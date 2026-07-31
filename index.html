@@ -10,12 +10,22 @@
 </style>
 </head>
 <body>
-  <!-- Replace the src below with YOUR Web App URL from Apps Script
-       (Deploy > Manage deployments > Web app > URL). -->
   <iframe
+    id="appFrame"
     src="https://script.google.com/macros/s/AKfycbzyJkmhDWYCgWQwObDVCS4JKdsWkqc1GKf8newTRb_fTcTwpe3W2ef4-3GwfKF-GSrUmQ/exec"
     allow="clipboard-write"
     referrerpolicy="no-referrer-when-downgrade"
   ></iframe>
+
+<script>
+  var BASE_URL = document.getElementById('appFrame').src.split('?')[0];
+
+  window.addEventListener('message', function(event){
+    var data = event.data;
+    if (data && data.type === 'rsc-dashboard-token' && data.token) {
+      document.getElementById('appFrame').src = BASE_URL + '?token=' + encodeURIComponent(data.token);
+    }
+  });
+</script>
 </body>
 </html>
