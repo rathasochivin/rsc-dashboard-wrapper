@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RSC Dashboard</title>
+<style>
+  html, body { margin:0; padding:0; height:100%; overflow:hidden; background:#0F3D3E; }
+  iframe { width:100%; height:100%; border:none; display:block; }
+</style>
+</head>
+<body>
+  <!-- IMPORTANT: keep this exact URL in sync with your Apps Script
+       "Web app" deployment URL (Deploy > Manage deployments > Web app).
+       Only changes if you ever create a brand-new deployment (not just
+       "New version" on the existing one). -->
+  <iframe
+    id="appFrame"
+    src="https://script.google.com/macros/s/AKfycbzyJkmhDWYCgWQwObDVCS4JKdsWkqc1GKf8newTRb_fTcTwpe3W2ef4-3GwfKF-GSrUmQ/exec"
+    allow="clipboard-write"
+    referrerpolicy="no-referrer-when-downgrade"
+  ></iframe>
+
+<script>
+  // The Login page inside the iframe broadcasts a message once it has a
+  // valid access token (see broadcastToken() in Login.html). We just
+  // swap the IFRAME's own src to include that token — the browser's own
+  // address bar (this page's URL, i.e. your custom domain) never
+  // changes, so it stays clean no matter what happens inside the frame.
+  var BASE_URL = document.getElementById('appFrame').src.split('?')[0];
+
+  window.addEventListener('message', function(event){
+    var data = event.data;
+    if (data && data.type === 'rsc-dashboard-token' && data.token) {
+      document.getElementById('appFrame').src = BASE_URL + '?token=' + encodeURIComponent(data.token);
+    }
+  });
+</script>
+</body>
+</html>
