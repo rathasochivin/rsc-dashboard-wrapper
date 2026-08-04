@@ -64,9 +64,18 @@
 
     /* ចាកចេញ ៖ Dashboard ប្រាប់មក ហើយយើងកំណត់ iframe ត្រលប់ទៅទំព័រចូល
        ដោយគ្មាន token — address bar នៅជា teamsmos.com ដដែល។ */
-    if (data.type === 'rsc-dashboard-logout') { frame.src = BASE_URL; return; }
+    /* ឆ្លើយតបបញ្ជាក់ជានិច្ច ៖ ទំព័រខាងក្នុងត្រូវដឹងច្បាស់ថាមាន wrapper
+       ដើម្បីកុំអោយវាបើកទំព័រដោយខ្លួនឯង ហើយអូស address bar ចេញពី
+       domain នេះ។ ការទាយតាមពេលវេលាមិនគ្រប់គ្រាន់ទេ ព្រោះ Apps Script
+       ប្រើពេលច្រើនជាងមួយវិនាទីដើម្បីផ្ទុក iframe ថ្មី។ */
+    function ack() {
+      try { event.source.postMessage({ type: 'rsc-wrapper-ack' }, event.origin); } catch (e) {}
+    }
+
+    if (data.type === 'rsc-dashboard-logout') { ack(); frame.src = BASE_URL; return; }
 
     if (data.type !== 'rsc-dashboard-token' || !data.token) return;
+    ack();
 
     /* ២. Token ជា UUID — បដិសេធអ្វីដែលមិនមែនរូបរាងនោះ */
     if (!/^[0-9a-fA-F-]{20,64}$/.test(String(data.token))) return;
