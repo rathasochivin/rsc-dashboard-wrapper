@@ -48,7 +48,6 @@
 
   var frame = document.getElementById('appFrame');
   var BASE_URL = frame.src.split('?')[0];
-  var swapped = false;
 
   window.addEventListener('message', function (event) {
     /* ១. ត្រូវមកពី Google ពិត */
@@ -62,12 +61,13 @@
     /* ៣. Token ជា UUID — បដិសេធអ្វីដែលមិនមែនរូបរាងនោះ */
     if (!/^[0-9a-fA-F-]{20,64}$/.test(String(data.token))) return;
 
-    /* ៤. ប្តូរតែម្តងក្នុងមួយទំព័រ — កុំអោយ message ជាបន្តបន្ទាប់
-          អាចផ្លាស់ប្តូរវគ្គដែលកំពុងប្រើ */
-    if (swapped) return;
-    swapped = true;
-
-    frame.src = BASE_URL + '?token=' + encodeURIComponent(data.token);
+    /* Login.html ផ្ញើ token ពីរដង ៖ ម្តងស្វ័យប្រវត្តិពេលទំព័រផ្ទុក និង
+       ម្តងទៀតពេលអ្នកប្រើចុចប៊ូតុង។ ដូច្នេះកុំកំណត់អោយប្តូរតែម្តង បើមិន
+       ដូច្នេះការចុចនឹងគ្មានប្រតិកម្មសោះ។ ការពិនិត្យ origin និង source
+       ខាងលើធានារួចហើយថាមានតែ iframe របស់យើងទេដែលផ្ញើបាន។ */
+    var next = BASE_URL + '?token=' + encodeURIComponent(data.token);
+    if (frame.src === next) return;   // token ដដែល — គ្មានអ្វីត្រូវធ្វើ
+    frame.src = next;
   }, false);
 </script>
 </body>
