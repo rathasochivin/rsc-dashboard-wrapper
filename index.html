@@ -37,34 +37,36 @@
 
 <script>
   /* ================================================================
-     ការការពារទី ២ ៖ ទទួលសារតែពី iframe របស់យើងផ្ទាល់
-     ជំនាន់មុនទទួល message ពីគ្រប់ប្រភព ដោយមិនពិនិត្យ event.origin ទេ។
-     មានន័យថា គេអាចផ្ញើ token របស់គេចូលមក ហើយបញ្ជូនអ្នកប្រើរបស់យើងចូល
-     គណនីរបស់គេ (session fixation) — សវនករនឹង upload ឯកសារសហគ្រាស
-     ចូលគណនីអ្នកវាយប្រហារដោយមិនដឹងខ្លួន។
-     ឥឡូវយើងពិនិត្យទាំង origin ទាំង source frame មុននឹងទទួល។
+     ការការពារទី ២ ៖ ទទួល token តែពី Google ប៉ុណ្ណោះ
+
+     ចំណាំសំខាន់អំពីរបៀបដែល Apps Script ដំណើរការ ៖
+     វាមិនរត់ HTML របស់យើងនៅលើ script.google.com ទេ។ វាដាក់វាក្នុង
+     iframe ជាន់ទីពីរនៅលើ domain sandbox n-xxxxx....googleusercontent.com
+     ដែលអក្សរខាងមុខប្តូររាល់ deployment និងរាល់វគ្គ។ ដូច្នេះ ៖
+       · event.origin  = googleusercontent.com (មិនមែន script.google.com)
+       · event.source  = iframe ជាន់ក្នុង (មិនមែន appFrame.contentWindow)
+     ការប្រៀបធៀបនឹង script.google.com ត្រង់ៗ ឬនឹង contentWindow នឹង
+     ទម្លាក់ token ចោលទាំងអស់ — នេះជាមូលហេតុដែលការចុចប៊ូតុងគ្មានប្រតិកម្ម។
+     ដូច្នេះយើងផ្ទៀងផ្ទាត់តាម pattern របស់ domain វិញ ដែលនៅតែបិទផ្លូវ
+     គេហទំព័រខាងក្រៅដដែល។
      ================================================================ */
-  var APPS_SCRIPT_ORIGIN = 'https://script.google.com';
+  var GOOGLE_ORIGIN = /^https:\/\/([a-z0-9-]+\.)*(googleusercontent\.com|script\.google\.com)$/;
 
   var frame = document.getElementById('appFrame');
   var BASE_URL = frame.src.split('?')[0];
 
   window.addEventListener('message', function (event) {
-    /* ១. ត្រូវមកពី Google ពិត */
-    if (event.origin !== APPS_SCRIPT_ORIGIN) return;
-    /* ២. ត្រូវមកពី iframe នេះផ្ទាល់ មិនមែនពី popup ឬ frame ផ្សេង */
-    if (event.source !== frame.contentWindow) return;
+    /* ១. ត្រូវមកពី domain របស់ Google ពិត */
+    if (!GOOGLE_ORIGIN.test(event.origin)) return;
 
     var data = event.data;
     if (!data || data.type !== 'rsc-dashboard-token' || !data.token) return;
 
-    /* ៣. Token ជា UUID — បដិសេធអ្វីដែលមិនមែនរូបរាងនោះ */
+    /* ២. Token ជា UUID — បដិសេធអ្វីដែលមិនមែនរូបរាងនោះ */
     if (!/^[0-9a-fA-F-]{20,64}$/.test(String(data.token))) return;
 
-    /* Login.html ផ្ញើ token ពីរដង ៖ ម្តងស្វ័យប្រវត្តិពេលទំព័រផ្ទុក និង
-       ម្តងទៀតពេលអ្នកប្រើចុចប៊ូតុង។ ដូច្នេះកុំកំណត់អោយប្តូរតែម្តង បើមិន
-       ដូច្នេះការចុចនឹងគ្មានប្រតិកម្មសោះ។ ការពិនិត្យ origin និង source
-       ខាងលើធានារួចហើយថាមានតែ iframe របស់យើងទេដែលផ្ញើបាន។ */
+    /* ៣. Login.html ផ្ញើ token ពីរដង ៖ ម្តងស្វ័យប្រវត្តិពេលទំព័រផ្ទុក និង
+          ម្តងទៀតពេលអ្នកប្រើចុចប៊ូតុង។ ដូច្នេះកុំកំណត់អោយប្តូរតែម្តង។ */
     var next = BASE_URL + '?token=' + encodeURIComponent(data.token);
     if (frame.src === next) return;   // token ដដែល — គ្មានអ្វីត្រូវធ្វើ
     frame.src = next;
