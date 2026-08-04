@@ -10,31 +10,65 @@
 </style>
 </head>
 <body>
-  <!-- IMPORTANT: keep this exact URL in sync with your Apps Script
-       "Web app" deployment URL (Deploy > Manage deployments > Web app).
-       Only changes if you ever create a brand-new deployment (not just
-       "New version" on the existing one). -->
+<script>
+  /* ================================================================
+     ការការពារទី ១ ៖ FRAME-BUSTING
+     ទំព័រនេះកាន់ token របស់អ្នកប្រើ។ បើគេហទំព័រណាមួយដាក់ទំព័រនេះក្នុង
+     iframe របស់វា នោះ window.top របស់ទំព័រ Login ខាងក្នុងនឹងក្លាយជា
+     ទំព័ររបស់អ្នកវាយប្រហារ — ហើយ token ធ្លាក់ទៅដៃគេ។ ដូច្នេះបើយើងមិន
+     មែននៅកម្រិតលើគេ ត្រូវផ្ទុះចេញភ្លាម មុនពេល iframe ត្រូវបានបង្កើត។
+     ================================================================ */
+  if (window.top !== window.self) {
+    try { window.top.location = window.self.location.href; }
+    catch (e) { document.write('ទំព័រនេះមិនអនុញ្ញាតឲ្យបើកក្នុង frame ទេ។'); }
+    throw new Error('framed');
+  }
+</script>
+
+  <!-- សំខាន់ ៖ URL នេះត្រូវតែដូចនឹង "Web app" deployment URL របស់ Apps
+       Script (Deploy > Manage deployments > Web app)។ វាប្តូរតែពេលអ្នក
+       បង្កើត deployment ថ្មីទាំងស្រុងប៉ុណ្ណោះ មិនមែនពេល "New version" ទេ។ -->
   <iframe
     id="appFrame"
     src="https://script.google.com/macros/s/AKfycbzyJkmhDWYCgWQwObDVCS4JKdsWkqc1GKf8newTRb_fTcTwpe3W2ef4-3GwfKF-GSrUmQ/exec"
     allow="clipboard-write"
-    referrerpolicy="no-referrer-when-downgrade"
+    referrerpolicy="no-referrer"
   ></iframe>
 
 <script>
-  // The Login page inside the iframe broadcasts a message once it has a
-  // valid access token (see broadcastToken() in Login.html). We just
-  // swap the IFRAME's own src to include that token — the browser's own
-  // address bar (this page's URL, i.e. your custom domain) never
-  // changes, so it stays clean no matter what happens inside the frame.
-  var BASE_URL = document.getElementById('appFrame').src.split('?')[0];
+  /* ================================================================
+     ការការពារទី ២ ៖ ទទួលសារតែពី iframe របស់យើងផ្ទាល់
+     ជំនាន់មុនទទួល message ពីគ្រប់ប្រភព ដោយមិនពិនិត្យ event.origin ទេ។
+     មានន័យថា គេអាចផ្ញើ token របស់គេចូលមក ហើយបញ្ជូនអ្នកប្រើរបស់យើងចូល
+     គណនីរបស់គេ (session fixation) — សវនករនឹង upload ឯកសារសហគ្រាស
+     ចូលគណនីអ្នកវាយប្រហារដោយមិនដឹងខ្លួន។
+     ឥឡូវយើងពិនិត្យទាំង origin ទាំង source frame មុននឹងទទួល។
+     ================================================================ */
+  var APPS_SCRIPT_ORIGIN = 'https://script.google.com';
 
-  window.addEventListener('message', function(event){
+  var frame = document.getElementById('appFrame');
+  var BASE_URL = frame.src.split('?')[0];
+  var swapped = false;
+
+  window.addEventListener('message', function (event) {
+    /* ១. ត្រូវមកពី Google ពិត */
+    if (event.origin !== APPS_SCRIPT_ORIGIN) return;
+    /* ២. ត្រូវមកពី iframe នេះផ្ទាល់ មិនមែនពី popup ឬ frame ផ្សេង */
+    if (event.source !== frame.contentWindow) return;
+
     var data = event.data;
-    if (data && data.type === 'rsc-dashboard-token' && data.token) {
-      document.getElementById('appFrame').src = BASE_URL + '?token=' + encodeURIComponent(data.token);
-    }
-  });
+    if (!data || data.type !== 'rsc-dashboard-token' || !data.token) return;
+
+    /* ៣. Token ជា UUID — បដិសេធអ្វីដែលមិនមែនរូបរាងនោះ */
+    if (!/^[0-9a-fA-F-]{20,64}$/.test(String(data.token))) return;
+
+    /* ៤. ប្តូរតែម្តងក្នុងមួយទំព័រ — កុំអោយ message ជាបន្តបន្ទាប់
+          អាចផ្លាស់ប្តូរវគ្គដែលកំពុងប្រើ */
+    if (swapped) return;
+    swapped = true;
+
+    frame.src = BASE_URL + '?token=' + encodeURIComponent(data.token);
+  }, false);
 </script>
 </body>
 </html>
