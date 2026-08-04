@@ -60,7 +60,13 @@
     if (!GOOGLE_ORIGIN.test(event.origin)) return;
 
     var data = event.data;
-    if (!data || data.type !== 'rsc-dashboard-token' || !data.token) return;
+    if (!data) return;
+
+    /* ចាកចេញ ៖ Dashboard ប្រាប់មក ហើយយើងកំណត់ iframe ត្រលប់ទៅទំព័រចូល
+       ដោយគ្មាន token — address bar នៅជា teamsmos.com ដដែល។ */
+    if (data.type === 'rsc-dashboard-logout') { frame.src = BASE_URL; return; }
+
+    if (data.type !== 'rsc-dashboard-token' || !data.token) return;
 
     /* ២. Token ជា UUID — បដិសេធអ្វីដែលមិនមែនរូបរាងនោះ */
     if (!/^[0-9a-fA-F-]{20,64}$/.test(String(data.token))) return;
