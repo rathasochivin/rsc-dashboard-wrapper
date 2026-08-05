@@ -74,6 +74,10 @@
 
     if (data.type === 'rsc-dashboard-logout') { ack(); frame.src = BASE_URL; return; }
 
+    /* ផ្ទុកឡើងវិញដោយរក្សា token ដដែល (ប្រើក្រោយ «លុបទិន្នន័យទាំងអស់») ៖
+       ការកំណត់ src ជាតម្លៃដដែលបង្ខំអោយ iframe ផ្ទុកឡើងវិញ។ */
+    if (data.type === 'rsc-dashboard-reload') { ack(); frame.src = frame.src; return; }
+
     if (data.type !== 'rsc-dashboard-token' || !data.token) return;
     ack();
 
