@@ -3,7 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>RSC Dashboard</title>
+<title>RSC SYSTEM</title>
+
+<!-- ==================================================================
+     ការដំឡើងជាកម្មវិធី (PWA) — [stated] 2026-08-07
+     ⚠ manifest ត្រូវតែនៅលើទំព័រកម្រិតលើគេ គឺ index.html នេះ។ ការដាក់វា
+     ក្នុង dashboard.html គ្មានប្រយោជន៍ទេ ព្រោះនោះស្ថិតក្នុង iframe ហើយ
+     Chrome អាន manifest របស់ទំព័រកម្រិតលើគេប៉ុណ្ណោះ។ នេះជាមូលហេតុដែល
+     ជម្រើស Install មិនលេចសម្រាប់អ្នកប្រើតាមគេហទំព័រ។
+     ឯកសារបួន ត្រូវដាក់ក្នុង folder ដដែលនឹង index.html ៖
+       manifest.json · icon-192.png · icon-512.png · icon-512-maskable.png
+     ================================================================== -->
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#C8A64B">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="RSC SYSTEM">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<link rel="icon" href="./icon-192.png">
 <style>
   html, body { margin:0; padding:0; height:100%; overflow:hidden; background:#0F3D3E; }
   iframe { width:100%; height:100%; border:none; display:block; }

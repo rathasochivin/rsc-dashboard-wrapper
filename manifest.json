@@ -1,0 +1,32 @@
+{
+  "name": "RSC SYSTEM",
+  "short_name": "RSC SYSTEM",
+  "description": "ប្រព័ន្ធគ្រប់គ្រងឯកសារសវនកម្មសារពើពន្ធ",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0F3D3E",
+  "theme_color": "#C8A64B",
+  "lang": "km",
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
