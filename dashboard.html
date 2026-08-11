@@ -10757,6 +10757,27 @@ function findVATCRSheetNames(wb) {
   return wb.SheetNames.filter(s => normalizeSheetName(s).includes('VATCR'));
 }
 
+/* ⚠ ដំណោះស្រាយ 2026-08-11 ៖ ការរកតាមឈ្មោះសន្លឹកតែមួយមុខមិនគ្រប់គ្រាន់ទេ។
+   ក្រុមរបស់អ្នកប្រើបំបែក VATCR ជា file ដាច់ដោយឡែក ហើយសន្លឹកខាងក្នុង
+   ជាញឹកញាប់ឈ្មោះ «Sheet1»។ ការសម្គាល់ពេល upload ចាប់បាន (detectIsVATCRSheet
+   អានក្បាលតារាង) ដូច្នេះ file ចូលដល់ MTR ត្រឹមត្រូវ — តែ getAllVATCRRows_
+   រកសន្លឹកតាមឈ្មោះវិញ ដូច្នេះទិន្នន័យអង្គុយនៅទីនោះដោយគ្មានអ្នកអាន ហើយ
+   ផ្ទាំង VATCR ចេញទទេ។ ឥឡូវ ៖ ឈ្មោះមិនត្រូវ → អានក្បាលតារាងជំនួស។ */
+function vatcrSheetsOf(wb) {
+  const byName = findVATCRSheetNames(wb);
+  if (byName.length) return byName;
+  const out = [];
+  (wb.SheetNames || []).forEach(function(sn){
+    const ws = wb.Sheets[sn];
+    if (!ws) return;
+    try {
+      const aoa = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '', raw: true });
+      if (detectIsVATCRSheet(aoa)) out.push(sn);
+    } catch (e) {}
+  });
+  return out;
+}
+
 function parseKhmerOrLatinNumber(str) {
   if (!str) return NaN;
   const khmerNums = {'០': '0', '១': '1', '២': '2', '៣': '3', '៤': '4', '៥': '5', '៦': '6', '៧': '7', '៨': '8', '៩': '9'};
@@ -11190,7 +11211,7 @@ function saveVatcrManual(){
 }
 /* មានឯកសារ VATCR ដែរឬទេ? បើមាន នោះការបញ្ចូលដោយដៃត្រូវចាក់សោ។ */
 function vatcrHasFile(){
-  try{ return loadedWorkbooks.some(it => findVATCRSheetNames(it.wb).length > 0); }catch(e){ return false; }
+  try{ return loadedWorkbooks.some(it => vatcrSheetsOf(it.wb).length > 0); }catch(e){ return false; }
 }
 let vatcrUnlocked = false;
 
@@ -11219,23 +11240,32 @@ function getAllVATCRRows_() {
      ត្រូវនឹងច្បាប់ «ឯកសារឈ្នះ» ដែលអ្នកប្រើកំណត់។ */
   vatcrManualAsRows().forEach(r => rowsByCode.set(r.code, r));
 
+  const scan = [];
   loadedWorkbooks.forEach(item => {
     const wb = item.wb;
-    const sheetNames = findVATCRSheetNames(wb);
+    const sheetNames = vatcrSheetsOf(wb);
+    if (!sheetNames.length) return;
 
     sheetNames.forEach(sheetName => {
       const ws = wb.Sheets[sheetName];
       if (!ws) return;
       const aoa = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '', raw: true });
+      let found = 0;
 
       for (let i = 0; i < aoa.length; i++) {
         const row = aoa[i] || [];
         const colA = row[0];
         const colB = String(row[1] || '').trim();
 
-        const isDataRow = (typeof colA === 'number' || (!isNaN(Number(colA)) && String(colA).trim() !== '')) &&
-                           /^OVAT/i.test(colB);
+        /* លេខបារកូដភាគច្រើនចាប់ផ្តើមដោយ OVAT តែមិនមែនទាំងអស់ទេ។ សន្លឹក
+           នេះត្រូវបានបញ្ជាក់ថាជា VATCR រួចហើយ (តាមឈ្មោះ ឬតាមក្បាលតារាង)
+           ដូច្នេះ «លេខរៀងជាលេខ + បារកូដមិនទទេ» គ្រប់គ្រាន់ជាការសម្គាល់ជួរ។
+           ជួរក្បាលតារាងធ្លាក់ចេញដោយខ្លួនឯង ព្រោះ ល.រ មិនមែនជាលេខ។ */
+        const numA = (typeof colA === 'number') ||
+                     (!isNaN(Number(colA)) && String(colA).trim() !== '');
+        const isDataRow = numA && (/^OVAT/i.test(colB) || colB.length >= 3);
         if (!isDataRow) continue;
+        found++;
 
         const monthRaw = row[3];
 
@@ -11252,8 +11282,10 @@ function getAllVATCRRows_() {
           evatStatus: String(row[8] || '').trim()
         });
       }
+      scan.push((item.name || 'ឯកសារ') + ' › ' + sheetName + ' ៖ ' + found + ' ជួរ');
     });
   });
+  window.__vatcrScan = scan;
 
   const rows = Array.from(rowsByCode.values());
   rows.sort((a, b) => b.monthSortKey - a.monthSortKey);
@@ -13992,7 +14024,9 @@ function vatcrManualPanel(){
       ${vatcrHasFile()
         ? `<label class="vm-lock"><input type="checkbox" id="vmUnlock"${vatcrUnlocked ? ' checked' : ''}>
              🔓 ដោះសោដើម្បីកែ (មានឯកសារ upload រួចហើយ)</label>`
-        : '<span class="vm-note">គ្មានឯកសារ VATCR ត្រូវបាន upload — អាចបញ្ចូលដោយដៃបាន</span>'}
+        : `<span class="vm-note">គ្មានឯកសារ VATCR ត្រូវបាន upload — អាចបញ្ចូលដោយដៃបាន${
+             (window.__vatcrScan && window.__vatcrScan.length)
+               ? '<br>សន្លឹកដែលបានអាន ៖ ' + esc(window.__vatcrScan.join(' · ')) : ''}</span>`}
       <button class="btn btn-plainlink" id="vmAdd" style="width:auto;"${dis}>＋ បន្ថែមជួរ</button>
     </div>
     ${locked ? '<div class="vm-note">🔒 ជួរទាំងនេះចាក់សោ ព្រោះទិន្នន័យពីឯកសារជាគោល។ ដោះសោខាងលើបើត្រូវកែករណីខុស។</div>' : ''}
@@ -16338,6 +16372,19 @@ window.__mtrFormExport = function(){ return Object.assign({}, mtrFormOverride); 
 /* រាប់ចំនួន workbook ដែលផ្ទុករួច — ថោកណាស់ (មិនបំប្លែងជា base64 ទេ)។
    ការរក្សាទុកស្វ័យប្រវត្តិប្រើវាដើម្បីដឹងថា MTR ចប់ការងារឬនៅ។ */
 window.__mtrLoadedCount = function(){ return loadedWorkbooks.length; };
+
+/* ការត្រួតពិនិត្យ VATCR — វាយ __vatcrScanReport() ក្នុង Console ដើម្បីមើល
+   ថាតើសន្លឹកណាខ្លះត្រូវបានអាន និងបានប៉ុន្មានជួរ។ ពេលផ្ទាំង VATCR ចេញទទេ
+   នេះជាចម្លើយភ្លាមថាបញ្ហានៅត្រង់ការសម្គាល់សន្លឹក ឬត្រង់ការអានជួរ។ */
+window.__vatcrRows = function(){ return getAllVATCRRows(); };
+window.__vatcrScanReport = function(){
+  const rows = getAllVATCRRows();
+  const t = 'VATCR ៖ ' + rows.length + ' ជួរ\n'
+          + ((window.__vatcrScan || []).join('\n') || 'រកសន្លឹក VATCR មិនឃើញក្នុងឯកសារណាមួយ');
+  try{ console.log(t); }catch(e){}
+  alert(t);
+  return t;
+};
 window.__mtrFormImport = function(o){
   if(!o || typeof o !== 'object') return;
   Object.keys(mtrFormOverride).forEach(k=>{ if(typeof o[k] === 'string') mtrFormOverride[k] = o[k]; });
