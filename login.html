@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RSC SYSTEM</title>
+
+<!-- ==================================================================
+     ការដំឡើងជាកម្មវិធី (PWA)
+     ⚠ manifest ត្រូវតែនៅលើទំព័រកម្រិតលើគេ គឺ index.html នេះ។
+     ឯកសារបួន ត្រូវដាក់ក្នុង folder ដដែលនឹង index.html ៖
+       manifest.json · icon-192.png · icon-512.png · icon-512-maskable.png
+     ================================================================== -->
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#C8A64B">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="RSC SYSTEM">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<link rel="icon" href="./icon-192.png">
+<style>
+  html, body { margin:0; padding:0; height:100%; overflow:hidden; background:#0F3D3E; }
+  iframe { width:100%; height:100%; border:none; display:block; }
+</style>
+</head>
+<body>
+<script>
+  /* ================================================================
+     ការការពារទី ១ ៖ FRAME-BUSTING
+     ទំព័រនេះកាន់ token របស់អ្នកប្រើ។ បើគេហទំព័រណាមួយដាក់ទំព័រនេះក្នុង
+     iframe របស់វា នោះ token អាចធ្លាក់ទៅដៃគេ។ ដូច្នេះបើយើងមិនមែននៅ
+     កម្រិតលើគេ ត្រូវផ្ទុះចេញភ្លាម មុនពេល iframe ត្រូវបានបង្កើត។
+     ================================================================ */
+  if (window.top !== window.self) {
+    try { window.top.location = window.self.location.href; }
+    catch (e) { document.write('ទំព័រនេះមិនអនុញ្ញាតឲ្យបើកក្នុង frame ទេ។'); }
+    throw new Error('framed');
+  }
+
+  /* ================================================================
+     ⚡ ថ្មី ៖ ទំព័រនេះលែងផ្ទុក dashboard ក្នុង iframe ទៀតហើយ។
+
+     ⚠ រចនាសម្ព័ន្ធ ៖ dashboard អង្គុយនៅ **index.html** (root) ដើម្បីអោយ
+     URL ជា «teamsmos.com» សុទ្ធ គ្មានឈ្មោះឯកសារ។ ឯកសារនេះ (login.html)
+     ជាទំព័រចូលប៉ុណ្ណោះ។ dashboard ជាឯកសារ static ដែល GitHub
+     Pages បញ្ជូនពី CDN — លឿនជាង Apps Script ដែលត្រូវបង្កើតទំព័រ 3.3 MB
+     ឡើងវិញរាល់ដង។ ហើយដោយវានៅលើ origin ពិត (មិនមែនក្នុង iframe
+     sandbox របស់ Google) ទើប CORS · PWA · និង API ផ្សេងៗដើរធម្មតា។
+
+     iframe ខាងក្រោមនៅសល់សម្រាប់ **តែទំព័រចូលប្រព័ន្ធ** ប៉ុណ្ណោះ
+     ដែលជាទំព័រតូច។ ពេលទទួល token ៖ រក្សាទុក រួចនាំទំព័រកម្រិតលើគេ
+     ទៅ dashboard.html — address bar នៅជា teamsmos.com ដដែល។
+     ================================================================ */
+  try {
+    var saved = localStorage.getItem('rsc_token') || '';
+    if (saved) { location.replace('./'); }
+  } catch (e) {}
+</script>
+
+  <!-- សំខាន់ ៖ URL នេះត្រូវតែដូចនឹង "Web app" deployment URL របស់ Apps
+       Script (Deploy > Manage deployments > Web app)។ វាប្តូរតែពេលអ្នក
+       បង្កើត deployment ថ្មីទាំងស្រុងប៉ុណ្ណោះ មិនមែនពេល "New version" ទេ។ -->
+  <iframe
+    id="appFrame"
+    src="https://script.google.com/macros/s/AKfycbzLnWeB05H8oqWAtM1hiw_FdYunlns01NkHR4MjsY5QbiT3Xuh-xdSDzKIuIYbB33k0/exec"
+    allow="clipboard-write"
+    referrerpolicy="no-referrer"
+  ></iframe>
+
+<script>
+  /* ================================================================
+     ការការពារទី ២ ៖ ទទួល token តែពី Google ប៉ុណ្ណោះ
+
+     Apps Script មិនរត់ HTML របស់យើងនៅលើ script.google.com ទេ — វាដាក់
+     វាក្នុង iframe ជាន់ទីពីរនៅលើ domain sandbox
+     n-xxxxx....googleusercontent.com ដែលអក្សរខាងមុខប្តូររាល់ deployment
+     និងរាល់វគ្គ។ ដូច្នេះ ៖
+       · event.origin  = googleusercontent.com (មិនមែន script.google.com)
+       · event.source  = iframe ជាន់ក្នុង (មិនមែន appFrame.contentWindow)
+     ការប្រៀបធៀបត្រង់ៗនឹងទម្លាក់ token ចោលទាំងអស់ ដូច្នេះយើងផ្ទៀងផ្ទាត់
+     តាម pattern របស់ domain វិញ។
+     ================================================================ */
+  var GOOGLE_ORIGIN = /^https:\/\/([a-z0-9-]+\.)*(googleusercontent\.com|script\.google\.com)$/;
+
+  var frame    = document.getElementById('appFrame');
+  var BASE_URL = frame.src.split('?')[0];
+  var handed   = false;
+
+  window.addEventListener('message', function (event) {
+    /* ១. ត្រូវមកពី domain របស់ Google ពិត */
+    if (!GOOGLE_ORIGIN.test(event.origin)) return;
+
+    var data = event.data;
+    if (!data) return;
+
+    /* ឆ្លើយតបបញ្ជាក់ជានិច្ច ៖ Login.html រង់ចាំ ack នេះ ដើម្បីបោះបង់
+       ការបើកទំព័រដោយខ្លួនឯង ដែលនឹងអូស address bar ចេញពី domain នេះ។ */
+    function ack() {
+      try { event.source.postMessage({ type: 'rsc-wrapper-ack' }, event.origin); } catch (e) {}
+    }
+
+    /* ចាកចេញ / ផ្ទុកឡើងវិញ ៖ នៅសល់សម្រាប់ករណីចាស់ ដែល dashboard នៅ
+       ក្នុង iframe (ឧ. STATIC_DASHBOARD_URL នៅទទេក្នុង Code.gs)។ */
+    if (data.type === 'rsc-dashboard-logout') { ack(); frame.src = BASE_URL; return; }
+    if (data.type === 'rsc-dashboard-reload') { ack(); frame.src = frame.src; return; }
+
+    if (data.type !== 'rsc-dashboard-token' || !data.token) return;
+    ack();
+
+    /* ២. Token ជា UUID — បដិសេធអ្វីដែលមិនមែនរូបរាងនោះ */
+    if (!/^[0-9a-fA-F-]{20,64}$/.test(String(data.token))) return;
+
+    /* ៣. Login.html ផ្ញើ token ពីរដង (ពេលផ្ទុក និងពេលចុចប៊ូតុង) ដូច្នេះ
+          ត្រូវធានាថាយើងនាំទៅ dashboard តែម្តងគត់។ */
+    if (handed) return;
+    handed = true;
+
+    try { localStorage.setItem('rsc_token', String(data.token)); } catch (e) {}
+    location.replace('./?token=' + encodeURIComponent(data.token));
+  }, false);
+</script>
+</body>
+</html>

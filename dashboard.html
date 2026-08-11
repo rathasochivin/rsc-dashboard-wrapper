@@ -31181,38 +31181,71 @@ else CC.init();
     var silent = !!(opts && opts.silent);
     if(!driveOn()){ if(!silent) exportAllDataToFile(); return; }   /* offline → ទាញយកដូចដើម */
 
-    var meta, text;
+    /* ⚠ ល្បឿននៃការឆ្លើយតប (កែ 2026-08-11) ៖ មុននេះ __buildFullDump() រត់
+       មុនពេលផ្ទាំងណាមួយលេចឡើង។ វាបំប្លែងឯកសារ Excel ទាំងអស់ជា base64
+       ដែលឈប់ខ្សែស្រឡាយមេ ៣-៥ វិនាទី — ដូច្នេះការចុច 💾 មើលទៅដូចជា
+       គ្មានប្រតិកម្ម ហើយអ្នកប្រើស្មានថាវាមិនដើរ។ ឥឡូវ ៖
+         ១. រកឈ្មោះគោល (ថោក) → បង្ហាញផ្ទាំងភ្លាម
+         ២. ពិនិត្យឯកសារដែលមានស្រាប់ រួចសួរ
+         ៣. បង្ហាញផ្ទាំង «កំពុងត្រៀម» រួច **បន្ធូរអោយ browser គូរជាមុន**
+            (setTimeout) ទើបចាប់ការងារធ្ងន់
+       ⚠ កុំយក JSON.stringify មកដាក់មុនផ្ទាំងវិញ។ */
+    var meta;
     try{
       meta = window.__rscSaveMeta ? window.__rscSaveMeta() : {base:'dashboard', company:'', tin:''};
-      /* គ្មាន indent — ឯកសារនេះសម្រាប់ម៉ាស៊ីនអាន មិនមែនមនុស្សអានទេ */
-      text = JSON.stringify(window.__buildFullDump());
     }catch(e){
-      if(!silent) alert('⚠ មិនអាចប្រមូលទិន្នន័យបានទេ ៖ ' + e.message);
+      if(!silent) alert('⚠ មិនអាចអានឈ្មោះសហគ្រាសបានទេ ៖ ' + e.message);
       return;
     }
-    if(!text || text.length < 5){ if(!silent) alert('⚠ គ្មានទិន្នន័យសម្រាប់រក្សាទុកទេ'); return; }
 
-    /* សួរជាមុន ៖ បើឈ្មោះគោលនេះមានឯកសាររួចហើយ អ្នកប្រើសម្រេចថាជាន់លើ
-       ឬបង្កើតជំនាន់ថ្មី។ ការរក្សាទុកស្វ័យប្រវត្តិមិនសួរទេ — វាយកជំនាន់ថ្មី។ */
-    var pre = silent
-      ? Promise.resolve({mode:'new'})
-      : call('driveFindBase', [window.__loggedInUserToken, meta.base])
-          .then(function(r){
-            var list = (r && r.ok && r.files) || [];
-            return list.length ? askOverwrite(list) : {mode:'new'};
-          })
-          .catch(function(){ return {mode:'new'}; });
+    var pre;
+    if(silent){
+      pre = Promise.resolve({mode:'new'});
+    }else{
+      var ov0 = overlay('រក្សាទុកចូល Google Drive');
+      ov0.msg('កំពុងពិនិត្យឯកសារដែលមានស្រាប់…');
+      pre = call('driveFindBase', [window.__loggedInUserToken, meta.base])
+        .then(function(r){
+          ov0.close();
+          var list = (r && r.ok && r.files) || [];
+          return list.length ? askOverwrite(list) : {mode:'new'};
+        })
+        .catch(function(){ ov0.close(); return {mode:'new'}; });
+    }
 
     pre.then(function(choice){
       if(!choice) return;                       /* បោះបង់ */
       if(choice.mode === 'over') meta.overwriteId = choice.id;
-      startSave(choice);
+
+      var ov = silent ? toast('💾 កំពុងរក្សាទុក…') : overlay('កំពុងរក្សាទុកចូល Google Drive');
+      ov.msg('កំពុងត្រៀមទិន្នន័យ…');
+      ov.pct(3);
+
+      /* បន្ធូរពីរដំណាក់ ៖ rAF អោយ browser គូរ រួច setTimeout អោយវាបញ្ចប់
+         ការគូរនោះមុនពេលខ្សែស្រឡាយមេត្រូវជាប់រវល់ */
+      var go = function(){
+        var text;
+        try{
+          /* គ្មាន indent — ឯកសារនេះសម្រាប់ម៉ាស៊ីនអាន មិនមែនមនុស្សអានទេ */
+          text = JSON.stringify(window.__buildFullDump());
+        }catch(e){
+          ov.close();
+          if(!silent) alert('⚠ មិនអាចប្រមូលទិន្នន័យបានទេ ៖ ' + e.message);
+          return;
+        }
+        if(!text || text.length < 5){
+          ov.close();
+          if(!silent) alert('⚠ គ្មានទិន្នន័យសម្រាប់រក្សាទុកទេ');
+          return;
+        }
+        ov.msg('កំពុងបង្ហាប់ទិន្នន័យ… (' + kb(text.length) + ')');
+        startSave(text, ov);
+      };
+      if(window.requestAnimationFrame) requestAnimationFrame(function(){ setTimeout(go, 30); });
+      else setTimeout(go, 60);
     });
 
-    function startSave(choice){
-    var ov = silent ? toast('💾 កំពុងរក្សាទុក…') : overlay('កំពុងរក្សាទុកចូល Google Drive');
-    ov.msg('កំពុងបង្ហាប់ទិន្នន័យ… (' + kb(text.length) + ')');
-
+    function startSave(text, ov){
     var sid = String(Date.now()) + '-' + Math.floor(Math.random() * 1e6);
 
     gzipText(text).then(function(gz){
