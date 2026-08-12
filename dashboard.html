@@ -1350,6 +1350,11 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
 #view-tracking .trk-letter tbody tr:nth-child(even), #docs-modal .trk-letter tbody tr:nth-child(even){background:transparent;}
 
 #view-tracking .lt-title, #docs-modal .lt-title{font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif; text-align:center; font-size:14.5px; margin:14px 0 12px; line-height:1.7;}
+#docs-modal #trkSum2 .sm-tk{cursor:pointer;}
+#docs-modal #trkSum2 .sm-rw{cursor:pointer;}
+#docs-modal #trkSum2 .sm-rw:hover{color:#0F3D3E; text-decoration:underline;}
+@media print{ .sm-rowbar{display:none !important;} }
+#docs-modal #trkSum2 .sm-tk:hover{background:#fff3c4;}
 #view-tracking .lt-meta, #docs-modal .lt-meta{width:100%; border-collapse:collapse; font-size:12.5px; margin-bottom:10px;}
 #view-tracking .lt-meta td, #docs-modal .lt-meta td{padding:2px 4px; vertical-align:top;}
 #view-tracking .lt-meta td.k, #docs-modal .lt-meta td.k{white-space:nowrap; width:1%; color:var(--muted);}
@@ -2159,6 +2164,14 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
 #mtr-embed table.annual-ledger thead th:nth-child(1){ text-align:left; }
 /* ⚠ ជួរឈរទី ២ ធ្លាប់ជា TOTAL ដែលបានដកចេញ — ឥឡូវវាជាឆ្នាំដំបូង
    ដូច្នេះកុំដាក់ពណ៌ត្រាលើវាទៀត។ ជួរដេក «សរុប» នៅបាតទទួលពណ៌នោះវិញ។ */
+#mtr-embed .ah-bar{
+  display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:14px;
+}
+#mtr-embed .ah-bar .btn{ width:auto; flex:none; padding:9px 14px; }
+#mtr-embed .ah-bar .ah-sep{
+  width:1px; align-self:stretch; background:var(--mtr-paper-line); margin:0 4px;
+}
+#mtr-embed .ah-bar .ah-hint{ font-size:12px; color:#8a8a8a; }
 /* 📜 ប្រវត្តិសវនកម្ម ៖ ជួរបញ្ចូលដោយដៃមានផ្ទៃលឿង ដូចឯកសារដើមរបស់គេ។
    ⚠ ត្រូវដាក់បុព្វបទ #mtr-embed បើមិនដូច្នេះ ច្បាប់ ID របស់ embed ឈ្នះ។ */
 #mtr-embed table.ah-tbl tbody td{ text-align:right; }
@@ -11238,6 +11251,15 @@ function audMCalc(y){
   };
 }
 function audFmt(n){ return (n || n === 0) ? Number(n).toLocaleString('en-US') : ''; }
+/* តម្លៃសម្រាប់ដាក់ក្នុងប្រអប់បញ្ចូល ៖ មានក្បៀស ដូចអ្វីដែលគេវាយដោយដៃ។
+   ⚠ រក្សាអ្វីដែលមិនមែនជាលេខទុកដដែល — កុំលុបអ្វីដែលគេកំពុងវាយ។ */
+function audNumIn(v){
+  var t = String(v == null ? '' : v).trim();
+  if(!t) return '';
+  var n = Number(t.replace(/,/g, ''));
+  if(!isFinite(n)) return t;
+  return Math.round(n).toLocaleString('en-US');
+}
 function audPct(v){ return (v === null || !isFinite(v)) ? '' : (v * 100).toFixed(2) + '%'; }
 
 /* ⚠ ការបើកឯកសារដែលបានរក្សាទុក សរសេរ localStorage ត្រឡប់មកវិញ តែម៉ូឌុល
@@ -11258,9 +11280,20 @@ window.__mtrReloadManual = function(){
 function renderHistoryView(){
   const st = audHistState();
   const sub = st.sub;
-  let html = '<div class="ah-subtabs" style="display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap;">' +
-    '<button class="btn ' + (sub === 'margin' ? 'btn-brass' : 'btn-outline') + '" data-ah-sub="margin">📈 ប្រវត្តិកម្រិតចំណេញ</button>' +
-    '<button class="btn ' + (sub === 'basis'  ? 'btn-brass' : 'btn-outline') + '" data-ah-sub="basis">🧾 ប្រវត្តិមូលដ្ឋានកំណត់ពន្ធ</button>' +
+  /* ⚠ `#mtr-embed .btn` កំណត់ `width:100%` ដូច្នេះប៊ូតុងនីមួយៗយកមួយជួរ
+     ពេញ។ ត្រូវដាក់ `width:auto` លើប៊ូតុងក្នុង embed នេះជានិច្ច —
+     ផ្ទាំងការបង់យឺតយ៉ាវក៏ធ្វើដូចគ្នា។ [stated] ចង់អោយនៅជួរតែមួយ។ */
+  let html = '<div class="ah-bar">' +
+    '<button class="btn ' + (sub === 'margin' ? 'btn-brass' : 'btn-outline') + '" data-ah-sub="margin">📈 កម្រិតចំណេញ</button>' +
+    '<button class="btn ' + (sub === 'basis'  ? 'btn-brass' : 'btn-outline') + '" data-ah-sub="basis">🧾 មូលដ្ឋានកំណត់ពន្ធ</button>' +
+    (sub === 'margin'
+      ? '<span class="ah-sep"></span>' +
+        '<button class="btn btn-outline" id="ahPull" title="បំពេញពី 🧮 ការគណនាពន្ធឡើងវិញ">↻ ទាញពីការគណនា</button>' +
+        '<button class="btn btn-outline" id="ahYearPrev">＋ ឆ្នាំមុន</button>' +
+        '<button class="btn btn-outline" id="ahYearNext">＋ ឆ្នាំក្រោយ</button>' +
+        '<span class="ah-hint">🟨 = បញ្ចូលដោយដៃ</span>'
+      : '<span class="ah-sep"></span>' +
+        '<button class="btn btn-brass" id="ahBasisAdd">+ បន្ថែមជួរ</button>') +
     '</div>';
 
   html += (sub === 'margin') ? audMarginHtml(st) : audBasisHtml(st);
@@ -11278,13 +11311,7 @@ function audMarginHtml(st){
       'value="' + String((st.m[k] || {})[y] == null ? '' : (st.m[k] || {})[y]).replace(/"/g, '&quot;') + '" ' +
       'inputmode="numeric" style="width:100%; text-align:right;">';
 
-  let h = '<div style="margin-bottom:12px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">' +
-    '<button class="btn btn-outline" id="ahYearPrev">＋ ឆ្នាំមុន</button>' +
-    '<button class="btn btn-outline" id="ahYearNext">＋ ឆ្នាំក្រោយ</button>' +
-    '<span style="font-size:12px; color:#8a8a8a;">ជួរផ្ទៃលឿង ៖ បញ្ចូលដោយដៃ · ជួរឯទៀតគណនាដោយស្វ័យប្រវត្តិ</span>' +
-    '</div>';
-
-  h += '<div class="table-wrap"><table class="ledger ah-tbl"><thead><tr>' +
+  let h = '<div class="table-wrap"><table class="ledger ah-tbl"><thead><tr>' +
        '<th style="min-width:230px;">បរិយាយ</th>';
   yrs.forEach(y => {
     h += '<th style="min-width:130px;">' + y +
@@ -11322,9 +11349,7 @@ function audMarginHtml(st){
 }
 
 function audBasisHtml(st){
-  let h = '<div style="margin-bottom:12px;">' +
-    '<button class="btn btn-brass" id="ahBasisAdd">+ បន្ថែមជួរ</button></div>';
-  h += '<div class="table-wrap"><table class="ledger ah-tbl"><thead><tr>' +
+  let h = '<div class="table-wrap"><table class="ledger ah-tbl"><thead><tr>' +
        '<th style="width:110px;">ឆ្នាំ</th>' +
        '<th style="min-width:230px;">មូលដ្ឋានកំណត់តាមប្រភេទពន្ធ</th>' +
        '<th style="width:170px;">ទឹកប្រាក់សរុប</th>' +
@@ -11356,11 +11381,64 @@ function audBasisHtml(st){
   return h;
 }
 
+/* ══ បំពេញពី 🧮 ការគណនាពន្ធឡើងវិញ ═══════════════════════════════════
+   [stated] «ទិន្នន័យដែលមានស្រាប់ ក្នុង TOI តាមឆ្នាំ … អាចដាក់ក្នុងនេះបាន»។
+   កាតគណនាមានតួលេខទាំង ៤ រួចហើយក្នុង CC.compute().y[year] ៖
+     turnDecl → ផលបានប្រកាស      · findAll → ផលកំណត់ឡើងវិញ
+     expDecl  → បន្ទុកបានប្រកាស   · expNew  → បន្ទុកកំណត់ឡើងវិញ
+   ⚠ បំពេញតែប្រអប់ទទេ — មិនសរសេរជាន់លើអ្វីដែលវាយដោយដៃទេ (ដូច
+     basisSyncFromCC ក្នុងឯកសារបរិយាយ)។ ⚠ ត្រូវហៅ autoFill មុន compute
+     បើមិនដូច្នេះ CC.state ទទេ ពេលអ្នកប្រើមិនទាន់បើកកាតគណនា។ */
+function audHistPull(){
+  var st = audHistState();
+  var CCa = window.CalcCard;
+  if(!CCa || typeof CCa.compute !== 'function'){
+    alert('⚠ រកកាតការគណនាពន្ធឡើងវិញមិនឃើញទេ');
+    return;
+  }
+  var res;
+  try{
+    if(typeof CCa.autoFill === 'function') CCa.autoFill(true);
+    res = CCa.compute();
+  }catch(e){ alert('⚠ គណនាមិនបាន ៖ ' + e.message); return; }
+
+  var per = (res && res.y) || {};
+  var years = Object.keys(per).sort();
+  if(!years.length){ alert('⚠ កាតការគណនាមិនទាន់មានទិន្នន័យឆ្នាំណាទេ'); return; }
+
+  var MAP = { turnDecl:'turnDecl', turnRe:'findAll', expDecl:'expDecl', expRe:'expNew' };
+  var filled = 0, skipped = 0, addedY = 0;
+
+  years.forEach(function(y){
+    if(st.years.indexOf(y) === -1){ st.years.push(y); addedY++; }
+    Object.keys(MAP).forEach(function(k){
+      var v = per[y][MAP[k]];
+      if(typeof v !== 'number' || !isFinite(v) || v === 0) return;
+      if(!st.m[k]) st.m[k] = {};
+      if(audMHas(k, y)){ skipped++; return; }      /* កុំសរសេរជាន់លើ */
+      /* [stated] លេខដែលទាញពីការគណនាចេញគ្មានក្បៀស ខណៈលេខដែលវាយ
+         ដោយដៃមានក្បៀស — មើលទៅមិនដូចគ្នា។ រក្សាទុកជាទម្រង់មានក្បៀស
+         ដដែល ; audMVal() ដកក្បៀសចេញមុនគណនាស្រាប់។ */
+      st.m[k][y] = audNumIn(v);
+      filled++;
+    });
+  });
+  st.years.sort();
+  audHistSave();
+  renderHistoryView();
+  alert('↻ បំពេញរួច\n\nប្រអប់ដែលបំពេញ ៖ ' + filled
+      + (addedY ? ('\nឆ្នាំដែលបន្ថែម ៖ ' + addedY) : '')
+      + (skipped ? ('\nរំលង (មានតម្លៃរួច) ៖ ' + skipped) : ''));
+}
+
 function audHistBind(){
   const st = audHistState();
   resultBody.querySelectorAll('[data-ah-sub]').forEach(b => {
     b.onclick = () => { st.sub = b.dataset.ahSub; audHistSave(); renderHistoryView(); };
   });
+
+  const pull = document.getElementById('ahPull');
+  if(pull) pull.onclick = audHistPull;
 
   const prev = document.getElementById('ahYearPrev');
   if(prev) prev.onclick = () => {
@@ -11391,7 +11469,13 @@ function audHistBind(){
       st.m[k][y] = inp.value;
       audHistSave();
     };
-    inp.onchange = () => renderHistoryView();
+    inp.onchange = () => {
+      /* ដាក់ក្បៀសអោយលេខដែលទើបវាយចប់ រួចគូរឡើងវិញ */
+      const k2 = inp.dataset.ahM, y2 = inp.dataset.ahY;
+      if(st.m[k2]) st.m[k2][y2] = audNumIn(st.m[k2][y2]);
+      audHistSave();
+      renderHistoryView();
+    };
   });
 
   const add = document.getElementById('ahBasisAdd');
@@ -16743,6 +16827,30 @@ window.__mtrFormExport = function(){ return Object.assign({}, mtrFormOverride); 
 /* រាប់ចំនួន workbook ដែលផ្ទុករួច — ថោកណាស់ (មិនបំប្លែងជា base64 ទេ)។
    ការរក្សាទុកស្វ័យប្រវត្តិប្រើវាដើម្បីដឹងថា MTR ចប់ការងារឬនៅ។ */
 window.__mtrLoadedCount = function(){ return loadedWorkbooks.length; };
+
+/* [stated] របាយការណ៍សង្ខេប ត្រូវបង្ហាញ «បានប្រកាសបង់ពន្ធសរុបក្នុងឆ្នាំ …»
+   ជាតារាង ប្រភេទពន្ធ × ឆ្នាំ + សរុប។ ទិន្នន័យដដែលនឹងផ្ទាំង ប្រចាំឆ្នាំ
+   ដូច្នេះបញ្ចេញជាអ្នកបម្រើសកល ជំនួសការសង់ឡើងវិញនៅឯកសារនោះ។ */
+window.__mtrAnnualByTax = function(){
+  var years = {}, byTax = {};
+  try{
+    getAllExtractedMonthlyRows().forEach(function(r){
+      var y = String(r[0] || ''), tax = String(r[1] || ''), v = r[r.length - 1];
+      if(!y || !tax || typeof v !== 'number') return;
+      years[y] = 1;
+      if(!byTax[tax]) byTax[tax] = {};
+      byTax[tax][y] = (byTax[tax][y] || 0) + v;
+    });
+  }catch(e){ return { years:[], rows:[] }; }
+  var ys = Object.keys(years).sort();
+  var rows = Object.keys(byTax).map(function(t){
+    var tot = 0;
+    ys.forEach(function(y){ tot += byTax[t][y] || 0; });
+    return { tax:t, byYear:byTax[t], total:tot };
+  }).filter(function(r){ return r.total; })
+    .sort(function(a, b){ return b.total - a.total; });
+  return { years: ys, rows: rows };
+};
 
 /* ការត្រួតពិនិត្យ VATCR — វាយ __vatcrScanReport() ក្នុង Console ដើម្បីមើល
    ថាតើសន្លឹកណាខ្លះត្រូវបានអាន និងបានប៉ុន្មានជួរ។ ពេលផ្ទាំង VATCR ចេញទទេ
@@ -23937,7 +24045,12 @@ const LETTERHEAD_CSS = `
   .lh-orn{margin-top:3px; color:#0F3D3E; text-align:center;}
   .kh-orn-svg{width:100px; height:auto; display:inline-block; vertical-align:middle;}
   .lh-mid{flex:0 0 132px;}
-  .lh-img{width:126px; height:auto; display:block; margin:0 auto;}
+  /* ⚠ ២០២៦-០៨-១២ ៖ «height:auto» ធ្វើអោយកម្ពស់អាស្រ័យលើការឌិកូដរូប។
+     មុនរូបឌិកូដរួច កម្ពស់ = 0 ដូច្នេះការវាស់ទំព័រលើកដំបូងខ្វះ ~113px
+     ហើយទំព័រទី១ ត្រូវបានវាស់ខ្លីជាងការពិត — ការព្រីនលើសទំព័រ ហើយពេល
+     វាស់ម្តងទៀត (ឧ. ចុចបង្រួម) ប្លុកមួយធ្លាក់ចុះក្រោម មើលទៅដូចជា
+     «បង្រួមហើយកាន់តែអាក្រក់»។ កម្ពស់ថេរ ៖ 220×197 → 126×113។ */
+  .lh-img{width:126px; height:113px; object-fit:contain; display:block; margin:0 auto;}
 `;
 
 let lastMinutes = [];
@@ -25681,7 +25794,20 @@ function basisCtx(){
 }
 
 function basisBodyHtml(forPrint){
-  const ys = basisYears();
+  /* ⚠ ឆ្នាំមកពី basisYears() (ការិយបរិច្ឆេទរបស់កម្មវិធី) ។ តែប្រភេទពន្ធ
+     ដែលទាញពីកាតគណនាអាចជាប់ឆ្នាំក្រៅជួរនោះ — បើមិនបញ្ចូល វាបាត់ស្ងាត់ៗ
+     ដោយអ្នកប្រើមិនដឹង។ ដូច្នេះបង្ហាញ **ការរួម** នៃឆ្នាំកម្មវិធី និងឆ្នាំ
+     ដែលមានធាតុរួចហើយ។ */
+  const ys = (function(){
+    const out = basisYears().map(String);
+    try{
+      const yrs = (basisState().years) || {};
+      Object.keys(yrs).forEach(function(y){
+        if(out.indexOf(String(y)) === -1 && (yrs[y] || []).length) out.push(String(y));
+      });
+    }catch(e){}
+    return out.sort();
+  })();
   if(!ys.length) return '<div class="rpt-empty">មិនទាន់មានការិយបរិច្ឆេទក្នុងកម្មវិធីនេះទេ</div>';
   return ys.map(y=>{
     const items = basisEntries(y);
@@ -25751,6 +25877,16 @@ function basisHtml(forPrint){
 function renderBasis(){
   const box = document.getElementById('trkBasis');
   if(!box) return;
+  /* [stated] ២០២៦-០៨-១២ ៖ «ជួយទាញប្រភេទពន្ធដែលត្រូវកំណត់មកទំព័រនេះផង
+     បើមាន» — មុននេះត្រូវចុចប៊ូតុង ↻ ដោយដៃ។ ឥឡូវទាញដោយស្វ័យប្រវត្តិរាល់
+     ពេលបង្ហាញ។ ⚠ basisSyncFromCC() **បន្ថែមតែប្រភេទដែលមិនទាន់មាន** ហើយ
+     មិនប៉ះអត្ថបទដែលគេវាយដោយដៃទេ — ដូច្នេះការហៅវាម្តងទៀតមិនបង្កគ្រោះ។
+     ⚠ CC.state ទទេរហូតដល់កាតគណនាបើកម្តង ដូច្នេះត្រូវ autoFill មុន។ */
+  try{
+    if(window.CalcCard && typeof window.CalcCard.autoFill === 'function')
+      window.CalcCard.autoFill(true);
+  }catch(e){}
+  try{ basisSyncFromCC(); }catch(e){}
   box.innerHTML = basisHtml(false);
   box.querySelectorAll('.bs-add').forEach(b=> b.onclick = ()=>{
     basisEntries(b.dataset.y).push({ type:'', text:'' }); trkSave(); renderBasis();
@@ -26219,18 +26355,42 @@ function narrPrintHtml(runHead, c, grand, bodyHtml, docCls){
    ចំណងជើង កថាខណ្ឌ និងតារាង ដែលជា px ថេរ មិនប្រែតាម line-height ទេ។
    ដូច្នេះឥឡូវមានតម្លៃតែមួយ --nr-sp (កត្តាបង្រួម ០.៦០–១.១០) ៖ វាគុណ
    ទាំង line-height ទាំង margin គ្រប់ប្លុក ដូច្នេះការបង្រួមមានប្រសិទ្ធភាពពិត។ */
-function narrLhMap(){
-  try{ return JSON.parse(localStorage.getItem('narrPageLhV1') || '{}') || {}; }catch(e){ return {}; }
+/* ⚠ ២០២៦-០៨-១២ ៖ ផែនទីបង្រួមធ្លាប់ជា **តែមួយ** ចែករំលែកគ្រប់ឯកសារ ៖
+   កំណត់ទំព័រ ១ ជា ៩០% ក្នុងបរិយាយការកំណត់ពន្ធ ក៏ប្តូរទំព័រ ១ របស់
+   របាយការណ៍សវនកម្ម និងសង្ខេបដែរ។ [stated] «ចុចបង្រួម វាបង្រួមទាំងអស់»។
+   ឥឡូវរក្សាទុកបំបែកតាមឯកសារ ៖ { narr:{}, audit:{}, sum2:{} }។
+   ⚠ `narrLhCur` ត្រូវកំណត់មុនហៅ narrLhOf/narrSetPageLh — narrPaginate
+     កំណត់វាតាម docCls ដូច្នេះផ្លូវទាំងអស់ឆ្លងកាត់វា។ */
+var narrLhCur = 'narr';
+function narrKindOf(cls){
+  cls = String(cls || '');
+  if(cls.indexOf('sm-doc') >= 0) return 'sum2';
+  if(cls.indexOf('ar-doc') >= 0) return 'audit';
+  return 'narr';
 }
+function narrLhAll(){
+  var o = {};
+  try{ o = JSON.parse(localStorage.getItem('narrPageLhV1') || '{}') || {}; }catch(e){ o = {}; }
+  /* ទម្រង់ចាស់ ៖ សោជាលេខទំព័រដោយផ្ទាល់ → ផ្ទេរទៅ narr */
+  var keys = Object.keys(o);
+  if(keys.length && keys.every(function(k){ return /^\d+$/.test(k); }))
+    o = { narr: o };
+  if(!o.narr)  o.narr  = {};
+  if(!o.audit) o.audit = {};
+  if(!o.sum2)  o.sum2  = {};
+  return o;
+}
+function narrLhMap(){ return narrLhAll()[narrLhCur] || {}; }
 function narrLhOf(i){
   const m = narrLhMap(), v = parseFloat(m[i]);
   return (v >= 0.6 && v <= 1.1) ? v : 1;
 }
 function narrSetPageLh(i, v){
-  const m = narrLhMap();
+  const all = narrLhAll();
+  const m = all[narrLhCur] || (all[narrLhCur] = {});
   if(v === null) delete m[i];
   else m[i] = Math.min(1.1, Math.max(0.6, Math.round(v * 100) / 100));
-  try{ localStorage.setItem('narrPageLhV1', JSON.stringify(m)); }catch(e){}
+  try{ localStorage.setItem('narrPageLhV1', JSON.stringify(all)); }catch(e){}
   /* សង់ឡើងវិញនូវការមើលជាមុនណាដែលកំពុងបើក */
   try{ renderNarr(); }catch(e){}
   try{ renderAudit(); }catch(e){}
@@ -26239,8 +26399,15 @@ function narrSetPageLh(i, v){
 
 /* បំបែកទំព័រពិត ៖ ត្រលប់ {pages:[{blocks, lh, used, avail}]} */
 function narrPaginate(bodyHtml, runHead, c, grand, docCls){
+  narrLhCur = narrKindOf(docCls);   /* ⚠ មុនហៅ narrLhOf ណាមួយ */
   const st = document.createElement('style');
-  st.textContent = NARR_CSS;
+  /* ⚠⚠ ២០២៦-០៨-១២ ៖ ម៉ាស៊ីនវាស់ធ្លាប់ចាក់តែ NARR_CSS ខណៈការព្រីនចាក់
+     ៧ សន្លឹក។ ដូច្នេះ ៖ ត្រា GDT គ្មានច្បាប់ទំហំ (វាធំតាមរូបដើម 220×197
+     ជំនួស 126×113) ហើយច្បាប់ .ar-* / .sm-* ខ្លះក៏បាត់ដែរ។ លទ្ធផល ៖
+     ទំព័រទី១ ត្រូវវាស់ខុសជានិច្ច ហើយ «កែយ៉ាងណាក៏មិនត្រូវ»។
+     ⚠ បញ្ជីនេះត្រូវដូច printInPage(...) បេះបិទ — បើបន្ថែមសន្លឹកថ្មីទីនោះ
+       ត្រូវបន្ថែមទីនេះដែរ។ */
+  st.textContent = LETTERHEAD_CSS + RPT_CSS + WP_CSS + BASIS_CSS + NARR_CSS + AR_CSS + SM_CSS;
   document.head.appendChild(st);
   const host = document.createElement('div');
   host.className = 'nr-doc ' + (docCls || '');   /* ត្រូវដូចទំព័រព្រីនពិត */
@@ -26256,7 +26423,18 @@ function narrPaginate(bodyHtml, runHead, c, grand, docCls){
     const footH = footEl ? footEl.offsetHeight : 0;
     const bodyEl = host.querySelector('.nr-body');
     bodyEl.innerHTML = bodyHtml;
-    const avail = narrMmPx(269) - headH - footH - 6;
+    /* ⚠⚠ ២០២៦-០៨-១២ ៖ អត្ថបទជាន់លើបន្ទាត់បាតទំព័រ។ ហេតុ ៖ ប្រអប់ទំព័រ
+       ពិតគឺ `.nr-page{height:266mm; padding-bottom:15mm; box-sizing:border-box}`
+       ដូច្នេះកន្លែងសម្រាប់អត្ថបទហូរគឺ **266 − 15 = 251mm** ប៉ុណ្ណោះ ហើយ
+       បាតទំព័រ (position:absolute; bottom:0) អង្គុយក្នុង padding នោះស្រាប់។
+       កូដចាស់យក 269mm រួចដក footH — ធំជាងការពិត ~៣២px ≈ មួយបន្ទាត់
+       ដែលហូរចេញទៅជាន់លើបាតទំព័រ។
+       ⚠ headH ត្រូវរាប់ margin-bottom របស់ក្បាលទំព័រផង បើមិនដូច្នេះ
+         ឯកសារបរិយាយ (ដែលមានក្បាលទំព័រ) នៅតែលើសបន្តិច។ */
+    const headMb = runEl ? (parseFloat(getComputedStyle(runEl).marginBottom) || 0) : 0;
+    /* ព្រំដែនពិត ៖ អត្ថបទត្រូវឈប់ **ខាងលើគែមខាងលើនៃបាតទំព័រ** ។
+       ទំព័រ 266mm − កម្ពស់បាតទំព័រ − ចន្លោះសុវត្ថិភាព − ក្បាលទំព័រ។ */
+    const avail = narrMmPx(266) - headH - headMb - footH - 8;
     const hOf = function(el){
       const cs = getComputedStyle(el);
       return el.offsetHeight + (parseFloat(cs.marginTop) || 0) + (parseFloat(cs.marginBottom) || 0);
@@ -26273,34 +26451,56 @@ function narrPaginate(bodyHtml, runHead, c, grand, docCls){
     };
     Array.from(bodyEl.children).forEach(flatten);
 
+    /* ⚠ ២០២៦-០៨-១២ ៖ ការបូក hOf(el) ម្តងមួយប្លុក **រាប់ margin ស្ទួន**។
+       ក្នុង CSS margin-bottom របស់ប្លុកមុន និង margin-top របស់ប្លុកបន្ទាប់
+       «រួមបញ្ចូលគ្នា» (យកតម្លៃធំ មិនមែនបូក) ។ ដូច្នេះកម្មវិធីគិតថាទំព័រ
+       ពេញលឿនជាងការពិត ហើយបំបែកមុនកាល — ទុកចន្លោះទទេធំនៅចុងទំព័រ។
+       [stated] «នៅពីក្រោមតារាងវាជាប់អីទេដឹង … នៅសល់គម្លាត»។
+       ដំណោះស្រាយ ៖ វាស់ពី **ទីតាំងពិត** ក្នុង DOM ៖ កម្ពស់ដែលប្រើ =
+       (បាតរបស់ប្លុកចុងក្រោយ − កំពូលរបស់ប្លុកទី១) ដែលរាប់ការរួមបញ្ចូល
+       margin ដោយស្វ័យប្រវត្តិ។ */
+    const topOf = function(el){ return el.offsetTop; };
+    const botOf = function(el){ return el.offsetTop + el.offsetHeight; };
+
     let idx = 0, pageNo = 0, guard = 0;
     while(idx < atoms.length && guard++ < 400){
       const lh = narrLhOf(pageNo);
       host.style.setProperty('--nr-sp', String(lh));   /* វាស់ឡើងវិញតាមកត្តាបង្រួមរបស់ទំព័រនេះ */
       const blocks = [];
       let used = 0;
+      const start = topOf(atoms[idx]);
       while(idx < atoms.length){
         const el = atoms[idx];
-        const h = hOf(el);
         const forced = el.classList.contains('nr-ybreak') || el.classList.contains('nr-break')
                   || el.classList.contains('ar-brk');
-        /* ⚠ បើទំព័រនៅស្ទើរទទេ (តិចជាង ៤០%) កុំបំបែក ៖ ការបំបែកត្រង់នោះ
-           បង្កើតទំព័រទទេធំមួយ ហើយរុញតារាងទៅសន្លឹកបន្ទាប់ទាំងមូល។ */
-        const nearlyEmpty = used < avail * 0.75;
+        const wouldUse = botOf(el) - start;
+        /* សំណាញ់សុវត្ថិភាព ៖ បើប្លុកតែមួយធំជាងទំព័រ កុំបង្កើតទំព័រទទេ */
+        const nearlyEmpty = used < avail * 0.45;
         if(forced && blocks.length) break;
-        if(!forced && used + h > avail && blocks.length && !nearlyEmpty) break;
+        if(!forced && wouldUse > avail && blocks.length && !nearlyEmpty) break;
         blocks.push(el.outerHTML);
-        used += h;
+        used = wouldUse;
         idx++;
       }
       if(!blocks.length){ blocks.push(atoms[idx].outerHTML); idx++; }
-      pages.push({ blocks: blocks, lh: lh, used: Math.round(used), avail: Math.round(avail) });
+      pages.push({ blocks: blocks, lh: lh, used: Math.round(used), avail: Math.round(avail),
+                   first: (blocks[0] || '').slice(0, 60) });
       pageNo++;
     }
   }catch(e){ console.error('narr paginate:', e); }
   document.body.removeChild(host);
   document.head.removeChild(st);
   if(!pages.length) pages.push({ blocks:[bodyHtml], lh:1, used:0, avail:0 });
+  /* ជំនួយវិនិច្ឆ័យ ៖ ទុកលទ្ធផលចុងក្រោយអោយអាចពិនិត្យបានពីខាងក្រៅ */
+  /* ⚠ រក្សាតាមប្រភេទឯកសារ ៖ ផ្ទាំងទាំង ៣ រៀបចំបន្តបន្ទាប់ ដូច្នេះតម្លៃ
+     តែមួយត្រូវសរសេរជាន់ដោយឯកសារចុងក្រោយជានិច្ច។ */
+  try{
+    var dbg = pages.map(function(p){
+      return { used:p.used, avail:p.avail, lh:p.lh, n:p.blocks.length, first:p.first }; });
+    window.__nrLastPages = dbg;
+    window.__nrPages = window.__nrPages || {};
+    window.__nrPages[narrLhCur] = dbg;
+  }catch(e){}
   return { pages: pages };
 }
 
@@ -26551,8 +26751,17 @@ function narrRenderTools(cell, bar, runHead){
   let pages = [];
   try{
     const c = basisCtx();
-    pages = narrPaginate(narrCleanBody(cell) || '', runHead, c, 0,
-      (cell && cell.closest('.ar-doc')) ? 'ar-doc' : '').pages;
+    /* ⚠ ២០២៦-០៨-១២ ៖ ត្រង់នេះធ្លាប់ត្រឡប់តែ «ar-doc» ដូច្នេះការគណនា
+       ទំព័រនៅលើអេក្រង់ប្រើទំហំអក្សរ 12px របស់ .ar-doc ខណៈការព្រីនប្រើ
+       «ar-doc sm-doc» ដែល 13.5px — ព្រំដែនទំព័រ និងភាគរយបង្រួមខុសគ្នា
+       ទាំងស្រុង។ នោះជាហេតុដែល «បង្រួមដើរតែលើអេក្រង់»។
+       ⚠ ច្បាប់ដដែលជាលើកទី ៤ ៖ ម៉ាស៊ីនវាស់ · ទំព័រព្រីន · ផ្ទាំងមើលជាមុន
+         ត្រូវពាក់ថ្នាក់ដូចគ្នា។ យកថ្នាក់ពិតពីធាតុឯកសារ កុំសរសេរដោយដៃ។ */
+    var dh = cell && cell.closest('.rpt-page, .nr-doc');
+    var dcls = dh ? ['ar-doc', 'sm-doc'].filter(function(k){
+      return dh.classList.contains(k);
+    }).join(' ') : '';
+    pages = narrPaginate(narrCleanBody(cell) || '', runHead, c, 0, dcls).pages;
   }catch(e){ pages = []; }
   /* [stated] របាយការណ៍សវនកម្ម/សង្ខេប ចាប់ពីទំព័រ ១ ; សេចក្តីបរិយាយពី ២ */
   const base = runHead ? 2 : 1;
@@ -26573,27 +26782,39 @@ function narrRenderTools(cell, bar, runHead){
       kh(String(pages.length)) + ' ទំព័រ</summary>' +
       '<div class="nr-ddbody">' + rows + '</div></details>';
   narrMarkPages(cell, pages, base);
+  /* ⚠ `narrLhCur` ជាតម្លៃសកល ហើយផ្ទាំងទាំង ៣ ត្រូវបានរៀបចំបន្តបន្ទាប់ —
+     ដូច្នេះនៅពេលអ្នកប្រើចុច វាកាន់តម្លៃរបស់ផ្ទាំង**ចុងក្រោយ**ដែលបាន
+     រៀបចំ មិនមែនផ្ទាំងដែលកំពុងមើលទេ។ ចាប់ប្រភេទឯកសារទុកនៅពេលនេះ
+     រួចដាក់វាមកវិញក្នុងអ្នកចាត់ការនីមួយៗ។ */
+  const kind = narrLhCur;
+  const withKind = function(fn){ return function(){ narrLhCur = kind; fn.apply(this, arguments); }; };
   bar.querySelectorAll('[data-pglh]').forEach(function(b){
-    b.onclick = function(){
+    b.onclick = withKind(function(){
       const i = +b.dataset.i;
       narrSetPageLh(i, narrLhOf(i) + (b.dataset.pglh === '1' ? 0.01 : -0.01));
-    };
+    });
   });
   bar.querySelectorAll('[data-pgrst]').forEach(function(b){
-    b.onclick = function(){ narrSetPageLh(+b.dataset.i, null); };
+    b.onclick = withKind(function(){ narrSetPageLh(+b.dataset.i, null); });
   });
   /* ⚠ ចង នៅ «change» មិនមែន «input» ៖ input បណ្តាលអោយ render ឡើងវិញ
      រាល់តួអក្សរ ហើយ cursor លោតចេញពីប្រអប់។ */
   bar.querySelectorAll('[data-pgset]').forEach(function(inp){
-    inp.onchange = function(){
+    inp.onchange = withKind(function(){
       const v = parseFloat(inp.value);
       if(isNaN(v)) return;
       narrSetPageLh(+inp.dataset.i, v / 100);
-    };
+    });
     inp.onkeydown = function(ev){ if(ev.key === 'Enter'){ ev.preventDefault(); inp.blur(); } };
   });
 }
 
+/* ⚠ ២០២៦-០៨-១២ ៖ គម្លាតត្រូវបានពង្រីក ១០% មួយសន្ទុះ រួច [stated]
+   «រក្សា Spacing បរិយាយការកំណត់ពន្ធ ដូចដើមវិញ» — ត្រឡប់មកតម្លៃដើម
+   ទាំងស្រុង (margin ដើម · line-height 2.05) ។ កំណត់ត្រាសម្រាប់លើកក្រោយ ៖
+   × 1.10 → ១២ ទំព័រ · × 1.15 → ១៤ · × 1.20 → ១៥ (ដើម ១១)។ បើត្រូវប្តូរ
+   ម្តងទៀត ៖ គុណតម្លៃទាំងអស់ជាមួយគ្នា កុំកែម្តងមួយបន្ទាត់ ព្រោះវាជា
+   មាត្រដ្ឋានដែលវាស់ចេញពីរូបស្កេនរបស់គេ។ */
 const NARR_CSS = `
   /* វាស់ចេញពីរូបគំរូរបស់អ្នកប្រើ ៖ ទំព័រ ៩០៤px · មាតិកា x62→x844 (៧៨២px)
      · គម្លាតបន្ទាត់ ៣២px ≈ ៧.៤mm · អក្សរតួ ≈ ១៣.៥px។ ទីតាំងទាំងអស់
@@ -27437,29 +27658,157 @@ function printAudit(){
    ចន្លោះដែលគ្មានទិន្នន័យ ទុកជាបន្ទាត់ចុចៗ ; ការមើលជាមុនកែដោយដៃបាន
    ដូច្នេះចុច Enter ដើម្បីបន្ថែមជួរនៅកន្លែងណាក៏បាន។
    ========================================================================= */
-function smYN(has){
-  return arCk(!!has) + ' មាន &nbsp;&nbsp;&nbsp;' + arCk(!has) + ' គ្មាន';
+/* ថ្ងៃចុះហត្ថលេខា ៖ ថ្ងៃបញ្ចប់ធ្វើសវនកម្ម */
+function smSignDate(){
+  try{ var d = khSignDate(); if(d) return d; }catch(e){}
+  return 'ថ្ងៃទី ......... ខែ ......... ឆ្នាំ .........';
+}
+
+/* កាលបរិច្ឆេទសម្រាប់បន្ទាត់ «-បាន…» ៖ ISO → «ថ្ងៃទី០៨ ខែកញ្ញា ឆ្នាំ២០១៥» ;
+   អ្វីដែលវាយដោយដៃ បញ្ចេញដដែល ; ទទេ → «គ្មាន»។ */
+function smDay(v){
+  var t = String(v == null ? '' : v).trim();
+  if(!t) return 'គ្មាន';
+  if(/^\d{4}-\d{2}-\d{2}$/.test(t)){
+    try{ return khmerDMY(t); }catch(e){}
+  }
+  return 'ថ្ងៃទី ' + escML(t);
+}
+
+/* ស្ថានភាពធីកទាំង ៤ */
+function smCk(){
+  var k = {};
+  try{ k = trkState.smCk || {}; }catch(e){}
+  /* ⚠ «limited» លែងជាការធីកទេ — វាកំណត់ដោយទិន្នន័យ (មើល smLimitedRows) */
+  return { customs:!!k.customs, bid:!!k.bid, other:!!k.other };
+}
+
+/* [stated] ធីក «សវនកម្មមានកម្រិត ឬលិខិតស្នាម» → តារាងដូចរបាយការណ៍
+   សវនកម្ម តែយកតែពីរប្រភេទនោះ។ ប្រភពដដែលនឹង arLimitedPaidTable()
+   គឺប្រវត្តិសវនកម្ម ; ត្រង់នេះទទួល «លិខិតស្នាម» ថែមទៀត។
+   បើគ្មានកំណត់ត្រាទេ ៖ បញ្ចេញតារាងទទេអោយបំពេញដោយដៃ។ */
+function smLimNum(v){
+  if(typeof v === 'number') return v;
+  var m = String(v == null ? '' : v).match(/-?\d[\d,\s]*(?:\.\d+)?/);
+  return m ? (Number(m[0].replace(/[,\s]/g, '')) || 0) : 0;
+}
+function smLimitedRows(){
+  var list = [];
+  try{ list = (window.__getAuditHistoryForCover && __getAuditHistoryForCover()) || []; }catch(e){}
+  return list.filter(function(a){
+    var t = String(a.auditType || a.type || '');
+    return (t.indexOf('មានកម្រិត') > -1 || t.indexOf('លិខិតស្នាម') > -1)
+        && smLimNum(a.taxAmt != null ? a.taxAmt : a.amount) > 0;
+  });
+}
+function smLimitedTable(rows){
+  var num = smLimNum;
+  var tot = 0;
+  /* [stated] មួយកម្មវិធីមួយបន្ទាត់ — កុំអោយការិយបរិច្ឆេទចុះពីរបន្ទាត់។
+     ដូច្នេះជួរនោះ nowrap ហើយទទឹងធំល្មមផ្ទុក «01/01/2021-31/03/2022»។ */
+  var h = ['<table class="ar-tbl sm-tbl sm-lim"><thead><tr><th style="width:200px">ការិយបរិច្ឆេទ</th>',
+           '<th class="l">ប្រភេទសវនកម្ម</th><th style="width:170px">ប្រាក់ពន្ធបានបង់</th></tr></thead><tbody>'];
+  rows.forEach(function(a){
+    var amt = num(a.taxAmt != null ? a.taxAmt : a.amount);
+    tot += amt;
+    h.push('<tr><td class="c nw">' + escML(a.period || a.year || '') + '</td>',
+           '<td class="l nw">' + escML(a.auditType || a.type || '') + '</td>',
+           '<td>' + arNum(amt) + ' ៛</td></tr>');
+  });
+  h.push('<tr class="sm-tot"><td class="c"><b>សរុប</b></td><td></td><td><b>' + arNum(tot) + ' ៛</b></td></tr>',
+         '</tbody></table>');
+  return h.join('');
+}
+
+/* [stated] «វាចេញសល់ជួរច្រើនពេក អាចលុបជួរតារាងដែលមិនប្រើបានផង» ៖
+   ចាប់ផ្តើមតែ ១ ជួរ ហើយមានប៊ូតុង ＋ / ✕ សម្រាប់បន្ថែម និងលុប។
+   ចំនួនជួររក្សាទុកក្នុង trkState.smRows[key] ដូច្នេះវានៅដដែលពេលបើកវិញ។
+   ⚠ ប៊ូតុងទាំងនោះជា .sm-rw ដែលមាន contenteditable="false" (ចុចបាន
+     ក្នុងតំបន់កែបាន) ហើយ CSS លាក់វាពេលព្រីន។ */
+function smRows(key){
+  var n = 1;
+  try{ n = Number((trkState.smRows || {})[key]); }catch(e){}
+  if(!isFinite(n) || n < 1) n = 1;
+  return Math.min(20, Math.round(n));
+}
+function smFillTable(key, heads, widths){
+  var n = smRows(key);
+  var h = ['<table class="ar-tbl sm-tbl sm-fill"><thead><tr>'];
+  heads.forEach(function(t, i){
+    var w = (widths && widths[i]) ? ' style="width:' + widths[i] + '"' : '';
+    h.push('<th' + w + '>' + escML(t) + '</th>');
+  });
+  h.push('</tr></thead><tbody>');
+  for(var r = 0; r < n; r++){
+    h.push('<tr>');
+    heads.forEach(function(){ h.push('<td>&nbsp;</td>'); });
+    h.push('</tr>');
+  }
+  h.push('</tbody></table>');
+  h.push('<div class="sm-rowbar" contenteditable="false">' +
+    '<span class="sm-rw" data-smrow="' + key + '" data-d="1">＋ បន្ថែមជួរ</span>' +
+    (n > 1 ? '<span class="sm-rw" data-smrow="' + key + '" data-d="-1">✕ លុបជួរចុងក្រោយ</span>' : '') +
+    '</div>');
+  return h.join('');
+}
+
+/* [stated] ២០២៦-០៨-១២ ៖ ធីកនៅលើបន្ទាត់របស់វាផ្ទាល់ក្នុងឯកសារ មិនមែន
+   នៅរបារខាងលើទេ។ តួឯកសារជា contenteditable ដូច្នេះធាតុដែលចុចបាន
+   ត្រូវដាក់ contenteditable="false" — ល្បិចដដែលនឹង .nr-pgmark។ */
+function smYN(key, has){
+  var one = function(v, txt){
+    return '<span class="sm-tk" contenteditable="false" data-smtk="' + key +
+      '" data-v="' + v + '">' + arCk(v ? !!has : !has) + ' ' + txt + '</span>';
+  };
+  return one(1, 'មាន') + ' &nbsp;&nbsp;&nbsp;' + one(0, 'គ្មាន');
 }
 function smBody(){
   var x = arCtx(), c = x.c, ci = x.ci;
-  var years = [];
-  try{ years = (window.CalcCard.state.years || []).slice().sort(function(a,b){ return a - b; }); }catch(e){}
-  var per = c.period || years.join('-');
+  /* [stated] ឆ្នាំត្រូវតាម **ការិយសវនកម្មរបស់កម្មវិធីដែលបានជ្រើស** មិនមែន
+     តាមឆ្នាំទាំងអស់ក្នុងកាតគណនាទេ ៖ កម្មវិធីទី១ មាន ២ ឆ្នាំ → ចេញ ២ ឆ្នាំ ;
+     មានតែ ១ ឆ្នាំ → ចេញ ១ ឆ្នាំ។ `smYears()` អានពី c.period ដែលមកពី
+     កម្មវិធីនោះស្រាប់ ហើយពន្លាតជួរ 2022-2026 ជាឆ្នាំម្តងមួយៗ។ */
+  var years = smYears(c);
+  /* បើគ្មានការិយបរិច្ឆេទក្នុងកម្មវិធី ៖ បង្ហាញ «ដើម-ចុង» មិនមែនរាយឆ្នាំ
+     ទាំងអស់ភ្ជាប់ដោយសហសញ្ញាទេ (2021-2022-2023-… អានមិនរួច)។ */
+  var per = c.period ||
+    (years.length ? (years[0] + (years.length > 1 ? '-' + years[years.length - 1] : '')) : '');
   var H = [];
 
-  H.push('<div class="ar-head"><div class="ar-hl">ក្រសួងសេដ្ឋកិច្ច និង ហិរញ្ញវត្ថុ<br>' +
-    '<b>អគ្គនាយកដ្ឋានពន្ធដារ</b><br>នាយកដ្ឋានសវនកម្មសហគ្រាស</div>' +
-    '<div class="ar-hr">ព្រះរាជាណាចក្រកម្ពុជា<br>ជាតិ សាសនា ព្រះមហាក្សត្រ</div></div>');
+  /* [stated] ក្បាលឯកសារត្រូវដូចរបាយការណ៍សវនកម្ម (ត្រា + ជ្វេងតុបតែង)
+     — ខុសត្រង់ថា របាយការណ៍សង្ខេប **គ្មានបារកូដ**។ ដូច្នេះហៅ
+     letterheadHtml() ដោយគ្មានអាគុយម៉ង់។ */
+  H.push('<div class="ar-lh">' + letterheadHtml() + '</div>');
 
-  /* អ្នកទទួល — កែបានលើអេក្រង់ */
-  H.push('<div class="sm-to">សូមគោរពជូន</div>');
-  H.push('<div class="sm-to2">លោកប្រធាននាយកដ្ឋានសវនកម្មសហគ្រាស</div>');
+  /* [stated] អ្នកទទួល ៖ ប្រធាននាយកដ្ឋាន ឬ ឯកឧត្តមរដ្ឋមន្ត្រី។ ជម្រើស
+     នេះប្តូរអត្ថបទ ៤ កន្លែង — ទាំងអស់មកពី smTo() តែមួយ។ */
+  var T = smTo();
+  H.push('<div class="sm-to">' + T.greet + '</div>');
+  H.push('<div class="sm-to2">' + T.title + '</div>');
+  if(T.title2) H.push('<div class="sm-to3">' + T.title2 + '</div>');
 
-  H.push('<p class="sm-subj"><b>កម្មវត្ថុ</b> ៖ របាយការណ៍សង្ខេបស្តីពីការធ្វើសវនកម្មសហគ្រាស ៖ ' +
+  /* [stated] «កម្មវត្ថុ» និងអត្ថបទទាំងអស់ត្រូវឈរត្រង់គែមឆ្វេងនៃពាក្យ
+     «ក្រសួងសេដ្ឋកិច្ច និង ហិរញ្ញវត្ថុ»។ ⚠ ជួរឈរឆ្វេងរបស់ក្បាលឯកសារ
+     ដាក់អក្សរ **ចំកណ្តាល** ដូច្នេះគែមឆ្វេងរបស់អក្សរអាស្រ័យលើទទឹង
+     អក្សរពិត — លេខថេរណាមួយនឹងខុសនៅម៉ាស៊ីនផ្សេងដែលពុម្ពអក្សរខុសគ្នា។
+     ដូច្នេះ ៖ គ្រប់ប្លុកទទួលការចូលបន្ទាត់ --sm-x តែមួយ។ */
+  /* ⚠ ២០២៦-០៨-១២ ៖ ការរុំតួឯកសារក្នុង .sm-in មិនដើរលើក្រដាសទេ។
+     paginator បំបែកកូនធាតុកម្រិតលើចេញជា «អាតូម» រួចរាយលើទំព័រ ដូច្នេះ
+     ប្រអប់រុំ (និង inline --sm-x របស់វា) បាត់ទាំងស្រុងពេលព្រីន — អេក្រង់
+     ត្រូវ តែក្រដាសខុស។ ការចូលបន្ទាត់ត្រូវដាក់លើ **ប្លុកនីមួយៗ** តាម
+     --sm-x ដែលកំណត់ក្នុង CSS លើ .sm-doc។ */
+
+  /* [stated] ៣–៦ ៖ «កម្មវត្ថុ» ជា Muol Light · ឈរត្រង់គែមឆ្វេងដូច
+     «ក្រសួងសេដ្ឋកិច្ច» (គ្មានការចូលបន្ទាត់) · ហើយកថាខណ្ឌទាំងពីរចាប់ផ្តើម
+     ត្រង់ពាក្យ «របាយការណ៍សង្ខេប» ។ ធ្វើដោយស្លាកទទឹងថេរ ៖ ស្លាកនិង
+     text-indent ប្រើលេខតែមួយ (--sm-lab) ដូច្នេះវាត្រង់គ្នាដោយស្វ័យប្រវត្តិ។
+     ⚠ កុំតម្រឹមដោយ em ឬដោយការស្មាន — ទទឹងអក្សរ Muol ខុសពី Siemreap។ */
+  H.push('<p class="sm-subj"><span class="sm-lab">កម្មវត្ថុ ៖</span>' +
+    'របាយការណ៍សង្ខេបស្តីពីការធ្វើសវនកម្មសហគ្រាស ៖ ' +
     escML(c.name || '') + ' លេខអត្តសញ្ញាណកម្មសារពើពន្ធ ៖ ' + escML(c.tin || '') + ' ។</p>');
 
-  H.push('<p class="sm-p">សេចក្តីដូចមានចែងក្នុងកម្មវត្ថុខាងលើ យើងខ្ញុំជាមន្ត្រីសវនករ សូមជម្រាបជូន ' +
-    'លោកប្រធាននាយកដ្ឋាន មេត្តាជ្រាបអំពី របាយការណ៍សង្ខេបស្តីពីការធ្វើសវនកម្មសហគ្រាសនេះដូចខាងក្រោម៖</p>');
+  H.push('<p class="sm-p">សេចក្តីដូចមានចែងក្នុងកម្មវត្ថុខាងលើ យើងខ្ញុំជាមន្ត្រីសវនករ ' +
+    T.report + ' ' + T.who + ' មេត្តាជ្រាបអំពី របាយការណ៍សង្ខេបស្តីពីការធ្វើសវនកម្មសហគ្រាសនេះដូចខាងក្រោម៖</p>');
 
   /* ---------- I ---------- */
   H.push('<div class="sm-h1">I- <u>សាវតា</u></div>');
@@ -27467,21 +27816,34 @@ function smBody(){
     ' លេខអត្តសញ្ញាណកម្មសារពើពន្ធ ' + escML(c.tin || '') + ' មានសកម្មភាពអាជីវកម្ម ' +
     escML(ci.activity || '') + ' ក្នុងការិយបរិច្ឆេទសវនកម្ម ' + escML(per) + '។</p>');
   H.push('<p class="sm-p">ក្រុមហ៊ុនមានព័ត៌មានឯកសារសវនកម្មតាមការតម្រៀបរបស់រដ្ឋបាលសារពើពន្ធមួយចំនួនដូចខាងក្រោម៖</p>');
-  H.push('<div class="sm-l">-បានចុះបញ្ជីនៅក្រសួងពាណិជ្ជកម្មនៅថ្ងៃទី ' + escML(ci.commerceRegDate || '') + '</div>');
-  H.push('<div class="sm-l">-បានចុះបញ្ជីនៅអគ្គនាយកដ្ឋានពន្ធដារនៅថ្ងៃទី ' + escML(ci.taxRegDate || '') + '</div>');
-  H.push('<div class="sm-l">-បានដាក់លិខិតសុំបញ្ឈប់អាជីវកម្មជាស្ថាពរចាប់ពីថ្ងៃទី ' + escML(ci.closeDate || '') + '</div>');
-  H.push('<div class="sm-l">-ក្នុងឆ្នាំ ' + escML(per) + ' សហគ្រាសនេះ ......................................។</div>');
+  /* [stated] កាលបរិច្ឆេទត្រូវសរសេរជាថ្ងៃ-ខែ-ឆ្នាំពេញ (មិនមែន 2001-05-08)
+     ហើយបើ Data Entry គ្មានថ្ងៃបញ្ឈប់អាជីវកម្មទេ សរសេរ «គ្មាន»។ */
+  H.push('<div class="sm-l">-បានចុះបញ្ជីនៅក្រសួងពាណិជ្ជកម្មនៅ' + smDay(ci.commerceRegDate) + '</div>');
+  H.push('<div class="sm-l">-បានចុះបញ្ជីនៅអគ្គនាយកដ្ឋានពន្ធដារនៅ' + smDay(ci.taxRegDate) + '</div>');
+  H.push('<div class="sm-l">-បានដាក់លិខិតសុំបញ្ឈប់អាជីវកម្មជាស្ថាពរចាប់ពី' + smDay(ci.closeDate) + '</div>');
+  H.push('<div class="sm-l">-បានប្រកាសបង់ពន្ធសរុបក្នុងឆ្នាំ ' + escML(per) + ' ដូចខាងក្រោម៖</div>');
+  H.push(smPaidTable(years));
 
   /* ---------- II ---------- */
-  H.push('<div class="sm-h1">II- <u>លទ្ធផលនៃការធ្វើសវនកម្ម</u></div>');
-  H.push('<div class="sm-ck">- ការពិនិត្យលើការធ្វើសវនកម្មមានកម្រិត ឬលើលិខិតស្នាម ៖ &nbsp;' + smYN(false) + '</div>');
-  /* [stated] បីចំណុចនេះទុកចន្លោះបំពេញ */
-  H.push('<div class="sm-ck">- ការពិនិត្យលើការស្នើសុំទិន្នន័យគយ ៖ &nbsp;' + smYN(false) + '</div>' + arBlank(2));
-  H.push('<div class="sm-ck">- ការពិនិត្យលើទិន្នន័យដេញថ្លៃ ៖ &nbsp;' + smYN(false) + '</div>' + arBlank(2));
-  H.push('<div class="sm-ck">- ការពិនិត្យលើឯកសារផ្សេងៗ ៖ &nbsp;' + smYN(false) + '</div>' + arBlank(2));
+  /* [stated] ៩ ៖ ចំណងជើងនេះគ្មានបន្ទាត់ពីក្រោមទេ (ខុសពី I និង III) */
+  H.push('<div class="sm-h1">II- លទ្ធផលនៃការធ្វើសវនកម្ម</div>');
+  /* [stated] ធីក «មាន» នៅរបារខាងលើ → តារាងបំពេញលេចឡើងក្រោមបន្ទាត់នោះ */
+  var K = smCk();
+  /* [stated] បន្ទាត់នេះមិនត្រូវការការធីកទេ ៖ បើមានកំណត់ត្រា វាចេញ
+     ដោយខ្លួនឯង (☑ មាន + តារាង) ; បើគ្មាន បង្ហាញ ☐ គ្មាន ដោយគ្មានតារាង។ */
+  var limRows = smLimitedRows();
+  H.push('<div class="sm-ck">- ការពិនិត្យលើការធ្វើសវនកម្មមានកម្រិត ឬលើលិខិតស្នាម ៖ &nbsp;' +
+    arCk(limRows.length > 0) + ' មាន &nbsp;&nbsp;&nbsp;' + arCk(!limRows.length) + ' គ្មាន</div>');
+  if(limRows.length) H.push(smLimitedTable(limRows));
+  H.push('<div class="sm-ck">- ការពិនិត្យលើការស្នើសុំទិន្នន័យគយ ៖ &nbsp;' + smYN('customs', K.customs) + '</div>');
+  if(K.customs) H.push(smFillTable('customs', ['ឆ្នាំ', 'បរិយាយ', 'នាំចូល', 'នាំចេញ'], ['70px', '', '150px', '150px']));
+  H.push('<div class="sm-ck">- ការពិនិត្យលើទិន្នន័យដេញថ្លៃ ៖ &nbsp;' + smYN('bid', K.bid) + '</div>');
+  if(K.bid) H.push(smFillTable('bid', ['ឆ្នាំ', 'បរិយាយ', 'ទឹកប្រាក់ដេញថ្លៃ'], ['70px', '', '190px']));
+  H.push('<div class="sm-ck">- ការពិនិត្យលើឯកសារផ្សេងៗ ៖ &nbsp;' + smYN('other', K.other) + '</div>');
+  if(K.other) H.push(smFillTable('other', ['បរិយាយ'], ['']));
   /* [stated] ការប្រកាសពន្ធប្រចាំឆ្នាំ ៖ សរសេរនិយតកម្ម — ផល និងចំណាយកំណត់ឡើងវិញ */
   H.push('<div class="sm-ck">- ការពិនិត្យលើការប្រកាសពន្ធលើប្រាក់ចំណេញប្រចាំឆ្នាំ ៖</div>');
-  H.push(smAdjTable(years));
+  H.push(smAdjBlocks(years));
 
   /* ---------- III ---------- */
   H.push('<div class="sm-h1">III- <u>សន្និដ្ឋាន</u></div>');
@@ -27491,40 +27853,185 @@ function smBody(){
   H.push(arResultTable());
 
   H.push('<p class="sm-p">យើងខ្ញុំជាសវនករសូមទទួលខុសត្រូវថា មិនបានទទួលសេវាខាងក្រៅពីសហគ្រាសខាងលើនេះឡើយ ។</p>');
-  H.push('<p class="sm-p">អាស្រ័យដូចបានជម្រាបជូនខាងលើ សូមលោកប្រធាននាយកដ្ឋាន មេត្តាពិនិត្យ និងសម្រេចជំនួសខ្ញុំខ្លះ់</p>');
+  /* ⚠ «សូម» ជាប់នឹងឈ្មោះតួនាទី គ្មានចន្លោះ — ដូចអត្ថបទដែលគេផ្តល់ */
+  H.push('<p class="sm-p">' + T.close + T.who + ' មេត្តាពិនិត្យ និងសម្រេចជាការគួរ។</p>');
 
-  var lun = '', dt = '';
+  /* [stated] ការិយបរិច្ឆេទ ដល់ ហត្ថលេខា រៀបទៅខាងស្តាំ · បន្ថែមឈ្មោះ
+     សវនករ និងសវនករដៃគូ · ទុកចន្លោះចុះហត្ថលេខារវាងពាក្យ «ហត្ថលេខា
+     សវនករ» និងឈ្មោះ។ ⚠ ដាក់ទាំងអស់ក្នុងប្រអប់ស្តាំតែមួយដែលមាន
+     text-align:center — ការតម្រឹមម្តងមួយផ្នែកមិនដែលត្រង់គ្នាទេ (ច្បាប់
+     ដដែលនឹង .wp-audwrap · .bs-close · .lt-guar-sign)។ */
+  var lun = '';
   try{ lun = (window.__lunarToday && __lunarToday()) || (ci.lunarDate || ''); }catch(e){ lun = ci.lunarDate || ''; }
-  H.push('<div class="sm-sign">' + escML(lun) + '<br>' +
-    'រាជធានីភ្នំពេញ,ថ្ងៃទី ......... ខែ ......... ឆ្នាំ .........<br>' +
-    '<b>ហត្ថលេខាសវនករ</b></div>');
+  var n1 = arAuditor(0), n2 = arAuditor(1);
+  H.push('<div class="sm-signwrap"><div class="sm-sign">' +
+    (lun ? escML(lun) + '<br>' : '') +
+    /* [stated] ថ្ងៃធម្មតាក៏ត្រូវបំពេញដែរ មិនមែនតែថ្ងៃចន្ទ្រគតិទេ។
+       khSignDate() អាន ថ្ងៃបញ្ចប់ធ្វើសវនកម្ម ពី Data Entry ហើយបើទទេ
+       វាត្រឡប់ទម្រង់ចុចៗអោយសរសេរដោយដៃ — ដូចឯកសារឯទៀតទាំងអស់។ */
+    'រាជធានីភ្នំពេញ, ' + escML(smSignDate()) + '<br>' +
+    '<b>ហត្ថលេខាសវនករ</b>' +
+    '<div class="sm-gap"></div>' +
+    /* [stated] ៧ ៖ ឈ្មោះសវនករទាំងពីរនៅជួរតែមួយ កុំចុះបន្ទាត់ */
+    '<div class="sm-nm">' +
+      (n1 ? escML(n1) : '.............................') +
+      (n2 ? '<span class="sm-nm2">' + escML(n2) + '</span>' : '') +
+    '</div>' +
+    '</div></div>');
   return H.join('');
 }
 
-/* តារាងនិយតកម្ម ៖ ផលកំណត់ថ្មី និងចំណាយកំណត់ឡើងវិញ តាមឆ្នាំ */
-function smAdjTable(years){
-  var rows = [];
-  try{
-    var t = window.CalcCard.state.toi || {};
-    (t.findings || []).forEach(function(f){
-      years.forEach(function(y){
-        var a = +(f.amt || {})[y] || 0;
-        if(a) rows.push({ y:y, kind:'ផលកំណត់ឡើងវិញ', name:f.type || '', amt:a });
-        var cp = +f.costPct || 0;
-        if(a && cp) rows.push({ y:y, kind:'ចំណាយកំណត់ឡើងវិញ', name:(f.type || '') + ' × ' + cp + '%', amt:a * cp / 100 });
+/* [stated] អត្ថបទទាំង ៤ កន្លែងតាមអ្នកទទួល — ប្រភពតែមួយ ដូច្នេះការកែ
+   ពាក្យលើកក្រោយធ្វើនៅទីនេះកន្លែងតែមួយ។ */
+function smTo(){
+  var min = false;
+  try{ min = (trkState.smTo === 'min'); }catch(e){}
+  if(min) return {
+    greet:  'សូមគោរពជូន',
+    title:  'ឯកឧត្តមរដ្ឋមន្ត្រីប្រតិភូអមនាយករដ្ឋមន្ត្រី',
+    /* [stated] បន្ទាត់ទី៣ ចំកណ្តាលដូចគ្នា ៖ «និងជាប្រតិភូរាជរដ្ឋាភិបាល…» */
+    title2: 'និងជាប្រតិភូរាជរដ្ឋាភិបាលទទួលបន្ទុកជាអគ្គនាយក នៃអគ្គនាយកដ្ឋានពន្ធដារ',
+    who:    'ឯកឧត្តមរដ្ឋមន្ត្រីប្រតិភូអមនាយករដ្ឋមន្ត្រី',
+    report: 'សូមគោរពជម្រាបជូន',
+    close:  'អាស្រ័យដូចបានគោរពជម្រាបជូនខាងលើ សូម'
+  };
+  return {
+    greet:  'សូមជម្រាបជូន',
+    title:  'លោកប្រធាននាយកដ្ឋានសវនកម្មសហគ្រាស',
+    who:    'លោកប្រធាននាយកដ្ឋាន',
+    report: 'សូមជម្រាបជូន',
+    close:  'អាស្រ័យដូចបានជម្រាបជូនខាងលើ សូម'
+  };
+}
+
+/* ឆ្នាំរបស់កម្មវិធីដែលបានជ្រើស — ដូច basisYears() តែអានពី c.period
+   ដែលបានបំពេញរួច ដូច្នេះមិនពឹងលើ basisProgramme() ដែលជាឯកសារផ្សេង។ */
+function smYears(c){
+  var raw = String((c && c.period) || '')
+    .replace(/[០-៩]/g, function(d){ return String(d.charCodeAt(0) - 0x17E0); });
+  var ys = (raw.match(/\d{4}/g) || []).map(Number).sort(function(a, b){ return a - b; });
+  if(ys.length === 2 && ys[1] - ys[0] > 1){
+    var span = [];
+    for(var y = ys[0]; y <= ys[1]; y++) span.push(y);
+    ys = span;
+  }
+  if(!ys.length){
+    try{ ys = (window.CalcCard.state.years || []).slice().map(Number); }catch(e){ ys = []; }
+    ys.sort(function(a, b){ return a - b; });
+  }
+  return ys.map(String);
+}
+
+/* [stated] ១០ ៖ តារាងនិយតកម្មត្រូវដកចេញ។ ជំនួសដោយប្លុកតាមការិយបរិច្ឆេទ ៖
+     * ការិយបរិច្ឆេទ 2023
+        : ការពិនិត្យលើផល
+           លំអៀលើការនាំចេញ
+        : ការពិនិត្យលើបន្ទុកបញ្ចូលមកវិញ …
+   ⚠ ប្រភព ៖ ជំហានទី៨ បូក/ដក ទាំងអស់ — មិនថាអ្នកជាប់ពន្ធប្រកាស ឬសវនករ
+     កំណត់ទេ ឱ្យតែមានតួលេខ។ `window.__toiStep8Blocks()` ត្រឡប់ប្លុក
+     សរុបនីមួយៗ ព្រមទាំង items របស់វា ដែលជាបន្ទាត់លម្អិត។
+   ⚠ ឆ្នាំណាគ្មានធាតុទេ ៖ សរសេរ «គ្មាន» — មិនទុកទទេ។ */
+/* ⚠ [stated] ចំណងជើងត្រូវជាពាក្យទាំង ៣ ដែលគេសរសេរ — មិនមែន
+   «សរុប [E18=សរុប(E2:E17)]» ទេ។ ស្លាកជួរសរុបក្នុងឯកសារ TOI របស់គេ
+   ជាសូត្រគណនា ដូច្នេះការផ្គូផ្គងតាមពាក្យក្នុងស្លាកនោះមិនដើរទេ។
+   ដូច្នេះ ៖ ផ្គូផ្គងតាម **លេខយោង** មុន (យោងតាមឯកសារពិតរបស់គេ ៖
+   E18 = បន្ទុកបញ្ចូលមកវិញ · E31 = បន្ទុកកាត់ចេញ) រួចទើបធ្លាក់មករក
+   ពាក្យក្នុងស្លាក ហើយចុងក្រោយរកក្នុងស្លាករបស់ធាតុខាងក្នុង។
+   ⚠ បើក្រុមណាមួយចេញខុស សូមផ្ញើបញ្ជីជួរជំហានទី៨ មក — ការបន្ថែម
+   លេខយោងក្នុងតារាងខាងក្រោមជាការកែតែមួយបន្ទាត់។ */
+var SM_ADJ_REF = {
+  E18: 'ការពិនិត្យលើបន្ទុកបញ្ចូលមកវិញ',
+  E31: 'ការពិនិត្យលើបន្ទុកកាត់ចេញ'
+};
+function smAdjHead(block){
+  var ref = String((block && block.ref) || '').toUpperCase();
+  if(SM_ADJ_REF[ref]) return SM_ADJ_REF[ref];
+
+  var pool = String((block && block.label) || '');
+  (block && block.items || []).forEach(function(it){ pool += ' ' + (it.label || ''); });
+  var hasRev  = pool.indexOf('ចំណូល') >= 0 || pool.indexOf('ផលរបរ') >= 0 || pool.indexOf('នាំចេញ') >= 0;
+  var hasCost = pool.indexOf('ចំណាយ') >= 0 || pool.indexOf('បន្ទុក') >= 0 || pool.indexOf('រំលស់') >= 0;
+  if(hasRev && !hasCost) return 'ការពិនិត្យលើផល';
+  if(hasCost) return (pool.indexOf('ដក') >= 0 || pool.indexOf('អនុញ្ញាត') >= 0)
+      ? 'ការពិនិត្យលើបន្ទុកកាត់ចេញ' : 'ការពិនិត្យលើបន្ទុកបញ្ចូលមកវិញ';
+  return 'ការពិនិត្យលើផល';
+}
+
+/* ស្លាកធាតុ ៖ ដកកន្សោមយោងក្នុងវង់ក្រចក «(TOI 01/IV-B36 …)» ចេញ —
+   [stated] គេចង់បានតែឈ្មោះ ឧ. «ចំណាយរំលស់គណនេយ្យ» */
+function smAdjItemLabel(t){
+  return String(t || '').replace(/\s*\([^)]*\)\s*$/, '').trim();
+}
+function smAdjBlocks(years){
+  var blocks = [];
+  try{ blocks = (window.__toiStep8Blocks && window.__toiStep8Blocks()) || []; }catch(e){}
+  var ys = (years && years.length) ? years : [];
+  if(!ys.length){
+    var seen = {};
+    blocks.forEach(function(b){
+      (b.items || []).forEach(function(it){ Object.keys(it.amt || {}).forEach(function(y){ seen[y] = 1; }); });
+    });
+    ys = Object.keys(seen).sort();
+  }
+  var H = [];
+  ys.forEach(function(y){
+    H.push('<div class="sm-per">* <b>ការិយបរិច្ឆេទ</b> ' + escML(String(y)) + '</div>');
+    var any = false;
+    blocks.forEach(function(b){
+      var hits = (b.items || []).filter(function(it){
+        var v = (it.amt || {})[y];
+        return typeof v === 'number' && v !== 0;
+      });
+      if(!hits.length) return;
+      any = true;
+      H.push('<div class="sm-ag">: ' + escML(smAdjHead(b)) + '</div>');
+      hits.forEach(function(it){
+        H.push('<div class="sm-ai">' + escML(smAdjItemLabel(it.label)) + '</div>');
       });
     });
-  }catch(e){}
-  var h = ['<table class="ar-tbl sm-tbl"><thead><tr><th style="width:90px">ឆ្នាំ</th>',
-    '<th style="width:170px">ប្រភេទនិយតកម្ម</th><th>បរិយាយ</th><th style="width:150px">ចំនួនទឹកប្រាក់</th>',
-    '</tr></thead><tbody>'];
-  rows.forEach(function(r){
-    h.push('<tr><td class="c">' + r.y + '</td><td class="l">' + escML(r.kind) + '</td>',
-      '<td class="l">' + escML(r.name) + '</td><td>' + arNum(r.amt) + ' ៛</td></tr>');
+    if(!any) H.push('<div class="sm-ag">: គ្មាន</div>');
   });
-  /* ជួរទទេសម្រាប់បំពេញដោយដៃ */
-  for(var k = 0; k < 3; k++)
-    h.push('<tr><td class="c"></td><td class="l"></td><td class="l"></td><td></td></tr>');
+  return H.join('');
+}
+
+/* [stated] ៨ ៖ តារាងពន្ធដែលបានប្រកាសបង់ តាមប្រភេទ × ឆ្នាំ + សរុប */
+function smPaidTable(years){
+  var d = { years:[], rows:[] };
+  try{ d = (window.__mtrAnnualByTax && window.__mtrAnnualByTax()) || d; }catch(e){}
+  if(!d.rows.length) return '<div class="sm-l">................................................</div>';
+  /* [stated] ជួរឈរតាមឆ្នាំសវនកម្មរបស់កម្មវិធីដែលជ្រើស ប៉ុណ្ណោះ។
+     បើគ្មានឆ្នាំណាត្រូវគ្នាទេ ត្រឡប់ទៅបង្ហាញគ្រប់ឆ្នាំវិញ ដើម្បីកុំអោយ
+     តារាងទទេដោយស្ងាត់។ */
+  if(years && years.length){
+    var want = {}; years.forEach(function(y){ want[String(y)] = 1; });
+    var keep = d.years.filter(function(y){ return want[y]; });
+    if(keep.length) d = {
+      years: keep,
+      rows: d.rows.map(function(r){
+        var by = {}, tot = 0;
+        keep.forEach(function(y){ var v = r.byYear[y] || 0; by[y] = v; tot += v; });
+        return { tax:r.tax, byYear:by, total:tot };
+      }).filter(function(r){ return r.total; })
+    };
+  }
+  if(!d.rows.length) return '<div class="sm-l">................................................</div>';
+  var h = ['<table class="ar-tbl sm-tbl"><thead><tr><th class="l">ប្រភេទពន្ធ</th>'];
+  d.years.forEach(function(y){ h.push('<th>' + escML(y) + '</th>'); });
+  h.push('<th>សរុប</th></tr></thead><tbody>');
+  var tot = {}, grand = 0;
+  d.rows.forEach(function(r){
+    h.push('<tr><td class="l">' + escML(r.tax) + '</td>');
+    d.years.forEach(function(y){
+      var v = r.byYear[y] || 0;
+      tot[y] = (tot[y] || 0) + v;
+      h.push('<td>' + (v ? arNum(v) + ' ៛' : '-') + '</td>');
+    });
+    grand += r.total;
+    h.push('<td>' + arNum(r.total) + ' ៛</td></tr>');
+  });
+  h.push('<tr class="sm-tot"><td class="l"><b>សរុប</b></td>');
+  d.years.forEach(function(y){ h.push('<td><b>' + arNum(tot[y] || 0) + ' ៛</b></td>'); });
+  h.push('<td><b>' + arNum(grand) + ' ៛</b></td></tr>');
   h.push('</tbody></table>');
   return h.join('');
 }
@@ -27539,6 +28046,10 @@ function smHtml(forPrint){
     '<tbody><tr><td>' + body + '</td></tr></tbody></table></div>';
 }
 
+/* ⚠ smAlign() ត្រូវបានលុប ៖ ការវាស់ពេលរត់មិនអាចទៅដល់ការព្រីនបានទេ
+   (paginator បោះប្រអប់រុំចោល) ហើយតម្លៃ px ដែលវាស់លើអេក្រង់ក៏ខុសនៅលើ
+   ក្រដាសដែរ ព្រោះទទឹងទំព័រខុសគ្នា។ ការចូលបន្ទាត់ឥឡូវជាភាគរយថេរតែមួយ
+   (--sm-x ក្នុង SM_CSS) ដែលអនុវត្តដូចគ្នាទាំងអេក្រង់ និងក្រដាស។ */
 function renderSummary(){
   var box = document.getElementById('trkSum2');
   if(!box) return;
@@ -27554,22 +28065,95 @@ function renderSummary(){
   if(cell){ cell.setAttribute('contenteditable','true'); cell.style.outline='none';
             narrBindEditKeys(cell); }
   try{ narrRenderTools(cell, box.querySelector('.nr-tools'), ''); }catch(e){}
+
+
+  /* [stated] ចុច «មាន» / «គ្មាន» ដោយផ្ទាល់លើឯកសារ។ ⚠ ធាតុទាំងនេះមាន
+     contenteditable="false" ដូច្នេះការចុចមិនត្រូវកែអត្ថបទទេ។ */
+  box.querySelectorAll('.sm-rw').forEach(function(el){
+    el.onclick = function(ev){
+      ev.preventDefault(); ev.stopPropagation();
+      if(!trkState.smRows || typeof trkState.smRows !== 'object') trkState.smRows = {};
+      var k = el.dataset.smrow;
+      var n = smRows(k) + Number(el.dataset.d || 1);
+      trkState.smRows[k] = Math.max(1, Math.min(20, n));
+      trkSave();
+      renderSummary();
+    };
+  });
+
+  box.querySelectorAll('.sm-tk').forEach(function(el){
+    el.onclick = function(ev){
+      ev.preventDefault(); ev.stopPropagation();
+      if(!trkState.smCk || typeof trkState.smCk !== 'object') trkState.smCk = {};
+      trkState.smCk[el.dataset.smtk] = (el.dataset.v === '1');
+      trkSave();
+      renderSummary();
+    };
+  });
 }
 
 var SM_CSS = `
-  .sm-doc{font-size:12.5px;}
+  /* ⚠ កុំប្រើសញ្ញា backtick ក្នុងកំណត់សម្គាល់នេះ — ប្លុក CSS ទាំងមូលជា
+     template literal ដូច្នេះ backtick បិទវាមុនកាល ហើយ CSS ដែលនៅសល់
+     ក្លាយជា JavaScript (កំហុស «doc is not defined»)។
+     [stated] ២ ៖ អក្សរឯកសារនេះត្រូវធំស្មើឯកសារដទៃ។ .ar-doc កំណត់ 12px
+     ហើយវាឈ្នះ ព្រោះ .sm-doc មកតែក្រោយដោយទម្ងន់ស្មើគ្នា — ដូច្នេះកំណត់
+     ច្បាស់នៅទីនេះជា 13.5px ដូចឯកសារបរិយាយ។ */
+  .sm-doc{font-size:13.5px; line-height:1.85;}
+  .sm-doc .ar-tbl{font-size:13px;}
+  /* [stated] ២០២៦-០៨-១២ ៖ បន្ថយគម្លាតពី «ជម្រាបជូន» រហូតដល់ «បានប្រកាស
+     បង់ពន្ធ» ដើម្បីអោយតារាងឡើងលើទំព័រតែមួយ។ គម្លាតភាគច្រើនស្ថិតនៅ
+     margin របស់ប្លុក មិនមែន line-height ទេ — កាត់ទាំងពីរ។ */
   .sm-to{text-align:center; font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif;
-    font-size:13px; margin:14px 0 4px; color:#1a237e;}
+    font-size:13px; margin:10px 0 3px; color:#1a237e;}
   .sm-to2{text-align:center; font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif;
-    font-size:14px; margin-bottom:14px; color:#1a237e;}
-  .sm-subj{margin:8px 0; text-align:justify;}
-  .sm-p{margin:8px 0; text-indent:2.4em; text-align:justify; line-height:1.95;}
+    font-size:14px; margin-bottom:2px; color:#1a237e;}
+  .sm-to3{text-align:center; font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif;
+    font-size:14px; margin-bottom:10px; color:#1a237e; line-height:1.5;}
+  .sm-to2:last-of-type{margin-bottom:10px;}
+  /* ស្លាក «កម្មវត្ថុ ៖» និង text-indent របស់កថាខណ្ឌ ប្រើលេខតែមួយ */
+  .sm-doc{--sm-lab:96px;}
+  /* ⚠ ការចូលបន្ទាត់រួម ៖ ជាភាគរយ មិនមែន px — ទំព័រព្រីនធំជាងអេក្រង់
+     ដូច្នេះ px ដែលវាស់លើអេក្រង់ខុសនៅលើក្រដាស។ ដាក់លើប្លុកនីមួយៗ
+     មិនមែនលើប្រអប់រុំទេ ព្រោះ paginator បោះប្រអប់រុំចោល។
+     បើត្រូវកែ ៖ ប្តូរលេខតែមួយនេះគ្រប់គ្រាន់។ */
+  .sm-doc{--sm-x:6.4%;}
+  .sm-subj{margin:7px 0 7px var(--sm-x); text-align:justify; padding-left:var(--sm-lab);
+    text-indent:calc(var(--sm-lab) * -1); line-height:1.82;}
+  .sm-lab{display:inline-block; width:var(--sm-lab); text-indent:0;
+    font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif;}
+  .sm-p{margin:7px 0 7px var(--sm-x); text-indent:var(--sm-lab); text-align:justify; line-height:1.82;}
   .sm-h1{font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif; font-size:12.5px;
-    margin:12px 0 6px; padding-left:2%; color:#1a237e;}
-  .sm-l{padding-left:6%; line-height:1.95;}
-  .sm-ck{padding-left:6%; line-height:2.1;}
-  .sm-tbl{margin-left:6%; width:88%;}
-  .sm-sign{text-align:center; margin-top:22px; line-height:2;}
+    margin:10px 0 5px var(--sm-x); padding-left:2%; color:#1a237e;}
+  /* [stated] បន្ទាត់ «-បាន…» ត្រូវឈរត្រង់ជួរដូចកថាខណ្ឌ «ក្រុមហ៊ុនមាន…» */
+  .sm-l{margin-left:var(--sm-x); padding-left:var(--sm-lab); line-height:1.82;}
+  .sm-ck{margin-left:var(--sm-x); padding-left:var(--sm-lab); line-height:2.0;}
+  .sm-tk{white-space:nowrap;}
+  /* [stated] តារាងត្រូវឈរត្រង់ជួរដូច «កម្មវត្ថុ» — ដូច្នេះ --sm-x ដដែល */
+  /* ⚠ AR_CSS មាន .ar-tbl margin:4px 0 2px !important ដែលលុប
+     margin-left របស់យើងចោល — ត្រូវ !important ដើម្បីឈ្នះវិញ។ */
+  .sm-tbl{margin:4px 0 6px var(--sm-x) !important; width:calc(94% - var(--sm-x));}
+  .sm-tot td{background:#f3f0e6;}
+  .sm-lim td.nw, .sm-lim th{white-space:nowrap;}
+  .sm-fill{margin:4px 0 2px var(--sm-x) !important;}
+  .sm-fill td{height:26px;}
+  /* ⚠ របារ ＋/✕ ជាឧបករណ៍អេក្រង់ ៖ ការព្រីនចម្លងខ្លឹមសារពីអេក្រង់ ដូច្នេះ
+     ត្រូវលាក់វាក្នុង SM_CSS ដែរ មិនមែនតែក្នុងសន្លឹកអេក្រង់ទេ។ */
+  .sm-rowbar{margin:0 0 10px var(--sm-x); display:none;}
+  #trkSum2 .sm-rowbar{display:flex; gap:14px;}
+  .sm-rw{font-size:11.5px; color:#8a8a8a;}
+  /* ប្លុកនិយតកម្មតាមការិយបរិច្ឆេទ */
+  .sm-per{margin:10px 0 2px var(--sm-x); padding-left:4%;}
+  .sm-ag{margin-left:var(--sm-x); padding-left:10%; line-height:2;}
+  .sm-ai{margin-left:var(--sm-x); padding-left:15%; line-height:1.9;}
+  /* [stated] ប្លុកចុះហត្ថលេខារៀបទៅខាងស្តាំ ៖ ប្រអប់ទទឹងថេរមួយ ដែល
+     អត្ថបទខាងក្នុងឈរចំកណ្តាល — កុំតម្រឹមម្តងមួយបន្ទាត់។ */
+  .sm-signwrap{display:flex; justify-content:flex-end; margin-top:22px;
+    break-inside:avoid; page-break-inside:avoid;}
+  .sm-sign{width:300px; text-align:center; line-height:2;}
+  .sm-gap{height:74px;}
+  .sm-nm{font-weight:600; line-height:1.9; white-space:nowrap;}
+  .sm-nm2{margin-left:26px;}
 `;
 
 function printSummary(){
@@ -27578,7 +28162,11 @@ function printSummary(){
     var cell = document.querySelector('#trkSum2 .nr-shell > tbody > tr > td');
     if(cell && narrCleanBody(cell).trim()){
       var c = basisCtx();
-      html = narrPrintHtml('', c, arGrand(), narrCleanBody(cell), 'ar-doc');
+      /* ⚠ ២០២៦-០៨-១២ ៖ ថ្នាក់ «sm-doc» ធ្លាប់ត្រូវបានភ្លេចត្រង់នេះ ដូច្នេះ
+         ពេលព្រីន ច្បាប់របស់ SM_CSS (ទំហំអក្សរ 13.5px · --sm-lab · ការចូល
+         បន្ទាត់) មិនអនុវត្តទេ — អេក្រង់ត្រូវ តែក្រដាសខុស។ ច្បាប់ដដែល ៖
+         ម៉ាស៊ីនវាស់ · ទំព័រព្រីន · ផ្ទាំងមើលជាមុន ត្រូវពាក់ថ្នាក់ដូចគ្នា។ */
+      html = narrPrintHtml('', c, arGrand(), narrCleanBody(cell), 'ar-doc sm-doc');
     }
   }catch(e){ html = ''; }
   printInPage(html || smHtml(true),
@@ -27754,6 +28342,12 @@ function docsHtml(){
             <option value="sum2">📗 របាយការណ៍សង្ខេប</option>
           </select>
         </label>
+        <label class="hub-smto">អ្នកទទួល
+          <select id="trkSmTo" class="trk-in" style="width:210px;">
+            <option value="dept">ប្រធាននាយកដ្ឋាន</option>
+            <option value="min">ឯកឧត្តមរដ្ឋមន្ត្រី</option>
+          </select>
+        </label>
         <label class="hub-letterkind">ប្រភេទលិខិត
           <select id="trkLetterKind" class="trk-in" style="width:190px;">
             ${TRK_LETTER_KINDS.map(k=>`<option value="${k.id}">${esc(k.label)}</option>`).join('')}
@@ -27840,12 +28434,26 @@ function wireDocs(host){
     if(lk) lk.style.display = (k === 'letter') ? '' : 'none';
     const bs = host.querySelector('.hub-bssync');
     if(bs) bs.style.display = (k === 'basis') ? '' : 'none';
+    const smt = host.querySelector('.hub-smto');
+    if(smt) smt.style.display = (k === 'sum2') ? '' : 'none';
+
   };
   if(dk){
     dk.value = trkState.docKind || 'letter';
     if(!dk.value) dk.value = 'letter';
     showDoc(dk.value);
     dk.onchange = ()=>{ trkState.docKind = dk.value; trkSave(); showDoc(dk.value); };
+  }
+
+  /* [stated] អ្នកទទួលរបស់របាយការណ៍សង្ខេប ៖ ប្រធាននាយកដ្ឋាន ឬ ឯកឧត្តម
+     រដ្ឋមន្ត្រី។ ជម្រើសនេះប្តូរអត្ថបទ ៤ កន្លែងក្នុងឯកសារ។ */
+  const smt = document.getElementById('trkSmTo');
+  if(smt){
+    smt.value = (trkState.smTo === 'min') ? 'min' : 'dept';
+    smt.onchange = ()=>{
+      trkState.smTo = smt.value; trkSave();
+      try{ renderSummary(); }catch(e){}
+    };
   }
 
   const lp = document.getElementById('trkLetterPrint');
@@ -28990,8 +29598,11 @@ CC.openAssess=function(info){
   var value=cur?Math.abs(+cur.amount||0):amt;
 
   var w=document.createElement("div"); w.id="ccAssess";
+  /* [stated] ២០២៦-០៨-១២ ៖ បើប្រភេទពន្ធដែលត្រូវការមិនមានក្នុងបញ្ជី
+     ត្រូវបង្កើតថ្មីបានភ្លាមត្រង់នេះ — ជៀសវាងបោះបង់ការកំណត់ចោលស្ងាត់ៗ។ */
   var opts=CC.assessTargets().map(function(o){
-    return '<option value="'+esc(o.v)+'"'+(target===o.v?" selected":"")+'>'+esc(o.n)+'</option>'; }).join("");
+    return '<option value="'+esc(o.v)+'"'+(target===o.v?" selected":"")+'>'+esc(o.n)+'</option>'; }).join("")
+    + '<option value="__new">＋ បង្កើតប្រភេទពន្ធថ្មី…</option>';
   var modeOpts=isBS
     ? '<option value="tax" selected>កំណត់ពន្ធ</option>'
     : ['<option value="tax"'+(mode==="tax"?" selected":"")+'>កំណត់ពន្ធ</option>',
@@ -29068,7 +29679,26 @@ CC.openAssess=function(info){
   /* សំណួរអំពីបន្ទុកចំណាយ ៖ សម្រាប់ចំណូលកំណត់ឡើងវិញតែប៉ុណ្ណោះ។
      សំណួរអំពីអាករលើធាតុចូល ៖ លុះត្រាតែចំណូលនោះជាប់អតប។ */
   var syncTarget=function(){
-    var tv=q('[data-as="target"]')?q('[data-as="target"]').value:"";
+    var sel=q('[data-as="target"]');
+    var tv=sel?sel.value:"";
+    /* [stated] «＋ បង្កើតប្រភេទពន្ធថ្មី…» ៖ សួរឈ្មោះ បង្កើតភ្លាម រួចជ្រើសវា។
+       ⚠ បន្ថែម <option> ចូល select នេះផ្ទាល់ — មិន render ផ្ទាំងឡើងវិញទេ
+       ព្រោះការ render នឹងបិទប្រអប់ ហើយបាត់អ្វីដែលកំពុងវាយ។ */
+    if(tv==="__new"){
+      var nm=(window.prompt("ឈ្មោះប្រភេទពន្ធថ្មី","")||"").trim();
+      if(!nm){ sel.value=CC.TURNOVER_NOVAT; return syncTarget(); }
+      var z={}; CC.state.years.forEach(function(y){ z[y]=0; });
+      var nid="cust"+Date.now();
+      CC.state.taxes.push({id:nid,name:nm,rate:0,on:true,custom:true,kind:"",lt:"",ib:"m",
+        msel:{},irate:{},base:Object.assign({},z),paid:Object.assign({},z),
+        paidAudit:Object.assign({},z),paidLate:Object.assign({},z)});
+      CC.persist();
+      var o=document.createElement("option");
+      o.value=nid; o.textContent=nm;
+      sel.insertBefore(o, sel.lastElementChild);
+      sel.value=nid;
+      tv=nid;
+    }
     var isTurn=(tv===CC.TURNOVER_VAT||tv===CC.TURNOVER_NOVAT);
     q('[data-as-wrap="cost"]').style.display=isTurn?"":"none";
     q('[data-as-wrap="invat"]').style.display=(tv===CC.TURNOVER_VAT)?"":"none";
@@ -29759,7 +30389,7 @@ CC.riskData=function(){
   return out;
 };
 
-var TABS=[["sum","📊 សង្ខេប"],["toi","💰 ពន្ធលើប្រាក់ចំណូល"],["risk","⚠️ វិភាគហានិភ័យ"],["vat","🧾 អាករលើតម្លៃបន្ថែម"],["oth","🧮 ពន្ធផ្សេងៗ"],["pay","💵 ការបង់ពន្ធ"],["asg","📌 កំណត់ពីជំហាន"],["ver","🗂 ជំនាន់"],["par","⚙️ ប៉ារ៉ាម៉ែត្រ"],["law","📜 ច្បាប់យោង"],["fx","💱 អត្រាប្តូរប្រាក់"]];
+var TABS=[["sum","📊 សង្ខេប"],["toi","💰 ពន្ធលើប្រាក់ចំណូល"],["risk","⚠️ វិភាគហានិភ័យ"],["vat","🧾 អាករលើតម្លៃបន្ថែម"],["oth","🧮 ពន្ធផ្សេងៗ"],["ver","🗂 ជំនាន់"],["par","⚙️ ប៉ារ៉ាម៉ែត្រ"],["law","📜 ច្បាប់យោង"],["fx","💱 អត្រាប្តូរប្រាក់"]];
 var MODES=[["tax","ពន្ធត្រូវបង់ប៉ុណ្ណោះ"],["add","+ ពន្ធបន្ថែម (Additional Tax)"],["int","+ ការប្រាក់ (Interest)"],["total","សរុប (Total)"]];
 CC.render=function(){
   var el=document.getElementById("calcCard"); if(!el) return;
@@ -29803,8 +30433,6 @@ CC.render=function(){
   h.push(only("risk",paneRisk));
   h.push(only("vat",function(){ return paneVat(res); }));
   h.push(only("oth",function(){ return paneOth(res); }));
-  h.push(only("pay",panePay));
-  h.push(only("asg",paneAsg));
   h.push(only("ver",paneVer));
   h.push(only("par",panePar));
   /* [stated] ច្បាប់យោងចេញពីផ្ទាំងប៉ារ៉ាម៉ែត្រមកជាផ្ទាំងផ្ទាល់ខ្លួន —
@@ -30314,6 +30942,11 @@ function paneToi(res){
   line('កំណត់ដាច់ដោយឡែក ៖ ពន្ធលើប្រាក់ចំណូល '+(s.rate.toi*100)+'%',get('directToi'),'cc-tot');
   line('កំណត់ដាច់ដោយឡែក ៖ អាករលើតម្លៃបន្ថែម '+(s.rate.vat*100)+'%',get('directVat'),'cc-tot');
   h.push('</tbody></table></div>');
+  /* [stated] ការបង់ពន្ធលើប្រាក់ចំណូល រស់នៅទីនេះឥឡូវ មិនមែនផ្ទាំងដាច់ដោយឡែក។
+     ⚠ ចំណាំ ៖ `CC.vatManPanel` អង្គុយចន្លោះ paneToi និង paneVat ដូច្នេះ
+     ការកំណត់ចំណុចបញ្ចូលដោយមើល «មុខងារមុន paneVat» គឺខុស។ */
+  h.push(payTable("ពន្ធលើប្រាក់ចំណូល",
+    {mtr:s.toi.toiPaid, audit:s.toi.toiPaidAudit, late:s.toi.toiPaidLate, attr:'data-pay="toi"'}));
   return h.join("");
 }
 
@@ -30421,6 +31054,8 @@ function paneVat(res){
   h.push('<p class="cc-note">មូលដ្ឋានជាប់អតប = ផលជាប់អតបបានប្រកាស + ផលរកឃើញដែលបានធីក «ជាប់អតប» តែប៉ុណ្ណោះ។ '+
     'បើ <b>អតប ត្រូវបង់ (កំណត់ឡើងវិញ)</b> ចេញ ០ ទាំងមានផលរកឃើញ សូមមើលជួរ <b>ឥណទានអាករយោងពីឆ្នាំមុន</b> — '+
     'ឥណទាននោះស្រូបយកអតបដែលកំណត់ថ្មីអស់។</p>');
+  h.push(payTable("អាករលើតម្លៃបន្ថែម",
+    {mtr:CC.state.vat.paid, audit:CC.state.vat.paidAudit, late:CC.state.vat.paidLate, attr:'data-pay="vat"'}));
   return h.join("");
 }
 
@@ -30429,20 +31064,69 @@ function paneOth(res){
   var s=CC.state,yrs=s.years,h=[],am=CC.assessMaps();
   h.push('<p class="cc-note" id="ccMtrStatus" style="margin:0 0 8px">'+
     esc(CC._mtrMsg||'ចំនួន «បានបង់» បំពេញស្វ័យប្រវត្តិពីលិខិតប្រកាសពន្ធប្រចាំខែក្នុងសាលកបត្រ។')+'</p>');
-  h.push('<div class="cc-bar"><button class="btn ghost" data-act="addTax">+ បន្ថែមប្រភេទពន្ធ</button>'+
-    '<span class="cc-note" style="margin:0">ប្រភេទពន្ធដែលបន្ថែមថ្មី កែឈ្មោះ អត្រា និងលុបបាន។</span></div>');
+  /* [stated] ២០២៦-០៨-១២ ៖ បង្ហាញតែប្រភេទពន្ធដែលកំពុងកំណត់ ; ប្រភេទឯទៀត
+     ស្ថិតក្នុង dropdown ដើម្បីជ្រើសយក។ ⚠ ប្រភេទដែលមានការកំណត់ពីជំហាន
+     (am.taxBase) ត្រូវបង្ហាញជានិច្ច ទោះមិនបានធីក — បើមិនដូច្នេះ តួលេខ
+     ដែលចុចមកពីជំហាននឹងបាត់ពីអេក្រង់ដោយស្ងាត់។ */
+  /* [stated] «ប្រភេទពន្ធនៅក្នុងជំហានមិនមាន អាចបង្កើតថ្មីដោយខ្លួនឯង
+     ជៀសវាងបាត់ស្ងាតៗ» — បើការកំណត់ចង្អុលទៅ id ដែលលែងមានក្នុងបញ្ជី
+     (ឧ. ត្រូវបានលុប) តួលេខនោះនឹងបាត់ពីអេក្រង់ដោយគ្មានសញ្ញា។ បង្កើត
+     ប្រភេទជំនួសភ្លាម រួចរាយវាធម្មតា។ */
+  (function(){
+    var made = 0;
+    Object.keys(am.taxBase).forEach(function(id){
+      if(s.taxes.some(function(t){ return t.id === id; })) return;
+      var z = {}; s.years.forEach(function(y){ z[y] = 0; });
+      s.taxes.push({ id:id, name:"ប្រភេទពន្ធពីជំហាន (" + id + ")", rate:0, on:true, custom:true,
+                     kind:"", lt:"", ib:"m", msel:{}, irate:{},
+                     base:Object.assign({}, z), paid:Object.assign({}, z),
+                     paidAudit:Object.assign({}, z), paidLate:Object.assign({}, z) });
+      made++;
+    });
+    if(made){ CC.persist(); }
+  })();
+
+  var hasStep = function(t){
+    var m = am.taxBase[t.id] || {};
+    return yrs.some(function(y){ return (+m[y] || 0) !== 0; });
+  };
+  var shown = [], hidden = [];
+  s.taxes.forEach(function(t, i){
+    (t.on || hasStep(t) ? shown : hidden).push(i);
+  });
+
+  h.push('<div class="cc-bar">');
+  if(hidden.length){
+    h.push('<span class="cc-lbl">បន្ថែមប្រភេទពន្ធដែលត្រូវកំណត់</span>' +
+      '<select data-act="pickTax"><option value="">— ជ្រើសប្រភេទពន្ធ —</option>' +
+      hidden.map(function(i){ return '<option value="' + i + '">' + esc(s.taxes[i].name) + '</option>'; }).join('') +
+      '</select>');
+  }
+  h.push('<button class="btn ghost" data-act="addTax">+ បង្កើតប្រភេទពន្ធថ្មី</button>');
+  h.push('<span class="cc-note" style="margin:0">បង្ហាញ ' + shown.length + ' / ' + s.taxes.length +
+    ' ប្រភេទ។ ដោះធីកមួយណា វាត្រឡប់ចូល dropdown វិញ។</span></div>');
   h.push('<p class="cc-note" style="margin:0 0 10px">ធីកប្រភេទពន្ធដែលត្រូវកំណត់ឡើងវិញ។ ពន្ធត្រូវបង់ = មូលដ្ឋាន × អត្រា − បានបង់។ '+
     'ចំពោះការប្រាក់លើប្រាក់កម្ចី មូលដ្ឋានគណនាដោយស្វ័យប្រវត្តិ = បំណុល × អត្រាការប្រាក់ប្រចាំឆ្នាំ × ចំនួនខែ ÷ ១២។</p>');
   h.push('<div class="cc-scroll"><table><thead><tr><th style="min-width:240px">ប្រភេទពន្ធ</th><th style="width:96px">អត្រា</th><th></th>');
   yrs.forEach(function(y){h.push('<th class="n">'+y+'</th>');});
   h.push('</tr></thead><tbody>');
 
-  s.taxes.forEach(function(t,i){
+  if(!shown.length) h.push('<tr><td colspan="' + (3 + yrs.length) + '" class="cc-empty" ' +
+    'style="text-align:center; padding:22px">មិនទាន់ជ្រើសប្រភេទពន្ធណាត្រូវកំណត់ទេ — ប្រើ dropdown ខាងលើ</td></tr>');
+  shown.forEach(function(i){
+    var t = s.taxes[i];
     var rows = t.kind==="loan"
       ? [["loan","មូលដ្ឋានបំណុល",1],["mo","ចំនួនខែ",1],["__rate","អត្រាការប្រាក់ ("+(t.lt==="KH"?"និវាសនជន":"អនិវាសនជន")+")",0],["__base","មូលដ្ឋានចំណាយការប្រាក់",0],["__paid","បានបង់ សរុប",0]]
       : [["base",(t.amt?(t.asAdd?"ចំនួនពន្ធបន្ថែម":"ចំនួនទឹកប្រាក់"):"មូលដ្ឋាន បញ្ចូលដោយដៃ"),1],
          ["__step","បូក ៖ កំណត់ពីជំហានទី៤–៧",0],
          ["__basetot","មូលដ្ឋានសរុប",0],
+         /* [stated] ការបង់ត្រូវលម្អិតត្រង់នេះ ដើម្បីអោយឃើញច្បាស់ថា
+            ផ្នែកណាដកចេញពីមូលដ្ឋាន និងផ្នែកណាមិនដក។ */
+         ["__pmtr","បានបង់ ៖ តាមសាលកបត្រ (ដកចេញ)",0],
+         /* ⚠ ត្រូវជា 0 ៖ ធាតុទី៣ បើពិត វានឹងទៅផ្លូវ input ទូទៅ (data-tax)
+            ជំនួសផ្លូវ __paud របស់យើង ហើយការវាយនឹងសរសេរខុសកន្លែង។ */
+         ["__paud","បានបង់ ៖ ក្នុងសវនកម្ម (មិនដក)",0],
+         ["__plate","បានបង់ ៖ យឺតយ៉ាវ (មិនដក)",0],
          ["__paid","បានបង់ សរុប",0]];
     if(t.kind==="loan") rows.splice(4,0,["__step","បូក ៖ កំណត់ពីជំហានទី៤–៧",0],["__basetot","មូលដ្ឋានសរុប",0]);
     if((t.ib||"m")==="m" && !t.np) rows.push(["__msel","ខែដែលគិតការប្រាក់",0]);
@@ -30477,6 +31161,14 @@ function paneOth(res){
           h.push('<td class="n cc-calc">'+fmt((am.taxBase[t.id]||{})[y]||0)+'</td>');
         }else if(r[0]==="__basetot"){
           h.push('<td class="n cc-calc">'+fmt(CC.baseOf(t,y)+((am.taxBase[t.id]||{})[y]||0))+'</td>');
+        }else if(r[0]==="__pmtr"){
+          h.push('<td class="n cc-calc">'+fmt((t.paid||{})[y]||0)+'</td>');
+        }else if(r[0]==="__paud"){
+          /* ⚠ ជួរតែមួយគត់ដែលកែបាន — ២ ជួរទៀតមកពីសាលកបត្រ និងផ្ទាំង 💸 */
+          h.push('<td class="n"><input class="cc-grid-in" data-pay="tax" data-i="'+i+'" data-k="audit" data-y="'+y+'" value="'+
+            fmt((t.paidAudit||{})[y]||0)+'"></td>');
+        }else if(r[0]==="__plate"){
+          h.push('<td class="n cc-calc">'+fmt((t.paidLate||{})[y]||0)+'</td>');
         }else if(r[0]==="__paid"){
           h.push('<td class="n cc-calc">'+fmt(CC.taxPaid(t,y))+'</td>');
         }else{
@@ -30495,53 +31187,50 @@ function paneOth(res){
     h.push('</tr>');
   });
   h.push('</tbody></table></div>');
+  /* [stated] បញ្ជីកំណត់ពីជំហានផ្លាស់មកទីនេះ ៖ វាជាកន្លែងតែមួយគត់ដែល
+     លុបការកំណត់ខុសបាន ដូច្នេះវាមិនត្រូវបាត់ពេលដកផ្ទាំង 📌 ចេញ។ */
+  h.push(asgTable());
   return h.join("");
 }
 
-/* ---- ការបង់ពន្ធ ៖ សាលកបត្រ · សវនកម្ម · យឺតយ៉ាវ ---- */
-function panePay(){
-  var s=CC.state,yrs=s.years,h=[];
-  h.push('<p class="cc-note" style="margin:0 0 10px">ការបង់ត្រូវបែងជា ៣ ៖ '+
-    '<b>តាមសាលកបត្រ</b> (អានពីលិខិតប្រកាសប្រចាំខែ) · '+
-    '<b>ក្នុងសវនកម្ម</b> (បញ្ចូលនៅទីនេះ) · '+
-    '<b>យឺតយ៉ាវ</b> (បញ្ចូលនៅផ្ទាំង 💸 ក្នុងកាតុសាលកបត្រ)។ '+
-    'មានតែជួរ «ក្នុងសវនកម្ម» ទេដែលកែបាន។</p>');
-  h.push('<div class="cc-scroll"><table><thead><tr><th style="min-width:240px">ប្រភេទពន្ធ</th><th style="width:150px">ការបង់</th>');
+/* [stated] ២០២៦-០៨-១២ ៖ ការបង់ត្រូវរស់នៅក្នុងផ្ទាំងរបស់ពន្ធនីមួយៗ
+   មិនមែនផ្ទាំងដាច់ដោយឡែកទេ។ ប្លុកតែមួយនេះប្រើទាំង TOI និង VAT ដូច្នេះ
+   វាមិនអាចខុសគ្នាបានទេ។ ⚠ មានតែជួរ «ក្នុងសវនកម្ម» ទេដែលកែបាន —
+   សាលកបត្រមកពីលិខិតប្រកាសប្រចាំខែ · យឺតយ៉ាវមកពីផ្ទាំង 💸។ */
+function payTable(name, slots){
+  var s=CC.state, yrs=s.years, h=[];
+  h.push('<h4 class="cc-h4" style="margin:16px 0 6px">💵 ការបង់ពន្ធ ៖ '+esc(name)+'</h4>');
+  h.push('<p class="cc-note" style="margin:0 0 8px">មានតែជួរ <b>ក្នុងសវនកម្ម</b> ទេដែលកែបាន។ '+
+    'តែ <b>តាមសាលកបត្រ</b> ប៉ុណ្ណោះដែលដកចេញពីពន្ធកំណត់ឡើងវិញ។</p>');
+  h.push('<div class="cc-scroll"><table><thead><tr><th style="min-width:200px">ការបង់</th>');
   yrs.forEach(function(y){h.push('<th class="n">'+y+'</th>');});
   h.push('</tr></thead><tbody>');
-
-  var group=function(name,slots){
-    [["mtr","តាមសាលកបត្រ",0],["audit","ក្នុងសវនកម្ម",1],["late","យឺតយ៉ាវ",0]].forEach(function(r,ri){
-      h.push('<tr>');
-      if(ri===0) h.push('<td rowspan="4"><b>'+esc(name)+'</b></td>');
-      h.push('<td>'+r[1]+'</td>');
-      yrs.forEach(function(y){
-        var m=slots[r[0]];
-        if(r[2]) h.push('<td class="n"><input class="cc-grid-in" '+slots.attr+' data-k="'+r[0]+'" data-y="'+y+'" value="'+fmt(m[y])+'"></td>');
-        else     h.push('<td class="n cc-calc">'+fmt(m[y])+'</td>');
-      });
-      h.push('</tr>');
-    });
-    h.push('<tr class="cc-tot"><td>សរុបបានបង់</td>');
+  [["mtr","តាមសាលកបត្រ (ដកចេញ)",0],["audit","ក្នុងសវនកម្ម (មិនដក)",1],["late","យឺតយ៉ាវ (មិនដក)",0]].forEach(function(r){
+    h.push('<tr><td>'+r[1]+'</td>');
     yrs.forEach(function(y){
-      h.push('<td class="n">'+fmt((+slots.mtr[y]||0)+(+slots.audit[y]||0)+(+slots.late[y]||0))+'</td>');});
+      var m=slots[r[0]]||{};
+      if(r[2]) h.push('<td class="n"><input class="cc-grid-in" '+slots.attr+' data-k="'+r[0]+'" data-y="'+y+'" value="'+fmt(m[y])+'"></td>');
+      else     h.push('<td class="n cc-calc">'+fmt(m[y])+'</td>');
+    });
     h.push('</tr>');
-  };
-
-  group("ពន្ធលើប្រាក់ចំណូល", {mtr:s.toi.toiPaid, audit:s.toi.toiPaidAudit, late:s.toi.toiPaidLate, attr:'data-pay="toi"'});
-  group("អាករលើតម្លៃបន្ថែម", {mtr:s.vat.paid, audit:s.vat.paidAudit, late:s.vat.paidLate, attr:'data-pay="vat"'});
-  s.taxes.forEach(function(t,i){
-    group(t.name, {mtr:t.paid, audit:t.paidAudit, late:t.paidLate, attr:'data-pay="tax" data-i="'+i+'"'});
   });
-  h.push('</tbody></table></div>');
+  h.push('<tr class="cc-tot"><td>សរុបបានបង់</td>');
+  yrs.forEach(function(y){
+    h.push('<td class="n">'+fmt((+(slots.mtr||{})[y]||0)+(+(slots.audit||{})[y]||0)+(+(slots.late||{})[y]||0))+'</td>');});
+  h.push('</tr></tbody></table></div>');
   return h.join("");
 }
 
+/* ⚠ panePay() ត្រូវបានលុប ២០២៦-០៨-១២ ៖ មុខងាររបស់វាផ្លាស់ទៅ payTable()
+   ដែលហៅពី paneToi និង paneVat រួច ; ពន្ធផ្សេងៗមានជួរបង់របស់វាផ្ទាល់។
+   ⚠ បើត្រូវការវិញ ៖ ផ្ទាំង «pay» និង «asg» ត្រូវដាក់ចូល TABS ឡើងវិញផង។ */
+
 /* ---- assessments taken off the ជំហាន panels ---- */
-function paneAsg(){
+function asgTable(){
   var s=CC.state,a=s.assessments||[],h=[];
+  h.push('<h4 class="cc-h4" style="margin:18px 0 6px">📌 ការកំណត់ពីជំហានទី៤–៧</h4>');
   h.push('<p class="cc-note" style="margin:0 0 10px">នៅជំហានទី៤ ចុចលើតួលេខណាមួយ → ជ្រើសប្រភេទពន្ធ។ '+
-    'នៅជំហានទី៥–៧ អាចជ្រើសបន្ថែម «កាត់ចំណាយចេញ» ផងដែរ។ ចុចជួរខាងក្រោមដើម្បីកែ។</p>');
+    'នៅជំហានទី៥–៧ អាចជ្រើសបន្ថែម «កាត់ចំណាយចេញ» ផងដែរ។ ចុច × ដើម្បីលុប។</p>');
   if(!a.length) return h.join("")+'<div class="cc-empty">មិនទាន់មានការកំណត់ពន្ធពីជំហានទេ</div>';
   h.push('<div class="cc-scroll"><table><thead><tr><th>ជំហាន</th><th style="min-width:220px">បរិយាយ</th>'+
     '<th class="n">ឆ្នាំ</th><th style="min-width:200px">ដាក់ចូល</th><th>កាត់ចំណាយ</th><th class="n">ចំនួន</th><th></th></tr></thead><tbody>');
@@ -31279,6 +31968,14 @@ function bind(el){
       var vv=s.versions[+t.dataset.ver];
       if(vv){ vv[t.dataset.k]=t.value; CC.persist(); }
       return;
+    }
+    /* [stated] dropdown ជ្រើសប្រភេទពន្ធដែលត្រូវកំណត់ ៖ ធីកវា រួចវាលេចលើតារាង។
+       ⚠ វាជា <select> ដូច្នេះត្រូវចាប់នៅ change មិនមែន click ទេ។ */
+    if(t.dataset.act==="pickTax"){
+      var pi=+t.value;
+      if(s.taxes[pi]){ s.taxes[pi].on=true; }
+      t.value="";
+      return re();
     }
     if(t.dataset.pay){
       var mp=(t.dataset.pay==="toi")?{mtr:s.toi.toiPaid,audit:s.toi.toiPaidAudit,late:s.toi.toiPaidLate}
