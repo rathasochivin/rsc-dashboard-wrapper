@@ -1367,13 +1367,20 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
 #view-tracking .lt-meta, #docs-modal .lt-meta{width:100%; border-collapse:collapse; font-size:12.5px; margin-bottom:10px;}
 #view-tracking .lt-meta td, #docs-modal .lt-meta td{padding:2px 4px; vertical-align:top;}
 #view-tracking .lt-meta td.k, #docs-modal .lt-meta td.k{white-space:nowrap; width:1%; color:var(--muted);}
-#view-tracking .lt-meta td.k::after, #docs-modal .lt-meta td.k::after{content:' ៖';}
+#view-tracking .lt-meta td.s, #docs-modal .lt-meta td.s{white-space:nowrap; width:1%; color:var(--muted); padding-left:0; padding-right:6px;}
 #view-tracking .lt-meta td.v, #docs-modal .lt-meta td.v{font-weight:600; border-bottom:1px dotted #9a9a9a; padding-right:14px;}
 #view-tracking .lt-p, #docs-modal .lt-p{margin:8px 0; text-indent:2.2em; text-align:justify; line-height:1.9;}
-#view-tracking .lt-list, #docs-modal .lt-list{width:100%; border-collapse:collapse; font-size:12.5px; margin:6px 0 8px;}
+/* ⚠ table-layout:fixed ចាំបាច់ ៖ ដោយ auto វាចែកទទឹងតាមអក្សរ ដូច្នេះជួរ
+   ខ្មែរលេបទំហំ ហើយជួរឡាតាំងចាប់ផ្តើមឆ្ងាយពេក (x=390px) រួច
+   «Employment Contracts of Expatriates and Management» (ត្រូវការ 302px)
+   ធ្លាក់ជាពីរបន្ទាត់។ វាស់លើការបង្ហាញពិត ៖ 40/52 សល់ទំហំបម្រុង
+   ឡាតាំង 47px និងខ្មែរ 42px — មានតុល្យភាព ហើយឡាតាំងរំកិលមកឆ្វេង
+   ~75px។ ⚠ កុំដក .km ចេញ បើមិនដូច្នេះទទឹងមិនអនុវត្តទេ។ */
+#view-tracking .lt-list, #docs-modal .lt-list{width:100%; border-collapse:collapse; font-size:12.5px; margin:6px 0 8px; table-layout:fixed;}
 #view-tracking .lt-list td, #docs-modal .lt-list td{padding:3px 4px; vertical-align:top;}
 #view-tracking .lt-list td.n, #docs-modal .lt-list td.n{width:26px; white-space:nowrap;}
-#view-tracking .lt-list td.en, #docs-modal .lt-list td.en{color:var(--muted); width:42%;}
+#view-tracking .lt-list td.km, #docs-modal .lt-list td.km{width:40%;}
+#view-tracking .lt-list td.en, #docs-modal .lt-list td.en{color:var(--muted); width:52%;}
 #view-tracking .lt-tbl, #docs-modal .lt-tbl{width:100%; border-collapse:collapse; font-size:12px; margin:8px 0;}
 #view-tracking .lt-tbl th, #view-tracking .lt-tbl td, #docs-modal .lt-tbl th, #docs-modal .lt-tbl td{border:1px solid #333 !important; padding:5px 7px; text-align:left; vertical-align:top;}
 #view-tracking .lt-tbl th, #docs-modal .lt-tbl th{text-align:center !important; font-weight:700;}
@@ -1411,6 +1418,7 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
 #view-tracking .lt-sign-h, #docs-modal .lt-sign-h{font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif; font-weight:700; font-size:12.5px;}
 #view-tracking .lt-sign-gap, #docs-modal .lt-sign-gap{height:64px;}
 #view-tracking .lt-sign-n, #docs-modal .lt-sign-n{font-weight:600;}
+#view-tracking .lt-sign-d, #docs-modal .lt-sign-d{margin-top:6px; font-size:12px;}
 #view-tracking .lt-foot2, #docs-modal .lt-foot2{display:flex; align-items:flex-start; gap:40px; margin-top:22px;}
 #view-tracking .lt-foot2 .lt-box, #docs-modal .lt-foot2 .lt-box{flex:0 0 auto;}
 #view-tracking .lt-aud, #docs-modal .lt-aud{flex:1; text-align:center; padding-top:6px;}
@@ -2163,9 +2171,32 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
   white-space:nowrap; width:1%;
 }
 #mtr-embed table.annual-ledger thead th:nth-child(1){ text-align:left; }
-#mtr-embed table.annual-ledger tbody td:nth-child(2){
-  font-weight:700; color:var(--mtr-seal); font-family:'Khmer OS Siemreap',sans-serif; text-align:right;
+/* ⚠ ជួរឈរទី ២ ធ្លាប់ជា TOTAL ដែលបានដកចេញ — ឥឡូវវាជាឆ្នាំដំបូង
+   ដូច្នេះកុំដាក់ពណ៌ត្រាលើវាទៀត។ ជួរដេក «សរុប» នៅបាតទទួលពណ៌នោះវិញ។ */
+/* 📜 ប្រវត្តិសវនកម្ម ៖ ជួរបញ្ចូលដោយដៃមានផ្ទៃលឿង ដូចឯកសារដើមរបស់គេ។
+   ⚠ ត្រូវដាក់បុព្វបទ #mtr-embed បើមិនដូច្នេះ ច្បាប់ ID របស់ embed ឈ្នះ។ */
+#mtr-embed table.ah-tbl tbody td{ text-align:right; }
+#mtr-embed table.ah-tbl tbody td.ah-lab{ text-align:left; white-space:nowrap; font-weight:600; }
+#mtr-embed table.ah-tbl tbody tr.ah-manual td{ background:#fff7cc; }
+#mtr-embed table.ah-tbl tbody tr.ah-manual td.ah-lab{ background:#fdf0b5; }
+#mtr-embed table.ah-tbl tbody tr.ah-sum td{
+  font-weight:700; color:var(--mtr-seal); border-top:1.5px solid var(--mtr-ink);
 }
+#mtr-embed table.ah-tbl tbody tr.ah-pct td{ color:#7a4a00; font-weight:600; }
+#mtr-embed table.ah-tbl input.ah-in{
+  border:1px solid #d8d2bd; border-radius:6px; padding:4px 6px; background:#fff;
+  font-family:'Khmer OS Siemreap',sans-serif; font-size:12.5px; color:#2a2f2a;
+}
+#mtr-embed table.ah-tbl .ah-ydel{
+  border:0; background:transparent; color:#c9c4b4; cursor:pointer; font-size:11px; padding:0 2px;
+}
+#mtr-embed table.ah-tbl th:hover .ah-ydel{ color:#B3261E; }
+#mtr-embed table.annual-ledger tbody tr.annual-sum td{
+  font-weight:700; color:var(--mtr-seal); font-family:'Khmer OS Siemreap',sans-serif;
+  border-bottom:2px solid var(--mtr-ink); background:rgba(0,0,0,.05);
+  position:sticky; top:0; z-index:1;
+}
+#mtr-embed table.annual-ledger tbody tr.annual-sum td:nth-child(1){ text-align:left; }
 #mtr-embed table.ledger tbody td.deducted-cell{
   background:#fde68a !important;
   font-weight:700;
@@ -4508,6 +4539,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
             <button class="tab-btn active" data-view="monthly">📊 ប្រចាំខែ</button>
             <button class="tab-btn" data-view="annual">📅 ប្រចាំឆ្នាំ</button>
             <button class="tab-btn" data-view="audit">🔍 សវនកម្ម</button>
+            <button class="tab-btn" data-view="history">📜 ប្រវត្តិសវនកម្ម</button>
             <button class="tab-btn" data-view="vatcr">💳 VATCR</button>
             <button class="tab-btn" data-view="mtrPrint">🖨️ MTR</button>
             <button class="tab-btn" data-view="vatPrint">🖨️ VAT</button>
@@ -5957,7 +5989,16 @@ const LOCAL_BACKUP = [
   { prefix: 'trackingData_'   },   /* 📋 តាមដានឯកសារ និងកំណត់ហេតុសវនកម្ម */
   { prefix: 'accessProAudit_' },   /* ព័ត៌មាន ProAudit — មួយកម្មវិធីមួយធាតុ */
   { prefix: 'accessProMap_'   },   /* ការភ្ជាប់កម្មវិធី Data Entry ↔ ជួរ Access */
-  { exact:  'mtrTaxAccessIds' },   /* តារាងលេខសម្គាល់ប្រភេទពន្ធ */
+  { exact:  'mtrTaxAccessIds'    },
+  { exact:  'mtrAuditHistoryV1'  }, /* 📜 ប្រវត្តិសវនកម្ម */
+  { exact:  'mtrLatePayV1'       }, /* 💸 ការបង់ពន្ធយឺតយ៉ាវ */
+  { exact:  'vatcrManualV1'      }, /* 💳 VATCR ដោយដៃ */
+  { exact:  'vatManualV1'        }, /* 🖨️ VAT ដោយដៃ */
+  { exact:  'vatManYearsV1'      },
+  { exact:  'auditManualV1'      }, /* 🔍 សវនកម្ម ដោយដៃ */
+  { exact:  'auditProgManualV1'  }, /* កម្មវិធីសវនកម្ម ដោយដៃ */
+  { exact:  'narrLhV1'           }, /* គម្លាតបន្ទាត់ព្រីន */
+  { exact:  'narrPageLhV1'       },
 ];
 /* [stated] ឈ្មោះ file ពេល Save ៖ «ឈ្មោះ_អតប» ហើយបន្ថែម _V1 _V2 …
    ចាប់ពីលើកទី២ ទៅ (លើកទី១ គ្មានលេខជំនាន់)។ ឈ្មោះឡាតាំងមុន បើគ្មាន
@@ -6019,6 +6060,7 @@ function restoreLocalBackup(o){
     try{ localStorage.setItem(k, o[k]); n++; }catch(e){}
   });
   try{ if(typeof window.__trkReload === 'function') window.__trkReload(); }catch(e){}
+  try{ if(typeof window.__mtrReloadManual === 'function') window.__mtrReloadManual(); }catch(e){}
   return n;
 }
 
@@ -9286,6 +9328,47 @@ async function handleAutoFileImport(evt){
     return;
   }
 
+  /* ══ សហគ្រាសផ្សេង = ទិន្នន័យចាស់ត្រូវលុប ═══════════════════════════
+     [stated] 2026-08-12 ៖ «ទិន្នន័យចាស់ upload ថ្មី ឬ ចុច លុប ត្រូវបាត់»។
+     ⚠ តែមិនអាចលុបរាល់ការ upload បានទេ — ឯកសារដៃគូ (CP_PURCHASE /
+       CP_SALE) និងឯកសារបន្ថែមរបស់សហគ្រាសដដែល ជាការ upload លើកក្រោយ
+       ដែរ។ ដូច្នេះការលុបចងនឹង **លេខអតបប្តូរ** មិនមែនចងនឹងការ upload ទេ។
+     សួរជាមុនជានិច្ច ៖ ការងារដែលមិនទាន់ Save អាចបាត់។ */
+  (function(){
+    var newTin = String(dt9 || '').replace(/\D/g, '').slice(-9);
+    if(!newTin) return;
+    var oldTin = '';
+    try{
+      var ci = (typeof window.__getTOICoverInfo === 'function') ? (window.__getTOICoverInfo() || {}) : {};
+      oldTin = String(ci.tin || '').replace(/\D/g, '').slice(-9);
+    }catch(e){}
+    if(!oldTin || oldTin === newTin) return;
+    if(typeof hasAnyDataLoaded === 'function' && !hasAnyDataLoaded()) return;
+    window.__rscPendingWipe = { from: oldTin, to: newTin };
+  })();
+
+  if(window.__rscPendingWipe){
+    var pw = window.__rscPendingWipe;
+    window.__rscPendingWipe = null;
+    if(statusEl){ statusEl.textContent = 'កំពុងរង់ចាំការបញ្ជាក់…'; statusEl.className = 'import-status'; }
+    appConfirm('ឯកសារនេះជារបស់សហគ្រាសផ្សេង។\n\nបច្ចុប្បន្ន ៖ អតប ' + pw.from +
+               '\nឯកសារថ្មី ៖ អតប ' + pw.to +
+               '\n\nទិន្នន័យចាស់ទាំងអស់នឹងត្រូវលុប។ បើមិនទាន់ Save សូមបោះបង់ រួច 💾 ជាមុនសិន។\n\nបន្តទេ?')
+      .then(function(ok){
+        if(!ok){
+          if(statusEl){ statusEl.textContent = 'បានបោះបង់ — ទិន្នន័យចាស់នៅដដែល'; statusEl.className = 'import-status'; }
+          return;
+        }
+        try{ wipeEnterpriseStorage(); }catch(e){}
+        /* ត្រូវផ្ទុកទំព័រឡើងវិញ ៖ MTR/TOI/TOS រក្សាទិន្នន័យក្នុងអង្គចងចាំ
+           ក្នុង IIFE ដាច់ដោយឡែក ហើយគ្មានផ្លូវលុបពីខាងក្រៅទេ។ ដូចគ្នានឹង
+           ប៊ូតុង 🗑️ ដែរ។ អ្នកប្រើត្រូវ upload ម្តងទៀតក្រោយផ្ទុកឡើងវិញ។ */
+        try{ localStorage.setItem('rscReuploadHint', '1'); }catch(e){}
+        reloadApp();
+      });
+    return;
+  }
+
   if(companyInfoSheet){
     forwardCompanyInfoToTOI(companyInfoSheet.sheet, companyInfoSheet.sourceName);
   }
@@ -10613,14 +10696,28 @@ function renderAll(){
    ត្រូវបន្ថែមកូនសោវានៅទីនេះផងដែរ។ មិនលុប ៖
    main_dashboard_personal_info_v1 (ព័ត៌មានសវនករផ្ទាល់ខ្លួន),
    accessDbPath និង gdtLogo (ជាប់នឹងម៉ាស៊ីន មិនមែនរបស់សហគ្រាស)។ */
+/* ⚠ បញ្ជីនេះជាប្រភពតែមួយសម្រាប់ការលុប។ រាល់កូនសោថ្មីដែលផ្ទុកទិន្នន័យ
+   «សហគ្រាស» ត្រូវបន្ថែមទីនេះ **និង** ក្នុង LOCAL_BACKUP ខាងក្រោម —
+   បើភ្លេច ៖ ខកខានទីនេះ = ទិន្នន័យចាស់នៅសល់ពេលប្តូរសហគ្រាស ·
+   ខកខានទីនោះ = ទិន្នន័យបាត់ពេលបើកឯកសារដែលបានរក្សាទុក។
+   មិនរាប់បញ្ចូល ៖ ព័ត៌មានផ្ទាល់ខ្លួន · accessDbPath · ចំណូលចិត្តអេក្រង់
+   (auditPanel*Open · tosHcOpen · rscAutoSave · accessTablePickV1) ។ */
 const ENTERPRISE_KEYS = [
-  "crosscheck_dashboard_v1",
-  "calcCardV1",
-  "mtrLatePayV1",
-  "toi_dashboard_risk_data_v4",
-  "toi_dashboard_data_entry_v1",
-  "toi_dashboard_cover_v1",
-  "mtrTaxAccessIds",
+  "crosscheck_dashboard_v1",        /* ទិន្នន័យមេ ៖ SALE · PURCHASE · WHT … */
+  "calcCardV1",                     /* 🧮 ការគណនាពន្ធឡើងវិញ */
+  "mtrLatePayV1",                   /* 💸 ការបង់ពន្ធយឺតយ៉ាវ */
+  "mtrAuditHistoryV1",              /* 📜 ប្រវត្តិសវនកម្ម */
+  "vatcrManualV1",                  /* 💳 VATCR បញ្ចូលដោយដៃ */
+  "vatManualV1",                    /* 🖨️ VAT បញ្ចូលដោយដៃ */
+  "vatManYearsV1",                  /* ឆ្នាំ VAT បន្ថែមដោយដៃ */
+  "auditManualV1",                  /* 🔍 សវនកម្ម បញ្ចូលដោយដៃ */
+  "auditProgManualV1",              /* កម្មវិធីសវនកម្ម បញ្ចូលដោយដៃ */
+  "toi_dashboard_risk_data_v4",     /* ការវិភាគហានិភ័យ */
+  "toi_dashboard_data_entry_v1",    /* 📝 Data Entry */
+  "toi_dashboard_cover_v1",         /* COVER */
+  "mtrTaxAccessIds",                /* លេខសម្គាល់ប្រភេទពន្ធសម្រាប់ Access */
+  "narrLhV1",                       /* គម្លាតបន្ទាត់ព្រីន — បរិយាយការកំណត់ពន្ធ */
+  "narrPageLhV1",                   /* គម្លាតបន្ទាត់ព្រីនតាមទំព័រ */
   "abc_dashboard_access_unlocked_v1",
 ];
 const ENTERPRISE_PREFIXES = ["trackingData_", "accessProAudit_", "accessProMap_"];
@@ -10671,6 +10768,16 @@ function init(){
        មានគ្រប់ហើយ ដូច្នេះផ្ទាំង ការគណនាពន្ធឡើងវិញ / ការវិភាគហានិភ័យ
        លេចឡើងជានិច្ច។ */
     try{ if(typeof applyFeatureGates === "function") applyFeatureGates(); }catch(e){}
+    /* ក្រោយការលុបដោយសារប្តូរសហគ្រាស ៖ ប្រាប់ឱ្យ upload ម្តងទៀត ព្រោះ
+       ការផ្ទុកទំព័រឡើងវិញបានបោះបង់ការ upload ដែលកំពុងដំណើរការ។ */
+    try{
+      if(localStorage.getItem('rscReuploadHint')){
+        localStorage.removeItem('rscReuploadHint');
+        setTimeout(function(){
+          alert('បានលុបទិន្នន័យសហគ្រាសចាស់រួច។\n\nសូម 📥 upload ឯកសារសហគ្រាសថ្មីម្តងទៀត។');
+        }, 400);
+      }
+    }catch(e){}
   };
   if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
   else start();
@@ -10817,7 +10924,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     currentView = e.target.getAttribute('data-view');
     activeAuditCode = null;
     
-    if (currentView === 'audit' || currentView === 'vatcr' || currentView === 'mtrPrint' || currentView === 'vatPrint' || currentView === 'latepay') {
+    if (currentView === 'audit' || currentView === 'history' || currentView === 'vatcr' || currentView === 'mtrPrint' || currentView === 'vatPrint' || currentView === 'latepay') {
       auditToggleWrapper.style.display = 'none';
     } else {
       auditToggleWrapper.style.display = 'flex';
@@ -10881,7 +10988,7 @@ function finalizeLoadedFiles(successMsg) {
 
   if (loadedWorkbooks.length > 0) {
     viewTabs.style.display = 'flex';
-    auditToggleWrapper.style.display = (currentView === 'audit' || currentView === 'vatcr' || currentView === 'mtrPrint' || currentView === 'vatPrint') ? 'none' : 'flex';
+    auditToggleWrapper.style.display = (currentView === 'audit' || currentView === 'history' || currentView === 'vatcr' || currentView === 'mtrPrint' || currentView === 'vatPrint') ? 'none' : 'flex';
     btnSave.disabled = false;
     btnDownload.style.display = '';
     renderActiveView();
@@ -11074,6 +11181,253 @@ function latePayTaxList(){
   });
   return out;
 }
+
+/* =========================================================================
+   📜 ប្រវត្តិសវនកម្ម — ២ ផ្ទាំងរង
+   ១. ប្រវត្តិកម្រិតចំណេញ  ២. ប្រវត្តិមូលដ្ឋានកំណត់ពន្ធ
+   -------------------------------------------------------------------------
+   [stated] 2026-08-12 ៖ ជួរដែលហាយឡាយ (លឿង) បញ្ចូលដោយដៃ · ជួរឯទៀត
+   គណនាដោយស្វ័យប្រវត្តិ។ រូបមន្តយកតាមឯកសារ Book1.xlsx របស់គេបេះបិទ ៖
+     សរុបផលកំណត់ឡើងវិញ  = ផលបានប្រកាស + ផលកំណត់ឡើងវិញ
+     ប្រាក់ចំណេញបានប្រកាស = ផលបានប្រកាស − បន្ទុកបានប្រកាស
+     ប្រាក់ចំណេញកំណត់ឡើងវិញ = សរុបផលកំណត់ឡើងវិញ − បន្ទុកកំណត់ឡើងវិញ
+     ⚠ % កម្រិតចំណេញ ទាំងពីរ ចែកនឹង «សរុបផលកំណត់ឡើងវិញ» (មិនមែនផល
+       បានប្រកាសទេ) — ដូចក្នុងឯកសារគេ B8=B7/B4 និង B10=B9/B4
+     បន្ទុកបានកាត់ចេញ = បន្ទុកបានប្រកាស − បន្ទុកកំណត់ឡើងវិញ
+     %បន្ទុកកាត់ចេញ  = បន្ទុកបានកាត់ចេញ ÷ បន្ទុកបានប្រកាស
+   លំដាប់ឆ្នាំ ៖ ចាស់នៅឆ្វេង ថ្មីនៅស្តាំ — តាមឯកសារដើមរបស់គេ។
+   ========================================================================= */
+const AUD_HIST_KEY = 'mtrAuditHistoryV1';
+let audHist = null;
+
+function audHistState(){
+  if(audHist) return audHist;
+  try{ audHist = JSON.parse(localStorage.getItem(AUD_HIST_KEY) || 'null'); }catch(e){ audHist = null; }
+  if(!audHist || typeof audHist !== 'object') audHist = {};
+  if(audHist.sub !== 'basis') audHist.sub = 'margin';
+  if(!Array.isArray(audHist.years) || !audHist.years.length){
+    const y = new Date().getFullYear();
+    audHist.years = [];
+    for(let i = 4; i >= 0; i--) audHist.years.push(String(y - i));
+  }
+  if(!audHist.m || typeof audHist.m !== 'object') audHist.m = {};
+  if(!Array.isArray(audHist.basis)) audHist.basis = [];
+  return audHist;
+}
+function audHistSave(){
+  try{ localStorage.setItem(AUD_HIST_KEY, JSON.stringify(audHistState())); }catch(e){}
+}
+/* ជួរបញ្ចូលដោយដៃ ៤ ជួរ — លេខសម្គាល់មិនប្តូរ ទោះឈ្មោះជួរប្តូរក៏ដោយ */
+const AUD_M_IN = [
+  { k:'turnDecl', label:'ផលបានប្រកាស' },
+  { k:'turnRe',   label:'ផលកំណត់ឡើងវិញ' },
+  { k:'expDecl',  label:'បន្ទុកបានប្រកាស' },
+  { k:'expRe',    label:'បន្ទុកកំណត់ឡើងវិញ' },
+];
+function audMVal(k, y){
+  const v = (audHistState().m[k] || {})[y];
+  const n = Number(String(v == null ? '' : v).replace(/,/g, ''));
+  return isNaN(n) ? 0 : n;
+}
+function audMHas(k, y){
+  const v = (audHistState().m[k] || {})[y];
+  return v !== undefined && v !== null && String(v).trim() !== '';
+}
+/* តម្លៃគណនាទាំង ៧ សម្រាប់ឆ្នាំមួយ */
+function audMCalc(y){
+  const tD = audMVal('turnDecl', y), tR = audMVal('turnRe', y);
+  const eD = audMVal('expDecl',  y), eR = audMVal('expRe',  y);
+  const tT = tD + tR;
+  const pD = tD - eD;
+  const pR = tT - eR;
+  const cut = eD - eR;
+  return {
+    turnTot: tT,
+    profDecl: pD,   pctDecl: tT ? pD / tT : null,
+    profRe:   pR,   pctRe:   tT ? pR / tT : null,
+    expCut:   cut,  pctCut:  eD ? cut / eD : null,
+    /* បង្ហាញតែពេលមានទិន្នន័យបញ្ចូល — កុំបង្ហាញ 0 នៅឆ្នាំទទេ */
+    anyTurn: audMHas('turnDecl', y) || audMHas('turnRe', y),
+    anyExp:  audMHas('expDecl',  y) || audMHas('expRe',  y),
+  };
+}
+function audFmt(n){ return (n || n === 0) ? Number(n).toLocaleString('en-US') : ''; }
+function audPct(v){ return (v === null || !isFinite(v)) ? '' : (v * 100).toFixed(2) + '%'; }
+
+/* ⚠ ការបើកឯកសារដែលបានរក្សាទុក សរសេរ localStorage ត្រឡប់មកវិញ តែម៉ូឌុល
+   នីមួយៗបានអានវាចូលអង្គចងចាំតាំងពីពេលផ្ទុកទំព័រ។ បើគ្មានការអានឡើងវិញ
+   ទិន្នន័យដែលបានស្តារ «មាននៅក្នុង localStorage តែមិនឃើញលើអេក្រង់»។
+   restoreLocalBackup ហៅមុខងារនេះបន្ទាប់ពីសរសេររួច។ */
+window.__mtrReloadManual = function(){
+  try{ audHist = null; }catch(e){}
+  try{ latePayRows = JSON.parse(localStorage.getItem(LATE_PAY_KEY) || '[]') || []; }catch(e){ latePayRows = []; }
+  try{ vatcrManual = JSON.parse(localStorage.getItem(VATCR_MAN_KEY) || '[]') || []; }catch(e){ vatcrManual = []; }
+  try{ vatManual   = JSON.parse(localStorage.getItem(VAT_MAN_KEY) || '{}') || {}; }catch(e){ vatManual = {}; }
+  try{ vatManYears = JSON.parse(localStorage.getItem(VAT_MAN_YEARS_KEY) || '[]') || []; }catch(e){ vatManYears = []; }
+  try{ auditManual = JSON.parse(localStorage.getItem(AUDIT_MAN_KEY) || '[]') || []; }catch(e){ auditManual = []; }
+  try{ auditProgManual = JSON.parse(localStorage.getItem(AUDIT_PROG_KEY) || '[]') || []; }catch(e){ auditProgManual = []; }
+  try{ renderActiveView(); }catch(e){}
+};
+
+function renderHistoryView(){
+  const st = audHistState();
+  const sub = st.sub;
+  let html = '<div class="ah-subtabs" style="display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap;">' +
+    '<button class="btn ' + (sub === 'margin' ? 'btn-brass' : 'btn-outline') + '" data-ah-sub="margin">📈 ប្រវត្តិកម្រិតចំណេញ</button>' +
+    '<button class="btn ' + (sub === 'basis'  ? 'btn-brass' : 'btn-outline') + '" data-ah-sub="basis">🧾 ប្រវត្តិមូលដ្ឋានកំណត់ពន្ធ</button>' +
+    '</div>';
+
+  html += (sub === 'margin') ? audMarginHtml(st) : audBasisHtml(st);
+  resultBody.innerHTML = html;
+  resultMeta.style.display = '';
+  resultMeta.textContent = (sub === 'margin')
+    ? ('ប្រវត្តិកម្រិតចំណេញ — ' + st.years.length + ' ឆ្នាំ')
+    : ('ប្រវត្តិមូលដ្ឋានកំណត់ពន្ធ — ' + st.basis.length + ' ជួរ');
+  audHistBind();
+}
+
+function audMarginHtml(st){
+  const yrs = st.years;
+  const numIn = (k, y) => '<input class="ah-in" data-ah-m="' + k + '" data-ah-y="' + y + '" ' +
+      'value="' + String((st.m[k] || {})[y] == null ? '' : (st.m[k] || {})[y]).replace(/"/g, '&quot;') + '" ' +
+      'inputmode="numeric" style="width:100%; text-align:right;">';
+
+  let h = '<div style="margin-bottom:12px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">' +
+    '<button class="btn btn-outline" id="ahYearPrev">＋ ឆ្នាំមុន</button>' +
+    '<button class="btn btn-outline" id="ahYearNext">＋ ឆ្នាំក្រោយ</button>' +
+    '<span style="font-size:12px; color:#8a8a8a;">ជួរផ្ទៃលឿង ៖ បញ្ចូលដោយដៃ · ជួរឯទៀតគណនាដោយស្វ័យប្រវត្តិ</span>' +
+    '</div>';
+
+  h += '<div class="table-wrap"><table class="ledger ah-tbl"><thead><tr>' +
+       '<th style="min-width:230px;">បរិយាយ</th>';
+  yrs.forEach(y => {
+    h += '<th style="min-width:130px;">' + y +
+         ' <button class="ah-ydel" data-ah-ydel="' + y + '" title="លុបឆ្នាំនេះ">✕</button></th>';
+  });
+  h += '</tr></thead><tbody>';
+
+  const inRow = (k, label) => {
+    let r = '<tr class="ah-manual"><td class="ah-lab">' + label + '</td>';
+    yrs.forEach(y => { r += '<td>' + numIn(k, y) + '</td>'; });
+    return r + '</tr>';
+  };
+  const calcRow = (label, fn, isPct, cls) => {
+    let r = '<tr class="' + (cls || '') + '"><td class="ah-lab">' + label + '</td>';
+    yrs.forEach(y => {
+      const c = audMCalc(y), v = fn(c);
+      r += '<td>' + (v === '' ? '' : (isPct ? audPct(v) : audFmt(v))) + '</td>';
+    });
+    return r + '</tr>';
+  };
+
+  h += inRow('turnDecl', AUD_M_IN[0].label);
+  h += inRow('turnRe',   AUD_M_IN[1].label);
+  h += calcRow('សរុបផលកំណត់ឡើងវិញ', c => c.anyTurn ? c.turnTot : '', false, 'ah-sum');
+  h += inRow('expDecl',  AUD_M_IN[2].label);
+  h += inRow('expRe',    AUD_M_IN[3].label);
+  h += calcRow('ប្រាក់ចំណេញបានប្រកាស',    c => (c.anyTurn || c.anyExp) ? c.profDecl : '', false);
+  h += calcRow('% កម្រិតចំណេញ',            c => (c.anyTurn || c.anyExp) ? c.pctDecl  : '', true, 'ah-pct');
+  h += calcRow('ប្រាក់ចំណេញកំណត់ឡើងវិញ', c => (c.anyTurn || c.anyExp) ? c.profRe   : '', false);
+  h += calcRow('% កម្រិតចំណេញ',            c => (c.anyTurn || c.anyExp) ? c.pctRe    : '', true, 'ah-pct');
+  h += calcRow('បន្ទុកបានកាត់ចេញ',        c => c.anyExp ? c.expCut : '', false);
+  h += calcRow('%បន្ទុកកាត់ចេញ',           c => c.anyExp ? c.pctCut : '', true, 'ah-pct');
+  h += '</tbody></table></div>';
+  return h;
+}
+
+function audBasisHtml(st){
+  let h = '<div style="margin-bottom:12px;">' +
+    '<button class="btn btn-brass" id="ahBasisAdd">+ បន្ថែមជួរ</button></div>';
+  h += '<div class="table-wrap"><table class="ledger ah-tbl"><thead><tr>' +
+       '<th style="width:110px;">ឆ្នាំ</th>' +
+       '<th style="min-width:230px;">មូលដ្ឋានកំណត់តាមប្រភេទពន្ធ</th>' +
+       '<th style="width:170px;">ទឹកប្រាក់សរុប</th>' +
+       '<th>បរិយាយមូលដ្ឋាន</th>' +
+       '<th style="width:50px;"></th></tr></thead><tbody>';
+  if(!st.basis.length){
+    h += '<tr><td colspan="5" style="text-align:center; padding:26px; color:#8a8a8a;">មិនទាន់មានទិន្នន័យ</td></tr>';
+  }
+  const esc2 = v => String(v == null ? '' : v).replace(/"/g, '&quot;');
+  st.basis.forEach((r, i) => {
+    h += '<tr class="ah-manual">' +
+      '<td><input class="ah-in" data-ah-b="' + i + '" data-k="year"   value="' + esc2(r.year)   + '" style="width:100%; text-align:center;"></td>' +
+      '<td><input class="ah-in" data-ah-b="' + i + '" data-k="tax"    value="' + esc2(r.tax)    + '" style="width:100%; text-align:left;"></td>' +
+      '<td><input class="ah-in" data-ah-b="' + i + '" data-k="amount" value="' + esc2(r.amount) + '" inputmode="numeric" style="width:100%; text-align:right;"></td>' +
+      '<td><input class="ah-in" data-ah-b="' + i + '" data-k="note"   value="' + esc2(r.note)   + '" style="width:100%; text-align:left;"></td>' +
+      '<td><button class="btn btn-outline" data-ah-bdel="' + i + '" style="padding:2px 8px;">×</button></td>' +
+    '</tr>';
+  });
+  /* សរុបទឹកប្រាក់ */
+  const tot = st.basis.reduce((a, r) => {
+    const n = Number(String(r.amount == null ? '' : r.amount).replace(/,/g, ''));
+    return a + (isNaN(n) ? 0 : n);
+  }, 0);
+  if(st.basis.length){
+    h += '<tr class="ah-sum"><td colspan="2" style="text-align:left;"><b>សរុប</b></td>' +
+         '<td style="text-align:right;"><b>' + audFmt(tot) + '</b></td><td colspan="2"></td></tr>';
+  }
+  h += '</tbody></table></div>';
+  return h;
+}
+
+function audHistBind(){
+  const st = audHistState();
+  resultBody.querySelectorAll('[data-ah-sub]').forEach(b => {
+    b.onclick = () => { st.sub = b.dataset.ahSub; audHistSave(); renderHistoryView(); };
+  });
+
+  const prev = document.getElementById('ahYearPrev');
+  if(prev) prev.onclick = () => {
+    const first = Number(st.years[0]) || new Date().getFullYear();
+    st.years.unshift(String(first - 1)); audHistSave(); renderHistoryView();
+  };
+  const next = document.getElementById('ahYearNext');
+  if(next) next.onclick = () => {
+    const last = Number(st.years[st.years.length - 1]) || new Date().getFullYear();
+    st.years.push(String(last + 1)); audHistSave(); renderHistoryView();
+  };
+  resultBody.querySelectorAll('[data-ah-ydel]').forEach(b => {
+    b.onclick = () => {
+      const y = b.dataset.ahYdel;
+      if(st.years.length <= 1) return;
+      st.years = st.years.filter(x => x !== y);
+      Object.keys(st.m).forEach(k => { if(st.m[k]) delete st.m[k][y]; });
+      audHistSave(); renderHistoryView();
+    };
+  });
+
+  /* ⚠ សរសេរតម្លៃលើ `input` តែកុំ render ឡើងវិញ — បើ render ទស្សន៍ទ្រនិច
+     នឹងលោតចេញរាល់តួអក្សរ។ ជួរគណនាធ្វើបច្ចុប្បន្នភាពនៅ `change`/blur។ */
+  resultBody.querySelectorAll('input[data-ah-m]').forEach(inp => {
+    inp.oninput = () => {
+      const k = inp.dataset.ahM, y = inp.dataset.ahY;
+      if(!st.m[k]) st.m[k] = {};
+      st.m[k][y] = inp.value;
+      audHistSave();
+    };
+    inp.onchange = () => renderHistoryView();
+  });
+
+  const add = document.getElementById('ahBasisAdd');
+  if(add) add.onclick = () => {
+    st.basis.push({ year: String(new Date().getFullYear()), tax: '', amount: '', note: '' });
+    audHistSave(); renderHistoryView();
+  };
+  resultBody.querySelectorAll('input[data-ah-b]').forEach(inp => {
+    inp.oninput = () => {
+      const row = st.basis[Number(inp.dataset.ahB)];
+      if(row){ row[inp.dataset.k] = inp.value; audHistSave(); }
+    };
+    inp.onchange = () => { if(inp.dataset.k === 'amount') renderHistoryView(); };
+  });
+  resultBody.querySelectorAll('[data-ah-bdel]').forEach(b => {
+    b.onclick = () => {
+      st.basis.splice(Number(b.dataset.ahBdel), 1);
+      audHistSave(); renderHistoryView();
+    };
+  });
+}
+
 function renderLatePayView(){
   const taxes = latePayTaxList();
   const yrNow = new Date().getFullYear();
@@ -11167,6 +11521,8 @@ window.__mtrLateImport = function(list){
 function renderActiveView(){
   /* ផ្ទាំងការបង់យឺតយ៉ាវបញ្ចូលដោយដៃ ដូច្នេះមិនត្រូវការឯកសារទេ */
   if (currentView === 'latepay') { renderLatePayView(); return; }
+  /* ប្រវត្តិសវនកម្មបញ្ចូលដោយដៃទាំងស្រុង ដូច្នេះមិនត្រូវការឯកសារទេ */
+  if (currentView === 'history') { renderHistoryView(); return; }
   if (loadedWorkbooks.length === 0) return;
   if (currentView === 'monthly') {
     renderMonthlyView();
@@ -16141,7 +16497,10 @@ function renderAnnualView(){
   });
 
   const years = Array.from(yearsSet).sort((a, b) => b.localeCompare(a));
-  const headers = ['ប្រភេទពន្ធ', 'TOTAL', ...years];
+  /* [stated] 2026-08-12 ៖ ជួរឈរ TOTAL ត្រូវដកចេញ ហើយជំនួសដោយជួរដេក
+     «សរុប» នៅបាតតារាង ដែលបូកតាមឆ្នាំនីមួយៗ។ rowTotal នៅគណនាដដែល —
+     វាប្រើសម្រាប់តម្រៀបជួរដេក តែលែងបង្ហាញជាជួរឈរទៀតទេ។ */
+  const headers = ['ប្រភេទពន្ធ', ...years];
   const rows = [];
 
   const colTotals = {};
@@ -16168,7 +16527,7 @@ function renderAnnualView(){
   }
 
   rows.sort((a, b) => b.rowTotal - a.rowTotal);
-  const finalRows = rows.map(r => [r.taxType, r.rowTotal, ...r.yearCols]);
+  const finalRows = rows.map(r => [r.taxType, ...r.yearCols]);
 
   const auditMapY = getAuditDeductionsMap(true);
   const deductedY = chkIncludeAudit.checked;
@@ -16186,14 +16545,25 @@ function renderAnnualView(){
   headers.forEach(h => html += `<th>${h}</th>`);
   html += '</tr></thead><tbody>';
 
+  /* [stated] 2026-08-12 ៖ ជួរដេកសរុបត្រូវនៅ **ខាងលើ** ក្រោមជួរឆ្នាំភ្លាម
+     ដើម្បីមើលឃើញភ្លាមដោយមិនបាច់អូសចុះក្រោម។ */
+  if (finalRows.length) {
+    html += '<tr class="annual-sum"><td>សរុប</td>';
+    years.forEach(yr => {
+      const v = colTotals[yr] || 0;
+      html += `<td>${v ? Number(v).toLocaleString('en-US') : '-'}</td>`;
+    });
+    html += '</tr>';
+  }
+
   finalRows.forEach(r => {
     const taxType = r[0];
     html += '<tr>';
     r.forEach((cellVal, idx) => {
       const display = (typeof cellVal === 'number') ? Number(cellVal).toLocaleString('en-US') : cellVal;
       let styleAttr = '';
-      if (idx >= 2) {
-        const yr = years[idx - 2];
+      if (idx >= 1) {
+        const yr = years[idx - 1];
         const amtY = yearTaxAmt.get(`${yr}|${taxType}`);
         if (amtY) {
           styleAttr = ' class="deducted-cell aud-hit" title="' +
@@ -16206,6 +16576,7 @@ function renderAnnualView(){
     });
     html += '</tr>';
   });
+
   html += '</tbody></table></div>';
   resultBody.innerHTML = html;
 }
@@ -16221,14 +16592,14 @@ function normalizeCell(v){
 
 btnSave.addEventListener('click', () => {
   const SUFFIX = {
-    monthly:'_សរុបប្រចាំខែ', annual:'_សរុបប្រចាំឆ្នាំ', vatcr:'_VATCR', audit:'_សរុបសវនកម្ម',
+    monthly:'_សរុបប្រចាំខែ', annual:'_សរុបប្រចាំឆ្នាំ', vatcr:'_VATCR', audit:'_សរុបសវនកម្ម', history:'_ប្រវត្តិសវនកម្ម',
     mtrPrint:'_ទម្រង់ព្រីន_MTR', vatPrint:'_ទម្រង់ព្រីន_VAT', latepay:'_ការបង់ពន្ធយឺតយ៉ាវ'
   };
   const defaultName = 'Tax_Audit_Summary' + (SUFFIX[currentView] || '_' + currentView) + '.xlsx';
 
   /* ផ្ទាំងដែលគ្មានរូបមន្តនាំចេញផ្ទាល់ខ្លួន (ទម្រង់ព្រីន · ប្រចាំឆ្នាំ · បង់យឺតយ៉ាវ) ៖
      យកតារាងដែលកំពុងបង្ហាញត្រង់ៗ — មុននេះវាធ្លាក់ចូល «សវនកម្ម» ជានិច្ច */
-  if (['annual','mtrPrint','vatPrint','latepay'].includes(currentView)) {
+  if (['annual','mtrPrint','vatPrint','latepay','history'].includes(currentView)) {
     const tables = Array.from(resultBody.querySelectorAll('table'))
       .filter(t => t.rows && t.rows.length);
     if (!tables.length) { toast('គ្មានតារាងសម្រាប់ទាញយកទេ', 'warn'); return; }
@@ -20197,7 +20568,13 @@ function renderRefStepPanel(stepKey){
     const v = rs.values[ref] ? rs.values[ref][y] : null;
     return v !== null && v !== undefined;
   }));
-  const yrs = yrsWithData.length > 0 ? yrsWithData : allVisibleYrs;
+  /* [stated] 2026-08-12 ៖ ជំហានទាំងអស់ក្នុងពន្ធលើប្រាក់ចំណូល ត្រូវរៀបឆ្នាំ
+     ថ្មីនៅឆ្វេង ចាស់នៅស្តាំ។ `state.years` តម្រៀបពីចាស់ទៅថ្មី ដូច្នេះត្រូវ
+     បញ្ច្រាសត្រង់ការបង្ហាញ។ ⚠ បញ្ច្រាសតែទីនេះ មិនប៉ះ visibleYears() ទេ —
+     មុខងារផ្សេង (សង្ខេបហិរញ្ញវត្ថុ · អនុបាត · ទ្រព្យសកម្ម) ពឹងលើលំដាប់
+     ចាស់→ថ្មី ដូចជា `yrs[yrs.length-1]` ជាឆ្នាំថ្មីបំផុត។ */
+  const yrsAsc = yrsWithData.length > 0 ? yrsWithData : allVisibleYrs;
+  const yrs = yrsAsc.slice().reverse();
   const filterable = (stepKey==='Step4' || stepKey==='Step5');
   const showAll = state.showAllRows[stepKey] === true;
   const wrap = el('div');
@@ -20246,7 +20623,9 @@ function renderRefStepPanel(stepKey){
     const hasMoney = values.some(v=> typeof v==='number' && v!==0) || (typeof prevVal==='number' && prevVal!==0);
     if(filterable && !showAll && !hasMoney) return;
     const isTotal = isTotalRef(stepKey,ref);
-    const isRisk = canCheckRisk && !isTotal && isRiskyRow(values);
+    /* ⚠ isRiskyRow ប្រៀបធៀបឆ្នាំមុន→ឆ្នាំក្រោយ ហើយ (curr−prev)/prev មិន
+       ស៊ីមេទ្រីទេ — ដូច្នេះត្រូវបញ្ជូនតម្លៃតាមលំដាប់ចាស់→ថ្មីដដែល។ */
+    const isRisk = canCheckRisk && !isTotal && isRiskyRow(values.slice().reverse());
     if(isRisk) anyRisk = true;
     const trClasses = [isTotal?'total-row':'', isRisk?'risk-row':''].filter(Boolean).join(' ');
     const tr = el('tr', {class: trClasses});
@@ -20555,7 +20934,13 @@ window.__toiGoStep = function(key){
 };
 
 window.__toiExport = function(){
-  if(!state.years.length) return null;
+  /* ⚠ កំហុសដែលរកឃើញ 2026-08-12 ៖ ពីមុនវាត្រឡប់ null ពេលគ្មានឆ្នាំ TOI —
+     ដូច្នេះអ្នកដែលបំពេញ 📝 Data Entry និង COVER ដោយដៃ តែមិនទាន់ upload
+     ឯកសារ TOI នោះ **បាត់ទាំងអស់ពេល Save**។ ឥឡូវនាំចេញជានិច្ច។ */
+  const empty = !state.years.length;
+  if(empty && !Object.keys(state.dataEntry || {}).length
+           && !Object.keys(state.coverData || {}).length
+           && !Object.keys(state.riskInputs || {}).length) return null;
   return {
     years: state.years, companyInfo: state.companyInfo,
     refSteps: state.refSteps, rawSteps: state.rawSteps,
@@ -20567,8 +20952,9 @@ window.__toiExport = function(){
 };
 window.__toiYearCount = function(){ return (state.years || []).length; };
 window.__toiImport = function(data){
-  if(!data || !Array.isArray(data.years) || !data.years.length) return;
-  state.years = data.years;
+  if(!data) return;
+  /* អាចមានតែ Data Entry / COVER ដោយគ្មានឆ្នាំ TOI — ត្រូវផ្ទុកមកវិញដដែល */
+  state.years = Array.isArray(data.years) ? data.years : [];
   state.companyInfo = data.companyInfo || {};
   state.refSteps = data.refSteps || {};
   state.rawSteps = data.rawSteps || {};
@@ -20583,9 +20969,10 @@ window.__toiImport = function(data){
   state.coverData = data.coverData || {};
   saveCoverData();
   state.activeStep = 'overview';
-  document.getElementById('toiBtnSave').disabled = false;
-  document.getElementById('btnPrintCurrent').disabled = false;
-  document.getElementById('btnPrintAll').disabled = false;
+  const on = state.years.length > 0;
+  ['toiBtnSave','btnPrintCurrent','btnPrintAll'].forEach(function(id){
+    const b = document.getElementById(id); if(b) b.disabled = !on;
+  });
   renderAll();
 };
 
@@ -23691,15 +24078,20 @@ function isoDMY(iso){
 
 /* ក្បាលលិខិតដែលរួមព័ត៌មានសហគ្រាស — ប្រើដោយលិខិតទី ១ និង ២ */
 function letterCompanyBlock(c){
+  /* [stated] 2026-08-12 ៖ សញ្ញា «៖» ត្រូវតម្រៀបស្មើគ្នាចាប់ពី ឈ្មោះសហគ្រាស
+     ដល់ អាសយដ្ឋាន។ មុននេះវាជា ::after ភ្ជាប់នឹងអក្សរផ្ទាល់ ដូច្នេះវាឈរ
+     តាមប្រវែងពាក្យនីមួយៗ (លេខ អតប ៖ នៅឆ្វេងឆ្ងាយពី ឈ្មោះសហគ្រាស ៖)។
+     ឥឡូវ «៖» មានជួរឈររបស់ខ្លួន (td.s) ដែលឈរនៅគែមស្តាំនៃជួរស្លាក។
+     ⚠ តារាងនេះមាន ៦ ជួរឈរ ៖ k s v k s v — colspan ត្រូវរាប់ទាំង s ផង។ */
   return `
   <table class="lt-meta">
-    <tr><td class="k">ឈ្មោះសហគ្រាស</td><td class="v" colspan="3">${esc(c.name)}</td></tr>
-    <tr><td class="k">ជាអក្សរឡាតាំង</td><td class="v" colspan="3">${esc(c.latin)}</td></tr>
-    <tr><td class="k">លេខ អតប</td><td class="v">${esc(c.tin)}</td>
-        <td class="k">ការិយសវនកម្ម</td><td class="v">${esc(c.period)}</td></tr>
-    <tr><td class="k">លេខទំនាក់ទំនង</td><td class="v">${esc(c.phone)}</td>
-        <td class="k">សារអេឡិចត្រូនិក</td><td class="v">${esc(c.email)}</td></tr>
-    <tr><td class="k">អាសយដ្ឋាន</td><td class="v" colspan="3">${esc(c.addr)}</td></tr>
+    <tr><td class="k">ឈ្មោះសហគ្រាស</td><td class="s">៖</td><td class="v" colspan="4">${esc(c.name)}</td></tr>
+    <tr><td class="k">ជាអក្សរឡាតាំង</td><td class="s">៖</td><td class="v" colspan="4">${esc(c.latin)}</td></tr>
+    <tr><td class="k">លេខ អតប</td><td class="s">៖</td><td class="v">${esc(c.tin)}</td>
+        <td class="k">ការិយសវនកម្ម</td><td class="s">៖</td><td class="v">${esc(c.period)}</td></tr>
+    <tr><td class="k">លេខទំនាក់ទំនង</td><td class="s">៖</td><td class="v">${esc(c.phone)}</td>
+        <td class="k">សារអេឡិចត្រូនិក</td><td class="s">៖</td><td class="v">${esc(c.email)}</td></tr>
+    <tr><td class="k">អាសយដ្ឋាន</td><td class="s">៖</td><td class="v" colspan="4">${esc(c.addr)}</td></tr>
   </table>`;
 }
 
@@ -23717,7 +24109,7 @@ function letterDocRows(){
 
 function letterRequestHtml(c){
   const rows = letterDocRows().map((r, n)=>`
-    <tr><td class="n">${kh(n+1)}-</td><td>${esc(r.label)}</td><td class="en">${esc(r.en)}</td>
+    <tr><td class="n">${kh(n+1)}-</td><td class="km">${esc(r.label)}</td><td class="en">${esc(r.en)}</td>
         <td class="lt-xcell"><button type="button" class="lt-x" data-i="${r.i}" title="លុបជួរនេះ">✕</button></td></tr>`).join('');
   const nno = c.noticeNo ? kh(c.noticeNo) : '..........';
   const nd  = c.noticeDate ? khmerDMY(c.noticeDate) : '..........';
@@ -23741,12 +24133,19 @@ function letterRequestHtml(c){
       <div class="lt-sign-h">សវនករ</div>
       <div class="lt-sign-gap"></div>
       <div class="lt-sign-n">${esc(c.auditor)}</div>
+      <!-- [stated] ថ្ងៃចុះលិខិតដែលជ្រើសខាងលើ ត្រូវលេចនៅក្រោមឈ្មោះសវនករ។
+           ពេលទទេ បង្ហាញជាចន្លោះចុចៗ ដើម្បីអាចសរសេរដោយដៃបាន។ -->
+      <div class="lt-sign-d">${c.ld.letterDate ? esc(khmerDMY(c.ld.letterDate))
+                                                : 'ថ្ងៃទី......... ខែ......... ឆ្នាំ.........'}</div>
     </div>
   </div>`;
 }
 
 function letterReceiveHtml(c){
   const items = (trkState.rounds[0] && trkState.rounds[0].items) || [];
+  /* [stated] កាលបរិច្ឆេទក្នុងប្រអប់ទាំងពីរ ៖ យកពី «ថ្ងៃចុះលិខិត» ដែល
+     ជ្រើសខាងលើ។ ពេលទទេ ទុកចន្លោះចុចៗ សម្រាប់សរសេរដោយដៃ។ */
+  const ldDate = c.ld.letterDate ? esc(khmerDMY(c.ld.letterDate)) : '............................';
   const rows = letterDocRows().map((r, n)=>{
     const it = items[r.i] || {};
     const got = !!it.received;
@@ -23777,12 +24176,15 @@ function letterReceiveHtml(c){
       <div class="lt-bl"><span class="k">ហត្ថលេខា</span><span class="d">............................</span></div>
       <div class="lt-bl"><span class="k">ឈ្មោះ</span><span class="d">${c.rep ? esc(c.rep) : '............................'}</span></div>
       <div class="lt-bl"><span class="k">មុខដំណែង</span><span class="d">............................</span></div>
+      <div class="lt-bl"><span class="k">កាលបរិច្ឆេទ</span><span class="d">${ldDate}</span></div>
     </div>
     <div class="lt-box">
       <div class="lt-bh">អ្នកទទួល</div>
       <div class="lt-bl"><span class="k">ហត្ថលេខា</span><span class="d">............................</span></div>
       <div class="lt-bl"><span class="k">ឈ្មោះ</span><span class="d">${c.auditor ? esc(c.auditor) : '............................'}</span></div>
-      <div class="lt-bl"><span class="k">មុខដំណែង</span><span class="d">............................</span></div>
+      <!-- [stated] មុខដំណែងរបស់អ្នកទទួល គឺ «សវនករពន្ធដារ» ជានិច្ច -->
+      <div class="lt-bl"><span class="k">មុខដំណែង</span><span class="d">សវនករពន្ធដារ</span></div>
+      <div class="lt-bl"><span class="k">កាលបរិច្ឆេទ</span><span class="d">${ldDate}</span></div>
     </div>
   </div>`;
 }
@@ -23870,13 +24272,14 @@ const LETTER_CSS = `
   .lt-meta{width:100%; border-collapse:collapse; font-size:12.5px; margin-bottom:10px;}
   .lt-meta td{padding:2px 4px; vertical-align:top;}
   .lt-meta td.k{white-space:nowrap; width:1%; color:#444;}
-  .lt-meta td.k::after{content:' ៖';}
+  .lt-meta td.s{white-space:nowrap; width:1%; color:#444; padding-left:0; padding-right:6px;}
   .lt-meta td.v{font-weight:600; border-bottom:1px dotted #9a9a9a; padding-right:14px;}
   .lt-p{margin:8px 0; text-indent:2.2em; text-align:justify; line-height:1.9;}
-  .lt-list{width:100%; border-collapse:collapse; font-size:12.5px; margin:6px 0 8px;}
+  .lt-list{width:100%; border-collapse:collapse; font-size:12.5px; margin:6px 0 8px; table-layout:fixed;}
   .lt-list td{padding:3px 4px; vertical-align:top;}
   .lt-list td.n{width:26px; white-space:nowrap;}
-  .lt-list td.en{color:#555; width:42%;}
+  .lt-list td.km{width:40%;}
+  .lt-list td.en{color:#555; width:52%;}
   .lt-tbl{width:100%; border-collapse:collapse; font-size:12px; margin:8px 0;}
   .lt-tbl th,.lt-tbl td{border:1px solid #333 !important; padding:5px 7px; text-align:left; vertical-align:top;}
   .lt-tbl th{text-align:center !important; font-weight:700;}
@@ -23913,6 +24316,7 @@ const LETTER_CSS = `
   .lt-sign-h{font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif; font-weight:700; font-size:12.5px;}
   .lt-sign-gap{height:64px;}
   .lt-sign-n{font-weight:600;}
+  .lt-sign-d{margin-top:6px; font-size:12px;}
   .lt-xcell{display:none;}
   .lt-x,.lt-restore{display:none;}
   .lt-foot2{display:flex; align-items:flex-start; gap:40px; margin-top:22px;}
@@ -24450,7 +24854,21 @@ function indepCtx(){
     a1: pi.auditorName || '', id1: pi.auditorID || '',
     a2: pi.partnerAuditorName || '', id2: pi.partnerAuditorID || '',
     head: pi.officeHeadName || '',
+    deputy: pi.subOfficeName || '',
   };
+}
+
+/* [stated] 2026-08-12 ៖ ឈ្មោះអនុប្រធានការិយាល័យត្រូវឈរជួរជាមួយសវនករ
+   ក្នុងលិខិតឯករាជ្យភាព — ប៉ុន្តែ បើគាត់ជាសវនករផង នោះកុំសរសេរឈ្មោះ
+   ដដែលពីរដង។ ដូចវិធីដែល trkOwnSignerRows ប្រើ ៖ ផ្គុំតាមឈ្មោះ។ */
+function indepSignerNames(c){
+  var out = [], seen = {};
+  [c.a1, c.a2, c.deputy].forEach(function(n){
+    n = String(n || '').trim();
+    if(!n || seen[n]) return;
+    seen[n] = 1; out.push(n);
+  });
+  return out;
 }
 
 function indepHeadTable(c){
@@ -24541,7 +24959,7 @@ function indepHtml(forPrint){
             បំពេញខាងលើពិតជាត្រឹមត្រូវពិតប្រាកដមែន។</div>
           <div class="ind-sign-h">សវនករពន្ធដារ</div>
           <div class="ind-gap"></div>
-          <div class="ind-sign-n"><span>${esc(c.a1)}</span><span>${esc(c.a2)}</span></div>
+          <div class="ind-sign-n">${indepSignerNames(c).map(n=>`<span>${esc(n)}</span>`).join('')}</div>
           <div class="ind-sign-d">${esc(khSignDate())}</div>
         </td>
       </tr>
@@ -30982,6 +31400,102 @@ else CC.init();
     return window.__rscApi(fn, args);
   }
 
+  /* ══════════════════════════════════════════════════════════════════
+     ឃ្លាំងក្នុងម៉ាស៊ីន (IndexedDB) — សម្រាប់ឯកសារ offline
+     ------------------------------------------------------------------
+     [stated] 2026-08-12 ៖ ពេលប្រើលើម៉ាស៊ីន ការរក្សាទុកត្រូវសួរ «ជាន់លើ
+     ចាស់ ឬ ជំនាន់ថ្មី» ដូចលើវេបសាយ ហើយប៊ូតុង 🚪 ត្រូវបង្ហាញបញ្ជីឯកសារ
+     ដែលធ្លាប់រក្សាទុក។ Drive ប្រើមិនបាន (គ្មានការចូលប្រព័ន្ធ) ដូច្នេះ
+     យើងប្រើ IndexedDB ជំនួស — បានសាកលើ file:// ហើយ ៖ ដំណើរការ និង
+     មានកូតាប្រមាណ 200 MB។
+     ⚠ localStorage ប្រើមិនបានទេ ៖ ដែនកំណត់ត្រឹម ~5 MB ចំណែកឯកសារ
+       មួយអាចធំ 13 MB។
+     ⚠ ទិន្នន័យនេះចងនឹង browser និងម៉ាស៊ីននេះ — មិនផ្ទេរទៅម៉ាស៊ីនផ្សេងទេ។
+       ដូច្នេះការទាញយកជាឯកសារ .json នៅរក្សាទុកដដែល ជាច្បាប់ចម្លងពិត។
+     ══════════════════════════════════════════════════════════════════ */
+  var LDB_NAME = 'rsc-local', LDB_STORE = 'snaps', LDB_KEEP = 10;
+
+  function ldbOpen(){
+    return new Promise(function(res, rej){
+      if(!window.indexedDB) return rej(new Error('browser នេះមិនគាំទ្រឃ្លាំងក្នុងម៉ាស៊ីនទេ'));
+      var rq = indexedDB.open(LDB_NAME, 1);
+      rq.onupgradeneeded = function(e){
+        var db = e.target.result;
+        if(!db.objectStoreNames.contains(LDB_STORE)){
+          var st = db.createObjectStore(LDB_STORE, { keyPath:'id' });
+          st.createIndex('base', 'base', { unique:false });
+        }
+      };
+      rq.onsuccess = function(){ res(rq.result); };
+      rq.onerror   = function(){ rej(rq.error || new Error('បើកឃ្លាំងមិនបាន')); };
+    });
+  }
+  function ldbAll(){
+    return ldbOpen().then(function(db){
+      return new Promise(function(res, rej){
+        var out = [], cur = db.transaction(LDB_STORE, 'readonly').objectStore(LDB_STORE).openCursor();
+        cur.onsuccess = function(e){
+          var c = e.target.result;
+          if(!c){ res(out); return; }
+          var v = c.value;
+          /* មិនយក text មកទេ — បញ្ជីត្រូវការតែព័ត៌មានសង្ខេប */
+          out.push({ id:v.id, name:v.name, base:v.base, ver:v.ver, company:v.company,
+                     tin:v.tin, updated:v.updated, size:v.size });
+          c.continue();
+        };
+        cur.onerror = function(){ rej(cur.error); };
+      });
+    });
+  }
+  function ldbGet(id){
+    return ldbOpen().then(function(db){
+      return new Promise(function(res, rej){
+        var rq = db.transaction(LDB_STORE, 'readonly').objectStore(LDB_STORE).get(id);
+        rq.onsuccess = function(){ res(rq.result || null); };
+        rq.onerror   = function(){ rej(rq.error); };
+      });
+    });
+  }
+  function ldbPut(rec){
+    return ldbOpen().then(function(db){
+      return new Promise(function(res, rej){
+        var tx = db.transaction(LDB_STORE, 'readwrite');
+        tx.objectStore(LDB_STORE).put(rec);
+        tx.oncomplete = function(){ res(rec); };
+        tx.onerror    = function(){ rej(tx.error || new Error('សរសេរមិនបាន')); };
+      });
+    });
+  }
+  function ldbDel(id){
+    return ldbOpen().then(function(db){
+      return new Promise(function(res, rej){
+        var tx = db.transaction(LDB_STORE, 'readwrite');
+        tx.objectStore(LDB_STORE).delete(id);
+        tx.oncomplete = function(){ res(true); };
+        tx.onerror    = function(){ rej(tx.error); };
+      });
+    });
+  }
+  /* រក្សាតែ LDB_KEEP ជំនាន់ចុងក្រោយក្នុងមួយសហគ្រាស — បើមិនដូច្នេះ
+     ការរក្សាទុករាល់ថ្ងៃនឹងបំពេញកូតារហូតដល់ QuotaExceededError */
+  function ldbPrune(base){
+    return ldbAll().then(function(all){
+      var mine = all.filter(function(f){ return f.base === base; })
+                    .sort(function(a, b){ return b.ver - a.ver; });
+      var drop = mine.slice(LDB_KEEP);
+      return drop.reduce(function(p, f){ return p.then(function(){ return ldbDel(f.id); }); },
+                         Promise.resolve());
+    }).catch(function(){});
+  }
+
+  function localNextVer(list){
+    var used = {};
+    list.forEach(function(f){ used[f.ver] = 1; });
+    for(var v = 1; v < 5000; v++) if(!used[v]) return v;
+    return Date.now();
+  }
+  function localFileName(base, ver){ return base + (ver ? '_V' + ver : '') + '.json'; }
+
   /* ---------- gzip / base64 (មានក្នុង Chrome · Edge · Safari 16.4+) ---------- */
   function canGzip(){   return typeof CompressionStream   !== 'undefined'; }
   function canUngzip(){ return typeof DecompressionStream !== 'undefined'; }
@@ -31174,7 +31688,7 @@ else CC.init();
       row.appendChild(mk('🆕 ជំនាន់ថ្មី', 'រក្សាទុកចាស់ទុក បន្ថែម ' + nextLabel(list),
                          '#C8A64B', '#12251f', {mode:'new'}));
       row.appendChild(mk('♻ សរសេរជាន់លើចាស់', 'ជំនួស ' + latest.name + ' — ទិន្នន័យចាស់បាត់',
-                         '#f7f7f5', '#333', {mode:'over', id:latest.id}));
+                         '#f7f7f5', '#333', {mode:'over', id:latest.id, rec:latest}));
       row.appendChild(mk('✕ បោះបង់', '', '#fff', '#888', null));
       card.appendChild(row);
       wrap.appendChild(card); document.body.appendChild(wrap);
@@ -31193,7 +31707,7 @@ else CC.init();
      នៅជ្រុងអេក្រង់។ ប្រើដោយការរក្សាទុកស្វ័យប្រវត្តិ ដើម្បីកុំឱ្យរំខានការងារ។ */
   window.__rscSave = function(opts){
     var silent = !!(opts && opts.silent);
-    if(!driveOn()){ if(!silent) exportAllDataToFile(); return; }   /* offline → ទាញយកដូចដើម */
+    if(!driveOn()){ if(!silent) localSave(); return; }   /* offline → ឃ្លាំងក្នុងម៉ាស៊ីន */
 
     /* ⚠ ល្បឿននៃការឆ្លើយតប (កែ 2026-08-11) ៖ មុននេះ __buildFullDump() រត់
        មុនពេលផ្ទាំងណាមួយលេចឡើង។ វាបំប្លែងឯកសារ Excel ទាំងអស់ជា base64
@@ -31331,30 +31845,89 @@ else CC.init();
 
   window.__rscOpenPicker = function(){
     buildPicker();
-    /* [stated] ឯកសារ offline ត្រូវឃើញប្រអប់ដដែល គ្រាន់តែមានតែជម្រើស
-       «បើកពីម៉ាស៊ីន» ដើរប៉ុណ្ណោះ — Drive ត្រូវការការចូលប្រព័ន្ធ។ */
-    if(!driveOn()){ setOfflineMode(); return; }
     loadList();
   };
 
-  function setOfflineMode(){
-    if(!pk) return;
-    pk.note.textContent = 'ឯកសារ offline — មិនភ្ជាប់នឹង Google Drive ទេ។ សូមប្រើ «📂 បើកពីម៉ាស៊ីន»។';
-    pk.q.disabled = true;
-    pk.q.placeholder = '🔍 ស្វែងរក (មានតែពេលភ្ជាប់ Drive)';
-    [pk.gsel, pk.vsel].forEach(function(sel){
-      sel.innerHTML = '';
-      var o = document.createElement('option');
-      o.textContent = '— គ្មានការតភ្ជាប់ Drive —';
-      o.disabled = true;
-      sel.appendChild(o);
-      sel.disabled = true;
+  /* ══ រក្សាទុកក្នុងម៉ាស៊ីន ══════════════════════════════════════════
+     ដំណើរការដូច Drive ៖ រកឈ្មោះគោល → បើមានរួច សួរជាន់លើ/ជំនាន់ថ្មី →
+     រក្សាទុកចូល IndexedDB → រួចទាញយកជាឯកសារ .json ដែរ (ច្បាប់ចម្លងពិត
+     ដែលអាចយកទៅម៉ាស៊ីនផ្សេងបាន)។
+     ⚠ ដូច Drive ដែរ ៖ ត្រូវបង្ហាញផ្ទាំងមុនធ្វើការងារធ្ងន់ (រង់ចាំ rAF)
+       បើមិនដូច្នេះ ការចុច 💾 មើលទៅដូចជាគ្មានប្រតិកម្ម ៣-៥ វិនាទី។ */
+  function localSave(){
+    var meta;
+    try{
+      meta = window.__rscSaveMeta ? window.__rscSaveMeta() : {base:'dashboard', company:'', tin:''};
+    }catch(e){ alert('⚠ មិនអាចអានឈ្មោះសហគ្រាសបានទេ ៖ ' + e.message); return; }
+
+    var ov0 = overlay('រក្សាទុកក្នុងម៉ាស៊ីន');
+    ov0.msg('កំពុងពិនិត្យឯកសារដែលមានស្រាប់…');
+
+    ldbAll().catch(function(){ return []; }).then(function(all){
+      ov0.close();
+      var mine = all.filter(function(f){ return f.base === meta.base; })
+                    .sort(function(a, b){ return b.ver - a.ver; });
+      return mine.length ? askOverwrite(mine) : {mode:'new'};
+    }).then(function(choice){
+      if(!choice) return;                       /* បោះបង់ */
+
+      var ov = overlay('កំពុងរក្សាទុកក្នុងម៉ាស៊ីន');
+      ov.msg('កំពុងត្រៀមទិន្នន័យ…'); ov.pct(3);
+
+      var go = function(){
+        var text;
+        try{ text = JSON.stringify(window.__buildFullDump()); }
+        catch(e){ ov.close(); alert('⚠ មិនអាចប្រមូលទិន្នន័យបានទេ ៖ ' + e.message); return; }
+        if(!text || text.length < 5){ ov.close(); alert('⚠ គ្មានទិន្នន័យសម្រាប់រក្សាទុកទេ'); return; }
+
+        ov.pct(40); ov.msg('កំពុងសរសេរ… (' + kb(text.length) + ')');
+        ldbAll().catch(function(){ return []; }).then(function(all){
+          var mine = all.filter(function(f){ return f.base === meta.base; });
+          var ver  = (choice.mode === 'over' && choice.rec) ? choice.rec.ver : localNextVer(mine);
+          var name = localFileName(meta.base, ver);
+          var d = new Date(), p2 = function(n){ return (n < 10 ? '0' : '') + n; };
+          return ldbPut({
+            id: meta.base + '|' + ver, base: meta.base, ver: ver, name: name,
+            company: meta.company || meta.base, tin: meta.tin || '',
+            updated: p2(d.getDate()) + '/' + p2(d.getMonth() + 1) + '/' + d.getFullYear()
+                     + ' ' + p2(d.getHours()) + ':' + p2(d.getMinutes()),
+            size: text.length, text: text
+          }).then(function(){ return ldbPrune(meta.base); })
+            .then(function(){ return name; });
+        }).then(function(name){
+          ov.pct(100); ov.close();
+          /* ទាញយកជាឯកសារផងដែរ ៖ ឃ្លាំងក្នុង browser មិនផ្ទេររវាងម៉ាស៊ីនទេ */
+          try{ downloadJson(text, name); }catch(e){}
+          alert('✅ រក្សាទុករួច ៖ ' + name);
+        }).catch(function(e){
+          ov.close();
+          var q = /Quota/i.test(String(e && e.name) + String(e && e.message));
+          alert('⚠ រក្សាទុកក្នុងឃ្លាំងមិនបាន ៖ ' + ((e && e.message) || e)
+              + (q ? '\n\nឃ្លាំងពេញ — សូមលុបជំនាន់ចាស់ចេញ។' : '')
+              + '\n\nឯកសារនឹងទាញយកជា .json ជំនួសវិញ។');
+          try{ exportAllDataToFile(); }catch(_){}
+        });
+      };
+      if(window.requestAnimationFrame) requestAnimationFrame(function(){ setTimeout(go, 30); });
+      else setTimeout(go, 60);
     });
-    if(pk.refreshBtn) pk.refreshBtn.style.display = 'none';
-    if(pk.openBtn){ pk.openBtn.disabled = true; pk.openBtn.style.opacity = '.4'; pk.openBtn.style.cursor = 'default'; }
-    if(pk.localBtn){ pk.localBtn.style.background = '#C8A64B'; pk.localBtn.style.color = '#12251f';
-                     pk.localBtn.style.fontWeight = '700'; pk.localBtn.style.borderColor = '#C8A64B'; }
   }
+
+  function downloadJson(text, filename){
+    var blob = new Blob([text], {type:'application/json'});
+    var url  = URL.createObjectURL(blob);
+    var a    = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(url); a.remove(); }, 1500);
+  }
+
+  window.__rscOpenPicker = function(){
+    buildPicker();
+    loadList();
+  };
+
+
 
   function el(tag, css, txt){
     var e = document.createElement(tag);
@@ -31371,7 +31944,8 @@ else CC.init();
       + 'display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.4);overflow:hidden;');
 
     var head = el('div', 'display:flex;align-items:center;gap:10px;padding:14px 18px;background:#0F3D3E;color:#fff;');
-    head.appendChild(el('div', 'font-size:16px;font-weight:700;flex:1 1 auto;', '🚪 បើកឯកសារពី Google Drive'));
+    var headTitle = el('div', 'font-size:16px;font-weight:700;flex:1 1 auto;', '🚪 បើកឯកសារពី Google Drive');
+    head.appendChild(headTitle);
     var x = el('button', 'background:transparent;border:0;color:#fff;font-size:20px;cursor:pointer;line-height:1;', '✕');
     x.onclick = closePicker; head.appendChild(x);
 
@@ -31426,16 +32000,19 @@ else CC.init();
     });
     document.body.appendChild(wrap);
 
-    pk = {wrap:wrap, q:q, gsel:gsel, vsel:vsel, note:note, refreshBtn:rf,
+    pk = {wrap:wrap, q:q, gsel:gsel, vsel:vsel, note:note, refreshBtn:rf, head:headTitle,
           localBtn:lb, openBtn:ob, files:[], groups:{}, gKey:'', fileId:''};
     setTimeout(function(){ try{ q.focus(); }catch(e){} }, 30);
   }
 
   function loadList(){
     if(!pk) return;
-    pk.note.textContent = 'កំពុងទាញបញ្ជីពី Drive…';
+    var local = !driveOn();
+    if(local){ pk.head.textContent = '🚪 បើកឯកសារដែលរក្សាទុកក្នុងម៉ាស៊ីន'; }
+    pk.note.textContent = local ? 'កំពុងទាញបញ្ជីក្នុងម៉ាស៊ីន…' : 'កំពុងទាញបញ្ជីពី Drive…';
     pk.gsel.innerHTML = ''; pk.vsel.innerHTML = '';
-    call('driveListSnapshots', [window.__loggedInUserToken])
+    (local ? ldbAll().then(function(files){ return {ok:true, files:files}; })
+           : call('driveListSnapshots', [window.__loggedInUserToken]))
       .then(function(r){
         if(!r || !r.ok) throw new Error((r && r.error) || 'ទាញបញ្ជីមិនបាន');
         pk.files = r.files || [];
@@ -31450,7 +32027,8 @@ else CC.init();
         });
         pk.note.textContent = pk.files.length
           ? ('សរុប ' + pk.files.length + ' ឯកសារ · ' + Object.keys(pk.groups).length + ' សហគ្រាស')
-          : 'មិនទាន់មានឯកសារណាមួយក្នុង Drive ទេ — ចុច 💾 ដើម្បីរក្សាទុកមុន';
+          : (local ? 'មិនទាន់មានឯកសារណាមួយក្នុងម៉ាស៊ីនទេ — ចុច 💾 ដើម្បីរក្សាទុកមុន'
+                   : 'មិនទាន់មានឯកសារណាមួយក្នុង Drive ទេ — ចុច 💾 ដើម្បីរក្សាទុកមុន');
         renderList();
       })
       .catch(function(e){ pk.note.textContent = '⚠ ' + e.message; });
@@ -31507,6 +32085,18 @@ else CC.init();
         if(!ok) return;
         closePicker();
         var ov = overlay('កំពុងបើក ៖ ' + label);
+
+        /* ឯកសារក្នុងម៉ាស៊ីន ៖ អានតែម្តង គ្មានការបែងចែកជាដុំទេ */
+        if(!driveOn()){
+          ldbGet(id).then(function(rec){
+            if(!rec) throw new Error('រកឯកសារនេះក្នុងម៉ាស៊ីនមិនឃើញ');
+            ov.close();
+            window.__importAllDataFromText(rec.text || '');
+            try{ if(typeof showView === 'function') showView('dashboard'); }catch(e){}
+          }).catch(function(e){ ov.close(); alert('⚠ បើកឯកសារមិនបាន ៖ ' + e.message); });
+          return;
+        }
+
         var wantGz = canUngzip(), buf = '', off = 0;
         (function step(){
           call('driveLoadSnapshot', [window.__loggedInUserToken, id, off, wantGz])
