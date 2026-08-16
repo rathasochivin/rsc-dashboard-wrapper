@@ -1327,15 +1327,12 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
   .atb-ticker{ min-width:180px; }
   #userGreeting{ margin-left:8px !important; font-size:12px !important; }
 
-  /* ⚠⚠ ប្រអប់ «ព្រីនឯកសារ» ៖ ការមើលជាមុនជាទំព័រក្រដាស — កុំបង្រួមវា
-     ដូចទំព័រធម្មតា បើមិនដូច្នេះក្បាលលិខិតបែកបន្ទាត់ដូចរូបភាពរបស់គេ។
-     រក្សាទទឹងក្រដាស រួចរំកិល ដូចវិធីដដែលនឹង COVER (B49)។ */
+  /* ⚠ ប្រអប់ «ព្រីនឯកសារ» ៖ ការមើលជាមុនរក្សាទទឹងក្រដាស រួចរំកិលផ្តេក។
+     ⚠⚠ កុំដាក់ min-width លើ #trk-print-host — វាជាម៉ាស៊ីនព្រីនពិត
+       មិនមែនការមើលជាមុនទេ ; ការប៉ះវាធ្វើអោយក្រដាសខូច។ */
   #docs-modal .modal-box{ padding:10px !important; }
-  #docs-modal .rpt-page, #docs-modal .nr-doc, #docs-modal .nr-shell,
-  #docs-modal #trk-print-host, #docs-modal .trk-prev{
-    min-width:186mm !important; }
-  #docs-modal .trk-prevwrap, #docs-modal .modal-body{
-    overflow-x:auto !important; -webkit-overflow-scrolling:touch; }
+  #docs-modal .trk-prev{ min-width:186mm !important; }
+  #docs-modal .modal-body{ overflow-x:auto !important; -webkit-overflow-scrolling:touch; }
   /* ៥ ៖ ក្រឡាចត្រង្គ KPI ២ ជួរ · ក្រាហ្វ ១ ជួរ */
   .kpi-row, .kpi-grid, #overview-financials .kpi-grid{ grid-template-columns:repeat(2,minmax(0,1fr)) !important; }
   .chart-row, .chart-grid, #overview-financials .chart-grid{ grid-template-columns:1fr !important; }
@@ -32225,7 +32222,16 @@ function printInPage(bodyHtml, css, pageRule){
         display:block !important;
         font-family:'Khmer OS Siemreap','Noto Sans Khmer',sans-serif;
         font-size:13px; line-height:1.9; color:#171B1A; background:#fff;
+        /* ⚠⚠ [stated] ២០២៦-០៨-១៦ ៖ «បើព្រីនខុសទាំងស្រុង» ពីទូរស័ព្ទ ៖
+           តារាងក្នុងលិខិត (.lt-meta) បង្រួមតាមទទឹងឧបករណ៍ ហើយស្លាក/តម្លៃ
+           ធ្លាក់ជាពីរបន្ទាត់ — ៣ ទំព័រក្លាយជា ១៣។ បញ្ជាក់ទទឹងជា **mm**
+           ត្រង់នេះ ដូច្នេះក្រដាសដូចគ្នាលើគ្រប់ឧបករណ៍។ ច្បាប់ដដែលនឹង
+           #coverPanel (B49) តែសម្រាប់ឯកសារទាំង ៥ ក្នុងប្រអប់។
+           186mm = A4 (210) ដករឹម @page (12mm × 2)។ */
+        width:186mm !important; min-width:186mm !important; max-width:186mm !important;
+        margin:0 auto !important;
       }
+      body.trk-printing > #trk-print-host table{ table-layout:auto !important; }
       ${pageRule || '@page{ size:A4; margin:14mm 12mm; }'}
       /* ⚠ បញ្ហាដែលការព្រីនក្នុងទំព័របង្កើត ៖ ឯកសារព្រីនស្ថិតក្នុងទំព័រ
          ដដែល ដូច្នេះវាទទួល CSS តារាងទូទៅរបស់កម្មវិធី —
@@ -38493,7 +38499,7 @@ else CC.init();
      ការរក្សាទុកឥឡូវ **រាយលេខជំហាន** លើផ្ទាំង ហើយផ្អាកអោយផ្ទាំងគូររួច
      មុននឹងចាប់ការងារធ្ងន់នីមួយៗ។ សារចុងក្រោយដែលឃើញ = ជំហានដែលគាំង។
      លេខ build ក៏បង្ហាញផង ដើម្បីដឹងច្បាស់ថាកំពុងប្រើឯកសារណា។ */
-  var RSC_BUILD = '16/08 · B52';
+  var RSC_BUILD = '16/08 · B53';
   try{ window.__RSC_BUILD = RSC_BUILD; }catch(e){}
 
   /* ⚠⚠ [stated] ២០២៦-០៨-១៣ ៖ រូបថតបង្ហាញ **«Page Unresponsive» របស់ Chrome**
