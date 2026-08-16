@@ -3275,7 +3275,12 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
        186mm = A4 (210) ដក រឹម @page (12mm × 2) ។ */
     #toi-embed #coverPanel{ width:186mm !important; min-width:186mm !important; max-width:186mm !important; }
     #toi-embed #coverPanel .table-wrap{ overflow:visible !important; width:100% !important; }
-    #toi-embed #coverPanel table{ width:100% !important; min-width:0 !important; table-layout:fixed !important; }
+    /* ⚠⚠ ២០២៦-០៨-១៦ ៖ `table-layout:fixed` ត្រូវដកចេញ — ខ្ញុំដាក់វានៅ B49
+       ហើយវាបំផ្លាញ COVER ៖ ក្រឡាស្លាកកំណត់ `width:1%` ដើម្បីអោយវាបង្រួម
+       តាមអត្ថបទ ដែលដំណើរការបានតែក្នុង **auto layout** ។ ជាមួយ fixed
+       ជួរឈរទាំងអស់បែងចែកស្មើគ្នា ហើយស្លាកនិងតម្លៃជាន់គ្នា។
+       ការកំណត់ទទឹងជា mm លើ #coverPanel គ្រប់គ្រាន់រួចហើយ។ */
+    #toi-embed #coverPanel table{ width:100% !important; min-width:0 !important; table-layout:auto !important; }
     #toi-embed #coverPanel h3{ margin-top:10px !important; margin-bottom:6px !important; }
     #toi-embed #coverPanel .table-wrap{ margin-bottom:8px !important; }
     /* ប្តូរប្រអប់ជាអត្ថបទធម្មតា ៖ តម្រឹមស្មើនឹងស្លាកឈ្មោះដោយស្វ័យប្រវត្តិ
@@ -38513,7 +38518,7 @@ else CC.init();
      ការរក្សាទុកឥឡូវ **រាយលេខជំហាន** លើផ្ទាំង ហើយផ្អាកអោយផ្ទាំងគូររួច
      មុននឹងចាប់ការងារធ្ងន់នីមួយៗ។ សារចុងក្រោយដែលឃើញ = ជំហានដែលគាំង។
      លេខ build ក៏បង្ហាញផង ដើម្បីដឹងច្បាស់ថាកំពុងប្រើឯកសារណា។ */
-  var RSC_BUILD = '16/08 · B53';
+  var RSC_BUILD = '16/08 · B54';
   try{ window.__RSC_BUILD = RSC_BUILD; }catch(e){}
 
   /* ⚠⚠ [stated] ២០២៦-០៨-១៣ ៖ រូបថតបង្ហាញ **«Page Unresponsive» របស់ Chrome**
