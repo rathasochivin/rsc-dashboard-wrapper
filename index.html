@@ -1293,6 +1293,54 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
 .company-note-actions{display:flex; align-items:center; justify-content:flex-end; gap:10px; margin-top:8px;}
 .note-status{font-size:11.5px; color:var(--green);}
 
+/* ═══════════════════════════════════════════════════════════════════════
+   [stated] ២០២៦-០៨-១៦ ៖ «ជួយធ្វើតាមទូរស័ព្ទឲ្យបានស្អាត និងស្រួលមើល» ។
+   គោលការណ៍ ៖ **កុំកម្ទេចប្លង់ដែលរចនាតាមទំហំក្រដាស** ។ តារាង និងទម្រង់
+   ផ្លូវការត្រូវរក្សារូបរាងដដែល រួចអោយរំកិលផ្តេក ; អ្វីដែលជា «ឧបករណ៍»
+   (របារ · ថេប · ប៊ូតុង · ប្រអប់) ទើបត្រូវរៀបឡើងវិញអោយសមនឹងម្រាមដៃ។
+   ⚠ ប្លុកនេះជាការបង្ហាញលើអេក្រង់ប៉ុណ្ណោះ — ច្បាប់ព្រីនកំណត់ជា mm ដាច់
+     ដោយឡែក ដូច្នេះការព្រីនពីទូរស័ព្ទនៅតែដូចកុំព្យូទ័រ (មើល B49)។
+   ══════════════════════════════════════════════════════════════════════ */
+/* ⚠⚠ ត្រូវ `screen and` ដាច់ខាត ៖ ពេលព្រីន ទទឹងផ្ទៃក្រដាស A4 ខ្លឹមសារ
+     = 186mm ≈ 703px ដែល **តូចជាង 820px** ដូច្នេះ media query ធម្មតានឹង
+     ត្រូវនឹងការព្រីនដែរ ហើយច្បាប់ទូរស័ព្ទនឹងកម្ទេចទំព័រក្រដាស។ */
+@media screen and (max-width: 820px){
+  /* ១ ៖ របារឧបករណ៍ និងថេប — មួយជួរ រំកិលបាន មិនបែកជា ៣ ជួរទៀត */
+  .toolbar, .topbar, .tabs, .hub-bar,
+  #toi-embed .toolbar, #mtr-embed .toolbar, #tos-embed .toolbar,
+  #toi-embed .tabs, #mtr-embed .tabs, #tos-embed .tabs{
+    flex-wrap:nowrap !important; overflow-x:auto; -webkit-overflow-scrolling:touch;
+    scrollbar-width:none; padding-bottom:4px;
+  }
+  .toolbar::-webkit-scrollbar, .tabs::-webkit-scrollbar{ display:none; }
+  .toolbar > *, .tabs > *{ flex:0 0 auto; }
+
+  /* ២ ៖ គោលដៅចុច ≥ ៤០px និងអក្សរ ១៦px ក្នុងប្រអប់ —
+     ⚠ ១៦px ជាកម្រិតដែល iOS ឈប់ពង្រីកអេក្រង់ដោយស្វ័យប្រវត្តិពេលចុចវាល។
+     ការពង្រីកនោះហើយជាមូលហេតុធំបំផុតដែលទូរស័ព្ទ «ពិបាកមើល»។ */
+  input, select, textarea{ font-size:16px !important; }
+  .btn, button, .nav button{ min-height:40px; }
+
+  /* ៣ ៖ តារាង — រក្សារូបរាង រំកិលផ្តេក មិនកម្ទេច */
+  .table-scroll, .table-wrap{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  main{ padding:14px 12px 48px; }
+  .card{ padding:14px 12px; border-radius:10px; }
+
+  /* ៤ ៖ ប្រអប់ — ពេញអេក្រង់ ព្រោះប្រអប់តូចលើទូរស័ព្ទអានមិនកើត */
+  .modal-box{ width:100% !important; max-width:100% !important; max-height:92vh;
+              border-radius:12px 12px 0 0; margin-top:auto; }
+  .modal-overlay{ align-items:flex-end; padding:0; }
+
+  /* ៥ ៖ ក្រឡាចត្រង្គ KPI ២ ជួរ · ក្រាហ្វ ១ ជួរ */
+  .kpi-row, .kpi-grid, #overview-financials .kpi-grid{ grid-template-columns:repeat(2,minmax(0,1fr)) !important; }
+  .chart-row, .chart-grid, #overview-financials .chart-grid{ grid-template-columns:1fr !important; }
+  .module-grid{ grid-template-columns:1fr !important; }
+}
+@media screen and (max-width: 520px){
+  .kpi-row, .kpi-grid, #overview-financials .kpi-grid{ grid-template-columns:1fr !important; }
+  main{ padding:10px 8px 44px; }
+}
+
 @media (max-width: 900px){
   .app{flex-direction:column;}
   .sidebar{width:100%; height:auto; position:relative; flex-direction:row; overflow-x:auto;}
@@ -3157,6 +3205,17 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
      (ឧ. ប្លុកចុះហត្ថលេខា)។ ឥឡូវធាតុនោះជាស្រោមខាងក្រៅ ដូច្នេះត្រូវអោយ
      ប្រអប់ខាងក្នុងតាមវាដែរ។ */
   #toi-embed .cf-wrap > textarea{ text-align:inherit; }
+  /* ⚠ [stated] ២០២៦-០៨-១៦ ៖ «ពេល view តាមទូរស័ព្ទអត់ស្អាតសោះ ហើយពិបាកមើល» ។
+     តារាង COVER ត្រូវបានរចនាតាមទទឹងក្រដាស ដូច្នេះលើអេក្រង់តូច វាបង្រួម
+     រហូតជួរឈរជាន់គ្នា។ ជាជាងកម្ទេចប្លង់ ទុកវាដដែល ហើយអោយ **រំកិលផ្តេក**
+     — អ្នកប្រើមើលឃើញរូបរាងពិត ដូចនឹងក្រដាស។
+     ⚠ ជាការបង្ហាញលើអេក្រង់តែប៉ុណ្ណោះ ៖ ច្បាប់ព្រីនខាងក្រោមសរសេរជាន់វា។ */
+  @media (max-width: 860px){
+    #toi-embed #coverPanel{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
+    #toi-embed #coverPanel > *{ min-width:760px; }
+    #toi-embed #coverPanel input, #toi-embed #coverPanel textarea,
+    #toi-embed #coverPanel select{ font-size:13px; }
+  }
   #toi-embed .cover-spacer{position:relative;}
   #toi-embed .cover-spacer-bar{display:flex; gap:6px; opacity:0; transition:opacity .15s; margin-top:2px;}
   #toi-embed .cover-spacer:hover .cover-spacer-bar{opacity:1;}
@@ -3192,6 +3251,15 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
        បូក ១៤px (margin-bottom របស់ .table-wrap) = ៣៨px ធំពេក។
        បើចង់បានចន្លោះធំនៅកន្លែងណាមួយ សូមប្រើប៊ូតុង «⏎ ចុះបន្ទាត់»
        ដែលមាននៅក្រោមតារាងនីមួយៗ — វាគ្រប់គ្រងបានម្តងមួយកន្លែង។ */
+    /* ⚠⚠ [stated] ២០២៦-០៨-១៦ ៖ «ពេលចុចព្រីនវាអត់ស្អាតដូចតាម computer ចឹង» ។
+       មូលហេតុ ៖ ការព្រីនលើទូរស័ព្ទចាប់យក **ប្លង់អេក្រង់តូច** ព្រោះទំហំ
+       viewport របស់ឧបករណ៍តូច ហើយតារាងរបស់ COVER បង្រួមតាមវា។
+       ដំណោះស្រាយ ៖ បង្ខំទទឹងខ្លឹមសារជា **មីលីម៉ែត្រ** ពេលព្រីន ដូច្នេះ
+       លទ្ធផលដូចគ្នាបេះបិទលើទូរស័ព្ទ និងលើកុំព្យូទ័រ ។
+       186mm = A4 (210) ដក រឹម @page (12mm × 2) ។ */
+    #toi-embed #coverPanel{ width:186mm !important; min-width:186mm !important; max-width:186mm !important; }
+    #toi-embed #coverPanel .table-wrap{ overflow:visible !important; width:100% !important; }
+    #toi-embed #coverPanel table{ width:100% !important; min-width:0 !important; table-layout:fixed !important; }
     #toi-embed #coverPanel h3{ margin-top:10px !important; margin-bottom:6px !important; }
     #toi-embed #coverPanel .table-wrap{ margin-bottom:8px !important; }
     /* ប្តូរប្រអប់ជាអត្ថបទធម្មតា ៖ តម្រឹមស្មើនឹងស្លាកឈ្មោះដោយស្វ័យប្រវត្តិ
@@ -38420,7 +38488,7 @@ else CC.init();
      ការរក្សាទុកឥឡូវ **រាយលេខជំហាន** លើផ្ទាំង ហើយផ្អាកអោយផ្ទាំងគូររួច
      មុននឹងចាប់ការងារធ្ងន់នីមួយៗ។ សារចុងក្រោយដែលឃើញ = ជំហានដែលគាំង។
      លេខ build ក៏បង្ហាញផង ដើម្បីដឹងច្បាស់ថាកំពុងប្រើឯកសារណា។ */
-  var RSC_BUILD = '16/08 · B48';
+  var RSC_BUILD = '16/08 · B51';
   try{ window.__RSC_BUILD = RSC_BUILD; }catch(e){}
 
   /* ⚠⚠ [stated] ២០២៦-០៨-១៣ ៖ រូបថតបង្ហាញ **«Page Unresponsive» របស់ Chrome**
