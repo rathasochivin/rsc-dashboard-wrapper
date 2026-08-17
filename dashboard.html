@@ -3091,10 +3091,14 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
      pain point. Other steps' tables are untouched. */
   #toi-embed table:is([data-step-key="Step4"],[data-step-key="Step5"],[data-step-key="Step6"],[data-step-key="Step7"],[data-step-key="Step8"]) td.label,
   #toi-embed table:is([data-step-key="Step4"],[data-step-key="Step5"],[data-step-key="Step6"],[data-step-key="Step7"],[data-step-key="Step8"]) th.label{
-    position:sticky; left:0; z-index:2;
+    /* ⚠ [stated] ២០២៦-០៨-១៧ ៖ «នៅផ្នែកជំហានទី១ ដល់ ១៧ មិនបាច់ FREEZE
+       នៅជួរខាងដើមទេ» ។ `position:static` បិទការបង្កក ; ស្រមោលគែមក៏ត្រូវ
+       ដកចេញដែរ ព្រោះវាជាសញ្ញាបង្ហាញគែមបង្កក — ទុកវាចោលនឹងនៅសល់បន្ទាត់
+       ស្រអាប់មួយដោយគ្មានហេតុផល។ ⚠ ពណ៌ផ្ទៃរក្សាទុក ៖ វាធ្វើអោយជួរដេក
+       ដាច់ពីគ្នា មិនទាក់ទងនឹងការបង្កកទេ។ */
+    position:static;
     white-space:nowrap; width:auto;
     background:var(--toi-card);
-    box-shadow:2px 0 4px -2px rgba(31,36,48,.18);
   }
   #toi-embed table:is([data-step-key="Step4"],[data-step-key="Step5"],[data-step-key="Step6"],[data-step-key="Step7"],[data-step-key="Step8"]) thead th.label{
     z-index:3; background:var(--toi-navy);
@@ -3309,19 +3313,32 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
        លទ្ធផលដូចគ្នាបេះបិទលើទូរស័ព្ទ និងលើកុំព្យូទ័រ ។
        186mm = A4 (210) ដក រឹម @page (12mm × 2) ។ */
     #toi-embed #coverPanel{ width:186mm !important; min-width:186mm !important; max-width:186mm !important; }
-    /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ COVER ព្រីនពីទូរស័ព្ទ ចេញជាសន្លឹកទ្វេដង
-       ហើយខ្លឹមសាររអិលទៅម្ខាង។ មូលហេតុ ៖ 186mm = A4 ដករឹម @page របស់យើង
-       (12mm × 2) — តែ **iOS Safari មិនគោរព @page margin** ហើយប្រើរឹមរបស់
-       ម៉ាស៊ីនបោះពុម្ពវិញ ដែលធំជាង។ ផ្ទៃបោះពុម្ពពិតតូចជាង 186mm ដូច្នេះ
-       ប្លុកនេះលើសទទឹងសន្លឹក ហើយ WebKit កាត់វា **តាមផ្តេក** ទៅសន្លឹកបន្ទាប់។
-       ដំណោះស្រាយ ៖ លើទូរស័ព្ទ ទុកអោយវាធំតាមផ្ទៃដែលមានពិត (max-width:100%)
-       ជំនួសលេខថេរ — មិនចាំបាច់ស្មានលេខ mm ណាមួយឡើយ។
-       ⚠ តម្លៃដែលត្រូវទទួល ៖ ទទឹងតូចជាងកុំព្យូទ័របន្តិច ដូច្នេះជួរដេកខ្លះ
-       អាចចុះបន្ទាត់ — តែខ្លឹមសារលែងបាត់ ឬដាច់ជាពីរសន្លឹកទៀត។ */
+    /* ⚠⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «Cover តាមកុំព្យូទ័រកាត់តារាង ហើយអក្សរ
+       ធ្លាក់ជួរឬធ្លាក់បន្ទាត់» ។ រកឃើញមូលហេតុពិត — ហើយវាប៉ះទាំងពីរឧបករណ៍ ៖
+       ច្បាប់ `@media (max-width:860px){ #toi-embed #coverPanel > *{min-width:760px} }`
+       ខាងលើ ត្រូវបានសរសេរសម្រាប់ **អេក្រង់តូច** (អោយវារំកិលផ្តេកបាន) ។
+       ⚠ តែ media query ក្នុងស្ថានភាពព្រីន វាស់ **ប្រអប់ទំព័រ** មិនមែនអេក្រង់ទេ —
+       ទំព័រ A4 ដករឹម @page (8mm × 2) = 194mm ≈ **733px** ដែលតូចជាង 860px
+       ដូច្នេះច្បាប់នោះ **បាញ់ពេលព្រីនលើកុំព្យូទ័រដែរ** ។ កូនរបស់ #coverPanel
+       ត្រូវបង្ខំជា 760px = 201mm ធំជាងប្រអប់ 186mm ហើយធំជាងផ្ទៃបោះពុម្ព 194mm
+       ⇒ ជួរឈរខាងស្តាំ (២០២៣) ត្រូវកាត់។
+       ដំណោះស្រាយ ៖ បន្សាបវាពេលព្រីន សម្រាប់ឧបករណ៍ទាំងអស់។ */
+    #toi-embed #coverPanel > *{ min-width:0 !important; }
+    /* ⚠⚠ ទូរស័ព្ទ ៖ iOS Safari មិនគោរព @page margin របស់យើងទេ វាប្រើរឹមរបស់
+       ម៉ាស៊ីនបោះពុម្ពដែលធំជាង ដូច្នេះផ្ទៃបោះពុម្ពពិតប្រហែល 165mm មិនមែន 186mm ។
+       បើទុកទទឹង 186mm វាដាច់ជាពីរសន្លឹក ; បើបង្រួមទទឹងវិញ ជួរដេកចុះបន្ទាត់
+       (ដែលមិនដូចកុំព្យូទ័រ) ។ ដូច្នេះជំនួសឱ្យការប្តូរទទឹង យើង **បង្រួមទាំងមូល**
+       — ប្លង់ដដែលបេះបិទនឹងកុំព្យូទ័រ គ្រាន់តែតូចជាង។
+       ⚠ 0.88 = 165/186 ។ **នេះជាលេខតែមួយដែលត្រូវលៃ** ៖ បើនៅដាច់ខាងស្តាំ
+         បន្ថយ (0.85) ; បើសល់ចន្លោះទំនេរខាងស្តាំច្រើន បង្កើន (0.92) ។
+       ⚠ `max-width:100%` ជាសំណាញ់សុវត្ថិភាព ៖ បើ browser មិនស្គាល់ `zoom`
+         វាធ្លាក់ត្រឡប់ទៅឥរិយាបថបង្រួមទទឹងវិញ មិនមែនកាត់ទំព័រទេ។ */
+    /* ទូរស័ព្ទ ៖ iOS មិនគោរព @page margin របស់យើងទេ ផ្ទៃបោះពុម្ពពិត
+       ប្រហែល 165mm = 624px ។ ទទឹងធ្វើការនៅ 900px ដដែល តែ zoom តូចជាង
+       (624/900 = 0.693) ដូច្នេះ **ប្លង់ដូចកុំព្យូទ័របេះបិទ** គ្រាន់តែតូចជាង។ */
     html.rsc-mobile-print #toi-embed #coverPanel{
-      width:auto !important; min-width:0 !important; max-width:100% !important;
+      zoom:0.693;
     }
-    html.rsc-mobile-print #toi-embed #coverPanel > *{ min-width:0 !important; }
     #toi-embed #coverPanel .table-wrap{ overflow:visible !important; width:100% !important; }
     /* ⚠⚠ ២០២៦-០៨-១៦ ៖ `table-layout:fixed` ត្រូវដកចេញ — ខ្ញុំដាក់វានៅ B49
        ហើយវាបំផ្លាញ COVER ៖ ក្រឡាស្លាកកំណត់ `width:1%` ដើម្បីអោយវាបង្រួម
@@ -3337,10 +3354,206 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     /* រក្សាទទឹងរបស់ស្រោមដដែល។ ការដាក់ width:auto ធ្វើអោយក្រឡា (width:1%)
        រួមតូចដល់ពាក្យវែងជាងគេ ហើយ «១៧ វិច្ឆិកា ២០១៥» ដាច់ជា ៣ បន្ទាត់។ */
     #toi-embed .cf-print{ display:block !important; white-space:pre-wrap; }
+    /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ខ្ញុំចង់ឱ្យវាបង្ហាញ … នៅលើបន្ទាត់តែមួយ
+       ដូចជាឈ្មោះសហគ្រាស លេខកម្មវិធី ការិយបរិច្ឆេទ» ។
+       ១) ការកាត់ខាងស្តាំ (ឧ. «vinopeng@gma…») ៖ `white-space:pre-wrap`
+          មិនអាចកាត់ពាក្យដែលគ្មានចន្លោះបានទេ — អាសយដ្ឋានអ៊ីមែលជាពាក្យ
+          វែងតែមួយ ដូច្នេះវាហូរចេញក្រៅសន្លឹក។ `overflow-wrap:anywhere`
+          អនុញ្ញាតឱ្យកាត់ ⇒ គ្មានអ្វីអាចហូរចេញក្រៅទំព័របានទៀតឡើយ។
+       ២) ការធ្លាក់បន្ទាត់ ៖ អេក្រង់កុំព្យូទ័រទូលាយប្រហែល ១២០០-១៣០០px
+          ចំណែកទំព័រ A4 ដករឹមមានត្រឹម **703px** ។ ជួរដេក ៦ ជួរឈរដដែល
+          ត្រូវតែចុះបន្ទាត់ បើទំហំអក្សរនៅដដែល — នេះជារូបធរណីមាត្រ
+          មិនមែនកំហុសកូដទេ។ ដូច្នេះបន្ថយទំហំអក្សរតែក្នុងតារាងព័ត៌មាន
+          របស់ COVER ដើម្បីឱ្យតម្លៃសមក្នុងបន្ទាត់តែមួយវិញ។
+       ⚠ 11px គឺជា **លេខតែមួយដែលត្រូវលៃ** ៖ បើនៅធ្លាក់បន្ទាត់ បន្ថយមក
+         10px ឬ 9.5px ; បើតូចពេក បង្កើនទៅ 12px ហើយទទួលការធ្លាក់បន្ទាត់
+         វិញ។ ជម្រើសមានតែពីរនេះទេ។ តារាងតួលេខ (.ledger) មិនប៉ះពាល់។ */
+    #toi-embed #coverPanel .cf-print,
+    #toi-embed #coverPanel table.cover-no-border td{
+      overflow-wrap:anywhere; word-break:break-word;
+    }
+    /* [ដកចេញ ២០២៦-០៨-១៧] ការបន្ថយអក្សរមក 11px លែងត្រូវការទៀតហើយ ៖
+       ការបង្រួម (zoom) ខាងក្រោមធ្វើការនោះឱ្យស្មើគ្នាទាំងអស់រួចហើយ។ */
+    /* ⚠⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ហេតុអ្វីពេលព្រីនចេញ ជួរអូសបន្ទាត់ចុះក្រោម
+       ដូចនៅផ្នែកខាងស្តាំ» — តួលេខឆ្នាំ ២០២៣ ត្រូវកាត់ត្រង់គែមខាងស្តាំ។
+       នេះជាកន្លែងទី **ពីរ** នៃច្បាប់អេក្រង់តូចដដែល ដែលបាញ់ពេលព្រីន ៖
+         @media (max-width:860px){ #toi-embed #coverPanel{ overflow-x:auto; } }
+       `overflow-x:auto` ប្តូរប្រអប់ COVER ជា **ប្រអប់រំកិល** ។ លើអេក្រង់
+       វាមានរបាររំកិល ដូច្នេះមើលឃើញគ្រប់ ; តែលើក្រដាសគ្មានរបាររំកិលទេ —
+       អ្វីដែលលើសត្រូវ **កាត់ចោលស្ងាត់ៗ** ។ ដូច្នេះទោះតារាងធំជាងប្រអប់
+       ប៉ុន្មានក៏ដោយ យើងឃើញត្រឹមគែម ហើយសល់ជាបន្ទាត់បញ្ឈរវែងនៅខាងស្តាំ។
+       ដំណោះស្រាយពីរជាន់ ៖
+         ១. `overflow:visible` ⇒ លែងកាត់ចោល
+         ២. `min-width:0` លើអ្វីៗទាំងអស់ក្នុង COVER ⇒ គ្មានអ្វីអាចទាមទារ
+            ទទឹងធំជាងប្រអប់ ១៨៦mm បានទៀតឡើយ (min-width ជាមធ្យោបាយតែមួយ
+            គត់ដែលធ្វើឱ្យធាតុលើស 100% បាន)។ */
+    #toi-embed #coverPanel{ overflow:visible !important; }
+    /* ⚠⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «FILE មើលក្នុងប្រព័ន្ធស្អាត តែចុចព្រីន
+       អត់កើត — ជួយធ្វើឱ្យ PRINT ដូចក្នុងប្រព័ន្ធ» ។
+       មូលហេតុឫសគល់ ៖ អេក្រង់ទូលាយ ~1280px ចំណែកទំព័រ A4 មានត្រឹម 703px ។
+       រាល់ការព្យាយាមកែម្តងមួយៗ (បន្ថយអក្សរ · បង្រួមទទឹង · រួមតារាង)
+       សុទ្ធតែ **រៀបប្លង់ឡើងវិញ** ដូច្នេះលទ្ធផលមិនដែលដូចអេក្រង់ឡើយ។
+       វិធីតែមួយគត់ដែលឱ្យដូចបេះបិទ ៖ **កុំរៀបឡើងវិញ — បង្រួមទាំងមូល** ។
+       ដាក់ទទឹងធ្វើការ 900px (ជិតនឹងអេក្រង់) រួច zoom ចុះមក 703px = 186mm ។
+       ប្លង់ ជួរឈរ ការចុះបន្ទាត់ សុទ្ធតែដូចអេក្រង់ គ្រាន់តែតូចជាង។
+       ⚠ **900 គឺជាលេខតែមួយដែលត្រូវលៃ** (zoom = 703/900 = 0.781) ៖
+         · បង្កើនទៅ 1000 → ដូចអេក្រង់ជាងនេះ តែអក្សរតូចជាង (~9.1px)
+         · បន្ថយមក 820  → អក្សរធំជាង (~11.1px) តែជួរខ្លះអាចចុះបន្ទាត់
+         បើប្តូរលេខ ត្រូវប្តូរ zoom ទាំងពីរកន្លែងឱ្យត្រូវគ្នា។ */
+    #toi-embed #coverPanel{
+      width:900px !important; min-width:0 !important; max-width:none !important;
+      zoom:0.781;
+    }
+    /* ⚠ ក្រឡាចត្រង្គរួម ៖ តារាងទាំងបីប្រើទទឹងជួរឈរដូចគ្នា ដូច្នេះ
+       សវនករដៃគូ ↔ លេខទូរស័ព្ទ (ជួរឈរ ៣) និង អនុការិយាល័យ ↔ Email ↔
+       អនុលោមភាព ↔ ការលើកទឹកចិត្ត (ជួរឈរ ៥) ចំកន្លែងគ្នាបេះបិទ។
+       ⚠ ត្រូវការ `table-layout:fixed` ទើប <col> មានអំណាចពិត។
+       ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «នៅខុសជួរ ចុះបញ្ជីសារពើពន្ធ ដែលមាន
+       ធ្លាក់បន្ទាត់» ។ ជួរដេកនោះជាជួរដេក ៣ គូ ដែលប្រើទាំង ៦ ជួរឈរពិត
+       (ជួរដេកឯទៀតលាតគ្រប ២-៤ ដូច្នេះមានទីធ្លាទូលាយ) ។ ជាមួយអក្សរ 14px
+       ជួរឈរ ២ ៣ ៤ ចង្អៀតពេក ⇒ តម្លៃចុះបន្ទាត់ ហើយសញ្ញា «៖» ដែល float
+       ក៏ធ្លាក់ចុះក្រោមដែរ។ ចែកចន្លោះឡើងវិញ ៖ យកពីជួរឈរ ១ និង ៦ (ដែល
+       នៅសល់) ទៅឱ្យ ២ និង ៣ ។
+       សរុប ១០០% លើទទឹងធ្វើការ 900px ៖ 162 · 171 · 126 · 108 · 144 · 189px
+       ⚠ វាស់តាមតម្រូវការពិត ៖ «ចុះបញ្ជីសារពើពន្ធ»≈160 · «១៧ កក្កដា ២០១៧»≈155
+         · «លេខទូរស័ព្ទ ៖»≈125 · «016806888»≈85 · «ការលើកទឹកចិត្ត ៖»≈140
+         · «01-01-2023 ដល់ 31-12-2024»≈180 */
+    #toi-embed #coverPanel table.cover-no-border{ table-layout:fixed !important; }
+    /* ⚠⚠ កំហុសរបស់ខ្ញុំពីជុំមុន ៖ ខ្ញុំបន្ថយជួរឈរទី ១ មក 18% (162px) ដែល
+       **តូចជាងស្លាកវែងជាងគេ** «ចុះបញ្ជីសារពើពន្ធ» (~171px) ។ ស្លាកជា
+       nowrap ដូច្នេះវាហូរចេញ ហើយជាន់លើតម្លៃ។ ជួរឈរនីមួយៗត្រូវតែធំល្មម
+       អក្សរវែងជាងគេរបស់វា — នេះជាល័ក្ខខ័ណ្ឌដំបូងបំផុត។
+       តម្រូវការវាស់ជាក់ស្តែងនៅ 14px (ទទឹងធ្វើការ 900px) ៖
+         ១ «ចុះបញ្ជីសារពើពន្ធ ៖» 171 · ២ «១៧ កក្កដា ២០១៧» 155
+         ៣ «លេខទូរស័ព្ទ ៖» 125    · ៤ «016806888» 85
+         ៥ «ការលើកទឹកចិត្ត ៖» 140 · ៦ «01/01/2023 ដល់ 31/12/2024» 180
+       សរុបតម្រូវការ ៨៥៦px ក្នុង ៩០០px — សមបាន បើចែកឱ្យត្រូវ ៖ */
+    /* ⚠⚠ កំហុសទី២របស់ខ្ញុំ ៖ ខ្ញុំវាស់ត្រឹម **អត្ថបទ** ភ្លេច **ចន្លោះក្នុង
+       ក្រឡា (padding)** ។ ក្រឡាតម្លៃមាន padding ១៨px ក្រឡាស្លាកមាន ២០px
+       ដូច្នេះជួរឈរ ៩០px ផ្តល់ទីធ្លាអក្សរត្រឹម ៧២px ⇒ «ប៉ាង ពេជ្របញ្ញា»
+       និង «016806888» ចុះបន្ទាត់។ **ទទឹងជួរឈរ = អក្សរ + padding ជានិច្ច។**
+       បន្ថយ padding ដើម្បីរកទីធ្លា (មើលច្បាប់ខាងក្រោម) រួចចែកឡើងវិញ ៖
+         ជួរឈរ  ១    ២    ៣    ៤    ៥     ៦
+         ទទឹង  171  153  117  126  139  193  = 899 / 900
+         ត្រូវការ 166  150  116  122  136  185  (អក្សរ + padding) */
+    #toi-embed #coverPanel col.cv-c1{ width:19%; }     /* 171 */
+    #toi-embed #coverPanel col.cv-c2{ width:17%; }     /* 153 */
+    #toi-embed #coverPanel col.cv-c3{ width:13%; }     /* 117 */
+    #toi-embed #coverPanel col.cv-c4{ width:14%; }     /* 126 */
+    #toi-embed #coverPanel col.cv-c5{ width:15.5%; }   /* 139 */
+    #toi-embed #coverPanel col.cv-c6{ width:21.5%; }   /* 193 */
+    /* ចន្លោះក្នុងក្រឡាតូចជាងមុន ៖ ក្រឡាតម្លៃ ១៨ → ១០px ។ នេះជាទីធ្លា
+       ដែលយើងទាញមកឱ្យជួរឈរ ៤ (ឈ្មោះសវនករដៃគូ) ។ */
+    #toi-embed #coverPanel table.cover-no-border td:nth-child(even){
+      padding-left:4px !important; padding-right:6px !important;
+    }
+    /* ⚠ ក្រឡាខ្លះមានទទឹងសរសេរ inline ក្នុងកូដ (1% · 100% · 34% …) ។
+       ក្នុង `table-layout:fixed` ធម្មតា <col> ជាអ្នកឈ្នះ តែកុំទុកឱ្យមាន
+       ការប្រកួតប្រជែងសោះ — លុបទទឹង inline ចោលពេលព្រីន ដូច្នេះមានតែ
+       ក្រឡាចត្រង្គរួមទេដែលកំណត់ជួរឈរ។ */
+    #toi-embed #coverPanel table.cover-no-border td{ width:auto !important; }
+    /* [stated] «"៖" មិនទាន់ស្មើគ្នា ខិតវាមកខាងស្តាំត្រង់ជួរគ្នា» ៖ ស្លាក
+       តម្រឹមស្តាំ ⇒ សញ្ញា «៖» អង្គុយលើគែមស្តាំរបស់ជួរឈរ ដែលឥឡូវថេរ
+       ដូចគ្នាទាំងបីតារាង ⇒ ត្រង់គ្នាទាំងអស់។ */
+    #toi-embed #coverPanel table.cover-no-border td:nth-child(odd){
+      text-align:left !important;
+    }
+    /* ⚠ ពីមុនប្រើ `float:right` ៖ បើជួរឈរចង្អៀតជាងអត្ថបទបូកសញ្ញា វា
+       **ធ្លាក់ចុះបន្ទាត់ក្រោម** (ដូចរូបដែលគេផ្ញើមក) ។ ការដាក់ទីតាំង
+       ដាច់ខាត (absolute) មិនចូលរួមក្នុងបន្ទាត់ទេ ដូច្នេះវាមិនអាចធ្លាក់
+       បានឡើយ ; `padding-right` ការពារអត្ថបទកុំឱ្យរត់ចូលក្រោមវា។
+       top:3px = padding-top របស់ក្រឡាពេលព្រីន ដូច្នេះវាឈរជួរនឹងបន្ទាត់
+       ទីមួយ ទោះតម្លៃមានច្រើនបន្ទាត់ក៏ដោយ។ */
+    /* ស្លាក ៖ ៤px ឆ្វេង + ១២px ស្តាំ (ទីធ្លាសម្រាប់សញ្ញា «៖») = ១៦px */
+    #toi-embed #coverPanel table.cover-no-border td:nth-child(odd){
+      position:relative; padding-left:4px !important; padding-right:12px !important;
+    }
+    #toi-embed #coverPanel table.cover-no-border td:nth-child(odd) .cv-cl{
+      position:absolute; right:4px; top:3px;
+    }
+    /* ⚠⚠ [stated] «ជួរ ចុះបញ្ជីសារពើពន្ធ ដល់ EMAIL ជាន់អក្សរគ្នា» ។
+       មូលហេតុ ៖ ជាមួយ `table-layout:fixed` ជួរឈរមិនរីកតាមមាតិកាទេ —
+       អ្វីដែលធំជាងជួរឈរ **ហូរចេញក្រៅ ហើយជាន់លើអ្នកជិតខាង** ។ ប្រអប់
+       បញ្ចូលខ្លះមានទទឹងថេរជា px សរសេរក្នុងកូដ (160px សម្រាប់ថ្ងៃចុះបញ្ជី,
+       120px សម្រាប់ទូរស័ព្ទ) ដែលធំជាងជួរឈររបស់វា។ បង្ខំវាឱ្យ ១០០%
+       នៃជួរឈរវិញ ⇒ លែងជាន់គ្នា។ */
+    #toi-embed #coverPanel table.cover-no-border input,
+    #toi-embed #coverPanel table.cover-no-border textarea,
+    #toi-embed #coverPanel table.cover-no-border select,
+    #toi-embed #coverPanel table.cover-no-border .cf-wrap,
+    #toi-embed #coverPanel table.cover-no-border .cf-print{
+      width:100% !important; min-width:0 !important; max-width:100% !important;
+      box-sizing:border-box;
+    }
+    /* [stated] «ពង្រីកទំហំ FONT KHMER OS SIEMREAP មក ១៤» */
+    #toi-embed #coverPanel table.cover-no-border td,
+    #toi-embed #coverPanel table.cover-no-border td *,
+    #toi-embed #coverPanel table.ledger th,
+    #toi-embed #coverPanel table.ledger td{
+      font-size:14px !important;
+    }
+    #toi-embed #coverPanel *{ min-width:0 !important; }
+    /* [stated] ២០២៦-០៨-១៧ ៖ «កែ FONT KHMER OS MUOL LIGHT កុំឱ្យឃើញធំខុសគេ
+       ពេក ដាក់ទំហំវាស្មើគ្នានឹង KHMER OS SIEMREAP» ។
+       ⚠ Muol Light គូរអក្សរខ្ពស់ និងធំជាង Siemreap នៅទំហំ px ដូចគ្នា
+       ដូច្នេះ «ស្មើគ្នា» មិនមែនមានន័យថាលេខ px ដូចគ្នាទេ — ត្រូវដាក់លេខ
+       តូចជាងបន្តិច។ តួអក្សរ COVER ឥឡូវ 11px ដូច្នេះចំណងជើងដាក់ 12px។
+       ⚠ **លេខតែមួយដែលត្រូវលៃ** ៖ នៅធំពេក → 11px ; តូចពេក → 13px។
+       ⚠ ច្បាប់នេះកំណត់ត្រឹម #coverPanel ប៉ុណ្ណោះ — ចំណងជើងរបស់ជំហានផ្សេង
+       និងឯកសារផ្សេងទៀត មិនប៉ះពាល់។ */
+    /* [ដកចេញ ២០២៦-០៨-១៧] ដូចគ្នា ៖ បើកំណត់ចំណងជើងដោយឡែក វាលែងស្មើ
+       សមាមាត្រនឹងតួអក្សរ ពេលទំព័រទាំងមូលត្រូវបង្រួម។ */
   }
 
 
   
+  /* ទម្រង់រដ្ឋបាល ៖ បន្ទាត់រងក្រោមចំណងជើង · ចន្លោះបំពេញ · ជួរឈរ ល.រ */
+  #toi-embed .risk-form-subtitle{
+    text-align:center; font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif;
+    font-size:13px; margin:2px 0 8px;
+  }
+  #toi-embed .risk-blank{
+    display:inline-block; border-bottom:1px dotted #000; vertical-align:baseline;
+  }
+  #toi-embed .risk-blank-p{ width:86px; }
+  #toi-embed .risk-blank-of{ width:64px; }
+  /* ⚠ [stated] ២០២៦-០៨-១៧ ៖ «ផ្នែក ល.រ កុំឱ្យចុះបន្ទាត់» — «ល.រ» ដាច់ជា
+     «ល.» + «រ» ព្រោះជួរឈរ ៣៤px តូចជាងអក្សរបូក padding របស់ក្រឡា។
+     `nowrap` ទប់ការចុះបន្ទាត់ ហើយបន្ថយ padding + បន្ថែមទទឹងបន្តិច
+     ដើម្បីអោយវាមានទីធ្លាពិត (មិនមែនត្រឹមហាមចុះបន្ទាត់ហើយហូរចេញទេ)។ */
+  #toi-embed .risk-no-col{
+    width:46px; min-width:46px; text-align:center; vertical-align:middle;
+    white-space:nowrap; padding-left:2px !important; padding-right:2px !important;
+  }
+  /* [stated] «ជួយរុញ សវនករពន្ធដារឡើងមកលើផងក្រោមតារាង» ៖ ប្លុកហត្ថលេខា
+     របស់ទម្រង់រដ្ឋបាល ចូលមកជិតតារាងវិញ (៣៤ → ១០px) ហើយចន្លោះចុះ
+     ហត្ថលេខាខ្លីជាង (៩២ → ៥៦px)។ ⚠ កំណត់ត្រឹមទម្រង់រដ្ឋបាល ដូច្នេះ
+     ទម្រង់ហានិភ័យធម្មតានៅដដែលបេះបិទ។ */
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «អគ្គនាយកដ្ឋានពន្ធដារ ខិតទៅខាងឆ្វេង ·
+     ព្រះរាជាណាចក្រកម្ពុជា ខិតទៅខាងស្តាំ · ចុះបន្ទាត់១ កុំនៅជិតគ្នាពេក» ។
+     មូលហេតុដែលវាមិននៅគែម ៖ ជួរឆ្វេង និងស្តាំមាន `flex:1` ព្រមទាំង
+     `text-align:center` ដូច្នេះនីមួយៗកាន់កាប់ពាក់កណ្តាលទំព័រ ហើយអក្សរ
+     អង្គុយ **ចំកណ្តាលពាក់កណ្តាលនោះ** = ប្រហែល ២៥% និង ៧៥% ។ ការដាក់
+     ត្រា (132px) ធ្លាប់ជាអ្នកបំបែកកណ្តាល តែទម្រង់រដ្ឋបាលគ្មានត្រា។
+     ដំណោះស្រាយ ៖ ឱ្យជួរឆ្វេង/ស្តាំតូចប៉ុនអក្សរ (`flex:0 1 auto`) ហើយ
+     ឱ្យប្រអប់ត្រាទទេជាអ្នកលាតយកទីធ្លាដែលនៅសល់ (`flex:1 1 auto`) ⇒
+     អក្សរត្រូវរុញទៅគែមទាំងសងខាង។
+     ⚠ កំណត់ត្រឹមទម្រង់រដ្ឋបាល — ទម្រង់ហានិភ័យមានត្រានៅកណ្តាល ដូច្នេះ
+     វាត្រូវរក្សាការចែកពាក់កណ្តាលដដែល។ */
+  #toi-embed .risk-admin-page .risk-official-hdr-left,
+  #toi-embed .risk-admin-page .risk-official-hdr-right{ flex:0 1 auto !important; }
+  #toi-embed .risk-admin-page .risk-official-hdr-seal{ flex:1 1 auto !important; }
+  /* បន្ទាត់ទំនេរមួយ រវាងក្បាល និងចំណងជើង (៦ → ២២px) */
+  #toi-embed .risk-admin-page .risk-official-hdr{ margin-bottom:22px !important; }
+  /* ⚠ [stated] ២០២៦-០៨-១៧ ៖ «ឈ្មោះសវនករពន្ធដារ ធ្លាក់ចុះក្រោម» — ស្លាក
+     នៅលើទំព័រនេះ តែ **ឈ្មោះ** ធ្លាក់ទៅទំព័របន្ទាប់។ ចន្លោះចុះហត្ថលេខា
+     (padding-bottom របស់ស្លាក) ជាកម្ពស់ដែលរុញឈ្មោះចុះក្រោម ៖ ៥៦px គឺ
+     នៅតែធំពេកសម្រាប់ក្រដាសដេក។ បន្ថយមក ២៤px ហើយឱ្យប្លុកទាំងមូលនៅជាប់
+     តារាងជាងមុន។
+     ⚠ ប្រអប់នេះជា **កន្លែងលៃតែមួយ** ៖ បើឈ្មោះនៅតែធ្លាក់ បន្ថយ ២៤ ទៀត ;
+     បើចង់បានចន្លោះចុះហត្ថលេខាធំជាង បង្កើនវា។ */
+  #toi-embed .risk-admin-page .risk-signoff-table{ margin-top:6px !important; }
+  #toi-embed .risk-admin-page .risk-signoff-label{ padding-bottom:24px !important; }
   #toi-embed .print-all-container{display:none;}
   @media print{
     /* រឹមខាងក្រោមធំជាងរឹមខាងលើ។ ពេលមាតិការបស់ជំហានមួយខ្ពស់ជាងផ្ទៃ
@@ -3426,6 +3639,29 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     #toi-embed tr.risk-row td.label::before{content:none !important;}
     #toi-embed td.cell-wrap{white-space:normal !important; word-break:break-word;}
     #toi-embed td:first-child, #toi-embed th:first-child{text-align:left !important;}
+    /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ជួរ ល.រ ដាក់ជា CENTER ចំកណ្តាល» ។
+       មូលហេតុពិត ៖ បន្ទាត់ខាងលើនេះឯង។ ជួរ «ល.រ» ជាក្រឡា **ទីមួយ** ដូច្នេះ
+       វាត្រូវច្បាប់នេះចាប់ ហើយបង្ខំតម្រឹមឆ្វេងដោយ !important — ទោះបីជា
+       `.risk-no-col` សរសេរ text-align:center រួចហើយក៏ដោយ។
+       ⚠ ការដាក់ !important តែឯងមិនគ្រប់គ្រាន់ទេ ព្រោះ `:first-child` និង
+       class មានទម្ងន់ស្មើគ្នា (0,1,1) — អ្នកឈ្នះគឺអ្នកសរសេរក្រោយ។ ដូច្នេះ
+       ប្រើ selector ដែលមានទម្ងន់ **ខ្ពស់ជាង** (បន្ថែម .risk-form-page)
+       ដើម្បីអោយវាឈ្នះទោះលំដាប់ណាក៏ដោយ។ */
+    #toi-embed .risk-form-page td.risk-no-col,
+    #toi-embed .risk-form-page th.risk-no-col{
+      text-align:center !important; vertical-align:middle !important;
+    }
+    /* ជួរឈរ «ប្រភេទ» ៖ ស្លាក និងតម្លៃ ចំកណ្តាល (ទម្ងន់ 0,2,1 ឈ្នះ
+       `th:first-child` ដែលមាន 0,1,1 ទោះលំដាប់ណាក៏ដោយ) */
+    #toi-embed .risk-form-page td.risk-type-cell,
+    #toi-embed .risk-form-page th.risk-type-cell{
+      text-align:center !important;
+    }
+    /* ឈ្មោះសហគ្រាស ៖ ខ្មែរមួយបន្ទាត់ ឡាតាំងមួយបន្ទាត់ តម្រឹមឆ្វេងទាំងពីរ */
+    #toi-embed .risk-form-page td.risk-name-cell,
+    #toi-embed .risk-form-page td.risk-name-cell div{
+      text-align:left !important;
+    }
     /* The on-screen "freeze the description column while scrolling"
        behavior (Step4-8) doesn't make sense on a printed/paginated page
        and was overriding this block's own td.label/th.label reset above
@@ -3600,7 +3836,19 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
   #tos-embed .tabular{ font-variant-numeric: tabular-nums; font-feature-settings:"tnum" 1; }
 
   
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ហេតុអ្វីប្រហោះនឹងនៅសល់ទេ គួរលុបចេញដែរ
+     ព្រោះអត់មានអក្សរនៅនឹងផង» ។ ក្រោយពេលដកចំណងជើង SALARY DASHBOARD និង
+     ផ្លាស់ទីប៊ូតុង EXCEL ចេញ ធាតុដែលនៅសល់ក្នុងក្បាលនេះសុទ្ធតែ
+     `display:none` រួចទៅហើយ (dropzone · folderZone · clearBtn ·
+     saveSessionBtn · loadSessionZone) — ដូច្នេះវានៅសល់តែផ្ទាំងខៀវទទេ។
+     ⚠ លាក់ ជំនួសការលុប ៖ កូដ TOS យកធាតុទាំងនោះតាម id ដោយគ្មានការ
+     ត្រួតពិនិត្យ ; `display:none` ទុកពួកវាក្នុង DOM ដដែល ដូច្នេះ
+     getElementById នៅរកឃើញ ហើយ input[type=file].click() នៅដើរ។
+     ⚠ ផលប៉ះពាល់តែមួយ ៖ សារ #sessionStatus លែងបង្ហាញ — តែផ្លូវដែលសរសេរ
+     វា (រក្សាទុក/បើកឯកសារ JSON នៅក្បាលនេះ) ត្រូវលាក់រួចហើយតាំងពី
+     ០៧/០៨ ព្រោះការរក្សាទុកធ្វើតាមរបារខាងលើរួម។ */
   #tos-embed header.hero{
+    display:none !important;
     position:relative;
     background:var(--tos-navy-800);
     color:#F3EFE1;
@@ -4521,13 +4769,15 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
              មូលហេតុ ៖ `accept=".json,.js"` — ប្រអប់ជ្រើសឯកសាររបស់ Windows
              លាក់ `.json.gz` ចោល ព្រោះវាមិនត្រូវនឹងតម្រង។ បន្ថែម .gz -->
         <input type="file" id="saved-file-input" accept=".json,.js,.gz,application/gzip" style="display:none;" onchange="importAllDataFromFile(event)">
-        <button class="atb-btn atb-icon data-gated" onclick="openDataEntry()" title="Data Entry — ព័ត៌មានកិច្ចការសវនកម្ម" aria-label="Data Entry">📝</button>
+        <!-- [stated] ២០២៦-០៨-១៧ ៖ «កាត DATA ENTRY នៅផ្នែកខាងលើលុបចេញ» ។
+             ⚠ ប៊ូតុងតែប៉ុណ្ណោះដែលដកចេញ — មុខងារ `openDataEntry()` នៅដដែល
+             ព្រោះកន្លែងផ្សេងហៅវា។ ផ្លូវចូលឥឡូវនៅជួរ ពន្ធលើប្រាក់ចំណូល។ -->
       </div>
       <div class="app-topbar-actions">
         <button class="atb-btn atb-icon data-gated" onclick="window.__rscSave ? window.__rscSave() : exportAllDataToFile()" title="រក្សាទុកឯកសារ" aria-label="រក្សាទុកឯកសារ">💾</button>
         <button class="atb-btn atb-icon feat-calc" onclick="showView('calc')" title="ការគណនាពន្ធឡើងវិញ" aria-label="ការគណនាពន្ធឡើងវិញ">🧮</button>
         <button class="atb-btn atb-icon atb-plane data-gated feat-access" onclick="window.__exportToAccess && window.__exportToAccess()" title="ផ្ទេរទិន្នន័យទៅ Access" aria-label="ផ្ទេរទិន្នន័យទៅ Access"><span class="ic">✈️</span></button>
-        <button class="atb-btn atb-icon" onclick="showView('personalinfo')" title="ព័ត៌មានផ្ទាល់ខ្លួន" aria-label="ព័ត៌មានផ្ទាល់ខ្លួន">👤</button>
+        <!-- [stated] ២០២៦-០៨-១៧ ៖ ផ្លាស់ទីទៅជួរ ពន្ធលើប្រាក់ចំណូល — មិនមែនចម្លងទេ ៖ ទុកទាំងពីរនឹងនាំឱ្យចូលពីរផ្លូវ។ -->
       </div>
       <!-- [stated] អក្សររត់លាតបន្តពី 👤 ព័ត៌មានផ្ទាល់ខ្លួន រហូតដល់ជិតប៊ូតុងព្រីន។
            វាជាកូនផ្ទាល់របស់របារ (មិនមែនក្នុងក្រុមណាមួយ) ដើម្បីអោយ flex:1
@@ -5125,15 +5375,14 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
 
 <header class="hero">
   <div class="hero-inner hero-inner-split">
-    <!-- [stated] ប៊ូតុង EXCEL ជាប់នឹងពាក្យ SALARY DASHBOARD -->
-    <div class="hero-title-row">
-      <h1>SALARY DASHBOARD</h1>
-      <button class="btn gold btn-xl-mini" id="exportBtn" type="button" disabled title="នាំចេញជា Excel">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
-             stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
-        <span>EXCEL</span>
-      </button>
-    </div>
+    <!-- ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «លុបចេញ SALARY DASHBOARD ហើយទាញយក
+         Excel មកដាក់នៅជួរ លុបការកំណត់ពន្ធឡើងវិញទាំងអស់ ដាក់វានៅមុខនោះ» ។
+         ចំណងជើង និងប្លុក .hero-title-row ត្រូវដកចេញទាំងស្រុង ; ប៊ូតុង
+         #exportBtn ត្រូវ **ផ្លាស់ទី** ទៅរបារសកម្មភាពខាងក្រោម។
+         ⚠ ត្រូវផ្លាស់ទី មិនមែនចម្លងទេ — កូដ TOS ភ្ជាប់ព្រឹត្តិការណ៍តាម
+         `id="exportBtn"` ដោយគ្មានការត្រួតពិនិត្យ ដូច្នេះបើមានពីរ ឬគ្មាន
+         សោះ វានឹងខូចស្ងាត់ៗ។ (មើលកំណត់សម្គាល់ dropzone ខាងក្រោម ៖ គេ
+         លាក់ធាតុជំនួសការលុប ដោយហេតុផលដដែល។) -->
     <div class="hero-actions">
       <!-- [stated] 2026-08-07 ៖ ទុកតែ «នាំចេញជា Excel» នៅរបារនេះ។ ការផ្ទុក
            ធ្វើតាម 📥 នៅរបារខាងលើរួមរួចហើយ។ លាក់ មិនមែនលុប ព្រោះកូដ TOS
@@ -5255,6 +5504,11 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
   </div>
 
   <div style="display:flex; justify-content:flex-end; gap:10px; margin:10px 4px 0;">
+    <button class="btn gold" id="exportBtn" type="button" disabled title="នាំចេញជា Excel">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+           stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+      <span>EXCEL</span>
+    </button>
     <button type="button" class="btn danger-ghost" id="revertAllReassessBtn">លុបការកំណត់ពន្ធឡើងវិញទាំងអស់</button>
     <button type="button" class="btn gold" id="viewAllReassessBtn">មើលការកំណត់ពន្ធឡើងវិញទាំងអស់ (<span id="reassessCountBadge">0</span>)</button>
   </div>
@@ -17099,6 +17353,19 @@ function getVATMonthlyAggregates_(){
     if(!agg[year]) agg[year] = {};
     if(!agg[year][month]) agg[year][month] = {
       saleNonTaxable:0, saleZeroRated:0, saleLocal10:0, saleExport10:0,
+      /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ ខែ១ មានលំអៀង ៤ រៀល ។ គេគណនាដោយដៃ ៖
+         78,431,005 + 24,504 = 78,455,509 − 5,737,744 = 72,717,765 = អ្វីដែល
+         បានបង់ពិត ដូច្នេះមិនគួរមានលំអៀងឡើយ។ គេត្រូវ។
+         មូលហេតុ ៖ យើងគណនា «អាករលើធាតុចេញ» = មូលដ្ឋានសរុប × ១០%
+         (784,555,052 × 10% = 78,455,505) ខណៈសៀវភៅលក់មាន **អាករពិត
+         ក្នុងវិក្កយបត្រនីមួយៗ** ដែលបូកគ្នាបាន 78,455,509 ។ ភាពខុសគ្នា ៤
+         គឺការបង្គត់ក្នុងវិក្កយបត្រនីមួយៗ — ១០% នៃផលបូក មិនស្មើផលបូក
+         នៃ ១០% ទេ។ ដូច្នេះប្រមូលអាករពិតទុកផង។ */
+      saleVat10:0,
+      /* [stated] ២០២៦-០៨-១៧ ៖ «ជួយធ្វើនៅផ្នែកទិញដែលផង ផ្នែកអាករលើធាតុចូល»
+         — ហេតុផលដូចជួរ ៤ បេះបិទ ៖ សៀវភៅទិញកាន់អាករពិតក្នុងវិក្កយបត្រ
+         នីមួយៗ ហើយ ១០% នៃផលបូក មិនស្មើផលបូកនៃ ១០% ទេ។ */
+      purVat:0,
       purLocal:0, purImport:0, purReverse:0,
       purNonCreditable:0, purNonVatBase:0,
       otherExpenses:0, prCN:0, prDN:0, srCN:0, srDN:0,
@@ -17123,6 +17390,9 @@ function getVATMonthlyAggregates_(){
     if(v.zeroRated)             b.saleZeroRated  += (v.baseExclVat || 0);
     if(pos(v.vatLocal))         b.saleLocal10    += (v.baseExclVat || 0);
     if(pos(v.vatExport))        b.saleExport10   += (v.baseExclVat || 0);
+    /* អាករពិតលើវិក្កយបត្រ (ក្នុងស្រុក + នាំចេញ) — ប្រើសម្រាប់ជួរ ៤ */
+    if(pos(v.vatLocal))         b.saleVat10      += v.vatLocal;
+    if(pos(v.vatExport))        b.saleVat10      += v.vatExport;
   });
 
   /* --- PURCHASE (PR) ---------------------------------------------------
@@ -17136,6 +17406,9 @@ function getVATMonthlyAggregates_(){
     const b = bucket(mk.year, mk.month), v = r.vat || {};
     if(pos(v.vatLocal))        b.purLocal  += (v.baseExclVat || 0);
     if(pos(v.vatExport))       b.purImport += (v.baseExclVat || 0);
+    /* អាករពិតលើវិក្កយបត្រទិញ (ក្នុងស្រុក + នាំចូល) — ប្រើសម្រាប់ជួរ ៩ */
+    if(pos(v.vatLocal))        b.purVat    += v.vatLocal;
+    if(pos(v.vatExport))       b.purVat    += v.vatExport;
     if(pos(v.vatReverseLocal) || pos(v.vatReverseImport)) b.purReverse += (v.baseExclVat || 0);
     if(pos(v.nonCreditable))   b.purNonCreditable += (r.amount || 0);
     b.purNonVatBase += (v.nonVatBase || 0);
@@ -17168,19 +17441,39 @@ function getVATMonthlyAggregates_(){
 /* The 12 printable columns of the VAT form, derived from the raw monthly
    aggregate above. Column numbers match the form's own numbering row. */
 function computeVATRow(b, vatPaid, credit){
-  const z = { saleNonTaxable:0, saleZeroRated:0, saleLocal10:0, saleExport10:0,
+  const z = { saleNonTaxable:0, saleZeroRated:0, saleLocal10:0, saleExport10:0, saleVat10:0,
+              purVat:0,
               purLocal:0, purImport:0, purReverse:0, purNonCreditable:0,
               purNonVatBase:0, otherExpenses:0, prCN:0, prDN:0, srCN:0, srDN:0 };
   b = Object.assign({}, z, b || {});
   const c1  = b.saleNonTaxable;                                   // មិនជាប់អាករ
   const c2  = b.saleZeroRated;                                    // អតប អត្រា ០%
   const c3  = b.saleLocal10 + b.saleExport10 - b.srCN + b.srDN;   // អាករ ១០%
-  const c4  = c3 * 0.10;                                          // អាករលើធាតុចេញ
+  /* អាករលើធាតុចេញ ៖ យកអាករ **ពិត** ដែលបូកពីវិក្កយបត្រនីមួយៗ បើមាន —
+     នេះជាអ្វីដែលដកលំអៀងបង្គត់ចេញ (សូមមើលកំណត់សម្គាល់ខាងលើ)។
+     ⚠ ការពារ ២ យ៉ាង ៖
+       ១. បើសៀវភៅគ្មានជួរអាករ (saleVat10 = 0) ថយទៅរូបមន្តចាស់
+       ២. បើអាករពិតខុសពី ១០% នៃមូលដ្ឋានលើសពី ១% (ឧ. គេកែមូលដ្ឋាន
+          ដោយដៃក្នុងទម្រង់) ក៏ថយទៅរូបមន្តចាស់ដែរ — ដូច្នេះការវាយដោយដៃ
+          មិនអាចទាស់នឹងអាករចាស់ដែលនៅសល់ក្នុងអង្គចងចាំបានឡើយ។
+     ⚠ CN/DN នៅតែគិត ១០% លើមូលដ្ឋានដដែល ព្រោះជួរទាំងនោះមិនកាន់អាករទេ។ */
+  const c4gross = (b.saleLocal10 + b.saleExport10) * 0.10;
+  const c4real  = b.saleVat10 || 0;
+  const c4use   = (c4real > 0 && Math.abs(c4real - c4gross) <= Math.max(10, c4gross * 0.01))
+                    ? c4real : c4gross;
+  const c4  = c4use - b.srCN * 0.10 + b.srDN * 0.10;              // អាករលើធាតុចេញ
   const c5  = b.purLocal - b.prCN + b.prDN;                       // ទិញក្នុងស្រុក
   const c6  = b.purImport;                                        // នាំចូល
   const c7  = c5 + c6;                                            // សរុប
   const c8  = b.purReverse;                                       // ការទិញអាករជាបន្ទុករដ្ឋ
-  const c9  = c7 * 0.10;                                          // អាករលើធាតុចូល
+  /* អាករលើធាតុចូល ៖ ច្បាប់ដូចជួរ ៤ បេះបិទ — យកអាករពិតដែលបូកពី
+     វិក្កយបត្រនីមួយៗ បើវាសមហេតុផល ; បើគ្មានជួរអាករ ឬខុសលើស ១%
+     ថយទៅ ១០% នៃមូលដ្ឋានវិញ។ PR CN/DN គិត ១០% ដដែល។ */
+  const c9gross = (b.purLocal + b.purImport) * 0.10;
+  const c9real  = b.purVat || 0;
+  const c9use   = (c9real > 0 && Math.abs(c9real - c9gross) <= Math.max(10, c9gross * 0.01))
+                    ? c9real : c9gross;
+  const c9  = c9use - b.prCN * 0.10 + b.prDN * 0.10;              // អាករលើធាតុចូល
   const c11 = b.purNonCreditable + b.purNonVatBase + b.otherExpenses; // ការទិញមិនជាប់អាករ
   return { c1, c2, c3, c4, c5, c6, c7, c8, c9, c10: credit || 0, c11, c12: vatPaid || 0,
            otherExpenses:b.otherExpenses, prCN:b.prCN, prDN:b.prDN, srCN:b.srCN, srDN:b.srDN };
@@ -17598,11 +17891,22 @@ function vatCellDetail(year, month, col){
       total = a + b - cn + dn; break;
     }
     case 'c4': {
-      formula = 'ជួរ ៣ (អាករ ១០%) × ១០%';
-      const c3 = vatCellDetail(year, month, 'c3');
-      parts.push({label:'ជួរ ៣', value:c3.total}, {label:'× ១០%', value:null});
-      total = c3.total * 0.10;
-      return { title:'អាករលើធាតុចេញ', formula, parts, docs:c3.docs, total };
+      /* ⚠ ត្រូវដូចនឹង computeVATRow បេះបិទ បើមិនដូច្នេះទេ ផ្ទាំងពិនិត្យ
+         នឹងបង្ហាញលេខមួយ ហើយតារាងបង្ហាញលេខមួយទៀត។ */
+      formula = 'អាករពិតលើវិក្កយបត្រ (ក្នុងស្រុក + នាំចេញ) − Sale CN × ១០% + Sale DN × ១០%';
+      const vLocal = sumSale(v=>pos(v.vatLocal), v=>(v.vatLocal||0), 'SALE · អាករក្នុងស្រុក');
+      const vExp   = sumSale(v=>pos(v.vatExport), v=>(v.vatExport||0), 'SALE · អាករនាំចេញ');
+      const cn = sumCD(S.saleCD, false, 'SALE CN (ដក)');
+      const dn = sumCD(S.saleCD, true,  'SALE DN (បូក)');
+      const gross = sumSale(v=>pos(v.vatLocal), v=>(v.baseExclVat||0), '')
+                  + sumSale(v=>pos(v.vatExport), v=>(v.baseExclVat||0), '');
+      const grossVat = gross * 0.10;
+      const real = vLocal + vExp;
+      const use = (real > 0 && Math.abs(real - grossVat) <= Math.max(10, grossVat * 0.01)) ? real : grossVat;
+      parts.push({label:'អាករក្នុងស្រុក', value:vLocal}, {label:'អាករនាំចេញ', value:vExp},
+                 {label:'ដក ៖ Sale CN × ១០%', value:-(cn*0.10)}, {label:'បូក ៖ Sale DN × ១០%', value:dn*0.10});
+      total = use - cn * 0.10 + dn * 0.10;
+      break;
     }
     case 'c5': {
       formula = 'ការទិញក្នុងស្រុក − PR CN + PR DN';
@@ -17630,11 +17934,21 @@ function vatCellDetail(year, month, col){
       parts.push({label:'បន្ទុករដ្ឋ', value:total}); break;
     }
     case 'c9': {
-      formula = 'ជួរ ៧ (សរុបការទិញ) × ១០%';
-      const c7 = vatCellDetail(year, month, 'c7');
-      parts.push({label:'ជួរ ៧', value:c7.total}, {label:'× ១០%', value:null});
-      total = c7.total * 0.10;
-      return { title:'អាករលើធាតុចូល', formula, parts, docs:c7.docs, total };
+      /* ⚠ ត្រូវដូចនឹង computeVATRow បេះបិទ (ដូចជួរ ៤ ដែរ)។ */
+      formula = 'អាករពិតលើវិក្កយបត្រទិញ (ក្នុងស្រុក + នាំចូល) − PR CN × ១០% + PR DN × ១០%';
+      const vLoc = sumPur(v=>pos(v.vatLocal), v=>(v.vatLocal||0), 'PURCHASE · អាករក្នុងស្រុក');
+      const vImp = sumPur(v=>pos(v.vatExport), v=>(v.vatExport||0), 'PURCHASE · អាករនាំចូល');
+      const cn = sumCD(S.purchaseCD, false, 'PR CN (ដក)');
+      const dn = sumCD(S.purchaseCD, true,  'PR DN (បូក)');
+      const gross = sumPur(v=>pos(v.vatLocal), v=>(v.baseExclVat||0), '')
+                  + sumPur(v=>pos(v.vatExport), v=>(v.baseExclVat||0), '');
+      const grossVat = gross * 0.10;
+      const real = vLoc + vImp;
+      const use = (real > 0 && Math.abs(real - grossVat) <= Math.max(10, grossVat * 0.01)) ? real : grossVat;
+      parts.push({label:'អាករក្នុងស្រុក', value:vLoc}, {label:'អាករនាំចូល', value:vImp},
+                 {label:'ដក ៖ PR CN × ១០%', value:-(cn*0.10)}, {label:'បូក ៖ PR DN × ១០%', value:dn*0.10});
+      total = use - cn * 0.10 + dn * 0.10;
+      break;
     }
     case 'c11': {
       formula = 'ការទិញមិនអនុញ្ញាតឥណទាន + ការទិញមិនជាប់អតប + Other Expenses';
@@ -20045,6 +20359,17 @@ window.__getTOICoverInfo = function(){
   };
 };
 
+/* ប្រភេទសវនកម្មដែលមានប្រសិទ្ធភាព — ច្បាប់តែមួយ ប្រើទាំង Data Entry
+   និង COVER ។ ⚠ កុំសរសេរច្បាប់នេះពីរកន្លែង បើមិនដូច្នេះទេ ថ្ងៃណាមួយ
+   ពួកវានឹងខុសគ្នា ហើយ COVER នឹងបង្ហាញផ្សេងពីអ្វីដែលគេជ្រើស។ */
+function coverAuditType(ex){
+  ex = ex || {};
+  if(ex.auditType) return ex.auditType;
+  var st = String(ex.companyStatus || '');
+  if(st.indexOf('ស្នើសុំបិទ') !== -1) return 'ស្នើសុំបិទ';
+  if(st.indexOf('ចុះបញ្ជីជោគជ័យ') !== -1) return 'កម្មវិធី';
+  return '';
+}
 function renderCoverPanel(){
   const de = state.dataEntry || {};
   const info = ciInfo(state.companyInfo[state.years[state.years.length-1]]);
@@ -20084,8 +20409,39 @@ function renderCoverPanel(){
   // ---- Header — a real bordered table (matches the Excel layout: two
   // label/value pairs per row, values on one line, editable where there's
   // no automated source) ----
-  const headerTable = el('table', {class:'cover-no-border', style:'width:100%; border-collapse:collapse; margin-bottom:6px;'});
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ខិតលេខទូរស័ព្ទមកឆ្វេង ឱ្យត្រូវជួរជាមួយ
+     សវនករដៃគូ · ខិត EMAIL ឱ្យត្រូវជាមួយ អនុការិយាល័យ · ជួរអនុលោមភាព និង
+     ការលើកទឹកចិត្ត ឱ្យត្រូវនឹងជួរអនុការិយាល័យ» ។
+     ផ្នែក COVER មានតារាង **បី** ដាច់ដោយឡែក ហើយតារាងនីមួយៗវាស់ជួរឈរ
+     របស់វាតាមមាតិកាខ្លួនឯង — ដូច្នេះជួរឈរទី ៣ របស់តារាងមួយ មិនដែល
+     ចំកន្លែងជាមួយជួរឈរទី ៣ របស់តារាងមួយទៀតឡើយ។
+     ដំណោះស្រាយដោយមិនរួមតារាង (ការរួមតារាងធ្លាប់បរាជ័យ ព្រោះជួរឈរ
+     ចុងក្រោយត្រូវច្របាច់អស់) ៖ ដាក់ **ក្រឡាចត្រង្គ ៦ ជួរឈរដូចគ្នា**
+     ទៅតារាងទាំងបី តាមរយៈ <colgroup> ។
+     ⚠ ធាតុ <col> ទាំងនេះ **គ្មានទទឹងទេ** ដោយខ្លួនឯង — ទទឹងកំណត់ក្នុង CSS
+     ព្រីនតែប៉ុណ្ណោះ ដូច្នេះ **ផ្ទាំងលើអេក្រង់មិនប្តូរសោះ** (ដែលគេថាស្អាត
+     ហើយ) ។ កែទទឹង ៖ រកពាក្យ `.cv-c1` ក្នុងប្លុក @media print ។ */
+  /* ស្លាកមួយ = អត្ថបទ + សញ្ញា «៖» ដាច់ពីគ្នា ដើម្បីអោយតម្រឹមបានដោយឡែក។ */
+  function cvLabel(td, text){
+    const a = document.createElement('span'); a.textContent = text + ' ';
+    const b = document.createElement('span'); b.className = 'cv-cl'; b.textContent = '៖';
+    td.appendChild(a); td.appendChild(b);
+    return td;
+  }
+  function cvCols(t){
+    const cg = document.createElement('colgroup');
+    for(let i=1;i<=6;i++){
+      const c = document.createElement('col'); c.className = 'cv-c' + i;
+      cg.appendChild(c);
+    }
+    t.appendChild(cg);
+    return t;
+  }
+  const headerTable = cvCols(el('table', {class:'cover-no-border', style:'width:100%; border-collapse:collapse; margin-bottom:6px;'}));
   const ex_h = state.extraCompanyInfo || {};
+  /* ប្រភេទសវនកម្មដែលមានប្រសិទ្ធភាព ៖ អ្វីដែលគេជ្រើសដោយដៃមុន បើទទេ
+     ទាយពីស្ថានភាពសហគ្រាស — ច្បាប់ដូចគ្នាបេះបិទនឹង Data Entry។ */
+  const auditTypeAuto = coverAuditType(ex_h);
   // Smart "ការិយសវនកម្ម" range: 01-01-[firstYear] ដល់ 31-12-[lastYear] by
   // default, UNLESS the company registered partway through firstYear (use
   // the actual registration date instead of Jan 1) or is closing partway
@@ -20095,13 +20451,14 @@ function renderCoverPanel(){
     s = String(s).trim();
     let m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);           // YYYY-MM-DD (native <input type=date>)
     if(m) return new Date(+m[1], +m[2]-1, +m[3]);
-    m = s.match(/^(\d{1,2})-(\d{1,2})-(\d{4})/);            // DD-MM-YYYY
+    m = s.match(/^(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{4})/);   // DD-MM-YYYY / DD/MM/YYYY
     if(m) return new Date(+m[3], +m[2]-1, +m[1]);
     return null;
   }
+  /* [stated] ២០២៦-០៨-១៧ ៖ «កែមក DD/MM/YYYY វិញ» ។ */
   function fmtDMY(d){
     const p = n => String(n).padStart(2,'0');
-    return p(d.getDate())+'-'+p(d.getMonth()+1)+'-'+d.getFullYear();
+    return p(d.getDate())+'/'+p(d.getMonth()+1)+'/'+d.getFullYear();
   }
   function smartAuditPeriodDefault(){
     if(!(periodYearMatches && periodYearMatches.length)) return '';
@@ -20113,7 +20470,7 @@ function renderCoverPanel(){
     const regDateVal = parseFlexDate(getCV('taxRegDate') || regDate);
     if(regDateVal && regDateVal > startDate) startDate = regDateVal;
 
-    const auditType = getCV('programAuditType') || ex_h.auditType || '';
+    const auditType = getCV('programAuditType') || auditTypeAuto || '';
     if(auditType === 'ស្នើសុំបិទ' || auditType === 'ជម្រះ'){
       const closureDateVal = parseFlexDate(ex_h.auditTypeDate);
       if(closureDateVal && closureDateVal < endDate) endDate = closureDateVal;
@@ -20123,19 +20480,37 @@ function renderCoverPanel(){
   const hRows = [
     ['សហគ្រាស', ()=>coverEditableInputDefault('companyNameOverride', info.name, '100%'), 'អតប', ()=>coverEditableInputDefault('companyTinOverride', info.tin, '100%')],
     ['លេខកម្មវិធី', ()=>coverEditableInputDefault('programNumber', getDE('prog_ptype_'+progIdx), '100%'), 'លេខកូដកម្មវិធី', ()=>coverEditableInputDefault('programCode', getDE('prog_pcode_'+progIdx), '100%')],
-    ['ប្រភេទកម្មវិធីសវនកម្ម', ()=>coverEditableInputDefault('programAuditType', ex_h.auditType, '100%'), 'ការិយសវនកម្ម', ()=>coverEditableInputDefault('auditPeriodRange', smartAuditPeriodDefault() || rawAuditPeriod, '100%')],
+    ['ប្រភេទកម្មវិធីសវនកម្ម', ()=>coverEditableInputDefault('programAuditType', auditTypeAuto, '100%'), 'ការិយសវនកម្ម', ()=>coverEditableInputDefault('auditPeriodRange', smartAuditPeriodDefault() || rawAuditPeriod, '100%')],
   ];
   hRows.forEach(([l1,v1,l2,v2], idx)=>{
     const tr = document.createElement('tr');
-    const td1 = document.createElement('td'); td1.style.cssText='padding:4px 4px 4px 0; font-weight:600; white-space:nowrap; width:1%;'; td1.textContent = l1 + ' ៖';
+    const td1 = document.createElement('td'); td1.style.cssText='padding:4px 4px 4px 0; font-weight:600; white-space:nowrap; width:1%;';
+    /* ⚠ [stated] ២០២៦-០៨-១៧ ៖ «ប្តូរជួរអក្សរនៅខាងឆ្វេង · ជួរ ៖ ត្រូវហើយ» ។
+       អត្ថបទស្លាកត្រូវតម្រឹម **ឆ្វេង** តែសញ្ញា «៖» ត្រូវនៅ **ជួរដដែល** ។
+       ធ្វើមិនបានទេបើវាជាអត្ថបទតែមួយ — ដូច្នេះបំបែកជាពីរ span ៖ អត្ថបទ
+       ហូរពីឆ្វេង ហើយ `.cv-cl` ត្រូវ float ទៅស្តាំក្នុង CSS ព្រីន។
+       លើអេក្រង់គ្មាន float ទេ ដូច្នេះវាបង្ហាញ «ស្លាក ៖» ដូចដើមបេះបិទ។ */
+    cvLabel(td1, l1);
     const td2 = document.createElement('td'); td2.style.cssText='padding:4px 12px 4px 6px;'; td2.appendChild(v1());
+    /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ជួរអនុការិយាល័យ នៅមិនត្រូវជួរជាមួយនឹង អតប» ។
+       តារាងក្បាល COVER មាន **៦ ជួរឈរ** ព្រោះជួរដេក សវនករ/សវនករដៃគូ/
+       អនុការិយាល័យ មាន ៣ គូ (៦ ក្រឡា) ។ ជួរដេកខាងលើមានតែ ៤ ក្រឡា
+       ដូច្នេះស្លាកទីពីរ («អតប») ធ្លាក់លើជួរឈរទី ៣ ខណៈ «អនុការិយាល័យ»
+       នៅជួរឈរទី ៥ — ជួរឈរខុសគ្នា មិនអាចត្រង់គ្នាបានឡើយ។
+       ដំណោះស្រាយ ៖ អោយក្រឡាតម្លៃទីមួយលាតគ្រប ៣ ជួរឈរ (២,៣,៤) ដូច្នេះ
+       ស្លាកទីពីរធ្លាក់លើជួរឈរទី ៥ ដូចគ្នាបេះបិទនឹង «អនុការិយាល័យ» ⇒
+       សញ្ញា «៖» របស់ អតប · លេខកូដកម្មវិធី · ការិយសវនកម្ម · អនុការិយាល័យ
+       ត្រង់គ្នាទាំងអស់ (ស្លាកជា width:1% ហើយតម្រឹមស្តាំ ដូច្នេះសញ្ញា «៖»
+       ជាគែមស្តាំរបស់ជួរឈរ — ត្រង់គ្នាដោយស្វ័យប្រវត្តិ)។
+       ⚠ ជួរឈរទី ៣ ឥឡូវជារបស់ «សវនករដៃគូ» តែម្នាក់ឯង។ */
     if(l2 === ''){
-      td2.colSpan = 3;
+      td2.colSpan = 5;
       tr.appendChild(td1); tr.appendChild(td2);
       headerTable.appendChild(tr);
       return;
     }
-    const td3 = document.createElement('td'); td3.style.cssText='padding:4px 4px 4px 0; font-weight:600; white-space:nowrap; width:1%;'; td3.textContent = l2 + ' ៖';
+    td2.colSpan = 3;
+    const td3 = document.createElement('td'); td3.style.cssText='padding:4px 4px 4px 0; font-weight:600; white-space:nowrap; width:1%;'; cvLabel(td3, l2);
     const td4 = document.createElement('td'); td4.style.cssText='padding:4px 12px 4px 6px;'; td4.appendChild(v2());
     tr.appendChild(td1); tr.appendChild(td2); tr.appendChild(td3); tr.appendChild(td4);
     headerTable.appendChild(tr);
@@ -20147,7 +20522,7 @@ function renderCoverPanel(){
     ['សវនករដៃគូ', coverEditableInputDefault('partnerAuditorOverride', (typeof window.__getPersonalInfo === 'function' ? window.__getPersonalInfo().partnerAuditorName : ''), '100%')],
     ['អនុការិយាល័យ', coverEditableInputDefault('subOffice', (typeof window.__getPersonalInfo === 'function' ? window.__getPersonalInfo().subOfficeName : ''), '100%')],
   ].forEach(([label, inputEl])=>{
-    const tdL = document.createElement('td'); tdL.style.cssText='padding:4px 4px 4px 0; font-weight:600; white-space:nowrap; width:1%;'; tdL.textContent = label + ' ៖';
+    const tdL = document.createElement('td'); tdL.style.cssText='padding:4px 4px 4px 0; font-weight:600; white-space:nowrap; width:1%;'; cvLabel(tdL, label);
     const tdV = document.createElement('td'); tdV.style.cssText='padding:4px 12px 4px 6px;'; tdV.appendChild(inputEl);
     auditorRow.appendChild(tdL); auditorRow.appendChild(tdV);
   });
@@ -20156,7 +20531,7 @@ function renderCoverPanel(){
 
   // ---- I. ព័ត៌មានសហគ្រាស ----
   wrap.appendChild(el('h3',{style:'margin-top:24px; font-family:\'Khmer OS Muol Light\',\'Noto Serif Khmer\',serif; font-weight:600;'}, 'I. ព័ត៌មានសហគ្រាស'));
-  const infoTable = el('table', {class:'cover-no-border', style:'width:100%; border-collapse:collapse; margin-bottom:6px;'});
+  const infoTable = cvCols(el('table', {class:'cover-no-border', style:'width:100%; border-collapse:collapse; margin-bottom:6px;'}));
   /* vertical-align:top ៖ តម្លៃណាដែលវែងហើយចុះពីរបន្ទាត់ (ទ្រង់ទ្រាយគតិយុត្ត)
      ធ្វើអោយក្រឡាទាំងអស់ខ្ពស់ឡើង ហើយស្លាកឈ្មោះ (ដែលកំណត់ដោយស្វ័យប្រវត្តិ
      ត្រង់កណ្តាល) ធ្លាក់ចុះក្រោមបន្ទាត់ទី១ របស់តម្លៃ — មើលទៅដូចជាអក្សរ
@@ -20176,7 +20551,7 @@ function renderCoverPanel(){
   function infoRowMulti(pairs, opts){
     const tr = document.createElement('tr');
     pairs.forEach(([label, val], i)=>{
-      const td1 = document.createElement('td'); td1.style.cssText = LABEL_CSS; td1.textContent = label + ' ៖';
+      const td1 = document.createElement('td'); td1.style.cssText = LABEL_CSS; cvLabel(td1, label);
       const td2 = document.createElement('td'); td2.style.cssText = VALUE_CSS;
       /* ក្រឡាតម្លៃទាំងអស់ លើកលែងក្រឡាចុងក្រោយ ត្រូវរួមតូចតាមមាតិការបស់វា
          (width:1%)។ បើទុកអោយវាចែកទំហំស្មើគ្នា នោះក្រឡាដើមៗសល់ចន្លោះទទេ
@@ -20211,7 +20586,18 @@ function renderCoverPanel(){
          បញ្ចប់មុនគែមតារាង ហើយវាលវែង (អាសយដ្ឋាន, ទ្រង់ទ្រាយគតិយុត្ត)
          ត្រូវច្របាច់រហូតដល់អក្សរដាច់។
          ជួរឈរដែលប្រើមុនក្រឡាចុងក្រោយ = 2×គូ − 1 ដូច្នេះនៅសល់ 7 − 2×គូ។ */
-      if(i === pairs.length - 1){
+      /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ជួរអក្សរអនុការិយាល័យស្មើនឹងជួរអតប» ។
+         ពីមុនចន្លោះលើសត្រូវដាក់លើក្រឡា **ចុងក្រោយ** ដូច្នេះគូចុងក្រោយរបស់
+         ជួរដេក ២ គូ អង្គុយនៅជួរឈរទី ៣ ខណៈគូចុងក្រោយរបស់ជួរដេក ៣ គូ
+         អង្គុយនៅជួរឈរទី ៥ — ជួរឈរខុសគ្នា ដូច្នេះមិនអាចត្រង់គ្នាបានឡើយ។
+         ឥឡូវចន្លោះលើសដាក់លើក្រឡាតម្លៃ **ទីមួយ** វិញ ដូច្នេះគូចុងក្រោយ
+         របស់គ្រប់ជួរដេក ធ្លាក់លើជួរឈរទី ៥ ដូចគ្នាទាំងអស់ ⇒ «អតប»
+         «លេខកូដកម្មវិធី» «ការិយសវនកម្ម» និង «អនុការិយាល័យ» ត្រង់គ្នា។
+         ⚠ ជួរដេកមួយគូ (អាសយដ្ឋាន) ៖ ក្រឡាទីមួយ ក៏ជាក្រឡាចុងក្រោយដែរ
+           ដូច្នេះវានៅលាតពេញដដែល — ឥរិយាបថមិនប្តូរទេ។
+         ⚠ តម្លៃដែលត្រូវទទួល ៖ គូទីពីរនៃជួរដេក ២ គូ រំកិលទៅស្តាំ ដូច្នេះ
+           មានចន្លោះទំនេរក្រោយតម្លៃទីមួយ — នេះជាអ្វីដែលការតម្រឹមទាមទារ។ */
+      if(i === (pairs.length > 1 ? 0 : pairs.length - 1)){
         const span = 7 - pairs.length * 2;
         if(span > 1) td2.colSpan = span;
       }
@@ -20237,12 +20623,19 @@ function renderCoverPanel(){
      ធំឈ្នះជានិច្ច ដូច្នេះប្រអប់ចុះបញ្ជីធំតាម ហើយស្លាក «លេខទូរស័ព្ទ» ត្រូវ
      រុញឆ្ងាយ — ទោះដាក់លេខទទឹងអ្វីក៏ដោយ។ តារាងដាច់ដោយឡែកបំបែកចំណង
      នោះ ដោយមិនប៉ះពាល់ជួរដេកឯទៀតសោះ។ */
-  const infoTableTop = el('table', {class:'cover-no-border', style:'width:100%; border-collapse:collapse;'});
+  const infoTableTop = cvCols(el('table', {class:'cover-no-border', style:'width:100%; border-collapse:collapse;'}));
   infoRowMulti([
     ['ចុះបញ្ជីសារពើពន្ធ', coverEditableInputDefault('taxRegDate', regDate, '160px')],
     ['លេខទូរស័ព្ទ', extraInfoInput('phone', ex.phone, '120px')],
     ['Email', extraInfoInput('email', ex.email, '100%')],
-  ], {lastWide:true, table:infoTableTop});
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «លេខទូរសព្ទ ដាក់នៅជួរក្រោមសវនករដៃគូ ·
+     EMAIL ដាក់នៅជួរក្រោមអនុការិយាល័យ» — ជួរដេកនេះនៅតែមិនត្រង់។
+     ជួរដេកនេះជាជួរដេក ៣ គូ ដូចជួរសវនករបេះបិទ ហើយប្រើក្រឡាចត្រង្គដូចគ្នា
+     តែវាមានអ្វីមួយផ្សេង ៖ `lastWide` ដែលសរសេរទទឹង **inline** លើក្រឡា
+     (`width:1%` និង `width:100%`) ។ នេះជាភាពខុសគ្នាតែមួយគត់រវាងជួរដេក
+     ទាំងពីរ ដូច្នេះវាជាមូលហេតុតែមួយគត់ដែលនៅសល់។ ដក `lastWide` ចេញ —
+     ក្រឡាចត្រង្គរួម (colgroup) កំណត់ទទឹងរួចហើយ ដូច្នេះលែងត្រូវការវាទៀត។ */
+  ], {table:infoTableTop});
   wrap.appendChild(infoTableTop);
   infoRowMulti([['អាសយដ្ឋាន', coverEditableInput('companyAddress', info.address||'', '100%')]]);
   infoRowMulti([['សកម្មភាពអាជីវកម្ម', coverEditableInput('businessActivityOverride', info.businessActivity||'', '100%')]]);
@@ -20616,7 +21009,13 @@ function renderCoverPanel(){
   }
 
   // ---- Sign-off ----
-  const defaultSignDate = de.auditStartDate || '';
+  /* [stated] ២០២៦-០៨-១៧ ៖ ថ្ងៃចុះហត្ថលេខាខាងក្រោមក៏ត្រូវ DD/MM/YYYY ដែរ។
+     ⚠ `auditStartDate` មកពី <input type="date"> ដូច្នេះវាតែងតែជា ISO
+     (YYYY-MM-DD) — ត្រូវប្តូរទម្រង់ ទើបបង្ហាញត្រូវ។ */
+  const defaultSignDate = (function(v){
+    const m = String(v || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    return m ? (m[3] + '/' + m[2] + '/' + m[1]) : (v || '');
+  })(de.auditStartDate);
   const pi = (typeof window.__getPersonalInfo === 'function') ? window.__getPersonalInfo() : {};
   function signBlock(roleLabel, nameKey, dateKey, defaultName){
     const nameInput = coverEditableInputDefault(nameKey, defaultName, '160px');
@@ -20722,11 +21121,17 @@ function renderDataEntryPanel(){
   const ex_ = state.extraCompanyInfo || {};
   // Suggest a default audit-type from COMPANYINFO's company-status text,
   // if the person hasn't already picked one by hand.
-  let auditTypeDefault = ex_.auditType || '';
-  if(!auditTypeDefault && ex_ && ex_.companyStatus){
-    const st = String(ex_.companyStatus);
-    if(st.includes('ស្នើសុំបិទ')) auditTypeDefault = 'ស្នើសុំបិទ';
-    else if(st.includes('ចុះបញ្ជីជោគជ័យ')) auditTypeDefault = 'កម្មវិធី';
+  let auditTypeDefault = coverAuditType(ex_);
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ប្រភេទកម្មវិធីសវនកម្ម ជួយបំពេញពី data entry» ។
+     មូលហេតុ ៖ ប្រអប់ជ្រើសរើសនេះ **បង្ហាញ** តម្លៃលំនាំដើមដែលទាយពី
+     ស្ថានភាពសហគ្រាស តែ **មិនរក្សាទុក** វាទេ — វារក្សាទុកតែពេលអ្នកប្រើ
+     ចុចប្តូរ (`change`) ។ ដូច្នេះបើគេទុកតាមលំនាំដើម `extraCompanyInfo
+     .auditType` នៅទទេ ហើយ COVER បានតម្លៃទទេ។ រក្សាទុកវាភ្លាមតែម្តង។ */
+  if(auditTypeDefault && !(ex_ && ex_.auditType)){
+    try{
+      state.extraCompanyInfo = state.extraCompanyInfo || {};
+      state.extraCompanyInfo.auditType = auditTypeDefault;
+    }catch(e){}
   }
   const auditTypeSelect = el('select',{class:'field-input', style:'width:118px;'});
   [['','ប្រភេទសវនកម្ម'],['ស្នើសុំបិទ','ស្នើសុំបិទ'],['ជម្រះ','ជម្រះ'],['កម្មវិធី','កម្មវិធី']].forEach(([val,label])=>{
@@ -20872,6 +21277,22 @@ function renderDataEntryPanel(){
      ទុកឱ្យខ្ញុំជាអ្នករើសខ្លួនឯង» — ឆ្នាំណាដែលរើស ឆ្នាំនោះគិតពន្ធបន្ថែម
      ចំពោះអំពើរាំងស្ទះ ១០,០០០,០០០ រៀល (គ្មានប្រាក់ពន្ធ គ្មានការប្រាក់)។
      ⚠ លេចឡើងតែពេលជ្រើស «មិនត្រឹមត្រូវ» — បើត្រឹមត្រូវ គ្មានអំពើរាំងស្ទះទេ។ */
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ហេតុអ្វីពេលខ្លះប្តូរទៅ មិនត្រឹមត្រូវ វាចេញ
+     ឱ្យរើសឆ្នាំ និងពេលខ្លះមិនចេញ» ។
+     មូលហេតុ ៖ ប្រអប់ជ្រើស «ការកាន់កាប់បញ្ជីគណនេយ្យ» គ្មានជម្រើសទទេទេ
+     ដូច្នេះពេលទិន្នន័យនៅទទេ កម្មវិធីរុករក **បង្ហាញ** ជម្រើសទីមួយ
+     («មិនត្រឹមត្រូវ») តែតម្លៃដែល **រក្សាទុក** នៅតែទទេ។ លក្ខខណ្ឌខាងក្រោម
+     អានតម្លៃដែលរក្សាទុក ⇒ ប្រអប់ឆ្នាំមិនលេចឡើង ទោះលើអេក្រង់អានឃើញថា
+     «មិនត្រឹមត្រូវ» ក៏ដោយ។ ពេលគេចុចប្តូរដោយដៃ តម្លៃត្រូវរក្សាទុក ⇒ វា
+     លេចឡើង។ នេះជាមូលហេតុនៃ «ពេលខ្លះចេញ ពេលខ្លះមិនចេញ» ។
+     ⚠ វាមិនត្រឹមតែលាក់ប្រអប់ទេ ៖ `CC.pullObstruct` ក៏សាកល្បងតម្លៃដដែល
+     ដូច្នេះពន្ធបន្ថែមចំពោះអំពើរាំងស្ទះក៏មិនគិតដែរ។
+     ⚠ ដូចករណី `coverAuditType` ដដែល ៖ **តម្លៃលំនាំដើមដែលគ្រាន់តែបង្ហាញ
+     មិនមែនជាតម្លៃដែលបានរក្សាទុកទេ** — ត្រូវសរសេរវាចូលឱ្យច្បាស់។
+     ⚠ សុវត្ថិភាព ៖ `setDE` គ្រាន់តែសរសេរ state រួចរក្សាទុក វាមិនហៅ
+     render ទេ ដូច្នេះគ្មានរង្វិលជុំឡើយ ; ហើយការគិតពន្ធនៅតែទាមទារឱ្យ
+     គេជ្រើសឆ្នាំមួយ (លំនាំដើម «— គ្មាន —» = គ្មានពន្ធ)។ */
+  if(!String(getDE('bookkeeping')||'').trim()) setDE('bookkeeping', 'មិនត្រឹមត្រូវ');
   const obstructSel = deSelect('obstructYear',
     ['— គ្មាន —'].concat((state.years||[]).slice()), '150px', renderAll);
   const bookRow = inlineRow(
@@ -22097,6 +22518,21 @@ function renderNav(){
     item.onclick = ()=>{ state.activeStep = key; renderAll(); };
     (topNav || nav).appendChild(item);
   }
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «រូបព័ត៌មានផ្ទាល់ខ្លួននៅផ្នែកខាងលើ ដូរវាមក
+     នៅក្នុង ពន្ធលើប្រាក់ចំណូល នៅជួរ DATA ENTRY ដាក់វានៅមុខ DATA ENTRY» ។
+     ⚠ វាមិនអាចប្រើ `navItem` បានទេ ៖ navItem កំណត់ `state.activeStep`
+     ដែលជាជំហានក្នុង TOI ; ព័ត៌មានផ្ទាល់ខ្លួនជា **ផ្ទាំងកម្រិតកម្មវិធី**
+     ដាច់ដោយឡែក ដូច្នេះវាត្រូវហៅ `showView('personalinfo')` វិញ។
+     ⚠ ហៅតាម `window.` ព្រមទាំងពិនិត្យមុន ៖ ប្លុកនេះជា IIFE ដាច់ដោយឡែក
+     ហើយបើថ្ងៃណាមួយឈ្មោះនោះបាត់ គួរតែគ្មានអ្វីកើតឡើង ជាជាងទាំងជួរ
+     រលត់ដោយ ReferenceError។ */
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ពេលចុចចូលព័ត៌មានផ្ទាល់ខ្លួន វាលោតចេញពី
+     ផ្ទាំងពន្ធលើប្រាក់ចំណូល អត់ដូចផ្នែកផ្សេងៗ» ។ ត្រូវ — ជុំមុនខ្ញុំហៅ
+     `showView('personalinfo')` ដែលជាការ **ប្តូរផ្ទាំងកម្រិតកម្មវិធី**
+     ទាំងមូល ; ធាតុឯទៀតក្នុងជួរនេះគ្រាន់តែប្តូរ `state.activeStep` ខាងក្នុង
+     TOI ប៉ុណ្ណោះ។ ឥឡូវវាជាជំហានពិតៗដូចគេ ⇒ ចូល/ចេញដូចគ្នា ហើយធាតុនេះ
+     ក៏ភ្លឺជា active ដែរ។ */
+  navItem('personalinfo', 'ព័ត៌មានផ្ទាល់ខ្លួន', '👤');
   navItem('overview', 'DATA ENTRY', '📝');
   navItem('cover', 'COVER', '📋');
   if(state.years.length){
@@ -22166,7 +22602,28 @@ function renderAll(){
   renderNav();
   renderYearChips();
   const content = document.getElementById('content');
+  /* ⚠⚠ មាតិកា ព័ត៌មានផ្ទាល់ខ្លួន គឺជាធាតុ **តែមួយក្នុងឯកសារ**
+     (`#personal-info-container`) ។ យើងខ្ចីវាមកដាក់ក្នុងផ្ទាំង TOI —
+     ការផ្លាស់ទីធាតុ DOM រក្សាព្រឹត្តិការណ៍ដែលចងរួចទាំងអស់។
+     ⚠⚠ តែ `content.innerHTML = ''` ខាងក្រោម **លុបកូនចោលទាំងអស់** ដូច្នេះ
+     ត្រូវផ្ញើវាត្រឡប់ទៅផ្ទះដើមវិញជាមុនសិន បើមិនដូច្នេះទេ ការចុចទៅជំហាន
+     ផ្សេងនឹងបំផ្លាញផ្ទាំងនោះជារៀងរហូត។ */
+  try{
+    const pib = document.getElementById('personal-info-container');
+    const home = document.getElementById('view-personalinfo');
+    if(pib && home && content.contains(pib)) home.appendChild(pib);
+  }catch(e){}
   content.innerHTML = '';
+  if(state.activeStep === 'personalinfo'){
+    const pib = document.getElementById('personal-info-container');
+    if(pib){
+      content.appendChild(pib);
+      /* ⚠ ត្រូវសង់មាតិកាឡើងវិញនៅទីនេះ ៖ `showView` ជាអ្នកហៅវាធម្មតា
+         តែឥឡូវយើងមិនឆ្លងកាត់ `showView` ទៀតទេ។ */
+      try{ if(typeof window.renderPersonalInfoView === 'function') window.renderPersonalInfoView(); }catch(e){}
+    }
+    return;
+  }
   if(state.activeStep === 'cover'){
     content.appendChild(renderCoverPanel());
     return;
@@ -23328,6 +23785,36 @@ function buildRiskMetaSection(){
     if(getFormMeta('auditorPartner')==='' && pi.partnerAuditorName) setFormMeta('auditorPartner', pi.partnerAuditorName);
   }
   if(getFormMeta('period')===''){ const p = riskPeriodAuto(); if(p) setFormMeta('period', p); }
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ទុកកន្លែងដើម្បីបំពេញ P1-2026 និង ការិយាល័យ
+     ផង មិនមែនបំពេញដោយដៃទេ» — ពួកគេចង់វាយក្នុងប្រព័ន្ធ រួចអោយវាចេញលើ
+     ក្រដាស មិនមែនសរសេរដោយប៊ិចលើក្រដាសទេ។ ដូច្នេះវាលពីរថ្មីនៅទីនេះ
+     ព្រមទាំងតម្លៃលំនាំដើមដែលទាយអោយ ៖
+       · លេខកម្មវិធី = «P» + លេខកម្មវិធីដែលជ្រើសក្នុង COVER + «-» + ឆ្នាំ
+         ចុងក្រោយនៃសវនកម្ម (ឧ. P1-2026)
+       · លេខការិយាល័យ = លេខដែលមានក្នុងឈ្មោះអនុការិយាល័យ បើមាន
+     ⚠ បំពេញតែវាលទទេ ដូចវាលឯទៀតទាំងអស់ក្នុងផ្ទាំងនេះ។ */
+  if(getFormMeta('progNo')===''){
+    var pn = '';
+    try{
+      var de_ = state.dataEntry || {};
+      var cp_ = de_.coverProgram || '';
+      var idx_ = ({}); idx_['កម្មវិធីទី១'] = 1; idx_['កម្មវិធីទី២'] = 2; idx_['កម្មវិធីទី៣'] = 3;
+      var n_ = idx_[cp_] || 1;
+      var ys_ = (state.years || []);
+      var y_ = ys_.length ? ys_[ys_.length-1] : '';
+      pn = 'P' + n_ + (y_ ? ('-' + y_) : '');
+    }catch(e){}
+    if(pn) setFormMeta('progNo', pn);
+  }
+  if(getFormMeta('officeNo')===''){
+    var on_ = '';
+    try{
+      var pi2 = (typeof window.__getPersonalInfo === 'function' ? window.__getPersonalInfo() : {}) || {};
+      var m2 = String(pi2.subOfficeName || '').match(/[0-9\u17E0-\u17E9]+/);
+      if(m2) on_ = m2[0];
+    }catch(e){}
+    if(on_) setFormMeta('officeNo', on_);
+  }
 
   const box = el('div',{class:'risk-meta-box'});
   box.appendChild(el('h3',{class:'sub-h'}, 'ព័ត៌មានទម្រង់ (សម្រាប់បង្កើតរបាយការណ៍)'));
@@ -23349,6 +23836,8 @@ function buildRiskMetaSection(){
   field('auditorPartner','សវនករដៃគូ');
   field('period','ការិយបរិច្ឆេទត្រួតពិនិត្យ (ឧ. 01/01/2024 - 31/12/2025)');
   field('periodYears','ឆ្នាំសវនកម្ម បើគ្មាន TOI (ឧ. 2024, 2025)');
+  field('progNo','លេខកម្មវិធី — ទម្រង់រដ្ឋបាល (ឧ. P1-2026)');
+  field('officeNo','ការិយាល័យសវនកម្មសហគ្រាសទី — ទម្រង់រដ្ឋបាល (ឧ. ១)');
   box.appendChild(grid);
 
   /* [stated] «ដើម្បីឱ្យកាន់តែកុំឱ្យមានកំហុស … បង្ហាញថ្ងៃចុះបញ្ជីពន្ធដារ
@@ -23380,8 +23869,21 @@ function buildRiskMetaSection(){
 }
 
 // Builds one finding page matching the reference form's layout, for print.
-function buildRiskFormPage(cat){
-  const page = el('div',{class:'risk-form-page'});
+/* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «សម្រាប់ផ្នែក Print វិភាគហានិភ័យ ជួយបន្ថែម
+   ទម្រង់នេះមួយទៀត ដាក់ឈ្មោះថា ព្រីនទម្រង់រដ្ឋបាល · កែផ្នែកខាងលើ និង
+   សវនករពន្ធដារ (មិនមានដៃគូរ និងទទួលបន្ទុកទេ) · សម្រាប់លេខ P1 និង
+   ការិយាល័យ ទុកចន្លោះដើម្បីបំពេញ» ។
+   ទម្រង់រដ្ឋបាល = ទម្រង់ហានិភ័យដដែល តែខុសគ្នា ៤ កន្លែង ៖
+     ១. ក្បាល ៖ គ្មានបន្ទាត់ក្រសួង គ្មានត្រា គ្មានក្បាច់ខ្មែរ
+     ២. ចំណងជើង ៖ «បញ្ជីសម្រង់ឈ្មោះ…» + បន្ទាត់ការិយាល័យ ទុកចន្លោះទទេ
+     ៣. តារាង ៖ បន្ថែមជួរឈរ «ល.រ» នៅខាងឆ្វេងបំផុត
+     ៤. ហត្ថលេខា ៖ «សវនករពន្ធដារ» មួយប៉ុណ្ណោះ
+   ⚠ សរសេរជា **ជម្រើស** លើមុខងារដដែល មិនមែនចម្លងមុខងារថ្មីទេ — បើចម្លង
+   ថ្ងៃណាមួយការកែតារាងមួយនឹងភ្លេចមួយទៀត។ */
+function buildRiskFormPage(cat, opts){
+  const admin = !!(opts && opts.admin);
+  /* class បន្ថែម ៖ អោយ CSS កំណត់វិសាលភាពត្រឹមទម្រង់រដ្ឋបាលបាន */
+  const page = el('div',{class: admin ? 'risk-form-page risk-admin-page' : 'risk-form-page'});
 
   // Official ministry header: left text block / center seal / right motto
   /* [stated] ២០២៦-០៨-១៦ ៖ ក្បាលឯកសារត្រូវដូច letterheadHtml() ដែលឯកសារ
@@ -23392,17 +23894,37 @@ function buildRiskFormPage(cat){
   try{ if(typeof window.__gdtSealSrc === 'function') sealSrc = window.__gdtSealSrc() || sealSrc; }catch(e){}
   try{ if(typeof window.__khOrnSrc === 'function') ornSrc = window.__khOrnSrc() || ''; }catch(e){}
   const ministryHdr = el('div',{class:'risk-official-hdr'});
-  ministryHdr.appendChild(el('div',{class:'risk-official-hdr-left'},
-    el('div',{class:'b'}, 'ក្រសួងសេដ្ឋកិច្ច និង ហិរញ្ញវត្ថុ'),
-    el('div',{class:'b'}, 'អគ្គនាយកដ្ឋានពន្ធដារ'),
-    el('div',{}, 'នាយកដ្ឋានសវនកម្មសហគ្រាស')));
-  ministryHdr.appendChild(el('div',{class:'risk-official-hdr-seal'}, el('img',{src:sealSrc, alt:'អគ្គនាយកដ្ឋានពន្ធដារ'})));
+  ministryHdr.appendChild(admin
+    ? el('div',{class:'risk-official-hdr-left'},
+        el('div',{class:'b'}, 'អគ្គនាយកដ្ឋានពន្ធដារ'),
+        el('div',{class:'b'}, 'នាយកដ្ឋានសវនកម្មសហគ្រាស'))
+    : el('div',{class:'risk-official-hdr-left'},
+        el('div',{class:'b'}, 'ក្រសួងសេដ្ឋកិច្ច និង ហិរញ្ញវត្ថុ'),
+        el('div',{class:'b'}, 'អគ្គនាយកដ្ឋានពន្ធដារ'),
+        el('div',{}, 'នាយកដ្ឋានសវនកម្មសហគ្រាស')));
+  /* ⚠ ទម្រង់រដ្ឋបាលគ្មានត្រា — តែត្រូវទុកប្រអប់កណ្តាលទទេចោល ដើម្បីអោយ
+     ជួរឆ្វេង/ស្តាំនៅកន្លែងដដែល (ក្បាលនេះជា ៣ ជួរ)។ */
+  ministryHdr.appendChild(el('div',{class:'risk-official-hdr-seal'},
+    admin ? null : el('img',{src:sealSrc, alt:'អគ្គនាយកដ្ឋានពន្ធដារ'})));
   ministryHdr.appendChild(el('div',{class:'risk-official-hdr-right'},
     el('div',{class:'b'}, 'ព្រះរាជាណាចក្រកម្ពុជា'),
     el('div',{class:'b'}, 'ជាតិ សាសនា ព្រះមហាក្សត្រ'),
-    ornSrc ? el('div',{class:'risk-official-orn'}, el('img',{src:ornSrc, alt:''})) : null));
+    (!admin && ornSrc) ? el('div',{class:'risk-official-orn'}, el('img',{src:ornSrc, alt:''})) : null));
   page.appendChild(ministryHdr);
-  page.appendChild(el('div',{class:'risk-form-title'}, 'ការវិភាគហានិភ័យទូទៅ'));
+  if(admin){
+    /* ចន្លោះបំពេញ ៖ លេខកម្មវិធី (P…) និងលេខការិយាល័យ ទុកជាបន្ទាត់ចុច
+       ដើម្បីអោយសរសេរដោយដៃ — គេស្នើដូច្នេះដោយផ្ទាល់។ */
+    /* តម្លៃពិតបើមាន ; បន្ទាត់ចុចនៅសល់តែពេលវាលទទេ */
+    const pNo = getFormMeta('progNo'), oNo = getFormMeta('officeNo');
+    page.appendChild(el('div',{class:'risk-form-title'},
+      'បញ្ជីសម្រង់ឈ្មោះសហគ្រាសសម្រាប់ដាក់កម្មវិធីសវនកម្ម ',
+      pNo ? el('span',{}, pNo) : el('span',{class:'risk-blank risk-blank-p'}, '')));
+    page.appendChild(el('div',{class:'risk-form-subtitle'},
+      'ការិយាល័យសវនកម្មសហគ្រាសទី',
+      oNo ? el('span',{}, oNo) : el('span',{class:'risk-blank risk-blank-of'}, '')));
+  } else {
+    page.appendChild(el('div',{class:'risk-form-title'}, 'ការវិភាគហានិភ័យទូទៅ'));
+  }
 
   // Everything below (info grid + category title/period + data table) is
   // ONE continuous table sharing GRID_COLS columns, so nothing above ever
@@ -23411,28 +23933,63 @@ function buildRiskFormPage(cat){
   // what caused the "leftover gap" the columns didn't line up).
   const GRID_COLS = 6;
   const nameKh = getFormMeta('nameKh'), nameEn = getFormMeta('nameEn');
+  /* ⚠ [stated] «ឈ្មោះជាភាសាខ្មែរ មួយជួរ រៀបនៅខាងឆ្វេង · ឈ្មោះជាឡាតាំង
+     មួយជួរ រៀបនៅខាងឆ្វេង» ។ ឈ្មោះនីមួយៗនៅបន្ទាត់ដាច់ដោយឡែករួចហើយ
+     (<div> ពីរ) — អ្វីដែលខុសគឺការតម្រឹម ៖ ក្រឡានេះមាន class
+     `risk-center-cell` ។ សម្រាប់ទម្រង់រដ្ឋបាល ដាក់ class ផ្សេងវិញ។ */
   const nameCellContent = (nameKh || nameEn)
     ? el('div',{}, nameKh ? el('div',{}, nameKh) : null, nameEn ? el('div',{}, nameEn) : null)
     : '—';
   const infoWrap = el('div',{class:'table-wrap risk-official-info'});
   const table = el('table');
   const thead = el('thead');
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «លេខអតប មួយជួរ · ប្រភេទ មួយជួរ · សវនករ
+     មួយជួរ · ការិយបរិច្ឆេទ មួយជួរ · ឈ្មោះសហគ្រាស merge · សកម្មភាព merge ·
+     ល.រ merge» ។ ក្បាលតារាងរបស់ទម្រង់រដ្ឋបាលមាន **ពីរជួរដេក** ៖ ជួរឈរ
+     ដែលកាន់តម្លៃពីរផ្សេងគ្នាបំបែកជាពីរស្លាក ; ជួរឈរដែលកាន់តម្លៃតែមួយ
+     លាតជាប់ពីរជួរដេក (rowspan) ។
+        ល.រ   | លេខ អតប      | ឈ្មោះសហគ្រាស | សកម្មភាព | សវនករ
+        (លាត) | ប្រភេទ       | (លាត)        | (លាត)    | ការិយបរិច្ឆេទ
+     ⚠ ល.រ ត្រូវបញ្ចូលក្រោយពេលតារាងសង់រួច (មើលខាងក្រោម) ដូច្នេះ rowspan
+     របស់វាកំណត់នៅទីនោះ មិនមែនទីនេះទេ។
+     ⚠ ទម្រង់ហានិភ័យធម្មតានៅក្បាលមួយជួរដេកដដែល។ */
   const hr1 = el('tr');
-  hr1.appendChild(el('th',{}, 'លេខ អតប / ប្រភេទ'));
-  hr1.appendChild(el('th',{colspan:'2'}, 'ឈ្មោះសហគ្រាស'));
-  hr1.appendChild(el('th',{}, 'សកម្មភាព'));
+  hr1.appendChild(el('th', admin ? {} : {}, admin ? 'លេខ អតប' : 'លេខ អតប / ប្រភេទ'));
+  hr1.appendChild(el('th', admin ? {colspan:'2', rowspan:'2'} : {colspan:'2'}, 'ឈ្មោះសហគ្រាស'));
+  hr1.appendChild(el('th', admin ? {rowspan:'2'} : {}, 'សកម្មភាព'));
   hr1.appendChild(el('th',{colspan:'2', class:'risk-auditor-cell'}, 'សវនករ'));
   thead.appendChild(hr1);
+  if(admin){
+    const hr2 = el('tr');
+    /* ⚠ [stated] ២០២៦-០៨-១៧ ៖ «ប្រភេទ CENTER · MTU-PP CENTER» ។ ទាំងពីរ
+       ជាក្រឡា **ទីមួយ** នៃជួរដេករបស់ខ្លួន ដូច្នេះវាត្រូវច្បាប់ដដែល
+       `#toi-embed td:first-child, th:first-child{text-align:left !important}`
+       ចាប់ — ករណីទី ២ ដូច «ល.រ» បេះបិទ។ ដាក់ class ដើម្បីអោយ CSS ព្រីន
+       ដែលមានទម្ងន់ខ្ពស់ជាងឈ្នះវិញ។ */
+    hr2.appendChild(el('th',{class:'risk-type-cell'}, 'ប្រភេទ'));
+    hr2.appendChild(el('th',{colspan:'2', class:'risk-auditor-cell'}, 'ការិយបរិច្ឆេទ'));
+    thead.appendChild(hr2);
+  }
   table.appendChild(thead);
   const tbody = el('tbody');
   const ir1 = el('tr');
   ir1.appendChild(el('td',{class:'label'}, getFormMeta('tin')||'—'));
-  ir1.appendChild(el('td',{colspan:'2', rowspan:'2', class:'risk-center-cell'}, nameCellContent));
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ឈ្មោះខ្មែរ ឡាតាំង នឹងមាន BOARDER ផង
+     (TABLE)» ។ ស៊ុមមកពី **ក្រឡា** មិនមែនពី <div> ទេ — ដរាបណាឈ្មោះទាំងពីរ
+     នៅក្នុងក្រឡាតែមួយ (rowspan 2) វាមិនអាចមានបន្ទាត់ខណ្ឌចែកបានឡើយ។
+     ដូច្នេះសម្រាប់ទម្រង់រដ្ឋបាល បំបែកជា **ពីរក្រឡា** ៖ ខ្មែរនៅជួរដេកទី ១
+     ឡាតាំងនៅជួរដេកទី ២ ដូចជួរឈរ លេខ អតប / ប្រភេទ បេះបិទ។
+     ⚠ ពេលដក rowspan ចេញ ជួរដេកទី ២ ខ្វះមួយក្រឡា — ត្រូវបញ្ចូលទៅវិញ
+     ខាងក្រោម បើមិនដូច្នេះទេ ក្រឡាឯទៀតនឹងរអិលខុសជួរឈរ។ */
+  ir1.appendChild(admin
+    ? el('td',{colspan:'2', class:'risk-center-cell risk-name-cell'}, nameKh || '—')
+    : el('td',{colspan:'2', rowspan:'2', class:'risk-center-cell'}, nameCellContent));
   ir1.appendChild(el('td',{rowspan:'2', class:'risk-center-cell'}, getFormMeta('activity')||'—'));
   ir1.appendChild(el('td',{class:'risk-auditor-cell'}, getFormMeta('auditorLead')||'—'));
   tbody.appendChild(ir1);
   const ir2 = el('tr');
-  ir2.appendChild(el('td',{class:'label'}, getFormMeta('unitType')||'—'));
+  ir2.appendChild(el('td',{class: admin ? 'label risk-type-cell' : 'label'}, getFormMeta('unitType')||'—'));
+  if(admin) ir2.appendChild(el('td',{colspan:'2', class:'risk-center-cell risk-name-cell'}, nameEn || '—'));
   ir2.appendChild(el('td',{class:'risk-auditor-cell'}, getFormMeta('auditorPartner')||'—'));
   tbody.appendChild(ir2);
   const ir3 = el('tr');
@@ -23478,6 +24035,18 @@ function buildRiskFormPage(cat){
     tbody.appendChild(tr);
   });
   table.appendChild(tbody);
+  if(admin){
+    /* ជួរឈរ «ល.រ» ៖ បន្ថែម <th> មួយនៅមុខជួរក្បាល ហើយ <td> មួយដែល
+       rowspan គ្រប់ជួរដេកក្នុង tbody — ធ្វើក្រោយពេលតារាងសង់រួច ដូច្នេះ
+       ចំនួនជួរដេកជាចំនួនពិត មិនមែនការស្មាន។ */
+    const bodyRows = tbody.children.length;
+    hr1.insertBefore(el('th',{class:'risk-no-col', rowspan:'2'}, 'ល.រ'), hr1.firstChild);
+    if(bodyRows){
+      tbody.children[0].insertBefore(
+        el('td',{class:'risk-no-col', rowspan:String(bodyRows)}, '១'),
+        tbody.children[0].firstChild);
+    }
+  }
   infoWrap.appendChild(table);
   page.appendChild(infoWrap);
 
@@ -23503,15 +24072,23 @@ function buildRiskFormPage(cat){
   signTable.appendChild(scg);
   const signBody = el('tbody');
   const labelRow = el('tr');
-  labelRow.appendChild(el('td',{colspan:'2'}));
-  labelRow.appendChild(el('td',{class:'risk-signoff-label'}, 'សវនករទទួលបន្ទុក'));
-  labelRow.appendChild(el('td',{class:'risk-signoff-label'}, 'សវនករដៃគូ'));
-  signBody.appendChild(labelRow);
   const sigRow = el('tr');
-  sigRow.appendChild(el('td',{colspan:'2'}));
-  sigRow.appendChild(el('td',{class:'risk-signoff-sig'}, getFormMeta('auditorLead')||'—'));
-  sigRow.appendChild(el('td',{class:'risk-signoff-sig'}, getFormMeta('auditorPartner')||'—'));
-  signBody.appendChild(sigRow);
+  if(admin){
+    /* [stated] «មិនមានដៃគូរ និងទទួលបន្ទុកទេ» — ស្លាកតែមួយ «សវនករពន្ធដារ»
+       នៅខាងស្តាំ ហើយឈ្មោះសវនករនៅក្រោមវា។ */
+    labelRow.appendChild(el('td',{colspan:'3'}));
+    labelRow.appendChild(el('td',{class:'risk-signoff-label'}, 'សវនករពន្ធដារ'));
+    sigRow.appendChild(el('td',{colspan:'3'}));
+    sigRow.appendChild(el('td',{class:'risk-signoff-sig'}, getFormMeta('auditorLead')||'—'));
+  } else {
+    labelRow.appendChild(el('td',{colspan:'2'}));
+    labelRow.appendChild(el('td',{class:'risk-signoff-label'}, 'សវនករទទួលបន្ទុក'));
+    labelRow.appendChild(el('td',{class:'risk-signoff-label'}, 'សវនករដៃគូ'));
+    sigRow.appendChild(el('td',{colspan:'2'}));
+    sigRow.appendChild(el('td',{class:'risk-signoff-sig'}, getFormMeta('auditorLead')||'—'));
+    sigRow.appendChild(el('td',{class:'risk-signoff-sig'}, getFormMeta('auditorPartner')||'—'));
+  }
+  signBody.appendChild(labelRow);
   signTable.appendChild(signBody);
   signWrap.appendChild(signTable);
   page.appendChild(signWrap);
@@ -23548,18 +24125,35 @@ function riskWaitImages(root){
   }));
 }
 
-function printRiskForms(){
+function printRiskForms(opts){
+  const admin = !!(opts && opts.admin);
   const checkedCats = allRiskCategories().filter(c=> getCatChecked(c.id));
   if(checkedCats.length===0){ alert('សូមគូសធីកមុខលេខចំណុចយ៉ាងហោចណាស់មួយជាមុនសិន (☑ នៅមុខលេខ ១-២៨)'); return; }
   const overlay = document.createElement('div');
   overlay.id = 'riskFormPrintContainer';
   overlay.className = 'print-all-container';
-  checkedCats.forEach(cat=> overlay.appendChild(el('div',{class:'print-page'}, buildRiskFormPage(cat))));
+  /* ⚠⚠ [stated] «ជួយរៀបចំព្រីន ដេកវិញបានពេញអក្សរ» — ទម្រង់រដ្ឋបាលព្រីនដេក។
+     ⚠ `@page` ដែលមានឈ្មោះ (page:print-landscape-page) **មិនដើរទេ** ៖ ប្លុក
+     ព្រីនរបស់ TOI មាន `@page{size:A4}` ឈរដោយគ្មានលក្ខខណ្ឌ ហើយវាឈ្នះ។
+     វិធីដែលដើរពិត (ដូច MTR) ៖ បញ្ចូល <style> @page ថ្មីចូល head មុនព្រីន
+     រួចដកវាចេញក្នុង cleanup — ដូច្នេះវាមានប្រសិទ្ធភាពតែពេលព្រីននេះ។
+     ⚠ class `print-landscape` ដាក់ផង ដើម្បីអោយ `autoFitPrintArea` វាស់
+     នឹងទទឹងដេក (990px) មិនមែនទទឹងឈរ (730px)។ */
+  const pageCls = admin ? 'print-page print-landscape' : 'print-page';
+  checkedCats.forEach(cat=> overlay.appendChild(el('div',{class:pageCls}, buildRiskFormPage(cat, {admin:admin}))));
+  var landStyle = null;
+  if(admin){
+    landStyle = document.createElement('style');
+    landStyle.id = 'risk-admin-page-style';
+    landStyle.textContent = '@page{ size:A4 landscape; margin:8mm 6mm 12mm; }';
+    document.head.appendChild(landStyle);
+  }
   overlay.style.position = 'fixed'; overlay.style.left = '-99999px'; overlay.style.top = '0'; overlay.style.display = 'block';
   document.getElementById('toi-embed').appendChild(overlay); // NOT document.body — every #toi-embed-scoped print rule (page breaks, landscape, hiding buttons/legends/year-chips) only matches elements that are actually inside #toi-embed
   function cleanup(){
     document.body.classList.remove('toi-embed-printing-all');
     if(overlay.parentNode) overlay.parentNode.removeChild(overlay);
+    if(landStyle && landStyle.parentNode) landStyle.parentNode.removeChild(landStyle);
     window.removeEventListener('afterprint', cleanup);
   }
   /* ⚠ autoFitPrintArea ក្រោយរូបរួចរាល់ ៖ វាវាស់កម្ពស់ ហើយរូបដែលមិនទាន់
@@ -23901,10 +24495,13 @@ function renderRiskAnalysisPanel(){
   const head = el('h2',{class:'panel-title risk-head'},
     el('span',{class:'risk-head-t'}, 'ការវិភាគហានិភ័យបឋម'));
   const printBtn = el('button',{class:'btn'}, '🖨️ ព្រីនទម្រង់ (☑)');
-  printBtn.onclick = printRiskForms;
+  printBtn.onclick = function(){ printRiskForms(); };
+  const adminBtn = el('button',{class:'btn'}, '🖨️ ព្រីនទម្រង់រដ្ឋបាល (☑)');
+  adminBtn.onclick = function(){ printRiskForms({admin:true}); };
   const excelBtn = el('button',{class:'btn'}, '📊 នាំចេញជា Excel (☑)');
   excelBtn.onclick = exportRiskFormsExcel;
   head.appendChild(printBtn);
+  head.appendChild(adminBtn);
   head.appendChild(excelBtn);
   wrap.appendChild(head);
 
@@ -24609,6 +25206,19 @@ window.__toiImport = function(data){
   let interestMonthlyRate = 1.5;   // percent per month, editable (1.5% or 2%)
   let reassessUsdRate = 0;         // 1 USD = ? KHR, one shared rate applied to every year's totals in the USD summary row (0 = not yet set, falls back to latest FX rate)
 
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ការកំណត់ពន្ធឡើងវិញមិនអាចកំណត់ទាបជាង
+     ការប្រកាសបានទេ ហើយក៏មិនអាចចេញតួលេខអវិជ្ជមានបានដែរ» — ផ្ទាំងបង្ហាញ
+     ពន្ធបៀវត្សបន្ថែម **-2,710,117**។
+     ការកំណត់ឡើងវិញគឺជាការ **បន្ថែម** ៖ បើការគណនាថ្មីទាបជាងអ្វីដែល
+     សហគ្រាសបានប្រកាស នោះគ្មានពន្ធបន្ថែមទេ (សូន្យ) — មិនមែនជាការ
+     សងត្រឡប់ទេ។ ⚠ លេខអវិជ្ជមានមិនត្រឹមតែបង្ហាញខុសទេ ៖ វាហូរបន្តទៅ
+     ពន្ធបន្ថែម ការប្រាក់ និងកាតគណនា ដែលនឹងកាត់បន្ថយពន្ធប្រភេទផ្សេង។
+     ⚠ ច្បាប់នេះត្រូវអនុវត្តនៅ **គ្រប់កន្លែងដែលសរសេរតម្លៃ** (៤ កន្លែង)
+     មិនមែនត្រឹមកន្លែងបង្ហាញទេ។ */
+  function tosAddTax(newTax, declared){
+    var d = (+newTax || 0) - (+declared || 0);
+    return d > 0 ? d : 0;
+  }
   function rowAdditionalTaxTotal(row){
     return (row.additionalSalaryTax || 0) + (row.additionalFringeTax || 0);
   }
@@ -25053,23 +25663,52 @@ window.__toiImport = function(data){
       // later (two separate commits) must not reset this baseline, or the
       // cumulative "additional tax" stat silently collapses to 0 on the
       // second edit — it stays fixed until a full revert.
+      /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ប្រាក់ខែគេប្រកាសខ្ពស់ជាងខ្ញុំកំណត់ឡើងវិញ
+         ចឹងពេលចុចកំណត់ឡើងវិញវាមិនគួរកែទេ លុះត្រាតែការកំណត់ធំជាងគេប្រកាស» ។
+         ការកំណត់ឡើងវិញអាចតែ **បន្ថែម** ប៉ុណ្ណោះ ។ បើតួលេខថ្មីទាបជាង ឬ
+         ស្មើអ្វីដែលសហគ្រាសបានប្រកាស នោះគ្មានអ្វីត្រូវកំណត់ទេ — ជួរដេក
+         ត្រូវនៅដដែល ហើយ **មិនត្រូវរាប់ថាបានកំណត់ឡើងវិញ** ដែរ។
+         ⚠ គោល (declared) = origSalary បើធ្លាប់កំណត់រួច ; បើមិនទាន់ទេ
+         គឺតម្លៃបច្ចុប្បន្នខ្លួនឯង។
+         ⚠ ប្រៀបធៀបលើ **ពន្ធ** មិនមែនលើប្រាក់ខែទេ ដើម្បីអោយការប្តូរ
+         សញ្ជាតិ/ស្ថានភាព (អត្រាខុសគ្នា) នៅតែកំណត់បាន ទោះប្រាក់ខែដដែល។ */
+      const declSalary    = existing.amended ? (existing.origSalary    || 0) : existing.salary;
+      const declFringe    = existing.amended ? (existing.origFringe    || 0) : existing.fringe;
+      const declSalaryTax = existing.amended ? (existing.origSalaryTax || 0) : existing.salaryTax;
+      const declFringeTax = existing.amended ? (existing.origFringeTax || 0) : existing.fringeTax;
+      const useSalary    = salary > declSalary ? salary : declSalary;
+      const useFringe    = fringe > declFringe ? fringe : declFringe;
+      const useSalaryTax = calculateSalaryTax(useSalary, year, residency);
+      const useFringeTax = calculateFringeBenefitTax(useFringe);
+      if (useSalaryTax <= declSalaryTax && useFringeTax <= declFringeTax){
+        /* ត្រឡប់ទៅតម្លៃប្រកាសវិញ ហើយដកស្លាក «បានកំណត់ឡើងវិញ» ចេញ។ */
+        existing.salary = declSalary; existing.salaryTax = declSalaryTax;
+        existing.fringe = declFringe; existing.fringeTax = declFringeTax;
+        existing.additionalSalaryTax = 0;
+        existing.additionalFringeTax = 0;
+        existing.amended = false;
+        existing.residency = residency;
+        if (opts.nationality) existing.nationality = opts.nationality;
+        if (opts.empId) existing.empId = opts.empId;
+        return { row: existing, isNew: false, totalAdditional: 0, belowDeclared: true };
+      }
       if (!existing.amended){
         existing.origSalary = existing.salary; existing.origSalaryTax = existing.salaryTax;
         existing.origFringe = existing.fringe; existing.origFringeTax = existing.fringeTax;
       }
       existing.prevSalary = existing.salary; existing.prevSalaryTax = existing.salaryTax;
       existing.prevFringe = existing.fringe; existing.prevFringeTax = existing.fringeTax;
-      existing.salary = salary; existing.salaryTax = salaryTax;
-      existing.fringe = fringe; existing.fringeTax = fringeTax;
-      existing.additionalSalaryTax = salaryTax - existing.origSalaryTax;
-      existing.additionalFringeTax = fringeTax - existing.origFringeTax;
+      existing.salary = useSalary; existing.salaryTax = useSalaryTax;
+      existing.fringe = useFringe; existing.fringeTax = useFringeTax;
+      existing.additionalSalaryTax = tosAddTax(useSalaryTax, existing.origSalaryTax);
+      existing.additionalFringeTax = tosAddTax(useFringeTax, existing.origFringeTax);
       existing.amended = true;
       existing.usdSalary = usdSalary; existing.usdFringe = usdFringe; existing.fxRate = info.rate;
       existing.fxYear = info.year; existing.fxMonth = info.month; existing.fxExact = info.exact;
       existing.residency = residency;
       if (opts.nationality) existing.nationality = opts.nationality;
       if (opts.empId) existing.empId = opts.empId;
-      return { row: existing, isNew: false, totalAdditional: (salaryTax - existing.prevSalaryTax) + (fringeTax - existing.prevFringeTax) };
+      return { row: existing, isNew: false, totalAdditional: (useSalaryTax - existing.prevSalaryTax) + (useFringeTax - existing.prevFringeTax) };
     }
 
     const row = {
@@ -25808,8 +26447,19 @@ window.__toiImport = function(data){
     const nationality = els.empModalNationality.value.trim();
     const empId = els.empModalId.value.trim();
     const residency = els.empModalResidency.value;
-    const { isNew, totalAdditional } = upsertEntry(modalEmpName, year, month, usdSalary, usdFringe, { nationality, empId, residency });
+    const { isNew, totalAdditional, belowDeclared } = upsertEntry(modalEmpName, year, month, usdSalary, usdFringe, { nationality, empId, residency });
 
+    if (belowDeclared){
+      /* ⚠ ស្ងាត់ៗគ្មានអ្វីកើតឡើង នឹងធ្វើអោយគេឆ្ងល់ — ប្រាប់មូលហេតុ។ */
+      els.empModalStatus.textContent =
+        'មិនបានកំណត់ឡើងវិញ ' + MONTH_KH[month] + ' ' + year +
+        ' — តួលេខមិនធំជាងអ្វីដែលបានប្រកាស';
+      els.empModalStatus.style.color = 'var(--muted)';
+      renderEmployeeModal();
+      refreshManualPanels();
+      render();
+      return;
+    }
     els.empModalStatus.textContent = isNew
       ? `បានកំណត់ពន្ធ ${MONTH_KH[month]} ${year} — ពន្ធត្រូវបង់សរុប ${fmt(totalAdditional)}`
       : `បានកំណត់ពន្ធឡើងវិញ ${MONTH_KH[month]} ${year} — ពន្ធត្រូវបង់បន្ថែម ${fmt(totalAdditional)}`;
@@ -25856,8 +26506,8 @@ window.__toiImport = function(data){
       // Multiple edits happened before this revert — one step of undo still
       // leaves this row short of its true original, so keep the amended
       // baseline and recompute the cumulative diff against it.
-      row.additionalSalaryTax = row.salaryTax - row.origSalaryTax;
-      row.additionalFringeTax = row.fringeTax - row.origFringeTax;
+      row.additionalSalaryTax = tosAddTax(row.salaryTax, row.origSalaryTax);
+      row.additionalFringeTax = tosAddTax(row.fringeTax, row.origFringeTax);
     }
 
     els.empModalStatus.textContent = `បានត្រលប់ ${row.month ? MONTH_KH[row.month] : ''} ${row.year} ទៅតម្លៃដើមវិញ`;
@@ -25940,8 +26590,8 @@ window.__toiImport = function(data){
     row.salaryTax = calculateSalaryTax(row.salary, row.year, row.residency);
     row.fringeTax = calculateFringeBenefitTax(row.fringe);
     if (row.amended){
-      row.additionalSalaryTax = row.salaryTax - (row.origSalaryTax || 0);
-      row.additionalFringeTax = row.fringeTax - (row.origFringeTax || 0);
+      row.additionalSalaryTax = tosAddTax(row.salaryTax, row.origSalaryTax);
+      row.additionalFringeTax = tosAddTax(row.fringeTax, row.origFringeTax);
     }
     els.empModalStatus.textContent = `បានកំណត់អត្រាប្តូរប្រាក់ 1 USD = ${fmt(newRate)} សម្រាប់ ${row.month ? MONTH_KH[row.month] : ''} ${row.year}`;
     els.empModalStatus.style.color = 'var(--success)';
@@ -26004,7 +26654,7 @@ window.__toiImport = function(data){
         r.residency = residency;
         r.salaryTax = calculateSalaryTax(r.salary, r.year, residency);
         if (r.amended){
-          r.additionalSalaryTax = r.salaryTax - (r.origSalaryTax || 0);
+          r.additionalSalaryTax = tosAddTax(r.salaryTax, r.origSalaryTax);
         }
       }
     });
