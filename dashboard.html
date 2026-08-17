@@ -1369,10 +1369,17 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
 
   /* ⚠ របារខាងលើ (.atb) ៖ លើទូរស័ព្ទវាបែកជា ៣ ជួរ ព្រោះ flex-wrap ។
      ដាក់មួយជួររំកិលបាន — ក្រុមប៊ូតុងនៅជាប់គ្នា អក្សររត់នៅកណ្តាល។ */
-  .atb{ flex-wrap:nowrap !important; overflow-x:auto; -webkit-overflow-scrolling:touch;
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «វានៅតែឃើញ៣ជួរ» ។ មូលហេតុ ៖ ច្បាប់ទាំងនេះ
+     សរសេរជា `.atb` តែធាតុរបារពិតគឺ **`<div id="app-topbar">` ដែលគ្មាន
+     class `atb` សោះ** ⇒ ច្បាប់មិនដែលចាប់អ្វីទាល់តែសោះ តាំងពីដើមមក។
+     (`atb-btn` · `atb-ticker` · `atb-tail` ជា class ពិត — ដែលធ្វើអោយ
+     មើលទៅដូចជា `.atb` ក៏ត្រូវដែរ។)
+     ⚠⚠ នេះជាលើកទី ២ នៃកំហុសដដែល — មេរៀន ០៨/០៨ ចែងច្បាស់ថា ៖ **រក class
+     ពិតក្នុង markup មុននឹងសរសេរច្បាប់** ។ ត្រូវពិនិត្យដោយ grep ជានិច្ច។ */
+  #app-topbar{ flex-wrap:nowrap !important; overflow-x:auto; -webkit-overflow-scrolling:touch;
         scrollbar-width:none; gap:6px !important; padding:8px 10px !important; }
-  .atb::-webkit-scrollbar{ display:none; }
-  .atb > *{ flex:0 0 auto; }
+  #app-topbar::-webkit-scrollbar{ display:none; }
+  #app-topbar > *{ flex:0 0 auto; }
   .atb-ticker{ min-width:180px; }
   #userGreeting{ margin-left:8px !important; font-size:12px !important; }
 
@@ -1390,7 +1397,7 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
   #app-topbar .app-topbar-actions + .app-topbar-actions{
     padding-left:7px !important; margin-left:0 !important;
   }
-  .atb{ padding:5px 8px !important; gap:5px !important; }
+  #app-topbar{ padding:5px 8px !important; gap:5px !important; }
   .atb-ticker{ min-width:140px !important; font-size:11.5px !important; }
   /* ជួរស្វាគមន៍ ៖ តូចជាងមុន ហើយអក្សរមិនរុញប៊ូតុងចេញ */
   #userGreeting{ font-size:11px !important; gap:6px !important; }
