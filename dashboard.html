@@ -28205,11 +28205,32 @@ function letterCtx(){
     program: pr.label || '',
     /* ពី Data Entry តាមកម្មវិធីដែលបានជ្រើស */
     noticeNo:   pr.noticeNo || '',
-    noticeDate: pr.noticeDate || trkLetterRow(0).date || '',
+    /* ⚠ «ថ្ងៃខែឆ្នាំលិខិតជូនដំណឹង» ក្នុង Data Entry ជាប្រអប់អក្សរសេរី ដូច្នេះ
+       អ្នកប្រើវាយ 21-07-2025 ។ khmerDMY() ទទួលតែទម្រង់ ISO (2025-07-21)
+       ប៉ុណ្ណោះ ហើយបើមិនត្រូវទេ វាបញ្ចេញ «............» — នេះជាមូលហេតុដែល
+       «ចុះ…» នៅទទេ ខណៈលេខជូនដំណឹងចេញត្រឹមត្រូវ។ ប្តូរទៅ ISO នៅទីនេះ។ */
+    noticeDate: letterIsoDate(pr.noticeDate) || trkLetterRow(0).date || '',
     /* ឈ្មោះអ្នកតំណាង ៖ វាយដោយដៃមុន បើទទេយកពីជួរ «ប្រគល់លិខិតជូនដំណឹង…» */
     rep:     ld.repName || trkLetterRow(1).rep || '',
     auditor: ld.auditorName || pi.auditorName || pi.name || '',
   };
+}
+/* ទទួលទម្រង់កាលបរិច្ឆេទទូទៅ ហើយបញ្ចេញជា ISO (YYYY-MM-DD) ៖
+     2025-07-21 · 21-07-2025 · 21/07/2025 · 2025/07/21 · 1-7-2025
+   បើអានមិនចេញ បញ្ចេញតម្លៃដើមវិញ ដូច្នេះឥរិយាបថចាស់មិនប្តូរទេ។ */
+function letterIsoDate(v){
+  var s = String(v || '').trim();
+  if(!s) return '';
+  var m = s.match(/^(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})$/);      /* ឆ្នាំ ខែ ថ្ងៃ */
+  if(!m) {
+    m = s.match(/^(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{4})$/);        /* ថ្ងៃ ខែ ឆ្នាំ */
+    if(m) m = [m[0], m[3], m[2], m[1]];
+  }
+  if(!m) return s;
+  var y = Number(m[1]), mo = Number(m[2]), d = Number(m[3]);
+  if(!(mo >= 1 && mo <= 12 && d >= 1 && d <= 31)) return s;
+  var p = function(n){ return (n < 10 ? '0' : '') + n; };
+  return y + '-' + p(mo) + '-' + p(d);
 }
 function state_coverProgram(){
   try{ return (window.__getTOICoverInfo() || {}).progPG || ''; }catch(e){ return ''; }
@@ -38709,10 +38730,10 @@ else CC.init();
       else setTimeout(res, 30);
     });
   }
-  /* លេខ build នៅលើ tab តាំងពីបើកកម្មវិធី — រូបថត tab ប្រាប់ភ្លាមថា
-     កំពុងប្រើឯកសារណា */
+  /* [stated] លេខ build លែងបន្ថែមលើចំណងជើងផ្ទាំងទៀតហើយ — tab បង្ហាញតែ
+     «RSC Dashboard» ។ RSC_BUILD នៅប្រើក្នុងផ្ទាំងវឌ្ឍនភាពពេលរក្សាទុក
+     ដដែល ដូច្នេះនៅតែដឹងថាកំពុងប្រើឯកសារណា ពេលមានបញ្ហា។ */
   try{
-    if(document.title.indexOf('·') < 0) document.title = document.title + ' · ' + RSC_BUILD;
     RSC_TITLE0 = document.title;
   }catch(e){}
 
