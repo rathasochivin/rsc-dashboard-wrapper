@@ -1357,7 +1357,23 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
   .btn, button, .nav button{ min-height:40px; }
 
   /* ៣ ៖ តារាង — រក្សារូបរាង រំកិលផ្តេក មិនកម្ទេច */
-  .table-scroll, .table-wrap{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ជួយកែសម្រួលផ្នែកទាំងអស់នេះឲ្យស្រួលមើល
+     តាមទូរសព្ទ» ជាមួយរូប ៨ សន្លឹក ។ រោគសញ្ញារួមក្នុងរូបទាំងអស់ ៖ របារ
+     ខាងលើ និងរបារ Tab ត្រូវ **កាត់នៅគែម** ហើយផ្ទាំងទាំងមូលរអិលទៅឆ្វេង។
+     មូលហេតុ ៖ តារាងធំជាងអេក្រង់ធ្វើអោយ **ទំព័រទាំងមូល**រអិលផ្តេក
+     មិនមែនតារាងរអិលក្នុងប្រអប់ខ្លួនឯងទេ។ `overflow-x:auto` មានស្រាប់
+     ហើយ តែគ្មាន `max-width` ⇒ ប្រអប់លាតតាមតារាង ជំនួសការរអិល។
+     ⚠ នេះជាការកែ **រចនាសម្ព័ន្ធ** ១ បន្ទាត់ ដែលដោះស្រាយគ្រប់អេក្រង់
+     ដែលមានតារាង — មិនមែនកែម្តងមួយអេក្រង់ទេ។
+     ⚠ តារាងរក្សាទំហំដើម (គោលការណ៍ ០៨/០៨ ៖ កុំបំបែកតារាងទម្រង់ក្រដាស) —
+     គ្រាន់តែឥឡូវអ្នកអូសក្នុងតារាង មិនអូសទាំងទំព័រ។ */
+  .table-scroll, .table-wrap{ overflow-x:auto; -webkit-overflow-scrolling:touch;
+                              max-width:100%; }
+  main, main .card{ max-width:100%; }
+  /* ការមើលជាមុន MTR/VAT ៖ ក្រដាសរក្សាទទឹងពិត តែរអិលក្នុងប្រអប់ខ្លួនឯង */
+  #mtr-embed #mtrPrintArea, #mtr-embed #vatPrintArea{
+    overflow-x:auto; -webkit-overflow-scrolling:touch; max-width:100%;
+  }
   main{ padding:14px 12px 48px; }
   .card{ padding:14px 12px; border-radius:10px; }
 
