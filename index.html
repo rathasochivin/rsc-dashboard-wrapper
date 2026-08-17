@@ -31028,6 +31028,18 @@ const NARR_CSS = `
   .nr-words{text-align:center; font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif;
     font-size:13px; margin:calc(10px*var(--nr-sp,1)) 0 calc(14px*var(--nr-sp,1));}
   .nr-break,.nr-ybreak{page-break-before:always; break-before:page;}
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ ព្រីនពីទូរស័ព្ទ (Safari/WebKit) ចេញសន្លឹកទទេ
+     មួយ — មានតែក្បាល និងជើងទំព័រ ឯតួបាត់ទាំងស្រុង ។ ព្រីនពី Chrome លើ
+     កុំព្យូទ័រ វិញត្រឹមត្រូវ ។
+     មូលហេតុ ៖ JS កាត់ទំព័ររួចហើយ ដូច្នេះ .nr-ybreak ធ្លាក់ជាកូនទី១ នៅ
+     ខាងក្នុងប្រអប់ .nr-page ។ Chrome ចាត់ទុកប្រអប់ overflow:hidden ជា
+     ប្លុកមិនអាចបំបែកបាន ដូច្នេះមិនអើពើនឹង break-before ខាងក្នុង ។ WebKit
+     អើពើ — វារុញលំហូរទាំងមូលចេញក្រៅប្រអប់ ហើយ overflow:hidden កាត់វា
+     បាត់ ។ ក្បាលទំព័រនៅសល់ព្រោះវាដាក់មុនសញ្ញាបំបែក ជើងទំព័រនៅសល់ព្រោះ
+     position:absolute ។
+     សញ្ញាបំបែកលែងត្រូវការនៅក្នុង .nr-page ទៀតទេ ៖ ប្រអប់នីមួយៗមាន
+     page-break-after:always ស្រាប់ ។ */
+  .nr-page .nr-break,.nr-page .nr-ybreak{page-break-before:auto; break-before:auto;}
   /* ⚠ កុំដាក់ page-break-inside:avoid លើ .nr-sec ៖ ផ្នែកពន្ធលើប្រាក់ចំណូល
      វែងជាងមួយទំព័រ ដូច្នេះវាលោតទៅទំព័របន្ទាប់ទាំងមូល ហើយទុកទំព័រទី១
      ទទេ — នេះជាអ្វីដែលអ្នកប្រើឃើញ។ ការពារត្រឹមជួរតួលេខតែប៉ុណ្ណោះ។ */
@@ -31772,6 +31784,9 @@ var AR_CSS = `
   .ar-sign{text-align:center; margin:8px 4% 0 auto; width:46%; line-height:1.75;}
   .ar-signames{display:inline-flex; gap:26px; justify-content:center;}
   .ar-brk{break-before:page; page-break-before:always;}
+  /* ⚠ ដូចនឹង .nr-ybreak ៖ នៅក្នុង .nr-page ត្រូវលុបចោល បើមិនដូច្នេះ
+     WebKit រុញតួទំព័រចេញក្រៅប្រអប់ ហើយសន្លឹកចេញទទេ ។ */
+  .nr-page .ar-brk{break-before:auto; page-break-before:auto;}
 `;
 
 function printAudit(){
