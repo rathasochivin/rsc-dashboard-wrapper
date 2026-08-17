@@ -702,10 +702,15 @@
    (មាន _) ។ ជាជាងអោយគេប្តូរឈ្មោះ ដាក់បំរែបំរួលទាំងអស់ក្នុង src ៖
    browser សាកម្តងមួយៗ ហើយប្រើមួយណាដែលផ្ទុកបាន — ៤០៤ គ្រាន់តែរំលង។
    ⚠ ឈ្មោះឯកសារលើ GitHub Pages **ប្រកាន់អក្សរតូចធំ** ដូច្នេះកុំពឹងលើ
-     ការដាក់ឈ្មោះត្រូវបេះបិទ។ */
+     ការដាក់ឈ្មោះត្រូវបេះបិទ។
+   ⚠⚠ ២០២៦-០៨-១៦ ៖ គេ upload ឯកសារ font ទៅ **ឫស repo** មិនចូលថត fonts
+     ទេ ដូច្នេះ `./fonts/…` ចេញ 404 ហើយ font មិនផ្ទុក។ ជាជាងអោយគេផ្លាស់
+     ឯកសារ ដាក់ URL ឫសនៅ **មុខគេ** ក្នុង src ។ ទាំងពីរទីតាំងដំណើរការ
+     ដូច្នេះការរៀបចំបែបណាក៏បាន។ */
 @font-face{
   font-family:'Khmer OS Siemreap';
   src: local('Khmer OS Siemreap'), local('KhmerOSsiemreap'),
+       url('./KhmerOS_siemreap.woff2') format('woff2'),
        url('./fonts/KhmerOS_siemreap.woff2') format('woff2'),
        url('./fonts/KhmerOSsiemreap.woff2') format('woff2'),
        url('./fonts/KhmerOS_siemreap.ttf') format('truetype');
@@ -714,6 +719,7 @@
 @font-face{
   font-family:'Khmer OS Muol Light';
   src: local('Khmer OS Muol Light'), local('KhmerOSmuollight'),
+       url('./KhmerOSmuollight.woff2') format('woff2'),
        url('./fonts/KhmerOSmuollight.woff2') format('woff2'),
        url('./fonts/KhmerOS_muollight.woff2') format('woff2'),
        url('./fonts/KhmerOSmuollight.ttf') format('truetype');
@@ -724,6 +730,7 @@
 @font-face{
   font-family:'Khmer OS Muol';
   src: local('Khmer OS Muol'), local('KhmerOSmuol'),
+       url('./KhmerOSmuol.woff2') format('woff2'),
        url('./fonts/KhmerOSmuol.woff2') format('woff2'),
        url('./fonts/KhmerOSmuol.ttf') format('truetype');
   font-weight:normal; font-style:normal; font-display:swap;
@@ -38589,7 +38596,7 @@ else CC.init();
      ការរក្សាទុកឥឡូវ **រាយលេខជំហាន** លើផ្ទាំង ហើយផ្អាកអោយផ្ទាំងគូររួច
      មុននឹងចាប់ការងារធ្ងន់នីមួយៗ។ សារចុងក្រោយដែលឃើញ = ជំហានដែលគាំង។
      លេខ build ក៏បង្ហាញផង ដើម្បីដឹងច្បាស់ថាកំពុងប្រើឯកសារណា។ */
-  var RSC_BUILD = '16/08 · B57';
+  var RSC_BUILD = '16/08 · B58';
   try{ window.__RSC_BUILD = RSC_BUILD; }catch(e){}
 
   /* ⚠⚠ [stated] ២០២៦-០៨-១៣ ៖ រូបថតបង្ហាញ **«Page Unresponsive» របស់ Chrome**
