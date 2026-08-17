@@ -1376,6 +1376,25 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
   .atb-ticker{ min-width:180px; }
   #userGreeting{ margin-left:8px !important; font-size:12px !important; }
 
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ជួរ Hi Chivin អាចរុញចុះក្រោមបានទេ កុំឲ្យ
+     ឃើញផ្ទាំងធំពេក ឬបង្រួមរូបតូចជាងនឹងបន្តិច … ការកែកុំឲ្យប៉ះពាល់ផ្នែក
+     មើលតាមកុំព្យូទ័រ» ។
+     ⚠ ទាំងអស់នៅក្នុង `@media screen and (max-width:820px)` ដែលមានស្រាប់
+     ដូច្នេះ **កុំព្យូទ័រមិនប៉ះពាល់សោះ** ។ ⚠ `screen and` ជាការចាំបាច់ ៖
+     សំណួរទទឹងទទេៗត្រូវនឹងការព្រីនដែរ (ក្រដាស A4 ≈ ៧០៣px)។
+     របៀបបង្រួម ៖ បន្ថយចន្លោះក្នុងប៊ូតុង · បន្ថយទំហំរូបតំណាង · បន្ថយ
+     ចន្លោះរបារ ⇒ កម្ពស់ផ្ទាំងតូចជាងមុនប្រហែល ១/៣ ។ */
+  #app-topbar .atb-btn{ padding:5px 9px !important; border-radius:8px !important; }
+  #app-topbar .atb-btn.atb-icon{ padding:5px 8px !important; font-size:13.5px !important; }
+  #app-topbar .app-topbar-actions{ gap:5px !important; }
+  #app-topbar .app-topbar-actions + .app-topbar-actions{
+    padding-left:7px !important; margin-left:0 !important;
+  }
+  .atb{ padding:5px 8px !important; gap:5px !important; }
+  .atb-ticker{ min-width:140px !important; font-size:11.5px !important; }
+  /* ជួរស្វាគមន៍ ៖ តូចជាងមុន ហើយអក្សរមិនរុញប៊ូតុងចេញ */
+  #userGreeting{ font-size:11px !important; gap:6px !important; }
+
   /* ⚠ ប្រអប់ «ព្រីនឯកសារ» ៖ ការមើលជាមុនរក្សាទទឹងក្រដាស រួចរំកិលផ្តេក។
      ⚠⚠ កុំដាក់ min-width លើ #trk-print-host — វាជាម៉ាស៊ីនព្រីនពិត
        មិនមែនការមើលជាមុនទេ ; ការប៉ះវាធ្វើអោយក្រដាសខូច។ */
