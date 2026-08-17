@@ -8505,6 +8505,26 @@ function rscFontsReady(){
   }catch(e){ return Promise.resolve(); }
 }
 try{ window.__rscFontsReady = rscFontsReady; }catch(e){}
+
+/* ⚠⚠ [stated] ២០២៦-០៨-១៦ ៖ «កុំឲ្យប៉ះពាល់លើកុំព្យូទ័រ កែតែផ្នែកទូរស័ព្ទ» ។
+   ប្រអប់ទំព័រព្រីន ៖ កុំព្យូទ័រនៅ **266mm** ដដែល (ចំនួនទំព័រមិនប្តូរសោះ) ;
+   ទូរស័ព្ទ/ថេប្លេត ប្រើ **252mm** ព្រោះ iOS Safari មិនគោរព @page margin
+   របស់យើងទេ ហើយប្រើរឹមម៉ាស៊ីនបោះពុម្ពផ្ទាល់ ដែលធ្វើអោយប្រអប់ 266mm
+   ហៀរទៅសន្លឹកទីពីរ (១២ ទំព័រ → ២២ សន្លឹក)។
+   ⚠ តម្លៃនេះត្រូវប្រើ **ទាំងក្នុង CSS និងក្នុង paginator** ៖ `--nr-ph`
+     សម្រាប់ប្រអប់ និង `window.__nrPageMm` សម្រាប់ការវាស់។ ពីរនេះជា
+     បរិមាណតែមួយ — កែមួយ កែទាំងពីរ។
+   ⚠ លទ្ធផល ៖ ឯកសារដដែលអាចមានចំនួនទំព័រខុសគ្នារវាងទូរស័ព្ទ និងកុំព្យូទ័រ
+     — ប្រាប់គេរួចហើយ ហើយគេយល់ព្រម។ */
+var RSC_MOBILE_PRINT = false;
+try{
+  RSC_MOBILE_PRINT = /iPhone|iPad|iPod|Android|Mobile/i.test(navigator.userAgent || '')
+    || (navigator.maxTouchPoints > 1 && /Macintosh/.test(navigator.userAgent || ''));  /* iPadOS */
+}catch(e){}
+window.__nrPageMm = RSC_MOBILE_PRINT ? 252 : 266;
+try{
+  document.documentElement.style.setProperty('--nr-ph', window.__nrPageMm + 'mm');
+}catch(e){}
 /* ⚠⚠ [stated] ២០២៦-០៨-១៦ ៖ «ព្រីនភាគច្រើននៅលើទូរស័ព្ទវាមានបញ្ហាចុះបន្ទាត់
    ទៅទំព័រផ្សេង និង footer អត់ត្រូវ» ។
    មូលហេតុ ៖ `narrPaginate` **វាស់** ទំព័រនៅពេលសង់ឯកសារ ដែលនៅលើទូរស័ព្ទ
@@ -30471,7 +30491,17 @@ function narrPaginate(bodyHtml, runHead, c, grand, docCls){
     const headMb = runEl ? (parseFloat(getComputedStyle(runEl).marginBottom) || 0) : 0;
     /* ព្រំដែនពិត ៖ អត្ថបទត្រូវឈប់ **ខាងលើគែមខាងលើនៃបាតទំព័រ** ។
        ទំព័រ 266mm − កម្ពស់បាតទំព័រ − ចន្លោះសុវត្ថិភាព − ក្បាលទំព័រ។ */
-    const avail = narrMmPx(266) - headH - headMb - footH - 8;
+    /* ⚠⚠ [stated] ២០២៦-០៨-១៦ ៖ «Footer អត់ទាន់ត្រូវ» ៖ paginator សង់ ១២
+       ទំព័រ តែ PDF ចេញ ២២ សន្លឹក — ស្ទើរតែគ្រប់ប្រអប់ទំព័របែកជាពីរ។
+       មូលហេតុ ៖ ប្រអប់ខ្ពស់ 266mm តែ **iOS Safari មិនគោរព `@page margin`
+       របស់យើងទេ** ហើយប្រើរឹមម៉ាស៊ីនបោះពុម្ពរបស់វាផ្ទាល់ ដែលធំជាង។
+       ផ្ទៃបោះពុម្ពពិតតូចជាង 266mm ដូច្នេះផ្នែកសល់ហៀរទៅសន្លឹកបន្ទាប់ ហើយ
+       ជើងទំព័រ (bottom:0 នៃប្រអប់) ធ្លាក់ទៅសន្លឹកទី២ ដោយឯកា។
+       ដំណោះស្រាយ ៖ បន្ថយប្រអប់មក **252mm** ដែលសល់ ~២១mm ជាចន្លោះ
+       សុវត្ថិភាពសម្រាប់រឹមឧបករណ៍ណាមួយ។
+       ⚠ ថ្លៃដែលត្រូវបង់ ៖ ក្រដាសបន្ថែមប្រហែល ៥% លើកុំព្យូទ័រដែរ។
+       ⚠ តម្លៃនេះត្រូវដូច `.nr-page{height}` បេះបិទ — កែមួយ កែទាំងពីរ។ */
+    const avail = narrMmPx((window.__nrPageMm || 266)) - headH - headMb - footH - 8;
     const hOf = function(el){
       const cs = getComputedStyle(el);
       return el.offsetHeight + (parseFloat(cs.marginTop) || 0) + (parseFloat(cs.marginBottom) || 0);
@@ -30969,7 +30999,7 @@ const NARR_CSS = `
   /* ⚠ ត្រូវមានកម្ពស់ថេរ ៖ ជើងទំព័រប្រើ position:absolute; bottom:0 ដូច្នេះ
      បើគ្មានកម្ពស់ វាធ្លាក់ទៅលើកំពូលទំព័រវិញ (អ្វីដែលទើបកើតឡើង)។
      min-height:0 នៅដដែល ដើម្បីផ្តួល .rpt-page{min-height:calc(100vh)}។ */
-  .nr-page{position:relative; box-sizing:border-box; height:266mm; max-height:266mm;
+  .nr-page{position:relative; box-sizing:border-box; height:var(--nr-ph,266mm); max-height:var(--nr-ph,266mm);
     min-height:0 !important; overflow:hidden;
     padding-bottom:15mm; page-break-after:always; break-after:page;}
   .nr-page:last-child{page-break-after:auto; break-after:auto;}
@@ -38598,7 +38628,7 @@ else CC.init();
      ការរក្សាទុកឥឡូវ **រាយលេខជំហាន** លើផ្ទាំង ហើយផ្អាកអោយផ្ទាំងគូររួច
      មុននឹងចាប់ការងារធ្ងន់នីមួយៗ។ សារចុងក្រោយដែលឃើញ = ជំហានដែលគាំង។
      លេខ build ក៏បង្ហាញផង ដើម្បីដឹងច្បាស់ថាកំពុងប្រើឯកសារណា។ */
-  var RSC_BUILD = '16/08 · B59';
+  var RSC_BUILD = '16/08 · B61';
   try{ window.__RSC_BUILD = RSC_BUILD; }catch(e){}
 
   /* ⚠⚠ [stated] ២០២៦-០៨-១៣ ៖ រូបថតបង្ហាញ **«Page Unresponsive» របស់ Chrome**
