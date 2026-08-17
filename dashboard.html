@@ -3308,7 +3308,8 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
        ដំណោះស្រាយ ៖ បង្ខំទទឹងខ្លឹមសារជា **មីលីម៉ែត្រ** ពេលព្រីន ដូច្នេះ
        លទ្ធផលដូចគ្នាបេះបិទលើទូរស័ព្ទ និងលើកុំព្យូទ័រ ។
        186mm = A4 (210) ដក រឹម @page (12mm × 2) ។ */
-    #toi-embed #coverPanel{ width:186mm !important; min-width:186mm !important; max-width:186mm !important; }
+    #toi-embed #coverPanel{ width:var(--pg-pw,186mm) !important;
+      min-width:var(--pg-pw,186mm) !important; max-width:var(--pg-pw,186mm) !important; }
     #toi-embed #coverPanel .table-wrap{ overflow:visible !important; width:100% !important; }
     /* ⚠⚠ ២០២៦-០៨-១៦ ៖ `table-layout:fixed` ត្រូវដកចេញ — ខ្ញុំដាក់វានៅ B49
        ហើយវាបំផ្លាញ COVER ៖ ក្រឡាស្លាកកំណត់ `width:1%` ដើម្បីអោយវាបង្រួម
@@ -3439,9 +3440,13 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     }
     /* ប្រើទាំង :first-child ទាំង + ៖ បើមានធាតុណាមួយជ្រែតក្នុងចន្លោះ
        (អត្ថបទទទេ ឬ div ផ្សេង) នោះ selector `+` លែងផ្គូផ្គង។ */
-    #toi-embed .print-page{page-break-before:always; break-before:page;}
-    #toi-embed .print-page:first-child{page-break-before:auto; break-before:auto;}
-    #toi-embed .print-page + .print-page{page-break-before:always; break-before:page;}
+    /* ⚠⚠ ២០២៦-០៨-១៧ ៖ សញ្ញាបំបែក **ទាំងសងខាង** (after លើទំព័រមុន និង
+       before លើទំព័របន្ទាប់) ជាការបំបែកពីរនៅចំណុចតែមួយ ។ Chrome បង្រួម
+       វាជាមួយ ដូច្នេះមើលទៅដូចដំណើរការ ; WebKit រាប់វាជាពីរ ហើយចេញ
+       **សន្លឹកទទេចន្លោះទំព័រនីមួយៗ** (34 សន្លឹកសម្រាប់ ១៧ ទំព័រ) ។
+       page-break-after:always ខាងលើធានាការបំបែករួចហើយ ដូច្នេះច្បាប់
+       before ទាំងនេះលែងត្រូវការ — លុបចោល ។ លើ Chrome គ្មានអ្វីប្តូរទេ
+       ព្រោះវាបង្រួមរួចជាស្រេច ។ */
     /* ចំណងជើងជំហានមិនត្រូវឲ្យផ្ដាច់ពាក់កណ្តាលដាច់ខាត ហើយបន្ថយទំហំពី
        ២០px មក ១៥px ពេលព្រីន ៖ ចំណងជើងធំស៊ីកម្ពស់ច្រើន ដូច្នេះជំហានខ្លះ
        លើសផ្ទៃទំព័របន្តិចបន្តួច ហើយជួរដេកចុងក្រោយត្រូវកាត់។ */
@@ -8545,8 +8550,27 @@ try{
     || (navigator.maxTouchPoints > 1 && /Macintosh/.test(navigator.userAgent || ''));  /* iPadOS 13+ */
 }catch(e){}
 window.__nrPageMm = RSC_MOBILE_PRINT ? 252 : 266;
+/* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ផ្នែក cover និង ពន្ធលើប្រាក់ចំណូលនៅមានបញ្ហា» ។
+   ការវាស់  252mm ខាងលើប្រាប់យើងថា ៖ iOS បន្សល់ទុករឹមប្រហែល ២២mm ក្នុង
+   មួយចំហៀង (297 − 252 = 45mm សរុប) ។ បើរឹមស្មើគ្នាទាំងបួនជ្រុង នោះ
+   **ទទឹងបោះពុម្ពពិតលើ iOS ≈ 210 − 45 = 165mm** មិនមែន 186mm ទេ ។
+   នោះជាមូលហេតុពីរយ៉ាង ៖
+     ១. ឯកសារ COVER ត្រូវកាត់ខាងឆ្វេង ៖ ស្រោមទទឹង 186mm ជាមួយ
+        margin:0 auto ធំជាងផ្ទៃ ដូច្នេះវាហៀរស្មើគ្នាទាំងសងខាង ហើយ
+        ឈ្មោះស្លាកខាងឆ្វេងបាត់ ។
+     ២. ទំព័រទទេរៀងរាល់មួយ ៖ min-height:100vh — WebKit មិនបកស្រាយ vh
+        ជាផ្ទៃបោះពុម្ពពិតទេ ដូច្នេះប្រអប់ខ្ពស់ជាងសន្លឹក ហើយហៀរទៅ
+        សន្លឹកបន្ទាប់ (ដែលចេញទទេ ព្រោះមាតិកាអស់ហើយ) ។
+   ⚠ តម្លៃពីរខាងក្រោមជាកន្លែងតែមួយសម្រាប់លៃតម្រូវ ៖
+       បើនៅតែកាត់ខាងឆ្វេង → បន្ថយ 166
+       បើសល់ចន្លោះសខាងស្តាំច្រើនពេក → បង្កើន 166 ម្តងមួយ 4mm
+   ⚠ កុំព្យូទ័រមិនប៉ះពាល់សោះ ៖ វានៅ 186mm និង 100vh ដដែល ។ */
+window.__pgPrintWmm = RSC_MOBILE_PRINT ? 166 : 186;
 try{
   document.documentElement.style.setProperty('--nr-ph', window.__nrPageMm + 'mm');
+  document.documentElement.style.setProperty('--pg-pw', window.__pgPrintWmm + 'mm');
+  document.documentElement.style.setProperty('--pg-ph',
+    RSC_MOBILE_PRINT ? (window.__nrPageMm + 'mm') : '100vh');
 }catch(e){}
 /* ⚠⚠ [stated] ២០២៦-០៨-១៦ ៖ «ព្រីនភាគច្រើននៅលើទូរស័ព្ទវាមានបញ្ហាចុះបន្ទាត់
    ទៅទំព័រផ្សេង និង footer អត់ត្រូវ» ។
@@ -28844,8 +28868,10 @@ const RPT_CSS = `
           ចេញក្រៅប្រអប់ ហើយបូកលើកម្ពស់លំហូរទៀត
      ដោះស្រាយ ៖ border-box · flow-root (ឃុំ margin ខាងក្នុង) · ដក ១px
      ទុកជាគម្លាតការពារការបង្គត់។ */
+  /* ⚠ --pg-ph ៖ 100vh លើកុំព្យូទ័រ (ដូចដើម) · mm លើទូរស័ព្ទ ព្រោះ WebKit
+     មិនបកស្រាយ vh ជាផ្ទៃបោះពុម្ពពិត — មើលកំណត់ត្រានៅ RSC_MOBILE_PRINT ។ */
   .rpt-page{page-break-after:always; break-after:page;
-    box-sizing:border-box; display:flow-root; min-height:calc(100vh - 1px);}
+    box-sizing:border-box; display:flow-root; min-height:calc(var(--pg-ph,100vh) - 1px);}
   .rpt-page:has(> .rpt-foot){display:flex; flex-direction:column;}
   .rpt-page > .rpt-foot{margin-top:auto;}
   /* បើមាតិកាវែងជាងមួយទំព័រ ទុកអោយវាបំបែកតាមធម្មតា */
@@ -29633,8 +29659,8 @@ const WP_CSS = `
   .wp-tbl td.c{text-align:center; vertical-align:middle;}
   .wp-tbl td.code{font-size:11px;}
   /* ---- សន្លឹកមុខ COVER · ស្លាកកាត់បិទ · E/F ---- */
-  .cv-sheet{border:1px solid #333; padding:4px; box-sizing:border-box; min-height:calc(100vh - 2px);}
-  .cv-in{border:2px solid #333; padding:14px 20px 16px; box-sizing:border-box; min-height:calc(100vh - 12px);
+  .cv-sheet{border:1px solid #333; padding:4px; box-sizing:border-box; min-height:calc(var(--pg-ph,100vh) - 2px);}
+  .cv-in{border:2px solid #333; padding:14px 20px 16px; box-sizing:border-box; min-height:calc(var(--pg-ph,100vh) - 12px);
     display:flex; flex-direction:column;}
   .cv-lh{display:flex; align-items:flex-start; justify-content:space-between; gap:16px;}
   .cv-lh-l,.cv-lh-r{text-align:center; color:#1a237e;
@@ -29694,7 +29720,7 @@ const WP_CSS = `
      លាតពេញទទឹង ហើយ inline-block ក៏លែងបង្រួមដែរ។ */
   .cv-info-lab td.k,.cv-info-lab td.s,.cv-info-lab td.v{width:auto;}
   .cv-info-lab td.v{padding-right:10px;}
-  .cv-plain{border:1px solid #333; padding:22px 26px; box-sizing:border-box; min-height:calc(100vh - 2px);}
+  .cv-plain{border:1px solid #333; padding:22px 26px; box-sizing:border-box; min-height:calc(var(--pg-ph,100vh) - 2px);}
   .cv-wh{text-align:center; font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif;
     font-weight:700; font-size:13px; text-decoration:underline; margin:16px 0 12px;}
   .cv-wl{border-bottom:1px dotted #333; box-sizing:border-box; min-height:30px;
@@ -32402,7 +32428,8 @@ function printInPage(bodyHtml, css, pageRule){
            ត្រង់នេះ ដូច្នេះក្រដាសដូចគ្នាលើគ្រប់ឧបករណ៍។ ច្បាប់ដដែលនឹង
            #coverPanel (B49) តែសម្រាប់ឯកសារទាំង ៥ ក្នុងប្រអប់។
            186mm = A4 (210) ដករឹម @page (12mm × 2)។ */
-        width:186mm !important; min-width:186mm !important; max-width:186mm !important;
+        width:var(--pg-pw,186mm) !important; min-width:var(--pg-pw,186mm) !important;
+        max-width:var(--pg-pw,186mm) !important;
         margin:0 auto !important;
       }
       body.trk-printing > #trk-print-host table{ table-layout:auto !important; }
