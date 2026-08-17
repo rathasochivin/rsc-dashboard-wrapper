@@ -1383,6 +1383,12 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
      គ្រាន់តែឥឡូវអ្នកអូសក្នុងតារាង មិនអូសទាំងទំព័រ។ */
   .table-scroll, .table-wrap{ overflow-x:auto; -webkit-overflow-scrolling:touch;
                               max-width:100%; }
+  /* ⚠ [stated] «ផ្ទាំងសាលកបត្រអត់ពេញដូចផ្ទាំងពន្ធលើប្រាក់ចំណូល» ។ ភាព
+     ខុសគ្នាមិនមែននៅរបារចំហៀងទេ (វាលាក់រួចទាំងពីរ) — គឺនៅ **ចន្លោះ
+     ខាងក្នុងផ្ទាល់របស់ MTR** ៖ `#mtr-embed .main` មាន ១៨–២៤px សងខាង
+     បន្ថែមលើចន្លោះរបស់ទំព័រ ⇒ ផ្ទាំងតូចជាង TOI ដែលគ្មានវា។ */
+  #mtr-embed .main{ padding-left:6px !important; padding-right:6px !important; }
+  #mtr-embed .toolrow{ padding-left:10px !important; padding-right:10px !important; }
   main, main .card{ max-width:100%; }
   /* ការមើលជាមុន MTR/VAT ៖ ក្រដាសរក្សាទទឹងពិត តែរអិលក្នុងប្រអប់ខ្លួនឯង */
   #mtr-embed #mtrPrintArea, #mtr-embed #vatPrintArea{
@@ -2492,8 +2498,12 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
   position:sticky; top:0; left:0; z-index:3;
   width:90px; min-width:90px; max-width:90px;
 }
+/* ⚠ [stated] ២០២៦-០៨-១៧ ៖ «ផ្នែក ប្រចាំខែ កុំ freeze នៅកន្លែងប្រភេទពន្ធ» ។
+   ជួរឈរ «ឆ្នាំ» (ទី ១) នៅបង្កកដដែល — គេសុំតែជួរឈរទី ២ ។
+   ⚠ `top:0` រក្សាទុក ៖ វាជាការបង្កក **ជួរដេកក្បាល** ពេលរំកិលចុះក្រោម
+   ដែលមិនទាក់ទងនឹងការបង្កកផ្តេកទេ ; ត្រឹម `left` ដែលត្រូវដក។ */
 #mtr-embed table.ledger.monthly-ledger thead th:nth-child(2){
-  position:sticky; top:0; left:90px; z-index:3;
+  position:sticky; top:0; z-index:3;
 }
 #mtr-embed table.ledger tbody td{
   padding:8px 12px; text-align:right; white-space:nowrap;
@@ -2515,13 +2525,15 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
    and that background has to be re-declared per row-state (default /
    even / hover) since :nth-child(even) and :hover normally target the
    whole <tr>, not these two sticky <td>s individually. MONTHLY table only. */
-#mtr-embed table.ledger.monthly-ledger tbody td:nth-child(1),
-#mtr-embed table.ledger.monthly-ledger tbody td:nth-child(2){
+#mtr-embed table.ledger.monthly-ledger tbody td:nth-child(1){
   position:sticky; z-index:1;
   background:var(--mtr-ledger);
 }
-#mtr-embed table.ledger.monthly-ledger tbody td:nth-child(1){ left:0; width:90px; min-width:90px; max-width:90px; }
-#mtr-embed table.ledger.monthly-ledger tbody td:nth-child(2){ left:90px; box-shadow: 2px 0 4px -2px rgba(20,26,23,.25); }
+#mtr-embed table.ledger.monthly-ledger tbody td:nth-child(1){ left:0; width:90px; min-width:90px; max-width:90px;
+  box-shadow: 2px 0 4px -2px rgba(20,26,23,.25); }
+/* ⚠ ជួរឈរ «ប្រភេទពន្ធ» លែងបង្កក ; ស្រមោលគែមផ្លាស់ទៅជួរឈរទី ១ ជំនួស
+   ព្រោះឥឡូវវាជាគែមបង្កកតែមួយគត់។ ពណ៌ផ្ទៃរបស់ជួរឈរទី ២ (គូ/hover)
+   រក្សាទុក — វាគ្រាន់តែពណ៌ មិនទាក់ទងនឹងការបង្កកទេ។ */
 #mtr-embed table.ledger.monthly-ledger tbody tr:nth-child(even) td:nth-child(1),
 #mtr-embed table.ledger.monthly-ledger tbody tr:nth-child(even) td:nth-child(2){ background:#f2f0e6; }
 #mtr-embed table.ledger.monthly-ledger tbody tr:hover td:nth-child(1),
