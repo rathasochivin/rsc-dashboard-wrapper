@@ -3323,6 +3323,19 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
        លទ្ធផលដូចគ្នាបេះបិទលើទូរស័ព្ទ និងលើកុំព្យូទ័រ ។
        186mm = A4 (210) ដក រឹម @page (12mm × 2) ។ */
     #toi-embed #coverPanel{ width:186mm !important; min-width:186mm !important; max-width:186mm !important; }
+    /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ COVER ព្រីនពីទូរស័ព្ទ ចេញជាសន្លឹកទ្វេដង
+       ហើយខ្លឹមសាររអិលទៅម្ខាង។ មូលហេតុ ៖ 186mm = A4 ដករឹម @page របស់យើង
+       (12mm × 2) — តែ **iOS Safari មិនគោរព @page margin** ហើយប្រើរឹមរបស់
+       ម៉ាស៊ីនបោះពុម្ពវិញ ដែលធំជាង។ ផ្ទៃបោះពុម្ពពិតតូចជាង 186mm ដូច្នេះ
+       ប្លុកនេះលើសទទឹងសន្លឹក ហើយ WebKit កាត់វា **តាមផ្តេក** ទៅសន្លឹកបន្ទាប់។
+       ដំណោះស្រាយ ៖ លើទូរស័ព្ទ ទុកអោយវាធំតាមផ្ទៃដែលមានពិត (max-width:100%)
+       ជំនួសលេខថេរ — មិនចាំបាច់ស្មានលេខ mm ណាមួយឡើយ។
+       ⚠ តម្លៃដែលត្រូវទទួល ៖ ទទឹងតូចជាងកុំព្យូទ័របន្តិច ដូច្នេះជួរដេកខ្លះ
+       អាចចុះបន្ទាត់ — តែខ្លឹមសារលែងបាត់ ឬដាច់ជាពីរសន្លឹកទៀត។ */
+    html.rsc-mobile-print #toi-embed #coverPanel{
+      width:auto !important; min-width:0 !important; max-width:100% !important;
+    }
+    html.rsc-mobile-print #toi-embed #coverPanel > *{ min-width:0 !important; }
     #toi-embed #coverPanel .table-wrap{ overflow:visible !important; width:100% !important; }
     /* ⚠⚠ ២០២៦-០៨-១៦ ៖ `table-layout:fixed` ត្រូវដកចេញ — ខ្ញុំដាក់វានៅ B49
        ហើយវាបំផ្លាញ COVER ៖ ក្រឡាស្លាកកំណត់ `width:1%` ដើម្បីអោយវាបង្រួម
@@ -3456,6 +3469,19 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     #toi-embed .print-page{page-break-before:always; break-before:page;}
     #toi-embed .print-page:first-child{page-break-before:auto; break-before:auto;}
     #toi-embed .print-page + .print-page{page-break-before:always; break-before:page;}
+    /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ ព្រីន TOI ពីទូរស័ព្ទចេញ ៦៣ សន្លឹក ខណៈ
+       កុំព្យូទ័រចេញប្រហែលពាក់កណ្តាល។ មូលហេតុ ៖ ជំហាននីមួយៗមាន
+       **សញ្ញាបំបែកពីរ** នៅចំណុចតែមួយ — `page-break-after` របស់ជំហានមុន
+       និង `page-break-before` របស់ជំហានបន្ទាប់។ Chrome បញ្ចូលវាជាមួយគ្នា
+       តែ **WebKit រាប់ទាំងពីរ** ហើយចេញសន្លឹកទទេនៅចន្លោះ (៦៣ = ៣២ + ៣១)។
+       លើទូរស័ព្ទ បន្សាបសញ្ញា before ចោល ៖ `page-break-after` គ្រប់គ្រាន់
+       ដើម្បីអោយមួយជំហានមួយសន្លឹករួចហើយ។
+       ⚠ ច្បាប់ before ខាងលើត្រូវរក្សាទុកសម្រាប់កុំព្យូទ័រ — គេដាក់វាដើម្បី
+       លុបស្នាមខ្មៅពាក់កណ្តាលជួរដេកនៅបាតទំព័រ (B33)។ */
+    html.rsc-mobile-print #toi-embed .print-page,
+    html.rsc-mobile-print #toi-embed .print-page + .print-page{
+      page-break-before:auto; break-before:auto;
+    }
     /* ចំណងជើងជំហានមិនត្រូវឲ្យផ្ដាច់ពាក់កណ្តាលដាច់ខាត ហើយបន្ថយទំហំពី
        ២០px មក ១៥px ពេលព្រីន ៖ ចំណងជើងធំស៊ីកម្ពស់ច្រើន ដូច្នេះជំហានខ្លះ
        លើសផ្ទៃទំព័របន្តិចបន្តួច ហើយជួរដេកចុងក្រោយត្រូវកាត់។ */
@@ -8561,6 +8587,15 @@ try{
 window.__nrPageMm = RSC_MOBILE_PRINT ? 252 : 266;
 try{
   document.documentElement.style.setProperty('--nr-ph', window.__nrPageMm + 'mm');
+}catch(e){}
+/* [stated] ២០២៦-០៨-១៧ ៖ «ជួយកែសម្រួលផ្នែក Print តាមទូរស័ព្ទសម្រាប់ cover
+   និង TOI ឱ្យដូចតាមកុំព្យូទ័រ» ។
+   ⚠ CSS មិនអាចដាក់លក្ខខណ្ឌតាមឧបករណ៍បានទេ (media query វាស់ viewport
+   មិនមែនប្រភេទឧបករណ៍) ដូច្នេះដាក់ជា class លើ <html> ។ រាល់ច្បាប់ព្រីន
+   ដែលសម្រាប់ទូរស័ព្ទតែម្នាក់ឯង ត្រូវព្យួរនៅលើ `html.rsc-mobile-print`
+   — កុំព្យូទ័រគ្មាន class នេះ ដូច្នេះវាមិនប៉ះពាល់ទាល់តែសោះ។ */
+try{
+  if(RSC_MOBILE_PRINT) document.documentElement.classList.add('rsc-mobile-print');
 }catch(e){}
 /* ⚠⚠ [stated] ២០២៦-០៨-១៦ ៖ «ព្រីនភាគច្រើននៅលើទូរស័ព្ទវាមានបញ្ហាចុះបន្ទាត់
    ទៅទំព័រផ្សេង និង footer អត់ត្រូវ» ។
