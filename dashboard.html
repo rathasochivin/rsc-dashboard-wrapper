@@ -721,6 +721,39 @@
        url('./fonts/KhmerOSmuol.ttf') format('truetype');
   font-weight:normal; font-style:normal; font-display:swap;
 }
+/* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «កន្លែងណាក្រៅពីមាន KHMER OS MUOL LIGHT
+   ស្រាប់ ហើយមិនទាន់មាន KHMER OS SIEMREAP … ប្តូរទៅ Siemreap រួមទាំង
+   DROPDOWN ; កន្លែងដែលមាន MUOL LIGHT ស្រាប់ កុំប៉ះ» ។
+   ⚠ ធាតុទម្រង់មិនទទួលមរតកអក្សរពី body ទេ — ត្រូវប្រាប់ដោយផ្ទាល់។
+   ⚠ ទម្ងន់ត្រឹម (0,0,1) ដោយចេតនា ៖ គ្រប់ច្បាប់ Muol ដែលមានស្រាប់
+   (សុទ្ធតែតាម class ឬ id) ឈ្នះច្បាប់នេះ ដូច្នេះ Muol មិនប៉ះពាល់។ */
+input, select, option, textarea, button{
+  font-family:'Khmer OS Siemreap','Khmer OS','Noto Sans Khmer',sans-serif;
+}
+/* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ផ្នែកអក្សរ FONT KHMER OS MUOL LIGHT ជួយបន្ថយ
+   FONT កុំឱ្យធំពេក និង ដាក់វាស្មើគ្នា … កែសម្រាប់តែលើអេក្រង់ទេ» ។
+   ចំណងជើង Muol លើអេក្រង់រាយពី ១៦ ដល់ ២២px ⇒ មើលទៅមិនស៊ីគ្នា។ ដាក់
+   ស្មើ ១៥px ទាំងអស់។
+   ⚠ `@media screen` ជាការចាំបាច់ ៖ ចំណងជើង Muol លើ **ក្រដាស** មានទំហំ
+   រៀងខ្លួន (១១–១៣.៥px) ដែលលៃតាមទំហំសន្លឹក — ប៉ះវានឹងខូចឯកសារផ្លូវការ។
+   ⚠ បញ្ជីច្បាស់លាស់ ដោយចេតនា ៖ CSS មិនអាចជ្រើស «ធាតុដែលប្រើ Muol»
+   បានទេ ដូច្នេះខ្ញុំរាយតែច្បាប់លើអេក្រង់ដែលរកឃើញពិត។ ច្បាប់ Muol
+   របស់ឯកសារព្រីន (#view-tracking · #docs-modal · .nr-* · .ar-*)
+   មិនស្ថិតក្នុងបញ្ជីនេះទេ។ */
+@media screen{
+  .topbar h2,
+  #mtr-embed .topbar .titles h2,
+  #toi-embed .panel-title,
+  .module-card .mc-title,
+  .section-title,
+  .brand h1,
+  .brand .mark,
+  .modal-head h3,
+  #tos-embed .manual-title,
+  #tos-embed .missing-title{
+    font-size:15px !important;
+  }
+}
 :root{
   --bg:#F5F4EF;
   --surface:#FFFFFF;
@@ -950,7 +983,7 @@ body.view-mtr-active main{align-self:flex-start; min-height:0;}
   background:repeating-linear-gradient(90deg, var(--line) 0 6px, transparent 6px 11px);
 }
 .kpi .num{
-  font-family:'JetBrains Mono',monospace; font-weight:600; font-size:26px;
+  font-family:'JetBrains Mono','Khmer OS Siemreap',monospace; font-weight:600; font-size:26px;
   font-variant-numeric:tabular-nums; color:var(--primary-dark); line-height:1.1;
 }
 .kpi .lbl{margin-top:6px; font-size:12px; color:var(--muted); line-height:1.4;}
@@ -1002,7 +1035,7 @@ body.view-mtr-active main{align-self:flex-start; min-height:0;}
   .module-card .mc-title .mc-char{ animation:none; }
 }
 .module-card .mc-stat{
-  font-family:'JetBrains Mono',monospace; font-weight:700; font-size:30px;
+  font-family:'JetBrains Mono','Khmer OS Siemreap',monospace; font-weight:700; font-size:30px;
   color:var(--mc-color, var(--primary-dark)); font-variant-numeric:tabular-nums; line-height:1;
 }
 /* Count on the left, the "go to sub-view" links on the right of the SAME
@@ -1086,7 +1119,7 @@ body:not(.has-data) .data-gated{ display:none !important; }
 .legend{display:flex; flex-direction:column; gap:7px; font-size:12.5px;}
 .legend .row{display:flex; align-items:center; gap:8px;}
 .legend .sw{width:10px;height:10px;border-radius:3px; flex:none;}
-.legend .val{font-family:'JetBrains Mono',monospace; font-weight:600; margin-left:auto; padding-left:14px; font-variant-numeric:tabular-nums;}
+.legend .val{font-family:'JetBrains Mono','Khmer OS Siemreap',monospace; font-weight:600; margin-left:auto; padding-left:14px; font-variant-numeric:tabular-nums;}
 
 /* tables */
 .table-scroll{overflow:auto; border:1px solid var(--line); border-radius:var(--radius); background:var(--surface);}
@@ -1108,15 +1141,15 @@ tfoot td{
   font-weight:700; background:#F1F0E9; border-top:2px solid var(--primary);
   padding:9px 10px; text-align:center;
 }
-.amt{text-align:right !important; font-family:'JetBrains Mono',monospace;}
-.amt-center{text-align:center !important; font-family:'JetBrains Mono',monospace;}
+.amt{text-align:right !important; font-family:'JetBrains Mono','Khmer OS Siemreap',monospace;}
+.amt-center{text-align:center !important; font-family:'JetBrains Mono','Khmer OS Siemreap',monospace;}
 .wrap-center{text-align:center !important; white-space:normal;}
 .oe-total-inline{
   display:flex; justify-content:flex-end; align-items:baseline; gap:8px;
   margin:0 0 8px; padding:6px 14px; font-size:13px; color:var(--muted);
 }
 .oe-total-inline b{
-  font-family:'JetBrains Mono',monospace; font-size:16px; font-weight:700;
+  font-family:'JetBrains Mono','Khmer OS Siemreap',monospace; font-size:16px; font-weight:700;
   color:var(--primary-dark); font-variant-numeric:tabular-nums;
 }
 .oe-pagination{
@@ -1167,7 +1200,7 @@ tfoot td{
 
 textarea.paste-box{
   width:100%; min-height:90px; border:1.5px dashed var(--line); border-radius:8px;
-  padding:10px 12px; font-family:'JetBrains Mono',monospace; font-size:12px;
+  padding:10px 12px; font-family:'JetBrains Mono','Khmer OS Siemreap',monospace; font-size:12px;
   resize:vertical; background:#FCFCFA;
 }
 textarea.paste-box:focus{outline:none; border-color:var(--accent);}
@@ -1214,7 +1247,7 @@ td[contenteditable="true"]:focus{outline:2px solid var(--accent); outline-offset
 .yoy-row:last-child{margin-bottom:0;}
 .yoy-row-head{display:flex; align-items:baseline; gap:8px; margin-bottom:5px;}
 .yoy-year{font-weight:700; color:var(--primary-dark); font-size:12.8px; min-width:36px; flex:none;}
-.yoy-amt{font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--ink); flex:1; text-align:right; font-variant-numeric:tabular-nums;}
+.yoy-amt{font-family:'JetBrains Mono','Khmer OS Siemreap',monospace; font-size:12px; color:var(--ink); flex:1; text-align:right; font-variant-numeric:tabular-nums;}
 .yoy-growth{font-size:10.8px; font-weight:700; white-space:nowrap; flex:none; min-width:78px; text-align:right;}
 .yoy-growth.up{color:var(--green);}
 .yoy-growth.down{color:var(--red);}
@@ -1248,7 +1281,7 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
   background:transparent; color:var(--primary); white-space:nowrap;
 }
 .btn-view:hover{background:var(--primary); color:#fff;}
-.rank-cell{font-family:'JetBrains Mono',monospace; color:var(--muted);}
+.rank-cell{font-family:'JetBrains Mono','Khmer OS Siemreap',monospace; color:var(--muted);}
 .toggle-raw{
   font-family:inherit; font-size:12.5px; color:var(--primary-light); cursor:pointer;
   text-decoration:underline; background:none; border:none; padding:0; margin:14px 0 4px; display:inline-block;
@@ -1857,10 +1890,19 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
 #view-tracking .wp-sign td, #docs-modal .wp-sign td{width:50%; text-align:center; vertical-align:top;}
 #view-tracking .wp-sign-h, #docs-modal .wp-sign-h{font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif; font-weight:700; font-size:13px;}
 #view-tracking .wp-sign-n, #docs-modal .wp-sign-n{font-weight:600;}
-#view-tracking .wp-toc, #docs-modal .wp-toc{width:100%; border-collapse:collapse; font-size:13px;}
-#view-tracking .wp-toc td, #docs-modal .wp-toc td{border-top:1px dotted #333; border-bottom:1px dotted #333; padding:8px 10px;}
-#view-tracking .wp-toc td.l, #docs-modal .wp-toc td.l{font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif; font-size:12.5px;}
-#view-tracking .wp-toc td.c, #docs-modal .wp-toc td.c{width:80px; text-align:center; font-size:15px;}
+/* មាតិកាឯកសារការងារ ៖ តារាងតូចចំកណ្តាល · បន្ទាត់ចុចៗពណ៌ខៀវ · សញ្ញា «-»
+   ក្នុងក្រឡាដាច់ដោយឡែក · អក្សរ A–F ធំជាអក្សរឡាតាំងខាងស្តាំ។
+   ⚠ លំនាំ lastWide ៖ td.d និង td.c ត្រូវ width:1% + nowrap ហើយ td.l យក
+   width:100% — ព្រោះ printInPage បង្ខំ `table-layout:auto !important`
+   ដូច្នេះទទឹងជាភិកសែលនឹងរីកតាមចន្លោះទំនេរបើមិនធ្វើដូចនេះ។ */
+#view-tracking .wp-toc, #docs-modal .wp-toc{width:65%; margin:0 auto; border-collapse:collapse; font-size:13px;}
+#view-tracking .wp-toc td, #docs-modal .wp-toc td{border-top:1px dotted #1a237e; border-bottom:1px dotted #1a237e;
+    border-left:0; border-right:0; padding:11px 0; background:#fff; text-align:left; vertical-align:middle;}
+#view-tracking .wp-toc td.d, #docs-modal .wp-toc td.d{width:1%; white-space:nowrap; padding-left:21px; padding-right:25px;}
+#view-tracking .wp-toc td.l, #docs-modal .wp-toc td.l{width:100%; white-space:normal;
+    font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif; font-size:12.5px;}
+#view-tracking .wp-toc td.c, #docs-modal .wp-toc td.c{width:1%; white-space:nowrap; text-align:right;
+    padding-right:22px; font-family:'Noto Sans',Arial,sans-serif; font-size:22px; line-height:1.2;}
 #view-tracking .wp-tbl, #docs-modal .wp-tbl{width:100%; border-collapse:collapse; font-size:11.5px; border:1.5px solid #333;}
 #view-tracking .wp-tbl th,.wp-tbl td{border:1px dotted #333; padding:4px 7px;}
 #view-tracking .wp-tbl th, #docs-modal .wp-tbl th{text-align:center; border-bottom:1.5px solid #333; font-size:12px;}
@@ -1873,6 +1915,24 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
   #view-tracking .cv-in, #docs-modal .cv-in{border:2px solid #333; padding:14px 20px 16px; box-sizing:border-box; min-height:calc(100vh - 12px);
     display:flex; flex-direction:column;}
   #view-tracking .cv-lh, #docs-modal .cv-lh{display:flex; align-items:flex-start; justify-content:space-between; gap:16px;}
+/* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ព្រីនត្រូវហើយ ប៉ុន្តែនៅលើអេក្រង់អត់ត្រូវ» ។
+   មូលហេតុ ៖ សន្លឹកមុខនេះមាន **សន្លឹករចនាបទពីរឈុត** — ឈុតព្រីន (WP_CSS)
+   និងឈុតអេក្រង់ (ច្បាប់ដែលដឹកនាំដោយ #view-tracking / #docs-modal) ។
+   ខ្ញុំកែតែឈុតព្រីន ⇒ អេក្រង់មិនប្រែប្រួលសោះ។
+   ⚠⚠ នេះជាលំនាំដដែលដែលកើតឡើងច្រើនដងក្នុងឯកសារនេះ (អ្នកអាន COMPANYINFO
+   ពីរ · របារខាងលើ · បាតទំព័រ) ៖ **ពិនិត្យថាមានច្បាប់/មុខងារប៉ុន្មានឈុត
+   មុននឹងកែមួយ** ។ ច្បាប់ថ្មីទាំងអស់ខាងក្រោមជាគូនឹងឈុតព្រីនបេះបិទ។ */
+#view-tracking .cv-lh-c, #docs-modal .cv-lh-c{flex:1 1 auto; min-width:0;
+  align-self:stretch; display:flex; align-items:flex-end; justify-content:center;
+  padding:0 8px 4px;}
+#view-tracking .cv-lh-c .cv-title, #docs-modal .cv-lh-c .cv-title{margin:0 !important;}
+#view-tracking .cv-dt-line, #docs-modal .cv-dt-line{margin-top:4px; font-size:12px;
+  white-space:nowrap;}
+#view-tracking .cv-nl2, #docs-modal .cv-nl2{display:flex; justify-content:space-between;
+  align-items:baseline; gap:12px;}
+#view-tracking .cv-nl2-l, #docs-modal .cv-nl2-l{flex:1 1 auto; min-width:0;}
+#view-tracking .cv-nl2-l input, #docs-modal .cv-nl2-l input{width:100%;}
+#view-tracking .cv-nl2-r, #docs-modal .cv-nl2-r{flex:0 0 auto; white-space:nowrap; font-weight:700;}
   #view-tracking .cv-lh-l, #docs-modal .cv-lh-l, #view-tracking .cv-lh-r, #docs-modal .cv-lh-r{text-align:center; color:#1a237e;
     font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif;}
   #view-tracking .cv-lh-l, #docs-modal .cv-lh-l{flex:0 1 auto; font-size:12px; line-height:24px;}
@@ -2226,7 +2286,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
 #ccAssess .cc-as-pct .btn{padding:6px 10px; font-size:12px;}
 #ccAssess .cc-as-pct-free{display:inline-flex; align-items:center; gap:5px; font-size:12.5px; color:var(--muted);}
 #ccAssess .cc-as-pct-free input{width:96px; margin:0; text-align:right;}
-#ccAssess input[data-as="amount"]{text-align:right; font-family:'JetBrains Mono',monospace; font-size:15px; letter-spacing:.3px;}
+#ccAssess input[data-as="amount"]{text-align:right; font-family:'JetBrains Mono','Khmer OS Siemreap',monospace; font-size:15px; letter-spacing:.3px;}
 #ccAssess select,#ccAssess input{width:100%; font:inherit; font-size:13.5px; padding:7px 9px;
   border:1px solid var(--line); border-radius:8px; background:var(--surface); color:var(--ink);}
 #ccAssess input[type=number]{text-align:right; font-variant-numeric:tabular-nums;}
@@ -2947,7 +3007,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     letter-spacing:.15px;
     line-height:1.55;
   }
-  #toi-embed .khmer-num{font-family:'JetBrains Mono','Noto Sans Khmer',monospace; font-variant-numeric: tabular-nums;}
+  #toi-embed .khmer-num{font-family:'JetBrains Mono','Khmer OS Siemreap','Noto Sans Khmer',monospace; font-variant-numeric: tabular-nums;}
 
   
   #toi-embed .app{display:flex; min-height:100vh;}
@@ -2982,7 +3042,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
   }
   #toi-embed nav.steps .nav-item .idx{
-    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--toi-gold-soft);
+    font-family:'JetBrains Mono','Khmer OS Siemreap',monospace; font-size:11px; color:var(--toi-gold-soft);
     width:22px; flex:0 0 22px;
   }
   #toi-embed nav.steps .nav-item:hover{background:rgba(255,255,255,.06); color:#fff;}
@@ -3031,7 +3091,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
   #toi-embed .year-chip{
     padding:5px 12px; border-radius:20px; font-size:12.5px; font-weight:600;
     border:1.5px solid var(--toi-gold); color:var(--toi-navy); cursor:pointer; background:#fff;
-    font-family:'JetBrains Mono',monospace;
+    font-family:'JetBrains Mono','Khmer OS Siemreap',monospace;
   }
   #toi-embed .year-chip.off{opacity:.35; border-color:var(--toi-line); color:var(--toi-ink-soft);}
   #toi-embed .status-msg{font-size:12.5px; color:var(--toi-ink-soft); margin-left:auto;}
@@ -3086,7 +3146,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     border-top:3px solid var(--toi-gold);
   }
   #toi-embed .kpi, #overview-financials .kpi .label{font-size:10.5px; color:var(--toi-ink-soft); margin-bottom:6px;}
-  #toi-embed .kpi, #overview-financials .kpi .value{font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:600; color:var(--toi-navy); white-space:nowrap; overflow:hidden;}
+  #toi-embed .kpi, #overview-financials .kpi .value{font-family:'JetBrains Mono','Khmer OS Siemreap',monospace; font-size:13px; font-weight:600; color:var(--toi-navy); white-space:nowrap; overflow:hidden;}
   /* ទំព័រដើម ៖ អក្សរ និងលេខធំជាង ដើម្បីអានបានច្បាស់ពីចម្ងាយ */
   #overview-financials .kpi{padding:18px 20px;}
   #overview-financials .kpi .label{font-size:12.5px; margin-bottom:8px;}
@@ -3139,10 +3199,23 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     font-family:'Khmer OS Muol Light','Khmer OS Muol','Noto Serif Khmer',serif;
   }
   #toi-embed #coverPanel thead th{font-family:'Khmer OS Siemreap',sans-serif; font-weight:700; font-size:13px;}
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «PRINT ត្រូវហើយ តែនៅអេក្រង់ធ្លាក់អក្សរខ្លាំង» ។
+     ការរួមក្រឡា Email ជាការប្តូរ **DOM** ដូច្នេះវាប៉ះទាំងអេក្រង់ ទាំង
+     ក្រដាស ; ខណៈការកែ inline ដែលខ្ញុំដាក់ ស្ថិតក្នុងប្លុកព្រីនតែប៉ុណ្ណោះ។
+     ⇒ លើអេក្រង់ ប្រអប់ទទឹង ១០០% អង្គុយក្នុងក្រឡាដដែលនឹងស្លាក ហើយធ្លាក់
+     ចុះក្រោម។ ច្បាប់ដូចគ្នាត្រូវការនៅផ្នែកអេក្រង់ផង។
+     ⚠ `min-width` ៖ ប្រអប់ដែល width:auto មានទទឹងតូចពេក ដូច្នេះកំណត់
+     ទទឹងអប្បបរមាដើម្បីអោយវាវាយបានស្រួល។ */
+  #toi-embed #coverPanel td.cv-tight{ white-space:nowrap; }
+  #toi-embed #coverPanel td.cv-tight .cf-wrap{
+    display:inline-block !important; width:auto !important; min-width:230px;
+    vertical-align:middle;
+  }
+  #toi-embed #coverPanel td.cv-tight .cf-wrap textarea{ width:100%; }
   #toi-embed table.de-fit-table thead th{font-size:11.5px; font-family:'Khmer OS Siemreap',sans-serif; font-weight:700; white-space:nowrap; line-height:1.3;}
   #toi-embed table.de-fit-table tbody td{font-size:12.5px; white-space:nowrap;}
   #toi-embed table.de-fit-table tbody td input{font-size:12.5px !important; white-space:nowrap;}
-  #toi-embed td.num, #toi-embed th.num{text-align:right; font-family:'JetBrains Mono',monospace; font-variant-numeric:tabular-nums; white-space:nowrap; word-break:normal;}
+  #toi-embed td.num, #toi-embed th.num{text-align:right; font-family:'JetBrains Mono','Khmer OS Siemreap',monospace; font-variant-numeric:tabular-nums; white-space:nowrap; word-break:normal;}
   #toi-embed thead th.num{text-align:center;}
   #toi-embed td.label, #toi-embed th.label{white-space:nowrap; min-width:60px;}
   #toi-embed td.ref, #toi-embed th.ref{white-space:nowrap;}
@@ -3150,7 +3223,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
   #toi-embed tbody tr:nth-child(even){background:#fbf9f3;}
   #toi-embed tbody tr.total-row{font-weight:700; background:var(--toi-gold-soft) !important;}
   #toi-embed tbody tr.total-row td{border-top:1.5px solid var(--toi-gold);}
-  #toi-embed td.ref{color:var(--toi-ink-soft); font-family:'JetBrains Mono',monospace; font-size:12.5px; letter-spacing:.5px; text-align:center;}
+  #toi-embed td.ref{color:var(--toi-ink-soft); font-family:'JetBrains Mono','Khmer OS Siemreap',monospace; font-size:12.5px; letter-spacing:.5px; text-align:center;}
   #toi-embed td.pct{text-align:center;}
   /* Freeze the "បរិយាយ" (description) column — Step4 through Step8 only
      (Balance Sheet / Income Statement / their neighbours), since those are
@@ -3213,7 +3286,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     padding:5px 8px; font-family:inherit; font-size:13px; background:#fff; color:var(--toi-ink);
   }
   #toi-embed .risk-input:focus{outline:none; border-color:var(--toi-gold); box-shadow:0 0 0 2px rgba(184,134,59,.15);}
-  #toi-embed input[type=number].risk-input{text-align:right; font-family:'JetBrains Mono',monospace;}
+  #toi-embed input[type=number].risk-input{text-align:right; font-family:'JetBrains Mono','Khmer OS Siemreap',monospace;}
   #toi-embed .risk-input-auto{background:#fdf6e6; border-color:var(--toi-gold-soft);}
   #toi-embed .risk-ratio-cell{font-weight:600;}
   #toi-embed .risk-checkbox{width:16px; height:16px; margin:0 8px 0 0; flex-shrink:0; accent-color:var(--toi-gold); cursor:pointer;}
@@ -3292,7 +3365,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
   #toi-embed .risk-cat-title-input{flex:1; max-width:520px; font-family:'Khmer OS Muol Light','Khmer OS Muol','Noto Serif Khmer',serif; font-size:14.5px; font-weight:600;}
   #toi-embed .risk-del-btn{margin-left:10px; padding:4px 10px; font-size:12px;}
   #toi-embed .risk-add-row-btn{margin:2px 0 18px; font-size:12.5px; padding:6px 12px;}
-  #toi-embed .risk-year-input{width:100px; min-width:80px; text-align:center; font-family:'JetBrains Mono',monospace;}
+  #toi-embed .risk-year-input{width:100px; min-width:80px; text-align:center; font-family:'JetBrains Mono','Khmer OS Siemreap',monospace;}
   #toi-embed .summary-list li{margin-bottom:7px; font-size:13px;}
   #toi-embed .toggle-row{margin-bottom:14px;}
   #toi-embed .field-input{
@@ -3533,11 +3606,56 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
        top:3px = padding-top របស់ក្រឡាពេលព្រីន ដូច្នេះវាឈរជួរនឹងបន្ទាត់
        ទីមួយ ទោះតម្លៃមានច្រើនបន្ទាត់ក៏ដោយ។ */
     /* ស្លាក ៖ ៤px ឆ្វេង + ១២px ស្តាំ (ទីធ្លាសម្រាប់សញ្ញា «៖») = ១៦px */
+    /* ⚠⚠ សញ្ញា «៖» តម្រឹមជាជួរ ៖ ទីតាំងដាច់ខាតនៅគែមស្តាំរបស់ជួរឈរ
+       ដូច្នេះសញ្ញាទាំងអស់ត្រង់គ្នា ; `padding-right` រក្សាផ្លូវទុកអោយវា
+       ដើម្បីកុំអោយអក្សរស្លាករត់ចូលក្រោម។ `top:3px` = padding-top របស់
+       ក្រឡាពេលព្រីន ដូច្នេះវាឈរជួរនឹងបន្ទាត់ទីមួយ។
+       ⚠⚠ ២០២៦-០៨-១៧ ៖ ខ្ញុំធ្លាប់ដក វាចេញម្តង តាមការស្នើសុំ («ខិតវាមក
+       នៅក្រោយអក្សរ») រួចគេប្តូរចិត្តភ្លាម («អត់ស្អាត») ហើយអោយត្រឡប់មក
+       វិញ។ **កុំដកវាចេញទៀត បើគេមិនបានឃើញលទ្ធផលទាំងពីររួច** — នេះជា
+       ការជ្រើសរើសរវាង «ត្រង់ជាជួរ» និង «ជាប់អក្សរ» ដែលមិនអាចបានទាំងពីរ
+       ហើយគេជ្រើសយក **ត្រង់ជាជួរ** ។ */
     #toi-embed #coverPanel table.cover-no-border td:nth-child(odd){
       position:relative; padding-left:4px !important; padding-right:12px !important;
     }
     #toi-embed #coverPanel table.cover-no-border td:nth-child(odd) .cv-cl{
       position:absolute; right:4px; top:3px;
+    }
+    /* ការលើកលែងតែមួយ ៖ Email — សញ្ញា «៖» ជាប់នឹងពាក្យ។
+       ⚠ ត្រូវការ `!important` ៖ ច្បាប់ខាងលើមានទម្ងន់ខ្ពស់ (២ id) ដូច្នេះ
+       ការបន្ថែម class តែឯងមិនគ្រប់គ្រាន់ដើម្បីយកឈ្នះទេ។ */
+    /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «អក្សរ …@gmail.com វាអត់ខិតតាមសញ្ញា ៖» ។
+       មូលហេតុ ៖ ក្រឡាតម្លៃឈរនៅ **ជួរឈរបន្ទាប់** ដែលទទឹងថេរតាមក្រឡាចត្រង្គ
+       — ការធ្វើអោយសញ្ញា «៖» ជាប់ពាក្យ មិនផ្លាស់ទីតម្លៃទេ។ ជាមួយ
+       `table-layout:fixed` ជួរឈរមិនអាចរួញតាមមាតិកាបានឡើយ។
+       ⚠ ដំណោះស្រាយក្នុងក្របខ័ណ្ឌក្រឡាចត្រង្គ ៖ តម្រឹមស្លាកនេះទៅ **ស្តាំ**
+       ⇒ «Email ៖» អង្គុយលើគែមស្តាំរបស់ជួរឈររបស់ខ្លួន ដែលជាប់នឹងគែម
+       ឆ្វេងរបស់ជួរឈរតម្លៃ ⇒ ទាំងពីរជាប់គ្នា។ */
+    /* ⚠⚠ ត្រូវការ `:nth-child(odd)` ៖ ច្បាប់តម្រឹមឆ្វេងខាងលើប្រើ
+       `td:nth-child(odd)` + !important ⇒ ទម្ងន់ ២៣៣ ។ ច្បាប់នេះដោយ
+       គ្មាន pseudo មានត្រឹម ២២៣ ហើយ **ចាញ់ ទោះមាន !important ក៏ដោយ** ។
+       ការបន្ថែម pseudo ដដែលធ្វើអោយស្មើ (២៣៣) រួចអ្នកសរសេរក្រោយឈ្នះ។ */
+    /* ក្រឡា Email ឥឡូវរួមស្លាក និងតម្លៃជាមួយគ្នា ⇒ តម្រឹមឆ្វេងធម្មតា
+       ហើយអក្សរហូរជាប់គ្នា។ ការតម្រឹមស្តាំដែលខ្ញុំដាក់ជុំមុនត្រូវដកចេញ
+       បើមិនដូច្នេះទេ ទាំងស្លាក និងតម្លៃនឹងរុញទៅស្តាំទាំងអស់។ */
+    #toi-embed #coverPanel table.cover-no-border td.cv-tight:nth-child(odd){
+      padding-right:6px !important;
+    }
+    #toi-embed #coverPanel td.cv-num, #toi-embed #coverPanel th.cv-num{
+      text-align:center !important;
+    }
+    /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «វាអត់ជាប់ទេ តែវាចុះបន្ទាត់» ។ ការរួម
+       ក្រឡាដើរហើយ តែតម្លៃនៅតែធ្លាក់មួយបន្ទាត់ ព្រោះស្បោកតម្លៃ
+       (`.cf-wrap`) ជា **`display:block`** ⇒ វាតែងតែចាប់បន្ទាត់ថ្មី។
+       ⚠ ធ្វើវាជា inline តែក្នុងក្រឡា Email ⇒ អក្សរហូរបន្តពីសញ្ញា «៖»
+       ក្នុងបន្ទាត់ដដែល។ ⚠ ត្រូវធ្វើទាំង `.cf-wrap` និង `.cf-print`
+       (អត្ថបទដែលព្រីនពិត) បើមិនដូច្នេះទេ មួយក្នុងចំណោមនោះនៅតែជាប្លុក។ */
+    #toi-embed #coverPanel td.cv-tight .cf-wrap,
+    #toi-embed #coverPanel td.cv-tight .cf-print{
+      display:inline !important; width:auto !important;
+    }
+    #toi-embed #coverPanel table.cover-no-border td.cv-tight:nth-child(odd) .cv-cl{
+      position:static !important; margin-left:2px;
     }
     /* ⚠⚠ [stated] «ជួរ ចុះបញ្ជីសារពើពន្ធ ដល់ EMAIL ជាន់អក្សរគ្នា» ។
        មូលហេតុ ៖ ជាមួយ `table-layout:fixed` ជួរឈរមិនរីកតាមមាតិកាទេ —
@@ -3628,6 +3746,23 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
        បោះពុម្ពបន្តិចបន្តួច ជួរដេកចុងក្រោយត្រូវកាត់ពាក់កណ្តាល ហើយផ្នែក
        ខាងលើនៃអក្សរនៅសល់ជាស្នាមខ្មៅនៅបាតទំព័រ។ រឹមធំជាងផ្តល់ចន្លោះ
        ល្មមអោយជួរដេកទាំងមូលធ្លាក់ទៅទំព័របន្ទាប់ ជំនួសការកាត់ពាក់កណ្តាល។ */
+    /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ដាក់ ទំព័រទី១ ទំព័រទី២ នៅ FOOTER ចំកណ្តាល ·
+       ដាក់ FOOTER នៅខាងស្តាំ "សម្រាប់ប្រើប្រាស់ផ្ទៃក្នុង…" · កុំឱ្យជាន់
+       FOOTER» ។
+       ⚠ លេខទំព័រ **មិនអាចគណនាដោយ CSS ធម្មតា**បានទេ ; `counter(page)`
+       ដើរតែក្នុង **ប្រអប់រឹមរបស់ @page** ។ Chrome ថ្មីៗគាំទ្រវា ដូច្នេះ
+       យើងប្រើផ្លូវនេះ។ ⚠ Safari/iOS មិនទាន់គាំទ្រ — លើទូរស័ព្ទ លេខទំព័រ
+       អាចមិនចេញ (អត្ថបទខាងស្តាំក៏ដូចគ្នា)។ បើត្រូវការលើទូរស័ព្ទដែរ
+       ត្រូវប្តូរទៅប្រើកម្មវិធីបែងចែកទំព័រដោយ JS ដូចរបាយការណ៍បរិយាយ។
+       ⚠ រឹមក្រោម ១៨ → ២២mm ៖ នេះជាអ្វីដែលធ្វើអោយ «កុំឱ្យជាន់ FOOTER» —
+       ប្រអប់រឹមរស់នៅក្នុងរឹម ដូច្នេះរឹមត្រូវធំល្មមផ្ទុកវា។ */
+    /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ទំព័រ និង "សម្រាប់ប្រើប្រាស់ផ្ទៃក្នុង…"
+       ដាក់សម្រាប់តែផ្នែក COVER ទេ» ។ ខ្ញុំបានដាក់វានៅទីនេះ ⇒ វាចេញលើ
+       **គ្រប់ការព្រីនរបស់ TOI** រួមទាំងទម្រង់រដ្ឋបាលផង។
+       ⚠⚠ `@page` អនុវត្តលើ **ការងារព្រីនទាំងមូល** មិនអាចកំណត់តាមធាតុ
+       ណាមួយបានទេ។ ដូច្នេះការដាក់ត្រឹម COVER ត្រូវធ្វើ **តាមពេលវេលា**
+       មិនមែនតាមទីកន្លែង ៖ បញ្ចូល @page ថ្មីចូល head តែពេលព្រីន COVER
+       រួចដកចេញ (វិធីដដែលនឹង MTR និងទម្រង់រដ្ឋបាលដេក)។ */
     @page{ size:A4; margin:12mm 8mm 18mm; }
     @page print-landscape-page{ size:A4 landscape; margin:8mm 6mm 14mm; }
     /* Hides the OUTER dashboard's own app shell (its left nav sidebar and
@@ -3669,6 +3804,15 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     /* កន្លែងអូសពង្រីករបស់ textarea បោះពុម្ពជាសញ្ញា ⌟ នៅជ្រុងស្តាំ */
     textarea{resize:none !important;}
     .no-print{display:none !important;}
+    /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «អក្សរទាំងអស់ប្រើពណ៌ខ្មៅ ផ្នែកណាក៏ដោយ» ។
+       ⚠ អនុវត្តតែពេល **ព្រីន** ៖ ឯកសារផ្លូវការត្រូវខ្មៅទាំងអស់ ខណៈ
+       ផ្ទាំងលើអេក្រង់ពឹងលើពណ៌ដើម្បីបែងចែក (ចំណងជើងខៀវ · ការព្រមានក្រហម ·
+       សញ្ញាធីកបៃតង) — ការធ្វើអោយអេក្រង់ខ្មៅទាំងអស់នឹងបំផ្លាញការរចនា។
+       ⚠ ប្លុកនេះជា `@media print` ដែលគ្របលើឯកសារទាំងមូល រួមទាំង
+       កន្លែងព្រីនដាច់ដោយឡែក (`#trk-print-host` · overlay) ព្រោះពួកវាជា
+       កូនរបស់ body ដដែល។
+       ⚠ ស៊ុមតារាង និងផ្ទៃខាងក្រោយមិនប៉ះទេ — ត្រឹម `color` ប៉ុណ្ណោះ។ */
+    body, body *{ color:#000 !important; }
     #toi-embed #coverPanel table{border-collapse:collapse !important;}
     #toi-embed #coverPanel table:not(.cover-no-border) th, #toi-embed #coverPanel table:not(.cover-no-border) td{border:1px solid #333 !important;}
     /* ពីមុនប្រើ table-layout:fixed ដែលចែកទទឹងជួរជាភាគរយថេរ។ ជាមួយ
@@ -4039,7 +4183,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
   #tos-embed .manual-grid .btn{ height:39px; justify-content:center; }
   #tos-embed .amount-pair .field{ position:relative; }
   #tos-embed .amount-pair .fx-preview{ position:absolute; left:0; top:100%; margin-top:4px; white-space:nowrap; }
-  #tos-embed .fx-preview{ font-size:11px; color:var(--tos-slate); font-family:'JetBrains Mono',monospace; }
+  #tos-embed .fx-preview{ font-size:11px; color:var(--tos-slate); font-family:'JetBrains Mono','Khmer OS Siemreap',monospace; }
   #tos-embed .fx-note{ font-size:12px; color:var(--tos-slate); margin-top:10px; }
   @media (max-width: 860px){
     
@@ -4058,7 +4202,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     display:flex; justify-content:space-between; gap:10px;
     font-size:12.5px; padding:3px 0; border-bottom:1px dashed rgba(27,42,74,0.14);
   }
-  #tos-embed .rline b{ font-family:'JetBrains Mono',monospace; font-weight:600; white-space:nowrap; }
+  #tos-embed .rline b{ font-family:'JetBrains Mono','Khmer OS Siemreap',monospace; font-weight:600; white-space:nowrap; }
   #tos-embed .rline.total{ border-bottom:none; margin-top:4px; padding-top:7px; border-top:1.5px solid var(--tos-gold-600); }
   #tos-embed .rline.total b{ color:var(--tos-danger); }
 
@@ -4080,7 +4224,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     border-bottom:1.5px dashed var(--tos-line);
   }
   #tos-embed .stub .label{ font-size:12px; color:var(--tos-slate); }
-  #tos-embed .stub .value{ font-family:'JetBrains Mono',monospace; font-size:19px; font-weight:600; color:var(--tos-navy-800); margin-top:4px; }
+  #tos-embed .stub .value{ font-family:'JetBrains Mono','Khmer OS Siemreap',monospace; font-size:19px; font-weight:600; color:var(--tos-navy-800); margin-top:4px; }
   #tos-embed .stub.gold .value{ color:var(--tos-gold-600); }
 
   
@@ -4208,7 +4352,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
   #tos-embed table.emp-grid .yr-start{ border-left:2px solid var(--tos-gold-500); }
   #tos-embed table.emp-grid .emp-cell{
     width:78px; border:1px solid var(--tos-line); border-radius:5px; padding:5px 6px;
-    font-family:'JetBrains Mono',monospace; font-size:12px; text-align:right; background:#fff;
+    font-family:'JetBrains Mono','Khmer OS Siemreap',monospace; font-size:12px; text-align:right; background:#fff;
   }
   #tos-embed table.emp-grid .emp-cell:focus{ outline:2px solid var(--tos-gold-600); outline-offset:1px; }
   #tos-embed table.emp-grid td.emp-cell-amended{ box-shadow:inset 0 0 0 1.5px var(--tos-gold-600); border-radius:4px; position:relative; }
@@ -4231,13 +4375,13 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     padding:12px 14px; margin-bottom:10px; font-size:12.5px; color:var(--tos-navy-800);
   }
   #tos-embed .amend-detail-box .head{ font-weight:700; margin-bottom:6px; }
-  #tos-embed .amend-detail-box .row{ display:flex; justify-content:space-between; gap:12px; padding:2px 0; font-family:'JetBrains Mono',monospace; }
+  #tos-embed .amend-detail-box .row{ display:flex; justify-content:space-between; gap:12px; padding:2px 0; font-family:'JetBrains Mono','Khmer OS Siemreap',monospace; }
   #tos-embed .amend-detail-box .row span:first-child{ font-family:inherit; color:var(--tos-slate); }
   #tos-embed .amend-detail-box .row.fx-row{ flex-direction:column; gap:5px; padding-bottom:8px; margin-bottom:6px; border-bottom:1px dashed rgba(201,162,39,0.4); }
   #tos-embed .amend-detail-box .row.fx-row span:last-child{ font-family:inherit; font-weight:600; }
   #tos-embed .amend-detail-box .row.total{ border-top:1.5px solid var(--tos-gold-600); margin-top:4px; padding-top:7px; font-weight:700; }
   #tos-embed .amend-detail-box .row.total span:last-child{ color:var(--tos-danger); }
-  #tos-embed .fx-edit-line{ display:flex; align-items:center; gap:6px; font-family:'JetBrains Mono',monospace; font-weight:600; }
+  #tos-embed .fx-edit-line{ display:flex; align-items:center; gap:6px; font-family:'JetBrains Mono','Khmer OS Siemreap',monospace; font-weight:600; }
   #tos-embed .fx-edit-line input{
     border:1px solid var(--tos-gold-500); border-radius:5px; padding:4px 6px;
     font-family:inherit; font-size:12px; text-align:right; background:#fff;
@@ -5494,7 +5638,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
   <div id="hcModal" class="hc-modal" hidden></div>
 
   <section class="card manual-card">
-    <h3 class="manual-title">បញ្ចូលបៀវត្សបុគ្គលិកដោយផ្ទាល់ (គិតជាដុល្លារ)</h3>
+    <h3 class="manual-title">បន្ថែមឈ្មោះបុគ្គលិក</h3>
     <div class="manual-grid">
       <label class="field">ឈ្មោះនិយោជិត
         <input type="text" id="manName" list="manNameList" placeholder="ជ្រើសរើស ឬវាយឈ្មោះថ្មី" autocomplete="off" />
@@ -5577,14 +5721,14 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
            stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
       <span>EXCEL</span>
     </button>
-    <button type="button" class="btn danger-ghost" id="revertAllReassessBtn">លុបការកំណត់ពន្ធឡើងវិញទាំងអស់</button>
-    <button type="button" class="btn gold" id="viewAllReassessBtn">មើលការកំណត់ពន្ធឡើងវិញទាំងអស់ (<span id="reassessCountBadge">0</span>)</button>
+    <button type="button" class="btn danger-ghost" id="revertAllReassessBtn">លុបការកំណត់ពន្ធ</button>
+    <button type="button" class="btn gold" id="viewAllReassessBtn">ពិនិត្យការកំណត់ពន្ធ (<span id="reassessCountBadge">0</span>)</button>
   </div>
 
 
   <section class="card missing-card" style="margin-top:16px;">
     <div class="missing-head">
-      <h3 class="missing-title"><span id="matrixTitle">ប្រាក់បៀវត្សប្រកាស</span> មធ្យមប្រចាំខែ (USD)</h3>
+      <h3 class="missing-title" style="display:none;"><span id="matrixTitle">ប្រាក់បៀវត្សប្រកាស</span></h3>
       <span class="legend-swatches"><span class="sw sw-high"></span>ខ្ពស់បំផុតក្នុងជួរឆ្នាំ<span class="sw sw-low"></span>ទាបបំផុតក្នុងជួរឆ្នាំ</span>
     </div>
     <div class="matrix-toggle-row">
@@ -6667,8 +6811,12 @@ function renderPersonalInfoView(){
   container.innerHTML = '';
   const wrap = document.createElement('div');
   wrap.style.cssText = 'max-width:640px; margin:24px auto; padding:24px; background:var(--surface); border-radius:var(--radius); box-shadow:0 1px 3px rgba(0,0,0,.08);';
+  /* ⚠ [stated] ២០២៦-០៨-១៧ ៖ «លុបចេញ 👤 ព័ត៌មានផ្ទាល់ខ្លួន ព្រោះមាននៅ
+     កន្លែងចុចចូល» — ធាតុជំហានក្នុងជួរ TOI មានឈ្មោះនេះរួចហើយ។
+     ⚠ ធាតុ <h2> នៅដដែល តែទទេ ៖ បន្ទាត់ខាងក្រោមភ្ជាប់ថ្នាំង និងកំណត់
+     រចនាបទលើវា ; ការលុបធាតុចោលនឹងត្រូវកែច្រើនកន្លែងដោយឥតប្រយោជន៍។ */
   const title = document.createElement('h2');
-  title.textContent = '👤 ព័ត៌មានផ្ទាល់ខ្លួន';
+  title.textContent = '';
   title.style.cssText = 'margin:0 0 6px; font-family:\'Khmer OS Muol Light\',\'Noto Serif Khmer\',serif; color:var(--primary);';
   wrap.appendChild(title);
 
@@ -7124,6 +7272,17 @@ function importAllDataFromFile(evt){
      ត្រឡប់ true) ព្រោះតួមុខងាររាប់សិបបន្ទាត់ខាងក្រោមរុំក្នុងវា — ការដក
      វាចេញទាំងស្រុងជាការកែប្រែធំដោយគ្មានប្រយោជន៍។
      ⚠ ការបើកនៅតែជំនួសទិន្នន័យទាំងអស់ ហើយឥឡូវគ្មានសំណួរបញ្ជាក់ទេ។ */
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ពេលបើកឯកសារធ្លាប់រក្សាទុក វានៅតែជាប់
+     ដដែល» ។ ការ upload សន្លឹក Excel ថ្មីលុបទិន្នន័យសហគ្រាសចាស់រួចហើយ
+     (តាមការប្តូរលេខអតប) — តែ **ការបើកឯកសារដែលរក្សាទុក មិនលុបទេ** ។
+     ⚠⚠ ការស្តារឡើងវិញសរសេរតែកូនសោដែលមានក្នុងឯកសារ ; កូនសោរបស់សហគ្រាស
+     មុនដែល **មិនមាន** ក្នុងឯកសារនោះ នៅសល់ស្ងាត់ៗ ហើយលាយចូល (នេះជា
+     ប្រភពនៃ CN/DN អវិជ្ជមានដដែល)។
+     ⭐ លុបកូនសោសហគ្រាសទាំងអស់ **មុន** ការស្តារ ⇒ អ្វីដែលនៅសល់មកពី
+     ឯកសារនោះតែមួយគត់។
+     ⚠ សុវត្ថិភាព ៖ ការលុបធ្វើក្រោយពេលអ្នកប្រើជ្រើសឯកសារ ហើយការស្តារ
+     ធ្វើភ្លាមបន្ទាប់ ដូច្នេះគ្មានស្ថានភាព «លុបហើយគ្មានអ្វីជំនួស» ឡើយ។ */
+  try{ if(typeof wipeEnterpriseStorage === 'function') wipeEnterpriseStorage(); }catch(e){}
   Promise.resolve(true).then(function(ok){
   if(!ok){ evt.target.value = ""; return; }
   const reader = new FileReader();
@@ -7200,14 +7359,26 @@ function importAllDataFromText(text){
          ឯកសារចាស់ (គ្មាន __p) ឆ្លងកាត់ដោយមិនប៉ះពាល់។ */
       ["sale","purchase","cpPurchase","cpSale","saleCD","purchaseCD","otherExpenses","wht"]
         .forEach(function(k){ try{ main[k] = unpackRows(main[k]); }catch(e){} });
-      if(Array.isArray(main.sale)) state.sale = main.sale;
-      if(Array.isArray(main.purchase)) state.purchase = main.purchase;
-      if(Array.isArray(main.cpPurchase)) state.cpPurchase = main.cpPurchase;
-      if(Array.isArray(main.cpSale)) state.cpSale = main.cpSale;
-      if(Array.isArray(main.saleCD)) state.saleCD = main.saleCD;
-      if(Array.isArray(main.purchaseCD)) state.purchaseCD = main.purchaseCD;
-      if(Array.isArray(main.otherExpenses)) state.otherExpenses = main.otherExpenses;
-      if(Array.isArray(main.wht)) state.wht = main.wht;
+      /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ពេលបើកឯកសារនៅតែជាប់ទិន្នន័យចាស់ ហើយ
+         គ្មានកន្លែងអាចលុបបានទេ ព្រោះទិន្នន័យនោះមិនមានការប្រកាសអ្វីសោះ» ។
+         ⚠⚠ នេះជាមូលហេតុពិត ៖ បន្ទាត់ចាស់សរសេរតែពេលឯកសារ **មាន** តារាង
+         នោះ។ សហគ្រាសថ្មីគ្មាន CN/DN ⇒ គ្មានក្នុងឯកសារ ⇒ លក្ខខណ្ឌមិន
+         ពិត ⇒ **តារាងចាស់នៅក្នុងអង្គចងចាំដដែល** ហើយផ្ទាំង VAT បន្តគណនា
+         ពីវា។ ការលុប localStorage មិនជួយទេ ព្រោះវារស់ក្នុងអង្គចងចាំ។
+         ⭐ ច្បាប់ត្រូវ ៖ ការបើកឯកសារ = **ការជំនួសពេញលេញ** ។ អវត្តមាន
+         ក្នុងឯកសារ មានន័យថា «គ្មាន» មិនមែន «កុំប៉ះ» ។
+         ⚠ នេះក៏ពន្យល់ចំណុចទី ៣ ដែរ (CN/DN មិនកាត់កងរហូតដល់កែដោយដៃ) ៖
+         ការកែដោយដៃសរសេរជាន់តារាងចាស់ ទើបលទ្ធផលត្រូវ។ */
+      ['sale','purchase','cpPurchase','cpSale','saleCD','purchaseCD','otherExpenses','wht']
+        .forEach(function(k){ state[k] = Array.isArray(main[k]) ? main[k] : []; });
+      /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ទិន្នន័យចាស់នៃ CN DN នៅតែជាប់ដដែល»
+         ទោះតារាងត្រូវសម្អាតរួច ។ មូលហេតុទី ២ ៖ ការបូកសរុបអតបត្រូវ
+         **រក្សាទុកក្នុងឃ្លាំងសម្ងាត់តាមលេខជំនាន់ទិន្នន័យ** (`memoByVersion`)។
+         ការស្តារឯកសារប្តូរ `state` តែមិនបានបង្កើនលេខជំនាន់ ⇒ ការគណនា
+         ត្រឡប់លទ្ធផលចាស់ដដែល ទាំងដែលទិន្នន័យថ្មីរួចហើយ។
+         ⚠ នេះក៏ជាមូលហេតុដែលការកែដោយដៃ «ដោះ» វាបាន ៖ រាល់ការកែហៅ
+         `__bumpDataVersion()` ដែលបោះឃ្លាំងសម្ងាត់ចោល។ */
+      try{ if(window.__bumpDataVersion) window.__bumpDataVersion(); }catch(e){}
       if(main.companyNotes && typeof main.companyNotes==="object") state.companyNotes = main.companyNotes;
       state.selectedCategory = {sale:null, purchase:null, cpPurchase:null, cpSale:null, saleCD:null, purchaseCD:null};
       state.whtSelectedType = null;
@@ -7227,8 +7398,37 @@ function importAllDataFromText(text){
         ["ការបង់ប្រាក់សវនកម្ម",     ()=> parsed.mtrSel  && window.__mtrSelImport  && window.__mtrSelImport(parsed.mtrSel)],
         ["ក្បាលទម្រង់ព្រីន",        ()=> parsed.mtrForm && window.__mtrFormImport && window.__mtrFormImport(parsed.mtrForm)],
         ["តាមដាន/កំណត់ហេតុ + ACCESS", ()=> parsed.local && restoreLocalBackup(parsed.local)],
-        ["Calculation",            ()=> parsed.calc && window.CalcCard && window.CalcCard.importState
-                                        && window.CalcCard.importState(parsed.calc)],
+        /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «CN DN បញ្ចូលដោយដៃ … ពេលលុបចោលវាមិន
+           ទៅ ; ពេល upload ឯកសារថ្មី អ្វីៗគួរតែថ្មី» ។ ត្រូវទាំងស្រុង។
+           ⚠⚠ តម្លៃអតបបញ្ចូលដោយដៃរស់ជា **អថេរក្នុងអង្គចងចាំ** របស់ម៉ូឌុល
+           MTR ។ ការលុបឃ្លាំងអចិន្ត្រៃយ៍ដកកូនសោចេញ តែច្បាប់ចម្លងក្នុង
+           អង្គចងចាំនៅដដែល ហើយវាដាក់ជាន់ការគណនាចុងក្រោយបំផុត ⇒ តួលេខ
+           សហគ្រាសចាស់បន្តលេចឡើងលើសហគ្រាសថ្មី។
+           ⚠ មុខងារអានឡើងវិញមានស្រាប់ តែវាហៅ **តែពេលឯកសារមានផ្នែក local**
+           ។ ឯកសារដែលគ្មានផ្នែកនោះ ⇒ មិនហៅ ⇒ អង្គចងចាំមិនស្អាត។
+           ⭐ ហៅវា **ជានិច្ច** ៖ អានឡើងវិញពីឃ្លាំង (ដែលទើបលុប រួចស្តារ
+           ចេញពីឯកសារ) ⇒ អ្វីដែលនៅសល់មកពីឯកសារនោះតែមួយគត់។ */
+        ["សម្អាតតម្លៃបញ្ចូលដោយដៃ", ()=>{
+          try{ if(window.__mtrReloadManual) window.__mtrReloadManual(); }catch(e){}
+          try{ if(window.__bumpDataVersion) window.__bumpDataVersion(); }catch(e){}
+          return true;
+        }],
+        /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «upload ថ្មីមិនមានជាប់ទេ ; បញ្ហានៅពេល
+           បើកឯកសារចាស់ វានៅតែជាប់» ហើយអ្វីដែលជាប់គឺ **លទ្ធផលកំណត់
+           ឡើងវិញ និងការគណនាអាករលើតម្លៃបន្ថែម** ។
+           ⚠⚠ លំនាំដដែលជាលើកទី ៤ ៖ ជំហាននេះស្តារកាតគណនា **តែពេលឯកសារមាន
+           ផ្នែក calc** ។ ឯកសារដែលគ្មាន ⇒ មិនធ្វើអ្វី ⇒ កាតគណនាចាស់នៅ
+           ក្នុងអង្គចងចាំដដែល ព្រមទាំងតួលេខអតបរបស់សហគ្រាសមុន។
+           ⭐ «អវត្តមាន = គ្មាន មិនមែន កុំប៉ះ» — ដូចដែលយើងអនុវត្តរួចលើ
+           តារាង CN/DN និងតម្លៃបញ្ចូលដោយដៃ។ `CC.resetAll()` ជាមុខងារ
+           សម្អាតដែលមានស្រាប់ (ប៊ូតុង «សម្អាតតួលេខ» ប្រើវាដដែល)។ */
+        ["Calculation",            ()=>{
+          if(parsed.calc && window.CalcCard && window.CalcCard.importState){
+            return window.CalcCard.importState(parsed.calc);
+          }
+          try{ if(window.__calcCardReset) window.__calcCardReset(); }catch(e){}
+          return true;
+        }],
         ["តារាងទិន្នន័យ",           ()=> { renderAll(); return true; }],
       ];
       let si = 0;
@@ -11983,13 +12183,54 @@ async function handleAutoFileImport(evt){
   (function(){
     var newTin = String(dt9 || '').replace(/\D/g, '').slice(-9);
     if(!newTin) return;
+    /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ទោះបីមិនលុប ក៏គួរពេល upload ដាច់ចេញពី
+       ក្រុមហ៊ុនចាស់ទាំងអស់ដែរ ; បើមិនដាច់ … នឹងមានបញ្ហាធំពេលក្រោយ» —
+       ហើយវាបានកើតឡើងរួច ៖ CN/DN របស់សហគ្រាសមុននៅសល់ ហើយបង្កើតជា
+       អតបធាតុចូលអវិជ្ជមាន −៣២០,៨៦៧ លើសហគ្រាសថ្មី។
+       ⚠⚠ មូលហេតុ ៖ លេខអតបចាស់អានពី **ប្រភពតែមួយ** (ស្ពាន COVER) ។ បើ
+       ស្ពាននោះទទេ (គ្មាន TOI ដូចករណីនេះ) `oldTin` ទទេ ⇒ កូដចេញភ្លាម
+       ⇒ គ្មានការលុប ⇒ ទិន្នន័យចាស់លាយចូល។
+       ⚠⚠ ហើយ `hasAnyDataLoaded()` ក៏ជាឧបសគ្គទី ២ ៖ វាមើលទិន្នានុប្បវត្តិ
+       ក្នុងអង្គចងចាំ ; CN/DN ដែលរស់នៅក្នុង localStorage មិនរាប់ទេ ⇒
+       ឆ្លើយថា «គ្មានទិន្នន័យ» ទាំងដែលមានទិន្នន័យចាស់ជាប់។
+       ⭐ ច្បាប់ថ្មី ៖ អានលេខអតបចាស់ពី **គ្រប់ប្រភព** ហើយបើមានកូនសោ
+       សហគ្រាសណាមួយក្នុង localStorage ក៏ចាត់ទុកថាមានទិន្នន័យចាស់ដែរ។
+       ការសួរបញ្ជាក់ម្តងលើសជាងការលាយទិន្នន័យសហគ្រាសពីរ។ */
     var oldTin = '';
     try{
       var ci = (typeof window.__getTOICoverInfo === 'function') ? (window.__getTOICoverInfo() || {}) : {};
       oldTin = String(ci.tin || '').replace(/\D/g, '').slice(-9);
     }catch(e){}
+    if(!oldTin){
+      try{ oldTin = String((state.extraCompanyInfo || {}).tin || '').replace(/\D/g, '').slice(-9); }catch(e){}
+    }
+    if(!oldTin){
+      try{
+        var de = JSON.parse(localStorage.getItem('toi_dashboard_data_entry_v1') || '{}') || {};
+        oldTin = String(de.tin || de.companyTin || '').replace(/\D/g, '').slice(-9);
+      }catch(e){}
+    }
+    if(!oldTin){
+      try{
+        var cvS = JSON.parse(localStorage.getItem('toi_dashboard_cover_v1') || '{}') || {};
+        oldTin = String(cvS.tin || '').replace(/\D/g, '').slice(-9);
+      }catch(e){}
+    }
     if(!oldTin || oldTin === newTin) return;
-    if(typeof hasAnyDataLoaded === 'function' && !hasAnyDataLoaded()) return;
+    /* មានទិន្នន័យចាស់ទេ? ៖ ក្នុងអង្គចងចាំ ឬក្នុង localStorage ក៏បាន។ */
+    var hasOld = false;
+    try{ hasOld = (typeof hasAnyDataLoaded === 'function') ? !!hasAnyDataLoaded() : true; }catch(e){ hasOld = true; }
+    if(!hasOld){
+      try{
+        for(var li = 0; li < localStorage.length; li++){
+          var lk = localStorage.key(li);
+          if(!lk) continue;
+          if(ENTERPRISE_KEYS.indexOf(lk) >= 0 ||
+             ENTERPRISE_PREFIXES.some(function(pre){ return lk.indexOf(pre) === 0; })){ hasOld = true; break; }
+        }
+      }catch(e){}
+    }
+    if(!hasOld) return;
     window.__rscPendingWipe = { from: oldTin, to: newTin };
   })();
 
@@ -18765,7 +19006,7 @@ function renderAuditView(){
       resultMeta.style.display = '';
       resultMeta.textContent = 'សវនកម្ម — មានកំហុស';
       resultBody.innerHTML = '<div class="empty-state"><h4>ផ្ទាំងសវនកម្មបង្ហាញមិនបាន</h4>' +
-        '<p style="font-family:monospace; font-size:12px; color:var(--red); white-space:pre-wrap;">' +
+        '<p style="font-family:Khmer OS Siemreap,monospace; font-size:12px; color:var(--red); white-space:pre-wrap;">' +
         String(err && err.message || err) + '</p>' +
         '<p>សូមថតអេក្រង់នេះផ្ញើមក ដើម្បីកែបញ្ហា។</p></div>';
     }catch(e){}
@@ -19907,6 +20148,33 @@ window.__toiDataEntry = function(){
   try{ return Object.assign({}, state.dataEntry || {}); }catch(e){ return {}; }
 };
 function setDE(key, value){ state.dataEntry[key] = value; saveDataEntry(); }
+/* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ការិយបរិច្ឆេទសវនកម្ម អាទិភាពមុនគេ ព្រោះកន្លែង
+   នេះជាកន្លែងត្រូវធ្វើសវនកម្ម ; ឆ្នាំ TOI គ្រាន់តែជាការបង្ហាញទិន្នន័យតែ
+   ប៉ុណ្ណោះ … ត្រូវរត់ទៅគ្រប់កន្លែង ការគណនា បរិយាយ លិខិតផ្សេងៗទាំងអស់» ។
+   ⚠⚠ ចំណុចសំខាន់ដែលត្រូវដឹង ៖ `state.years` ក្នុងឯកសារនេះមាន **អត្ថន័យ
+   ពីរ** ជាប់គ្នា — «ឆ្នាំដែលមានទិន្នន័យ TOI» និង «ឆ្នាំសវនកម្ម» ។ ការប្តូរ
+   `state.years` ដោយផ្ទាល់នឹងធ្វើអោយតារាងជំហាន ៤-៨ បង្ហាញជួរឈរឆ្នាំដែល
+   គ្មានទិន្នន័យ ហើយអាចបោះកំហុស។ ដូច្នេះ **កុំប្តូរ `state.years`** ;
+   ប្រើមុខងារនេះវិញនៅកន្លែងណាដែលចង់បាន «ឆ្នាំសវនកម្ម» ។
+   លំដាប់ ៖ ការិយបរិច្ឆេទសវនកម្មមុន (អាទិភាពតាមការស្នើសុំ) បើគ្មានទើប
+   ធ្លាក់ទៅឆ្នាំ TOI ។ */
+window.__auditYears = function(){
+  try{
+    var raw = String((state.dataEntry || {}).auditPeriod || '');
+    var m = raw.match(/\d{4}/g);
+    if(m && m.length){
+      var a = parseInt(m[0], 10), b = parseInt(m[m.length - 1], 10);
+      if(a > 1900 && b > 1900){
+        if(b < a){ var t = a; a = b; b = t; }
+        if(b - a > 30) b = a + 30;
+        var out = [];
+        for(var y = a; y <= b; y++) out.push(String(y));
+        return out;
+      }
+    }
+  }catch(e){}
+  try{ return (state.years || []).slice().map(String); }catch(e){ return []; }
+};
 window.__getTOIDataEntry = function(){ return state.dataEntry || {}; };
 
 /* =========================================================
@@ -19949,9 +20217,19 @@ function coverAutoGrow(ta){
      ដោយស្វ័យប្រវត្តិផង)។ ពេលព្រីន យើងលុបកម្ពស់ថេរចេញ ហើយ browser
      ប្រើ rows ជំនួស — ដូច្នេះប្រអប់ព្រីនខ្ពស់ត្រឹមមាតិការបស់វា ឥតមាន
      ចន្លោះទទេពីកម្ពស់អប្បបរមារបស់អេក្រង់ឡើយ។ */
-  let lh = parseFloat(getComputedStyle(ta).lineHeight);
-  if(!lh || isNaN(lh)) lh = 20;
-  ta.rows = Math.max(1, Math.ceil(Math.max(0, h - 8) / lh));
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «សរសេរមួយធ្លាក់មួយ · ចុច BACKSPACE ក៏ធ្លាក់
+     ដែរ» ជាមួយរូបដែលបង្ហាញប្រអប់រីកធំសម្បើម។
+     ⚠⚠ មូលហេតុ ៖ **រង្វិលជុំចម្អិនខ្លួនឯង** ។ បន្ទាត់ចាស់កំណត់ `rows`
+     ពី `scrollHeight` ខណៈ `rows` ខ្លួនវាផ្ទាល់ជាអ្នកកំណត់កម្ពស់ធម្មជាតិ
+     របស់ប្រអប់ ⇒ ការវាយម្តងធ្វើអោយ rows កើន → scrollHeight កើន → rows
+     កើនទៀត។ ប្រអប់រីករាល់គ្រាប់ចុច ហើយការរៀបចំទំព័រឡើងវិញរាល់ដងធ្វើអោយ
+     ទស្សន៍ទ្រនិចលោត — នោះជា «សរសេរមួយធ្លាក់មួយ» ។
+     ⚠ ដំណោះស្រាយ ៖ រាប់បន្ទាត់ពី **អត្ថបទ** មិនមែនពីកម្ពស់ដែលវាស់បាន
+     ⇒ គ្មានផ្លូវត្រឡប់ ⇒ គ្មានរង្វិលជុំ។
+     ⚠ ការព្រីនមិនប៉ះពាល់ ៖ វាព្រីន `.cf-print` (អត្ថបទធម្មតា) មិនមែន
+     ប្រអប់ទេ ដូច្នេះ `rows` គ្រាន់តែសម្រាប់អេក្រង់។ */
+  var lines = String(ta.value || '').split('\n').length;
+  ta.rows = Math.max(1, lines);
 }
 function coverMultilineField(value, width, placeholder, onInput){
   /* ពេលព្រីន យើងមិនព្រីនប្រអប់ទេ — យើងព្រីនអត្ថបទធម្មតាជំនួសវិញ។
@@ -20294,7 +20572,19 @@ window.__getTOICoverInfo = function(){
   let info = {}, ex = {};
   try{
     const yrs = state.years || [];
-    info = (state.companyInfo && state.companyInfo[yrs[yrs.length-1]]) || {};
+    /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ លិខិតផ្លូវការទាំង ៧ «នៅមិនទាន់មានព័ត៌មាន
+       ពី companyinfo ចូលទៅក្នុងនោះនៅឡើយ» ។
+       ⚠⚠ មូលហេតុ ៖ បន្ទាត់នេះអានពី `state.companyInfo[ឆ្នាំចុងក្រោយ]`
+       ដែលមកពី **ឯកសារ TOI តែប៉ុណ្ណោះ** ។ គ្មាន TOI ⇒ `yrs` ទទេ ⇒
+       `state.companyInfo[undefined]` ⇒ `{}` ⇒ ឈ្មោះ អតប អាសយដ្ឋាន
+       សកម្មភាព សុទ្ធតែទទេក្នុងលិខិតទាំងអស់។
+       ⚠ `ciInfo()` ជាមុខងារដែលបំពេញបម្រុងពីសន្លឹក COMPANYINFO រួចហើយ
+       (យើងបានពង្រីកវាឱ្យគ្របគ្រប់វាល) — ដូច្នេះការរុំបន្ទាត់នេះដោយវា
+       ធ្វើអោយលិខិត **ទាំង ៧** ទទួលព័ត៌មានព្រមគ្នា ដោយកែតែមួយកន្លែង។
+       ⭐ នេះជាចំណុចរួម ៖ លិខិត · យុទ្ធសាស្រ្ត · ឯករាជ្យភាព · ឯកសារ
+       ការងារ · មូលដ្ឋានកំណត់ពន្ធ · បរិយាយ · របាយការណ៍សង្ខេប សុទ្ធតែ
+       អានតាមស្ពាននេះ។ */
+    info = ciInfo((state.companyInfo && state.companyInfo[yrs[yrs.length-1]]) || {});
     ex = state.extraCompanyInfo || {};
   }catch(e){ info = {}; ex = {}; }
   const autoFromStep1 = (matcher) => {
@@ -20330,10 +20620,18 @@ window.__getTOICoverInfo = function(){
        Step1`. Reading only the typed one made every untouched field come
        back empty — which is why ចុះបញ្ជីពន្ធដារ and ទ្រង់ទ្រាយគតិយុត្ត
        never reached Access. */
+    /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ជួយបញ្ចូលទ្រង់ទ្រាយគតិយុត្តិនៅផ្នែក
+       ឯកសារការងារសវនកម្មសារពើពន្ធ» ។ ជួរនោះមានរួចហើយ តែទទេ ព្រោះ
+       `cvOrAuto` អានតែ (ក) តម្លៃដែលវាយលើ COVER ឬ (ខ) សន្លឹកជំហានទី១
+       របស់ TOI ។ គ្មាន TOI ហើយគ្មានការវាយដោយដៃ ⇒ ទទេ។
+       ⚠ បន្ថែម `info.*` ជាបម្រុងទី ៣ — `info` ឥឡូវបំពេញពី COMPANYINFO
+       តាមរយៈ `ciInfo` ។ ដូចគ្នាសម្រាប់ថ្ងៃចុះបញ្ជីសារពើពន្ធ។ */
     taxRegDate: cvOrAuto('taxRegDate', l =>
-      l.includes('ចុះបញ្ជី') && (l.includes('ថ្ងៃ') || l.includes('កាលបរិច្ឆេទ') || l.includes('ពន្ធដារ'))),
+      l.includes('ចុះបញ្ជី') && (l.includes('ថ្ងៃ') || l.includes('កាលបរិច្ឆេទ') || l.includes('ពន្ធដារ')))
+      || info.taxRegDate || '',
     legalForm: cvOrAuto('legalForm', l =>
-      l.includes('ទ្រង់ទ្រាយគតិយុត្តិ') || l.includes('ទ្រង់ទ្រាយគតិយុត្ត')),
+      l.includes('ទ្រង់ទ្រាយគតិយុត្តិ') || l.includes('ទ្រង់ទ្រាយគតិយុត្ត'))
+      || info.legalForm || '',
     branchInfo: cvOrAuto('branchInfo', l => l.includes('ចំនួនសាខា')),
     incentive: getCV('incentive') || '',     // ការលើកទឹកចិត្ត (QIP, SMEs, …)
     auditPeriod: getDE('auditPeriod') || '',
@@ -20444,7 +20742,12 @@ function renderCoverPanel(){
   const ex = state.extraCompanyInfo || {};
   const coverProgram = de.coverProgram || 'កម្មវិធីទី១';
   const progIdx = ({'កម្មវិធីទី១':1,'កម្មវិធីទី២':2,'កម្មវិធីទី៣':3})[coverProgram] || 1;
-  const regDate = rawStepTextAfterColon('Step1', l => l.includes('ចុះបញ្ជី') && (l.includes('ថ្ងៃ') || l.includes('កាលបរិច្ឆេទ') || l.includes('ពន្ធដារ')));
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «មិនទាន់មានផ្នែក ទ្រង់ទ្រាយគតិយុត្ត ·
+     ចុះបញ្ជីសារពើពន្ធ» ។ តម្លៃលំនាំដើមទាំងពីរអានពី **សន្លឹកជំហានទី១
+     របស់ TOI តែប៉ុណ្ណោះ** — គ្មាន TOI ⇒ ទទេជានិច្ច។ ឥឡូវធ្លាក់ទៅ
+     `info` (ដែលបំពេញពីសន្លឹក COMPANYINFO តាមរយៈ `ciInfo`) ជាបម្រុង។ */
+  const regDate = rawStepTextAfterColon('Step1', l => l.includes('ចុះបញ្ជី') && (l.includes('ថ្ងៃ') || l.includes('កាលបរិច្ឆេទ') || l.includes('ពន្ធដារ')))
+    || info.taxRegDate || '';
   // Year(s) covered by this program's audit period (from the raw program
   // table value, or the shared Data Entry fallback) — used both for the
   // smart date-range default below and for which years the 5-year
@@ -20453,7 +20756,9 @@ function renderCoverPanel(){
   const periodYearMatches = rawAuditPeriod.match(/\d{4}/g);
 
   const wrap = el('div', {id:'coverPanel', style:'max-width:1100px; font-family:\'Khmer OS Siemreap\',sans-serif; font-size:13px;'});
-  wrap.appendChild(el('h1',{style:'text-align:center; font-family:\'Khmer OS Muol Light\',\'Noto Serif Khmer\',serif; font-size:18px; font-weight:600; color:var(--toi-navy,#171B1A); margin:0 0 16px;'},
+  /* ⚠ [stated] ២០២៦-០៨-១៧ ៖ «បន្ថយទំហំ FONT ឬដាក់ស្មើនឹង ព័ត៌មានសហគ្រាស» ។
+     ចំណងជើងផ្នែក («I. ព័ត៌មានសហគ្រាស») ជា h3 គ្មានទំហំកំណត់ ⇒ ~១៥px ។ */
+  wrap.appendChild(el('h1',{style:'text-align:center; font-family:\'Khmer OS Muol Light\',\'Noto Serif Khmer\',serif; font-size:15px; font-weight:600; color:var(--toi-navy,#171B1A); margin:0 0 16px;'},
     'សេចក្ដីបរិយាយការងារចុះធ្វើសវនកម្មពន្ធដារ'));
   /* The programme switch lives HERE rather than in Data Entry: it changes
      which cover sheet is on screen, so it belongs beside that sheet. Having
@@ -20491,6 +20796,10 @@ function renderCoverPanel(){
      ហើយ) ។ កែទទឹង ៖ រកពាក្យ `.cv-c1` ក្នុងប្លុក @media print ។ */
   /* ស្លាកមួយ = អត្ថបទ + សញ្ញា «៖» ដាច់ពីគ្នា ដើម្បីអោយតម្រឹមបានដោយឡែក។ */
   function cvLabel(td, text){
+    /* ⚠ [stated] ២០២៦-០៨-១៧ ៖ «តែផ្នែក Email មួយទេ ដែលសញ្ញា ៖ បំពេញត
+       ពីក្រោយ Email តែម្តង» ។ ស្លាកឯទៀតរក្សាការតម្រឹមជាជួរដដែល ដូច្នេះ
+       សម្គាល់តែក្រឡានេះ រួចលើកលែងវាក្នុង CSS ព្រីន។ */
+    try{ if(String(text || '').trim() === 'Email') td.classList.add('cv-tight'); }catch(e){}
     const a = document.createElement('span'); a.textContent = text + ' ';
     const b = document.createElement('span'); b.className = 'cv-cl'; b.textContent = '៖';
     td.appendChild(a); td.appendChild(b);
@@ -20669,11 +20978,25 @@ function renderCoverPanel(){
         const span = 7 - pairs.length * 2;
         if(span > 1) td2.colSpan = span;
       }
-      tr.appendChild(td1); tr.appendChild(td2);
+      /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «រុញផ្នែកក្រឡាតម្លៃមកនៅក្រោយ ៖ មិនមែន
+         រុញ EMAIL វិញទេ» ។ ជាមួយក្រឡាចត្រង្គថេរ ក្រឡាតម្លៃ **មិនអាច
+         រំកិល**បានឡើយ — វាចាប់ផ្តើមនៅគែមជួរឈររបស់វាជានិច្ច។
+         ⚠ ផ្លូវតែមួយគត់ដែលធ្វើអោយតម្លៃឈរជាប់សញ្ញា «៖» គឺ **រួមក្រឡា
+         ទាំងពីរជាមួយគ្នា** ៖ ស្លាក សញ្ញា និងតម្លៃ ក្នុងក្រឡាតែមួយ
+         ដូច្នេះអក្សរហូរជាប់គ្នាតាមធម្មជាតិ។ ធ្វើតែជួរ Email ប៉ុណ្ណោះ។ */
+      if(td1.classList && td1.classList.contains('cv-tight')){
+        while(td2.firstChild) td1.appendChild(td2.firstChild);
+        td1.colSpan = (td1.colSpan || 1) + (td2.colSpan || 1);
+        td1.style.whiteSpace = 'normal';
+        tr.appendChild(td1);
+      } else {
+        tr.appendChild(td1); tr.appendChild(td2);
+      }
     });
     (opts && opts.table ? opts.table : infoTable).appendChild(tr);
   }
-  const legalFormAuto = rawStepTextAfterColon('Step1', l => l.includes('ទ្រង់ទ្រាយគតិយុត្តិ') || l.includes('ទ្រង់ទ្រាយគតិយុត្ត'));
+  const legalFormAuto = rawStepTextAfterColon('Step1', l => l.includes('ទ្រង់ទ្រាយគតិយុត្តិ') || l.includes('ទ្រង់ទ្រាយគតិយុត្ត'))
+    || info.legalForm || '';
   const complianceAuto = rawStepTextAfterColon('Step1', l => l.includes('អនុលោមភាព'));
   const branchAuto = rawStepTextAfterColon('Step1', l => l.includes('ចំនួនសាខា'));
   const shareholdersAuto = rawStepShareholders('Step2');
@@ -20781,7 +21104,10 @@ function renderCoverPanel(){
     const usesRaw = (rawCol !== undefined);
     const ref = !usesRaw ? (fixedRef || (match ? findRefByLabel(stepKey, match) : null)) : null;
     const hasSource = usesRaw || ref || calc;
-    finTable += `<tr><td style="text-align:left;">${label}${!hasSource?' <span style="color:#B3261E; font-size:10.5px;">(ដៃ)</span>':''}</td>`;
+    /* ⚠ [stated] ២០២៦-០៨-១៧ ៖ «ពាក្យ ដៃ នៅតែចេញ» ។ «(ដៃ)» ជាសញ្ញាណ
+       ជួយអ្នកបំពេញ (តម្លៃនេះវាយដោយដៃ គ្មានប្រភពស្វ័យប្រវត្តិ) — វាមិនមែន
+       ជាផ្នែកនៃឯកសារផ្លូវការទេ ដូច្នេះដាក់ `no-print` ។ */
+    finTable += `<tr><td style="text-align:left;">${label}${!hasSource?' <span class="no-print" style="color:#B3261E; font-size:10.5px;">(ដៃ)</span>':''}</td>`;
     coverYears.forEach(y=>{
       let auto = usesRaw ? rawStepValue(stepKey, y, match, rawCol) : (ref ? refVal(stepKey, ref, y) : null);
       if(auto===null && calc) auto = calc(y);
@@ -20825,7 +21151,7 @@ function renderCoverPanel(){
   });
 
   // ---- II. ប្រវត្តិសវនកម្ម (auto from MTR's AUDIT sheet data) ----
-  wrap.appendChild(el('h3',{style:'margin-top:24px; font-family:\'Khmer OS Muol Light\',\'Noto Serif Khmer\',serif; font-weight:600;'}, 'II. ប្រវត្តិសវនកម្ម (កម្មវិធីសវនកម្ម ៣ ចុងក្រោយ)'));
+  wrap.appendChild(el('h3',{style:'margin-top:24px; font-family:\'Khmer OS Muol Light\',\'Noto Serif Khmer\',serif; font-weight:600;'}, 'II. ប្រវត្តិសវនកម្ម'));
   const auditHistory = (typeof window.__getAuditHistoryForCover === 'function') ? window.__getAuditHistoryForCover() : [];
   /* «៣ ចុងក្រោយ» = ថ្មីជាងគេតាមកាលបរិច្ឆេទបង្កើត មិនមែន ៣ ជួរចុងក្រោយ
      ក្នុងឯកសារទេ (លំដាប់ក្នុងឯកសារមិនតាមកាលបរិច្ឆេទ)។ ហើយយកតែកម្មវិធី
@@ -20877,21 +21203,50 @@ function renderCoverPanel(){
   wrap.appendChild(el('h3',{style:'margin-top:24px; font-family:\'Khmer OS Muol Light\',\'Noto Serif Khmer\',serif; font-weight:600;'}, 'III. ដំណើរការនៃការធ្វើសវនកម្ម និងកិច្ចសហការ'));
   wrap.appendChild(el('p',{class:'panel-sub print-keep', style:'font-family:\'Khmer OS Siemreap\',sans-serif; font-size:13px; font-weight:700; color:var(--toi-navy,#171B1A);'}, '1) ការជូនដំណឹង, ការចុះដល់ទីតាំង និងការជួបធ្វើការជាមួយសហគ្រាស'));
   const procItems = ['ប្រគល់លិខិតជូនដំណឹង','ចុះដល់ទីតាំងសហគ្រាស','ពិភាក្សាលើប្រតិបត្តិការអាជីវកម្ម និងស្នើសុំឯកសារ និងព័ត៌មានបន្ថែម','ស្នើសុំការពន្យល់លើឯកសារដែលសហគ្រាសបានផ្ដល់ឱ្យ','ពន្យល់មូលដ្ឋាននៃការកំណត់ពន្ធឡើងវិញជូនអ្នកតំណាងសហគ្រាស'];
-  let procTable = '<div class="table-wrap"><table class="ledger"><thead><tr><th style="width:130px;">កាលបរិច្ឆេទ</th><th>តំណាងសហគ្រាស</th><th style="text-align:left;">បរិយាយ</th></tr></thead><tbody>';
-  procItems.forEach((label,i)=>{
-    procTable += `<tr>
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ផ្នែកទី១ នេះ ជួយបន្ថែម ជួរ និង ដកជួរបានដែរ
+     ផង ដូចផ្នែកទី២ដែរ» ។ លំនាំដូច `docreq_count` បេះបិទ ៖ ចំនួនជួរដេក
+     រក្សាទុកក្នុងកូនសោរបស់ខ្លួន ហើយប៊ូតុងពីរកែវា រួចសង់ឡើងវិញ។
+     ⚠ ភាពខុសគ្នាតែមួយ ៖ ជួរដេក ៥ ដំបូងមាន **បរិយាយថេរ** ។ ជួរដេកដែល
+     បន្ថែមថ្មីមិនមានអត្ថបទថេរទេ ដូច្នេះវាទទួលប្រអប់វាយបញ្ចូល
+     (`proc_desc_i`) — បើមិនដូច្នេះជួរថ្មីនឹងទទេគ្មានន័យ។
+     ⚠ លំនាំដើម = ចំនួនធាតុថេរ (៥) ដូច្នេះអ្នកប្រើដែលមិនប៉ះអ្វី ឃើញដូចដើម។ */
+  const procCount = getCV('proc_count') === '' ? procItems.length : (parseInt(getCV('proc_count')) || 0);
+  if(procCount === 0){
+    wrap.appendChild(el('div',{style:'font-size:13px; margin-bottom:10px;'}, 'គ្មាន'));
+  } else {
+    let procTable = '<div class="table-wrap"><table class="ledger"><thead><tr><th style="width:130px;">កាលបរិច្ឆេទ</th><th>តំណាងសហគ្រាស</th><th style="text-align:left;">បរិយាយ</th></tr></thead><tbody>';
+    for(let i=0;i<procCount;i++){
+      const fixed = procItems[i];
+      const descCell = fixed
+        ? `<td style="text-align:left;">${fixed}</td>`
+        : `<td style="text-align:left;"><input type="text" class="field-input cover-cell" data-key="proc_desc_${i}" value="${getCV('proc_desc_'+i)}" style="width:100%; box-sizing:border-box;"></td>`;
+      procTable += `<tr>
       <td><input type="text" class="field-input cover-cell" data-key="proc_date_${i}" value="${getCV('proc_date_'+i)}" placeholder="DD-MM-YYYY" style="width:110px;"></td>
       <td><input type="text" class="field-input cover-cell" data-key="proc_rep_${i}" value="${getCV('proc_rep_'+i)}" style="width:100%; box-sizing:border-box;"></td>
-      <td style="text-align:left;">${label}</td>
+      ${descCell}
     </tr>`;
-  });
-  procTable += '</tbody></table></div>';
-  const procTableEl = el('div'); procTableEl.innerHTML = procTable;
-  wrap.appendChild(procTableEl);
-  wrap.appendChild(coverSpacer('gap_afterProc'));
-  procTableEl.querySelectorAll('.cover-cell').forEach(inp=>{
-    inp.addEventListener('input', ()=> setCV(inp.dataset.key, inp.value));
-  });
+    }
+    procTable += '</tbody></table></div>';
+    const procTableEl = el('div'); procTableEl.innerHTML = procTable;
+    wrap.appendChild(procTableEl);
+    wrap.appendChild(coverSpacer('gap_afterProc'));
+    procTableEl.querySelectorAll('.cover-cell').forEach(inp=>{
+      inp.addEventListener('input', ()=> setCV(inp.dataset.key, inp.value));
+    });
+  }
+  const addProcBtn = el('button',{class:'btn no-print', style:'margin-top:8px; margin-bottom:14px; margin-right:8px;'}, '➕ បន្ថែមជួរ');
+  addProcBtn.onclick = ()=>{ setCV('proc_count', String(procCount+1)); renderAll(); };
+  wrap.appendChild(addProcBtn);
+  if(procCount > 0){
+    const removeProcBtn = el('button',{class:'btn no-print', style:'margin-top:8px; margin-bottom:14px;'}, '➖ ដកជួរចុងក្រោយ');
+    removeProcBtn.onclick = ()=>{
+      /* ⚠ សម្អាតតម្លៃរបស់ជួរដេកដែលដកចេញ បើមិនដូច្នេះទេ ពេលបន្ថែមវិញ
+         អត្ថបទចាស់នឹងលេចឡើងម្តងទៀតដោយមិនរំពឹងទុក។ */
+      setCV(`proc_date_${procCount-1}`,''); setCV(`proc_rep_${procCount-1}`,''); setCV(`proc_desc_${procCount-1}`,'');
+      setCV('proc_count', String(procCount-1)); renderAll();
+    };
+    wrap.appendChild(removeProcBtn);
+  }
 
   // ---- 2) ការស្នើសុំឯកសារ ----
   wrap.appendChild(el('p',{class:'panel-sub print-keep', style:'margin-top:18px; font-family:\'Khmer OS Siemreap\',sans-serif; font-size:13px; font-weight:700; color:var(--toi-navy,#171B1A);'}, '2) ការស្នើសុំឯកសារ'));
@@ -20931,7 +21286,12 @@ function renderCoverPanel(){
   function toKhmerNum(n){ return String(n).split('').map(d=>KHMER_NUM[+d]||d).join(''); }
   let docTable = '<div class="table-wrap"><table class="ledger"><thead><tr><th style="width:56px;">ល.រ</th><th style="text-align:left;">បរិយាយ</th><th>សវនករ<br>បានទទួល</th><th>អ្នកជាប់ពន្ធ<br>មិនបានផ្ដល់ឱ្យ</th><th>អ្នកជាប់ពន្ធ<br>មិនមាន</th></tr></thead><tbody>';
   docItems.forEach((label,i)=>{
-    docTable += `<tr><td style="text-align:center;">${toKhmerNum(i+1)}</td><td style="text-align:left;">${label}</td>`;
+    /* ⚠ [stated] «ជួរលេខរៀង ល.រ ដាក់ជា CENTER» ។ `text-align:center`
+       មានស្រាប់ តែច្បាប់ព្រីន `#toi-embed td:first-child{text-align:left
+       !important}` យកឈ្នះ — ករណីទី ៣ របស់ច្បាប់នោះ (មុននេះ «ល.រ» របស់
+       ទម្រង់រដ្ឋបាល និង «ប្រភេទ»)។ ដាក់ class ដើម្បីអោយ CSS ដែលមាន
+       ទម្ងន់ខ្ពស់ជាងឈ្នះវិញ។ */
+    docTable += `<tr><td class="cv-num" style="text-align:center;">${toKhmerNum(i+1)}</td><td style="text-align:left;">${label}</td>`;
     ['received','notProvided','notExist'].forEach(col=>{
       const key = `doc_${col}_${i}`;
       const defaultChecked = (col==='notProvided'); // matches the reference — every item defaults to "not provided"
@@ -21002,23 +21362,68 @@ function renderCoverPanel(){
 
   // ---- 5) មូលដ្ឋាននៃការកំណត់ពន្ធឡើងវិញ ----
   wrap.appendChild(el('h3',{style:'margin-top:24px; font-family:\'Khmer OS Siemreap\',sans-serif; font-size:14px; font-weight:700;'}, '5) មូលដ្ឋាននៃការកំណត់ពន្ធឡើងវិញ'));
-  wrap.appendChild(el('div',{style:'margin-bottom:10px; font-size:12.5px;'}, 'ការិយបរិច្ឆេទ៖ ', coverEditableInput('basis_period','','200px')));
+  /* ⚠ [stated] ២០២៦-០៨-១៧ ៖ «ចន្លោះ និងឆ្នាំ មិនជាប់គ្នា … សរសេរតែម្តង» ។
+     មូលហេតុ ៖ `coverEditableInput` ត្រឡប់ `.cf-wrap` ដែលជា `display:block`
+     ⇒ វាចុះបន្ទាត់ថ្មីជានិច្ច។ រុំវាក្នុងធាតុ inline ដើម្បីអោយស្លាក និង
+     តម្លៃឈរជួរតែមួយ។ */
+  (function(){
+    const perWrap = coverEditableInput('basis_period','','200px');
+    try{ perWrap.style.display = 'inline-block'; perWrap.style.width = '200px';
+         perWrap.style.verticalAlign = 'middle'; }catch(e){}
+    /* ⚠ [stated] ២០២៦-០៨-១៧ ៖ «អក្សរផ្នែកទី ៥ តូចជាងគេ ធ្វើឱ្យស្មើគ្នា» ។
+       ផ្នែកនេះប្រើ ១២.៥px ខណៈតារាងផ្នែក ៦ និង ៧ ប្រើ ១៣.៥px ។ */
+    wrap.appendChild(el('div',{style:'margin-bottom:10px; font-size:13.5px;'},
+      'ការិយបរិច្ឆេទ៖ ', perWrap));
+  })();
   const ROMAN = ['i','ii','iii','iv','v','vi','vii','viii'];
   const basisCount = parseInt(getCV('basis_count')) || 1;
   for(let i=0;i<basisCount;i++){
     const taxTypeInput = coverEditableInput(`basis_taxtype_${i}`, 'ឧ. ពន្ធលើប្រាក់ចំណូល', '260px');
-    wrap.appendChild(el('div',{style:'margin-bottom:6px; font-size:12.5px; font-weight:600; display:flex; align-items:center; gap:6px;'},
+    wrap.appendChild(el('div',{style:'margin-bottom:6px; font-size:13.5px; font-weight:600; display:flex; align-items:center; gap:6px;'},
       el('span',{}, ROMAN[i]+'. '), taxTypeInput));
-    wrap.appendChild(el('div',{style:'margin-bottom:4px; font-size:12.5px;'}, 'មតិសវនករ៖'));
-    const auditorOpinion = el('textarea',{class:'field-input', rows:'3', style:'width:100%; margin-bottom:10px;'});
+    /* ⚠ ២០២៦-០៨-១៧ ៖ ស្លាកឯកោមួយនៅសល់ពីរចនាសម្ព័ន្ធចាស់ (ស្លាកមួយបន្ទាត់
+       រួចប្រអប់មួយបន្ទាត់) ។ ពេលប្តូរទៅជួរតែមួយ ខ្ញុំបានបន្ថែមស្លាកថ្មី
+       ចូលក្នុងជួរនោះ តែភ្លេចដកស្លាកចាស់ចេញ ⇒ «មតិសវនករ៖» ចេញពីរដង។
+       ⚠ ការប្តូររចនាសម្ព័ន្ធត្រូវពិនិត្យថាធាតុចាស់ត្រូវដកចេញពិត —
+       ការរាប់ចំនួនស្លាកក្នុងឯកសារលទ្ធផលជាការត្រួតពិនិត្យត្រឹមត្រូវ។ */
+    /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «គម្លាត SPACING រវាងមតិសវនករ និងអ្នកជាប់ពន្ធ
+       នៅតែធំ» ។ មូលហេតុ ៖ ប្រអប់ទាំងនេះជា `rows="3"` ថេរ ⇒ ពេលព្រីន
+       កម្ពស់វា **៣ បន្ទាត់ជានិច្ច** ទោះមានអក្សរតែមួយបន្ទាត់ ឬគ្មានសោះ។
+       នោះជាចន្លោះទទេដែលឃើញ — មិនមែន margin ទេ។
+       ⚠ ដំណោះស្រាយ ៖ រាប់បន្ទាត់ពីអត្ថបទ ដូចដែលយើងទើបធ្វើសម្រាប់ប្រអប់
+       COVER ។ ចាប់ផ្តើមពី ១ បន្ទាត់ រួចលូតតាមមាតិកា។ */
+    const opRows = v => Math.max(1, String(v || '').split('\n').length);
+    const auditorOpinion = el('textarea',{class:'field-input', rows:'1', style:'width:100%; margin-bottom:10px;'});
     auditorOpinion.value = getCV(`basis_auditorOpinion_${i}`);
-    auditorOpinion.addEventListener('input', ()=> setCV(`basis_auditorOpinion_${i}`, auditorOpinion.value));
-    wrap.appendChild(auditorOpinion);
-    wrap.appendChild(el('div',{style:'margin-bottom:4px; font-size:12.5px;'}, 'មតិអ្នកជាប់ពន្ធ៖'));
-    const taxpayerOpinion = el('textarea',{class:'field-input', rows:'3', style:'width:100%; margin-bottom:10px;'});
+    auditorOpinion.rows = opRows(auditorOpinion.value);
+    auditorOpinion.addEventListener('input', ()=>{
+      setCV(`basis_auditorOpinion_${i}`, auditorOpinion.value);
+      auditorOpinion.rows = opRows(auditorOpinion.value);
+    });
+    /* ⚠ [stated] «មតិអ្នកជាប់ពន្ធ និងមតិសវនករ សរសេរបន្តគ្នា មិនចាំបាច់
+       ចុះបន្ទាត់ទេ» ។ ស្លាកនៅឆ្វេង អត្ថបទបន្តភ្លាមនៅស្តាំ ⇒ ប្រអប់ត្រូវ
+       ក្លាយជា inline ហើយចែកទទឹងជាមួយស្លាក។ */
+    auditorOpinion.style.display = 'inline-block';
+    auditorOpinion.style.width = 'calc(100% - 118px)';
+    auditorOpinion.style.verticalAlign = 'top';
+    auditorOpinion.style.marginBottom = '6px';
+    wrap.appendChild(el('div',{style:'margin-bottom:4px; font-size:13.5px;'},
+      el('span',{style:'display:inline-block; width:110px; vertical-align:top;'}, 'មតិសវនករ៖ '),
+      auditorOpinion));
+    const taxpayerOpinion = el('textarea',{class:'field-input', rows:'1', style:'width:100%; margin-bottom:10px;'});
     taxpayerOpinion.value = getCV(`basis_taxpayerOpinion_${i}`);
-    taxpayerOpinion.addEventListener('input', ()=> setCV(`basis_taxpayerOpinion_${i}`, taxpayerOpinion.value));
-    wrap.appendChild(taxpayerOpinion);
+    taxpayerOpinion.rows = opRows(taxpayerOpinion.value);
+    taxpayerOpinion.addEventListener('input', ()=>{
+      setCV(`basis_taxpayerOpinion_${i}`, taxpayerOpinion.value);
+      taxpayerOpinion.rows = opRows(taxpayerOpinion.value);
+    });
+    taxpayerOpinion.style.display = 'inline-block';
+    taxpayerOpinion.style.width = 'calc(100% - 118px)';
+    taxpayerOpinion.style.verticalAlign = 'top';
+    taxpayerOpinion.style.marginBottom = '6px';
+    wrap.appendChild(el('div',{style:'margin-bottom:4px; font-size:13.5px;'},
+      el('span',{style:'display:inline-block; width:110px; vertical-align:top;'}, 'មតិអ្នកជាប់ពន្ធ៖ '),
+      taxpayerOpinion));
   }
   const addBasisBtn = el('button',{class:'btn no-print', style:'margin-bottom:14px; margin-right:8px;'}, '➕ បន្ថែមប្រភេទពន្ធ');
   addBasisBtn.onclick = ()=>{ setCV('basis_count', String(basisCount+1)); renderAll(); };
@@ -21030,13 +21435,26 @@ function renderCoverPanel(){
   }
 
   // ---- 6) នីតិវិធីនៃការកំណត់ពន្ធឡើងវិញ ----
+  /* ⚠ [stated] ២០២៦-០៨-១៧ ៖ «នៅលើចំណុចទី ៦ បន្ថែម ចុះបន្ទាត់ផង» —
+     ចន្លោះលៃដោយដៃមួយទៀត នៅ **ខាងលើ** ចំណងជើង។ កូនសោថ្មី ដូច្នេះវាមិន
+     ជាន់ចន្លោះដែលមានស្រាប់ខាងក្រោមតារាងទេ។ */
+  wrap.appendChild(coverSpacer('gap_beforeProc6'));
   wrap.appendChild(el('h3',{style:'margin-top:24px; font-family:\'Khmer OS Siemreap\',sans-serif; font-size:14px; font-weight:700;'}, '6) នីតិវិធីនៃការកំណត់ពន្ធឡើងវិញ'));
   const procRows6 = ['នីតិវិធីនៃការកំណត់ពន្ធឡើងវិញ','ការកាន់កាប់បញ្ជីគណនេយ្យ'];
-  let table6 = '<div class="table-wrap"><table class="ledger"><thead><tr><th style="text-align:left;">បរិយាយ</th>' + coverYears.map(y=>`<th>${y}</th>`).join('') + '</tr></thead><tbody>';
+  /* ⚠ [stated] «នីតិវិធីនៃការកំណត់ពន្ធឡើងវិញ បន្ថយ FONT ០.៥ … អាចវាមិន
+     ធ្លាក់បន្ទាត់» — ស្លាកជួរដេកវែងជាងជួរឈរ ដូច្នេះវាចុះបន្ទាត់។
+     ០.៥px តូចជាងធម្មតា ជាការលៃតូចបំផុតដែលអាចដោះបាន។ */
+  let table6 = '<div class="table-wrap"><table class="ledger" style="font-size:13.5px;"><thead><tr><th style="text-align:left;">បរិយាយ</th>' + coverYears.map(y=>`<th>${y}</th>`).join('') + '</tr></thead><tbody>';
   procRows6.forEach(label=>{
     table6 += `<tr><td style="text-align:left;">${label}</td>`;
     coverYears.forEach(y=>{
-      table6 += `<td><input type="text" class="field-input cover-cell" data-key="proc6_${label}_${y}" value="${getCV('proc6_'+label+'_'+y)}" style="width:100%; box-sizing:border-box; text-align:center; border:none; outline:none; background:transparent;"></td>`;
+      /* ⚠ [stated] ២០២៦-០៨-១៧ ៖ «ផ្នែកទី៦ មិនអាចចុះបន្ទាត់បាន» ។
+         `<input>` តាមធម្មជាតិមានតែមួយបន្ទាត់ — ការចុច Enter មិនកើត។
+         ប្តូរទៅ `<textarea>` ដែលចាប់ផ្តើមមួយបន្ទាត់ រួចលូតតាមមាតិកា
+         (វិធីដដែលនឹងប្រអប់ COVER ឯទៀត)។ ⚠ រក្សា class `cover-cell` និង
+         `data-key` ៖ អ្នកចាត់ការរក្សាទុកអានតាមទាំងពីរនេះ ហើយវាប្រើ
+         `.value` ដែល textarea មានដូចគ្នា។ */
+      table6 += `<td><textarea rows="1" class="field-input cover-cell" data-key="proc6_${label}_${y}" style="width:100%; box-sizing:border-box; text-align:center; border:none; outline:none; background:transparent; resize:none; overflow:hidden;">${String(getCV('proc6_'+label+'_'+y)||'').split('&').join('&amp;').split('<').join('&lt;')}</textarea></td>`;
     });
     table6 += '</tr>';
   });
@@ -21045,7 +21463,12 @@ function renderCoverPanel(){
   wrap.appendChild(table6El);
   wrap.appendChild(coverSpacer('gap_afterProc6'));
   table6El.querySelectorAll('.cover-cell').forEach(inp=>{
-    inp.addEventListener('input', ()=> setCV(inp.dataset.key, inp.value));
+    /* ⚠ ក្រឡាទាំងនេះឥឡូវជា <textarea> ដើម្បីអោយចុះបន្ទាត់បាន ; ត្រូវលូត
+       តាមចំនួនបន្ទាត់ បើមិនដូច្នេះទេ បន្ទាត់ទី ២ ត្រូវលាក់។ */
+    const grow = ()=>{ if(inp.tagName === 'TEXTAREA'){
+      inp.rows = Math.max(1, String(inp.value || '').split('\n').length); } };
+    grow();
+    inp.addEventListener('input', ()=>{ setCV(inp.dataset.key, inp.value); grow(); });
   });
 
   // ---- 7) សង្ខេបមូលដ្ឋាននៃការកំណត់ពន្ធឡើងវិញ ----
@@ -21090,8 +21513,14 @@ function renderCoverPanel(){
     nameInput.style.textAlign = 'center';
     const dateInput = coverEditableInputDefault(dateKey, defaultSignDate, '160px');
     dateInput.style.textAlign = 'center';
+    /* ⚠ [stated] «ថ្ងៃខែឆ្នាំក្រោមឈ្មោះ ដាក់ទំហំប្រហែលនឹងឈ្មោះ» —
+       ឈ្មោះ ១៤px ដិត ; ថ្ងៃ ១៣.៥px ធម្មតា ដូច្នេះវាមិនលេចធ្លោជាងឈ្មោះ។ */
+    dateInput.style.fontSize = '13.5px';
+    /* ⚠ [stated] ២០២៦-០៨-១៧ ៖ ឈ្មោះខ្មៅដិត · ធំជាងបន្តិច · ចន្លោះចុះ
+       ហត្ថលេខាធំជាងបន្តិច (៧០ → ៩០px) ។ */
+    try{ nameInput.style.fontWeight='700'; nameInput.style.fontSize='14px'; }catch(e){}
     return el('div',{style:'text-align:center;'},
-      el('div',{style:'font-weight:700; font-size:14px; margin-bottom:70px;'}, roleLabel),
+      el('div',{style:'font-weight:700; font-size:14px; margin-bottom:90px;'}, roleLabel),
       nameInput,
       el('div',{style:'margin-top:8px;'}, dateInput),
     );
@@ -21102,8 +21531,10 @@ function renderCoverPanel(){
     nameInput.style.textAlign = 'center';
     const dateInput = coverEditableInputDefault(dateKey, defaultSignDate, '140px');
     dateInput.style.textAlign = 'center';
+    dateInput.style.fontSize = '13.5px';
+    try{ nameInput.style.fontWeight='700'; nameInput.style.fontSize='14px'; }catch(e){}
     return el('div',{style:'text-align:center;'},
-      el('div',{style:'margin-bottom:70px;'}),
+      el('div',{style:'margin-bottom:90px;'}),
       nameInput,
       el('div',{style:'margin-top:8px;'}, dateInput),
     );
@@ -21361,13 +21792,42 @@ function renderDataEntryPanel(){
      render ទេ ដូច្នេះគ្មានរង្វិលជុំឡើយ ; ហើយការគិតពន្ធនៅតែទាមទារឱ្យ
      គេជ្រើសឆ្នាំមួយ (លំនាំដើម «— គ្មាន —» = គ្មានពន្ធ)។ */
   if(!String(getDE('bookkeeping')||'').trim()) setDE('bookkeeping', 'មិនត្រឹមត្រូវ');
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ករណីមិនមាន TOI ទេ ឆ្នាំយកពី ការិយបរិច្ឆេទ
+     សវនកម្ម» ។ `state.years` មកពីឯកសារ TOI ; គ្មាន TOI ⇒ ទទេ ⇒ បញ្ជីឆ្នាំ
+     ទាំងអស់ទទេ។ ការិយបរិច្ឆេទសវនកម្ម (ឧ. «2022-2026») មានស្រាប់ក្នុង
+     Data Entry ដូច្នេះពន្លាតវាជាឆ្នាំ។
+     ⚠ ប្រើតែពេល `state.years` ទទេ — ឯកសារ TOI តែងតែឈ្នះ។ */
+  var deYearList = (function(){
+    var ys = (state.years || []).slice();
+    if(ys.length) return ys;
+    var m = String(getDE('auditPeriod') || '').match(/\d{4}/g);
+    if(!m || !m.length) return [];
+    var a = parseInt(m[0], 10), b = parseInt(m[m.length - 1], 10);
+    if(!(a > 1900 && b > 1900)) return [];
+    if(b < a){ var t = a; a = b; b = t; }
+    if(b - a > 30) b = a + 30;
+    var out = [];
+    for(var y = a; y <= b; y++) out.push(String(y));
+    return out;
+  })();
   const obstructSel = deSelect('obstructYear',
-    ['— គ្មាន —'].concat((state.years||[]).slice()), '150px', renderAll);
+    ['— គ្មាន —'].concat(deYearList), '150px', renderAll);
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «លុះត្រាតែខ្ញុំប្តូរពាក្យទៅត្រឹមត្រូវសិន
+     បន្ទាប់មកប្តូរទៅមិនត្រឹមត្រូវវិញ ទើបវាបង្ហាញឆ្នាំឱ្យរើស» ។
+     ⚠⚠ នេះជាការបែកគ្នារវាង **អ្វីដែលឃើញ** និង **អ្វីដែលរក្សាទុក** ម្តង
+     ទៀត។ ខ្ញុំធ្លាប់កែវាដោយសរសេរតម្លៃលំនាំដើមចូល state (ខាងលើ) — តែ
+     នៅមានផ្លូវណាមួយដែលធ្វើអោយវាបែកគ្នាដដែល។
+     ⭐ ដំណោះស្រាយដែលមិនពឹងលើមូលហេតុ ៖ សួរ **ប្រអប់ជ្រើសផ្ទាល់** ថាតម្លៃ
+     របស់វាជាអ្វី។ `sel.value` គឺជាអ្វីដែលអ្នកប្រើឃើញពិត — ទោះ state
+     ទទេ ឬខុសក៏ដោយ។ ដូច្នេះជួរឆ្នាំលេចឡើងត្រូវតាមអ្វីដែលឃើញជានិច្ច។
+     ⚠ ការសរសេរតម្លៃលំនាំដើមចូល state នៅរក្សាទុក ៖ `CC.pullObstruct`
+     អានពី state ដូច្នេះទាំងពីរត្រូវស្របគ្នា។ */
+  const bookSel = deSelect('bookkeeping', ['មិនត្រឹមត្រូវ','ត្រឹមត្រូវ'], '160px', renderAll);
+  const bookBad = String(bookSel.value || '').indexOf('មិនត្រឹមត្រូវ') >= 0;
+  if(bookBad && String(getDE('bookkeeping')||'') !== bookSel.value) setDE('bookkeeping', bookSel.value);
   const bookRow = inlineRow(
-    labeled('ការកាន់កាប់បញ្ជីគណនេយ្យ និងលិខិតយុត្តិការផ្សេងៗ',
-      deSelect('bookkeeping', ['មិនត្រឹមត្រូវ','ត្រឹមត្រូវ'], '160px', renderAll)),
-    (String(getDE('bookkeeping')||'').indexOf('មិនត្រឹមត្រូវ')>=0
-      ? labeled('ឆ្នាំគិតពន្ធបន្ថែម (អំពើរាំងស្ទះ)', obstructSel) : null),
+    labeled('ការកាន់កាប់បញ្ជីគណនេយ្យ', bookSel),
+    (bookBad ? labeled('ឆ្នាំគិតពន្ធបន្ថែម (អំពើរាំងស្ទះ)', obstructSel) : null),
     /* [stated] «ពន្ធបន្ថែម» ដកចេញ ៖ អត្រាកើតឡើងតាមប្រភេទកំណត់ពន្ធ
        (ឡើងវិញ → ១០%/២៥% តាមប្រភេទពន្ធ · ឯកតោភាគី → ៤០%) ដូច្នេះការ
        ជ្រើសដោយដៃត្រង់នេះគ្មានឥទ្ធិពលទៀតទេ ហើយបំភាន់។ */
@@ -21379,7 +21839,7 @@ function renderDataEntryPanel(){
   const datesRow = inlineRow(
     labeled('ថ្ងៃចាប់ផ្តើមធ្វើសវនកម្ម', auditStartDateInput),
     labeled('ថ្ងៃបញ្ចប់ធ្វើសវនកម្ម', auditEndDateInput),
-    labeled('ការិយបរិច្ឆេទសវនកម្ម (ឧ. 2022-2026)', deInput('auditPeriod', '2022-2026', '150px')),
+    labeled('ការិយបរិច្ឆេទសវនកម្ម', deInput('auditPeriod', '2022-2026', '150px')),
     labeled('ថ្ងៃខែចុះបញ្ជីពាណិជ្ជកម្ម' + (ex_.commerceRegDate ? ' ✅' : ''), commerceRegDateInput),
   );
   wrap.appendChild(datesRow);
@@ -21401,7 +21861,7 @@ function renderDataEntryPanel(){
     const r = window.__khmerLunar && window.__khmerLunar(iso);
     /* [stated] លែងបង្ហាញបន្ទាត់ «គណនាបាន ៖ …» ទេ ព្រោះប្រអប់បង្ហាញរួចហើយ។
        រក្សាទុកតែសារព្រមានពិត ៖ ថ្ងៃជិតមហាសង្ក្រាន្ត និងករណីខ្វះថ្ងៃបញ្ចប់។ */
-    lunarNote.textContent = !iso ? 'បំពេញ ថ្ងៃបញ្ចប់ធ្វើសវនកម្ម ជាមុនសិន។'
+    lunarNote.textContent = !iso ? ''
       : (r && r.checkYear)
           ? '⚠ ថ្ងៃនេះជិតមហាសង្ក្រាន្ត — សូមផ្ទៀងផ្ទាត់ឆ្នាំសត្វ និងស័កម្តងទៀត។'
           : '';
@@ -21414,7 +21874,7 @@ function renderDataEntryPanel(){
   });
   /* [stated] ថ្ងៃចន្ទ្រគតិឈរជាប់នឹង ថ្ងៃបញ្ចប់ធ្វើសវនកម្ម ដែលវាគណនាចេញពី
      — ដាក់ជាកូនទី៣ របស់ជួរកាលបរិច្ឆេទ គឺភ្លាមក្រោយថ្ងៃបញ្ចប់។ */
-  const lunarField = labeled('ថ្ងៃចន្ទ្រគតិ (ទទេ = គណនាដោយស្វ័យប្រវត្តិ)', lunarInput);
+  const lunarField = labeled('ថ្ងៃចន្ទ្រគតិ', lunarInput);
   if(datesRow.children[2]) datesRow.insertBefore(lunarField, datesRow.children[2]);
   else datesRow.appendChild(lunarField);
   wrap.appendChild(lunarNote);
@@ -21941,6 +22401,11 @@ function extractRefRows(aoa){
      ២. កោសិកាមិនទទេបន្តបន្ទាប់ខាងស្តាំ (រហូត ៤ កោសិកា)
      ៣. កោសិកាខាងក្រោមផ្ទាល់
    ហើយបដិសេធតម្លៃដែលខ្លួនវាជាស្លាកទៀត។ */
+/* ⚠⚠ សន្លឹកខ្លះដាក់តម្លៃនៅ **បន្ទាត់ក្រោម** ដោយចាប់ផ្តើមដោយ «៖ » ។
+   បើមិនកាត់វាចេញ តម្លៃនឹងក្លាយជា «៖ សុខហួរ សំណាង» ។ */
+function ciStripLead(s){
+  return String(s == null ? "" : s).replace(/^\s*[៖:]\s*/, "").trim();
+}
 function ciIsLabelish(v){
   var s = String(v == null ? "" : v).trim();
   if(!s) return true;
@@ -21974,33 +22439,72 @@ function ciValueNear(aoa, r, c, cell, re){
     break;
   }
   /* ៣ — ខាងក្រោម */
+  /* ⚠⚠ ២០២៦-០៨-១៧ — សន្លឹកពិតរបស់គេ (WORKBOOK_DATA.xlsx) សរសេរបញ្ឈរ ៖
+       ៤៦ | អាសយដ្ឋានសហគ្រាស / ADDRESS      ← ចំណងជើងផ្នែក គ្មានតម្លៃ
+       ៤៧ | អាសយដ្ឋានទីចាត់ការ              ← ស្លាកមួយទៀត
+       ៥០ | អាសយដ្ឋាន                       ← ស្លាកពិត
+       ៥១ | ៖ #106 E0E1E2 ផ្លូវ 139…        ← តម្លៃ
+     កូដចាស់យកជួរ ៤៧ ធ្វើជាតម្លៃរបស់ជួរ ៤៦ ⇒ «អាសយដ្ឋាន» ក្លាយជា
+     «អាសយដ្ឋានទីចាត់ការ» ។ ក្នុងទម្រង់នេះ តម្លៃ **តែងចាប់ផ្តើមដោយ «៖»**
+     ដូច្នេះ ៖ បើកោសិកាខាងក្រោមចាប់ផ្តើមដោយ ៖ យកវា ; បើមិនមែន យកតែពេល
+     វាមិនមែនជាស្លាកណាមួយឡើយ។ */
   var below = (aoa[r + 1] || [])[c];
-  if(below != null && String(below).trim() !== "" && !ciIsLabelish(below)) return String(below).trim();
+  if(below != null && String(below).trim() !== ""){
+    var bs = String(below).trim();
+    if(/^[៖:]/.test(bs)) return ciStripLead(bs);
+    /* ⚠⚠ បើសន្លឹកនេះជាទម្រង់ «ស្លាក / ៖ តម្លៃ» នោះកោសិកាខាងក្រោមដែល
+       **គ្មាន ៖** គឺជាស្លាកមួយទៀត មិនមែនតម្លៃទេ។ ការទទួលយកវាគឺជា
+       មូលហេតុដែល «អាសយដ្ឋាន» ក្លាយជា «អាសយដ្ឋានទីចាត់ការ» និង
+       «សកម្មភាពអាជីវកម្ម» ក្លាយជា «ល.រ» ។ */
+    if(window.__ciColonMode) return "";
+    if(!ciIsLabelish(bs) && !ciAnyLabel(bs)) return bs;
+  }
   return "";
 }
 /* ស្លាក ៖ ទូលាយជាងមុន ដើម្បីទទួលបានទម្រង់សរសេរផ្សេងៗគ្នា */
+/* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «សហគ្រាសអត់មាន TOI តែមានព័ត៌មានក្នុង
+   COMPANYINFO … ផ្នែកខ្លះនៅតែមិនចាប់យក ដូចជាលេខអតប ឈ្មោះសហគ្រាសខ្មែរ
+   អាសយដ្ឋាន សកម្មភាព» ។
+   ⚠⚠ មូលហេតុ ៖ សន្លឹករបស់គេសរសេរស្លាក **មិនដូច**អ្វីដែលកូដរង់ចាំ ៖
+     · «លេខ**អគ្គ**សញ្ញាណកម្មសារពើពន្ធ»   ↔ កូដរក «អ**ត្ត**សញ្ញាណកម្ម»
+     · «ទ្រង់ទ្រាយ**សហគ្រាស**»            ↔ កូដរក «ទ្រង់ទ្រាយ**គតិយុត្ត**»
+     · «កាលបរិច្ឆេទចុះបញ្ជីពន្ធដារ**ជាស្ថាពរ**» ↔ កូដ **រំលង** បន្ទាត់ណា
+       ដែលមាន «ជាស្ថាពរ» — តែក្នុងសន្លឹកនេះ វាជាកាលបរិច្ឆេទតែមួយគត់។
+   ⚠ ការសរសេរស្លាកខុសគ្នាតាមប្រភព ជារឿងធម្មតា — ដូច្នេះពង្រីកលំនាំ
+   ជាជាងសុំគេកែសន្លឹក (គោលការណ៍ដដែលនឹងឈ្មោះឯកសារ font)។ */
 var CI_LABELS = {
   name:             /ឈ្មោះសហគ្រាស|ឈ្មោះក្រុមហ៊ុន|ឈ្មោះអ្នកជាប់ពន្ធ|Enterprise\s*Name|Company\s*Name/i,
   latinName:        /ឈ្មោះ.*ឡាតាំង|អក្សរឡាតាំង|Latin\s*Name|Name\s*in\s*Latin/i,
-  tin:              /លេខអត្តសញ្ញាណកម្មសារពើពន្ធ|អត្តសញ្ញាណកម្មសារពើពន្ធ|លេខអតប|\bTIN\b|VATTIN/i,
-  address:          /អាសយដ្ឋាន.*(ស្នាក់ការ|សហគ្រាស|បច្ចុប្បន្ន)|Address/i,
+  tin:              /លេខអត្តសញ្ញាណកម្មសារពើពន្ធ|អត្តសញ្ញាណកម្មសារពើពន្ធ|អគ្គសញ្ញាណកម្មសារពើពន្ធ|សញ្ញាណកម្មសារពើពន្ធ|លេខអតប|\bTIN\b|VATTIN/i,
+  address:          /អាសយដ្ឋាន(?!ឃ្លាំង)|Address/i,
   warehouseAddress: /អាសយដ្ឋានឃ្លាំង/,
   branchCount:      /ចំនួនសាខា/,
-  legalForm:        /ទ្រង់ទ្រាយគតិយុត្ត/,
+  legalForm:        /ទ្រង់ទ្រាយគតិយុត្ត|ទ្រង់ទ្រាយសហគ្រាស/,
   owner:            /ឈ្មោះអភិបាល|ឈ្មោះម្ចាស់|ប្រធានក្រុមហ៊ុន/,
-  businessActivity: /សកម្មភាពអាជីវកម្ម|Business\s*Activit/i,
+  businessActivity: /សកម្មភាពអាជីវកម្ម|សកម្មភាព.*អាជីវកម្ម|Business\s*Activit/i,
   accountant:       /ឈ្មោះគណនេយ្យករ/,
   bookkeepingMethod:/ការកត់ត្រាបញ្ជិកា/,
   bookkeepingStatus:/ការកាន់កាប់បញ្ជិកា/,
   complianceLevel:  /កម្រិតអនុលោមភាព/,
   auditRequirement: /សវនកម្មឯករាជ្យ/,
   taxRegDate:       /កាលបរិច្ឆេទចុះបញ្ជីពន្ធដារ/,
-  phone:            /ទូរស័ព្ទ|Phone|Tel\b/i,
+  /* ⚠ សន្លឹកសរសេរ «ទូរសព្ទ» (គ្មាន ័) ខណៈកូដរក «ទូរស័ព្ទ» ⇒ មិនចាប់។ */
+  phone:            /ទូរស័ព្ទ|ទូរសព្ទ|Phone|Tel\b/i,
   email:            /អ៊ីម៉ែល|E-?mail/i
 };
 function ciScanAoa(aoa){
   var out = {};
   if(!aoa || !aoa.length) return out;
+  /* ស្គាល់ទម្រង់សន្លឹក ៖ បើមានកោសិកាចាប់ផ្តើមដោយ «៖» យ៉ាងតិច ៣
+     នោះជាទម្រង់បញ្ឈរ «ស្លាកមួយជួរ / តម្លៃមួយជួរ» ។ */
+  var colon = 0;
+  for(var rr0 = 0; rr0 < aoa.length && colon < 3; rr0++){
+    var row0 = aoa[rr0] || [];
+    for(var cc0 = 0; cc0 < row0.length; cc0++){
+      if(typeof row0[cc0] === "string" && /^\s*[៖:]/.test(row0[cc0])){ colon++; break; }
+    }
+  }
+  window.__ciColonMode = (colon >= 3);
   for(var r = 0; r < aoa.length; r++){
     var row = aoa[r] || [];
     for(var c = 0; c < row.length; c++){
@@ -22010,7 +22514,36 @@ function ciScanAoa(aoa){
       if(!t) continue;
       for(var key in CI_LABELS){
         if(out[key]) continue;
-        if(key === "taxRegDate" && /ជាស្ថាពរ/.test(t)) continue;
+        /* ⚠ «ជាស្ថាពរ» ធ្លាប់ត្រូវរំលងព្រោះសន្លឹកខ្លះមានពីរបន្ទាត់ ហើយ
+           បន្ទាត់ធម្មតាល្អជាង។ តែសន្លឹកខ្លះមានតែបន្ទាត់នេះ ⇒ ទុកវាជា
+           **តម្លៃបម្រុង** វិញ ដើម្បីកុំអោយបាត់ទាំងស្រុង។ */
+        /* ⚠⚠ សន្លឹកនេះមានពីរបន្ទាត់ ៖ «លេខ…សារពើពន្ធ**ចាស់**» មកមុន
+           «លេខ…សារពើពន្ធ» ។ អ្នករកយកបន្ទាត់ដំបូងដែលត្រូវ ⇒ វាបានលេខ
+           **ចាស់** ។ ដូច្នេះទុកលេខចាស់ជាតម្លៃបម្រុង រួចអោយលេខបច្ចុប្បន្ន
+           សរសេរជាន់ពីលើ។ */
+        /* ⚠ «ទូរសព្ទលើតុ» មកមុន «ទូរសព្ទចល័ត» ក្នុងសន្លឹក ។ លេខចល័តជា
+           លេខដែលគេប្រើពិត ដូច្នេះទុកលេខតុជាបម្រុង។ */
+        if(key === "phone" && /លើតុ|តុ\b|Fax|ទូរសារ/i.test(t)){
+          if(!out.__phoneDesk){
+            var vDesk = ciValueNear(aoa, r, c, t, CI_LABELS[key]);
+            if(vDesk) out.__phoneDesk = vDesk;
+          }
+          continue;
+        }
+        if(key === "tin" && /ចាស់|old/i.test(t)){
+          if(!out.__tinOld){
+            var vOld = ciValueNear(aoa, r, c, t, CI_LABELS[key]);
+            if(vOld) out.__tinOld = vOld;
+          }
+          continue;
+        }
+        if(key === "taxRegDate" && /ជាស្ថាពរ/.test(t)){
+          if(!out.__taxRegDatePerm){
+            var vPerm = ciValueNear(aoa, r, c, t, CI_LABELS[key]);
+            if(vPerm) out.__taxRegDatePerm = vPerm;
+          }
+          continue;
+        }
         if(!CI_LABELS[key].test(t)) continue;
         var v = ciValueNear(aoa, r, c, t, CI_LABELS[key]);
         if(v) out[key] = v;
@@ -22019,6 +22552,34 @@ function ciScanAoa(aoa){
   }
   /* លេខអតប ៖ រក្សាទម្រង់ដើម តែធានាថាមានលេខ ៩ ខ្ទង់ពិត */
   if(out.tin && !/\d{9}/.test(String(out.tin).replace(/\D/g, ""))) delete out.tin;
+  /* កាលបរិច្ឆេទ «ជាស្ថាពរ» ៖ ប្រើពេលគ្មានបន្ទាត់ធម្មតា */
+  if(!out.taxRegDate && out.__taxRegDatePerm) out.taxRegDate = out.__taxRegDatePerm;
+  delete out.__taxRegDatePerm;
+  if(!out.tin && out.__tinOld) out.tin = out.__tinOld;
+  delete out.__tinOld;
+  if(!out.phone && out.__phoneDesk) out.phone = out.__phoneDesk;
+  delete out.__phoneDesk;
+  /* ⚠⚠ សកម្មភាពអាជីវកម្មមិនមែនជាគូ ស្លាក/តម្លៃទេ — វាជា **តារាង** ៖
+       ៦៨ | សកម្មភាពអាជីវកម្ម / BUSINESS ACTIVITY   ← ចំណងជើងផ្នែក
+       ៦៩ | ល.រ | លេខកូដ | ឈ្មោះសកម្មភាព | ពិព៌ណនា  ← ជួរក្បាល
+       ៧០ |  1  | 46413  | អាហរ័ណនីហរ័ណ …          ← ជួរដេកទិន្នន័យ
+     ដូច្នេះរកជួរក្បាលដែលមាន «ឈ្មោះសកម្មភាព» រួចយកកោសិកាក្នុងជួរឈរ
+     នោះពីជួរដេកបន្ទាប់។ */
+  if(!out.businessActivity){
+    for(var rr = 0; rr < aoa.length; rr++){
+      var hrow = aoa[rr] || [];
+      for(var cc = 0; cc < hrow.length; cc++){
+        if(typeof hrow[cc] !== "string") continue;
+        if(!/ឈ្មោះសកម្មភាព/.test(hrow[cc])) continue;
+        var below2 = (aoa[rr + 1] || [])[cc];
+        if(below2 != null && String(below2).trim()){
+          out.businessActivity = String(below2).trim();
+        }
+        break;
+      }
+      if(out.businessActivity) break;
+    }
+  }
   return out;
 }
 
@@ -22028,15 +22589,27 @@ function ciScanAoa(aoa){
    ដោយផ្ទាល់ ដូច្នេះពេលគ្មាន COMPANYINFO វានៅទទេ។ `ciInfo()` បំពេញវាល
    ដែលទទេពី `__toiIdentity()` ដូច្នេះគ្រប់កន្លែងឃើញដូចគ្នា។
    ⚠ បំពេញតែវាលទទេ — តម្លៃដែលអានពីឯកសារពិត ឬវាយដោយដៃ តែងតែឈ្នះ។ */
+/* ⚠⚠ គ្មានឯកសារ TOI ⇒ `state.years` ទទេ ⇒ `state.companyInfo[undefined]`
+   ⇒ `base` គឺ undefined ។ ដូច្នេះ **គ្រប់វាល**របស់ COVER ត្រូវពឹងលើការ
+   បំពេញបម្រុងនៅទីនេះ មិនត្រឹម ៤ វាលដូចមុនទេ។ លំដាប់ ៖ តម្លៃពិត →
+   សន្លឹក COMPANYINFO (`extraCompanyInfo`) → អ្នករកអត្តសញ្ញាណ។ */
+var CI_FILL_KEYS = ['name','latinName','tin','address','businessActivity',
+  'legalForm','taxRegDate','phone','email','owner','accountant','branchCount',
+  'warehouseAddress','complianceLevel','auditRequirement','bookkeepingMethod',
+  'bookkeepingStatus','companyStatus'];
 function ciInfo(base){
   var o = {};
   try{ Object.keys(base || {}).forEach(function(k){ o[k] = base[k]; }); }catch(e){}
-  var id = {};
+  var id = {}, ex = {};
   try{ id = (window.__toiIdentity ? window.__toiIdentity() : {}) || {}; }catch(e){}
-  if(!o.name) o.name = id.name || id.latinName || '';
-  if(!o.tin) o.tin = id.tin || '';
-  if(!o.address) o.address = id.address || '';
-  if(!o.businessActivity) o.businessActivity = id.businessActivity || '';
+  try{ ex = state.extraCompanyInfo || {}; }catch(e){}
+  for(var i = 0; i < CI_FILL_KEYS.length; i++){
+    var k = CI_FILL_KEYS[i];
+    if(!o[k]) o[k] = ex[k] || id[k] || '';
+  }
+  /* ⚠ ឈ្មោះ ៖ ខ្មែរមុន ; ឡាតាំងជាជម្រើសចុងក្រោយប៉ុណ្ណោះ
+     ([stated] «ទៅយកឡាតាំងជំនួសវិញ ទាំងដែលឈ្មោះខ្មែរមានសោះ»)។ */
+  if(!o.name) o.name = id.name || ex.latinName || id.latinName || '';
   return o;
 }
 
@@ -22375,6 +22948,20 @@ document.getElementById('inputInfoFile').addEventListener('change', async (e)=>{
     const firstSheet = wb.SheetNames[0];
     const aoa = aoaFromSheet(wb.Sheets[firstSheet]);
     const parsed = extractExtraCompanyInfo(aoa);
+    /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ព័ត៌មាននៅតែមិនចូល» ។ នេះជាមូលហេតុពិត ៖
+       ការផ្ទុកសន្លឹក COMPANYINFO ប្រើ `extractExtraCompanyInfo` ដែលរំពឹង
+       ថាស្លាក និងតម្លៃនៅ **ក្នុងកោសិកាតែមួយ** («ស្លាក ៖ តម្លៃ») ។ សន្លឹក
+       របស់គេសរសេរបញ្ឈរ (ស្លាកមួយជួរ តម្លៃមួយជួរ) ដូច្នេះវារកឃើញតិចតួច។
+       ⚠⚠ ការកែទាំងអស់ដែលខ្ញុំធ្វើពីមុនស្ថិតលើ `ciScanAoa` ដែលជាអ្នករក
+       **ទូលាយ** — តែផ្លូវផ្ទុកនេះមិនដែលហៅវាសោះ ! នោះជាមូលហេតុដែល
+       គ្មានអ្វីប្រែប្រួល។ ឥឡូវយកលទ្ធផលទាំងពីរ ៖ អ្នករកចាស់មុន រួច
+       អ្នករកទូលាយបំពេញអ្វីដែលនៅសល់។
+       ⭐ មេរៀន ៖ ពេលកែ «អ្នកអាន» ត្រូវផ្ទៀងផ្ទាត់ជាមុនថា **ផ្លូវពិត
+       ហៅអ្នកអានណា** — កុំសន្មត់ថាមានតែមួយ។ */
+    try{
+      const scan = ciScanAoa(aoa);
+      Object.keys(scan).forEach(function(k){ if(!parsed[k]) parsed[k] = scan[k]; });
+    }catch(e){ console.warn('ciScanAoa on COMPANYINFO:', e); }
     state.extraCompanyInfo = Object.assign({auditType:''}, state.extraCompanyInfo||{}, parsed);
     // keep any auditType the user already picked manually
     if(state.extraCompanyInfo.auditType===undefined) state.extraCompanyInfo.auditType = '';
@@ -22399,7 +22986,7 @@ document.getElementById('inputInfoFile').addEventListener('change', async (e)=>{
    ========================================================================= */
 function measurePrintTextWidth(text, fontPx, isMono){
   const ctx = measurePrintTextWidth._ctx || (measurePrintTextWidth._ctx = document.createElement('canvas').getContext('2d'));
-  ctx.font = fontPx + 'px ' + (isMono ? "'JetBrains Mono',monospace" : "'Khmer OS Siemreap','Khmer OS','Noto Sans Khmer',sans-serif");
+  ctx.font = fontPx + 'px ' + (isMono ? "'JetBrains Mono','Khmer OS Siemreap',monospace" : "'Khmer OS Siemreap','Khmer OS','Noto Sans Khmer',sans-serif");
   return ctx.measureText(text || '').width;
 }
 
@@ -22473,9 +23060,38 @@ document.getElementById('btnZoomOut').onclick   = ()=> stepToiZoom(-0.1);
 document.getElementById('btnZoomReset').onclick = ()=>{ toiZoom = 1; applyToiZoom(); };
 applyToiZoom();
 
+/* បាតទំព័រសម្រាប់ COVER ៖ លេខទំព័រចំកណ្តាល + កំណត់ចំណាំខាងស្តាំ។
+   ⚠ រឹមក្រោមត្រូវធំល្មម (២២mm) ព្រោះប្រអប់រឹមរស់នៅក្នុងរឹម ; បើមិន
+   ធំទេ អត្ថបទនឹងជាន់វា។ */
+const COVER_PAGE_CSS =
+  '@page{ size:A4; margin:12mm 8mm 22mm;' +
+  /* ⚠ [stated] ២០២៦-០៨-១៧ ៖ «អក្សរទំព័រទី ធំជាងអក្សរនៅលើប្រព័ន្ធ» ។
+     ៩pt ≈ ១២px ធំជាងអក្សរតួ (~១០.៩px ក្រោយការបង្រួម) ។ ៧.៥pt ≈ ១០px
+     តូចជាងអក្សរតួបន្តិច ដូចបាតទំព័រគួរតែជា។ */
+  '  @bottom-center{ content:"ទំព័រទី " counter(page);' +
+  '    font-family:\'Khmer OS Siemreap\',sans-serif; font-size:7.5pt; color:#333; }' +
+  '  @bottom-right{ content:"សម្រាប់ប្រើប្រាស់ផ្ទៃក្នុងនាយកដ្ឋានសវនកម្មសហគ្រាស";' +
+  '    font-family:\'Khmer OS Siemreap\',sans-serif; font-size:8pt; color:#555; }' +
+  '}';
+function withCoverFooter(fn){
+  /* ⚠ ដាក់តែពេលជំហានបច្ចុប្បន្នជា COVER ។ ការព្រីនគ្រប់ជំហានរួម
+     (btnPrintAll) មិនដាក់ទេ ព្រោះការងារព្រីនតែមួយមិនអាចមានបាតទំព័រ
+     ខុសគ្នាតាមទំព័របានឡើយ។ */
+  if(state.activeStep !== 'cover'){ fn(); return; }
+  const st = document.createElement('style');
+  st.id = 'cover-page-footer';
+  st.textContent = COVER_PAGE_CSS;
+  document.head.appendChild(st);
+  function clean(){
+    if(st.parentNode) st.parentNode.removeChild(st);
+    window.removeEventListener('afterprint', clean);
+  }
+  window.addEventListener('afterprint', clean);
+  try{ fn(); } finally { setTimeout(clean, 2000); }
+}
 document.getElementById('btnPrintCurrent').onclick = ()=>{
   autoFitPrintArea(document.getElementById('content'), -2);   // អក្សរតូចជាង ២px
-  window.print();
+  withCoverFooter(()=> window.print());
 };
 document.getElementById('btnPrintAll').onclick = ()=>{
   const overlay = document.createElement('div');
@@ -22682,6 +23298,10 @@ function renderAll(){
     if(pib && home && content.contains(pib)) home.appendChild(pib);
   }catch(e){}
   content.innerHTML = '';
+  /* ⚠ ប៊ូតុងព្រីនទំព័របច្ចុប្បន្នចាប់ផ្តើមជា `disabled` ក្នុង markup ;
+     បើគ្មានឯកសារណាផ្ទុកសោះ គ្មានអ្វីបើកវាទេ។ បើកនៅទីនេះ ព្រោះការ
+     សង់ផ្ទាំងមានន័យថាមានអ្វីមួយត្រូវព្រីនរួចហើយ។ */
+  try{ const bpc = document.getElementById('btnPrintCurrent'); if(bpc) bpc.disabled = false; }catch(e){}
   if(state.activeStep === 'personalinfo'){
     const pib = document.getElementById('personal-info-container');
     if(pib){
@@ -22704,13 +23324,32 @@ function renderAll(){
     autoFitKpiValues(content);
     return;
   }
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ព័ត៌មាននៅតែអត់ចូល · ផ្នែក DATA ENTRY
+     មិនអាចបំពេញបាន — ប្រអប់មិនលេចឡើងសោះ» ជាមួយសហគ្រាសដែល **គ្មាន TOI
+     តែមាន COMPANYINFO** ។
+     ⚠⚠ មូលហេតុ ៖ ការត្រួតពិនិត្យ `state.years.length === 0` ខាងក្រោម
+     ឈរ **មុន** ការសង់ផ្ទាំង DATA ENTRY ។ គ្មានឯកសារ TOI ⇒ គ្មានឆ្នាំ ⇒
+     ចេញភ្លាមដោយបង្ហាញផ្ទាំងទទេ ហើយ DATA ENTRY មិនដែលត្រូវសង់ឡើយ។
+     ⚠ តែ DATA ENTRY ជាការ **វាយបញ្ចូលដោយដៃ** — វាមិនត្រូវការឆ្នាំពី TOI
+     ទាល់តែសោះ។ ដូច្នេះផ្លាស់វាទៅមុនការត្រួតពិនិត្យ ដូច COVER និង RISK
+     ដែលធ្វើរួចមកហើយ។
+     ⚠ ព័ទ្ធដោយ try/catch ៖ ផ្នែកសង្ខេបខ្លះក្នុងផ្ទាំងនេះរំពឹងថាមានឆ្នាំ ;
+     បើវាបោះកំហុស យើងបង្ហាញផ្ទាំងទទេវិញ ជាជាងទុកអេក្រង់ស ។ */
+  if(state.activeStep === 'overview'){
+    try{
+      content.appendChild(renderOverview());
+    }catch(err){
+      console.error('renderOverview:', err);
+      content.appendChild(el('div', {class:'empty-state'}));
+    }
+    autoFitKpiValues(content);
+    return;
+  }
   if(state.years.length === 0){
     content.appendChild(el('div', {class:'empty-state'}));
     return;
   }
-  if(state.activeStep === 'overview'){
-    content.appendChild(renderOverview());
-  } else if(state.activeStep === 'ratios'){
+  if(state.activeStep === 'ratios'){
     content.appendChild(renderRatiosPanel());
   } else if(state.activeStep === 'changes'){
     content.appendChild(renderChangesPanel());
@@ -24561,7 +25200,7 @@ function renderRiskAnalysisPanel(){
      ជួរចំណងជើងតែម្តង។ ⚠ `#toi-embed .btn{display:none !important}` មាន
      ស្រាប់ក្នុង @media print ដូច្នេះវាមិនចេញលើក្រដាសទេ។ */
   const head = el('h2',{class:'panel-title risk-head'},
-    el('span',{class:'risk-head-t'}, 'ការវិភាគហានិភ័យបឋម'));
+    el('span',{class:'risk-head-t'}, ''));
   const printBtn = el('button',{class:'btn'}, '🖨️ ព្រីនទម្រង់ (☑)');
   printBtn.onclick = function(){ printRiskForms(); };
   const adminBtn = el('button',{class:'btn'}, '🖨️ ព្រីនទម្រង់រដ្ឋបាល (☑)');
@@ -25193,10 +25832,18 @@ window.__toiImport = function(data){
   state.coverData = data.coverData || {};
   saveCoverData();
   state.activeStep = 'overview';
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ផ្នែក COVER ខ្ញុំចុច PRINT អត់បាន» ។
+     ⚠⚠ មូលហេតុ ៖ ប៊ូតុងព្រីនទាំងពីរត្រូវបិទរហូតដល់ **មានឯកសារ TOI** ។
+     តែ COVER · RISK · DATA ENTRY · ព័ត៌មានផ្ទាល់ខ្លួន ដំណើរការដោយគ្មាន
+     TOI រួចទៅហើយ (យើងទើបធ្វើវាឱ្យដើរ) ដូច្នេះការហាមព្រីនទំព័របច្ចុប្បន្ន
+     លែងសមហេតុផលទៀត។
+     ⚠ «ព្រីន TOI» (ព្រីនគ្រប់ជំហានរួម) នៅតែបិទដដែល — គ្មានឯកសារ TOI
+     ក៏គ្មានជំហានអ្វីត្រូវព្រីនដែរ។ */
   const on = state.years.length > 0;
-  ['toiBtnSave','btnPrintCurrent','btnPrintAll'].forEach(function(id){
+  ['toiBtnSave','btnPrintAll'].forEach(function(id){
     const b = document.getElementById(id); if(b) b.disabled = !on;
   });
+  (function(){ const b = document.getElementById('btnPrintCurrent'); if(b) b.disabled = false; })();
   renderAll();
 };
 
@@ -29360,7 +30007,14 @@ function rptFinTable(stepKey, c){
   let t = {order:[], labels:{}, values:{}, years:[]};
   try{ t = (window.__getTOIStepTable && window.__getTOIStepTable(stepKey)) || t; }catch(e){}
   const ys = t.years.slice().sort((a,b)=> b-a);          // ចុះ
-  if(!ys.length) return '<div class="rpt-empty">មិនទាន់មានទិន្នន័យ TOI សម្រាប់ជំហាននេះ</div>';
+  /* [stated] ២០២៦-០៨-១៧ ៖ ករណីគ្មាន TOI ក្នុងការិយសវនកម្ម ត្រូវសរសេរជា
+     សេចក្តីថ្លែង មិនមែនជាសារបច្ចេកទេស «មិនទាន់មានទិន្នន័យ» ទេ។ */
+  if(!ys.length){
+    var perST = '';
+    try{ perST = String((window.__toiDataEntry && window.__toiDataEntry().auditPeriod) || ''); }catch(e){}
+    return '<div class="rpt-empty">សហគ្រាសមិនបានដាក់លិខិតប្រកាសពន្ធលើប្រាក់ចំណូល' +
+           'សម្រាប់ការិយសវនកម្ម ' + (perST || '.........') + ' ទេ។</div>';
+  }
   const unit = rptState().unit;
   const unitTxt = unit === 'm' ? 'លានរៀល' : 'រៀល';
   /* ក្បាលតារាងតាមទម្រង់ដើម ៖ ក្រឡាទី១ ជាឈ្មោះតារាង (តារាងតុល្យការ /
@@ -30139,7 +30793,36 @@ function wpCv(){
 
 /* ក្បាលលិខិតរបស់សន្លឹកមុខនេះគ្មានត្រា ៖ មានតែជួរឆ្វេង បន្ទាត់ខ្វែង និងជួរស្តាំ
    ដូចទម្រង់ដើម ដូច្នេះមិនប្រើ letterheadHtml() រួមទេ។ */
+/* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ជួយដាក់បារកូដពីក្រោមសញ្ញាតាក់តែងនៃជួរ ជាតិ
+   សាសនា ព្រះមហាក្សត្រ ដូចទម្រង់នៃលិខិត សេចក្តីបរិយាយអំពីមូលដ្ឋាន តែយក
+   លេខ DT នៃ DATA ENTRY មិនមែនលេខកម្មវិធីទេ» ។
+   ⚠ ឯកសារមូលដ្ឋានប្រើ `c.code` (លេខកូដកម្មវិធី) ; ទីនេះត្រូវយក `dtNo`
+   របស់កម្មវិធីដែលបានជ្រើសក្នុងឯកសារការងារវិញ។
+   ⚠ បើគ្មានលេខ DT ៖ គ្មានបារកូដសោះ — បារកូដទទេគ្មានន័យ ហើយក្រដាស
+   ផ្លូវការមិនគួរមានរូបភាពដែលស្កេនមិនចេញឡើយ។ */
+/* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ពាក្យ តាមដានការបញ្ជូនឯកសារ ខិតដាក់នៅជួរ
+   បារកូដ» ។ ការទាញរឹមអវិជ្ជមានពីរដងមិនគ្រប់គ្រាន់ទេ ព្រោះចំណងជើងជាធាតុ
+   **ក្រោយ** ក្បាលលិខិត ⇒ វាចាប់ផ្តើមក្រោមធាតុវែងបំផុត។
+   ⭐ ដំណោះស្រាយរចនាសម្ព័ន្ធ ៖ ដាក់វាជា **ជួរឈរកណ្តាល** ក្នុងជួរក្បាល
+   លិខិតតែម្តង ⇒ វាឈរជួរជាមួយបារកូដដោយស្វ័យប្រវត្តិ ឥតត្រូវការការទាញរឹម
+   ណាមួយឡើយ។
+   ⚠⚠ កំណត់សម្គាល់ត្រូវឈរ **ខាងក្រៅ** template literal ៖ អត្ថបទក្នុងវា
+   ព្រីនចេញជាអក្សរលើក្រដាស។ នេះជាកំហុសទី ៦ របស់ខ្ញុំក្នុងលំនាំដដែល។ */
 function wpCvHead(){
+  var dtNo = '';
+  try{ dtNo = String((wpProgramme() || {}).dtNo || '').trim(); }catch(e){}
+  var bc = dtNo
+    ? `<div class="bs-bc">${barcode39Svg(dtNo)}<div class="bs-bcn">${esc(dtNo)}</div></div>`
+    : '';
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ករណីដែលមិនមានបារកូដ DT សូមធ្វើអោយដូច
+     ទម្រង់ពីមុន» ។ ចំណងជើងឈរក្នុងជួរឈរកណ្តាល ដោយតម្រឹមបាត ដើម្បីអោយ
+     ស្មើនឹងបារកូដ ។ គ្មានបារកូដ ⇒ ជួរឈរស្តាំខ្លីជាង ⇒ ចំណងជើងអណ្តែត
+     នៅកម្រិតកណ្តាល ដែលមិនដូចទម្រង់ដើមឡើយ។
+     ⚠ ដូច្នេះពេលគ្មានបារកូដ ត្រឡប់ទៅរចនាសម្ព័ន្ធដើម ៖ ជួរឈរកណ្តាលទទេ
+     ហើយចំណងជើងជាប្លុកចំកណ្តាល **ក្រោមក្បាលលិខិត** ។ */
+  var titleTxt = 'តាមដានការបញ្ជូនឯកសារ';
+  var titleMid = bc ? `<div class="cv-title">${titleTxt}</div>` : '';
+  var titleBelow = bc ? '' : `<div class="cv-title">${titleTxt}</div>`;
   return `<div class="cv-lh">
     <div class="cv-lh-l">
       <div class="b">ក្រសួងសេដ្ឋកិច្ច និង ហិរញ្ញវត្ថុ</div>
@@ -30147,12 +30830,14 @@ function wpCvHead(){
       <div class="b">អគ្គនាយកដ្ឋានពន្ធដារ</div>
       <div>នាយកដ្ឋានសវនកម្មសហគ្រាស</div>
     </div>
+    <div class="cv-lh-c">${titleMid}</div>
     <div class="cv-lh-r">
       <div class="b">ព្រះរាជាណាចក្រកម្ពុជា</div>
       <div class="b">ជាតិ សាសនា ព្រះមហាក្សត្រ</div>
       <div class="cv-orn">${KH_ORNAMENT}</div>
+      ${bc}
     </div>
-  </div>`;
+  </div>${titleBelow}`;
 }
 
 /* ជួរព័ត៌មានដដែលប្រើទាំងសន្លឹកមុខ និងស្លាកកាត់បិទ */
@@ -30192,11 +30877,78 @@ function wpCvList(forPrint){
 
 function wpCvNotes(forPrint){
   const cv = wpCv();
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «DT ដាក់វានៅក្រោមពាក្យ សហគ្រាសបានធ្វើ
+     បច្ចុប្បន្នភាព… នៅជួរ…..» ។ កំណត់សម្គាល់មានពីរជួរ ៖ ជួរទី ១ ជាឃ្លា
+     ថេរ ជួរទី ២ ទទេ (បន្ទាត់ចុចសម្រាប់សរសេរ)។ គេចង់អោយលេខ DT អង្គុយ
+     **លើជួរទី ២ នោះ** មិនមែនជាបន្ទាត់ថ្មីក្រោមវាទេ។
+     ⚠ ធ្វើតែពេលព្រីន និងតែពេលជួរនោះទទេ ៖ អ្វីដែលគេវាយដោយដៃឈ្នះជានិច្ច
+     ហើយលើអេក្រង់ប្រអប់វាយនៅដដែល។ */
+  var dtNo = '', closing = false;
+  try{ dtNo = String((wpProgramme() || {}).dtNo || '').trim(); }catch(e){}
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «នៅ Data Entry មានពាក្យស្នើសុំបិទ តែមិន
+     ឃើញបង្ហាញ» ។ ខ្ញុំអានតែ `companyStatus` (សន្លឹក COMPANYINFO) ។ តែ
+     ស្ថានភាពដែលគេកំណត់ដោយដៃស្ថិតនៅ **ប្រភេទសវនកម្ម** របស់ Data Entry
+     (`auditTypeChoice` / `ex.auditType`) ។
+     ⚠ អានទាំង ៣ ប្រភព ៖ ប្រភេទសវនកម្មដែលគេជ្រើស · ស្ថានភាពសហគ្រាស ·
+     និងតម្លៃដែលវាយលើ COVER ។ មួយណាក៏បានប្រាប់ដូចគ្នា ដូច្នេះកុំបង្ខំ
+     អោយពឹងលើប្រភពតែមួយ។ */
+  try{
+    var ciW = coverInfo() || {};
+    var stW = [ciW.auditTypeChoice, ciW.companyStatus, ciW.auditType]
+                .map(function(x){ return String(x || ''); }).join(' ');
+    closing = /បិទ/.test(stW);
+  }catch(e){}
+  /* ⚠ [stated] ២០២៦-០៨-១៧ ៖ «បើក្រុមហ៊ុនបិទ បង្ហាញពាក្យ សហគ្រាសសុំបិទ
+     នៅជួរជាមួយនឹងអក្សរ DT ; DT ឆ្វេង · សហគ្រាសសុំបិទ ស្តាំ» ។
+     ⚠ ជួរទី ២ ក្លាយជាជួរពីរផ្នែក ⇒ ត្រូវរចនាបទដាច់ដោយឡែក (`cv-nl2`)
+     ក្នុង **សន្លឹករចនាបទទាំងពីរ** (អេក្រង់ និងព្រីន) ។ */
+  const closeTag = closing ? '<span class="cv-nl2-r">សហគ្រាសស្នើសុំបិទ</span>' : '';
   const lines = cv.note.map((v, i)=> forPrint
-    ? `<div class="cv-nl">${escML(v)}</div>`
-    : `<div class="cv-nl edit"><input class="wp-cvnote" data-i="${i}" value="${esc(v)}"></div>`
+    ? (i === 1
+        ? `<div class="cv-nl cv-nl2"><span class="cv-nl2-l">${escML((!String(v || '').trim() && dtNo) ? dtNo : v)}</span>${closeTag}</div>`
+        : `<div class="cv-nl">${escML(v)}</div>`)
+    /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «នៅលើអេក្រង់ អត់ទាន់ត្រូវផ្នែក អក្សរ DT
+       ក្រោមអក្សរ សហគ្រាសបានធ្វើបច្ចុប្បន្នភាព…» ។ ពេលព្រីន លេខចូលជួរទី ២
+       រួច ; លើអេក្រង់ជួរនោះជា **ប្រអប់វាយ** ដូច្នេះការដាក់លេខចូលតម្លៃ
+       នឹងក្លាយជាអ្វីដែលគេវាយផ្ទាល់ ហើយវានឹងត្រូវរក្សាទុក។
+       ⚠ ដាក់ជា **placeholder** វិញ ៖ វាឈរត្រង់កន្លែងដដែលនឹងក្រដាស
+       បេះបិទ តែមិនប៉ះទិន្នន័យ ហើយបើគេវាយអ្វីមួយចូល តម្លៃរបស់គេឈ្នះ។ */
+    : (i === 1
+        ? `<div class="cv-nl edit cv-nl2"><span class="cv-nl2-l"><input class="wp-cvnote" data-i="${i}" value="${esc(v)}" placeholder="${dtNo ? esc(dtNo) : ''}"></span>${closeTag}</div>`
+        : `<div class="cv-nl edit"><input class="wp-cvnote" data-i="${i}" value="${esc(v)}"></div>`)
   ).join('');
-  return `<div class="cv-nh">កំណត់សម្គាល់ផ្សេងៗ</div>${lines}`;
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ដាក់លេខ DT នៅពីក្រោមពាក្យ សហគ្រាសបាន
+     ធ្វើបច្ចុប្បន្នភាព…» និង «ករណីសហគ្រាសស្នើសុំបិទ សរសេរ សហគ្រាសស្នើសុំបិទ
+     នៅជួរជាមួយ DT តែដាក់វានៅខាងស្តាំបំផុត» ។
+     ⚠ ស្ថានភាព «ស្នើសុំបិទ» មកពីសន្លឹក COMPANYINFO តាមរយៈ
+     `coverInfo().companyStatus` ; ការសាកល្បងធ្វើលើពាក្យ «បិទ» ដើម្បី
+     ចាប់បានទាំង «កំពុងស្នើសុំបិទ» និង «ស្នើសុំបិទ» ។
+     ⚠ ជួរនេះចេញតែពេលមានលេខ DT — បន្ទាត់ទទេលើក្រដាសផ្លូវការគ្មានប្រយោជន៍។ */
+  /* ⚠ [stated] ២០២៦-០៨-១៧ ៖ «យកតែ DT.... (មិនមានពាក្យ លេខ DT)» ហើយ
+     «សហគ្រាសស្នើសុំបិទ» នៅខាងស្តាំនៃជួរដដែល។ ជួរនេះឈរជាជួរទី ២ ក្រោម
+     «សហគ្រាសបានធ្វើបច្ចុប្បន្នភាព…» ។
+     ⚠ ជួរនេះចេញពេលមាន **មួយក្នុងចំណោមពីរ** ៖ លេខ DT ឬស្ថានភាពស្នើសុំបិទ
+     — បើទាមទារទាំងពីរ ស្ថានភាពនឹងបាត់ពេលគ្មានលេខ DT ។ */
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «DT និង សហគ្រាសសុំបិទ នៅតែមិនទាន់នៅជួរ
+     ជាមួយគ្នា» ។ flex ជាមួយ nowrap មិនកើត ⇒ ខ្ញុំឈប់លៃ CSS ហើយប្តូរ
+     រចនាសម្ព័ន្ធវិញ ៖ **តារាងមួយជួរដេក ពីរក្រឡា** ។ ក្រឡាតារាងមិនដែល
+     ធ្លាក់ចុះក្រោមគ្នាឡើយ ទោះទទឹងតឹងយ៉ាងណាក៏ដោយ។ */
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ពាក្យ តាមដានការបញ្ជូនឯកសារ នៅជួរជាមួយនឹង
+     អក្សរ DT… មិនមែននៅខាងលើបំផុតទេ» + «លុបអក្សរ សហគ្រាសស្នើសុំបិទ ទុកតែ
+     DT» ។ ដូច្នេះចំណងជើងចេញពីជួរក្បាលលិខិត មករួមជួរជាមួយ DT វិញ ៖
+     ចំណងជើងឆ្វេង · DT ស្តាំ ក្នុងតារាងមួយជួរដេក (ក្រឡាតារាងមិនរុំ)។
+     ⚠ ជួរនេះចេញជានិច្ចឥឡូវ ព្រោះចំណងជើងជាផ្នែកថេររបស់ទម្រង់ — DT ទទេ
+     ទុកក្រឡាស្តាំទទេ តែចំណងជើងនៅដដែល។ */
+  /* ⚠ [stated] ២០២៦-០៨-១៧ ៖ «លុបផ្នែកសហគ្រាសសុំបិទចេញ ដើម្បីដាក់ជំនួស
+     មកអក្សរ DT នៅពីក្រោមជួរ សហគ្រាសបានធ្វើបច្ចុប្បន្នភាពវិញ» ។
+     ⇒ ជួរនេះជាលេខ DT តែឯង ; ចំណងជើងត្រឡប់ទៅក្បាលលិខិតវិញ។ */
+  /* ⚠ លែងត្រូវការជួរដាច់ដោយឡែកទៀត — លេខចូលជួរទី ២ ខាងលើរួច។
+     ⚠ លើអេក្រង់ (មិនមែនព្រីន) នៅបង្ហាញវាដាច់ដោយឡែក ដើម្បីអោយឃើញថា
+     លេខនឹងព្រីនចេញ ទោះប្រអប់វាយនៅទទេ។ */
+  /* ⚠ លែងត្រូវការជួរដាច់ដោយឡែកទៀត ៖ លើក្រដាសលេខចូលជួរទី ២ ហើយលើ
+     អេក្រង់វាបង្ហាញជា placeholder របស់ជួរដដែល។ */
+  var dtLine = '';
+  return `<div class="cv-nh">កំណត់សម្គាល់ផ្សេងៗ</div>${lines}${dtLine}`;
 }
 
 function wpCvRoute(forPrint){
@@ -30220,7 +30972,6 @@ function wpCoverSheet(c, forPrint){
   return `<div class="rpt-page cv-page">
     <div class="cv-sheet"><div class="cv-in">
       ${wpCvHead()}
-      <div class="cv-title">តាមដានការបញ្ជូនឯកសារ</div>
       <table class="cv-info">${wpCvInfoRows(c, false)}</table>
       <div class="cv-sub">ឯកសារភ្ជាប់</div>
       ${wpCvList(forPrint)}
@@ -30309,7 +31060,7 @@ function wpHtml(forPrint){
     <div class="wp-title2">មាតិកាឯកសារការងារ</div>
     <div class="wp-orn">${KH_ORNAMENT}</div>
     <table class="wp-toc">
-      ${WP_TOC.map(([t, l])=>`<tr><td class="l">− ${esc(t)}</td><td class="c">${esc(l)}</td></tr>`).join('')}
+      ${WP_TOC.map(([t, l])=>`<tr><td class="d">-</td><td class="l">${esc(t)}</td><td class="c">${esc(l)}</td></tr>`).join('')}
     </table>
     ${wpFoot(c, 2)}
   </div>
@@ -30367,6 +31118,47 @@ function renderWorkPapers(){
 }
 
 const WP_CSS = `
+  /* ជួរលេខ DT ៖ ស្លាកឆ្វេង · សញ្ញាស្នើសុំបិទស្តាំបំផុត (flex ដាច់សងខាង)។ */
+  /* ⚠ [stated] ២០២៦-០៨-១៧ ៖ «វានៅជួរតែមួយ មិនមែនពីរជួរទេ» ។ flex
+     អនុញ្ញាតការរុំតាមលំនាំដើម ⇒ ពេលទទឹងតឹង អត្ថបទស្តាំធ្លាក់ចុះក្រោម។
+     flex-wrap:nowrap លើប្រអប់ និង white-space:nowrap លើអត្ថបទទាំងពីរ
+     រក្សាវាលើជួរតែមួយ។ */
+  .cv-nl2{display:flex; justify-content:space-between; align-items:baseline; gap:12px;}
+  .cv-nl2-l{flex:1 1 auto; min-width:0;}
+  .cv-nl2-l input{width:100%;}
+  .cv-nl2-r{flex:0 0 auto; white-space:nowrap; font-weight:700;}
+  .cv-dt-line{margin-top:4px; font-size:12px; white-space:nowrap;}
+  .cv-dt{width:100%; border-collapse:collapse; margin-top:4px; font-size:12px;}
+  .cv-dt td{border:none; padding:0; white-space:nowrap; vertical-align:baseline;}
+  .cv-dt-l{text-align:left;}
+  .cv-dt-r{text-align:right; font-weight:700;}
+  /* ចំណងជើងក្នុងជួរ DT ៖ រក្សារូបរាងដើម (Muol · ខៀវ · គូសបន្ទាត់ក្រោម)
+     តែតម្រឹមឆ្វេង និងគ្មានរឹមបញ្ឈរ ព្រោះវាឈរក្នុងក្រឡាតារាងឥឡូវ។ */
+  .cv-dt .cv-title{display:inline; margin:0 !important; text-align:left;}
+  /* ចំណងជើងកណ្តាលក្នុងជួរក្បាលលិខិត ៖ យកទីធ្លាដែលនៅសល់ រួចដាក់ចំកណ្តាល។ */
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «នៅពីលើឈ្មោះសហគ្រាស នៅ CENTER ត្រូវហើយ
+     តែជួរផ្នែកបារកូដ … មិនមែនផ្នែកខាងក្រោមទេ» ។ ដូច្នេះចំណងជើងនៅជួរ
+     ក្បាលលិខិតដដែល តែត្រូវ **តម្រឹមបាត** (flex-end) ⇒ វាឈរជួរនឹង
+     បារកូដ ដែលជាធាតុចុងក្រោយនៃជួរឈរខាងស្តាំ ជំនួសការឈរជួរនឹងបន្ទាត់
+     ទីមួយ («ក្រសួងសេដ្ឋកិច្ច…») ។ */
+  /* ⚠⚠ ២០២៦-០៨-១៧ ៖ align-items:flex-end តែឯងមិនកើតទេ ។ មូលហេតុ ៖
+     ជួរក្បាលលិខិតមាន align-items:flex-start ⇒ ជួរឈរកណ្តាល **រួញតាម
+     មាតិការបស់ខ្លួន ហើយអង្គុយនៅកំពូល** ; ការតម្រឹមខាងក្នុងវាគ្មានទីធ្លា
+     ត្រូវតម្រឹមឡើយ។ ត្រូវ align-self:stretch អោយជួរឈរនោះលាតពេញកម្ពស់
+     ជួរជាមុនសិន ទើបការតម្រឹមបាតមានន័យ។ */
+  .cv-lh-c{flex:1 1 auto; min-width:0; align-self:stretch;
+    display:flex; align-items:flex-end; justify-content:center; padding:0 8px 4px;}
+  .cv-lh-c .cv-title{margin:0 !important;}
+  /* ⚠⚠ បារកូដលេខ DT លើសន្លឹកមុខ ៖ ថ្នាក់ .bs-bc មានស្រាប់ក្នុង BASIS_CSS
+     តែ printWorkPapers **មិនបញ្ចូល BASIS_CSS ទេ** ⇒ បើមិនចម្លងច្បាប់មក
+     ទីនេះ បារកូដនឹងចេញធំខុសទំហំ ហើយលេខក្រោមវាគ្មានទ្រង់ទ្រាយ។
+     ⚠ មេរៀនដដែល ៖ ពេលប្រើថ្នាក់ពីឯកសារមួយក្នុងឯកសារមួយទៀត ត្រូវពិនិត្យ
+     ថាសន្លឹករចនាបទរបស់វាទៅដល់ផ្លូវព្រីននោះដែរឬទេ។ */
+  .bs-bc{text-align:center; margin:6px 0 0;}
+  .bs-bc .bc-svg{width:170px; height:32px; display:block; margin:0 auto;}
+  .bs-bcn{font-family:'Noto Sans',Arial,sans-serif; font-size:11px;
+    letter-spacing:.5px; margin-top:1px; text-align:center; color:#171B1A;}
+
   .wp-title{font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif; text-align:center;
     font-size:16px; color:#1a237e; margin:18px 0 2px;}
   .wp-title2{font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif; text-align:center;
@@ -30395,10 +31187,15 @@ const WP_CSS = `
   .wp-sign td{width:50%; text-align:center; vertical-align:top;}
   .wp-sign-h{font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif; font-weight:700; font-size:13px;}
   .wp-sign-n{font-weight:600;}
-  .wp-toc{width:100%; border-collapse:collapse; font-size:13px;}
-  .wp-toc td{border-top:1px dotted #333; border-bottom:1px dotted #333; padding:8px 10px;}
-  .wp-toc td.l{font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif; font-size:12.5px;}
-  .wp-toc td.c{width:80px; text-align:center; font-size:15px;}
+  /* មាតិកាឯកសារការងារ — ច្បាប់ចម្លងសម្រាប់ព្រីន (ត្រូវដូចប្លុកអេក្រង់) */
+  .wp-toc{width:65%; margin:0 auto; border-collapse:collapse; font-size:13px;}
+  .wp-toc td{border-top:1px dotted #1a237e; border-bottom:1px dotted #1a237e;
+    border-left:0; border-right:0; padding:11px 0; background:#fff; text-align:left; vertical-align:middle;}
+  .wp-toc td.d{width:1%; white-space:nowrap; padding-left:21px; padding-right:25px;}
+  .wp-toc td.l{width:100%; white-space:normal;
+    font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif; font-size:12.5px;}
+  .wp-toc td.c{width:1%; white-space:nowrap; text-align:right;
+    padding-right:22px; font-family:'Noto Sans',Arial,sans-serif; font-size:22px; line-height:1.2;}
   .wp-tbl{width:100%; border-collapse:collapse; font-size:11.5px; border:1.5px solid #333;}
   .wp-tbl th,.wp-tbl td{border:1px dotted #333; padding:4px 7px;}
   .wp-tbl th{text-align:center; border-bottom:1.5px solid #333; font-size:12px;}
@@ -30418,6 +31215,21 @@ const WP_CSS = `
   .cv-lh-l .b,.cv-lh-r .b{font-weight:700;}
   .cv-rule{border-top:1.2px solid #1a237e; width:62%; margin:1px auto 2px;}
   .cv-orn{margin-top:2px;}
+  /* ⚠ [stated] ២០២៦-០៨-១៧ ៖ «អក្សរ តាមដានការបញ្ជូនឯកសារ ស្មើនឹងអក្សរ
+     ក្រោមបារកូដ (ខិតឡើងលើ)» ។ ក្បាលលិខិតខាងស្តាំវែងជាងខាងឆ្វេង ព្រោះ
+     វាមានក្បាច់ + បារកូដ + លេខ ; ចំណងជើងធ្លាក់ក្រោមទាំងអស់នោះ។ រឹមខាងលើ
+     ១២ → -៦px ទាញវាឡើងអោយស្មើនឹងបន្ទាត់លេខក្រោមបារកូដ។ */
+  /* ⚠ [stated] «ខិតឡើងលើបន្តិចទៀត ដើម្បីអោយបានតែ ១ ទំព័រ» ៖ -៦ → -១៦px ។
+     ⚠ នេះជាការទាញកម្ពស់ចេញពីសន្លឹក ដូច្នេះវាជាការលៃដែលអាស្រ័យលើប្រវែង
+     មាតិកា — បើថ្ងៃណាបញ្ជីឯកសារវែងជាងនេះ វានឹងហូរទៅទំព័រទី ២ ម្តងទៀត
+     ហើយការទាញបន្ថែមទៀតនឹងធ្វើអោយចំណងជើងជាន់ក្បាលលិខិត។ */
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «នៅលើអេក្រង់ត្រូវ តែពេលព្រីនអត់ត្រូវ» ។
+     មូលហេតុ ៖ រឹមអវិជ្ជមាន −១៦px ដែលខ្ញុំដាក់កាលពីមុន ដើម្បីទាញចំណងជើង
+     ឡើងលើ ។ ឥឡូវការឈរជួរនឹងបារកូដធ្វើតាមរយៈជួរឈរកណ្តាលរួចហើយ ⇒ រឹម
+     អវិជ្ជមាននោះលែងត្រូវការ ហើយក្នុងករណីគ្មានបារកូដ វាទាញចំណងជើងចូល
+     ជាន់ក្បាលលិខិត។ ត្រឡប់ទៅរឹមធម្មតាដូចឈុតអេក្រង់បេះបិទ។
+     ⚠ ករណីមានបារកូដមិនប៉ះទេ ៖ .cv-lh-c .cv-title កំណត់ margin:0
+     ដោយ !important រួចហើយ។ */
   .cv-title{text-align:center; font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif;
     font-weight:700; font-size:14.5px; color:#1a237e; text-decoration:underline; margin:12px 0 8px;}
   .cv-sub{text-align:center; font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif;
@@ -30590,9 +31402,16 @@ function basisTemplate(r){
 }
 
 /* បាតទំព័រ ៖ លេខទំព័រជា n/សរុប ដូចទម្រង់ដើម (១/២ · ២/២) */
+/* ⚠ [stated] ២០២៦-០៨-១៧ ៖ «ផ្នែក FOOTER ជួយប្តូរមកប្រើលេខឡាតាំងវិញ
+   គ្រប់ផ្នែកទាំងអស់» — មុននេះ kh() បម្លែងទៅលេខខ្មែរ។ មុខងារនេះជាបាតទំព័រ
+   រួមរបស់ ៖ យុទ្ធសាស្ត្រផែនការ · ឯករាជ្យភាព · មូលដ្ឋានកំណត់ពន្ធ ⇒ ការប្តូរ
+   តែមួយកន្លែងគ្របទាំងអស់។
+   ⚠⚠ កំណត់សម្គាល់ត្រូវឈរ **ខាងក្រៅ** template literal ៖ អត្ថបទក្នុងវា
+   នឹងព្រីនចេញជាអក្សរ ហើយសញ្ញា backtick ក្នុងកំណត់សម្គាល់បិទ literal
+   មុនកាលកំណត់ — ខ្ញុំធ្វើកំហុសនេះបួនដងហើយថ្ងៃនេះ។ */
 function pageFoot(c, n, total){
   return `<div class="rpt-foot"><span>សហគ្រាស៖ ${esc(c.name)} &nbsp; អតប៖ ${esc(c.tin9)}
-    &nbsp; ការិយ៖ ${esc(c.period)}</span><span>ទំព័រ៖ ${kh(n)}/${kh(total)}</span></div>`;
+    &nbsp; ការិយ៖ ${esc(c.period)}</span><span>ទំព័រ៖ ${n}/${total}</span></div>`;
 }
 
 function basisCtx(){
@@ -30695,7 +31514,14 @@ function basisHtml(forPrint){
       <div class="lt-sign-gap" style="height:90px;"></div>
       <div class="bs-signn">${esc(c.auditors)}</div>
     </div>
-    ${pageFoot(c, 1, 1)}
+    <!-- ⚠⚠ ២០២៦-០៨-១៧ ៖ បាតទំព័រត្រូវដកចេញមួយសន្ទុះ ព្រោះវាមិនចុះទៅបាត
+         សន្លឹក រួចដាក់ត្រឡប់មកវិញតាមការស្នើសុំ ៖ «អាចមើលផ្នែកយុទ្ធសាស្ត្រ
+         ផែនការជាគំរូបាន គឺ FOOTER ដូចគ្នាបេះបិទ» ។
+         ⚠ រចនាសម្ព័ន្ធនៅទីនេះ **ដូចយុទ្ធសាស្ត្រផែនការបេះបិទ** ៖ pageFoot
+         ជាកូនផ្ទាល់ចុងក្រោយរបស់ .rpt-page ហើយ RPT_CSS (ដែលបញ្ចូលក្នុង
+         ការព្រីនទាំងពីរ) ជាអ្នករុញវាចុះបាតតាម flex + margin-top:auto ។
+         ⚠ កុំបន្ថែមច្បាប់កម្ពស់ថ្មីនៅទីនេះទៀត — ការព្យាយាមពីរដងមុន
+         (100vh · 258mm) មិនកើត ហើយវាគ្រាន់តែបន្ថែមភាពស្មុគស្មាញ។ -->
   </div>`;
 }
 
@@ -30732,6 +31558,17 @@ function renderBasis(){
 }
 
 const BASIS_CSS = `
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ខុស FOOTER ទំព័រចុងក្រោយ» ពេលព្រីនពីផ្ទាំង
+     ព្រីនឯកសារ — បាតទំព័រអង្គុយភ្លាមក្រោយហត្ថលេខា ជំនួសបាតសន្លឹក។
+     ⚠⚠ មូលហេតុ ៖ ច្បាប់ដែលរុញបាតទំព័រចុះក្រោម (display:flex +
+     margin-top:auto) ស្ថិតក្នុងសន្លឹករចនាបទ **ផ្សេង** ដែលមិនទៅដល់
+     កន្លែងព្រីនរបស់ផ្ទាំងនេះ។ ឯកសារនេះមានសន្លឹករចនាបទផ្ទាល់ខ្លួន
+     (BASIS_CSS) ដែល **ច្បាស់ថាទៅដល់** ព្រោះទម្រង់ឯកសារបង្ហាញត្រឹមត្រូវ
+     គ្រប់យ៉ាង។ ដូច្នេះដាក់ច្បាប់ទំព័រនៅទីនេះជំនួស។
+     ⚠ ប្រើ flex + margin-top:auto (មិនមែន position:absolute) ៖ បើមាតិកា
+     វែងជាងមួយសន្លឹក បាតទំព័រនឹងហូរតាមធម្មតា មិនជាប់នៅសន្លឹកទទេដូច
+     កំហុសដែលធ្លាប់កើតលើឯកសារបរិយាយឡើយ។ */
+
   /* បារកូដឈរជាជួរដេកដោយឡែកនៅខាងលើស្តាំ ៖ ពីមុនវា position:absolute
      ជាន់លើក្បាលលិខិត ហើយ SVG យកទទឹងពេញតាមចំនួនតួអក្សរ ដូច្នេះវាលាត
      ឆ្លងកាត់ត្រា និងអក្សរទាំងអស់។ */
@@ -30815,6 +31652,17 @@ function narrNum(v){
   const n = Math.round(Number(v) || 0);
   return n.toLocaleString('en-US');
 }
+/* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ករណីមិនមានតួលេខ មិនចាំបាច់ដាក់លេខសូន្យ (០)
+   ទេ» ។ ក្នុងឯកសារបរិយាយ ជួរដេកទាំងអស់ត្រូវបោះពុម្ព ទោះគ្មានតួលេខ —
+   «0» ពាសពេញឯកសារធ្វើអោយអានពិបាក ហើយមើលទៅដូចជាការគណនាបាន ០ ពិត
+   ទាំងដែលគ្មានអ្វីសោះ។
+   ⚠ ដាក់នៅត្រង់ **កន្លែងបង្ហាញ** មិនមែនក្នុង `narrNum` ទេ ៖ `narrNum`
+   ក៏ប្រើក្នុងរូបមន្ត («X 20%») និងបាតទំព័រសរុប ដែល ០ ជាតម្លៃពិត
+   ត្រូវបង្ហាញ។ */
+function narrNumBlank(v){
+  const n = Math.round(Number(v) || 0);
+  return n === 0 ? '' : n.toLocaleString('en-US');
+}
 function narrRiel(v){ return narrNum(v) + ' ៛'; }
 /* ទទឹងមាតិកាក្នុងរូបគំរូ ៖ ៧៨២px លើទំព័រ ៩០៤px — គ្រប់ទីតាំងខាងក្រោម
    ជាភាគរយនៃ ៧៨២ ដូច្នេះវារក្សាសមាមាត្រដដែលលើក្រដាសពិត។ */
@@ -30857,7 +31705,17 @@ function narrLine(label, value, mul, strong, rule, pre){
     '<span class="nr-lt">' + escML(txt) + '</span>' +
     '<span class="nr-lm">' + (mul ? escML(mul) : '') + '</span>' +
     '<span class="nr-le">=</span>' +
-    '<span class="nr-lv">' + (value === '' ? '' : narrNum(value)) + '</span>' +
+    /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «អក្សរ ៛ បន្ទាត់ពីក្រោមវាអត់ស្មើនឹង
+       បន្ទាត់ដែលទំនេរ» ។ មូលហេតុ ៖ ប្រអប់តម្លៃ **ទទេទាំងស្រុង** បាត់
+       ប្រអប់បន្ទាត់របស់វា ⇒ កម្ពស់ជួរដេក និងបន្ទាត់គោលរអិល ហើយ «៛»
+       លែងត្រង់នឹងជួរដេកឯទៀត។
+       ⚠ ដាក់ចន្លោះមិនបំបែក (nbsp) ជំនួស ⇒ ជួរដេករក្សាកម្ពស់ដដែល
+       បេះបិទដូចមុន ត្រឹមតែលេខ ០ បាត់ទៅ។ */
+    '<span class="nr-lv">' + (value === '' ? '&nbsp;' : (narrNumBlank(value) || '&nbsp;')) + '</span>' +
+    /* ⚠ [stated] ២០២៦-០៨-១៧ ៖ «រក្សា ៛ នៅកន្លែងដើមដដែល កែតែលេខ ០» ។
+       ខ្ញុំបានលាក់សញ្ញា ៛ ទៅជាមួយផង ដោយគិតថា «៛» ឯកោគ្មានន័យ — តែវាជា
+       **ជួរឈរថេរ**របស់ទម្រង់ ហើយការលាក់វាធ្វើអោយជួរដេកមិនត្រង់គ្នា។
+       ⚠ សេចក្តីសម្រេច ៖ ទម្រង់ឈរមុនតក្កវិជ្ជា — សញ្ញានៅដដែលជានិច្ច។ */
     '<span class="nr-lr">៛</span></div>';
 }
 /* [stated] បង្ហាញ «ដកអ្វីខ្លះ / បញ្ចូលអ្វីខ្លះ» នៅក្រោមជួរសរុប ៖
@@ -30866,7 +31724,7 @@ function narrLine(label, value, mul, strong, rule, pre){
    ថ្លៃដើម / ប្រតិបត្តិការ / ការប្រាក់ រួចហើយក្នុងលទ្ធផលឆ្នាំ។ */
 function narrSub(label, value){
   return '<div class="nr-sub"><span class="nr-subt">' + escML(label) + '</span>' +
-    '<span class="nr-subv">' + narrNum(value) + '</span>' +
+    '<span class="nr-subv">' + (narrNumBlank(value) || '&nbsp;') + '</span>' +
     '<span class="nr-subr">៛</span></div>';
 }
 /* ⚠ ផលរកឃើញ និងបន្ទុកអនុញ្ញាត មកពី «ពីរប្រភព» ៖
@@ -31360,6 +32218,29 @@ function narrPaginate(bodyHtml, runHead, c, grand, docCls){
         used = wouldUse;
         idx++;
       }
+      /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ជួរពាក្យ សរុបប្រាក់ពន្ធ… និងតារាងរបស់វា
+         ត្រូវតែនៅជាមួយគ្នា ; បើតារាងទៅទំព័រផ្សេង ជួរពាក្យក៏ត្រូវទៅជាមួយ» ។
+         ⚠ `.nr-sec` ត្រូវបំបែកជាអាតូម ដូច្នេះចំណងជើង និងតារាងក្លាយជា
+         អាតូម **ពីរដាច់ដោយឡែក** ⇒ ចំណងជើងអាចជាអាតូមចុងក្រោយនៃទំព័រ។
+         ⭐ ច្បាប់ «keep-with-next» ៖ បើអាតូមចុងក្រោយដែលទទួលយកជាចំណងជើង
+         ហើយនៅមានអាតូមបន្តទៀត — ដកវាចេញ អោយវាចុះទៅទំព័របន្ទាប់ជាមួយ
+         មាតិការបស់វា។
+         ⚠ ធ្វើតែពេល `blocks.length > 1` ៖ បើចំណងជើងជាអាតូមតែមួយគត់នៃ
+         ទំព័រ ការដកវាចេញនឹងបង្កើតរង្វិលជុំមិនចេះចប់។ */
+      if(blocks.length > 1 && idx < atoms.length){
+        var lastAtom = atoms[idx - 1];
+        var lastCls = (lastAtom && lastAtom.classList) ? lastAtom.classList : null;
+        /* ⚠⚠ លក្ខខណ្ឌទី ២ ដែលចាំបាច់ ៖ មាតិកាបន្ទាប់ត្រូវ **សមក្នុងទំព័រ
+           ទទេ** ។ បើវាធំជាងទំព័រ (តារាងវែង) ការទាញចំណងជើងចុះទៅ នឹងធ្វើ
+           អោយចំណងជើងឯកាលើទំព័រថ្មី រួចតារាងទៅទំព័របន្ទាប់ទៀត — អាក្រក់
+           ជាងមុន។ ខ្ញុំបានឃើញរឿងនេះក្នុងម៉ូដែលតេស្តមុននឹងបញ្ជូន។ */
+        var nextFits = false;
+        try{ nextFits = hOf(atoms[idx]) <= avail; }catch(e){}
+        if(nextFits && lastCls && (lastCls.contains('nr-h1') || lastCls.contains('nr-h2')
+                    || lastCls.contains('ar-h1') || lastCls.contains('sm-h1'))){
+          blocks.pop(); idx--;
+        }
+      }
       if(!blocks.length){ blocks.push(atoms[idx].outerHTML); idx++; }
       /* ⚠⚠ [stated] ២០២៦-០៨-១៦ ៖ «ជាក់ស្តែង ៦ តែវាចេញ ៧ ទំព័រ» ជាមួយសន្លឹក
          មួយទទេទាំងស្រុង (មានតែក្បាល និងជើងទំព័រ)។
@@ -31443,7 +32324,22 @@ function narrHtml(forPrint){
     });
     body += '</tbody></table>';
     body += '<div class="nr-words">( ' + escML(khRielWords(grand)) + ' )</div>';
-    body += '<p class="nr-p">យោងមាត្រា២០៥ និងមាត្រា២១០នៃច្បាប់ស្តីពីសារពើពន្ធ រដ្ឋបាលសារពើពន្ធអាចធ្វើការកំណត់ពន្ធឡើងវិញក្នុងរយៈពេល ១០ (ដប់) ឆ្នាំ ក្រោយកាលបរិច្ឆេទដែលត្រូវប្រកាសពន្ធ ប្រសិនបើមានភស្តុតាងបញ្ជាក់ថា មានអំពើរាំងស្ទះដល់ការអនុវត្តបញ្ញត្តិស្តីពីពន្ធដារ ឬក្នុងរយៈពេលណាមួយក៏បាន តាមការយល់ព្រមជាលាយលក្ខណ៍អក្សររបស់អ្នកជាប់ពន្ធ។</p>';
+    /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ ជួរទី ១ រក្សាទុក ; ជួរទី ២ និង ៣ «ដាក់វា
+       ពីក្រោមតារាងចុងខាងឆ្វេង» ។ ពីមុនវាជាកថាខណ្ឌតែមួយដែលបំបែកបន្ទាត់
+       ដោយស្វ័យប្រវត្តិ ⇒ បន្ទាត់ទី ២-៣ ទទួលរឹមឆ្វេងដដែលនឹងជួរទី ១ ។
+       ⚠ ឥឡូវបំបែកជា ៣ ធាតុ ហើយពីរធាតុចុងក្រោយគ្មានរឹម និងគ្មានការចូល
+       បន្ទាត់ ⇒ ឈរត្រង់គែមឆ្វេងនៃតារាង។
+       ⚠ ការបំបែកបន្ទាត់ឥឡូវ **ថេរ** មិនតាមទទឹងក្រដាសទៀតទេ — នេះជាអ្វី
+       ដែលទម្រង់ផ្លូវការទាមទារ តែបើអក្សរប្តូរទំហំ ការបំបែកនឹងនៅដដែល។ */
+    body += '<p class="nr-p nr-p-tight">យោងមាត្រា២០៥ និងមាត្រា២១០នៃច្បាប់ស្តីពីសារពើពន្ធ រដ្ឋបាលសារពើពន្ធអាចធ្វើការកំណត់ពន្ធឡើងវិញក្នុងរយៈពេល</p>';
+    /* ⚠ [stated] ២០២៦-០៨-១៧ ៖ «ស្តីពីពន្ធដារ ខិតទៅជួរទី ២ ជាប់នឹង
+       ការអនុវត្តបញ្ញត្តិ ព្រោះវានៅសល់ SPACE មិនទាន់ពេញនៅផ្នែកខាងស្តាំ» ។
+       ⚠ ខ្ញុំបានបំបែកវាជា ២ ធាតុដោយចេតនាកាលពីជុំមុន ⇒ បន្ទាត់ទី ២ បញ្ចប់
+       មុនគែមស្តាំ ហើយទុកចន្លោះទទេ។ ការរួមវិញអោយអក្សរហូរតាមធម្មជាតិ
+       ⇒ បំពេញបន្ទាត់ពេញមុននឹងចុះបន្ទាត់។
+       ⭐ ជាការល្អជាងផង ៖ ការបំបែកបន្ទាត់លែងថេរ ដូច្នេះវាមិនខូចពេលអក្សរ
+       ឬទទឹងក្រដាសប្តូរទៀតទេ។ */
+    body += '<p class="nr-p nr-p-flush">១០ (ដប់) ឆ្នាំ ក្រោយកាលបរិច្ឆេទដែលត្រូវប្រកាសពន្ធ ប្រសិនបើមានភស្តុតាងបញ្ជាក់ថា មានអំពើរាំងស្ទះដល់ការអនុវត្តបញ្ញត្តិស្តីពីពន្ធដារ ឬក្នុងរយៈពេលណាមួយក៏បាន តាមការយល់ព្រមជាលាយលក្ខណ៍អក្សររបស់អ្នកជាប់ពន្ធ។</p>';
     body += '</div>';
   }
 
@@ -31728,6 +32624,15 @@ const NARR_CSS = `
     font-size:13px; margin:calc(10px*var(--nr-sp,1)) 0 calc(5px*var(--nr-sp,1)); padding-left:8.4%;}
   .nr-h4{margin:calc(8px*var(--nr-sp,1)) 0 calc(4px*var(--nr-sp,1)); padding-left:12.5%; font-weight:600;}
   .nr-p{margin:calc(6px*var(--nr-sp,1)) 0 calc(10px*var(--nr-sp,1)) 6.9%; text-indent:5.1%; text-align:justify;}
+  /* បន្ទាត់ដែលត្រូវឈរត្រង់គែមឆ្វេងនៃតារាង ៖ គ្មានរឹម គ្មានការចូលបន្ទាត់
+     ហើយចន្លោះខាងលើតូច ដើម្បីអោយវាមើលទៅជាបន្ទាត់បន្តគ្នា។ */
+  .nr-p-flush{margin-left:0 !important; text-indent:0 !important;
+    margin-top:0 !important; margin-bottom:calc(4px*var(--nr-sp,1)) !important;}
+  /* ⚠ [stated] ២០២៦-០៨-១៧ ៖ «គម្លាត ៣ ជួរនេះ ដាក់វាឱ្យស្មើគ្នា ; ជួរទី ១
+     ធំជាងទី ២» ។ មូលហេតុ ៖ ចន្លោះរវាងកថាខណ្ឌទី ១ និងទី ២ គឺ margin
+     (១០px) ខណៈចន្លោះរវាងបន្ទាត់ក្នុងកថាខណ្ឌទី ២ គឺ line-height ធម្មតា។
+     ⚠ ដកចន្លោះកថាខណ្ឌចេញ ⇒ ទាំង ៣ បន្ទាត់ដកឃ្លាដោយ line-height ដូចគ្នា។ */
+  .nr-p-tight{margin-bottom:0 !important;}
   /* [stated] ឃ្លា «ពុំមានការកំណត់…» ប្រើអក្សរដិត */
   .nr-none{margin:calc(8px*var(--nr-sp,1)) 0 calc(10px*var(--nr-sp,1)) 6.9%; text-indent:5.1%; font-weight:700;}
   /* យោង៖ ស្លាកនៅ ៥%, អត្ថបទចាប់ ១១.៥% ហើយបន្ទាត់បន្តចូល ១.៨% */
@@ -31982,7 +32887,14 @@ function arPaidTable(years){
       if(any) rows.push({ name: t.name, v: v, sum: any });
     });
   }catch(e){}
-  if(!rows.length) return '<div class="ar-note">មិនទាន់មានទិន្នន័យពន្ធបានបង់</div>';
+  /* [stated] ២០២៦-០៨-១៧ ៖ ជំនួស «មិនទាន់មានទិន្នន័យពន្ធបានបង់» ដោយ
+     សេចក្តីថ្លែងច្បាស់លាស់ ព្រមទាំងការិយបរិច្ឆេទ។ */
+  if(!rows.length){
+    var perAR = '';
+    try{ perAR = String((window.__toiDataEntry && window.__toiDataEntry().auditPeriod) || ''); }catch(e){}
+    if(!perAR && years && years.length) perAR = years[0] + '-' + years[years.length-1];
+    return '<div class="ar-note">✳ គ្មានប្រាក់ពន្ធបានបង់ក្នុងការិយសវនកម្ម ' + escML(perAR) + '</div>';
+  }
   var h = ['<table class="ar-tbl"><thead><tr><th>ប្រភេទពន្ធដែលបានបង់</th>'];
   years.forEach(function(y){ h.push('<th>' + y + '</th>'); });
   h.push('<th>សរុប</th></tr></thead><tbody>');
@@ -32086,7 +32998,9 @@ function arFindingsTable(years){
       out.push({ y:y, name:r.name, refs:refs, amt:t });
     });
   });
-  if(!out.length) return '<div class="ar-r"><span class="ar-rv">គ្មាន</span></div>';
+  /* ⚠ [stated] ២០២៦-០៨-១៧ ៖ «សរសេរជាប់ពី ៖ គ្មាន កុំចុះបន្ទាត់» ។
+     សញ្ញាទទេពិសេស ⇒ អ្នកហៅដាក់ «៖ គ្មាន» ជាប់នឹងចំណងជើងវិញ។ */
+  if(!out.length) return '';
   /* [stated] «ប្រភេទពន្ធ» និង «យោងច្បាប់» ទទឹងស្មើគ្នា ហើយអត្ថបទចុះបន្ទាត់បាន */
   var h = ['<table class="ar-tbl ar-find"><thead><tr><th style="width:15%">ការិយបរិច្ឆេទ</th>',
     '<th style="width:32%">ប្រភេទពន្ធ</th>',
@@ -32299,10 +33213,12 @@ function arBody(){
   H.push('<div class="ar-h4">ខ២ - <i>ប្រភេទ និងវិសាលភាពនៃការធ្វើតេស្តប្រយោល</i></div>' + arBlank(2));
   H.push('<div class="ar-h4">ខ៣ - <i>ត្រូតពិនិត្យលើការអនុវត្តន៍ច្បាប់</i></div>' + arBlank(2));
 
-  H.push('<div class="ar-h3">គ - <u>ការធ្វេសប្រហែសរកឃើញ</u></div>');
+  var findTbl = arFindingsTable(years);
+  H.push('<div class="ar-h3">គ - <u>ការធ្វេសប្រហែសរកឃើញ</u>' +
+    (findTbl ? '' : ' ៖ គ្មាន') + '</div>');
   /* [stated] បំពេញពីបរិយាយការកំណត់ពន្ធ ៖ ការិយបរិច្ឆេទ · ប្រភេទពន្ធ ·
      យោងច្បាប់ · ប្រាក់ពន្ធ។ បើគ្មានការកំណត់ សរសេរ «គ្មាន»។ */
-  H.push(arFindingsTable(years));
+  if(findTbl) H.push(findTbl);
 
   /* ---------- V ---------- */
   /* [stated] ចន្លោះទុកបំពេញ ៖ ការពិភាក្សាជាមួយសហគ្រាស */
@@ -32916,9 +33832,16 @@ function smPaidTable(years){
   /* [stated] ជួរឈរតាមឆ្នាំសវនកម្មរបស់កម្មវិធីដែលជ្រើស ប៉ុណ្ណោះ។
      បើគ្មានឆ្នាំណាត្រូវគ្នាទេ ត្រឡប់ទៅបង្ហាញគ្រប់ឆ្នាំវិញ ដើម្បីកុំអោយ
      តារាងទទេដោយស្ងាត់។ */
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ករណីដែលឆ្នាំបានបង់ពន្ធប្រចាំឆ្នាំ មិនមាន
+     នៅក្នុងការិយសវនកម្មទេ មិនបាច់បង្ហាញទេ … សរសេរ គ្មាន» ។
+     ⚠ កូដចាស់ ៖ បើគ្មានឆ្នាំណាត្រូវគ្នា វា **ថយទៅបង្ហាញគ្រប់ឆ្នាំវិញ** —
+     នេះជាមូលហេតុដែលឆ្នាំ 2017 លេចឡើងក្នុងរបាយការណ៍ការិយបរិច្ឆេទ
+     2022-2026 ។ ការបង្ហាញឆ្នាំក្រៅការិយបរិច្ឆេទក្នុងឯកសារផ្លូវការ
+     អាក្រក់ជាងការបង្ហាញ «គ្មាន» ។ */
   if(years && years.length){
     var want = {}; years.forEach(function(y){ want[String(y)] = 1; });
     var keep = d.years.filter(function(y){ return want[y]; });
+    if(!keep.length) return '<div class="sm-l">គ្មាន</div>';
     if(keep.length) d = {
       years: keep,
       rows: d.rows.map(function(r){
@@ -33105,9 +34028,35 @@ function printSummary(){
      ${SM_CSS}`);
 }
 
+/* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «សន្លឹកទី១ អត់ចេញ FOOTER · សន្លឹកទី២ ចេញតែ
+   វានៅក្រោមឈ្មោះសវនករ» ។ នេះជាចម្លើយចុងក្រោយ — ហើយវាពន្យល់ការព្យាយាម
+   ដែលបរាជ័យទាំងអស់ ៖
+   ⚠⚠ ឯកសារនេះជា **.rpt-page តែមួយ** ដែលមាតិកាហូរលើសទៅសន្លឹកទី ២ ។
+   បាតទំព័រក្នុងលំហូរមានតែ **មួយ** ដូច្នេះវាចេញម្តងគត់ នៅចុងមាតិកា —
+   សន្លឹកទី ១ គ្មាន និងសន្លឹកទី ២ មានតែក្រោមហត្ថលេខា។ គ្មានតម្លៃកម្ពស់
+   ណាមួយអាចដោះស្រាយបានឡើយ ព្រោះបញ្ហាមិនមែនកម្ពស់ទេ គឺ **ចំនួន** ។
+   ⚠ យុទ្ធសាស្ត្រផែនការត្រូវ ព្រោះវាមាន .rpt-page **ប្រាំ** ដាច់ដោយឡែក
+   ហើយបាតទំព័រម្នាក់ក្នុងមួយសន្លឹក។ ការបំបែកឯកសារនេះជាទំព័រៗអាស្រ័យលើ
+   ប្រវែងមាតិកា ដែលយើងមិនដឹងជាមុន។
+   ⭐ ដំណោះស្រាយ ៖ ប្រអប់រឹមរបស់ `@page` — កម្មវិធីរុករកគូរវា **លើគ្រប់
+   សន្លឹកដោយស្វ័យប្រវត្តិ** ហើយ counter(page)/counter(pages) ផ្តល់លេខ
+   ត្រឹមត្រូវ។ វិធីដដែលនឹងបាតទំព័រ COVER ដែលដើរហើយ។
+   ⚠ Safari/iOS មិនទាន់គាំទ្រ ⇒ ព្រីនពីកុំព្យូទ័រ។ */
 function printBasis(){
+  var bc = {};
+  try{ bc = basisCtx() || {}; }catch(e){}
+  var cssStr = function(v){ return String(v == null ? '' : v).replace(/["\\]/g, ' '); };
+  var pageCss =
+    '@page{ margin:14mm 12mm 18mm;' +
+    '  @bottom-left{ content:"សហគ្រាស៖ ' + cssStr(bc.name) +
+    '    អតប៖ ' + cssStr(bc.tin) + '    ការិយ៖ ' + cssStr(bc.period) + '";' +
+    '    font-family:\'Khmer OS Siemreap\',sans-serif; font-size:7.5pt; color:#000; }' +
+    '  @bottom-right{ content:"ទំព័រ៖ " counter(page) "/" counter(pages);' +
+    '    font-family:\'Khmer OS Siemreap\',sans-serif; font-size:7.5pt; color:#000; }' +
+    '}';
   printInPage(basisHtml(true),
-    `.bs-year{page-break-inside:auto;}
+    pageCss + `
+     .bs-year{page-break-inside:auto;}
      ${LETTERHEAD_CSS}
      ${RPT_CSS}
      ${WP_CSS}
@@ -33762,8 +34711,22 @@ CC.taxVariants = TAX_VARIANTS;
 })();
 window.CalcCard=CC;
 
+/* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «អំពើរាំងស្ទះពេលយកឆ្នាំ ២០២៦ នៅផ្ទាំងការគណនា
+   អត់ចេញ តែឆ្នាំផ្សេងចេញ» + «រៀបតារាងគណនាយកឆ្នាំតាមឆ្នាំសវនកម្ម» ។
+   ⚠⚠ មូលហេតុពិត ៖ បញ្ជីឆ្នាំរបស់កាតគណនាត្រូវ **សរសេរដិតក្នុងកូដ** ជា
+   2025-2021 ។ ២០២៦ **មិនមានក្នុងបញ្ជីនោះទេ** ដូច្នេះការគណនាណាដែល
+   ដើររង្វិលតាម `CC.state.years` រំលងវាទាំងស្រុង — នេះជាហេតុដែលឆ្នាំ
+   ផ្សេងចេញ តែ ២០២៦ មិនចេញ។ វាមិនមែនកំហុសរបស់អំពើរាំងស្ទះទេ។
+   ដំណោះស្រាយ ៖ យកឆ្នាំពី `__auditYears()` (ការិយបរិច្ឆេទសវនកម្មមុនគេ)។ */
 CC.blank=function(){
-  var Y=[2025,2024,2023,2022,2021];
+  var Y=(function(){
+    try{
+      var a=(window.__auditYears?window.__auditYears():[]).map(Number)
+              .filter(function(n){ return n>1900; });
+      if(a.length) return a.sort(function(x,y){ return y-x; });
+    }catch(e){}
+    return [2025,2024,2023,2022,2021];
+  })();
   var z=function(){var o={};Y.forEach(function(y){o[y]=0;});return o;};
   var st={
     v:2,                       /* ដំណើរការតែឯកសារជំនាន់នេះ — ជំនាន់មុនផ្ទុកតួលេខសាកល្បង */
@@ -34262,7 +35225,10 @@ CC._sourceSig=function(){
      ⚠ ការបំពេញស្វ័យប្រវត្តិថ្មីណាមួយ ត្រូវបន្ថែមប្រភពរបស់វាចូលទីនេះ
        បើមិនដូច្នេះ វារត់តែម្តងគត់ រួចលែងឆ្លើយតបនឹងការផ្លាស់ប្តូរ។ */
   try{ var de=(window.__toiDataEntry&&window.__toiDataEntry())||{};
-       parts.push("E"+(de.bookkeeping||"")+"/"+(de.obstructYear||"")); }catch(e){}
+       /* ⚠ ការិយបរិច្ឆេទសវនកម្មបញ្ចូលផង ៖ វាកំណត់ថាឆ្នាំណាខ្លះមាន
+          ក្នុងការគណនា ដូច្នេះការប្តូរវាត្រូវធ្វើអោយបំពេញស្វ័យប្រវត្តិ
+          រត់ឡើងវិញ។ */
+       parts.push("E"+(de.bookkeeping||"")+"/"+(de.obstructYear||"")+"/"+(de.auditPeriod||"")); }catch(e){}
   try{ var ts=(window.__tosTotalsByYear&&window.__tosTotalsByYear())||{};
        Object.keys(ts).sort().forEach(function(y){
          parts.push("S"+y+":"+Math.round(ts[y].addSalaryTax||0)+":"+Math.round(ts[y].addFringeTax||0)); }); }catch(e){}
@@ -34292,6 +35258,24 @@ CC.pullAssessDate=function(){
   return false;
 };
 
+/* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ក្រោយសម្អាតទិន្នន័យ ការគណនាការប្រាក់ពន្ធ
+   ប៉ាតង់ខុស» ។ មូលហេតុ ៖ `CC.resetAll()` ត្រឡប់ស្ថានភាពទៅ `blank()`
+   ដែលមាន `assessDate:""` (ថ្ងៃកំណត់ពន្ធ) ។ ចំនួនខែការប្រាក់សម្រាប់ពន្ធ
+   ប្រចាំឆ្នាំរាប់ពី ០១ មេសា ដល់ **ថ្ងៃកំណត់ពន្ធ** ⇒ ថ្ងៃទទេ = ០ ខែ។
+   ⚠⚠ ការបំពេញស្វ័យប្រវត្តិទាញ **ថ្ងៃស្នើសុំបិទ** មកវិញ តែ **មិនទាញថ្ងៃ
+   កំណត់ពន្ធ** ទេ ⇒ ក្រោយសម្អាត វាមិនត្រឡប់មកវិញដោយខ្លួនឯងឡើយ។
+   ⚠ ថ្ងៃនេះគឺ «ថ្ងៃបញ្ចប់ធ្វើសវនកម្ម» ក្នុង Data Entry — ជាថ្ងៃដដែល
+   ដែលឯកសារការងារប្រើសម្រាប់ហត្ថលេខា ដូច្នេះប្រភពតែមួយសម្រាប់ទាំងអស់។ */
+CC.pullAssessDate=function(){
+  try{
+    if(typeof window.__getTOICoverInfo!=="function") return false;
+    var c=window.__getTOICoverInfo()||{};
+    var iso=String(c.auditEndDate||"").slice(0,10);
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(iso)) return false;
+    if(iso!==CC.state.assessDate){ CC.state.assessDate=iso; return true; }
+  }catch(e){}
+  return false;
+};
 CC.pullCloseDate=function(){
   try{
     if(typeof window.__getTOICoverInfo!=="function") return false;
@@ -34406,6 +35390,15 @@ CC.pullObstruct=function(){
 
 CC.autoFill=function(force){
   if(!CC.state) return false;
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ចូលតែឆ្នាំ ២០២៥ ចុះឆ្នាំ ២០២៦ លុះត្រាតែចុច
+     ២ ទៅ ៣ ដង» ។ មូលហេតុជាលំដាប់ពេលវេលា ៖ `pullObstruct` ដើររង្វិល
+     តាម `CC.state.years` ហើយ **២០២៦ មិនទាន់មានក្នុងបញ្ជីនោះ** ពេលវារត់ —
+     ការបញ្ចូលឆ្នាំសវនកម្មដែលខ្ញុំដាក់ជុំមុន ស្ថិតក្នុង `compute` ដែលរត់
+     **ក្រោយ** ។ ចុច ២-៣ ដងទើបចូល ព្រោះ compute របស់លើកមុនបានបន្ថែម
+     ២០២៦ រួច លើកក្រោយទើបសរសេរបាន។
+     ⚠ ដូច្នេះត្រូវធ្វើសមកាលកម្មឆ្នាំ **មុនគេបំផុត** ក្នុងការបំពេញ
+     ស្វ័យប្រវត្តិ — មុនអ្នកទាញទិន្នន័យទាំងអស់។ */
+  try{ CC.syncAuditYears(); }catch(e){}
   /* សហគ្រាសផ្លាស់ប្តូរ = ការកំណត់ពន្ធថ្មី ៖ លុបចោលទាំងស្រុងជាមុនសិន។
      ឯកសារបន្ថែមរបស់សហគ្រាសដដែល (ដៃគូ CROSSCHECK, ឆ្នាំបន្ថែម) មិនប៉ះទេ។ */
   try{
@@ -34433,6 +35426,7 @@ CC.autoFill=function(force){
   run(function(){ return CC.pullTos(); },"CARD ប្រាក់បៀវត្ស");
   run(function(){ return CC.pullObstruct(); },"អំពើរាំងស្ទះ");
   run(function(){ return CC.pullCloseDate(); },"ថ្ងៃស្នើសុំបិទ");
+  run(function(){ return CC.pullAssessDate(); },"ថ្ងៃកំណត់ពន្ធ");
   run(function(){ return CC.pullAssessDate(); },"ថ្ងៃកំណត់ពន្ធ");
   CC._toiMsg=r1.msg; CC._vatMsg=r2.msg; CC._mtrMsg=r3.msg;
   try{ CC.persist(); }catch(e){}
@@ -34536,6 +35530,20 @@ CC.repair=function(s){
   if(!s.toi.blocks     || !Array.isArray(s.toi.blocks))     s.toi.blocks=[];
   if(!Array.isArray(s.assessments)) s.assessments=[];
   if(!Array.isArray(s.years) || !s.years.length) s.years=b.years;
+  /* ⚠ ឯកសារដែលរក្សាទុករួច មានបញ្ជីឆ្នាំចាស់ជាប់ ដូច្នេះ ២០២៦ នៅតែបាត់
+     ទោះកែ `blank()` ក៏ដោយ។ បញ្ចូលឆ្នាំសវនកម្មដែលខ្វះទៅក្នុងវា។
+     ⚠ **បន្ថែមតែប៉ុណ្ណោះ គ្មានការដកចេញ** — ឆ្នាំដែលគេវាយតួលេខរួច
+     មិនត្រូវបាត់ឡើយ។ តម្លៃដែលមិនទាន់មានអានជា 0 ដោយស្វ័យប្រវត្តិ
+     (គ្រប់កន្លែងប្រើលំនាំ `+x||0`)។ */
+  try{
+    var ay=(window.__auditYears?window.__auditYears():[]).map(Number)
+             .filter(function(n){ return n>1900; });
+    if(ay.length){
+      var have={}; s.years.forEach(function(y){ have[Number(y)]=1; });
+      ay.forEach(function(y){ if(!have[y]) s.years.push(y); });
+      s.years=s.years.map(Number).sort(function(x,y){ return y-x; });
+    }
+  }catch(e){}
   CC.state=s;
   /* តម្រឹមគ្រប់តារាងតាមបញ្ជីឆ្នាំបច្ចុប្បន្ន */
   try{ var ys=s.years.slice(); s.years=[]; CC.setYears(ys); }catch(e){}
@@ -34606,7 +35614,99 @@ CC.importState=function(o){
 /* ================= engine ================= */
 /* Everything the card shows comes from here, so the summary can never
    drift away from the working. One object per year. */
+/* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «នៅតែត្រូវការចូលទៅថែមឆ្នាំ មិនអាចចាប់បាន
+   ពេលបំពេញឆ្នាំនៅការិយបរិច្ឆេទសវនកម្មនោះទេ» ។
+   ⚠⚠ ការបញ្ចូលឆ្នាំដែលខ្ញុំដាក់ជុំមុន ដំណើរការ **តែពេលផ្ទុកកាតគណនា**
+   ប៉ុណ្ណោះ។ គេបំពេញការិយបរិច្ឆេទ **ក្រោយ** ការផ្ទុករួច ⇒ គ្មានអ្វីកើត
+   ឡើងរហូតដល់ផ្ទុកឡើងវិញ។ ដូច្នេះត្រូវពិនិត្យ **រាល់ពេលគណនា** វិញ។
+   ⚠ បន្ថែមតែប៉ុណ្ណោះ គ្មានការដកចេញ ; ថ្លៃដំណើរការតិចតួច (ប្រៀបធៀបលេខ
+   មួយក្តាប់) ដូច្នេះដាក់ក្នុង compute បានដោយសុវត្ថិភាព។ */
+/* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ឱ្យវាចាប់យកការិយបរិច្ឆេទសវនកម្ម មានឆ្នាំណា
+   បង្ហាញឆ្នាំនោះ បើត្រូវថែមផ្សេងទៀតមានកន្លែងបន្ថែមបាន» ។
+   ⚠⚠ គ្រោះថ្នាក់ ៖ ការលុបឆ្នាំចោលក៏លុប **តួលេខដែលគេវាយរួច** សម្រាប់
+   ឆ្នាំនោះដែរ។ ដូច្នេះលុបតែឆ្នាំដែល (ក) នៅក្រៅការិយបរិច្ឆេទ **និង**
+   (ខ) គ្មានតួលេខអ្វីសោះ។ ឆ្នាំដែលមានតួលេខ នៅដដែល ហើយប៊ូតុង ✕ របស់វា
+   នៅដដែល — គេលុបដោយដៃបាន។
+   ⚠ `fxYears` · `loanRates` · `rate` ត្រូវរំលងពេលរាវរក ៖ វាមានតម្លៃ
+   សម្រាប់គ្រប់ឆ្នាំជាស្រេច (អត្រាប្តូរប្រាក់…) ដូច្នេះបើរាប់វា គ្រប់ឆ្នាំ
+   នឹងមើលទៅដូចជា «មានទិន្នន័យ» ហើយគ្មានអ្វីត្រូវលុបឡើយ។ */
+CC.yearHasData=function(y){
+  var SKIP={fxYears:1, loanRates:1, rate:1, years:1};
+  var target=String(y), found=false;
+  try{
+    (function walk(o, depth){
+      if(found || !o || typeof o!=="object" || depth>8) return;
+      Object.keys(o).forEach(function(k){
+        if(found || SKIP[k]) return;
+        var v=o[k];
+        if(k===target){
+          if(typeof v==="number"){ if(v!==0){ found=true; return; } }
+          else if(typeof v==="string"){ if(v.trim()!=="" && v!=="0"){ found=true; return; } }
+          else if(v===true){ found=true; return; }
+          else if(v && typeof v==="object"){ found=true; return; }
+        }
+        if(v && typeof v==="object") walk(v, depth+1);
+      });
+    })(CC.state, 0);
+  }catch(e){ return true; }   /* មិនច្បាស់ ⇒ កុំលុប */
+  return found;
+};
+/* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ទោះបីជា TOI មានដល់ទី ២០២១-២០២៤ តែការិយ
+   សវនកម្មបញ្ចូល ២០២២-២០២៤ ប៉ារ៉ាមែត្របង្ហាញតែឆ្នាំបញ្ចូលក្នុងនោះតែ
+   ប៉ុណ្ណោះ» ។ ច្បាប់ច្បាស់ជាងអ្វីដែលខ្ញុំសន្មត់ជុំមុន ៖ **ការិយបរិច្ឆេទ
+   ជាអ្នកកំណត់** ។ ទិន្នន័យ TOI សម្រាប់ឆ្នាំក្រៅការិយបរិច្ឆេទ មិនរក្សា
+   ឆ្នាំនោះទុកទេ — វាគ្រាន់តែជាការបង្ហាញ ហើយទាញមកវិញបានជានិច្ច។
+   ⚠ អ្វីដែលត្រូវរក្សា ៖ ឆ្នាំដែលអ្នកប្រើ **បន្ថែមដោយដៃ** (បញ្ជី
+   `yearsManual`) — បើមិនចងចាំ សមកាលកម្មនឹងលុបវាចោលភ្លាមក្រោយបន្ថែម។
+   សំណុំចុងក្រោយ = ការិយបរិច្ឆេទ ∪ បន្ថែមដោយដៃ។ */
+CC.markYearManual=function(y){
+  try{
+    var s=CC.state; if(!s) return;
+    if(!Array.isArray(s.yearsManual)) s.yearsManual=[];
+    var n=Number(y); if(!(n>1900)) return;
+    if(s.yearsManual.map(Number).indexOf(n)<0) s.yearsManual.push(n);
+  }catch(e){}
+};
+CC.unmarkYearManual=function(y){
+  try{
+    var s=CC.state; if(!s||!Array.isArray(s.yearsManual)) return;
+    var n=Number(y);
+    s.yearsManual=s.yearsManual.map(Number).filter(function(v){ return v!==n; });
+  }catch(e){}
+};
+CC.syncAuditYears=function(){
+  try{
+    var ay=(window.__auditYears?window.__auditYears():[]).map(Number)
+             .filter(function(n){ return n>1900; });
+    if(!ay.length) return false;
+    var s=CC.state;
+    if(!s || !Array.isArray(s.years)) return false;
+    var keep={};
+    ay.forEach(function(y){ keep[y]=1; });
+    (Array.isArray(s.yearsManual)?s.yearsManual:[]).forEach(function(y){
+      var n=Number(y); if(n>1900) keep[n]=1;
+    });
+    var want=Object.keys(keep).map(Number).sort(function(a,b){ return b-a; });
+    var cur=s.years.map(Number).sort(function(a,b){ return b-a; });
+    if(want.join(",")===cur.join(",")) return false;
+    s.years=want;
+    return true;
+  }catch(e){ return false; }
+};
+/* ចំនួនខែពីថ្ងៃស្នើសុំបិទ ដល់ថ្ងៃបញ្ចប់សវនកម្ម > ៣ ឬអត់។ */
+CC.stampOver3M=function(){
+  try{
+    var s=CC.state||{};
+    var a=String(s.closeDate||"").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    var b=String(s.assessDate||"").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if(!a||!b) return false;
+    var m=(Number(b[1])-Number(a[1]))*12 + (Number(b[2])-Number(a[2]));
+    if(Number(b[3]) < Number(a[3])) m -= 1;
+    return m > 3;
+  }catch(e){ return false; }
+};
 CC.compute=function(){
+  CC.syncAuditYears();
   var s=CC.state,out={},yrs=s.years,am=CC.assessMaps();
 
   yrs.forEach(function(y){
@@ -34919,7 +36019,21 @@ CC.compute=function(){
       push(t.name,v,t.ib||"m",t.msel,t.np,t.asAdd,ass,t.istart,null,true,fa,fi);
       return;
     }
-    push(t.name,v,t.ib||"m",t.msel,t.np,t.asAdd,ass,t.istart,t.addPct,t.noInt);
+    /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ពន្ធប្រថាប់ត្រាបិទ នៅតែចេញពន្ធបន្ថែម
+       ធ្វើម៉េចលុបបាន» + ច្បាប់ដែលបានបញ្ជាក់ ៖ ពន្ធបន្ថែម **លុះត្រាតែ
+       ហួស ៣ ខែ និងបានធីកដើម្បីពិន័យ** ។
+       ⚠ `addPct:1.00` ធ្វើអោយពន្ធបន្ថែម = ១០០% នៃមូលដ្ឋាន **ដោយគ្មាន
+       លក្ខខណ្ឌ** ។ ឥឡូវបញ្ជូន `addPct` តែពេលលក្ខខណ្ឌទាំងពីរពេញ ;
+       បើមិនពេញ បញ្ជូន 0 ⇒ ពន្ធបន្ថែម ០។
+       ⚠ លំនាំដើម = **មិនពិន័យ** ដូច្នេះគ្មានការគិតដោយភ្ញាក់ផ្អើលទេ។
+       ⚠ «ហួស ៣ ខែ» រាប់ពី **ថ្ងៃស្នើសុំបិទ** (ដែល `CC.pullCloseDate`
+       ទាញចូលរួច) ដល់ **ថ្ងៃបញ្ចប់សវនកម្ម** ។ បើថ្ងៃណាមួយទទេ ចាត់ទុក
+       ថាមិនទាន់ហួស — សុវត្ថិភាពជាងការពិន័យដោយស្មាន។ */
+    var addPctUse = t.addPct;
+    if(t.id === 'stamp'){
+      addPctUse = (t.pen && CC.stampOver3M()) ? t.addPct : 0;
+    }
+    push(t.name,v,t.ib||"m",t.msel,t.np,t.asAdd,ass,t.istart,addPctUse,t.noInt);
   });
 
   return {y:out,rows:rows};
@@ -37481,7 +38595,18 @@ function paneOth(res){
           (t.custom
             ? '<input class="cc-grid-in" style="text-align:left" data-tax="'+i+'" data-k="name" value="'+esc(t.name)+'" placeholder="ឈ្មោះប្រភេទពន្ធ">'
             : esc(t.name))+'</label>'+
-          (t.custom?'<button class="cc-x" data-act="delTax" data-i="'+i+'" style="margin-top:6px">×</button>':'')+'</td>');
+          (t.custom?'<button class="cc-x" data-act="delTax" data-i="'+i+'" style="margin-top:6px">×</button>':'')+
+          /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ ប្រអប់ធីកពិន័យ «ក្នុងជួរពន្ធប្រថាប់ត្រា
+             ក្នុងផ្ទាំង ពន្ធផ្សេងៗ» ។ ពន្ធបន្ថែមកើតឡើងលុះត្រាតែ ធីក
+             **និង** ហួស ៣ ខែ (មើល `CC.stampOver3M`) ។ ស្លាកប្រាប់ស្ថានភាព
+             ពិតរបស់លក្ខខណ្ឌទី ២ ដើម្បីកុំអោយឆ្ងល់ថាហេតុអ្វីធីកហើយនៅ ០។ */
+          (t.id==='stamp'
+            ? '<label class="cc-flag'+(t.pen?" on":"")+'" style="width:100%; margin-top:6px; font-size:11.5px;">'+
+              '<input type="checkbox" data-tax="'+i+'" data-k="pen"'+(t.pen?" checked":"")+'>'+
+              'ពិន័យ (ហួស ៣ ខែ)</label>'+
+              '<div class="cc-note" style="margin-top:2px">'+
+              (CC.stampOver3M()?'ហួស ៣ ខែ ✓':'មិនទាន់ហួស ៣ ខែ')+'</div>'
+            : '')+'</td>');
         h.push('<td class="cc-rate" rowspan="'+span+'">'+((vcat||t.id==='light')?'<span class="cc-note">តាមឆ្នាំ ↓</span>':(t.amt?'<span class="cc-note">ចំនួនផ្ទាល់</span>':
           '<input class="cc-grid-in" data-tax="'+i+'" data-k="rate" value="'+(t.rate*100).toFixed(2)+'"> %'))+'</td>');
       }
@@ -38307,10 +39432,16 @@ function bind(el){
       var ny = ys.length
         ? (act==="yrPrev" ? Math.min.apply(null,ys)-1 : Math.max.apply(null,ys)+1)
         : new Date().getFullYear();
+      CC.markYearManual(ny);
       CC.setYears(ys.concat([ny])); re();
     }
     else if(act==="delYr"){
-      if(s.years.length>1){ CC.setYears(s.years.filter(function(y){return String(y)!==a.dataset.y;})); re(); }
+      if(s.years.length>1){
+        /* ⚠ លុបដោយដៃ ៖ ត្រូវដកចេញពីបញ្ជី «បន្ថែមដោយដៃ» ផង បើមិនដូច្នេះ
+           សមកាលកម្មនឹងដាក់វាត្រឡប់មកវិញភ្លាម។ */
+        CC.unmarkYearManual(a.dataset.y);
+        CC.setYears(s.years.filter(function(y){return String(y)!==a.dataset.y;})); re();
+      }
     }
     else if(act==="addLr"){
       var yy=(s.years&&s.years[0])||new Date().getFullYear();
@@ -38472,7 +39603,8 @@ function bind(el){
     }
     if(t.dataset.tax!=null){
       var tx=s.taxes[+t.dataset.tax],k3=t.dataset.k;
-      if(k3==="on"){
+      if(k3==="pen"){ tx.pen=t.checked; }
+      else if(k3==="on"){
         tx.on=t.checked;
         /* ចំនួនកំណត់ជាក់លាក់ (ឧ. ពិន័យរាំងស្ទះ) ចេញលុះត្រាតែធីក */
         if(tx.amt && tx.def){
