@@ -30983,7 +30983,7 @@ function wpCvRoute(forPrint){
 
 /* ---------- ១. សន្លឹកមុខ ៖ តាមដានការបញ្ជូនឯកសារ ---------- */
 function wpCoverSheet(c, forPrint){
-  return `<div class="rpt-page cv-page">
+  return `<div class="rpt-page cv-page cv-cover-page">
     <div class="cv-sheet"><div class="cv-in">
       ${wpCvHead()}
       <table class="cv-info">${wpCvInfoRows(c, false)}</table>
@@ -31221,6 +31221,27 @@ const WP_CSS = `
   .cv-sheet{border:1px solid #333; padding:4px; box-sizing:border-box; min-height:calc(100vh - 2px);}
   .cv-in{border:2px solid #333; padding:14px 20px 16px; box-sizing:border-box; min-height:calc(100vh - 12px);
     display:flex; flex-direction:column;}
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៨ ៖ «ព្រីនតាមទូរស័ព្ទ វាធ្លាក់ទៅទំព័រទី ២ ;
+     តាមកុំព្យូទ័រត្រូវហើយ កុំកែ — កែតែតាមទូរស័ព្ទ ហើយតែផ្នែកនេះទេ» ។
+     វាស់បាន (Chromium + Khmer OS) ៖ កម្ពស់ **ធម្មជាតិ** នៃសន្លឹកមុខ
+     = 1014px = 268.4mm ស្ទើរតែស្មើនឹងប្រអប់ទំព័ររបស់កុំព្យូទ័រ (269mm)
+     ⇒ វាសមត្រឹមត្រូវលើកុំព្យូទ័រ តែគ្មានទីធ្លាសល់សោះ។
+     iOS Safari មិនគោរព @page margin របស់យើងទេ ⇒ ផ្ទៃបោះពុម្ពពិតត្រឹម
+     ~252mm (លេខដដែលដែលបានវាស់សម្រាប់ paginator នៅ B57) ⇒ លើស ~១៦mm
+     ហើយហៀរទៅសន្លឹកទី ២ (សន្លឹកទី ២ ឃើញតែគែមស៊ុមមួយបន្ទាត់)។
+     ដំណោះស្រាយ ៖ **បង្រួមទាំងសន្លឹក** (zoom) ដូចដែលធ្វើនឹង #coverPanel
+     នៅ B57 — ប្លង់ដូចកុំព្យូទ័របេះបិទ គ្រាន់តែតូចជាង មិនមែនរៀបចំថ្មី។
+     ⚠ 0.92 × 268.4 = 247mm ≤ 252mm ។ **នេះជាលេខតែមួយដែលត្រូវលៃ** ៖ បើ
+       នៅតែធ្លាក់ទំព័រទី ២ បន្ថយ (0.88) ; បើសល់ចន្លោះទំនេរខាងក្រោមច្រើន
+       បង្កើន (0.95) ។
+     ⚠ កម្ពស់ត្រង់នេះកំណត់ជា **mm មិនមែន vh** ៖ យើងមិនដឹងថា iOS គិត
+       100vh ជាប្រអប់ @page ឬជាក្រដាសពេញ ដូច្នេះកុំពឹងលើវា។
+     ⚠ ច្បាប់ព្យួរលើ `html.rsc-mobile-print` ⇒ កុំព្យូទ័រគ្មាន class នេះ
+       ដូច្នេះមិនប៉ះពាល់ទាល់តែសោះ ; ហើយ `.cv-cover-page` មានតែលើសន្លឹកមុខ
+       ⇒ ស្លាកកាត់បិទ និង E/F នៅដដែល។ */
+  html.rsc-mobile-print .cv-cover-page{ zoom:0.92; min-height:0; }
+  html.rsc-mobile-print .cv-cover-page .cv-sheet{ min-height:268mm; }
+  html.rsc-mobile-print .cv-cover-page .cv-in{ min-height:265mm; }
   .cv-lh{display:flex; align-items:flex-start; justify-content:space-between; gap:16px;}
   .cv-lh-l,.cv-lh-r{text-align:center; color:#1a237e;
     font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif;}
