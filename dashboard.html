@@ -2904,6 +2904,40 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
   /* [stated] បន្ទាត់ចុចៗពីក្រោម សហគ្រាស / លេខ អតប / សកម្មភាព មិនត្រូវព្រីនទេ។
      រក្សាវាលើអេក្រង់ ព្រោះវាបង្ហាញថាវាលទាំងនោះវាយចូលបាន។ */
   body.mtr-print-single #mtr-embed .mtr-form-meta .val{ border-bottom:0 !important; }
+
+  /* ══ [stated] ២០២៦-០៨-១៨ ៖ «ព្រីនតាមទូរស័ព្ទ វាអត់ចេញ landscape ទាំង ២
+     ផ្នែក ; កែតែតាមទូរស័ព្ទទេ» ══════════════════════════════════════════
+     មូលហេតុ ៖ WebKit (Safari លើ iPhone/iPad) **មិនគាំទ្រ `@page{size:…}`**
+     ទាល់តែសោះ — ទិសទំព័រមកពីកុងតាក់ Orientation ក្នុងប្រអប់ព្រីនរបស់ iOS
+     ដែលលំនាំដើមជា Portrait ។ ដូច្នេះ `@page{size:A4 landscape}` (ទាំង
+     ក្នុង printSheetsInPage ទាំងក្នុងផ្ទាំងលោត) ដើរតែលើកុំព្យូទ័រ។
+     ដំណោះស្រាយសម្រាប់ iOS តែម្នាក់ឯង ៖ printSheetsInPage រុំសន្លឹកនីមួយៗ
+     ក្នុង `.mtr-rot` ធំប៉ុនទំព័រឈរ រួច **បង្វិលសន្លឹក ៩០°** ខាងក្នុង —
+     ក្រដាសឈរ តែសន្លឹកចេញដេក ដូចកុំព្យូទ័របេះបិទ។
+     ⚠ ច្បាប់ទាំងនេះផ្គូផ្គងតែពេលមាន `.mtr-rot` ក្នុង DOM ដែលកើតតែលើ iOS
+       ⇒ កុំព្យូទ័រ និង Android (ដែលគោរព @page) មិនប៉ះពាល់ទាល់តែសោះ។
+     ⚠ សន្លឹកសង់ក្នុងប្រអប់ 285×194mm ដដែលនឹងកុំព្យូទ័រ (A4 ដេក ដករឹម
+       8mm/6mm) ⇒ ការចុះបន្ទាត់ និងទទឹងជួរឈរដូចគ្នាបេះបិទ ; មានតែ zoom
+       ដែលបង្រួម។
+     ⚠ **0.82 ជាលេខតែមួយដែលត្រូវលៃ** ៖ 194×0.82 = 159mm ចូលក្នុងទទឹង
+       បោះពុម្ពពិតរបស់ iOS (~165mm) ហើយ 285×0.82 = 234mm ចូលក្នុងកម្ពស់
+       (~252mm ដែលបានវាស់រួច) ។ បើគែមណាមួយត្រូវកាត់ បន្ថយ (0.78) ;
+       បើសល់ចន្លោះទំនេរច្រើន បង្កើន (0.86) ។
+     ⚠ ប្រអប់រុំ `overflow:hidden` ដោយចេតនា ៖ ធានាថាមួយសន្លឹក = មួយទំព័រ
+       ទោះការវាស់ខុសបន្តិច (WebKit បំបែកមាតិកាដែលលើសទៅសន្លឹកបន្ថែម)។ */
+  body.mtr-print-single #mtr-embed .mtr-rot{
+    position:relative; width:160mm; height:244mm; overflow:hidden; margin:0;
+    page-break-after:always; break-after:page;
+  }
+  body.mtr-print-single #mtr-embed .mtr-rot:last-child{
+    page-break-after:auto; break-after:auto;
+  }
+  body.mtr-print-single #mtr-embed .mtr-rot > .mtr-form{
+    position:absolute; top:0; left:0;
+    width:285mm; height:194mm; zoom:0.82;
+    transform-origin:top left; transform:rotate(90deg) translateY(-100%);
+    page-break-after:auto !important; break-after:auto !important;
+  }
 }
 
 /* ================= 2026-08-07 ចំណុចដែលអ្នកប្រើស្នើ =================
@@ -17329,6 +17363,23 @@ function printSheetsInPage(sheets){
   const host = document.createElement('div');
   host.id = 'mtr-print-host';
   host.innerHTML = sheets;
+  /* ⚠ iOS តែម្នាក់ឯង ៖ Safari មិនស្គាល់ `@page{size:landscape}` ទេ ដូច្នេះ
+     ក្រដាសចេញឈរជានិច្ច។ រុំសន្លឹកនីមួយៗក្នុង `.mtr-rot` រួច CSS បង្វិលវា
+     ៩០° (មើលប្លុក `body.mtr-print-single … .mtr-rot`) ។ កុំព្យូទ័រ និង
+     Android មិនចូលមកទីនេះ ⇒ ផ្លូវរបស់គេនៅដដែលបេះបិទ។ */
+  var __mtrIOS = false;
+  try{
+    __mtrIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent || '')
+      || (navigator.maxTouchPoints > 1 && /Macintosh/.test(navigator.userAgent || ''));
+  }catch(e){}
+  if(__mtrIOS){
+    Array.prototype.forEach.call(host.querySelectorAll('.mtr-form'), function(f){
+      var w = document.createElement('div');
+      w.className = 'mtr-rot';
+      f.parentNode.insertBefore(w, f);
+      w.appendChild(f);
+    });
+  }
   embed.appendChild(host);
   document.body.classList.add('mtr-print-single');
 
@@ -31222,8 +31273,11 @@ const WP_CSS = `
        បង្កើន (0.95) ។
      ⚠ កម្ពស់ត្រង់នេះកំណត់ជា **mm មិនមែន vh** ៖ យើងមិនដឹងថា iOS គិត
        100vh ជាប្រអប់ @page ឬជាក្រដាសពេញ ដូច្នេះកុំពឹងលើវា។
-     ⚠ ច្បាប់ព្យួរលើ `html.rsc-mobile-print` ⇒ កុំព្យូទ័រគ្មាន class នេះ
-       ដូច្នេះមិនប៉ះពាល់ទាល់តែសោះ ; ហើយ `.cv-cover-page` មានតែលើសន្លឹកមុខ
+     ⚠⚠ កុំដាក់សញ្ញា backtick ក្នុងកំណត់សម្គាល់ត្រង់នេះ ៖ WP_CSS ជា
+       template literal របស់ JS ⇒ backtick មួយបញ្ចប់ខ្សែអក្សរ ហើយបំបែក
+       ប្លុក script ទាំងមូល។
+     ⚠ ច្បាប់ព្យួរលើ html.rsc-mobile-print ⇒ កុំព្យូទ័រគ្មាន class នេះ
+       ដូច្នេះមិនប៉ះពាល់ទាល់តែសោះ ; ហើយ .cv-cover-page មានតែលើសន្លឹកមុខ
        ⇒ ស្លាកកាត់បិទ និង E/F នៅដដែល។ */
   html.rsc-mobile-print .cv-cover-page{ zoom:0.92; min-height:0; }
   html.rsc-mobile-print .cv-cover-page .cv-sheet{ min-height:268mm; }
