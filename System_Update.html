@@ -2,20 +2,6 @@
 <html lang="km">
 <head>
 <meta charset="UTF-8">
-<script>
-/* ══ ឆ្មាំចូលប្រព័ន្ធ — ត្រូវនៅខាងលើគេបំផុត ══════════════════════════
-   ឯកសារនេះជា dashboard ហើយវាអង្គុយនៅ root ដើម្បីអោយ URL ជា
-   «teamsmos.com» សុទ្ធ។ អ្នកដែលមិនទាន់ចូល ត្រូវបញ្ជូនទៅ login.html
-   ភ្លាមៗ — ដាក់នៅទីនេះមុនគេ ដើម្បីអោយ browser បញ្ឈប់ការទាញឯកសារ
-   ៣ MB ដែលនៅសល់។ ⚠ កុំផ្លាស់ប្លុកនេះទៅខាងក្រោម។ */
-(function(){
-  try{
-    var hasQ = location.search.indexOf('token=') !== -1;
-    var hasS = !!localStorage.getItem('rsc_token');
-    if(!hasQ && !hasS) location.replace('./login.html');
-  }catch(e){}
-})();
-</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RSC Dashboard</title>
 <!-- ដាក់លើអេក្រង់ដើមទូរស័ព្ទ ៖ រូបតំណាង ឈ្មោះ និងបើកពេញអេក្រង់
@@ -5125,6 +5111,14 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
       window.__features = null;
     </script>
     <script>
+      /* Apps Script only — this block is EXPECTED to fail on a local open. */
+      window.__loggedInUserName = <?!= JSON.stringify(loggedInUserName || '') ?>;
+      window.__loggedInUserEmail = <?!= JSON.stringify(loggedInUserEmail || '') ?>;
+      window.__loggedInUserToken = <?!= JSON.stringify(loggedInUserToken || '') ?>;
+      window.__sessionExpiresAtMs = <?!= JSON.stringify(sessionExpiresAtMs || null) ?>;
+      window.__appBaseUrl = <?!= JSON.stringify(appBaseUrl || '') ?>;
+    </script>
+    <script>
       /* ══ ផ្លូវហៅម៉ាស៊ីនមេរួម ══════════════════════════════════════════
          ឯកសារនេះត្រូវដើរបានពីរកន្លែង ៖
            ១. ក្នុង Apps Script  → ប្រើ google.script.run ដូចដើម
@@ -5134,6 +5128,13 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
            មិនបានទេ ដូច្នេះ application/json នឹងជាប់ CORS ជានិច្ច។
          ══════════════════════════════════════════════════════════════ */
       (function(){
+        /* ⚠⚠ [stated] ២០២៦-០៨-១៦ ៖ ច្បាប់ offline ចេញ «មិនទាន់កំណត់
+           __RSC_EXEC_URL ទេ» ។ រកឃើញ ៖ **តែ build នេះមួយគត់** ដែលដាក់វា
+           ជាខ្សែអក្សរទទេ។ ក្នុង Apps Script វាមិនសំខាន់ទេ ព្រោះ
+           google.script.run ត្រូវបានប្រើ — តែច្បាប់ `file://` ដដែលនេះ
+           គ្មានទាំង gs.run គ្មានទាំង URL ដូច្នេះ __rscApi បដិសេធភ្លាម
+           ដោយមិនទាន់សាកសោះ។ ដាក់ URL ដូច build ពីរផ្សេងទៀត។
+           ⚠ ក្នុង Apps Script គ្មានផលប៉ះពាល់ (hasGsRun ឈ្នះមុន)។ */
         window.__RSC_EXEC_URL = window.__RSC_EXEC_URL ||
           'https://script.google.com/macros/s/AKfycbzLnWeB05H8oqWAtM1hiw_FdYunlns01NkHR4MjsY5QbiT3Xuh-xdSDzKIuIYbB33k0/exec';
 
