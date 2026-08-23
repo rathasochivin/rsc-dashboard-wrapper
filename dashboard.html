@@ -1785,6 +1785,21 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
 #view-tracking .lt-restore-btn, #docs-modal .lt-restore-btn{color:var(--brand,#0F3D3E); text-decoration:underline; font-size:12px;}
 #view-tracking .rpt-page, #docs-modal .rpt-page{page-break-after:always; break-after:page;
   box-sizing:border-box; display:flex; flex-direction:column; min-height:265mm;}
+/* ⚠ [stated] «ការពិនិត្យលើអេក្រង់នៅតែមិនដូចពេលព្រីន» ⇒ ការមើលជាមុននៃឯកសារ
+   ផ្លូវការក៏ត្រូវជា **សន្លឹកក្រដាស** ដូចការមើលជាមុនរបាយការណ៍ដែរ ៖ ទទឹង
+   A4 ថេរ · ស៊ុម · ស្រមោល · ចន្លោះរវាងសន្លឹក · បង្រួមតាមទទឹងផ្ទាំង (zoom)។
+   ⚠ កម្ពស់ 240mm ដូចពេលព្រីនលើទូរស័ព្ទ ⇒ ចន្លោះក្រោមជើងទំព័រដូចគ្នា។ */
+@media screen{
+  #docs-modal .rpt-page{
+    zoom:var(--nr-zoom,1);
+    width:210mm; box-sizing:border-box;
+    min-height:240mm;
+    background:#fff; border:1px solid #E3E7E8; border-radius:2px;
+    box-shadow:0 2px 10px rgba(0,0,0,.14);
+    margin:0 auto 16px; padding:10mm 12mm 15mm;
+  }
+  #docs-modal .docs-body{ background:#EDEBE3; }
+}
 #view-tracking .rpt-page > .rpt-foot, #docs-modal .rpt-page > .rpt-foot{margin-top:auto;}
 #view-tracking .rpt-page:last-child, #docs-modal .rpt-page:last-child{page-break-after:auto; break-after:auto;}
 #view-tracking .rpt-title, #docs-modal .rpt-title{border:2px solid #1a237e; color:#1a237e; text-align:center; font-weight:700;
@@ -31732,6 +31747,16 @@ const RPT_CSS = `
      ទុកជាគម្លាតការពារការបង្គត់។ */
   .rpt-page{page-break-after:always; break-after:page;
     box-sizing:border-box; display:flow-root; min-height:calc(100vh - 1px);}
+  /* ⚠⚠ [stated] ២០២៦-០៨-២០ ៖ «ចន្លោះខាងក្រោម footer នៅតែសល់ធំ» (iPhone) និង
+     footer ធ្លាក់ទៅទំព័របន្ទាប់ (ថេប្លេត) — ឯកសារ «យុទ្ធសាស្ត្រ និងផែនការ
+     សវនកម្ម» មិនមែនជាឯកសារបរិយាយទេ ៖ វាប្រើ .rpt-page ដែលកម្ពស់មកពី
+     100vh ហើយជើងទំព័ររុញដោយ margin-top:auto ។
+     iOS/Android មិនគោរព @page margin ⇒ 100vh ធំជាងផ្ទៃបោះពុម្ពពិត ⇒
+     ជើងទំព័ររុញទាបហួស (ចន្លោះធំ) ឬហៀរទៅសន្លឹកបន្ទាប់ទាំងស្រុង។
+     ⇒ ទូរស័ព្ទ/ថេប្លេត ៖ ជំនួស vh ដោយ 240mm ដែលសមគ្រប់ឧបករណ៍។
+     ⚠ កុំព្យូទ័រនៅ 100vh ដដែល — មិនប៉ះពាល់។
+     ⚠⚠ គ្មាន backtick ក្នុងកំណត់សម្គាល់នេះ ៖ RPT_CSS ជា template literal។ */
+  html.rsc-mobile-print .rpt-page{ min-height:240mm !important; }
   .rpt-page:has(> .rpt-foot){display:flex; flex-direction:column;}
   .rpt-page > .rpt-foot{margin-top:auto;}
   /* បើមាតិកាវែងជាងមួយទំព័រ ទុកអោយវាបំបែកតាមធម្មតា */
@@ -33892,11 +33917,14 @@ const NARR_SCREEN_FIX = `
     #trkNarr .nr-page,#trkAudit .nr-page,#trkSum2 .nr-page{
       zoom:var(--nr-zoom,1);
       /* ⚠ ទទឹងក្រដាសពិត ៖ 186mm ជាប្រអប់អត្ថបទ បូករឹម 12mm សងខាង ⇒ 210mm
-         ដូច A4 ។ បើទុកអោយវាលាតតាមផ្ទាំង ការចុះបន្ទាត់នឹងខុសពីព្រីន។ */
+         ដូច A4 ។ បើទុកអោយវាលាតតាមផ្ទាំង ការចុះបន្ទាត់នឹងខុសពីព្រីន។
+         ⚠⚠ រឹមក្រោម ត្រូវ **15mm ដូចពេលព្រីន** បេះបិទ (មិនមែន 10mm) ៖
+           ជើងទំព័រខ្ទាស់ bottom:0 ដូច្នេះរឹមក្រោមកំណត់ចន្លោះក្រោមជើងទំព័រ។
+           កម្ពស់មកពី --nr-ph ដដែលនឹងព្រីន ⇒ អេក្រង់ = ក្រដាស។ */
       width:210mm; box-sizing:border-box;
       background:#fff; border:1px solid #E3E7E8; border-radius:2px;
       box-shadow:0 2px 10px rgba(0,0,0,.14);
-      margin:0 auto 16px; padding:10mm 12mm;
+      margin:0 auto 16px; padding:10mm 12mm 15mm;
       overflow:hidden;
     }
     #trkNarr,#trkAudit,#trkSum2{ background:#F1F0E9; padding:10px 6px; }
@@ -33954,6 +33982,22 @@ const NARR_SCREEN_FIX = `
    ⚠ ការចុះបន្ទាត់មិនប្តូរទេ ព្រោះទទឹងក្រដាសនៅដដែល — អ្វីដែលឃើញ = អ្វី
      ដែលចេញពីម៉ាស៊ីនព្រីន។ */
 function nrFitPaper(){
+  /* ⚠ ការមើលជាមុនឯកសារផ្លូវការ (#docs-modal .docs-body) ក៏ត្រូវបង្រួមដែរ —
+     វាប្រើ `.rpt-page` មិនមែន `.nr-page` ទេ។ */
+  try{
+    const dm = document.querySelector('#docs-modal .docs-body');
+    if(dm){
+      const p1 = dm.querySelector('.rpt-page');
+      if(p1){
+        dm.style.setProperty('--nr-zoom', '1');
+        const pw = p1.getBoundingClientRect().width;
+        const av = dm.clientWidth - 16;
+        const z = (pw > 0 && av > 0 && av < pw) ? Math.max(0.35, av / pw) : 1;
+        if(z === 1) dm.style.removeProperty('--nr-zoom');
+        else dm.style.setProperty('--nr-zoom', String(Math.round(z * 1000) / 1000));
+      }
+    }
+  }catch(e){}
   ['trkNarr','trkAudit','trkSum2'].forEach(function(id){
     const host = document.getElementById(id);
     if(!host) return;
@@ -34265,11 +34309,16 @@ const NARR_CSS = `
      ⚠ ត្រូវលុប height ទាំង max-height ⇒ បើទុកមួយ ប្រអប់នៅតែថេរ។
      ⚠ ជើងទំព័រត្រូវប្តូរទៅ position:static បើមិនដូច្នេះទេ ពេលប្រអប់គ្មាន
        កម្ពស់ វាធ្លាក់ទៅជាន់លើមាតិកា។ */
-  @media print{
-    html.rsc-mobile-print .nr-page{ height:auto !important; max-height:none !important;
-      padding-bottom:6mm !important; overflow:visible !important; }
-    html.rsc-mobile-print .nr-page > .nr-foot{ position:static !important; margin-top:8px; }
-  }
+  /* ⚠⚠ [stated] ២០២៦-០៨-២០ (ជុំទី២) ៖ «១ ការពិនិត្យលើអេក្រង់នៅតែមិនដូច
+     ពេលព្រីន ; ២ ចន្លោះខាងក្រោម footer នៅតែសល់ធំ» ។
+     មូលហេតុនៃទាំងពីរគឺ **គំរូពីរផ្សេងគ្នា** ៖ ខ្ញុំធ្វើអោយទូរស័ព្ទព្រីនជា
+     ប្រអប់កម្ពស់ស្វ័យប្រវត្តិ (ជើងទំព័រហូរតាមមាតិកា) ខណៈអេក្រង់នៅជាសន្លឹក
+     កម្ពស់ថេរ (ជើងទំព័រខ្ទាស់បាត) ⇒ មើលមិនដូចព្រីន ហើយចន្លោះក្រោមជើងទំព័រ
+     ខុសគ្នាទៀត។
+     ⇒ ត្រឡប់មក **គំរូតែមួយគ្រប់កន្លែង** ៖ សន្លឹកកម្ពស់ថេរ + ជើងទំព័រនៅបាត។
+       ការហៀរលើថេប្លេតដោះស្រាយដោយ **កម្ពស់សន្លឹក 240mm** (មើល __nrPageMm)
+       ដែលសមទាំង iOS · Android · កុំព្យូទ័រ ⇒ គ្មានអ្វីធ្លាក់ទៅសន្លឹកបន្ទាប់
+       ហើយអេក្រង់ = ព្រីន បេះបិទ។ */
   .nr-page > .nr-run{margin-bottom:12px;}
   .nr-shell{width:100%; border-collapse:collapse; table-layout:fixed;}
   .nr-shell > thead{display:table-header-group;}
@@ -36027,6 +36076,8 @@ window.__openDocsModal = function(){
   const body = g.querySelector('#docs-body');
   body.innerHTML = docsHtml();
   try{ wireDocs(body); }catch(e){ console.error('wireDocs:', e); }
+  /* បង្រួមសន្លឹកអោយសមផ្ទាំង (ថេប្លេត/ទូរស័ព្ទ) — មើល nrFitPaper */
+  try{ nrFitPaper(); }catch(e){}
   const close = ()=> g.remove();
   g.querySelector('#docs-close').onclick = close;
   g.addEventListener('click', e=>{ if(e.target === g) close(); });
