@@ -9666,7 +9666,17 @@ try{
   RSC_MOBILE_PRINT = /iPhone|iPad|iPod|Android|Mobile/i.test(navigator.userAgent || '')
     || (navigator.maxTouchPoints > 1 && /Macintosh/.test(navigator.userAgent || ''));  /* iPadOS 13+ */
 }catch(e){}
-window.__nrPageMm = RSC_MOBILE_PRINT ? 252 : 266;
+/* ⚠⚠ [stated] ២០២៦-០៨-២០ ៖ «រូបទី១ (iPhone) នៅសល់ជើងក្រោមធំណាស់ ; រូបទី២
+   (tablet) ធ្លាក់ footer ទៅទំព័របន្ទាប់» — រូបភាពពីរបញ្ជាក់រឿងតែមួយ ៖
+   **ប្រអប់ទំព័រកម្ពស់ថេរ មិនអាចត្រូវនឹងគ្រប់ឧបករណ៍បានទេ** ។ ធំពេក (tablet)
+   ⇒ ជើងទំព័រហៀរទៅសន្លឹកបន្ទាប់ ⇒ ៥ ទំព័រក្លាយជា ១០ ; តូចពេក (iPhone) ⇒
+   ចន្លោះទំនេរធំនៅបាត។
+   ⇒ សម្រាប់ទូរស័ព្ទ/ថេប្លេត ៖ (១) បន្ថយការវាស់មក **240mm** ដែលសមទាំង iOS
+     និង Android ; (២) ប្រអប់ទំព័រ **កម្ពស់ស្វ័យប្រវត្តិ** ហើយជើងទំព័រ
+     **ហូរតាមមាតិកា** ជំនួសការខ្ទាស់នៅបាត (មើល NARR_CSS · html.rsc-mobile-print)
+     ⇒ គ្មានចន្លោះទំនេរធំ ហើយគ្មានអ្វីហៀរ។
+   ⚠ កុំព្យូទ័រនៅ 266mm និងជើងទំព័រខ្ទាស់បាតដដែល — មិនប៉ះពាល់ទាល់តែសោះ។ */
+window.__nrPageMm = RSC_MOBILE_PRINT ? 240 : 266;
 try{
   document.documentElement.style.setProperty('--nr-ph', window.__nrPageMm + 'mm');
 }catch(e){}
@@ -33884,6 +33894,27 @@ function narrSetLh(v){
    ច្បាប់ខាងក្រោមដាក់ #trkNarr នាំមុខ + !important ដើម្បីអោយអេក្រង់
    ដូចពេលព្រីនបេះបិទ។ */
 const NARR_SCREEN_FIX = `
+  /* ══ [stated] ២០២៦-០៨-២០ ៖ «សម្រាប់ការ view នៅ tablet អាចឱ្យ view នៅលើ
+     អេក្រង់ដូចរូបពេលព្រីនបានទេ» ⇒ ការមើលជាមុនបង្ហាញជា **សន្លឹកក្រដាស** ៖
+     ផ្ទៃស ស៊ុមស្រាល ស្រមោល និងចន្លោះរវាងសន្លឹក។
+     ⚠⚠ គ្មាន backtick ក្នុងកំណត់សម្គាល់នេះ (template literal — លើកទី ៥)។
+     ⚠ ទទឹងក្រដាសថេរ (186mm ជាប្រអប់អត្ថបទ) — កុំបង្រួមតាមអេក្រង់ ព្រោះការ
+       ចុះបន្ទាត់នឹងខុសពីព្រីន។ ជំនួសវិញប្រើ zoom ដែលមិនប៉ះការចុះបន្ទាត់
+       សោះ គ្រាន់តែបង្ហាញតូចជាង ⇒ អ្វីដែលឃើញ = អ្វីដែលចេញ។
+     ⚠ --nr-zoom កំណត់ដោយ JS (nrFitPaper) តាមទទឹងផ្ទាំងពិត។ */
+  @media screen{
+    #trkNarr .nr-page,#trkAudit .nr-page,#trkSum2 .nr-page{
+      zoom:var(--nr-zoom,1);
+      /* ⚠ ទទឹងក្រដាសពិត ៖ 186mm ជាប្រអប់អត្ថបទ បូករឹម 12mm សងខាង ⇒ 210mm
+         ដូច A4 ។ បើទុកអោយវាលាតតាមផ្ទាំង ការចុះបន្ទាត់នឹងខុសពីព្រីន។ */
+      width:210mm; box-sizing:border-box;
+      background:#fff; border:1px solid #E3E7E8; border-radius:2px;
+      box-shadow:0 2px 10px rgba(0,0,0,.14);
+      margin:0 auto 16px; padding:10mm 12mm;
+      overflow:hidden;
+    }
+    #trkNarr,#trkAudit,#trkSum2{ background:#F1F0E9; padding:10px 6px; }
+  }
   #trkNarr .nr-tbl{border-collapse:collapse !important; width:100% !important; min-width:0 !important;}
   /* ⚠ កុំកំណត់ padding ត្រង់នេះ ៖ វាធ្វើអោយអេក្រង់តឹងជាងព្រីន ហើយតារាង
      ដែលមើលទៅសមលើអេក្រង់ លោតទៅទំព័រ ២ ពេលព្រីន។ */
@@ -33929,6 +33960,36 @@ const NARR_SCREEN_FIX = `
     background:#FFFBF2; user-select:none;}
 `;
 
+/* ══ [stated] ២០២៦-០៨-២០ ៖ ការមើលជាមុនត្រូវមើលទៅដូចក្រដាសពិត សូម្បីលើ
+   ថេប្លេត ។ ទទឹងក្រដាសថេរ ⇒ លើអេក្រង់តូច វាហៀរចេញ។ `nrFitPaper` គណនា
+   `zoom` = ទទឹងផ្ទាំង ÷ ទទឹងក្រដាស (មិនលើស ១) ។
+   ⚠ ប្រើ `zoom` មិនមែន `transform:scale` ៖ zoom បង្រួមទាំងកម្ពស់ក្នុងលំហូរ
+     ដូច្នេះសន្លឹកបន្ទាប់រំកិលឡើងតាម ; transform ទុកចន្លោះទទេធំ។
+   ⚠ ការចុះបន្ទាត់មិនប្តូរទេ ព្រោះទទឹងក្រដាសនៅដដែល — អ្វីដែលឃើញ = អ្វី
+     ដែលចេញពីម៉ាស៊ីនព្រីន។ */
+function nrFitPaper(){
+  ['trkNarr','trkAudit','trkSum2'].forEach(function(id){
+    const host = document.getElementById(id);
+    if(!host) return;
+    const pg = host.querySelector('.nr-page');
+    if(!pg){ host.style.removeProperty('--nr-zoom'); return; }
+    const prev = host.style.getPropertyValue('--nr-zoom');
+    host.style.setProperty('--nr-zoom', '1');
+    const paper = pg.getBoundingClientRect().width;   /* ទទឹងពិតនៅ zoom 1 */
+    const avail = host.clientWidth - 16;
+    const z = (paper > 0 && avail > 0 && avail < paper) ? Math.max(0.35, avail / paper) : 1;
+    if(z === 1) host.style.removeProperty('--nr-zoom');
+    else host.style.setProperty('--nr-zoom', String(Math.round(z * 1000) / 1000));
+    if(prev && z === 1) host.style.removeProperty('--nr-zoom');
+  });
+}
+try{
+  window.addEventListener('resize', function(){
+    clearTimeout(window.__nrFitT);
+    window.__nrFitT = setTimeout(nrFitPaper, 150);
+  });
+}catch(e){}
+
 function renderNarr(){
   const box = document.getElementById('trkNarr');
   if(!box) return;
@@ -33945,6 +34006,7 @@ function renderNarr(){
   /* [stated] ការបង្រួមសម្រាប់ព្រីនតែប៉ុណ្ណោះ — អេក្រង់រក្សាគម្លាតធម្មតា
      ដើម្បីងាយអាន ដូច្នេះមិនកំណត់ --nr-lh លើ #trkNarr ទេ។ */
   box.innerHTML = '<div class="nr-tools" id="nrTools"></div>' + narrHtml(false);
+  try{ nrFitPaper(); }catch(e){}
   /* [stated] «ករណីធ្លាក់ជួរ … អាចកែដោយដៃបានទេ» និង «អាចបន្ថែម/លុបការចុះ
      បន្ទាត់បានទេ» ៖ បាទ — តួឯកសារនៅទីនេះកែបានផ្ទាល់ ហើយការព្រីនយក
      អ្វីដែលឃើញនៅលើអេក្រង់ ដូច្នេះអ្វីដែលកែ ព្រីនចេញដដែល។ */
@@ -34211,6 +34273,17 @@ const NARR_CSS = `
     padding-bottom:15mm; page-break-after:always; break-after:page;}
   .nr-page:last-child{page-break-after:auto; break-after:auto;}
   .nr-page > .nr-foot{position:absolute; left:0; right:0; bottom:0;}
+  /* ══ ទូរស័ព្ទ/ថេប្លេត ៖ កម្ពស់ស្វ័យប្រវត្តិ + ជើងទំព័រហូរតាមមាតិកា ══
+     ⚠⚠ កុំដាក់ backtick ក្នុងកំណត់សម្គាល់នេះ ៖ NARR_CSS ជា template literal
+       ⇒ backtick មួយបំបែកប្លុក script ទាំងមូល (ធ្លាប់កើតរួច ២០២៦-០៨-១៨)។
+     ⚠ ត្រូវលុប height ទាំង max-height ⇒ បើទុកមួយ ប្រអប់នៅតែថេរ។
+     ⚠ ជើងទំព័រត្រូវប្តូរទៅ position:static បើមិនដូច្នេះទេ ពេលប្រអប់គ្មាន
+       កម្ពស់ វាធ្លាក់ទៅជាន់លើមាតិកា។ */
+  @media print{
+    html.rsc-mobile-print .nr-page{ height:auto !important; max-height:none !important;
+      padding-bottom:6mm !important; overflow:visible !important; }
+    html.rsc-mobile-print .nr-page > .nr-foot{ position:static !important; margin-top:8px; }
+  }
   .nr-page > .nr-run{margin-bottom:12px;}
   .nr-shell{width:100%; border-collapse:collapse; table-layout:fixed;}
   .nr-shell > thead{display:table-header-group;}
@@ -34784,6 +34857,7 @@ function renderAudit(){
     document.head.appendChild(st);
   }
   box.innerHTML = '<div class="nr-tools"></div>' + arHtml(false);
+  try{ nrFitPaper(); }catch(e){}
   var cell = box.querySelector('.nr-shell > tbody > tr > td');
   if(cell){ cell.setAttribute('contenteditable','true'); cell.style.outline='none';
             narrBindEditKeys(cell); }
@@ -35393,6 +35467,7 @@ function renderSummary(){
     document.head.appendChild(st);
   }
   box.innerHTML = '<div class="nr-tools"></div>' + smHtml(false);
+  try{ nrFitPaper(); }catch(e){}
   var cell = box.querySelector('.nr-shell > tbody > tr > td');
   if(cell){ cell.setAttribute('contenteditable','true'); cell.style.outline='none';
             narrBindEditKeys(cell); }

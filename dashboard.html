@@ -1135,6 +1135,33 @@ tbody td{
   font-variant-numeric:tabular-nums;
 }
 tbody td.name-cell{text-align:left; white-space:normal;}
+/* កម្រិតលំអៀងនៃការផ្គូផ្គង (crosscheck) */
+.ct-ok{ color:#1b7a3e; }
+.ct-warn{ color:#8a6100; }
+.ct-bad{ color:#b3261e; font-weight:600; }
+/* ══ [stated] ២០២៦-០៨-១៨ ៖ «នៅផ្នែក Purchase and Sale ខ្ញុំចង់ឱ្យបង្រួម
+   អក្សរដើម្បីឱ្យវា Fit មើលបានពេញនិងមិនចុះបន្ទាត់» — សម្រាប់ **ទម្រង់ដើម**
+   (📄 raw view) ដែលមានជួរឈរដើមរាប់សិប។ ⚠ ជួរឈរ «ប្រភេទ» និង «ឈ្មោះ» ធ្លាប់
+   ចុះបន្ទាត់ ២–៣ ជួរ ព្រោះ `tbody td.name-cell` កំណត់ `white-space:normal`
+   ដែលមានតម្លៃខ្ពស់ជាង — ដូច្នេះត្រូវ `!important` ត្រង់នេះ។
+   ⚠ ប៉ះតែ `.raw-tbl` ⇒ តារាងធម្មតា · MTR · VAT មិនប្តូរអ្វីទាំងអស់។
+   ⚠ ជួរណាវែងពេក នៅតែរំកិលផ្តេកបានក្នុង `.table-scroll` — មិនកាត់អក្សរចោល
+     ដោយ ellipsis ទេ ព្រោះលេខ អតប និងឈ្មោះត្រូវអានអោយគ្រប់។ */
+/* របាររំកិលផ្តេកខាងលើតារាងទម្រង់ដើម */
+.raw-topbar{ overflow-x:auto; overflow-y:hidden; height:14px; margin:0 0 2px; }
+.raw-topbar > div{ height:1px; }
+@media print{ .raw-topbar{ display:none !important; } }
+table.raw-tbl{ font-size:11px; }
+table.raw-tbl thead th{
+  padding:6px 7px !important; font-size:10.5px !important;
+  white-space:nowrap !important; line-height:1.35 !important;
+}
+table.raw-tbl tbody td{
+  padding:4px 7px !important; font-size:11px !important;
+  white-space:nowrap !important; line-height:1.4 !important;
+}
+table.raw-tbl tbody td.name-cell{ white-space:nowrap !important; }
+table.raw-tbl tbody tr.raw-sum td{ font-size:11px !important; }
 tbody tr:nth-child(even){background:#FAFAF7;}
 tbody tr:hover{background:var(--accent-light);}
 tfoot td{
@@ -4461,6 +4488,23 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     font-weight:600; cursor:pointer;
   }
   #tos-embed .matrix-toggle-btn.active{ background:var(--tos-navy-800); border-color:var(--tos-navy-800); color:#fff; }
+  /* ប្រអប់ស្វែងរកឈ្មោះបុគ្គលិក */
+  #tos-embed .mx-search{ position:relative; display:flex; align-items:center; }
+  #tos-embed .mx-search-ico{ position:absolute; left:12px; font-size:13px; opacity:.55; pointer-events:none; }
+  #tos-embed .mx-search input{
+    width:240px; max-width:52vw; padding:8px 30px 8px 32px; border-radius:999px;
+    border:1px solid var(--tos-line,#d9d5c7); background:#fff; font:inherit; font-size:13px;
+    color:inherit; outline:none;
+  }
+  #tos-embed .mx-search input:focus{ border-color:var(--tos-gold-600); }
+  #tos-embed .mx-search input::-webkit-search-cancel-button{ display:none; }
+  #tos-embed .mx-search button{
+    position:absolute; right:8px; border:0; background:transparent; cursor:pointer;
+    font-size:13px; line-height:1; padding:4px; color:inherit; opacity:.6;
+  }
+  #tos-embed .mx-search button:hover{ opacity:1; }
+  #tos-embed .mx-hit{ font-size:12.5px; color:var(--tos-ink-soft,#5b6570); margin:0 0 8px; }
+  @media print{ #tos-embed .mx-search{ display:none !important; } }
   #tos-embed .matrix-toggle-btn:hover:not(.active){ border-color:var(--tos-gold-600); color:var(--tos-navy-800); }
   #tos-embed .year-tab-add{ border-style:dashed; color:var(--tos-gold-600); }
   #tos-embed .year-tab-add:hover{ background:var(--tos-gold-100); border-color:var(--tos-gold-600); }
@@ -4480,7 +4524,12 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
    ================================================================ */
 (function(root){
   var FONT_BODY = 'Khmer OS Siemreap', SZ_BODY = 11;
-  var FONT_HEAD = 'Khmer OS Muol Light', SZ_HEAD = 12;
+  /* [stated] ២០២៦-០៨-១៨ ៖ «ពេលទាញឯកសារ ក្បាលខាងលើ header ដែលប្រើ font
+     khmer os muol light បន្ថយមកត្រឹម ១០ បានហើយ» ⇒ ១២ → ១០ ។
+     ⚠ ការគណនាទទឹងជួរឈរ (`widthOf`) គុណជួរក្បាល ×1.25 ព្រោះ Muol Light
+       ទូលាយជាង Siemreap ; ១០ ជិតនឹង ១១ របស់តួអក្សរជាង ដូច្នេះបន្ថយមក
+       ×1.15 ដើម្បីកុំឱ្យជួរឈរទូលាយហួសហេតុ។ */
+  var FONT_HEAD = 'Khmer OS Muol Light', SZ_HEAD = 10;
 
   /* --- CRC32 (តម្រូវដោយ zip) --- */
   var CRC = (function(){
@@ -4573,7 +4622,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
       var len = textWidth(v);
       /* ⚠ ជួរក្បាល (ជួរទី១) ប្រើ Khmer OS Muol Light ដែលទូលាយជាង
          Siemreap ដូច្នេះត្រូវផ្តល់កន្លែងបន្ថែម បើមិនដូច្នេះក្បាលចង្អៀត */
-      if(ri === 0) len *= 1.25;
+      if(ri === 0) len *= 1.15;
       if(len > w) w = len;
     });
     return Math.min(60, Math.ceil(w) + 2);
@@ -5771,6 +5820,15 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
         <button type="button" class="matrix-toggle-btn" data-view="fringe">អត្ថប្រយោជន៍បន្ថែម</button>
       </div>
       <div class="matrix-toggle" id="matrixNatFilter" style="margin:0;"></div>
+      <!-- [stated] ២០២៦-០៨-១៨ ៖ «ជួយបន្ថែមកន្លែងស្វែងរកឈ្មោះបុគ្គលិកផង» ។
+           ⚠ ប្រអប់នេះនៅ **ក្រៅ** #employeeMatrixWrap ដោយចេតនា ៖ ការសរសេរ
+             តារាងឡើងវិញរាល់តួអក្សរនឹងបំផ្លាញ input ហើយបាត់ focus។ -->
+      <div class="mx-search">
+        <span class="mx-search-ico">🔍</span>
+        <input type="search" id="matrixSearch" autocomplete="off" spellcheck="false"
+               placeholder="ស្វែងរកឈ្មោះបុគ្គលិក…">
+        <button type="button" id="matrixSearchClear" title="សម្អាត" hidden>✕</button>
+      </div>
     </div>
     <div class="missing-table-wrap" id="employeeMatrixWrap"></div>
   </section>
@@ -6117,6 +6175,11 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
           <input type="text" id="search-invoice-sale" class="partner-select" style="min-width:180px;" placeholder="វាយលេខវិក្កយបត្រ..." oninput="refreshDataViewDebouncedReset('sale')">
         </div>
         <div class="import-group">
+          <span title="ទំនិញ/សេវា">📦</span>
+          <select id="product-sale" class="partner-select" style="min-width:170px;" onchange="refreshDataViewReset('sale')"></select>
+          <input type="text" id="search-product-sale" class="partner-select" style="min-width:150px;" placeholder="ឬ វាយទំនិញ/សេវា..." oninput="refreshDataViewDebouncedReset('sale')">
+        </div>
+        <div class="import-group">
           <span>📅 ខែ:</span>
           <select id="month-sale" class="partner-select" style="min-width:110px;" onchange="refreshDataViewReset('sale')"></select>
         </div>
@@ -6134,8 +6197,11 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
             <option value="amount-desc">ទឹកប្រាក់ ខ្ពស់ → ទាប</option>
           </select>
         </div>
+        <div class="import-group">
+          <span title="ប្រភេទ (បំបែកតាមជួរឈរនៃឯកសារ)">📊</span>
+          <select id="cat-sale" class="partner-select" style="min-width:280px;" onchange="catPick('sale', this.value)"></select>
+        </div>
         <button class="btn ghost" onclick="resetDataFilters('sale')">✕ សម្អាតតម្រង</button>
-        <button class="btn" onclick="rawViewToggle('sale')" title="មើលទម្រង់ដើមរបស់ឯកសារ ដោយលាក់ជួរឈរទទេ">📄 ទម្រង់ដើម</button>
       </div>
       <div id="raw-sale" style="display:none"></div>
       <div id="quick-invoice-sale"></div>
@@ -6161,6 +6227,11 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
           <input type="text" id="search-invoice-purchase" class="partner-select" style="min-width:180px;" placeholder="វាយលេខវិក្កយបត្រ..." oninput="refreshDataViewDebouncedReset('purchase')">
         </div>
         <div class="import-group">
+          <span title="ទំនិញ/សេវា">📦</span>
+          <select id="product-purchase" class="partner-select" style="min-width:170px;" onchange="refreshDataViewReset('purchase')"></select>
+          <input type="text" id="search-product-purchase" class="partner-select" style="min-width:150px;" placeholder="ឬ វាយទំនិញ/សេវា..." oninput="refreshDataViewDebouncedReset('purchase')">
+        </div>
+        <div class="import-group">
           <span>📅 ខែ:</span>
           <select id="month-purchase" class="partner-select" style="min-width:110px;" onchange="refreshDataViewReset('purchase')"></select>
         </div>
@@ -6178,8 +6249,11 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
             <option value="amount-desc">ទឹកប្រាក់ ខ្ពស់ → ទាប</option>
           </select>
         </div>
+        <div class="import-group">
+          <span title="ប្រភេទ (បំបែកតាមជួរឈរនៃឯកសារ)">📊</span>
+          <select id="cat-purchase" class="partner-select" style="min-width:280px;" onchange="catPick('purchase', this.value)"></select>
+        </div>
         <button class="btn ghost" onclick="resetDataFilters('purchase')">✕ សម្អាតតម្រង</button>
-        <button class="btn" onclick="rawViewToggle('purchase')" title="មើលទម្រង់ដើមរបស់ឯកសារ ដោយលាក់ជួរឈរទទេ">📄 ទម្រង់ដើម</button>
       </div>
       <div id="raw-purchase" style="display:none"></div>
       <div id="quick-invoice-purchase"></div>
@@ -6295,6 +6369,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
         </div>
         <button class="btn ghost" onclick="resetDataFilters('saleCD')">✕ សម្អាតតម្រង</button>
       </div>
+      <div id="cdman-saleCD"></div>
       <div id="quick-invoice-saleCD"></div>
       <div id="summary-back-saleCD"></div>
       <div class="table-scroll"><table id="summary-saleCD"></table></div>
@@ -6325,6 +6400,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
         </div>
         <button class="btn ghost" onclick="resetDataFilters('purchaseCD')">✕ សម្អាតតម្រង</button>
       </div>
+      <div id="cdman-purchaseCD"></div>
       <div id="quick-invoice-purchaseCD"></div>
       <div id="summary-back-purchaseCD"></div>
       <div class="table-scroll"><table id="summary-purchaseCD"></table></div>
@@ -6433,6 +6509,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
                oninput="crossSearchSet('crossSale', this.value)">
         <span class="import-status" id="filter-count-crossSale"></span>
         <button class="btn ghost" onclick="crossExcel('crossSale')" title="ទាញយកលទ្ធផលផ្គូផ្គងទាំងអស់ (គ្រប់ទំព័រ)">⬇ Excel</button>
+        <button class="btn ghost" onclick="crossExcelAll('crossSale')" title="សន្លឹកសង្ខេបគ្រប់ក្រុមហ៊ុន + សន្លឹកលម្អិត">⬇ Excel (គ្រប់ក្រុមហ៊ុន)</button>
         <button class="btn" style="margin-left:auto" onclick="openCrossPurchaseAndPickFolder()"
                 title="ផ្ទុកបញ្ជីទិញរបស់ក្រុមហ៊ុនដៃគូ">📥 ផ្ទុកឯកសារដៃគូ (ការទិញ)</button>
         <button class="btn ghost" onclick="clearCpStore('cpPurchase')"
@@ -6457,6 +6534,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
                oninput="crossSearchSet('crossPurchase', this.value)">
         <span class="import-status" id="filter-count-crossPurchase"></span>
         <button class="btn ghost" onclick="crossExcel('crossPurchase')" title="ទាញយកលទ្ធផលផ្គូផ្គងទាំងអស់ (គ្រប់ទំព័រ)">⬇ Excel</button>
+        <button class="btn ghost" onclick="crossExcelAll('crossPurchase')" title="សន្លឹកសង្ខេបគ្រប់ក្រុមហ៊ុន + សន្លឹកលម្អិត">⬇ Excel (គ្រប់ក្រុមហ៊ុន)</button>
         <button class="btn" style="margin-left:auto" onclick="openCrossSaleAndPickFolder()"
                 title="ផ្ទុកបញ្ជីលក់របស់ក្រុមហ៊ុនដៃគូ">📥 ផ្ទុកឯកសារដៃគូ (ការលក់)</button>
         <button class="btn ghost" onclick="clearCpStore('cpSale')"
@@ -7020,6 +7098,9 @@ const LOCAL_BACKUP = [
   { exact:  'vatManYearsV1'      },
   { exact:  'auditManualV1'      }, /* 🔍 សវនកម្ម ដោយដៃ */
   { exact:  'auditProgManualV1'  }, /* កម្មវិធីសវនកម្ម ដោយដៃ */
+  { exact:  'cdManualV1'         }, /* ✎ PR/SR CN·DN បញ្ចូលដោយដៃ (ជួរពេញ) */
+  { exact:  'crossReviewedV1'     }, /* ✓ ក្រុមហ៊ុនដែលពិនិត្យរួច (crosscheck) */
+  { exact:  'crossExcludeV1'       }, /* 🚫 ក្រុមហ៊ុនដែលដកចេញដោយដៃ (crosscheck) */
   { exact:  'crossCdV1'           }, /* 🧾 CN/DN របស់ដៃគូ (crosscheck) */
   { exact:  'crossManualV1'      }, /* 🤝 ការផ្គូផ្គងដោយដៃ (crosscheck) */
   { exact:  'narrLhV1'           }, /* គម្លាតបន្ទាត់ព្រីន */
@@ -7938,6 +8019,21 @@ function showView(id){
   document.body.classList.toggle("view-mtr-active", id === "mtr");
   /* គូរតារាងដែលរង់ចាំសម្រាប់ផ្ទាំងនេះ (មើលកំណត់សម្គាល់នៅ renderDataTable) */
   try{ __flushPendingTables(); }catch(e){ console.error("flush", e); }
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៨ ៖ «ពេលបើកមកផ្ទាំងវាបែបនេះ» — ជួរតម្រងចេញ
+     តែតារាងទទេ ហើយ dropdown ប្រភេទគ្មានជម្រើសសោះ។
+     មូលហេតុ ៖ `renderAll()` ហៅ `renderDataTable` / `renderSummaryTable`
+     **ដោយផ្ទាល់** — វាមិនដែលហៅ `refreshDataView` ទេ ; ហើយពេលបើកផ្ទាំង
+     មានតែ `__flushPendingTables()` ដែលរត់ ដែលគូរតែតារាងដែលរង់ចាំ។
+     ដូច្នេះអ្វីៗដែលរស់ក្នុង `refreshDataView` (ទម្រង់ដើម · ជម្រើសប្រភេទ ·
+     ប្រអប់ CN/DN ដោយដៃ) មិនដែលត្រូវបានគូរឡើយ។ មុននេះមើលមិនឃើញ ព្រោះ
+     តារាងប្រភេទចាស់មកពី `renderSummaryTable` ដែលមានក្នុងបញ្ជីរង់ចាំ។
+     ⇒ បើកផ្ទាំងណាមួយនៃសៀវភៅ ត្រូវរត់ `refreshDataView` ពេញលេញ។ */
+  try{
+    var __vs = { 'sale':'sale', 'purchase':'purchase',
+                 'sale-cd':'saleCD', 'purchase-cd':'purchaseCD',
+                 'cp-purchase':'cpPurchase', 'cp-sale':'cpSale' }[id];
+    if(__vs) refreshDataView(__vs);
+  }catch(e){ console.error("refresh on open", e); }
   // OTHER EXPENSES is a large flat (ungrouped) list, unlike SALE/PURCHASE
   // which default to a compact category summary — rebuilding its table
   // HTML on every renderAll() even while hidden was the main source of
@@ -8617,7 +8713,12 @@ function renderRawView(store){
         + (rpage * DATA_PAGE_SIZE + 1) + '–' + Math.min(all.length, (rpage + 1) * DATA_PAGE_SIZE)
         + ' ក្នុងចំណោម ' + all.length + ' ជួរ · ទំព័រ ' + (rpage + 1) + '/' + rpages
         + ' · ជួរឈរដែលទទេត្រូវលាក់ (' + (cols.length - keep.length) + ' ជួរឈរ)</div>'
-        + '<div class="table-scroll"><table class="ledger"><thead><tr>'
+        /* [stated] ២០២៦-០៨-១៨ ៖ «អាចបន្ថែមរបារ ខិតឆ្វេងស្តាំ នៅជួរនេះបានទេ»
+           ⇒ របាររំកិលផ្តេក **ខាងលើ** តារាង ដើម្បីកុំឱ្យត្រូវរមូរចុះក្រោមរក
+           របាររបស់ browser ។ វាជា div ទទេទទឹងស្មើតារាង ហើយ JS ចម្លង
+           `scrollLeft` ទៅមកទាំងសងខាង (មើល `rawSyncScroll`)។ */
+        + '<div class="raw-topbar" id="rawtop-' + store + '"><div></div></div>'
+        + '<div class="table-scroll"><table class="ledger raw-tbl"><thead><tr>'
         + keep.map(function(c){ return '<th>' + escAttr(c.t) + '</th>'; }).join("")
         + '</tr></thead><tbody>';
   h += '<tr class="raw-sum">' + keep.map(function(c, i){
@@ -8641,10 +8742,308 @@ function renderRawView(store){
       + '<button class="btn ghost" ' + (rpage >= rpages - 1 ? 'disabled' : '') + ' onclick="rawGo(\''+store+'\',1)">បន្ទាប់ ›</button></div>';
   }
   host.innerHTML = h;
+  rawSyncScroll(store);
+}
+/* ⚠ ត្រូវហៅ **ក្រោយ** `innerHTML` ព្រោះទទឹងតារាងអានបានតែពេលវានៅក្នុង DOM។
+   ⚠ `syncing` ការពារ loop ៖ ការកំណត់ `scrollLeft` ម្ខាង បាញ់ព្រឹត្តិការណ៍
+     scroll នៅម្ខាងទៀត។ */
+function rawSyncScroll(store){
+  const host = document.getElementById("raw-" + store);
+  if(!host) return;
+  const top = document.getElementById("rawtop-" + store);
+  const box = host.querySelector(".table-scroll");
+  const tbl = box && box.querySelector("table");
+  if(!top || !box || !tbl) return;
+  const spacer = top.firstElementChild;
+  const setW = function(){
+    spacer.style.width = tbl.scrollWidth + "px";
+    /* គ្មានអ្វីត្រូវរំកិល ⇒ លាក់របារ ដើម្បីកុំឱ្យរញ៉េរញ៉ៃ */
+    top.style.display = (tbl.scrollWidth > box.clientWidth + 2) ? "" : "none";
+  };
+  setW();
+  let syncing = false;
+  top.onscroll = function(){
+    if(syncing) return;
+    syncing = true; box.scrollLeft = top.scrollLeft; syncing = false;
+  };
+  box.onscroll = function(){
+    if(syncing) return;
+    syncing = true; top.scrollLeft = box.scrollLeft; syncing = false;
+  };
+  if(window.ResizeObserver && !top.__ro){
+    top.__ro = new ResizeObserver(setW);
+    top.__ro.observe(box);
+  }
+}
+
+/* ══ ✎ បញ្ចូល CN / DN ដោយដៃ នៅផ្ទាំង ទិញ / លក់ ═══════════════════════
+   [stated] ២០២៦-០៨-១៨, ជុំទី២ ៖ «មិនមែនតែទឹកប្រាក់ទេ គឺមាន ១ ថ្ងៃខែឆ្នាំ
+   នៃ CN DN · ២ លេខវិក្កយបត្រ CN DN · ៣ ទឹកប្រាក់ CN DN · ៤ លេខវិក្កយបត្រ
+   sale and purchase ដែលត្រូវយកមកបូក ឬដក» ។
+   ⚠⚠ ជុំទី១ ខ្ញុំសង់តារាងតួលេខ **ប្រចាំខែ** សរសេរចូល `vatManual` — ខុស ៖
+     CN/DN ជា **ឯកសារ** មិនមែនតួលេខសរុប ។ ឥឡូវជាឃ្លាំងជួរពេញ `cdManual`
+     ហើយ `cdManualAsRows()` សាងវាជារូបរាងជួរ PR_CD/SR_CD បេះបិទ រួច
+     `__getMainVatSourceData` បញ្ចូលវាទៅក្នុងប្រភព ⇒ គ្រប់ការគណនាទទួល
+     បានវាដូចជួរមកពីឯកសារ (ទម្រង់ អតប · អាករត្រូវបង់ · ការគណនាឡើងវិញ ·
+     TblVAT) ដោយមិនចាំបាច់ភ្ជាប់អ្វីថ្មី។
+   ⚠ រក្សាទុកក្នុង localStorage `cdManualV1` និងក្នុង `LOCAL_BACKUP` ⇒ រស់
+     ឆ្លងការ Save/Open ។ */
+const CD_MAN_KEY = 'cdManualV1';
+let cdManual = { purchase:[], sale:[] };
+try{
+  const raw = JSON.parse(localStorage.getItem(CD_MAN_KEY) || '{}') || {};
+  cdManual = { purchase: Array.isArray(raw.purchase) ? raw.purchase : [],
+               sale:     Array.isArray(raw.sale)     ? raw.sale     : [] };
+}catch(e){ cdManual = { purchase:[], sale:[] }; }
+function cdManSave(){
+  try{ localStorage.setItem(CD_MAN_KEY, JSON.stringify(cdManual)); }catch(e){}
+  /* ⚠ ចាំបាច់ ៖ `getVATMonthlyAggregates` ជា memo តាម `__dataVersion` ។
+     បើមិន bump ទេ តួលេខថ្មីមិនដែលទៅដល់ អតប ឬការគណនាឡើងវិញឡើយ។ */
+  try{ if(window.__bumpDataVersion) window.__bumpDataVersion(); }catch(e){}
+}
+/* ⚠⚠ dd-mm-yyyy ជាទម្រង់ **តែមួយគត់** ដែលត្រូវរក្សាទុក ៖ `parseDDMMYYYY`
+   (ដែល `getVATMonthlyAggregates_` ប្រើ) `split('-')` ប៉ុណ្ណោះ — dd/mm/yyyy
+   ត្រឡប់ null ហើយជួរនោះនឹងបាត់ពីការគណនាដោយស្ងាត់។ `parseDMY` (សៀវភៅ)
+   ទទួលទាំងពីរ ដូច្នេះ dd-mm-yyyy ដើរគ្រប់កន្លែង។ `<input type=date>` ប្រើ
+   ISO ⇒ បម្លែងទៅមកត្រង់នេះ។ */
+function cdManToIso(d){
+  const m = String(d || '').match(/^(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})$/);
+  return m ? (m[3] + '-' + ('0' + m[2]).slice(-2) + '-' + ('0' + m[1]).slice(-2)) : '';
+}
+function cdManFromIso(v){
+  const m = String(v || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  return m ? (m[3] + '-' + m[2] + '-' + m[1]) : '';
+}
+/* ជួរដៃ → រូបរាងដូចជួរឯកសារ PR_CD / SR_CD បេះបិទ ៖ `date` · `category`
+   ('DEBIT' = DN, បើមិនដូច្នេះ CN) · `vat.baseExclVat` ។ `refInvoice` រក្សា
+   លេខវិក្កយបត្រលក់/ទិញដើមដែលត្រូវបូក ឬដក។ */
+function cdManualAsRows(store){
+  /* ⚠⚠ [stated] ឯកសារឈ្នះ ៖ ពេលផ្ទាំង CN/DN នោះមានឯកសារ upload រួច ជួរ
+     ដែលវាយដោយដៃ **មិនត្រូវរាប់ចូលទេ** — បើមិនដូច្នេះទេ វានឹងបូកស្ទួន។
+     នេះជាកន្លែងតែមួយដែលត្រូវការពារ ព្រោះគ្រប់ការគណនាឆ្លងកាត់ទីនេះ។ */
+  const cdView = (store === 'sale') ? 'saleCD' : 'purchaseCD';
+  if((state[cdView] || []).length) return [];
+  return (cdManual[store] || []).filter(r=> r && r.date && Number(r.base)).map(r=>({
+    date: r.date,
+    invoiceNumber: r.docNo || '',
+    refInvoice: r.refNo || '',
+    name: r.name || '',
+    tin: r.tin || '',
+    category: (String(r.type || 'CN').toUpperCase() === 'DN') ? 'DEBIT' : 'CREDIT',
+    product: '',
+    amount: Math.abs(Number(r.base) || 0) * 1.1,
+    vat: { baseExclVat: Math.abs(Number(r.base) || 0) },
+    __manual: true
+  }));
+}
+window.__cdManualRows = function(store){ return cdManualAsRows(store); };
+
+/* ⚠⚠ [stated] ២០២៦-០៨-១៨, ជុំទី៤ ៖ «មិនបាច់មានការបញ្ចូលដោយដៃក្នុង
+   purchase and sale ព្រោះវាមានកន្លែងរបស់វាហើយ ការបញ្ចូលដោយដៃករណីដែល
+   មិនបាន upload ឯកសារ បើមានឯកសារហើយនោះនឹងមិនចាំបាច់បញ្ចូលដោយដៃទេ» ។
+   ⇒ ប្រអប់នេះរស់នៅ **ផ្ទាំង PURCHASE_CN/DN និង SALE_CN/DN** ប៉ុណ្ណោះ
+     (កន្លែងផ្ទាល់របស់វា) ហើយលេចឡើង **តែពេលគ្មានឯកសារ** នៃផ្ទាំងនោះ។
+   ⚠ បើមានឯកសារ ៖ ជួរដោយដៃ **មិនត្រូវរាប់ចូលការគណនាទេ** (ឯកសារឈ្នះ) ;
+     បង្ហាញតែសេចក្តីជូនដំណឹង ព្រមទាំងប៊ូតុងលុបចោល បើគេចង់សម្អាត។ */
+const CD_MAN_STORE = { purchaseCD:'purchase', saleCD:'sale' };
+const CD_MAN_LABEL = { purchaseCD:'PR CN / PR DN', saleCD:'SR CN / SR DN' };
+function cdManHasFile(cdView){ return !!((state[cdView] || []).length); }
+function renderCdManPanel(cdView){
+  const host = document.getElementById('cdman-' + cdView);
+  if(!host) return;
+  const store = CD_MAN_STORE[cdView];
+  if(!store){ host.innerHTML = ''; return; }
+  const rows = cdManual[store] || [];
+  const isSale = store === 'sale';
+  /* មានឯកសារ ⇒ គ្មានប្រអប់វាយ */
+  if(cdManHasFile(cdView)){
+    host.innerHTML = rows.length
+      ? '<div class="card" style="margin:10px 0;padding:10px 14px"><p class="hint" style="margin:0">'
+        + '🔒 មានឯកសារ CN/DN ដែល upload រួច ⇒ ឯកសារឈ្នះ ហើយជួរដែលវាយដោយដៃ ('
+        + rows.length + ' ជួរ) <b>មិនត្រូវបានរាប់ចូលការគណនាទេ</b>។ '
+        + '<button class="btn ghost" style="margin-left:8px" onclick="cdManClear(\'' + cdView + '\')">🗑 លុបជួរដោយដៃទាំងអស់</button>'
+        + '</p></div>'
+      : '';
+    return;
+  }
+  let cn = 0, dn = 0;
+  rows.forEach(r=>{
+    const v = Math.abs(Number(r.base) || 0);
+    if(String(r.type || 'CN').toUpperCase() === 'DN') dn += v; else cn += v;
+  });
+  const cnLbl = isSale ? 'SR CN' : 'PR CN';
+  const dnLbl = isSale ? 'SR DN' : 'PR DN';
+  let h = '<div class="card" style="margin:10px 0;padding:12px 14px">'
+    + '<div class="toolbar" style="margin:0 0 8px">'
+    + '<b>✎ បញ្ចូល ' + CD_MAN_LABEL[cdView] + ' ដោយដៃ</b>'
+    + '<button class="btn ghost" onclick="cdManAdd(\'' + cdView + '\')">＋ បន្ថែមជួរ</button>'
+    + '<span class="hint">' + cnLbl + ' សរុប ៖ ' + cn.toLocaleString('en-US')
+    + ' ៛ · ' + dnLbl + ' សរុប ៖ ' + dn.toLocaleString('en-US') + ' ៛</span>'
+    + '</div>'
+    + '<p class="hint" style="margin:0 0 8px">មិនទាន់មានឯកសារ CN/DN ⇒ វាយដោយដៃបាន។ '
+    + 'ពេល upload ឯកសារ ជួរទាំងនេះនឹងឈប់ប្រើដោយស្វ័យប្រវត្តិ។</p>';
+  if(rows.length){
+    h += '<div class="table-scroll"><table class="ledger raw-tbl"><thead><tr>'
+       + '<th>ល.រ</th><th>កាលបរិច្ឆេទ</th><th>ប្រភេទ</th><th>លេខវិក្កយបត្រ CN/DN</th>'
+       + '<th>លេខវិក្កយបត្រ ' + (isSale ? 'លក់' : 'ទិញ') + ' ដើម</th>'
+       + '<th>ឈ្មោះ</th><th>លេខ អតប</th><th>តម្លៃមិនរួមអតប (៛)</th><th></th>'
+       + '</tr></thead><tbody>';
+    rows.forEach((r, i)=>{
+      const set = (k)=> 'onchange="cdManEdit(\'' + cdView + '\',' + i + ',\'' + k + '\', this.value)"';
+      h += '<tr><td>' + (i + 1) + '</td>'
+        + '<td><input type="date" class="partner-select" style="width:140px" value="'
+          + escAttr(cdManToIso(r.date)) + '" ' + set('date') + '></td>'
+        + '<td><select class="partner-select" style="width:78px" ' + set('type') + '>'
+          + '<option value="CN"' + (String(r.type||'CN').toUpperCase()==='DN'?'':' selected') + '>CN</option>'
+          + '<option value="DN"' + (String(r.type||'').toUpperCase()==='DN'?' selected':'') + '>DN</option>'
+          + '</select></td>'
+        + '<td><input type="text" class="partner-select" style="width:130px" value="' + escAttr(r.docNo || '') + '" ' + set('docNo') + '></td>'
+        + '<td><input type="text" class="partner-select" style="width:140px" value="' + escAttr(r.refNo || '') + '" ' + set('refNo') + '></td>'
+        + '<td><input type="text" class="partner-select" style="width:160px" value="' + escAttr(r.name || '') + '" ' + set('name') + '></td>'
+        + '<td><input type="text" class="partner-select" style="width:120px" value="' + escAttr(r.tin || '') + '" ' + set('tin') + '></td>'
+        + '<td class="amt"><input type="text" class="partner-select" style="width:130px;text-align:right" value="'
+          + (Number(r.base) ? Number(r.base).toLocaleString('en-US') : '') + '" ' + set('base') + '></td>'
+        + '<td><button class="btn ghost" title="លុបជួរ" onclick="cdManDel(\'' + cdView + '\',' + i + ')">🗑</button></td>'
+        + '</tr>';
+    });
+    h += '</tbody></table></div>'
+       + '<p class="hint" style="margin-top:8px">CN ដក · DN បូក — រត់ទៅ ទម្រង់ អតប និងការគណនាពន្ធឡើងវិញ តាមខែនៃកាលបរិច្ឆេទ។</p>';
+  }else{
+    h += '<p class="hint">មិនទាន់មានជួរណាមួយទេ — ចុច «＋ បន្ថែមជួរ»។</p>';
+  }
+  h += '</div>';
+  host.innerHTML = h;
+}
+function cdManAdd(cdView){
+  const store = CD_MAN_STORE[cdView]; if(!store) return;
+  if(!cdManual[store]) cdManual[store] = [];
+  cdManual[store].push({ date:'', type:'CN', docNo:'', refNo:'', name:'', tin:'', base:0 });
+  cdManSave();
+  renderCdManPanel(cdView);
+}
+function cdManDel(cdView, i){
+  const store = CD_MAN_STORE[cdView]; if(!store) return;
+  (cdManual[store] || []).splice(i, 1);
+  cdManSave();
+  renderCdManPanel(cdView);
+}
+function cdManClear(cdView){
+  const store = CD_MAN_STORE[cdView]; if(!store) return;
+  cdManual[store] = [];
+  cdManSave();
+  renderCdManPanel(cdView);
+}
+/* ══ បង្កើត CN/DN ចេញពីវិក្កយបត្រដែលរកឃើញ (ផ្ទាំង SALE / PURCHASE) ═════
+   ⚠ ឈ្មោះ · លេខ អតប · លេខវិក្កយបត្រដើម មកពីជួរដែលចុច — មិនវាយឡើងវិញ។
+   ⚠ លេខវិក្កយបត្រនៅសៀវភៅទិញ/លក់ ស្ថិតក្នុងវាល `invoiceNo` (មិនមែន
+     `invoiceNumber` ដូចជួរ CN/DN) — ឈ្មោះវាលពីរផ្សេងគ្នាសម្រាប់រឿងតែមួយ។
+   ⚠ ជួរដែលបង្កើត ទៅដាក់ក្នុង `cdManual[store]` ⇒ បង្ហាញ និងកែបាននៅ
+     ផ្ទាំង PURCHASE_CN/DN / SALE_CN/DN ។ */
+function cdManInvoiceRows(store, invNo){
+  const key = String(invNo || '').trim().toLowerCase();
+  if(!key) return [];
+  return (cdManual[store] || []).filter(r=> String(r.refNo || '').trim().toLowerCase() === key);
+}
+function cdManFromInvoice(store, dataIndex){
+  const r = (state[store] || [])[dataIndex];
+  if(!r){ alert('រកជួរវិក្កយបត្រមិនឃើញ។'); return; }
+  const cdView = (store === 'sale') ? 'saleCD' : 'purchaseCD';
+  if((state[cdView] || []).length){
+    alert('មានឯកសារ CN/DN ដែល upload រួច ⇒ មិនចាំបាច់វាយដោយដៃទេ។');
+    return;
+  }
+  const inv = r.invoiceNo || '';
+  const already = cdManInvoiceRows(store, inv);
+  let sum = 0;
+  already.forEach(x=>{ const v = Math.abs(Number(x.base) || 0);
+                       sum += (String(x.type||'CN').toUpperCase() === 'DN') ? v : -v; });
+  const old = document.getElementById('cdman-dlg');
+  if(old) old.remove();
+  const wrap = document.createElement('div');
+  wrap.id = 'cdman-dlg';
+  wrap.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:99999;display:flex;align-items:center;justify-content:center;padding:16px';
+  wrap.innerHTML = `<div class="card" style="max-width:560px;width:100%;padding:16px 18px;background:#fff">
+    <h3 style="margin:0 0 4px">✎ បង្កើត CN / DN</h3>
+    <p class="hint" style="margin:0 0 10px">
+      ${escAttr(r.name || '')} ${r.tin ? '· ' + escAttr(r.tin) : ''}<br>
+      វិក្កយបត្រដើម ៖ <b>${escAttr(inv)}</b> · ${escAttr(fmtDate(r.date))} · ${fmtAmt(Number(r.amount) || 0)} ៛
+      ${already.length ? '<br>មាន CN/DN រួចហើយ ៖ ' + already.length + ' ជួរ · សុទ្ធ ' + fmtAmt(sum) + ' ៛' : ''}
+    </p>
+    <div class="toolbar" style="margin:0 0 8px">
+      <div class="import-group"><span>ប្រភេទ ៖</span>
+        <select id="cdDlgType" class="partner-select" style="width:90px">
+          <option value="CN">CN (ដក)</option><option value="DN">DN (បូក)</option>
+        </select></div>
+      <div class="import-group"><span>កាលបរិច្ឆេទ ៖</span>
+        <input type="date" id="cdDlgDate" class="partner-select" style="width:150px" value="${escAttr(cdManToIso(r.date))}"></div>
+    </div>
+    <div class="toolbar" style="margin:0 0 10px">
+      <div class="import-group"><span>លេខ CN/DN ៖</span>
+        <input type="text" id="cdDlgNo" class="partner-select" style="width:150px" placeholder="ឧ. CN-001"></div>
+      <div class="import-group"><span>ទឹកប្រាក់ (មិនរួមអតប) ៖</span>
+        <input type="text" id="cdDlgAmt" class="partner-select" style="width:150px;text-align:right" placeholder="0"></div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn ghost" id="cdDlgCancel">បោះបង់</button>
+      <button class="btn" id="cdDlgSave">រក្សាទុក</button>
+    </div></div>`;
+  document.body.appendChild(wrap);
+  const close = ()=> wrap.remove();
+  wrap.addEventListener('click', e=>{ if(e.target === wrap) close(); });
+  document.getElementById('cdDlgCancel').onclick = close;
+  document.getElementById('cdDlgSave').onclick = ()=>{
+    const d = cdManFromIso(document.getElementById('cdDlgDate').value);
+    const amt = Number(String(document.getElementById('cdDlgAmt').value).replace(/[^0-9.\-]/g, '')) || 0;
+    if(!d){ alert('សូមបំពេញកាលបរិច្ឆេទ។'); return; }
+    if(!amt){ alert('សូមបំពេញទឹកប្រាក់។'); return; }
+    if(!cdManual[store]) cdManual[store] = [];
+    cdManual[store].push({
+      date: d,
+      type: document.getElementById('cdDlgType').value === 'DN' ? 'DN' : 'CN',
+      docNo: String(document.getElementById('cdDlgNo').value || '').trim(),
+      refNo: inv,                       /* ការចងភ្ជាប់ទៅវិក្កយបត្រដើម */
+      name: r.name || '',
+      tin: r.tin || '',
+      base: Math.abs(amt)
+    });
+    cdManSave();
+    close();
+    try{ renderCdManPanel(cdView); }catch(e){}
+    renderQuickInvoiceSearch(store);
+    alert('រក្សាទុករួច — CN/DN នេះកាត់លើវិក្កយបត្រ ' + (inv || '(គ្មានលេខ)')
+        + ' ហើយបង្ហាញនៅផ្ទាំង ' + (store === 'sale' ? 'SALE_CN/DN' : 'PURCHASE_CN/DN') + '។');
+  };
+  setTimeout(()=>{ const n = document.getElementById('cdDlgNo'); if(n) n.focus(); }, 30);
+}
+
+function cdManEdit(cdView, i, key, val){
+  const store = CD_MAN_STORE[cdView]; if(!store) return;
+  const r = (cdManual[store] || [])[i];
+  if(!r) return;
+  if(key === 'date')      r.date = cdManFromIso(val);
+  else if(key === 'base') r.base = Number(String(val).replace(/[^0-9.\-]/g, '')) || 0;
+  else                    r[key] = String(val || '').trim();
+  cdManSave();
+  /* គូរឡើងវិញលើ `change` មិនមែន `input` — កុំអោយ cursor លោត */
+  renderCdManPanel(cdView);
 }
 
 function refreshDataViewReset(storeName){ dataPage[storeName] = 0; refreshDataView(storeName); }
 function refreshDataView(storeName){
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៨ ៖ «ហេតុអ្វីចាំបាច់ចុចទម្រង់ដើមទើបវាចេញ ឱ្យវា
+     ចេញអូតូ ហើយមិនចាំបាច់មានទម្រង់ដើមទៀតទេ» — ប៊ូតុង 📄 ត្រូវលុបចោល ។
+     ⇒ ទម្រង់ដើមជាទិដ្ឋភាព **តែមួយគត់** សម្រាប់ SALE / PURCHASE ៖ វាបើក
+       ដោយស្វ័យប្រវត្តិជានិច្ច លើកលែងតែពេលកំពុងជ្រើសប្រភេទក្នុង dropdown
+       (ពេលនោះបង្ហាញតារាងតាមក្រុមហ៊ុនវិញ)។
+     ⚠ កំណត់ដោយ **គ្មានលក្ខខណ្ឌ `undefined`** ៖ ជុំមុនខ្ញុំដាក់លំនាំដើមតែពេល
+       មិនទាន់មានតម្លៃ ដូច្នេះនៅពេលវាធ្លាប់ត្រូវបិទ វានៅតែបិទ ហើយគេត្រូវ
+       ចុចទើបចេញ។ ស្ថានភាពត្រូវគណនាឡើងវិញរាល់ដង មិនមែនចាំតែលើកដំបូង។ */
+  if(storeName === 'sale' || storeName === 'purchase'){
+    const cat = state.selectedCategory[storeName];
+    rawViewOn[storeName] = (cat === null || cat === undefined);
+  }
+  /* ⚠ កុំលេបកំហុសស្ងាត់ៗ ៖ ជុំមុន `catch(e){}` ទទេ លាក់មូលហេតុពិត */
+  try{ populateCategoryOptions(storeName); }catch(e){ console.error("catOptions", e); }
   const tableId = RAW_TABLE_ID[storeName];
   if(tableId) renderDataTable(tableId, getFilteredIndices(storeName), true, storeName);
   renderSummaryTable(storeName);
@@ -8656,6 +9055,10 @@ function refreshDataView(storeName){
     var host = norm ? (norm.closest(".table-scroll") || norm) : null;
     if(host) host.style.display = rawViewOn[storeName] ? "none" : "";
   }catch(e){ console.error("rawView", e); }
+  /* ✎ CN/DN ដោយដៃ ៖ រស់នៅផ្ទាំង PURCHASE_CN/DN និង SALE_CN/DN ប៉ុណ្ណោះ */
+  try{
+    if(storeName === 'purchaseCD' || storeName === 'saleCD') renderCdManPanel(storeName);
+  }catch(e){ console.error("cdMan", e); }
 }
 /* Picking a specific company from the "ឈ្មោះសហគ្រាស" dropdown already
    narrows things down to one company — making the person also click a
@@ -8664,9 +9067,19 @@ function refreshDataView(storeName){
 function onMinistryFilterChange(storeName){
   const ministrySel = document.getElementById('ministry-'+storeName);
   const ministryVal = ministrySel ? ministrySel.value : "";
-  if(ministryVal && (state.selectedCategory[storeName]===null || state.selectedCategory[storeName]===undefined)){
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៨ ៖ «ពេល filter ឈ្មោះសហគ្រាស ឱ្យចេញទម្រង់ដើម» ។
+     ពីមុន ការជ្រើសក្រុមហ៊ុន **បង្ខំ** `selectedCategory = ALL` ⇒ លោតទៅ
+     តារាងតាមក្រុមហ៊ុនភ្លាម។ ឥឡូវនេះ ៖
+       🏢 ក្រុមហ៊ុន = **តម្រង** ប៉ុណ្ណោះ (ទម្រង់ដើមនៅដដែល ត្រឹមតែច្រោះ)
+       📊 ប្រភេទ   = អ្វីដែលប្តូរទៅតារាងសង្ខេប
+     ⚠ ផ្ទាំង SALE / PURCHASE ប៉ុណ្ណោះ ; ផ្ទាំងឯទៀត (ចំណាយផ្សេងៗ …) នៅ
+       រក្សាឥរិយាបថលោតចាស់ ព្រោះវាគ្មានទម្រង់ដើម។ */
+  const isJournal = (storeName === 'sale' || storeName === 'purchase');
+  if(!isJournal && ministryVal
+     && (state.selectedCategory[storeName]===null || state.selectedCategory[storeName]===undefined)){
     state.selectedCategory[storeName] = ALL_CATEGORIES_MARKER;
   }
+  dataPage[storeName] = 0;
   refreshDataView(storeName);
 }
 // Typing in a search box used to rebuild the whole table on every single
@@ -8703,19 +9116,34 @@ function renderQuickInvoiceSearch(storeName){
 
   let rows = "";
   let total = 0;
+  /* ជួរឈរប៊ូតុងមានតែលើ SALE / PURCHASE ហើយតែពេលគ្មានឯកសារ CN/DN */
+  const cdViewFor = storeName === 'sale' ? 'saleCD' : (storeName === 'purchase' ? 'purchaseCD' : '');
+  const cdCol = !!(cdViewFor && !(state[cdViewFor] || []).length);
   indices.forEach((i,idx)=>{
     const r = data[i];
     const amt = Number(r.amount)||0;
     total += amt;
-    rows += `<tr><td>${idx+1}</td><td class="name-cell">${r.name||""}</td><td>${r.tin||""}</td><td>${fmtDate(r.date)}</td><td><b>${r.invoiceNo||""}</b></td><td class="name-cell">${r.product||""}</td><td class="amt">${fmtAmt(amt)}</td></tr>`;
+    /* ⚠ [stated] ២០២៦-០៨-១៨, ជុំទី៥ ៖ «នៅផ្នែក sale purchase បាត់កន្លែង
+       ស្វែងរកលេខវិក្កយបត្រ ហើយចុចដើម្បីបញ្ចូល CN DN» — ជុំមុនខ្ញុំដកវាចេញ
+       ទាំងស្រុងពេលផ្លាស់ប្តូរប្រអប់វាយទៅផ្ទាំង CN/DN ។ ត្រូវយកមកវិញ ៖
+       ការចុចវិក្កយបត្រគឺជាការ **ជ្រើសយកឈ្មោះ · អតប · លេខវិក្កយបត្រដើម**
+       ដែលមានស្រាប់ — មិនមែនជាកន្លែងផ្ទុកទិន្នន័យទេ។ ជួរដែលបង្កើតនៅតែទៅ
+       ដាក់ក្នុងផ្ទាំង PURCHASE_CN/DN / SALE_CN/DN ដដែល។
+       ⚠ បង្ហាញតែពេល **គ្មានឯកសារ CN/DN** — ច្បាប់របស់គេ ៖ មានឯកសារ ⇒
+         មិនចាំបាច់វាយដោយដៃ (ហើយជួរដៃក៏លែងរាប់ដែរ)។ */
+    const cdView = storeName === 'sale' ? 'saleCD' : (storeName === 'purchase' ? 'purchaseCD' : '');
+    const cdBtn = (cdView && !(state[cdView] || []).length)
+      ? `<td><button class="btn ghost" style="padding:2px 8px" title="បង្កើត CN / DN លើវិក្កយបត្រនេះ" onclick="cdManFromInvoice('${storeName}', ${i})">✎ CN/DN</button></td>`
+      : '';
+    rows += `<tr><td>${idx+1}</td><td class="name-cell">${r.name||""}</td><td>${r.tin||""}</td><td>${fmtDate(r.date)}</td><td><b>${r.invoiceNo||""}</b></td><td class="name-cell">${r.product||""}</td><td class="amt">${fmtAmt(amt)}</td>${cdBtn}</tr>`;
   });
 
   container.innerHTML = `<div class="quick-invoice-box">
     <div class="quick-invoice-head">🔎 លទ្ធផលស្វែងរកលេខវិក្កយបត្រ (${indices.length})</div>
     <div class="table-scroll"><table>
-      <thead><tr><th>ល.រ</th><th>ឈ្មោះក្រុមហ៊ុន</th><th>TIN</th><th>កាលបរិច្ឆេទ</th><th>លេខវិក្កយបត្រ</th><th style="text-align:left;">ទំនិញ/សេវា</th><th>ចំនួនទឹកប្រាក់ (KHR)</th></tr></thead>
+      <thead><tr><th>ល.រ</th><th>ឈ្មោះក្រុមហ៊ុន</th><th>TIN</th><th>កាលបរិច្ឆេទ</th><th>លេខវិក្កយបត្រ</th><th style="text-align:left;">ទំនិញ/សេវា</th><th>ចំនួនទឹកប្រាក់ (KHR)</th>${cdCol ? '<th></th>' : ''}</tr></thead>
       <tbody>${rows}</tbody>
-      <tfoot><tr><td colspan="6">សរុប</td><td class="amt">${fmtAmt(total)}</td></tr></tfoot>
+      <tfoot><tr><td colspan="6">សរុប</td><td class="amt">${fmtAmt(total)}</td>${cdCol ? '<td></td>' : ''}</tr></tfoot>
     </table></div>
   </div>`;
 }
@@ -8726,6 +9154,12 @@ function resetDataFilters(storeName){
   const ministrySel = document.getElementById('ministry-'+storeName);
   const searchInp = document.getElementById('search-'+storeName);
   const invSearchInp = document.getElementById('search-invoice-'+storeName);
+  /* ⚠ តម្រងថ្មីត្រូវសម្អាតដែរ — បើភ្លេច ប៊ូតុង «សម្អាតតម្រង» នឹងទុកតារាង
+     ច្រោះស្ងាត់ៗ ហើយអ្នកប្រើគិតថាទិន្នន័យបាត់។ */
+  const productSel = document.getElementById('product-'+storeName);
+  const productSearchInp = document.getElementById('search-product-'+storeName);
+  if(productSel) productSel.value = "";
+  if(productSearchInp) productSearchInp.value = "";
   if(yearSel) yearSel.value = "";
   if(monthSel) monthSel.value = "";
   if(sortSel) sortSel.value = "";
@@ -8733,6 +9167,9 @@ function resetDataFilters(storeName){
   if(searchInp) searchInp.value = "";
   if(invSearchInp) invSearchInp.value = "";
   if(storeName in state.selectedCategory) state.selectedCategory[storeName] = null;
+  const catSel = document.getElementById('cat-'+storeName);
+  if(catSel) catSel.value = "";
+  if(storeName === 'sale' || storeName === 'purchase') rawViewOn[storeName] = true;
   refreshDataView(storeName);
 }
 function toggleRaw(storeName){
@@ -8798,9 +9235,13 @@ function computeCompanySummary(storeName){
     const amt = valueOf(r);
     if(useCategory && !amt) return; // this invoice has nothing under the selected column
     const k = companyKey(r);
-    if(!map[k]) map[k] = {key:k, tin:r.tin, name:r.name, total:0, byYear:{}};
+    if(!map[k]) map[k] = {key:k, tin:r.tin, name:r.name, total:0, byYear:{}, byMonth:{}};
     map[k].total += amt;
     if(y!==null) map[k].byYear[y] = (map[k].byYear[y]||0) + amt;
+    /* [stated] ២០២៦-០៨-១៨ ៖ «ចង់មើលសរុបពីខែ១ ដល់ខែ១២ រួចរើសក្រុមហ៊ុន វា
+       បង្ហាញតែទឹកប្រាក់សរុប» ⇒ បំបែកតាមខែផងដែរ គ្រាប់ចុច `y-m`។ */
+    if(d) map[k].byMonth[y + "-" + (d.getMonth() + 1)] =
+      (map[k].byMonth[y + "-" + (d.getMonth() + 1)] || 0) + amt;
   });
 
   let years = Array.from(yearsSet).sort((a,b)=>a-b);
@@ -8944,6 +9385,46 @@ function renderCategorySummaryTable(storeName, kindLabel){
   table.innerHTML = html;
 }
 
+/* ══ [stated] ២០២៦-០៨-១៨ ៖ «ផ្ទាំងនេះខ្ញុំចង់ប្តូរមកដាក់ជា dropdown ជំនួស
+   វិញ ហើយបញ្ជាក់ចំនួនភាគរយនៃប្រភេទចំណាយ និងចំណូលនោះ ដូចនេះផ្ទាំងខាងមុខ
+   មានតែមួយទេ គឺទម្រង់ដើម» ═══════════════════════════════════════════════
+   តារាងប្រភេទក្លាយជា `<select>` ៖ ជម្រើសនីមួយៗបង្ហាញ ឈ្មោះប្រភេទ ·
+   ទឹកប្រាក់ · និង **ភាគរយធៀបនឹងតម្លៃសរុបលើវិក្កយបត្រ** ។
+   ⚠ ភាគរយគិតលើ `totalRow.total` (តម្លៃសរុបលើវិក្កយបត្រ) ⇒ ផលបូកអាចលើស
+     ១០០% ដោយស្មើភាព ព្រោះជួរឈរខ្លះជាផ្នែករងនៃគ្នា (ឧ. តម្លៃមិនរួមអតប
+     ស្ថិតក្នុងតម្លៃសរុប) — នេះជាធម្មជាតិនៃឯកសារ មិនមែនកំហុសទេ។
+   ⚠ ជម្រើសទទេ = គ្មានប្រភេទ ⇒ ផ្ទាំងខាងមុខបង្ហាញ **ទម្រង់ដើមតែមួយ**។ */
+function populateCategoryOptions(storeName){
+  const sel = document.getElementById('cat-' + storeName);
+  if(!sel) return;
+  let data;
+  try{ data = computeCategorySummary(storeName); }catch(e){ return; }
+  const tot = Number(data.totalRow.total) || 0;
+  const pct = (v)=> tot ? ' · ' + ((v / tot) * 100).toFixed(1) + '%' : '';
+  const cur = state.selectedCategory[storeName];
+  let html = '<option value="">📊 ប្រភេទ ៖ គ្រប់ប្រភេទ (ទម្រង់ដើម)</option>';
+  html += '<option value="' + ALL_CATEGORIES_MARKER + '"' + (cur === ALL_CATEGORIES_MARKER ? ' selected' : '') + '>'
+        + 'តម្លៃសរុបលើវិក្កយបត្រ — ' + fmtAmt(tot) + ' ៛</option>';
+  (data.categories || []).forEach(c=>{
+    html += '<option value="' + escAttr(c.name) + '"' + (cur === c.name ? ' selected' : '') + '>'
+          + escAttr(c.name) + ' — ' + fmtAmt(c.total || 0) + ' ៛' + pct(c.total || 0) + '</option>';
+  });
+  sel.innerHTML = html;
+}
+function catPick(storeName, val){
+  /* ⚠ ជម្រើសទទេ ⇒ ត្រឡប់ទៅទម្រង់ដើម ; ជ្រើសប្រភេទ ⇒ បង្ហាញតារាងតាម
+     ក្រុមហ៊ុនរបស់ប្រភេទនោះ (ដូចការចុចជួរកាលពីមុន)។ */
+  if(!val){
+    state.selectedCategory[storeName] = null;
+    rawViewOn[storeName] = true;
+  }else{
+    state.selectedCategory[storeName] = val;
+    rawViewOn[storeName] = false;
+  }
+  dataPage[storeName] = 0;
+  refreshDataView(storeName);
+}
+
 function selectCategory(storeName, catName){
   state.selectedCategory[storeName] = catName;
   renderSummaryTable(storeName);
@@ -8953,13 +9434,26 @@ function backToCategories(storeName){
   renderSummaryTable(storeName);
 }
 
+function clearMonthFilter(storeName){
+  const sel = document.getElementById('month-'+storeName);
+  if(sel) sel.value = "";
+  dataPage[storeName] = 0;
+  refreshDataView(storeName);
+}
 function renderCompanyLevelTable(storeName){
   const table = document.getElementById('summary-'+storeName);
   if(!table) return;
   const {years, list} = computeCompanySummary(storeName);
   const catFilter = state.selectedCategory[storeName];
   const catLabel = catFilter===ALL_CATEGORIES_MARKER ? "ទាំងអស់ (តម្លៃសរុបលើវិក្កយបត្រ)" : catFilter;
-  const backBtn = `<div style="margin-bottom:10px;"><button class="btn ghost" onclick="backToCategories('${storeName}')">← ត្រឡប់ទៅប្រភេទ</button> <span class="hint" style="margin-left:8px;">ប្រភេទ: <b>${catLabel}</b></span></div>`;
+  /* ⚠ បើតម្រងខែកំពុងបើក ជួរខែឯទៀតនឹងទទេ — ត្រូវប្រាប់ឱ្យច្បាស់ ជាជាង
+     ឱ្យគេឆ្ងល់ថាទិន្នន័យបាត់។ */
+  const mSelEl = document.getElementById('month-'+storeName);
+  const mOn = mSelEl && mSelEl.value ? (mSelEl.options[mSelEl.selectedIndex] || {}).text : "";
+  const mWarn = mOn
+    ? ` <span class="hint" style="margin-left:8px;color:var(--red)">⚠ តម្រងខែ ៖ <b>${escAttr(mOn)}</b> — <a href="javascript:void(0)" onclick="clearMonthFilter('${storeName}')">បង្ហាញគ្រប់ខែ</a></span>`
+    : "";
+  const backBtn = `<div style="margin-bottom:10px;"><button class="btn ghost" onclick="backToCategories('${storeName}')">← ត្រឡប់ទៅប្រភេទ</button> <span class="hint" style="margin-left:8px;">ប្រភេទ: <b>${catLabel}</b></span>${mWarn}</div>`;
 
   if(list.length===0){
     table.innerHTML = `<tbody><tr><td style="padding:18px;text-align:center;color:var(--muted);">គ្មានទិន្នន័យសម្រាប់ប្រភេទនេះទេ</td></tr></tbody>`;
@@ -8977,8 +9471,19 @@ function renderCompanyLevelTable(storeName){
     });
   }
 
+  /* ⚠ ជ្រើសឆ្នាំតែមួយ ⇒ បង្ហាញ **១២ ខែ** បូកជួរសរុប ; ជ្រើស «គ្រប់ឆ្នាំ»
+     ⇒ បង្ហាញមួយជួរក្នុងមួយឆ្នាំដូចដើម (១២ ខែ × ច្រើនឆ្នាំ ធំពេក)។ */
+  const ySel = document.getElementById('year-'+storeName);
+  const oneYear = (ySel && ySel.value) ? String(ySel.value) : "";
+  const MONTH_KH = ["មករា","កុម្ភៈ","មីនា","មេសា","ឧសភា","មិថុនា",
+                    "កក្កដា","សីហា","កញ្ញា","តុលា","វិច្ឆិកា","ធ្នូ"];
   let html = "<thead><tr><th>ល.រ</th><th>ឈ្មោះក្រុមហ៊ុន</th><th>TIN</th>";
-  years.slice().reverse().forEach(y=> html += `<th>${y}</th>`);
+  if(oneYear){
+    MONTH_KH.forEach(m=> html += `<th>${m}</th>`);
+    html += `<th>សរុប ${oneYear}</th>`;
+  }else{
+    years.slice().reverse().forEach(y=> html += `<th>${y}</th>`);
+  }
   if(cdStoreName) html += `<th>CN/DN</th>`;
   html += `<th>${storeName==="purchase" ? "WHT" : "លម្អិត"}</th></tr></thead><tbody>`;
 
@@ -8987,13 +9492,22 @@ function renderCompanyLevelTable(storeName){
   // rendered.
   let grandTotal = 0;
   const yearTotals = {};
+  const monTotals = {};
   list.forEach(s=>{
     grandTotal += s.total;
     years.forEach(y=> { yearTotals[y] = (yearTotals[y]||0) + (s.byYear[y]||0); });
+    if(oneYear) for(let m=1;m<=12;m++){
+      monTotals[m] = (monTotals[m]||0) + ((s.byMonth||{})[oneYear+"-"+m] || 0);
+    }
   });
 
   html += `<tr class="summary-total-row"><td colspan="3">សរុប (${list.length} ក្រុមហ៊ុន)</td>`;
-  years.slice().reverse().forEach(y=> html += `<td class="amt"><b>${fmtAmt(yearTotals[y]||0)}</b></td>`);
+  if(oneYear){
+    for(let m=1;m<=12;m++) html += `<td class="amt"><b>${monTotals[m] ? fmtAmt(monTotals[m]) : "—"}</b></td>`;
+    html += `<td class="amt"><b>${fmtAmt(yearTotals[oneYear]||grandTotal)}</b></td>`;
+  }else{
+    years.slice().reverse().forEach(y=> html += `<td class="amt"><b>${fmtAmt(yearTotals[y]||0)}</b></td>`);
+  }
   if(cdStoreName) html += `<td></td>`;
   html += `<td></td></tr>`;
 
@@ -9006,10 +9520,18 @@ function renderCompanyLevelTable(storeName){
   list.forEach((s,i)=>{
     const keyEsc = escJsAttr(s.key);
     html += `<tr class="partner-row" onclick="openCompanyDetail('${storeName}','${keyEsc}')" title="ចុចដើម្បីមើលលម្អិតរបស់ ${escAttr(s.name)}"><td class="rank-cell">${i+1}</td><td class="name-cell">${escAttr(s.name)}</td><td>${escAttr(s.tin)}</td>`;
-    years.slice().reverse().forEach(y=>{
-      const v = s.byYear[y]||0;
-      html += `<td class="amt">${v ? fmtAmt(v) : "—"}</td>`;
-    });
+    if(oneYear){
+      for(let m=1;m<=12;m++){
+        const v = (s.byMonth||{})[oneYear+"-"+m] || 0;
+        html += `<td class="amt">${v ? fmtAmt(v) : "—"}</td>`;
+      }
+      html += `<td class="amt"><b>${fmtAmt(s.byYear[oneYear] || s.total || 0)}</b></td>`;
+    }else{
+      years.slice().reverse().forEach(y=>{
+        const v = s.byYear[y]||0;
+        html += `<td class="amt">${v ? fmtAmt(v) : "—"}</td>`;
+      });
+    }
     if(cdStoreName){
       const cnt = cdCountByTin[String(s.tin||"").trim()] || 0;
       html += cnt>0
@@ -9052,6 +9574,10 @@ function renderSummaryTable_(storeName){
 
   if(catFilter===null || catFilter===undefined){
     if(backEl) backEl.innerHTML = "";
+    /* ⚠ SALE / PURCHASE ៖ តារាងប្រភេទត្រូវជំនួសដោយ dropdown ⇒ គ្មានតារាង
+       ត្រង់នេះទេ ហើយផ្ទាំងខាងមុខនៅសល់ទម្រង់ដើមតែមួយ។ ផ្ទាំងឯទៀត
+       (CN/DN · CP_* · ចំណាយផ្សេងៗ) នៅដដែល។ */
+    if(storeName === 'sale' || storeName === 'purchase'){ table.innerHTML = ""; return; }
     renderCategorySummaryTable(storeName, CATEGORY_TITLE[storeName] || "ប្រភេទ");
   }else{
     renderCompanyLevelTable(storeName);
@@ -9126,7 +9652,17 @@ try{
   RSC_MOBILE_PRINT = /iPhone|iPad|iPod|Android|Mobile/i.test(navigator.userAgent || '')
     || (navigator.maxTouchPoints > 1 && /Macintosh/.test(navigator.userAgent || ''));  /* iPadOS 13+ */
 }catch(e){}
-window.__nrPageMm = RSC_MOBILE_PRINT ? 252 : 266;
+/* ⚠⚠ [stated] ២០២៦-០៨-២០ ៖ «រូបទី១ (iPhone) នៅសល់ជើងក្រោមធំណាស់ ; រូបទី២
+   (tablet) ធ្លាក់ footer ទៅទំព័របន្ទាប់» — រូបភាពពីរបញ្ជាក់រឿងតែមួយ ៖
+   **ប្រអប់ទំព័រកម្ពស់ថេរ មិនអាចត្រូវនឹងគ្រប់ឧបករណ៍បានទេ** ។ ធំពេក (tablet)
+   ⇒ ជើងទំព័រហៀរទៅសន្លឹកបន្ទាប់ ⇒ ៥ ទំព័រក្លាយជា ១០ ; តូចពេក (iPhone) ⇒
+   ចន្លោះទំនេរធំនៅបាត។
+   ⇒ សម្រាប់ទូរស័ព្ទ/ថេប្លេត ៖ (១) បន្ថយការវាស់មក **240mm** ដែលសមទាំង iOS
+     និង Android ; (២) ប្រអប់ទំព័រ **កម្ពស់ស្វ័យប្រវត្តិ** ហើយជើងទំព័រ
+     **ហូរតាមមាតិកា** ជំនួសការខ្ទាស់នៅបាត (មើល NARR_CSS · html.rsc-mobile-print)
+     ⇒ គ្មានចន្លោះទំនេរធំ ហើយគ្មានអ្វីហៀរ។
+   ⚠ កុំព្យូទ័រនៅ 266mm និងជើងទំព័រខ្ទាស់បាតដដែល — មិនប៉ះពាល់ទាល់តែសោះ។ */
+window.__nrPageMm = RSC_MOBILE_PRINT ? 240 : 266;
 try{
   document.documentElement.style.setProperty('--nr-ph', window.__nrPageMm + 'mm');
 }catch(e){}
@@ -9901,7 +10437,20 @@ function crosscheck(ourRows, cpRows){
   /* ជួរដៃគូប៉ុន្មានផ្ទុកអតបនៃក្រុមហ៊ុនដែលមានក្នុងបញ្ជីយើង? */
   let cntPartner = 0;
   Object.keys(rowsByTin).forEach(t=>{ if(t && partnerTins[t]) cntPartner += rowsByTin[t].length; });
-  const modeA = cpTotal > 0 && cntPartner >= cpTotal * 0.5;
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៨ ៖ «ខ្ញុំរើស FOLDER ដើម្បីផ្គូផ្គងតែជាមួយក្រុមហ៊ុន
+     នៃលេខ អតប L001-100048080 … តែវាចាប់យកលេខអតបផ្សេងមកជាមួយទៀត។ …
+     ដូច្នេះផ្គូផ្គងជាមួយនឹងលេខអតបយើង» ។
+     មូលហេតុ ៖ របៀប «partner» (modeA) ត្រូវជ្រើសដោយ **សមាមាត្រ** ៖ ឯកសារ
+     ទិន្នានុប្បវត្តិរបស់ដៃគូមួយ មានអ្នកផ្គត់ផ្គង់របស់គេជាច្រើន ហើយអ្នក
+     ទាំងនោះជាអតិថិជនរបស់យើងផងដែរ ⇒ ជាង ៥០% នៃជួរផ្គូនឹងបញ្ជីយើង ⇒ modeA
+     ឈ្នះ ហើយប្រព័ន្ធយកក្រុមហ៊ុនផ្សេងទៀតមកប្រៀបធៀបជាមួយ។
+     ច្បាប់ត្រឹមត្រូវតាមអ្វីដែលគេពន្យល់ ៖ បើឯកសារដៃគូមានជួរណាមួយផ្ទុក
+     **អតបយើង** នោះឯកសារនោះជាទិន្នានុប្បវត្តិរបស់ដៃគូដែលបែរមករកយើង ⇒
+     ត្រូវផ្គូផ្គង **តែជួរដែលបែរមករកយើង** (modeB) ។ ថតមួយ = ដៃគូមួយ ;
+     ដៃគូច្រើន = រើសថតច្រើន ដូចដែលគេចង់បាន។
+     ⚠ modeA នៅដដែលសម្រាប់ករណីឯកសារគ្មានអតបយើងសោះ (ឯកសារពីទស្សនៈយើង)។ */
+  const facingUs = (OURS && rowsByTin[OURS]) ? rowsByTin[OURS].length : 0;
+  const modeA = !facingUs && cpTotal > 0 && cntPartner >= cpTotal * 0.5;
 
   let out, diag;
   if(modeA){
@@ -9943,16 +10492,33 @@ function crosscheck(ourRows, cpRows){
     pool.forEach(r=>{ const i = invKey(r.invoiceNo); if(i) (cpG[i] = cpG[i] || []).push(r); });
     ourRows.forEach(r=>{ const i = invKey(r.invoiceNo); if(i) (ourG[i] = ourG[i] || []).push(r); });
     const used = new Set(), hit = {}, info = new Map();
+    /* ⚠ ជួរដៃគូដែលមានម្ចាស់ថត (`cpOwnerTin`) ត្រូវផ្គូបានតែនឹងជួររបស់យើង
+       ដែលមានអតបដូចម្ចាស់នោះ — កុំអោយថតរបស់ដៃគូ A ទៅផ្គូនឹងវិក្កយបត្រ
+       របស់អតិថិជន B ដោយចៃដន្យ (លេខវិក្កយបត្រអាចដូចគ្នា)។ */
+    const ownOk = function(cpRow, ourRow){
+      const o = cpRow && cpRow.cpOwnerTin;
+      if(!o) return true;                       /* ថតគ្មានម្ចាស់ ⇒ ដូចមុន */
+      return o === tin9(ourRow.tin);
+    };
     Object.keys(ourG).forEach(i=>{
-      const cs = cpG[i]; if(!cs || !cs.length) return;
-      const os = ourG[i];
-      const cpSum  = cs.reduce((s,x)=> s + (Number(x.amount)||0), 0);
-      const ourSum = os.reduce((s,x)=> s + (Number(x.amount)||0), 0);
-      cs.forEach(x=> used.add(x));
-      os.forEach((r,k)=>{
-        hit[tin9(r.tin)] = 1;
-        info.set(r, {cs:cs, cpSum:cpSum, ourSum:ourSum, first:(k===0),
-                     multi:(cs.length > 1 || os.length > 1)});
+      const csAll = cpG[i]; if(!csAll || !csAll.length) return;
+      /* ⚠⚠ ចែកជួររបស់យើងតាម **អតបក្រុមហ៊ុន** សិន ៖ លេខវិក្កយបត្រតែមួយ
+         អាចប្រើដោយអតិថិជនពីរនាក់ផ្សេងគ្នា។ ពីមុនក្រុមទាំងមូលចាប់គូ
+         ជាមួយគ្នា ⇒ ក្រុមហ៊ុនដែលមិនបាន upload ថតក៏ក្លាយជា «covered»។ */
+      const byTinOur = {};
+      ourG[i].forEach(r=>{ const t = tin9(r.tin) || ""; (byTinOur[t] = byTinOur[t] || []).push(r); });
+      Object.keys(byTinOur).forEach(t=>{
+        const os = byTinOur[t];
+        const cs = csAll.filter(x=> !used.has(x) && ownOk(x, os[0]));
+        if(!cs.length) return;
+        const cpSum  = cs.reduce((s,x)=> s + (Number(x.amount)||0), 0);
+        const ourSum = os.reduce((s,x)=> s + (Number(x.amount)||0), 0);
+        cs.forEach(x=> used.add(x));
+        os.forEach((r,k)=>{
+          hit[tin9(r.tin)] = 1;
+          info.set(r, {cs:cs, cpSum:cpSum, ourSum:ourSum, first:(k===0),
+                       multi:(cs.length > 1 || os.length > 1)});
+        });
       });
     });
     const anyHit = Object.keys(hit).length > 0;
@@ -9969,7 +10535,10 @@ function crosscheck(ourRows, cpRows){
       if(info.has(r)) return;
       const k = String(r.date||"") + "|" + Math.round(Number(r.amount)||0);
       const cand = leftBy[k];
-      if(cand && !used.has(cand)){ used.add(cand); amtM.set(r, cand); hit[tin9(r.tin)] = 1; }
+      /* ⚠ ការផ្គូតាម ថ្ងៃ+ទឹកប្រាក់ ក៏ត្រូវគោរពម្ចាស់ថតដែរ */
+      if(cand && !used.has(cand) && ownOk(cand, r)){
+        used.add(cand); amtM.set(r, cand); hit[tin9(r.tin)] = 1;
+      }
     });
     const anyHit2 = anyHit || Object.keys(hit).length > 0;
     out = ourRows.map(r=>{
@@ -10001,6 +10570,9 @@ function crosscheck(ourRows, cpRows){
       no:"", date:null, invoiceNo:r.invoiceNo, name:r.name || "", tin:r.tin || "",
       amount:null, cpDate:r.date, cpAmount:r.amount,
       vat:r.vat, breakdown:r.breakdown,   /* ដើម្បីចាត់ថ្នាក់ ក្នុងស្រុក/នាំចេញ/មិនជាប់អតប */
+      /* ⚠ បន្តម្ចាស់ថត ⇒ តារាងសង្ខេបដាក់ជួរនេះនៅក្រុមហ៊ុនត្រឹមត្រូវ
+         ជំនួសធាតុ «(មិនកំណត់ក្រុមហ៊ុន)» */
+      cpOwnerTin:r.cpOwnerTin || "", cpOwnerName:r.cpOwnerName || "",
       status:STATUS.OURMISS, dDays:null, dAmt:null, matchBy:"", covered:true, theirs:true
     }));
     /* [stated] ២០២៦-០៨-១៣ ៖ «ជួយរៀបឈ្មោះសហគ្រាសដៃគូ និងលេខអតប ដើម្បីដឹង
@@ -10292,16 +10864,18 @@ function renderCrossBar(which, rows){
     + '<span>លំអៀង ៖ <b class="' + (Math.round(d)===0?'':(d>0?'diff-pos':'diff-neg')) + '">' + fmtAmt(d) + '</b></span>';
   /* [stated] បង្ហាញប្រភេទចំណូលនៅផ្នែកខាងក្រោយ ៖ ក្នុងស្រុក · នាំចេញ · មិនជាប់អតប */
   (function(){
-    const g = {vat:{n:0,a:0}, nonv:{n:0,a:0}, exp:{n:0,a:0}};
+    /* ⚠ បង្គុំតាម **ស្លាកលម្អិត** ឥឡូវ (រួម បន្ទុករដ្ឋ · មិនអនុញ្ញាតឥណទាន)
+       ⇒ បញ្ជីមិនកំណត់ត្រឹម ៣ ទៀត ដូច្នេះប្រើ object ថាមវន្ត។ */
+    const g = {}, order = [];
     list.forEach(r=>{
-      const k = crossVatKind(r);
-      g[k].n++;
-      g[k].a += (r.theirs ? (Number(r.cpAmount)||0) : (Number(r.amount)||0));
+      const lbl = crossVkDetail(r, which);
+      if(!g[lbl]){ g[lbl] = {n:0, a:0}; order.push(lbl); }
+      g[lbl].n++;
+      g[lbl].a += (r.theirs ? (Number(r.cpAmount)||0) : (Number(r.amount)||0));
     });
-    const seg = [];
-    if(g.vat.n)  seg.push('ក្នុងស្រុក ១០% <b>' + g.vat.n  + '</b> (' + fmtAmt(g.vat.a)  + ')');
-    if(g.nonv.n) seg.push('មិនជាប់អតប <b>'   + g.nonv.n + '</b> (' + fmtAmt(g.nonv.a) + ')');
-    if(g.exp.n)  seg.push('នាំចេញ ០% <b>'     + g.exp.n  + '</b> (' + fmtAmt(g.exp.a)  + ')');
+    const seg = order.map(function(l){
+      return escAttr(l) + ' <b>' + g[l].n + '</b> (' + fmtAmt(g[l].a) + ')';
+    });
     if(seg.length) h += '<span style="color:var(--muted)">ប្រភេទ ៖ ' + seg.join(' · ') + '</span>';
   })();
   if(oKeys.length || tKeys.length){
@@ -10422,10 +10996,73 @@ function crossVatKind(r){
   }
   return "vat";
 }
-function crossVkLabel(r){
+/* ══ [stated] ២០២៦-០៨-១៨ ៖ «ការទិញ បែងចែកជា ២ សម្រាប់អាករលើតម្លៃបន្ថែម ៖
+   ១ អតប (ធម្មតា) ៖ ការទិញក្នុងស្រុក · ការនាំចូល ១០% · មិនអនុញ្ញាតឥណទាន
+   ២ អតប (បន្ទុករដ្ឋ) ៖ ការទិញក្នុងស្រុក · ការនាំចូល ១០%
+   ដូច្នេះពេលបង្ហាញ ជាបញ្ជាក់ផងថាទិញក្នុងស្រុក (បន្ទុករដ្ឋ) ឬធម្មតា ; បើ
+   ធម្មតា មិនបាច់បញ្ជាក់ក៏បាន» ។
+   ⚠ `crossVatKind` នៅត្រឹម ៣ ប្រភេទដដែល (vat · nonv · exp) ព្រោះវាចង
+     ភ្ជាប់នឹង `CROSS_VK` ដែលកំណត់ **គោលដៅកំណត់ពន្ធ** — ការបំបែកបន្ថែម
+     ជារឿង **បង្ហាញ** ប៉ុណ្ណោះ ដូច្នេះដាក់ក្នុងមុខងារដាច់ដោយឡែក។
+   ⚠ ជួរនៃការទិញ និងការលក់ ចែក field ដូចគ្នា តែន័យខុសគ្នា ៖
+     `vatExport` = នាំចូល (ទិញ) ឬ នាំចេញ (លក់) ⇒ ត្រូវដឹង `which` ។ */
+function crossVkDetail(r, which){
   const k = crossVatKind(r);
-  return k === "exp" ? "នាំចេញ ០%" : (k === "nonv" ? "មិនជាប់អតប" : "ក្នុងស្រុក ១០%");
+  if(k === "exp")  return "នាំចេញ ០%";
+  if(k === "nonv") return "មិនជាប់អតប";
+  const v = (r && r.vat) || {};
+  const n = function(x){ return (Number(x) || 0) > 0; };
+  const isBuy  = which === "crossPurchase";
+  const impLbl = isBuy ? "នាំចូល ១០%" : (which === "crossSale" ? "នាំចេញ ១០%" : "នាំចូល/នាំចេញ ១០%");
+  if(n(v.vatReverseLocal))  return "ក្នុងស្រុក (បន្ទុករដ្ឋ)";
+  if(n(v.vatReverseImport)) return impLbl + " (បន្ទុករដ្ឋ)";
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៨ ៖ «សហគ្រាសមានការទិញក្នុងស្រុក (បន្ទុករដ្ឋ) តែវា
+     ចេញតែ ការទិញក្នុងស្រុក» ។ វាល `vatReverseLocal` អានតាម **ទីតាំងជួរឈរ
+     ថេរ** (a+7 / a+8) ; បើឯកសាររបស់គេមានជួរឈរលើស ឬតម្រៀបខុសបន្តិច
+     តម្លៃនោះធ្លាក់ចូលវាលផ្សេង ហើយស្លាកត្រឡប់ទៅ «ក្នុងស្រុក» វិញ។
+     ⇒ ផ្លូវទី ២ ៖ អានពី `breakdown` ដែលជាចំណងជើងជួរឈរ **ពិតរបស់ឯកសារ**
+       ហើយរកពាក្យ «បន្ទុករដ្ឋ» ។ ការវាស់ពីទិន្នន័យ ជឿជាក់ជាងទីតាំងថេរ។ */
+  const bk = crossVkReverse(r);
+  if(bk.local > 0) return "ក្នុងស្រុក (បន្ទុករដ្ឋ)";
+  if(bk.imp > 0)   return impLbl + " (បន្ទុករដ្ឋ)";
+  if(n(v.nonCreditable))    return "មិនអនុញ្ញាតឥណទាន";
+  if(n(v.vatExport))        return impLbl;
+  return "ក្នុងស្រុក ១០%";
 }
+/* រកជួរឈរ «បន្ទុករដ្ឋ» ពីចំណងជើងពិតរបស់ឯកសារ */
+function crossVkReverse(r){
+  const bk = (r && r.breakdown) || {};
+  let local = 0, imp = 0;
+  Object.keys(bk).forEach(function(k){
+    if(!/បន្ទុករដ្ឋ/.test(k)) return;
+    const val = Number(bk[k]) || 0;
+    if(val <= 0) return;
+    if(/នាំចូល|នាំចេញ|import|export/i.test(k)) imp += val; else local += val;
+  });
+  return {local:local, imp:imp};
+}
+/* ⚠ ជំនួយរោគវិនិច្ឆ័យ ៖ បង្ហាញជួរឈរអតបទាំងឡាយដែលមានតម្លៃលើជួរនេះ ដាក់ជា
+   tooltip លើស្លាក — បើស្លាកមិនត្រូវ អ្នកប្រើឃើញភ្លាមថាឯកសារដាក់តួលេខនៅណា
+   ដោយមិនចាំបាច់បើក F12។ */
+function crossVkTitle(r){
+  const v = (r && r.vat) || {}, out = [];
+  const M = {baseExclVat:"តម្លៃមិនរួមអតប", nonVatBase:"មិនជាប់អតប",
+             vatZeroExport:"អត្រា ០%", vatLocal:"អតប ក្នុងស្រុក",
+             vatExport:"អតប នាំចូល/នាំចេញ", nonCreditable:"មិនអនុញ្ញាតឥណទាន",
+             vatReverseLocal:"បន្ទុករដ្ឋ ក្នុងស្រុក", vatReverseImport:"បន្ទុករដ្ឋ នាំចូល"};
+  Object.keys(M).forEach(function(k){
+    const n = Number(v[k]) || 0;
+    if(n) out.push(M[k] + " ៖ " + fmtAmt(n));
+  });
+  const bk = (r && r.breakdown) || {};
+  Object.keys(bk).forEach(function(k){
+    if(!/បន្ទុករដ្ឋ/.test(k)) return;
+    const n = Number(bk[k]) || 0;
+    if(n) out.push(k + " ៖ " + fmtAmt(n));
+  });
+  return out.length ? out.join(" · ") : "គ្មានជួរឈរអតបណាមួយមានតម្លៃ";
+}
+function crossVkLabel(r, which){ return crossVkDetail(r, which); }
 /* ផលបូកតាមប្រភេទអតប សម្រាប់ជួរដែលកំពុងបង្ហាញ */
 function crossVkSplit(rows, kind){
   const out = {vat:{n:0,amt:0}, nonv:{n:0,amt:0}, exp:{n:0,amt:0}};
@@ -10781,7 +11418,7 @@ function crossExcel(which){
                 "គំលាតថ្ងៃ","គំលាតទឹកប្រាក់","ស្ថានភាព"];
   const aoa = [head];
   rows.forEach((r,i)=> aoa.push([
-    i+1, r.date || "", r.invoiceNo || "", r.cpInvoice || "", crossVkLabel(r),
+    i+1, r.date || "", r.invoiceNo || "", r.cpInvoice || "", crossVkLabel(r, which),
     r.name || "", r.tin || "",
     r.amount===null||r.amount===undefined ? "" : Number(r.amount)||0,
     r.cpDate || "",
@@ -10798,6 +11435,56 @@ function crossExcel(which){
   if(yt) XLSX.utils.book_append_sheet(wb, XLSX.utils.table_to_sheet(yt, {raw:true}), "សរុបតាមឆ្នាំ");
   const stamp = new Date().toISOString().slice(0,10);
   window.__xlsxSaveStyled(wb, (which==="crossSale" ? "CROSSCHECK_SALE" : "CROSSCHECK_PURCHASE") + "_" + stamp + ".xlsx");
+}
+
+/* [stated] Excel មួយឯកសាររួម ៖ សន្លឹក ១ = សង្ខេបគ្រប់ក្រុមហ៊ុន (រួម
+   ស្ថានភាព «ពិនិត្យរួច») · សន្លឹក ២ = លម្អិតគ្រប់ជួរ គ្រប់ក្រុមហ៊ុន។
+   ⚠ មិនអានពី DOM ទេ (តារាងបង្ហាញតែ ១០០ ជួរក្នុងមួយទំព័រ) — សង់ពី
+     `crossSaleResult` / `crossPurchaseResult` ដដែលនឹងអេក្រង់។ */
+function crossExcelAll(which){
+  if(typeof XLSX === "undefined"){ alert("បណ្ណាល័យ Excel មិនទាន់រួចរាល់"); return; }
+  const full = which==="crossSale" ? crossSaleResult : crossPurchaseResult;
+  const shown = (full || []).filter(r=> r.covered !== false);
+  const theirs = (full.__theirs || []);
+  const off = crossYearOff[which] || {};
+  const all = shown.concat(theirs).filter(r=> !Object.keys(off).length || !off[crossRowYear(r)]);
+  if(!all.length){ alert("គ្មានទិន្នន័យសម្រាប់ទាញយកទេ"); return; }
+  const list = crossPartnerSummary(which, all, full.__partners || []);
+  const done = crossReviewed[which] || {};
+  const ourWord = which==="crossSale" ? "យើងលក់ឱ្យគេ" : "យើងទិញពីគេ";
+  const s1 = [["ល.រ","ក្រុមហ៊ុនដៃគូ","អតប",ourWord,"គេប្រកាស","លំអៀង","% លំអៀង","កម្រិត",
+               "ត្រូវគ្នា","ខុសទឹកប្រាក់/ថ្ងៃ","គេមិនបានប្រកាស","យើងមិនបានប្រកាស",
+               "វិក្កយបត្រយើង","វិក្កយបត្ររបស់គេ","ពិនិត្យរួច"]];
+  const tot = {our:0, cp:0};
+  list.forEach((s,i)=>{
+    const t = crossTone(s.gap, s.our);
+    tot.our += s.our; tot.cp += s.cp;
+    s1.push([i+1, s.name || "", s.tin || "", Math.round(s.our), Math.round(s.cp), Math.round(s.gap),
+             Number(t.pct.toFixed(2)), (t.cls==="ct-ok" ? "ធម្មតា" : (t.cls==="ct-warn" ? "គួរពិនិត្យ" : "ហានិភ័យ")),
+             s.match, s.diff, s.miss, s.ourmiss, s.n, s.cpn, done[s.key] ? "រួច" : ""]);
+  });
+  s1.push(["","សរុប","", Math.round(tot.our), Math.round(tot.cp), Math.round(tot.our - tot.cp),
+           "", "", "", "", "", "", "", "", ""]);
+  const head = ["ល.រ","ក្រុមហ៊ុនដៃគូ","អតប","កាលបរិច្ឆេទ (យើង)","លេខវិក្កយបត្រ (យើង)",
+                "លេខវិក្កយបត្រ (ដៃគូ)","ប្រភេទចំណូល","ទឹកប្រាក់ (យើង)","កាលបរិច្ឆេទ (ដៃគូ)",
+                "ទឹកប្រាក់ (ដៃគូ)","CN/DN","គំលាតថ្ងៃ","គំលាតទឹកប្រាក់","ស្ថានភាព"];
+  const s2 = [head];
+  all.forEach((r,i)=> s2.push([
+    i+1, r.name || "", r.tin || "", r.date || "", r.invoiceNo || "", r.cpInvoice || "",
+    crossVkLabel(r, which),
+    r.amount===null||r.amount===undefined ? "" : Number(r.amount)||0,
+    r.cpDate || "",
+    r.cpAmount===null||r.cpAmount===undefined ? "" : Number(r.cpAmount)||0,
+    r.cpAdj ? Number(r.cpAdj) : "",
+    r.dDays===null||r.dDays===undefined ? "" : r.dDays,
+    r.dAmt===null||r.dAmt===undefined ? "" : Number(r.dAmt)||0,
+    r.status ? r.status.label : ""
+  ]));
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(s1), "សង្ខេបគ្រប់ក្រុមហ៊ុន");
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(s2), "លម្អិត");
+  const stamp = new Date().toISOString().slice(0,10);
+  window.__xlsxSaveStyled(wb, (which==="crossSale" ? "CROSSCHECK_SALE_ALL" : "CROSSCHECK_PURCHASE_ALL") + "_" + stamp + ".xlsx");
 }
 
 function crossOpenAssess(which, kind){
@@ -10966,6 +11653,203 @@ function crossPushFinding(year, amount, kindDef, from, which){
   }
 }
 
+/* ══ [stated] ២០២៦-០៨-១៨ ៖ «ផ្នែកពិនិត្យមើលក្រុមហ៊ុនយើងប្រកាសនឹងគេប្រកាស
+   អាចជួយធ្វើបែបណាដើម្បីឱ្យងាយស្រួលបានទេ» ⇒ ជ្រើសយកទាំង ៤ គំនិត ៖
+     ១. តារាងសង្ខេប **គ្រប់ក្រុមហ៊ុន** ក្នុងទំព័រតែមួយ តម្រៀបតាមលំអៀង
+     ២. ធីក «ពិនិត្យរួច» ក្នុងមួយក្រុមហ៊ុន + របាររីកចម្រើន
+     ៣. Excel មួយឯកសាររួម (សន្លឹកសង្ខេប + សន្លឹកលម្អិត គ្រប់ក្រុមហ៊ុន)
+     ៤. សញ្ញាពណ៌តាមកម្រិតលំអៀង
+   ⚠ តារាងសង្ខេបបង្ហាញ **តែពេលមិនទាន់ជ្រើសក្រុមហ៊ុន** ; ពេលជ្រើសហើយ
+     វាបាត់ ដើម្បីកុំឱ្យអេក្រង់មានតារាងបីជាន់។ */
+/* ⚠⚠ [stated] ២០២៦-០៨-២០ ៖ «នៅតែចេញ ៧ ក្រុមហ៊ុន» ។ ៥ ក្នុងនោះជាថតដែល
+   គេរើសពិតៗ ; នៅសល់ពីរ ៖ ក្រុមហ៊ុនមួយចូលមកតាមលេខវិក្កយបត្រចៃដន្យ និង
+   ធាតុ «(មិនកំណត់ក្រុមហ៊ុន)» ។ ការចំណាំម្ចាស់ថតកើតឡើង **ពេលអានឯកសារ**
+   ដូច្នេះទិន្នន័យដែល upload មុនកំណែថ្មី គ្មានចំណាំ ⇒ បញ្ហាដដែល។
+   ⇒ ដំណោះស្រាយពីរផ្នែក ៖
+     ១. សារព្រមាន ពេលឃើញជួរដៃគូគ្មានចំណាំ ព្រមទាំងប៊ូតុងលុប+upload ឡើងវិញ
+     ២. ប៊ូតុង 🚫 លើជួរនីមួយៗនៃតារាងសង្ខេប ដើម្បីដកក្រុមហ៊ុនចេញដោយដៃ
+        (រក្សាទុក) — គេគ្រប់គ្រងបាន ទោះទិន្នន័យចាស់ក៏ដោយ។ */
+const CROSS_EXCL_KEY = "crossExcludeV1";
+let crossExcluded = {crossSale:{}, crossPurchase:{}};
+try{
+  const rawX = JSON.parse(localStorage.getItem(CROSS_EXCL_KEY) || "{}") || {};
+  crossExcluded = {crossSale: rawX.crossSale || {}, crossPurchase: rawX.crossPurchase || {}};
+}catch(e){ crossExcluded = {crossSale:{}, crossPurchase:{}}; }
+function crossExclSave(){
+  try{ localStorage.setItem(CROSS_EXCL_KEY, JSON.stringify(crossExcluded)); }catch(e){}
+}
+function crossExclOn(which, key){ return !!(crossExcluded[which] || {})[key]; }
+/* ជួរខាងដៃគូគ្មាន `partnerKey` ⇒ រកគ្រាប់ចុចពីម្ចាស់ថត */
+function crossExclKeyFor(which, ownTin){
+  const full = which === "crossSale" ? crossSaleResult : crossPurchaseResult;
+  const ps = (full && full.__partners) || [];
+  const hit = ps.filter(function(p){ return tin9(p.tin) === ownTin; })[0];
+  return hit ? hit.key : "";
+}
+function crossExclToggle(which, key, on){
+  if(!crossExcluded[which]) crossExcluded[which] = {};
+  if(on) crossExcluded[which][key] = true; else delete crossExcluded[which][key];
+  crossExclSave();
+  renderFilteredCross(which);
+}
+function crossExclClear(which){
+  crossExcluded[which] = {};
+  crossExclSave();
+  renderFilteredCross(which);
+}
+
+const CROSS_REVIEW_KEY = "crossReviewedV1";
+let crossReviewed = {crossSale:{}, crossPurchase:{}};
+try{
+  const raw = JSON.parse(localStorage.getItem(CROSS_REVIEW_KEY) || "{}") || {};
+  crossReviewed = {crossSale: raw.crossSale || {}, crossPurchase: raw.crossPurchase || {}};
+}catch(e){ crossReviewed = {crossSale:{}, crossPurchase:{}}; }
+function crossReviewSave(){
+  try{ localStorage.setItem(CROSS_REVIEW_KEY, JSON.stringify(crossReviewed)); }catch(e){}
+}
+function crossReviewToggle(which, key, on){
+  if(!crossReviewed[which]) crossReviewed[which] = {};
+  if(on) crossReviewed[which][key] = true; else delete crossReviewed[which][key];
+  crossReviewSave();
+  renderFilteredCross(which);
+}
+/* កម្រិតលំអៀង ៖ បៃតង ≤0.5% · លឿង ≤2% · ក្រហម >2% (ធៀបនឹងខាងយើង) */
+function crossTone(gap, base){
+  const b = Math.abs(Number(base) || 0);
+  const g = Math.abs(Number(gap) || 0);
+  if(!g) return {cls:"ct-ok",   dot:"🟢", pct:0};
+  const p = b ? (g / b) * 100 : 100;
+  if(p <= 0.5) return {cls:"ct-ok",   dot:"🟢", pct:p};
+  if(p <= 2)   return {cls:"ct-warn", dot:"🟡", pct:p};
+  return         {cls:"ct-bad",  dot:"🔴", pct:p};
+}
+/* បង្គុំតាមក្រុមហ៊ុន ៖ ជួរខាងយើងតាម `partnerKey`; ជួរខាងដៃគូ (`theirs`)
+   មិនមានខាងយើងសោះ ⇒ បើមានក្រុមហ៊ុនតែមួយ ដាក់ចូលក្រុមហ៊ុននោះ បើមិនដូច្នេះ
+   ដាក់ក្នុងធាតុ «មិនកំណត់ក្រុមហ៊ុន» ដើម្បីកុំឱ្យបាត់ចេញពីសរុប។ */
+function crossPartnerSummary(which, scoped, partners){
+  const g = {};
+  const only = (partners && partners.length === 1) ? partners[0].key : null;
+  const pick = function(k, tin, name){
+    return g[k] = g[k] || {key:k, tin:tin||"", name:name||"", our:0, cp:0,
+                           n:0, cpn:0, match:0, diff:0, miss:0, ourmiss:0};
+  };
+  scoped.forEach(r=>{
+    if(r.theirs){
+      /* ⚠ អាទិភាព ៖ ម្ចាស់ថត → ដៃគូតែមួយ → ធាតុមិនកំណត់ ។ ជួរដៃគូសរសេរ
+         អតប**យើង** ដូច្នេះ `r.tin` មិនអាចប្រើសម្គាល់ក្រុមហ៊ុនបានទេ។ */
+      const own = r.cpOwnerTin || "";
+      /* ⚠ ត្រូវប្រើ **គ្រាប់ចុចដដែល** នឹងជួររបស់យើង បើមិនដូច្នេះទេ ក្រុមហ៊ុន
+         តែមួយនឹងចេញពីរជួរក្នុងតារាងសង្ខេប (ម្តងតាម partnerKey ម្តងតាមម្ចាស់ថត)។ */
+      const pMatch = own ? (partners || []).filter(function(p){ return tin9(p.tin) === own; })[0] : null;
+      const k = pMatch ? pMatch.key : (own ? (own + "|" + (r.cpOwnerName || "")) : (only || "__x"));
+      const s = pMatch
+        ? pick(k, pMatch.tin, pMatch.name)
+        : (own ? pick(k, own, r.cpOwnerName || "")
+               : pick(k, only ? (partners[0].tin) : "", only ? partners[0].name : "(មិនកំណត់ក្រុមហ៊ុន)"));
+      s.ourmiss++; s.cpn++; s.cp += Number(r.cpAmount) || 0;
+      return;
+    }
+    const k = partnerKey(r);
+    const s = pick(k, r.tin, r.name);
+    s.n++; s.our += Number(r.amount) || 0;
+    if(r.cpAmount !== null && r.cpAmount !== undefined){ s.cp += Number(r.cpAmount) || 0; s.cpn++; }
+    if(r.status===STATUS.MATCH || r.status===STATUS.MANUAL || r.status===STATUS.GROUP) s.match++;
+    else if(r.status===STATUS.NOTFOUND) s.miss++;
+    else s.diff++;
+  });
+  return Object.keys(g).map(k=> g[k])
+    .map(s=> Object.assign(s, {gap: s.our - s.cp}))
+    .sort((a,b)=> Math.abs(b.gap) - Math.abs(a.gap));
+}
+function renderCrossPartnerSummary(which, list){
+  const tableId = which==="crossSale" ? "table-crossSale" : "table-crossPurchase";
+  const table = document.getElementById(tableId);
+  if(!table) return;
+  const host = table.closest(".table-scroll") || table;
+  let box = document.getElementById("psum-"+which);
+  if(!box){
+    box = document.createElement("div");
+    box.id = "psum-"+which;
+    box.style.cssText = "margin:0 0 14px;";
+    const ys = document.getElementById("ysum-"+which);
+    host.parentNode.insertBefore(box, ys || host);
+  }
+  /* ជ្រើសក្រុមហ៊ុនហើយ ⇒ លាក់តារាងសង្ខេប */
+  if(filters[which] || !list.length){ box.innerHTML = ""; return; }
+  const ourWord = which==="crossSale" ? "យើងលក់ឱ្យគេ" : "យើងទិញពីគេ";
+  const cpWord  = which==="crossSale" ? "គេប្រកាស" : "គេប្រកាស";
+  const done = crossReviewed[which] || {};
+  const nDone = list.filter(s=> done[s.key]).length;
+  const pct = list.length ? Math.round(nDone / list.length * 100) : 0;
+  /* ⚠ ទិន្នន័យដៃគូដែល upload មុនកំណែចំណាំម្ចាស់ ⇒ ប្រាប់ឱ្យច្បាស់ ព្រោះ
+     នេះជាមូលហេតុពិតដែលក្រុមហ៊ុនលើសនៅតែចេញ។ */
+  const cpStore = which === "crossSale" ? "cpPurchase" : "cpSale";
+  const cpRows = state[cpStore] || [];
+  const noStamp = cpRows.filter(function(r){ return !r.cpOwnerTin; }).length;
+  let h = "";
+  if(noStamp){
+    h += '<div class="hint" style="margin:0 0 8px;padding:8px 10px;border:1px dashed var(--red);border-radius:8px">'
+      + '⚠ ជួរដៃគូ <b>' + noStamp + '</b> / ' + cpRows.length + ' គ្មានចំណាំក្រុមហ៊ុន '
+      + '(ផ្ទុកមុនកំណែថ្មី) ⇒ ក្រុមហ៊ុនដែលមិនបានរើសអាចលេចឡើង។ '
+      + '<b>សូមចុច 🗑 លុប រួច ផ្ទុកឯកសារដៃគូឡើងវិញ</b> ដើម្បីអោយការចំណាំដំណើរការ។'
+      + '</div>';
+  }
+  const exN = Object.keys(crossExcluded[which] || {}).length;
+  if(exN){
+    h += '<div class="hint" style="margin:0 0 8px">🚫 ដកចេញដោយដៃ ' + exN + ' ក្រុមហ៊ុន · '
+      + '<a href="javascript:void(0)" onclick="crossExclClear(\'' + which + '\')">↩ យកមកវិញទាំងអស់</a></div>';
+  }
+  h += '<div style="display:flex;align-items:center;gap:10px;margin:0 0 6px;font-size:13px;">'
+    + '<b>📋 សង្ខេបគ្រប់ក្រុមហ៊ុន (' + list.length + ')</b>'
+    + '<span style="flex:0 0 160px;height:8px;border-radius:99px;background:var(--line);overflow:hidden;display:inline-block">'
+    + '<span style="display:block;height:100%;width:' + pct + '%;background:var(--primary)"></span></span>'
+    + '<span class="hint">ពិនិត្យរួច ' + nDone + ' / ' + list.length + ' ក្រុមហ៊ុន</span>'
+    + '<span class="hint" style="margin-left:auto">🟢 ≤0.5% · 🟡 ≤2% · 🔴 >2%</span>'
+    + '</div>'
+    + '<div class="table-scroll"><table class="ledger raw-tbl"><thead><tr>'
+    + '<th>✓</th><th>ល.រ</th><th>ក្រុមហ៊ុនដៃគូ</th><th>អតប</th>'
+    + '<th class="amt">' + ourWord + '</th><th class="amt">' + cpWord + '</th>'
+    + '<th class="amt">លំអៀង</th><th>%</th>'
+    + '<th>ត្រូវគ្នា</th><th>ខុស</th><th>គេមិនប្រកាស</th><th>យើងមិនប្រកាស</th><th></th><th>🚫</th>'
+    + '</tr></thead><tbody>';
+  const tot = {our:0, cp:0, match:0, diff:0, miss:0, ourmiss:0};
+  list.forEach((s,i)=>{
+    const t = crossTone(s.gap, s.our);
+    tot.our += s.our; tot.cp += s.cp; tot.match += s.match;
+    tot.diff += s.diff; tot.miss += s.miss; tot.ourmiss += s.ourmiss;
+    const isDone = !!done[s.key];
+    const isEx = crossExclOn(which, s.key);
+    h += '<tr' + (isEx ? ' style="opacity:.4;text-decoration:line-through"' : (isDone ? ' style="opacity:.55"' : '')) + '>'
+      + '<td><input type="checkbox"' + (isDone ? ' checked' : '')
+        + ' title="សម្គាល់ថាពិនិត្យរួច"'
+        + ' onchange="crossReviewToggle(\'' + which + '\',\'' + escJsAttr(s.key) + '\', this.checked)"></td>'
+      + '<td>' + (i+1) + '</td>'
+      + '<td class="name-cell"><a href="javascript:void(0)" onclick="filterFromSummary(\'' + which + '\',\'' + escJsAttr(s.key) + '\')"'
+        + ' title="ចូលមើលលម្អិតរបស់ក្រុមហ៊ុននេះ">' + escAttr(s.name || "(គ្មានឈ្មោះ)") + '</a></td>'
+      + '<td>' + escAttr(s.tin || "") + '</td>'
+      + '<td class="amt">' + fmtAmt(s.our) + '</td>'
+      + '<td class="amt">' + fmtAmt(s.cp) + '</td>'
+      + '<td class="amt ' + t.cls + '">' + fmtAmt(s.gap) + '</td>'
+      + '<td class="' + t.cls + '">' + t.dot + ' ' + (t.pct ? t.pct.toFixed(1) + '%' : '0%') + '</td>'
+      + '<td>' + s.match + '</td><td>' + s.diff + '</td><td>' + s.miss + '</td><td>' + s.ourmiss + '</td>'
+      + '<td><a href="javascript:void(0)" onclick="filterFromSummary(\'' + which + '\',\'' + escJsAttr(s.key) + '\')">👁</a></td>'
+      /* 🚫 ដកក្រុមហ៊ុននេះចេញពីការផ្គូផ្គង (រក្សាទុក) */
+      + '<td><input type="checkbox"' + (crossExclOn(which, s.key) ? ' checked' : '')
+        + ' title="ដកក្រុមហ៊ុននេះចេញ — មិនរាប់ក្នុងតារាង និងសរុប"'
+        + ' onchange="crossExclToggle(\'' + which + '\',\'' + escJsAttr(s.key) + '\', this.checked)"></td>'
+      + '</tr>';
+  });
+  const tg = tot.our - tot.cp, tt = crossTone(tg, tot.our);
+  h += '<tr><td></td><td></td><td><b>សរុប</b></td><td></td>'
+    + '<td class="amt"><b>' + fmtAmt(tot.our) + '</b></td>'
+    + '<td class="amt"><b>' + fmtAmt(tot.cp) + '</b></td>'
+    + '<td class="amt ' + tt.cls + '"><b>' + fmtAmt(tg) + '</b></td>'
+    + '<td class="' + tt.cls + '">' + tt.dot + ' ' + (tt.pct ? tt.pct.toFixed(1) + '%' : '0%') + '</td>'
+    + '<td>' + tot.match + '</td><td>' + tot.diff + '</td><td>' + tot.miss + '</td><td>' + tot.ourmiss + '</td><td></td><td></td></tr>'
+    + '</tbody></table></div>';
+  box.innerHTML = h;
+}
+
 function renderCrossYearSummary(which, rows){
   const tableId = which==="crossSale" ? "table-crossSale" : "table-crossPurchase";
   const table = document.getElementById(tableId);
@@ -11024,14 +11908,16 @@ function renderCrossYearSummary(which, rows){
   };
   const line = function(y, s, isTot){
     const d = s.our - s.cp;
-    const cls = Math.round(d)===0 ? "" : (d>0 ? "diff-pos" : "diff-neg");
+    /* [stated] សញ្ញាពណ៌តាមកម្រិតលំអៀង — ដដែលនឹងតារាងសង្ខេបក្រុមហ៊ុន */
+    const tone = crossTone(d, s.our);
+    const cls = tone.cls + (Math.round(d)===0 ? "" : (d>0 ? " diff-pos" : " diff-neg"));
     const on = (!isTot && cy===y) ? ' style="background:var(--accent-light)"' : '';
     return '<tr'+on+'>'
       + '<td>' + (isTot ? '<b>សរុប</b>'
           : '<a href="javascript:void(0)" onclick="crossPickYear(\''+which+'\',\''+y+'\',false)"><b>'+y+'</b></a>') + '</td>'
       + '<td class="amt">'+fmtAmt(s.our)+'</td>'
       + '<td class="amt">'+fmtAmt(s.cp)+'</td>'
-      + '<td class="amt '+cls+'">' + (isTot ? fmtAmt(d)
+      + '<td class="amt '+cls+'" title="'+(tone.pct?tone.pct.toFixed(1)+'% នៃខាងយើង':'គ្មានលំអៀង')+'">' + tone.dot + ' ' + (isTot ? fmtAmt(d)
           : crossMark(crossDone(which, "diff", y))
             + '<a href="javascript:void(0)" onclick="crossPickYear(\''+which+'\',\''+y+'\',true)" title="មើលវិក្កយបត្រដែលលំអៀង">'+fmtAmt(d)+'</a>') + '</td>'
       + '<td>'+num(y,s.match,'match',isTot)+'</td>'
@@ -11108,7 +11994,7 @@ function renderCrossTable(tableId, rows, ourLabel, which){
       <td>${fmtDate(r.date)}</td>
       <td><a href="javascript:void(0)" onclick="crossOpenCd('${which||''}','${escAttr(r.invoiceNo||'')}')"
              title="បញ្ចូល CN / DN របស់ដៃគូលើវិក្កយបត្រនេះ">${r.invoiceNo}</a>
-          <br><span style="font-size:11px;color:var(--muted)">${crossVkLabel(r)}${
+          <br><span style="font-size:11px;color:var(--muted)" title="${escAttr(crossVkTitle(r))}">${crossVkLabel(r, which)}${
             r.cpAdj ? ` · CN/DN ${r.cpAdj>0?"+":""}${fmtAmt(r.cpAdj)}` : ""}</span></td>
       <td class="name-cell">${r.name}</td>
       <td class="amt">${fmtAmt(r.amount)}</td>
@@ -11328,13 +12214,127 @@ function findColumnIndex(aoa, keyword){
    (e.g. "ការលក់ក្នុងស្រុក" appears once under the normal VAT header and
    again under the state-burden VAT header) are combined into one row,
    in the order the label first appears left-to-right. */
+/* ⚠⚠ [stated] ២០២៦-០៨-១៨ ៖ «នៅផ្នែក purchase sale អត់ទាន់បានកែ ៖ sale
+   អាចមាន ការលក់ (បន្ទុករដ្ឋ) · purchase មាន ការទិញ និង នាំចូល (បន្ទុករដ្ឋ)» ។
+   ឯកសារ GDT មានចំណងជើង **ពីរជាន់** ៖ ជួរមេ «អាករលើតម្លៃបន្ថែម» និង
+   «អាករលើតម្លៃបន្ថែម(បន្ទុករដ្ឋ)» ហើយក្រោមវាទាំងពីរ ជួររងឈ្មោះ **ដូចគ្នា**
+   («ការទិញក្នុងស្រុក» · «ការនាំចូល១០%»)។ មុននេះ `idxByLabel` បង្គុំតាម
+   ស្លាកតែមួយ ⇒ ជួរធម្មតា និងជួរបន្ទុករដ្ឋ **បូកលាយគ្នា** ហើយ dropdown
+   ប្រភេទបង្ហាញតែ «ការទិញក្នុងស្រុក» មួយ។
+   ⇒ ពិនិត្យជួរមេ ៖ សម្រាប់ជួរឈរនីមួយៗ ដើរឡើងលើតាមជួរដេកចំណងជើង ហើយ
+     ទៅឆ្វេង (ព្រោះក្រឡាបញ្ចូលគ្នា ដាក់អត្ថបទតែក្រឡាដំបូង) រកពាក្យ
+     «បន្ទុករដ្ឋ» ។ រកឃើញ ⇒ បន្ថែម « (បន្ទុករដ្ឋ)» ទៅស្លាក។
+   ⚠ ផ្លូវទី ២ ៖ បើចំណងជើងមេគ្មានពាក្យនោះសោះ តែស្លាកដដែលកើតឡើងលើកទី ២
+     យើងចាត់ថាជាផ្នែកបន្ទុករដ្ឋ (លំដាប់ក្នុងទម្រង់ GDT ៖ ធម្មតាមុន)។
+     ដូច្នេះមិនមានករណីណាដែលបូកលាយគ្នាទៀតទេ។ */
+function colIsReverse(aoa, ci){
+  const scanRows = Math.min(aoa.length, HEADER_SCAN_ROWS);
+  for(let ri=0; ri<scanRows; ri++){
+    const row = aoa[ri] || [];
+    const first = row[0];
+    if(typeof first === "number" && first > 0 && Number.isFinite(first)) break;
+    /* ក្រឡាបញ្ចូលគ្នា ៖ អត្ថបទនៅក្រឡាដំបូងនៃក្រុម ⇒ ដើរទៅឆ្វេងរហូតជួប
+       អត្ថបទដំបូង ហើយពិនិត្យតែអត្ថបទនោះ។ */
+    for(let cj=ci; cj>=0 && cj > ci-8; cj--){
+      const txt = String(row[cj] ?? "").replace(/\u200b/g,"").trim();
+      if(!txt) continue;
+      if(txt.includes("បន្ទុករដ្ឋ")) return true;
+      break;
+    }
+  }
+  return false;
+}
+/* ចំណងជើងមេ (ក្រឡាបញ្ចូលគ្នា) នៃជួរឈរ ci — ដើរឡើងលើ រួចទៅឆ្វេង */
+function colParentLabel(aoa, ci){
+  const scanRows = Math.min(aoa.length, HEADER_SCAN_ROWS);
+  let out = "";
+  for(let ri=0; ri<scanRows; ri++){
+    const row = aoa[ri] || [];
+    const first = row[0];
+    if(typeof first === "number" && first > 0 && Number.isFinite(first)) break;
+    for(let cj=ci; cj>=0 && cj > ci-8; cj--){
+      const txt = String(row[cj] ?? "").replace(/\u200b/g,"").trim();
+      if(!txt) continue;
+      if(cj !== ci) out = txt;      /* មកពីក្រឡាបញ្ចូលគ្នាខាងឆ្វេង */
+      break;
+    }
+  }
+  return out;
+}
+/* ⚠⚠ [stated] ២០២៦-០៨-១៨ (រូបភាពក្បាលឯកសារពិត) ៖ «វាជាបន្ទុករដ្ឋ តែចេញ
+   ធម្មតាទៅវិញ» ។ ការដើរទៅឆ្វេងក្នុងជួរដេកចំណងជើងគឺពឹងលើរូបរាងក្រឡាបញ្ចូល
+   គ្នា ដែលប្រែប្រួលតាមឯកសារ (ជួរដេកទទេ · ក្រឡាបញ្ចូលពីរជាន់ · ចន្លោះ
+   ជួរឈរដូច «អាករលើតម្លៃបន្ថែមអត្រា 0%» ជ្រែកកណ្តាល)។
+   ⇒ វិធីម៉ត់ចត់ជាង ៖ ស្កេនក្បាលទាំងមូល រកក្រឡាដែលមានពាក្យ «បន្ទុករដ្ឋ»
+     រួចយក **ទីតាំងជួរឈរឆ្វេងបំផុត** របស់វា ។ ជួរឈរណាដែលនៅត្រង់ ឬខាងស្តាំ
+     ចំណុចនោះ = ផ្នែកបន្ទុករដ្ឋ ទាំងអស់។ មិនពឹងលើក្រឡាបញ្ចូលគ្នាទៀតទេ។
+   ⚠ ជួរ «បរិយាយ» នៅខាងស្តាំគេ ⇒ ក៏ចូលលក្ខខណ្ឌនេះដែរ តែវាត្រូវរំលងរួចហើយ
+     ដោយការត្រួតពិនិត្យស្លាកខាងក្រោម។ */
+function revStartIdx(aoa){
+  const scanRows = Math.min(aoa.length, HEADER_SCAN_ROWS);
+  let best = -1;
+  for(let ri=0; ri<scanRows; ri++){
+    const row = aoa[ri] || [];
+    const first = row[0];
+    if(typeof first === "number" && first > 0 && Number.isFinite(first)) break;
+    for(let cj=0; cj<row.length; cj++){
+      const txt = String(row[cj] ?? "").replace(/\u200b/g,"").trim();
+      if(txt && txt.includes("បន្ទុករដ្ឋ")){
+        if(best < 0 || cj < best) best = cj;
+      }
+    }
+  }
+  return best;
+}
 function detectBreakdownColumns(aoa, amountIdx, descIdx){
-  const endIdx = (descIdx!=null && descIdx>amountIdx) ? descIdx : amountIdx + 14;
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៨ ៖ ទម្រង់ អតប បង្ហាញ «ការទិញអាករជាបន្ទុករដ្ឋ»
+     ១២៤,៦៧១,៥៦៦ តែទម្រង់ដើមនៃសៀវភៅទិញគ្មានជួរឈរនោះសោះ។ មូលហេតុពីរ ៖
+       ១. ជួរឈរបន្ទុករដ្ឋ **គ្មានចំណងជើងរង** (មានតែចំណងជើងមេបញ្ចូលគ្នា)
+          ⇒ `columnLabel` ត្រឡប់ "" ⇒ `continue` ⇒ រំលងទាំងស្រុង
+       ២. `endIdx` អាចកាត់មុនដល់ a+7/a+8 បើជួរ «បរិយាយ» នៅជិត
+     ⇒ ដោះស្រាយទាំងពីរ ៖ បើគ្មានចំណងជើងរង យកចំណងជើងមេមកជំនួស ; ហើយ
+       ធានាថាការស្កេនទៅដល់យ៉ាងតិច a+9 (ជួរបន្ទុករដ្ឋពីរស្ថិតនៅ a+7/a+8)។
+     ⚠ ជួរ «បរិយាយ» ត្រូវរំលងជានិច្ច បើមិនដូច្នេះការពង្រីកខាងលើនឹងទាញវាចូល។
+     ⚠ ក្រោមចំណងជើងមេបន្ទុករដ្ឋ ជួរទី ១ = ក្នុងស្រុក · ជួរទី ២ = នាំចូល
+       (លំដាប់ក្នុងទម្រង់ GDT) — ការលក់មានតែជួរទី ១។ */
+  let endIdx = (descIdx!=null && descIdx>amountIdx) ? descIdx : amountIdx + 14;
+  if(endIdx < amountIdx + 9) endIdx = amountIdx + 9;
   const order = [];
   const idxByLabel = {};
+  const seen = {};
+  let revSeen = 0;
+  const revStart = revStartIdx(aoa);
+  /* ⚠ ការពង្រីក endIdx អាចហួសទទឹងពិតនៃឯកសារ ⇒ រំលងជួរឈរដែលគ្មានតម្លៃ
+     ណាមួយសោះ បើមិនដូច្នេះទេ ជួរឈរបន្លំនឹងលេចក្នុងបញ្ជីប្រភេទ។ */
+  const colHasAny = function(ci){
+    for(let ri=0; ri<aoa.length; ri++){
+      const v = (aoa[ri] || [])[ci];
+      if(v !== undefined && v !== null && String(v).trim() !== "") return true;
+    }
+    return false;
+  };
   for(let ci=amountIdx+1; ci<endIdx; ci++){
-    const label = columnLabel(aoa, ci);
-    if(!label) continue;
+    if(!colHasAny(ci)) continue;
+    let label = columnLabel(aoa, ci);
+    const rev = (revStart >= 0 && ci >= revStart)
+             || colIsReverse(aoa, ci)
+             || (label && seen[label] && !/បន្ទុករដ្ឋ/.test(label));
+    if(!label && !rev){
+      const parent = colParentLabel(aoa, ci);
+      if(!parent) continue;
+      label = parent;
+    }
+    if(rev){
+      /* ⚠ ជួរឈរបន្ទុករដ្ឋច្រើនតែគ្មានចំណងជើងរង ⇒ ស្លាកដែលអានបានគឺ
+         ចំណងជើងមេ («អាករលើតម្លៃបន្ថែម(បន្ទុករដ្ឋ)») ដដែលសម្រាប់ជួរទាំងពីរ
+         ហើយវានឹងបូកលាយគ្នាម្តងទៀត។ ដូច្នេះពេលស្លាកជាចំណងជើងមេ (ឬទទេ)
+         ដាក់ឈ្មោះតាមលំដាប់ ៖ ទី១ = ក្នុងស្រុក · ទី២ = នាំចូល ១០%។ */
+      if(!label || /អាករលើតម្លៃបន្ថែម/.test(label)) label = (revSeen === 0 ? "ក្នុងស្រុក" : "នាំចូល ១០%");
+      revSeen++;
+      if(!/បន្ទុករដ្ឋ/.test(label)) label = label + " (បន្ទុករដ្ឋ)";
+    }
+    if(!label || /បរិយាយ|description|remark/i.test(label)) continue;
+    seen[label] = 1;
     if(!idxByLabel[label]){ idxByLabel[label] = []; order.push(label); }
     idxByLabel[label].push(ci);
   }
@@ -12372,6 +13372,50 @@ async function handleAutoFileImport(evt){
 // + detectIsWHT/rowsFromWHTSheet/mergeWHTRows below), so the extra picker
 // was redundant and has been removed.
 
+/* ══ [stated] ២០២៦-០៨-១៨ ៖ «ខ្ញុំរើសតែ ៥ វាចេញដល់ទៅ ៧» ព្រមទាំងរូបថត
+   ថតមេ «File Crosscheck» ដែលមាន **ថតរងមួយក្នុងមួយក្រុមហ៊ុន** ៖
+     File Crosscheck/CMED CONSTRUCTION Co., Ltd/…xlsx
+   ⇒ ឈ្មោះថតរង **គឺជា** អត្តសញ្ញាណដៃគូ។ អានវាពី `webkitRelativePath` រួច
+     ផ្គូនឹងឈ្មោះក្រុមហ៊ុនក្នុងសៀវភៅរបស់យើង ដើម្បីដឹងលេខ អតប។
+   ⚠ ការផ្គូឈ្មោះត្រូវធូរបន្តិច ៖ ថតសរសេរ «CMED CONSTRUCTION Co., Ltd»
+     ឯសៀវភៅសរសេរ «ស៊ីអឹមអ៊ីឌី ខនស្ត្រាក់សិន» ⇒ ប្រៀបធៀបជាអក្សរតូច ដក
+     វណ្ណយុត្តិ និងពាក្យទូទៅ (co ltd plc…) រួចទទួល ការផ្ទុកគ្នាទាំងសងខាង។
+   ⚠ រកមិនឃើញ ⇒ **មិនចំណាំ** (ដំណើរការដូចមុន) ជាជាងទាយខុស។ */
+function cpNormName(s){
+  return String(s || "")
+    .toLowerCase()
+    .replace(/[.,()\-_'"`]/g, " ")
+    .replace(/\b(co|ltd|plc|inc|company|limited|corp|corporation|cambodia|ខេមបូឌា|ឯ\.ក|ម\.ក|ឯក|កុំព្យូទ័រ)\b/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+function cpFindCompany(folderName){
+  const q = cpNormName(folderName);
+  if(!q || q.length < 3) return null;
+  const seen = {};
+  const pool = [];
+  ["sale","purchase"].forEach(function(st){
+    (state[st] || []).forEach(function(r){
+      const k = (r.tin || "") + "|" + (r.name || "");
+      if(seen[k]) return;
+      seen[k] = 1;
+      pool.push({tin:r.tin || "", name:r.name || "", n:cpNormName(r.name)});
+    });
+  });
+  let hit = pool.filter(function(c){ return c.n && c.n === q; })[0];
+  if(!hit) hit = pool.filter(function(c){ return c.n && (c.n.indexOf(q) >= 0 || q.indexOf(c.n) >= 0); })[0];
+  return hit || null;
+}
+/* ថតរងភ្លាមមុនឯកសារ ៖ «មេ/ក្រុមហ៊ុន/ឯកសារ.xlsx» → «ក្រុមហ៊ុន» ;
+   បើគ្មានថតរង (រើសថតក្រុមហ៊ុនផ្ទាល់) → ថតដំបូង។ */
+function cpFolderOf(file){
+  const p = String((file && file.webkitRelativePath) || "");
+  if(!p) return "";
+  const parts = p.split("/").filter(Boolean);
+  if(parts.length < 2) return "";
+  return parts[parts.length - 2];
+}
+
 function handleFileImport(evt, storeName, kind){
   const files = Array.from(evt.target.files || []);
   const statusEl = document.getElementById("status-"+storeName);
@@ -12407,6 +13451,7 @@ function handleFileImport(evt, storeName, kind){
   let combined = [];
   let filesDone = 0;
   let anyError = false;
+  const cpOwnerReport = [];
 
   validFiles.forEach(file=>{
     const reader = new FileReader();
@@ -12418,6 +13463,18 @@ function handleFileImport(evt, storeName, kind){
         const rows = (kind === "saleCD" || kind === "purchaseCD") ? rowsFromCDSheet(sheet, kind)
                    : (kind === "otherExpenses") ? rowsFromOtherExpensesSheet(sheet)
                    : rowsFromSheet(sheet, kind);
+        /* ⚠ ឯកសារដៃគូ ៖ ចំណាំម្ចាស់តាមឈ្មោះថតរង ⇒ ការផ្គូផ្គងមិនឆ្លង
+           ក្រុមហ៊ុន (មើល `ownOk` ក្នុង `crosscheck`)។ */
+        if(storeName === "cpPurchase" || storeName === "cpSale"){
+          const fold = cpFolderOf(file);
+          const own = fold ? cpFindCompany(fold) : null;
+          rows.forEach(function(r){ r.__fold = fold || ""; });
+          if(own){
+            const t = tin9(own.tin);
+            rows.forEach(function(r){ r.cpOwnerTin = t; r.cpOwnerName = own.name; });
+            cpOwnerReport.push("✓ " + fold + " → " + own.name + " (តាមឈ្មោះថត)");
+          }
+        }
         combined = combined.concat(rows);
       }catch(err){
         anyError = true;
@@ -12454,6 +13511,72 @@ function handleFileImport(evt, storeName, kind){
         ? `✓ ផ្ទុកបាន ${combined.length} ជួរ (មានឯកសារខ្លះមិនអាចអានបាន)`
         : `✓ ផ្ទុកបាន ${combined.length} ជួរ ពី ${validFiles.length} ឯកសារ`;
       statusEl.className = anyError ? "import-status err" : "import-status ok";
+    }
+    /* ══ [stated] ២០២៦-០៨-២០ ៖ «ខ្ញុំរើស folder ពីក្រុមហ៊ុនដៃគូ … តែវានៅតែ
+       ចេញក្រុមហ៊ុនផ្សេងមកទៀត» ។ ការផ្គូតាម **ឈ្មោះ** ថតបរាជ័យញឹកញាប់ ៖ ថត
+       សរសេរឡាតាំង ឯសៀវភៅសរសេរខ្មែរ ⇒ គ្មានចំណាំ ⇒ ការផ្គូតាមលេខវិក្កយបត្រ
+       ឆ្លងក្រុមហ៊ុនត្រឡប់មកវិញ។
+       ⭐ ដំណោះស្រាយមិនពឹងលើភាសា ៖ **អានពីទិន្នន័យ** ។ លេខវិក្កយបត្រក្នុង
+         ឯកសាររបស់ដៃគូ គឺជាលេខវិក្កយបត្រ **របស់យើង** ⇒ ស្វែងរកលេខទាំងនោះ
+         ក្នុងសៀវភៅយើង រួចរាប់ថាភាគច្រើនជារបស់អតិថិជនណា — នោះជាម្ចាស់ថត។
+       ⚠ ត្រូវការភស្តុតាងច្បាស់មុននឹងចំណាំ ៖ យ៉ាងតិច ៣ ការផ្គូ និង ≥៦០%
+         នៃការផ្គូក្នុងថតនោះ ; បើមិនដល់ ទុកគ្មានចំណាំ (ដំណើរការដូចមុន)។ */
+    if(storeName === "cpPurchase" || storeName === "cpSale"){
+      const ourStore = (storeName === "cpPurchase") ? "sale" : "purchase";
+      const invOwner = {};
+      (state[ourStore] || []).forEach(function(r){
+        const i = invKey(r.invoiceNo);
+        const t = tin9(r.tin);
+        if(i && t) (invOwner[i] = invOwner[i] || {})[t] = 1;
+      });
+      const byFold = {};
+      combined.forEach(function(r){ (byFold[r.__fold || ""] = byFold[r.__fold || ""] || []).push(r); });
+      const nameOfTin = function(t){
+        return ((state[ourStore] || []).filter(function(r){ return tin9(r.tin) === t; })[0] || {}).name || "";
+      };
+      Object.keys(byFold).forEach(function(fold){
+        const rows = byFold[fold];
+        if(rows[0] && rows[0].cpOwnerTin) return;      /* ចំណាំតាមឈ្មោះរួច */
+        /* ជំហាន ១ ៖ ជួរណាដែលលេខវិក្កយបត្ររបស់វាចង្អុលទៅ **ក្រុមហ៊ុនតែមួយ**
+           ក្នុងសៀវភៅយើង ⇒ ចំណាំជួរនោះដោយផ្ទាល់ (ច្បាស់ ១០០%)។ */
+        const tally = {};
+        let hits = 0;
+        rows.forEach(function(r){
+          const owners = invOwner[invKey(r.invoiceNo)];
+          if(!owners) return;
+          const ks = Object.keys(owners);
+          if(ks.length !== 1) return;                  /* លេខស្ទួនច្រើនក្រុមហ៊ុន ⇒ រំលង */
+          r.cpOwnerTin = ks[0];
+          r.cpOwnerName = nameOfTin(ks[0]);
+          tally[ks[0]] = (tally[ks[0]] || 0) + 1;
+          hits++;
+        });
+        /* ជំហាន ២ ៖ ជួរដែលនៅសល់ (លេខរកមិនឃើញក្នុងសៀវភៅយើង = «យើងមិនបាន
+           ប្រកាស») ទទួលម្ចាស់ភាគច្រើននៃថតនោះ — តែពេលភស្តុតាងច្បាស់លាស់។
+           ⚠ ៧៥% មិនមែន ៦០% ៖ ថតលាយក្រុមហ៊ុនពីរ ៣/៥ = ៦០% ធ្លាប់ឆ្លងកាត់។ */
+        const best = Object.keys(tally).sort(function(a,b){ return tally[b] - tally[a]; })[0];
+        const strong = best && hits >= 3 && tally[best] >= hits * 0.75;
+        if(strong){
+          const nm = nameOfTin(best);
+          rows.forEach(function(r){ if(!r.cpOwnerTin){ r.cpOwnerTin = best; r.cpOwnerName = nm; } });
+        }
+        if(best){
+          cpOwnerReport.push((strong ? "✓ " : "◐ ") + (fold || "(ថតគ្មានឈ្មោះ)") + " → "
+            + (nameOfTin(best) || best) + " (តាមលេខវិក្កយបត្រ " + tally[best] + "/" + hits + ")"
+            + (strong ? "" : " — ជួរដែលផ្គូបានប៉ុណ្ណោះត្រូវចំណាំ"));
+        }else{
+          cpOwnerReport.push("⚠ " + (fold || "(ថតគ្មានឈ្មោះ)") + " → មិនអាចកំណត់ក្រុមហ៊ុនបាន");
+        }
+      });
+      combined.forEach(function(r){ delete r.__fold; });
+    }
+    /* ⚠ ប្រាប់ជាក់ស្តែងថាថតរងណាទៅជាប់ក្រុមហ៊ុនណា — បើផ្គូមិនបាន អ្នកប្រើ
+       ត្រូវដឹងភ្លាម ជាជាងឆ្ងល់ថាហេតុអ្វីក្រុមហ៊ុនលើសចេញក្នុងតារាងសង្ខេប។ */
+    if(cpOwnerReport.length){
+      const uniq = cpOwnerReport.filter(function(v,i,a){ return a.indexOf(v) === i; });
+      const bad = uniq.filter(function(v){ return v.indexOf("⚠") === 0; });
+      alert("📁 ថតរង → ក្រុមហ៊ុនដៃគូ ៖\n" + uniq.join("\n")
+        + (bad.length ? "\n\n⚠ ថតដែលផ្គូមិនបាន នឹងផ្គូផ្គងតាមលេខវិក្កយបត្រធម្មតា — សូមប្តូរឈ្មោះថតឱ្យដូចឈ្មោះក្រុមហ៊ុនក្នុងសៀវភៅ។" : ""));
     }
     evt.target.value = "";
   }
@@ -12521,6 +13644,27 @@ function renderFilteredCross(which, hasData){
   if(!hasData){
     document.getElementById(tableId).innerHTML = `<tbody><tr><td style="padding:24px;text-align:center;color:var(--muted);">⏳ លទ្ធផលផ្គូផ្គងនឹងបង្ហាញនៅពេលមានការផ្ទុកឯកសាររបស់ក្រុមហ៊ុនដៃគូ (ផ្ទាំង ${which==="crossSale"?"CP_PURCHASE":"CP_SALE"}) សិន។</td></tr></tbody>`;
     if(countEl) countEl.textContent = "";
+    /* ⚠⚠ [stated] ២០២៦-០៨-១៨ ៖ «ពេលខ្ញុំចុចលុប ហេតុអ្វីនៅជាប់ព័ត៌មានទៀត» ។
+       មូលហេតុ ៖ ផ្ទាំង Crosscheck សង់ប្លុកជាច្រើន **ក្រៅតារាង** (ក្បាល
+       ក្រុមហ៊ុនដៃគូ · តារាងសរុបតាមឆ្នាំ · របារ · ការស្វែងរក · CN/DN ·
+       ទំព័រ) ដោយបញ្ចូលទៅក្នុង DOM ដាច់ដោយឡែក។ ផ្លូវ «គ្មានទិន្នន័យ»
+       សម្អាតតែ `innerHTML` នៃតារាង រួចចេញភ្លាម ⇒ ប្លុកឯទៀតនៅសល់ ហើយ
+       បង្ហាញលេខចាស់ ទោះទិន្នន័យត្រូវលុបអស់ហើយ។
+       ⚠ ការសម្អាតត្រូវរាប់ប្លុកទាំងអស់តាម id ៖ បើថែមប្លុកថ្មីនៅផ្ទាំងនេះ
+         ត្រូវបន្ថែមឈ្មោះវាក្នុងបញ្ជីខាងក្រោមផង។ */
+    ["chd-", "psum-", "ysum-", "cbar-", "csearch-", "cdchk-", "pager-"].forEach(function(p){
+      const el = document.getElementById(p + which);
+      if(el) el.remove();
+    });
+    /* តម្រងក៏ត្រូវសម្អាតដែរ — បើទុក ការ upload លើកក្រោយនឹងចេញទទេស្ងាត់ៗ */
+    filters[which] = "";
+    crossPage[which] = 0; crossYear[which] = ""; crossDiffOnly[which] = false;
+    crossStat[which] = ""; crossSearch[which] = "";
+    crossYearOff[which] = {};
+    const selEl = document.getElementById("filter-" + which);
+    if(selEl) selEl.value = "";
+    const inpEl = document.getElementById("search-" + which);
+    if(inpEl) inpEl.value = "";
     return;
   }
   const full = which==="crossSale" ? crossSaleResult : crossPurchaseResult;
@@ -12540,6 +13684,27 @@ function renderFilteredCross(which, hasData){
      ដកអ្វីចេញទាល់តែសោះ។ ⚠ តម្រងណាក៏ដោយត្រូវដាក់ **ក្រោយ** concat។ */
   const off = crossYearOff[which] || {};
   if(Object.keys(off).length) scoped = scoped.filter(r=> !off[crossRowYear(r)]);
+  /* ⚠ តារាងសង្ខេបគ្រប់ក្រុមហ៊ុនត្រូវសង់ពី `shown` (មុនតម្រងក្រុមហ៊ុន)
+     បូក `theirs` — បើសង់ពី `scoped` នោះពេលជ្រើសក្រុមហ៊ុនណាមួយ វានឹង
+     នៅសល់តែមួយជួរ ហើយបាត់ន័យសង្ខេប។ */
+  try{
+    const allRows = shown.concat(theirs).filter(r=>{
+      const off = crossYearOff[which] || {};
+      return !Object.keys(off).length || !off[crossRowYear(r)];
+    });
+    renderCrossPartnerSummary(which, crossPartnerSummary(which, allRows, full.__partners || []));
+    /* ⚠ បន្ទាប់ពីគូរតារាងសង្ខេប (ដែលនៅតែបង្ហាញធាតុដែលដកចេញ ដើម្បីអោយ
+       យកមកវិញបាន) ទើបច្រោះជួរដែលដកចេញពីតារាងខាងក្រោម និងសរុប។ */
+  }catch(e){ console.error("partner summary", e); }
+  const exX = crossExcluded[which] || {};
+  if(Object.keys(exX).length){
+    scoped = scoped.filter(function(r){
+      const k = r.theirs
+        ? ((r.cpOwnerTin ? (crossExclKeyFor(which, r.cpOwnerTin) || "") : ""))
+        : partnerKey(r);
+      return !k || !exX[k];
+    });
+  }
   renderCrossYearSummary(which, scoped);
   let rows = scoped;
   if(crossYear[which]) rows = rows.filter(r=> crossRowYear(r)===crossYear[which]);
@@ -12649,10 +13814,25 @@ function renderPartnerSummary(containerId, rows, which){
 /* Upload a partner document for ONE specific company directly from the Top 10
    table — appended into the existing CP_PURCHASE / CP_SALE pool (not replacing
    other companies' data) so it becomes available for crosscheck. */
-function handleFileImportForCompany(evt, storeName, kind, companyName){
+function handleFileImportForCompany(evt, storeName, kind, companyName, companyTin){
+  /* [stated] ២០២៦-០៨-១៨ ៖ «បានតែ file select upload folder ទាំងមូលអត់បាន»
+     ⇒ បន្ថែម `webkitdirectory` មួយទៀតក្បែរប៊ូតុងឯកសារ។ មុខងារនេះទទួល
+     ទាំងពីរដោយមិនប្តូរអ្វី ព្រោះវាធ្វើការលើ `evt.target.files` ដដែល។
+     ⚠ ថតទាំងមូលនាំមកនូវឯកសារឥតបានការផង ៖ ត្រូវច្រោះចេញនូវ ៖
+       · `~$…` (ឯកសារចាក់សោបណ្តោះអាសន្នរបស់ Excel — បើអានវា XLSX.read គាំង)
+       · ឯកសារលាក់ដែលចាប់ផ្តើមដោយ `.` (ឧ. `.DS_Store` លើ Mac)
+     ⚠ `accept` មិនដើរជាមួយ `webkitdirectory` ទេ ⇒ ការច្រោះនាមត្រកូល
+       ត្រង់នេះជាការការពារតែមួយគត់។ */
   const files = Array.from(evt.target.files || []);
-  const validFiles = files.filter(f => /\.(xlsx|xls|csv)$/i.test(f.name));
-  if(validFiles.length === 0){ evt.target.value = ""; return; }
+  const validFiles = files.filter(f =>
+    /\.(xlsx|xls|csv)$/i.test(f.name) &&
+    !/^~\$/.test(f.name) &&
+    !/^\./.test(f.name));
+  if(validFiles.length === 0){
+    evt.target.value = "";
+    if(files.length) alert("⚠ រកមិនឃើញឯកសារ Excel (.xlsx / .xls / .csv) ក្នុងថតនេះទេ។");
+    return;
+  }
 
   let combined = [];
   let filesDone = 0;
@@ -12688,6 +13868,20 @@ function handleFileImportForCompany(evt, storeName, kind, companyName){
       alert("⚠ រកមិនឃើញជួរទិន្នន័យត្រឹមត្រូវក្នុងឯកសារនេះ");
       return;
     }
+    /* ⚠⚠ [stated] ២០២៦-០៨-១៨ ៖ «នៅតែមានក្រុមហ៊ុនតែមិនបានរើស វាលោតចូល
+       ក្នុងនេះដែរ … ក្រុមហ៊ុនផ្សេងមានទិញពីក្រុមហ៊ុនចឹង តែយើងមិនបានរើស
+       ក៏វាចេញមកដែរ» ។ របៀប «single» ផ្គូផ្គងតាម **លេខវិក្កយបត្រតែមួយ**
+       ហើយថតច្រើនត្រូវបញ្ចូលក្នុងឃ្លាំងតែមួយ ⇒ លេខវិក្កយបត្ររបស់យើងសម្រាប់
+       ក្រុមហ៊ុន X អាចទៅផ្គូនឹងជួររបស់ដៃគូ Y ដោយចៃដន្យ។
+       ⇒ ចំណាំម្ចាស់ថតលើជួរនីមួយៗ ៖ អ្នកប្រើរើសថតពីជួររបស់ក្រុមហ៊ុនណា
+         ជួរទាំងនោះជារបស់ក្រុមហ៊ុននោះ។ `crosscheck` ប្រើវាដើម្បីហាមការ
+         ផ្គូឆ្លងក្រុមហ៊ុន។ ថតដែល upload តាមប៊ូតុងទូទៅ គ្មានម្ចាស់ ⇒
+         ដំណើរការដូចមុន។ */
+    const ownTin = (typeof tin9 === "function") ? tin9(companyTin || "") : "";
+    combined.forEach(r=>{
+      if(ownTin) r.cpOwnerTin = ownTin;
+      if(companyName) r.cpOwnerName = companyName;
+    });
     const existing = state[storeName];
     let nextNo = existing.reduce((m,r)=> Math.max(m, Number(r.no)||0), 0);
     combined.forEach(r=>{ nextNo++; r.no = nextNo; });
@@ -12755,7 +13949,9 @@ function renderTopCompaniesTable(containerId, storeName){
   const targetStore = storeName==="sale" ? "cpPurchase" : "cpSale";
   const targetKind = storeName==="sale" ? "purchase" : "sale";
 
-  let html = `<thead><tr><th title="ផ្ទុកឯកសារដៃគូសម្រាប់ក្រុមហ៊ុននេះ">📁</th><th>ល.រ</th><th>ក្រុមហ៊ុន</th><th>TIN</th><th>សរុប (KHR)</th><th>%</th>`;
+  /* [stated] ២០២៦-០៨-១៨ ៖ «មិនបាច់រើសឯកសារទេ select folder ទាំងម្តង មានតែ
+     ១ បានហើយ» ⇒ ប៊ូតុងតែមួយ ៖ ជ្រើសថត។ ការជ្រើសឯកសារម្តងមួយៗត្រូវលុបចោល។ */
+  let html = `<thead><tr><th title="📁 ជ្រើសថតទាំងមូល (សម្រាប់ក្រុមហ៊ុននេះ)">📁</th><th>ល.រ</th><th>ក្រុមហ៊ុន</th><th>TIN</th><th>សរុប (KHR)</th><th>%</th>`;
   years.forEach(y=> html += `<th>${y}</th>`);
   html += `<th>លម្អិត</th>`;
   html += `</tr></thead><tbody>`;
@@ -12764,9 +13960,9 @@ function renderTopCompaniesTable(containerId, storeName){
     const nameEsc = escJsAttr(c.name);
     const keyEsc = escJsAttr(c.key);
     html += `<tr class="partner-row" onclick="openCompanyDetail('${storeName}','${keyEsc}')" title="ចុចដើម្បីមើលលម្អិតការលក់/ទិញរបស់ ${escAttr(c.name)}">
-      <td style="text-align:center;" onclick="event.stopPropagation()">
-        <label class="file-label" style="padding:4px 8px; font-size:12px; display:inline-block;" title="ផ្ទុកឯកសារដៃគូ របស់ ${escAttr(c.name)} ដើម្បី Crosscheck">📁
-          <input type="file" accept=".xlsx,.xls,.csv" multiple style="display:none" onchange="handleFileImportForCompany(event,'${targetStore}','${targetKind}','${nameEsc}')">
+      <td style="text-align:center; white-space:nowrap;" onclick="event.stopPropagation()">
+        <label class="file-label" style="padding:4px 8px; font-size:12px; display:inline-block;" title="ជ្រើសថតទាំងមូល របស់ ${escAttr(c.name)} — អានឯកសារ Excel គ្រប់ថតរង">📁
+          <input type="file" webkitdirectory directory multiple style="display:none" onchange="handleFileImportForCompany(event,'${targetStore}','${targetKind}','${nameEsc}','${escAttr(c.tin||'')}')">
         </label>
       </td>
       <td class="rank-cell">${i+1}</td>
@@ -13676,6 +14872,12 @@ function renderAll(){
   populateProductOptions("otherExpenses");
   populateMinistryOptions("sale");
   populateMinistryOptions("purchase");
+  /* [stated] ២០២៦-០៨-១៨ ៖ «ជួយបន្ថែមកន្លែងដើម្បីអាច filter ផ្នែក ទំនិញ/សេវា
+     ផង ទាំង purchase និង sale» ។ ⚠ `getFilteredIndices` គាំទ្រ `product-*`
+     និង `search-product-*` រួចហើយ (សង់សម្រាប់ ចំណាយផ្សេងៗ) — ខ្វះតែប្រអប់
+     និងការបំពេញជម្រើសប៉ុណ្ណោះ ; កុំសរសេរតម្រងថ្មីស្ទួន។ */
+  populateProductOptions("sale");
+  populateProductOptions("purchase");
   renderDataTable("table-sale", getFilteredIndices("sale"), true, "sale");
   renderDataTable("table-purchase", getFilteredIndices("purchase"), true, "purchase");
   renderDataTable("table-cpPurchase", getFilteredIndices("cpPurchase"), true, "cpPurchase");
@@ -15084,6 +16286,55 @@ function buildTblTPDataRows(tin){
    ដែលធ្វើអោយចំណូល និងចំណាយប្រចាំខែចេញ ០ ទាំងអស់។ ត្រូវនាំចេញជា hook។ */
 window.__vatMonthlyAgg = function(){
   try{ return getVATMonthlyAggregates() || {}; }catch(e){ return {}; }
+};
+
+/* [stated] ២០២៦-០៨-១៨ ៖ «ចង់ចុចមើលបាន … តើចំណាយនោះចាយលើអ្វី ក្រុមហ៊ុនណា
+   និងមាន CN DN ឬអត់» នៅជួររងនៃផ្នែកវិភាគហានិភ័យ។
+   ⚠ ការដាក់ជាក្រុមត្រូវ **ដូចបេះបិទ** នឹង `CC.riskMonthly` ៖ ជួរដែលធីក
+     «មិនអនុញ្ញាតឥណទាន» ចេញពីក្រុម taxable ទៅក្រុម nonCred វិញ (តម្លៃ
+     វិក្កយបត្រសរុប) — បើមិនដូច្នេះទេ ផលបូកក្នុងប្រអប់នឹងខុសពីតារាង។
+   ⚠ បង្គុំតាម TIN|ឈ្មោះ ព្រោះឈ្មោះតែមួយអាចមានច្រើន TIN ក្នុងសៀវភៅ។ */
+window.__purchasePartners = function(){
+  const out = {};
+  try{
+    const src = (typeof window.__getMainVatSourceData === 'function') ? window.__getMainVatSourceData() : null;
+    if(!src) return out;
+    const pos = v => (typeof v === 'number' && v > 0);
+    const put = (year, group, r, amt)=>{
+      if(!amt) return;
+      const Y = out[String(year)] || (out[String(year)] = {});
+      const G = Y[group] || (Y[group] = {});
+      const tin  = String(r.tin || '').trim();
+      const name = String(r.name || '').trim();
+      const k = tin + '|' + name;
+      const e = G[k] || (G[k] = { tin:tin, name:name, amt:0, n:0 });
+      e.amt += amt; e.n++;
+    };
+    (src.purchase || []).forEach(r=>{
+      const mk = parseDDMMYYYY(r.date); if(!mk) return;
+      const v = r.vat || {};
+      if(pos(v.nonCreditable))                      put(mk.year, 'nonCred', r, (r.amount || 0));
+      else if(pos(v.vatLocal) || pos(v.vatExport))  put(mk.year, 'taxable', r, (v.baseExclVat || 0));
+      if(pos(v.nonVatBase))                         put(mk.year, 'nonVat',  r, (v.nonVatBase || 0));
+    });
+    (src.purchaseCD || []).forEach(r=>{
+      const mk = parseDDMMYYYY(r.date); if(!mk) return;
+      const base = Math.abs((r.vat && r.vat.baseExclVat) || 0);
+      put(mk.year, (String(r.category||'').toUpperCase() === 'DEBIT') ? 'dn' : 'cn', r, base);
+    });
+    (src.otherExpenses || []).forEach(r=>{
+      const mk = parseDDMMYYYY(r.date); if(!mk) return;
+      put(mk.year, 'other', r, (r.amount || 0));
+    });
+    /* បម្លែងទៅជាបញ្ជីតម្រៀបតាមទឹកប្រាក់ធំទៅតូច */
+    Object.keys(out).forEach(y=>{
+      Object.keys(out[y]).forEach(g=>{
+        out[y][g] = Object.keys(out[y][g]).map(k=> out[y][g][k])
+                          .sort((a,b)=> b.amt - a.amt);
+      });
+    });
+  }catch(e){}
+  return out;
 };
 
 window.__vatDeclaredByYear = function(){
@@ -17680,6 +18931,30 @@ function vatSrcHasFile(){
 }
 /* ការវាយដោយដៃមានប្រសិទ្ធភាពពេលគ្មានឯកសារ ឬពេលដោះសោ */
 function vatManualActive(){ return !vatSrcHasFile() || vatManUnlocked; }
+/* ══ [stated] ២០២៦-០៨-១៨ ៖ «នៅផ្នែក purchase and sale អាចឱ្យខ្ញុំបញ្ចូល
+   PR CN DN and SR CN DN បានដោយដៃផងដែរ ហើយវារត់ទៅការគណនានៅផ្នែកការគណនា
+   ឡើងវិញ និង VAT ផងដែរ» ══════════════════════════════════════════════
+   ⚠⚠ ច្បាប់ចាក់សោចាស់ជា **ទាំងអស់ ឬគ្មាន** ៖ `vatManualActive()` ត្រឡប់
+     false ភ្លាមៗនៅពេលមាន SALE ឬ PURCHASE upload ។ តែករណីរបស់គេគឺ ៖
+     upload ទិន្នានុប្បវត្តិទិញ-លក់ **ដោយគ្មានឯកសារ PR_CD / SR_CD** ⇒
+     ការវាយ CN/DN ដោយដៃត្រូវបានចាក់សោទាំងស្រុង ដោយគ្មានឯកសារជាន់សោះ។
+   ⇒ ចាក់សោ **តាមជួរឈរ** វិញ ៖ ជួរឈរណាដែលឯកសារពិតជាមាន ឯកសារឈ្នះ ;
+     ជួរឈរណាដែលគ្មានឯកសារ វាយដោយដៃបាន។ 🔓 ដោះសោនៅតែជាន់លើទាំងអស់។
+   ⚠ ច្បាប់ «ឯកសារឈ្នះ» មិនផ្លាស់ប្តូរទេ — គ្រាន់តែវាស់វាអោយម៉ត់ចត់ជាង។ */
+const VAT_MAN_SRC = { prCN:'purchaseCD', prDN:'purchaseCD',
+                      srCN:'saleCD',     srDN:'saleCD',
+                      otherExpenses:'otherExpenses' };
+function vatSrcHasCol(col){
+  try{
+    const src = (typeof window.__getMainVatSourceData === 'function') ? window.__getMainVatSourceData() : null;
+    if(!src) return false;
+    const k = VAT_MAN_SRC[col];
+    /* ⚠ ជួរ CN/DN ដែលវាយដោយដៃត្រូវបានបញ្ចូលក្នុង src រួច ⇒ បើរាប់វាដែរ
+       ជួរឈរនឹងចាក់សោខ្លួនឯង។ រាប់តែជួរមកពីឯកសារ (`__manual` មិនមែន)។ */
+    return !!(k && Array.isArray(src[k]) && src[k].some(function(r){ return r && !r.__manual; }));
+  }catch(e){ return false; }
+}
+function vatManColActive(col){ return vatManUnlocked || !vatSrcHasCol(col); }
 function vatManualKey(year, month){ return String(year) + '-' + String(month); }
 function vatManualGet(year, month){ return vatManual[vatManualKey(year, month)] || {}; }
 function vatManualSet(year, month, col, val){
@@ -17699,13 +18974,16 @@ function getVATMonthlyAggregates_(){
   /* ដាក់តម្លៃដៃចូលក្រោយបំផុត ដូច្នេះវាហូរទៅគ្រប់កន្លែងដែលអានពី agg —
      ទម្រង់អតប · អាករត្រូវបង់ (គណនា) · TblVAT · ការគណនាពន្ធឡើងវិញ។ */
   const applyManual = ()=>{
-    if(!vatManualActive()) return agg;
+    /* ⚠ ការសម្រេចធ្វើតាម **ជួរឈរ** ឥឡូវ (មើលកំណត់សម្គាល់នៅ vatManColActive) ;
+       បើគ្មានជួរឈរណាមួយសកម្មទេ ទើបចេញភ្លាម។ */
+    const live = VAT_MAN_COLS.filter(vatManColActive);
+    if(!live.length) return agg;
     (vatManYears || []).forEach(y=>{ for(let m = 1; m <= 12; m++) bucket(String(y), m); });
     Object.keys(vatManual).forEach(k=>{
       const m = k.match(/^(\d{4})-(\d{1,2})$/);
       if(!m) return;
       const b = bucket(m[1], Number(m[2]));
-      VAT_MAN_COLS.forEach(c=>{ if(vatManual[k][c]) b[c] = vatManual[k][c]; });
+      live.forEach(c=>{ if(vatManual[k][c]) b[c] = vatManual[k][c]; });
     });
     return agg;
   };
@@ -17728,6 +19006,13 @@ function getVATMonthlyAggregates_(){
       purVat:0,
       purLocal:0, purImport:0, purReverse:0,
       purNonCreditable:0, purNonVatBase:0,
+      /* [stated] ២០២៦-០៨-១៨ ៖ មូលដ្ឋាន (តម្លៃមិនរួមអតប) នៃជួរ «មិនអនុញ្ញាត
+         ឥណទាន» ដែល **បានបូកចូល purLocal/purImport រួចហើយ** ។ ត្រូវការ
+         ដើម្បីអាចដកវាចេញ រួចដាក់តម្លៃវិក្កយបត្រសរុបជំនួស នៅផ្នែកវិភាគ
+         ហានិភ័យ ដោយមិនរាប់ការទិញតែមួយពីរដង។ បើសៀវភៅដាក់អាករនៅជួរ
+         «មិនអនុញ្ញាតឥណទាន» តែម្នាក់ឯង (purLocal គ្មាន) នោះវានៅ 0 ហើយ
+         គ្មានអ្វីត្រូវដក — រូបមន្តត្រូវទាំងពីរករណី។ */
+      purNonCredBaseInc:0,
       otherExpenses:0, prCN:0, prDN:0, srCN:0, srDN:0,
     };
     return agg[year][month];
@@ -17770,7 +19055,10 @@ function getVATMonthlyAggregates_(){
     if(pos(v.vatLocal))        b.purVat    += v.vatLocal;
     if(pos(v.vatExport))       b.purVat    += v.vatExport;
     if(pos(v.vatReverseLocal) || pos(v.vatReverseImport)) b.purReverse += (v.baseExclVat || 0);
-    if(pos(v.nonCreditable))   b.purNonCreditable += (r.amount || 0);
+    if(pos(v.nonCreditable)){
+      b.purNonCreditable += (r.amount || 0);
+      if(pos(v.vatLocal) || pos(v.vatExport)) b.purNonCredBaseInc += (v.baseExclVat || 0);
+    }
     b.purNonVatBase += (v.nonVatBase || 0);
   });
 
@@ -19891,10 +21179,71 @@ window.__getAuditHistoryForCover = function(){
   try{ return getAllAuditSheetData(); }catch(e){ return []; }
 };
 
+/* [stated] ២០២៦-០៨-១៨ ៖ ទិន្នានុប្បវត្តិទិញ ពេលខ្លះ **មិនរួម** ទឹកប្រាក់
+   ត្រូវបើកនៃពន្ធកាត់ទុកទេ ដូច្នេះផ្នែកវិភាគហានិភ័យត្រូវការវាដើម្បីអោយ
+   អ្នកប្រើធីកបូកចូលចំណាយប្រចាំខែបាន។
+   ⚠ `base` = ទឹកប្រាក់ត្រូវបើក (ជួរ ៩) ដែលជា **ចំណាយពិត** ; `tax` = ពន្ធ
+     កាត់ទុក (ជួរ ១០)។ កុំច្រឡំពីរនេះ — ការបូកពន្ធជំនួសមូលដ្ឋាននឹងធ្វើអោយ
+     ចំណាយតូចជាងការពិតប្រហែល ៨៥%។
+   ⚠ ត្រឡប់ខែៗផងដែរ (`mBase`) ព្រោះការធៀបជាដុល្លារបែងចែកតាមអត្រាខែ។ */
+window.__whtByYear = function(){
+  const out = {};
+  try{
+    (state.wht || []).forEach(r=>{
+      const d = parseDMY(r.date); if(!d) return;
+      const y = String(d.getFullYear()), i = d.getMonth();
+      if(!out[y]) out[y] = { base:0, tax:0, n:0,
+                             mBase:new Array(12).fill(0), mTax:new Array(12).fill(0) };
+      const b = +r.baseAmount || 0, t = +r.amount || 0;
+      out[y].base += b; out[y].tax += t; out[y].n++;
+      if(i >= 0 && i < 12){ out[y].mBase[i] += b; out[y].mTax[i] += t; }
+    });
+  }catch(e){ console.warn('whtByYear:', e); }
+  return out;
+};
+
+/* [stated] ២០២៦-០៨-១៨ ៖ ប្រអប់វាយ CN/DN ដោយដៃរស់នៅផ្ទាំង ទិញ/លក់ ដែល
+   ស្ថិតក្នុងប្លុក script ផ្សេង ⇒ ត្រូវមាន hook ដូចរាល់ការហៅឆ្លង IIFE ។ */
+window.__vatManualAPI = {
+  get:  function(y, m){ try{ return vatManualGet(y, m) || {}; }catch(e){ return {}; } },
+  set:  function(y, m, col, val){ try{ vatManualSet(y, m, col, val); }catch(e){} },
+  colActive: function(col){ try{ return vatManColActive(col); }catch(e){ return false; } },
+  hasFileCol: function(col){ try{ return vatSrcHasCol(col); }catch(e){ return false; } },
+  years: function(){ try{ return (vatManYears || []).slice(); }catch(e){ return []; } },
+  addYear: function(y){
+    try{
+      var s = String(Number(y) || '');
+      if(!s) return;
+      if((vatManYears || []).indexOf(s) < 0){ vatManYears.push(s); saveVatManYears(); }
+    }catch(e){}
+  },
+  unlocked: function(){ return !!vatManUnlocked; },
+  setUnlocked: function(v){
+    vatManUnlocked = !!v;
+    try{ if(window.__bumpDataVersion) window.__bumpDataVersion(); }catch(e){}
+    try{ renderVATPrintView(); }catch(e){}
+  }
+};
+
 window.__getMainVatSourceData = function(){
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៨ ៖ CN/DN ដែលវាយដោយដៃ មិនមែនតែទឹកប្រាក់ទេ —
+     មាន កាលបរិច្ឆេទ · លេខវិក្កយបត្រ CN/DN · ទឹកប្រាក់ · និងលេខវិក្កយបត្រ
+     លក់/ទិញដើមដែលត្រូវបូក ឬដក។ ដូច្នេះវាជា **ជួរឯកសារពេញ** មិនមែនតួលេខ
+     ប្រចាំខែ ⇒ បញ្ចូលវាត្រង់ប្រភពតែមួយនេះ ដែលគ្រប់ការគណនាអានពី ⇒ ទម្រង់
+     អតប · ការគណនាពន្ធឡើងវិញ · TblVAT ទទួលបានដូចជួរមកពីឯកសារបេះបិទ។
+     ⚠ ជួរដៃ **បូកបន្ថែម** លើឯកសារ មិនជាន់ទេ ៖ CN/DN នីមួយៗជាឯកសារដាច់
+       ដោយឡែក ដូច្នេះការជាន់នឹងបាត់ឯកសារពិត។ (ខុសពី vatManual ដែលជា
+       តួលេខសរុបប្រចាំខែ ហើយត្រូវជាន់។) */
+  var pcd = state.purchaseCD || [], scd = state.saleCD || [];
+  try{
+    if(typeof cdManualAsRows === 'function'){
+      pcd = pcd.concat(cdManualAsRows('purchase'));
+      scd = scd.concat(cdManualAsRows('sale'));
+    }
+  }catch(e){ console.error('cdManual inject', e); }
   return {
     purchase: state.purchase, sale: state.sale,
-    purchaseCD: state.purchaseCD, saleCD: state.saleCD,
+    purchaseCD: pcd, saleCD: scd,
     otherExpenses: state.otherExpenses,
   };
 };
@@ -26149,6 +27498,8 @@ window.__toiImport = function(data){
     employeeMatrixWrap: document.getElementById('employeeMatrixWrap'),
     matrixTitle: document.getElementById('matrixTitle'),
     matrixNatFilter: document.getElementById('matrixNatFilter'),
+    matrixSearch: document.getElementById('matrixSearch'),
+    matrixSearchClear: document.getElementById('matrixSearchClear'),
     empModalOverlay: document.getElementById('empModalOverlay'),
     empModalTitle: document.getElementById('empModalTitle'),
     empModalNationality: document.getElementById('empModalNationality'),
@@ -26800,6 +28151,11 @@ window.__toiImport = function(data){
   let matrixNatFilter = 'all'; // 'all' or a specific nationality string
 
   let matrixPage = 0;                 /* ទំព័របច្ចុប្បន្ននៃតារាងបុគ្គលិក */
+  let matrixQuery = '';               /* អក្សរដែលវាយក្នុងប្រអប់ស្វែងរក */
+  /* ធ្វើអោយអក្សរប្រៀបធៀបបាន ៖ លុបចន្លោះលើស និងបម្លែងជាអក្សរតូច។
+     ⚠ ខ្មែរគ្មានអក្សរធំ-តូច តែឈ្មោះខ្លះមានឡាតាំងលាយ ដូច្នេះ toLowerCase
+       នៅតែមានប្រយោជន៍ ; ការលុបចន្លោះជួយពេលឯកសារវាយ «សុខ  កាំ» ២ ដក។ */
+  const mxNorm = s => String(s == null ? '' : s).replace(/\s+/g, ' ').trim().toLowerCase();
   function renderEmployeeMatrix(){
     const { years, employees: allEmployees } = computeEmployeeYearMatrix(matrixView);
     els.matrixTitle.textContent = matrixView === 'salary' ? 'ប្រាក់បៀវត្សប្រកាស' : 'អត្ថប្រយោជន៍បន្ថែមប្រកាស';
@@ -26818,12 +28174,21 @@ window.__toiImport = function(data){
       els.matrixNatFilter.innerHTML = '';
     }
 
-    const employees = matrixNatFilter === 'all'
+    let employees = matrixNatFilter === 'all'
       ? allEmployees
       : allEmployees.filter(e => (e.nationality || '').trim() === matrixNatFilter);
 
+    /* តម្រងស្វែងរក ៖ ឈ្មោះ ឬ លេខសម្គាល់ ; ដំណើរការជាមួយតម្រងសញ្ជាតិ */
+    const q = mxNorm(matrixQuery);
+    if (q) employees = employees.filter(e =>
+      mxNorm(e.name).indexOf(q) >= 0 || mxNorm(e.id).indexOf(q) >= 0);
+
     if (!employees.length){
-      els.employeeMatrixWrap.innerHTML = `<p class="hint" style="padding:14px;">សូមផ្ទុក File ឬបញ្ចូលទិន្នន័យដែលមានខែច្បាស់លាស់ជាមុនសិន</p>`;
+      /* ⚠ ពេលកំពុងស្វែងរក កុំបង្ហាញសារ «សូមផ្ទុក File» — វាមិនមែនជាបញ្ហា
+         ទិន្នន័យទេ គ្រាន់តែគ្មានឈ្មោះត្រូវគ្នា។ */
+      els.employeeMatrixWrap.innerHTML = q
+        ? `<p class="hint" style="padding:14px;">រកមិនឃើញបុគ្គលិកដែលត្រូវនឹង «${escapeHtml(matrixQuery.trim())}»។</p>`
+        : `<p class="hint" style="padding:14px;">សូមផ្ទុក File ឬបញ្ចូលទិន្នន័យដែលមានខែច្បាស់លាស់ជាមុនសិន</p>`;
       return;
     }
 
@@ -26860,7 +28225,9 @@ window.__toiImport = function(data){
          </div>`
       : '';
 
-    els.employeeMatrixWrap.innerHTML = `
+    const hit = q ? `<p class="mx-hit">ត្រូវនឹង ${employees.length} នាក់ · «${escapeHtml(matrixQuery.trim())}»</p>` : '';
+
+    els.employeeMatrixWrap.innerHTML = hit + `
       <table class="missing-table mx-tbl" style="min-width:${340 + years.length * 110}px;">
         <thead><tr><th>ឈ្មោះនិយោជិត</th><th>សញ្ជាតិ</th><th>ស្ថានភាព</th>${theadCols}</tr></thead>
         <tbody>${bodyRows}</tbody>
@@ -26878,6 +28245,25 @@ window.__toiImport = function(data){
       renderEmployeeMatrix();
     });
   });
+
+  if (els.matrixSearch){
+    els.matrixSearch.addEventListener('input', () => {
+      matrixQuery = els.matrixSearch.value || '';
+      if (els.matrixSearchClear) els.matrixSearchClear.hidden = !matrixQuery;
+      matrixPage = 0;               /* ការស្វែងរកថ្មី = ចាប់ពីទំព័រទី១ */
+      renderEmployeeMatrix();
+    });
+  }
+  if (els.matrixSearchClear){
+    els.matrixSearchClear.addEventListener('click', () => {
+      els.matrixSearch.value = '';
+      matrixQuery = '';
+      els.matrixSearchClear.hidden = true;
+      matrixPage = 0;
+      renderEmployeeMatrix();
+      els.matrixSearch.focus();
+    });
+  }
 
   els.matrixNatFilter.addEventListener('click', e => {
     const btn = e.target.closest('.nat-filter-btn');
@@ -27795,6 +29181,27 @@ window.__toiImport = function(data){
       let i = MO.indexOf(String(r.month || ''));
       if(i < 0){ const n = parseInt(r.month, 10); i = (n >= 1 && n <= 12) ? n - 1 : -1; }
       if(i >= 0) out[y][i] += (+r.salary || 0) + (+r.fringe || 0);
+    });
+    return out;
+  };
+  /* [stated] ២០២៦-០៨-១៨ ៖ «ចង់ចុចទៅលើប្រកាសបៀវត្សប្រចាំខែ … អាចមើលដឹង
+     ប្រកាសបៀវត្ស និងអត្ថប្រយោជន៍បន្ថែមត្រូវបើក ប៉ុន្មានទៅតាមខែនីមួយៗ» ។
+     ⚠ `__tosMonthlyByYear` បូក បៀវត្ស + អត្ថប្រយោជន៍ ចូលគ្នា ហើយមានអ្នកប្រើ
+       រួចហើយ (ការបំបែកជាដុល្លារ) — កុំប្តូរវា ; នេះជា hook ថ្មីដាច់ដោយឡែក។
+     ⚠ ខែគ្មានជួរប្រកាសសោះ = **null មិនមែន 0** ដូចនឹង `__tosHeadcountByYear`
+       ៖ «មិនបានប្រកាស» និង «ប្រកាស ០» ជារឿងពីរផ្សេងគ្នា។ */
+  window.__tosMonthlySplitByYear = function(){
+    const MO = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const out = {};
+    (allRows || []).forEach(r=>{
+      const y = String(r.year || '');
+      if(!y) return;
+      let i = MO.indexOf(String(r.month || ''));
+      if(i < 0){ const n = parseInt(r.month, 10); i = (n >= 1 && n <= 12) ? n - 1 : -1; }
+      if(i < 0) return;
+      if(!out[y]) out[y] = { sal: new Array(12).fill(null), frg: new Array(12).fill(null) };
+      out[y].sal[i] = (+out[y].sal[i] || 0) + (+r.salary || 0);
+      out[y].frg[i] = (+out[y].frg[i] || 0) + (+r.fringe || 0);
     });
     return out;
   };
@@ -32473,6 +33880,27 @@ function narrSetLh(v){
    ច្បាប់ខាងក្រោមដាក់ #trkNarr នាំមុខ + !important ដើម្បីអោយអេក្រង់
    ដូចពេលព្រីនបេះបិទ។ */
 const NARR_SCREEN_FIX = `
+  /* ══ [stated] ២០២៦-០៨-២០ ៖ «សម្រាប់ការ view នៅ tablet អាចឱ្យ view នៅលើ
+     អេក្រង់ដូចរូបពេលព្រីនបានទេ» ⇒ ការមើលជាមុនបង្ហាញជា **សន្លឹកក្រដាស** ៖
+     ផ្ទៃស ស៊ុមស្រាល ស្រមោល និងចន្លោះរវាងសន្លឹក។
+     ⚠⚠ គ្មាន backtick ក្នុងកំណត់សម្គាល់នេះ (template literal — លើកទី ៥)។
+     ⚠ ទទឹងក្រដាសថេរ (186mm ជាប្រអប់អត្ថបទ) — កុំបង្រួមតាមអេក្រង់ ព្រោះការ
+       ចុះបន្ទាត់នឹងខុសពីព្រីន។ ជំនួសវិញប្រើ zoom ដែលមិនប៉ះការចុះបន្ទាត់
+       សោះ គ្រាន់តែបង្ហាញតូចជាង ⇒ អ្វីដែលឃើញ = អ្វីដែលចេញ។
+     ⚠ --nr-zoom កំណត់ដោយ JS (nrFitPaper) តាមទទឹងផ្ទាំងពិត។ */
+  @media screen{
+    #trkNarr .nr-page,#trkAudit .nr-page,#trkSum2 .nr-page{
+      zoom:var(--nr-zoom,1);
+      /* ⚠ ទទឹងក្រដាសពិត ៖ 186mm ជាប្រអប់អត្ថបទ បូករឹម 12mm សងខាង ⇒ 210mm
+         ដូច A4 ។ បើទុកអោយវាលាតតាមផ្ទាំង ការចុះបន្ទាត់នឹងខុសពីព្រីន។ */
+      width:210mm; box-sizing:border-box;
+      background:#fff; border:1px solid #E3E7E8; border-radius:2px;
+      box-shadow:0 2px 10px rgba(0,0,0,.14);
+      margin:0 auto 16px; padding:10mm 12mm;
+      overflow:hidden;
+    }
+    #trkNarr,#trkAudit,#trkSum2{ background:#F1F0E9; padding:10px 6px; }
+  }
   #trkNarr .nr-tbl{border-collapse:collapse !important; width:100% !important; min-width:0 !important;}
   /* ⚠ កុំកំណត់ padding ត្រង់នេះ ៖ វាធ្វើអោយអេក្រង់តឹងជាងព្រីន ហើយតារាង
      ដែលមើលទៅសមលើអេក្រង់ លោតទៅទំព័រ ២ ពេលព្រីន។ */
@@ -32518,6 +33946,36 @@ const NARR_SCREEN_FIX = `
     background:#FFFBF2; user-select:none;}
 `;
 
+/* ══ [stated] ២០២៦-០៨-២០ ៖ ការមើលជាមុនត្រូវមើលទៅដូចក្រដាសពិត សូម្បីលើ
+   ថេប្លេត ។ ទទឹងក្រដាសថេរ ⇒ លើអេក្រង់តូច វាហៀរចេញ។ `nrFitPaper` គណនា
+   `zoom` = ទទឹងផ្ទាំង ÷ ទទឹងក្រដាស (មិនលើស ១) ។
+   ⚠ ប្រើ `zoom` មិនមែន `transform:scale` ៖ zoom បង្រួមទាំងកម្ពស់ក្នុងលំហូរ
+     ដូច្នេះសន្លឹកបន្ទាប់រំកិលឡើងតាម ; transform ទុកចន្លោះទទេធំ។
+   ⚠ ការចុះបន្ទាត់មិនប្តូរទេ ព្រោះទទឹងក្រដាសនៅដដែល — អ្វីដែលឃើញ = អ្វី
+     ដែលចេញពីម៉ាស៊ីនព្រីន។ */
+function nrFitPaper(){
+  ['trkNarr','trkAudit','trkSum2'].forEach(function(id){
+    const host = document.getElementById(id);
+    if(!host) return;
+    const pg = host.querySelector('.nr-page');
+    if(!pg){ host.style.removeProperty('--nr-zoom'); return; }
+    const prev = host.style.getPropertyValue('--nr-zoom');
+    host.style.setProperty('--nr-zoom', '1');
+    const paper = pg.getBoundingClientRect().width;   /* ទទឹងពិតនៅ zoom 1 */
+    const avail = host.clientWidth - 16;
+    const z = (paper > 0 && avail > 0 && avail < paper) ? Math.max(0.35, avail / paper) : 1;
+    if(z === 1) host.style.removeProperty('--nr-zoom');
+    else host.style.setProperty('--nr-zoom', String(Math.round(z * 1000) / 1000));
+    if(prev && z === 1) host.style.removeProperty('--nr-zoom');
+  });
+}
+try{
+  window.addEventListener('resize', function(){
+    clearTimeout(window.__nrFitT);
+    window.__nrFitT = setTimeout(nrFitPaper, 150);
+  });
+}catch(e){}
+
 function renderNarr(){
   const box = document.getElementById('trkNarr');
   if(!box) return;
@@ -32534,6 +33992,7 @@ function renderNarr(){
   /* [stated] ការបង្រួមសម្រាប់ព្រីនតែប៉ុណ្ណោះ — អេក្រង់រក្សាគម្លាតធម្មតា
      ដើម្បីងាយអាន ដូច្នេះមិនកំណត់ --nr-lh លើ #trkNarr ទេ។ */
   box.innerHTML = '<div class="nr-tools" id="nrTools"></div>' + narrHtml(false);
+  try{ nrFitPaper(); }catch(e){}
   /* [stated] «ករណីធ្លាក់ជួរ … អាចកែដោយដៃបានទេ» និង «អាចបន្ថែម/លុបការចុះ
      បន្ទាត់បានទេ» ៖ បាទ — តួឯកសារនៅទីនេះកែបានផ្ទាល់ ហើយការព្រីនយក
      អ្វីដែលឃើញនៅលើអេក្រង់ ដូច្នេះអ្វីដែលកែ ព្រីនចេញដដែល។ */
@@ -32800,6 +34259,17 @@ const NARR_CSS = `
     padding-bottom:15mm; page-break-after:always; break-after:page;}
   .nr-page:last-child{page-break-after:auto; break-after:auto;}
   .nr-page > .nr-foot{position:absolute; left:0; right:0; bottom:0;}
+  /* ══ ទូរស័ព្ទ/ថេប្លេត ៖ កម្ពស់ស្វ័យប្រវត្តិ + ជើងទំព័រហូរតាមមាតិកា ══
+     ⚠⚠ កុំដាក់ backtick ក្នុងកំណត់សម្គាល់នេះ ៖ NARR_CSS ជា template literal
+       ⇒ backtick មួយបំបែកប្លុក script ទាំងមូល (ធ្លាប់កើតរួច ២០២៦-០៨-១៨)។
+     ⚠ ត្រូវលុប height ទាំង max-height ⇒ បើទុកមួយ ប្រអប់នៅតែថេរ។
+     ⚠ ជើងទំព័រត្រូវប្តូរទៅ position:static បើមិនដូច្នេះទេ ពេលប្រអប់គ្មាន
+       កម្ពស់ វាធ្លាក់ទៅជាន់លើមាតិកា។ */
+  @media print{
+    html.rsc-mobile-print .nr-page{ height:auto !important; max-height:none !important;
+      padding-bottom:6mm !important; overflow:visible !important; }
+    html.rsc-mobile-print .nr-page > .nr-foot{ position:static !important; margin-top:8px; }
+  }
   .nr-page > .nr-run{margin-bottom:12px;}
   .nr-shell{width:100%; border-collapse:collapse; table-layout:fixed;}
   .nr-shell > thead{display:table-header-group;}
@@ -33373,6 +34843,7 @@ function renderAudit(){
     document.head.appendChild(st);
   }
   box.innerHTML = '<div class="nr-tools"></div>' + arHtml(false);
+  try{ nrFitPaper(); }catch(e){}
   var cell = box.querySelector('.nr-shell > tbody > tr > td');
   if(cell){ cell.setAttribute('contenteditable','true'); cell.style.outline='none';
             narrBindEditKeys(cell); }
@@ -33982,6 +35453,7 @@ function renderSummary(){
     document.head.appendChild(st);
   }
   box.innerHTML = '<div class="nr-tools"></div>' + smHtml(false);
+  try{ nrFitPaper(); }catch(e){}
   var cell = box.querySelector('.nr-shell > tbody > tr > td');
   if(cell){ cell.setAttribute('contenteditable','true'); cell.style.outline='none';
             narrBindEditKeys(cell); }
@@ -36002,6 +37474,51 @@ CC.compute=function(){
     };
   });
 
+  /* ══ ខាតយោងទៅមុខ ត្រូវដើរតាមការកំណត់ឡើងវិញ ═══════════════════════
+     ⚠⚠ [stated] ២០២៦-០៨-១៨ ៖ «នៅពេលដែលឆ្នាំ២០២២ មានការកាត់ចំណាយមួយចំនួន
+     ចេញ វាមិនត្រូវមានខាតយោងទៅឆ្នាំ២០២៣ ទេ លុះត្រាតែការកាត់ចំណាយនោះតិចជាង
+     តែបើច្រើនជាងវាមិនមានអ្វីត្រូវយោងទៅកាត់កងនៅឆ្នាំបន្ទាប់ឡើយ» ។
+     មុននេះ E41 អាន `t.lossCF[y]` ដែលជាតួលេខ **តាមការប្រកាស** ⇒ ឆ្នាំ ២០២២
+     កាត់ចំណាយរួច E36 ក្លាយជាវិជ្ជមាន តែឆ្នាំ ២០២៣ នៅតែដកខាតយោង
+     ១០០,៩៤០,០២៨ ដដែល — ខាតដែលលែងមាន។
+     ដំណោះស្រាយ ៖ ដើរឆ្នាំពី **ចាស់ទៅថ្មី** ហើយរក្សា «អាងខាត» ៖
+       ប្រើ  = min(អាងខាត, E40 វិជ្ជមាន)          ← កាត់កងបានតែប៉ុណ្ណឹង
+       អាង  = អាង − ប្រើ + max(0, −E40)            ← ខាតថ្មីបញ្ចូលអាង
+     ⚠ ចាប់ផ្តើមអាងដោយតួលេខប្រកាសរបស់ឆ្នាំដំបូង (ខាតពីឆ្នាំក្រៅឯកសារ) ;
+       បើឆ្នាំមុនភ្ជាប់គ្នាបាត់ (ចន្លោះឆ្នាំ) ចាប់ផ្តើមអាងឡើងវិញពីតួលេខ
+       ប្រកាសរបស់ឆ្នាំនោះ — ខ្សែសង្វាក់កាត់ផ្តាច់ មិនអាចសន្មតបានទេ។
+     ⚠ មិនដកលើសពីតួលេខប្រកាសឡើយ (`Math.min(use, declared)`) ៖ ការកំណត់
+       ឡើងវិញអាចធ្វើអោយខាតតិចជាង តែមិនអាចបង្កើតខាតថ្មីអោយសហគ្រាសទេ។
+     ⚠ ត្រូវគណនាខ្សែសង្វាក់ពី E42 ចុះក្រោមឡើងវិញទាំងស្រុង (E43 · E47 · E50 ·
+       E52 · ត្រូវបង់) បើមិនដូច្នេះទេ តារាងនឹងបង្ហាញ E42 ថ្មី តែពន្ធចាស់។ */
+  (function(){
+    var asc=yrs.slice().sort(function(a,b){ return Number(a)-Number(b); });
+    var pool=null, prevN=null;
+    asc.forEach(function(y){
+      var o=out[y]; if(!o) return;
+      var n=Number(y), declared=+o.lossCF||0;
+      if(pool===null || prevN===null || n!==prevN+1) pool=declared;
+      var use=Math.min(pool, Math.max(0, o.e40));
+      if(use>declared) use=declared;
+      if(!(use>=0)) use=0;
+      o.lossCFDecl=declared;
+      pool=pool-use+Math.max(0, -o.e40);
+      prevN=n;
+      if(Math.round(use)===Math.round(declared)) return;   /* គ្មានអ្វីប្តូរ */
+      o.lossCF=use;
+      o.e42=o.e40-use;            o.taxable=o.e42;
+      o.e43=o.e42>0?o.e42*s.rate.toi:0;
+      o.e45=o.e43;
+      o.e47=Math.max(0,o.e45-(+o.foreign||0));
+      o.e50=Math.max(0,o.e47-(+o.dividend||0));
+      o.toiOnTaxable=o.e50;
+      o.e52=Math.max(o.e50,+o.minTax||0);   o.due=o.e52;
+      o.toiDue=Math.max(0,o.e52-(+o.wht||0)-(+o.prepaid||0));
+      o.credits=(+o.wht||0)+(+o.prepaid||0)+(+o.toiPaidDed||0);
+      o.toiPay=o.waived?0:Math.max(0,o.toiDue-(+o.toiPaidDed||0));
+    });
+  })();
+
   /* --- អតបបង់លើសយោងទៅការិយបរិច្ឆេទបន្ទាប់ ---
      [stated] កុំដកដោយស្វ័យប្រវត្តិ ៖ សហគ្រាសខ្លះបង្គត់លេខពេលបង់ ហើយមិន
      បានយោងលើសនោះទេ។ ដូច្នេះចំនួនលើសនៅតែ «បង្ហាញ» ជានិច្ច តែត្រូវ
@@ -37065,6 +38582,8 @@ if(window.MutationObserver){
 var Bn=function(l,v){ return {l:l,v:v}; };
 
 /* key -> [រូបមន្ត, ធាតុផ្សំ(y, o, s)] */
+/* option ដដែលសម្រាប់ប្រអប់បញ្ជីអ្នកផ្គត់ផ្គង់ទាំង ៤ */
+var PUR_OPT={head:"ឈ្មោះសហគ្រាស និង អតប", left:true, noResult:true};
 CC.BASIS={
   turnDecl:["ចំណូលប្រតិបត្តិការ ក្នុងជំហានទី៥ (B0)",function(){ return []; }],
   findAll:["ផលរកឃើញ + ការកំណត់ដែលចុចមកពីជំហានទី៤–៧",function(y,o,s){
@@ -37191,19 +38710,64 @@ CC.BASIS={
             Bn("ដក ៖ ស្តុកដើមគ្រា",-o.eStkO),
             Bn("បូក ៖ ស្តុកចុងគ្រា",o.eStkC),
             Bn("= ចំណាយសុទ្ធប្រចាំឆ្នាំ",o.expY)]; }],
-  rExpM:["ទិន្នានុប្បវត្តិទិញ ៖ តម្លៃមិនរួមអាករ + មិនជាប់អាករ + ចំណាយផ្សេងៗ (គ្មានអាករ ១០%)",function(y){ var o=CC.riskData()[y]||{};
-    return [Bn("ការទិញជាប់អាករ (ក្រោយ CN/DN, បូកនាំចូល)",o.expMT),
+  rExpM:["ទិន្នានុប្បវត្តិទិញ ៖ តម្លៃមិនរួមអាករ + មិនជាប់អាករ + ចំណាយផ្សេងៗ ; ការទិញមិនអនុញ្ញាតឥណទាន យកតម្លៃសរុបលើវិក្កយបត្រ (រួមអាករ)",function(y){ var o=CC.riskData()[y]||{};
+    return [Bn("ការទិញជាប់អាករ (ក្រោយ CN/DN, បូកនាំចូល · មិនរាប់មិនអនុញ្ញាតឥណទាន)",o.expMT),
+            Bn("ការទិញមិនអនុញ្ញាតឥណទាន (តម្លៃសរុបលើវិក្កយបត្រ · រួមអាករ)",o.expMC),
             Bn("ការទិញមិនជាប់អាករ",o.expMN),
             Bn("ចំណាយផ្សេងៗ",o.expMO),
+            /* ជួរទាំងពីរនេះចេញជានិច្ច (មិនធីក = «—») ដូច្នេះបញ្ជីស្លាក
+               ដដែលគ្រប់ឆ្នាំ ហើយ showBasis បង្រួមបានត្រឹមត្រូវ។ */
+            Bn("＋ ចំណាយបៀវត្សប្រចាំខែ (ធីក)", CC.riskAddOn("sal",y)?o.expAddSal:null),
+            Bn("＋ ចំណាយពន្ធកាត់ទុក ៖ ទឹកប្រាក់ត្រូវបើក (ធីក)", CC.riskAddOn("wht",y)?o.expAddWht:null),
             Bn("= សរុប",o.expM)]; }],
+  /* [stated] ២០២៦-០៨-១៨ ៖ ចង់ចុចមើលថាចំណាយនោះចាយលើក្រុមហ៊ុនណា និងមាន
+     CN/DN ឬអត់ — ជួររងទាំង ៤ បើកបញ្ជីអ្នកផ្គត់ផ្គង់ពីទិន្នានុប្បវត្តិទិញ។
+     ⚠ CN ដាក់ជា **អវិជ្ជមាន** និង DN ជាវិជ្ជមាន ដូចរូបមន្តក្នុងតារាង ;
+       ឆ្នាំណាគ្មាន CN/DN ជួរនោះចេញ «—» ដែលជាចម្លើយដោយផ្ទាល់។ */
+  /* ⚠⚠ [stated] ២០២៦-០៨-១៨ ៖ «CN DN នៅឆ្នាំ២០២៤ មានតែវាអត់ចេញឱ្យ» ។
+     មូលហេតុ ៖ ខ្ញុំអាន CN/DN តែពីឯកសារ PR_CD ប៉ុណ្ណោះ ; សហគ្រាសនេះ
+     **វាយ PR CN / PR DN ដោយដៃ** ក្នុងជួរ vatManual នៃទម្រង់ អតប ដែល
+     មិនមានឈ្មោះក្រុមហ៊ុនភ្ជាប់ ដូច្នេះក្រុម cn/dn ចេញទទេ ខណៈតារាង
+     (ដែលអានពី aggregate ក្រោយ applyManual) មានតួលេខ។
+     ⇒ បន្ថែមជួរ «នៅសល់» = សរុប prCN/prDN ក្នុង aggregate ដក ផលបូកតាម
+       ក្រុមហ៊ុនពីសៀវភៅ ⇒ ប្រអប់បូកចេញស្មើនឹងតារាងជានិច្ច ទោះ CN/DN មក
+       ពីឯកសារ ឬពីការវាយដោយដៃ។ */
+  rExpMT:["តម្លៃមិនរួមអាករ តាមអ្នកផ្គត់ផ្គង់ (មិនរាប់ជួរមិនអនុញ្ញាតឥណទាន) ដក PR CN បូក PR DN — ២០ ធំជាងគេ",function(y){ var o=CC.riskData()[y]||{};
+    var cnJ=CC.purPartSum(y,"cn"), dnJ=CC.purPartSum(y,"dn");
+    var cnR=(+o.expMCN||0)-cnJ, dnR=(+o.expMDN||0)-dnJ;
+    /* [stated] លំដាប់ ៖ សរុបមុនដក → PR CN/DN → សរុបក្រោយដក ។
+       ⚠ `expMT` ក្នុងតារាង **ដក CN បូក DN រួចហើយ** ដូច្នេះសរុបមុនដក
+         ត្រូវបូក CN ត្រឡប់វិញ និងដក DN ចេញ។ */
+    var pre=(+o.expMT||0)+(+o.expMCN||0)-(+o.expMDN||0);
+    return CC.purPartRows(y,"taxable",20)
+      .concat([Bn("= សរុបមុនដក PR CN / PR DN", pre)])
+      .concat(CC.purPartRows(y,"cn",10,"⊖ PR CN ៖ ",-1))
+      .concat([Bn("⊖ PR CN ៖ បញ្ចូលដោយដៃ / គ្មានឈ្មោះ", Math.round(cnR)?-cnR:null)])
+      .concat(CC.purPartRows(y,"dn",10,"⊕ PR DN ៖ ",1))
+      .concat([Bn("⊕ PR DN ៖ បញ្ចូលដោយដៃ / គ្មានឈ្មោះ", Math.round(dnR)?dnR:null)])
+      .concat([Bn("= សរុបក្រោយដក PR CN / PR DN",o.expMT)]); }, PUR_OPT],
+  rExpMC:["ការទិញមិនអនុញ្ញាតឥណទាន ៖ តម្លៃសរុបលើវិក្កយបត្រ (រួមអាករ) តាមអ្នកផ្គត់ផ្គង់ — ២០ ធំជាងគេ",function(y){ var o=CC.riskData()[y]||{};
+    return CC.purPartRows(y,"nonCred",20).concat([Bn("= សរុប",o.expMC)]); }, PUR_OPT],
+  rExpMN:["ការទិញមិនជាប់អាករ តាមអ្នកផ្គត់ផ្គង់ — ២០ ធំជាងគេ",function(y){ var o=CC.riskData()[y]||{};
+    return CC.purPartRows(y,"nonVat",20).concat([Bn("= សរុប",o.expMN)]); }, PUR_OPT],
+  rExpMO:["ចំណាយផ្សេងៗ តាមឈ្មោះ — ២០ ធំជាងគេ",function(y){ var o=CC.riskData()[y]||{};
+    return CC.purPartRows(y,"other",20).concat([Bn("= សរុប",o.expMO)]); }, PUR_OPT],
   expD:["ចំណាយប្រកាសប្រចាំឆ្នាំ − ចំណាយប្រកាសប្រចាំខែ",function(y){ var o=CC.riskData()[y]||{};
     return [Bn("ប្រចាំឆ្នាំ",o.expY),Bn("ដក ៖ ប្រចាំខែ",-o.expM),Bn("= គំលាត",o.expD)]; }],
   rSalY:["ជំហានទី៥ B23 + ជំហានទី៦ C8 + ជំហានទី៧ C8",function(y){ var o=CC.riskData()[y]||{};
     return [Bn("ជំហានទី៥ (B23)",o.sal5),Bn("ជំហានទី៦ (C8)",o.sal6),
             Bn("ជំហានទី៧ (C8)",o.sal7),Bn("= សរុប",o.salY)]; }],
-  rSalM:["ពន្ធលើប្រាក់បៀវត្សរ៍ ៖ បៀវត្សត្រូវបើក + អត្ថប្រយោជន៍បន្ថែម",function(y){ var o=CC.riskData()[y]||{};
-    return [Bn("បៀវត្សត្រូវបើក",o.salMS),Bn("អត្ថប្រយោជន៍បន្ថែមត្រូវបើក",o.salMF),
-            Bn("= សរុប",o.salM)]; }],
+  /* [stated] ២០២៦-០៨-១៨ ៖ ចង់ឃើញ **តាមខែនីមួយៗ** ថាបៀវត្ស និងអត្ថប្រយោជន៍
+     បន្ថែមត្រូវបើក ប៉ុន្មាន។ បញ្ជីជួរដដែលគ្រប់ឆ្នាំ (១២ ខែ × ២ + សរុប) ដូច្នេះ
+     showBasis បង្រួមតាមស្លាកបានត្រឹមត្រូវ ; ខែគ្មានប្រកាស = «—» ។ */
+  rSalM:["ពន្ធលើប្រាក់បៀវត្សរ៍ ៖ បៀវត្សត្រូវបើក + អត្ថប្រយោជន៍បន្ថែម តាមខែ",function(y){ var o=CC.riskData()[y]||{};
+    var M=CC.tosSplit()[String(y)]||{}, sal=M.sal||[], frg=M.frg||[], a=[], i;
+    for(i=0;i<12;i++) a.push(Bn("បៀវត្ស ៖ "+CC.KHMON[i], sal[i]==null?null:sal[i]));
+    a.push(Bn("= បៀវត្សត្រូវបើក សរុប",o.salMS));
+    for(i=0;i<12;i++) a.push(Bn("អត្ថប្រយោជន៍បន្ថែម ៖ "+CC.KHMON[i], frg[i]==null?null:frg[i]));
+    a.push(Bn("= អត្ថប្រយោជន៍បន្ថែម សរុប",o.salMF));
+    a.push(Bn("= សរុប",o.salM));
+    return a; }, {left:true, noResult:true}],
   salD:["បៀវត្សប្រចាំឆ្នាំ − បៀវត្សប្រចាំខែ",function(y){ var o=CC.riskData()[y]||{};
     return [Bn("ប្រចាំឆ្នាំ",o.salY),Bn("ដក ៖ ប្រចាំខែ",-o.salM),Bn("= គំលាត",o.salD)]; }],
   rStk:["តារាងតុល្យការ ជំហានទី៤ ៖ A15",function(y){ var o=CC.riskData()[y]||{};
@@ -37241,7 +38805,16 @@ CC.BASIS={
     return [Bn("ផលរបរកំណត់ឡើងវិញ",o.turnNew),Bn("E36",-o.e36)]; }],
   e38:["E36 + ចំណាយសប្បុរសធម៌",function(y,o){ return [Bn("E36",o.e36),Bn("E37 សប្បុរសធម៌",o.charity)]; }],
   e40:["E38 + និយតកម្មលើការប្រាក់",function(y,o){ return [Bn("E38",o.e38),Bn("E39 និយតកម្មលើការប្រាក់",o.intAdj)]; }],
-  e42:["E40 − ខាតយោងពីឆ្នាំមុន",function(y,o){ return [Bn("E40",o.e40),Bn("E41 ខាតយោង",-o.lossCF)]; }],
+  e42:["E40 − ខាតយោងពីឆ្នាំមុន",function(y,o){
+    var a=[Bn("E40",o.e40)];
+    /* បង្ហាញការកាត់បន្ថយ ៖ បើការកំណត់ឡើងវិញលេបខាតរបស់ឆ្នាំមុនអស់
+       អ្នកប្រើត្រូវឃើញមូលហេតុ មិនមែនត្រឹមលេខ ០ ស្ងាត់ៗទេ។ */
+    if(o.lossCFDecl!=null && Math.round(+o.lossCFDecl||0)!==Math.round(+o.lossCF||0)){
+      a.push(Bn("ខាតយោងតាមការប្រកាស",-(+o.lossCFDecl||0)));
+      a.push(Bn("បន្ថយដោយការកំណត់ឡើងវិញឆ្នាំមុន",(+o.lossCFDecl||0)-(+o.lossCF||0)));
+    }
+    a.push(Bn("E41 ខាតយោង (ប្រើពិត)",-o.lossCF));
+    return a; }],
   e43:["E42 × អត្រាពន្ធលើប្រាក់ចំណូល",function(y,o,s){
     return [Bn("E42 ចំណូលជាប់ពន្ធ",o.e42),Bn("អត្រា "+(s.rate.toi*100)+"%",null)]; }],
   e47:["E45 − ឥណទានពន្ធបរទេស",function(y,o){ return [Bn("E45",o.e45),Bn("E46 ឥណទានពន្ធបរទេស",-o.foreign)]; }],
@@ -37342,6 +38915,86 @@ CC.showInterest=function(ri){
   });
 };
 
+/* ── ការបំបែកតាមអ្នកផ្គត់ផ្គង់ សម្រាប់ជួររងនៃវិភាគហានិភ័យ ──────────
+   ⚠ ស្លាកជួរត្រូវ **ដូចគ្នាគ្រប់ឆ្នាំ** (ឈ្មោះ · អតប ប៉ុណ្ណោះ គ្មានចំនួន
+     វិក្កយបត្រ) ព្រោះ showBasis បង្រួមជួរតាមស្លាក ៖ បើដាក់ចំនួនចូល
+     ក្រុមហ៊ុនតែមួយនឹងបែកជាជួរផ្សេងក្នុងឆ្នាំនីមួយៗ។ */
+CC.purPart=function(){
+  try{ return (window.__purchasePartners && window.__purchasePartners()) || {}; }catch(e){ return {}; }
+};
+/* ⚠⚠ [stated] ២០២៦-០៨-១៨ ៖ «ក្រោម សរុប ឃើញមានឈ្មោះក្រុមហ៊ុនឆ្នាំ២០២២
+   និង ២០២៣» — កំហុសរបស់ខ្ញុំ។ `showBasis` សង់លំដាប់ជួរតាម **ការឃើញលើក
+   ដំបូង** ៖ វារត់ឆ្នាំ ២០២៤ មុន (បញ្ចប់ដោយ «= សរុប») រួចទើបឆ្នាំ ២០២៣
+   ដែលអ្នកផ្គត់ផ្គង់ថ្មីត្រូវបន្ថែម **ក្រោយ** ជួរសរុបទៅវិញ។
+   ដំណោះស្រាយ ៖ លំដាប់ត្រូវ **សកល មិនមែនតាមឆ្នាំ** — `purPartList` បូក
+   គ្រប់ឆ្នាំរួចតម្រៀបម្តងជាសកល ហើយរាល់ឆ្នាំបញ្ចេញ **បញ្ជីស្លាកដដែល
+   តាមលំដាប់ដដែល** (ឆ្នាំដែលគ្មាន ដាក់ null ⇒ បង្ហាញ «—»)។ ដូច្នេះ
+   «= សរុប» នៅចុងជានិច្ច។
+   ⚠ ច្បាប់ទូទៅសម្រាប់ប្រអប់នេះ ៖ បញ្ជីជួរដែលបញ្ចេញក្នុងឆ្នាំនីមួយៗ
+     ត្រូវតែដូចគ្នាបេះបិទ — កុំបន្ថែមជួរតាមលក្ខខណ្ឌរបស់ឆ្នាំណាមួយ។ */
+/* ══ [stated] ២០២៦-០៨-១៨ ៖ «ជួយបន្ថែមជម្រើសក្នុងការបូក ចំណាយបៀវត្ស
+   ប្រចាំខែ និង ចំណាយពន្ធកាត់ទុកត្រូវបង់ (ធីកដើម្បីបូកជាចំណាយចូលក្នុងការ
+   គណនា) ដោយសារនៅក្នុងទិន្នានុប្បវត្តិទិញ ពេលខ្លះមិនរួមចំណាយបៀវត្ស និង
+   ទឹកប្រាក់ត្រូវបើកនៃពន្ធកាត់ទុកទេ» ══════════════════════════════════
+   ⚠ ជាជម្រើស **មិនធីកជាលំនាំដើម** ៖ សហគ្រាសខ្លះដាក់ចំណាយទាំងនោះក្នុង
+     ទិន្នានុប្បវត្តិទិញរួចហើយ ; ការបូកដោយស្វ័យប្រវត្តិនឹងរាប់ពីរដង។
+   ⚠ ទុកក្នុង `CC.state.riskExpAdd` ⇒ រក្សាទុកជាមួយឯកសារដោយស្វ័យប្រវត្តិ។ */
+CC.riskAdd=function(){
+  var s=CC.state;
+  if(!s.riskExpAdd || typeof s.riskExpAdd!=="object") s.riskExpAdd={};
+  if(!s.riskExpAdd.sal) s.riskExpAdd.sal={};
+  if(!s.riskExpAdd.wht) s.riskExpAdd.wht={};
+  return s.riskExpAdd;
+};
+CC.riskAddOn=function(k,y){ return !!CC.riskAdd()[k][String(y)]; };
+CC.riskAddToggle=function(k,y,on){
+  var a=CC.riskAdd();
+  if(on) a[k][String(y)]=true; else delete a[k][String(y)];
+  CC.persist(); CC.render();
+};
+CC.wht=function(){
+  try{ return (window.__whtByYear && window.__whtByYear()) || {}; }catch(e){ return {}; }
+};
+
+/* ឈ្មោះខែជាភាសាខ្មែរ — ប្រើក្នុងប្រអប់បៀវត្សតាមខែ */
+CC.KHMON=["មករា","កុម្ភៈ","មីនា","មេសា","ឧសភា","មិថុនា",
+          "កក្កដា","សីហា","កញ្ញា","តុលា","វិច្ឆិកា","ធ្នូ"];
+CC.tosSplit=function(){
+  try{ return (window.__tosMonthlySplitByYear && window.__tosMonthlySplitByYear()) || {}; }catch(e){ return {}; }
+};
+CC.purPartKey=function(e){ return String(e.tin||"")+"|"+String(e.name||""); };
+CC.purPartList=function(group, cap){
+  var P=CC.purPart(), yrs=(CC.state.years||[]), tot={}, meta={};
+  yrs.forEach(function(y){
+    ((P[String(y)]||{})[group]||[]).forEach(function(e){
+      var k=CC.purPartKey(e); tot[k]=(tot[k]||0)+(+e.amt||0); meta[k]=e;
+    });
+  });
+  var keys=Object.keys(tot).sort(function(a,b){ return tot[b]-tot[a]; });
+  cap=cap||20;
+  return { keys:keys.slice(0,cap), rest:keys.slice(cap), meta:meta };
+};
+CC.purPartSum=function(y, group){
+  var g=((CC.purPart()[String(y)]||{})[group])||[], s=0;
+  g.forEach(function(e){ s+=(+e.amt||0); });
+  return s;
+};
+CC.purPartRows=function(y, group, cap, prefix, sign){
+  var L=CC.purPartList(group, cap), by={}, out=[];
+  sign=(sign===-1?-1:1); prefix=prefix||"";
+  (((CC.purPart()[String(y)]||{})[group])||[]).forEach(function(e){ by[CC.purPartKey(e)]=(+e.amt||0); });
+  L.keys.forEach(function(k){
+    var m=L.meta[k]||{}, nm=(m.name||m.tin||"(គ្មានឈ្មោះ)")+(m.tin?"  ·  "+m.tin:"");
+    out.push(Bn(prefix+nm, (by[k]==null?null:sign*by[k])));
+  });
+  if(L.rest.length){
+    var r=0, had=false;
+    L.rest.forEach(function(k){ if(by[k]!=null){ r+=by[k]; had=true; } });
+    out.push(Bn(prefix+"ផ្សេងៗទៀត ("+L.rest.length+" ក្រុមហ៊ុន)", had?sign*r:null));
+  }
+  return out;
+};
+
 CC.showBasis=function(key){
   var s=CC.state, res=CC._lastRes||CC.compute(), yrs=s.years;
   var def=null,title=key;
@@ -37390,7 +39043,14 @@ CC.showBasis=function(key){
      ទទឹងតាមអេក្រង់ (រហូតដល់ ១២០០px) ហើយកម្ពស់ដល់ ៩២vh។ */
   var h=['<div class="cc-as-box cc-as-wide"><h3>មូលដ្ឋាននៃការគណនា</h3>'+
          '<p class="cc-as-sub"><b>'+esc(title)+'</b><br>'+esc(def[0])+'</p>'];
-  h.push('<div class="cc-scroll"><table><thead><tr><th style="min-width:210px">ធាតុផ្សំ</th>');
+  /* [stated] ២០២៦-០៨-១៨ ៖ ប្រអប់ខ្លះត្រូវការក្បាលជួរ និងការតម្រឹមផ្សេង
+     (ឧ. បញ្ជីអ្នកផ្គត់ផ្គង់ ៖ «ឈ្មោះសហគ្រាស និង អតប» តម្រឹមឆ្វេង គ្មានជួរ
+     «លទ្ធផល» ព្រោះមានជួរសរុបរួចហើយ)។ ធាតុទី ៣ នៃ BASIS ជា option ៖
+       {head:'…', left:true, noResult:true}
+     ⚠ ប្រអប់ដទៃដែលគ្មាន option នៅដដែលបេះបិទ។ */
+  var opt=def[2]||{};
+  h.push('<div class="cc-scroll"><table><thead><tr><th style="min-width:210px'+
+         (opt.left?';text-align:left':'')+'">'+esc(opt.head||"ធាតុផ្សំ")+'</th>');
   yrs.forEach(function(y){ h.push('<th class="n">'+y+'</th>'); });
   h.push('</tr></thead><tbody>');
   var rows={},order=[];
@@ -37404,7 +39064,7 @@ CC.showBasis=function(key){
   });
   if(!order.length) h.push('<tr><td colspan="'+(yrs.length+1)+'" class="cc-empty">តួលេខនេះអានផ្ទាល់ពីឯកសារ — គ្មានធាតុផ្សំបន្ថែម</td></tr>');
   order.forEach(function(l){
-    h.push('<tr><td>'+esc(l)+'</td>');
+    h.push('<tr><td'+(opt.left?' style="text-align:left"':'')+'>'+esc(l)+'</td>');
     yrs.forEach(function(y){
       var v=rows[l][y];
       h.push('<td class="n'+((v<0)?" neg":"")+'">'+(v==null?"—":fmt(v))+'</td>');
@@ -37412,10 +39072,26 @@ CC.showBasis=function(key){
     h.push('</tr>');
   });
   /* លទ្ធផល */
-  var resultKey=(key.indexOf("blk:")===0)?null:key;
+  /* ⚠ ២០២៦-០៨-១៨ ៖ សោរនៃវិភាគហានិភ័យ (rExpM, rExpMT, incD …) មិនស្ថិត
+     ក្នុង `res.y[y]` ទេ — វានៅក្នុង `CC.riskData()` — ដូច្នេះជួរ «លទ្ធផល»
+     ធ្លាប់ចេញ 0 ជានិច្ចសម្រាប់ប្រអប់ទាំងនោះ។ ឥឡូវថយទៅអាន riskData បើ
+     res គ្មានសោរនោះ ; ប្រអប់ឯទៀតមិនប៉ះពាល់ (res មានតម្លៃរួចហើយ)។ */
+  var resultKey=(key.indexOf("blk:")===0||opt.noResult)?null:key;
+  var RD=null;
+  var riskKey=function(k){ return /^r?(Exp|Inc|Sal|Stk|Prod|Cogs)/.test(k)||/^(exp|inc|sal|stk)D$/.test(k); };
   if(resultKey && CC.BASIS[resultKey]){
     h.push('<tr class="cc-sum"><td>លទ្ធផល</td>');
-    yrs.forEach(function(y){ h.push('<td class="n">'+fmt((res.y[y]||{})[resultKey])+'</td>'); });
+    yrs.forEach(function(y){
+      var v=(res.y[y]||{})[resultKey];
+      if(v==null && riskKey(resultKey)){
+        if(!RD){ try{ RD=CC.riskData(); }catch(e){ RD={}; } }
+        var rk=resultKey.replace(/^r/,"");
+        rk=rk.charAt(0).toLowerCase()+rk.slice(1);
+        var o=(RD||{})[y]||{};
+        v=(o[resultKey]!=null?o[resultKey]:o[rk]);
+      }
+      h.push('<td class="n">'+(v==null?"—":fmt(v))+'</td>');
+    });
     h.push('</tr>');
   }
   h.push('</tbody></table></div>');
@@ -37647,32 +39323,59 @@ CC.riskMonthly=function(){
       /* mInc / mExp ៖ តួលេខម្តងមួយខែ (index 0 = មករា) — ត្រូវការសម្រាប់
          ការបំបែកជាដុល្លារ ព្រោះខែនីមួយៗប្រើអត្រាផ្សេងគ្នា។ មុននេះយើង
          បូក ១២ ខែភ្លាម ដូច្នេះអត្រាប្រចាំខែលែងអាចអនុវត្តបាន។ */
-      var t={saleTaxable:0,saleZero:0,saleNon:0,purTaxable:0,purNon:0,otherExp:0,
+      var t={saleTaxable:0,saleZero:0,saleNon:0,purTaxable:0,purNonCred:0,purNon:0,otherExp:0,
+             prCN:0,prDN:0,
              mInc:[0,0,0,0,0,0,0,0,0,0,0,0], mExp:[0,0,0,0,0,0,0,0,0,0,0,0]};
       Object.keys(agg[y]).forEach(function(m){
         var b=agg[y][m]||{};
         var inc=(+b.saleLocal10||0)+(+b.saleExport10||0)-(+b.srCN||0)+(+b.srDN||0)
               +(+b.saleZeroRated||0)+(+b.saleNonTaxable||0);
-        /* ⚠⚠ [stated] ២០២៦-០៨-១៣ ៖ «ចំណាយប្រកាសប្រចាំខែ គឺយក តម្លៃមិន
-           រួមអតប និង ការទិញមិនជាប់អតប … អ្នកយកការទិញជាប់អាករដដែលមក
-           ដាក់ពីរដង» — ត្រូវហើយ ៖ `purNonCreditable` បូក **តម្លៃវិក្កយបត្រ
-           សរុប** (រួមអាករ) នៃជួរដែលធីក «មិនអនុញ្ញាតឥណទាន» ; ជួរទាំងនោះ
-           បានបូកចូល `purLocal` ជាតម្លៃមិនរួមអាករ រួចហើយ។ ដូច្នេះការទិញ
-           ជាប់អាករមួយត្រូវរាប់ពីរដង — ម្តងសុទ្ធ ម្តងសរុប។
-           ⚠ `purNonCreditable` នៅប្រើដដែលសម្រាប់ជួរ ១១ នៃទម្រង់ អតប
-             ដែលជាច្បាប់ផ្លូវការ — កុំប្តូរទីនោះ។ */
+        /* ២០២៦-០៨-១៣ ៖ `purNonCreditable` ត្រូវបានដកចេញទាំងស្រុង ព្រោះការ
+           បូកវាដោយមិនដកមូលដ្ឋានចេញ = រាប់ការទិញតែមួយពីរដង។ ច្បាប់នោះ
+           **ត្រូវបានជំនួស** ដោយច្បាប់ ២០២៦-០៨-១៨ ខាងក្រោម (ជំនួស មិនមែនបូក)។ */
+        /* ⚠⚠ [stated] ២០២៦-០៨-១៨ — ច្បាប់ចុងក្រោយសម្រាប់ចំណាយប្រចាំខែ ៖
+           «សរុបការទិញមិនជាប់អាករ + សរុបតម្លៃមិនរួមអតប ; តែករណីមាន
+            មិនអនុញ្ញាតឥណទាន ត្រូវយកតម្លៃសរុបលើវិក្កយបត្រមកជំនួសវិញ ។
+            ការទិញក្នុងស្រុក ការនាំចូល និងផ្សេងៗទៀត យកតម្លៃមិនរួមអតបធម្មតា»។
+           ហេតុផលតាមច្បាប់ ៖ ចំណាយមិនអនុញ្ញាតឥណទាន **មានអាករ** តែអាករនោះ
+           កាត់កងជាអាករធាតុចូលមិនបាន ⇒ វាក្លាយជាចំណាយ។ បើយកតែតម្លៃមិន
+           រួមអតប អាករនោះនឹងបាត់ ហើយកើតលំអៀង។
+           ⚠ ដូច្នេះវាជាការ **ជំនួស** មិនមែនការបូកបន្ថែមទេ ៖ ដក
+             `purNonCredBaseInc` (មូលដ្ឋានដែលបានរាប់ក្នុង purLocal រួច)
+             ចេញសិន រួចបូក `purNonCreditable` (តម្លៃវិក្កយបត្រសរុប) ចូល។
+             ២០២៦-០៨-១៣ ខ្ញុំបានបូកវាដោយមិនដក ហើយគេចាប់បានថារាប់ពីរដង។
+           ⚠ ជួរ ១១ នៃទម្រង់ អតប នៅប្រើ `purNonCreditable` ដដែល — កុំប្តូរ។ */
         var exp=(+b.purLocal||0)-(+b.prCN||0)+(+b.prDN||0)+(+b.purImport||0)
+              -(+b.purNonCredBaseInc||0)
+              +(+b.purNonCreditable||0)
               +(+b.purNonVatBase||0)+(+b.otherExpenses||0);
         var mi=CC.riskMonthIdx(m);
         if(mi>=0){ t.mInc[mi]+=inc; t.mExp[mi]+=exp; }
         t.saleTaxable += (+b.saleLocal10||0)+(+b.saleExport10||0)-(+b.srCN||0)+(+b.srDN||0);
         t.saleZero    += (+b.saleZeroRated||0);
         t.saleNon     += (+b.saleNonTaxable||0);
-        t.purTaxable  += (+b.purLocal||0)-(+b.prCN||0)+(+b.prDN||0)+(+b.purImport||0);
+        /* ការទិញជាប់អាករ ៖ តម្លៃមិនរួមអតប ដោយ **ដកជួរមិនអនុញ្ញាតឥណទាន
+           ចេញ** — ជួរទាំងនោះបង្ហាញដាច់ដោយឡែកជាតម្លៃវិក្កយបត្រសរុប។ */
+        t.purTaxable  += (+b.purLocal||0)-(+b.prCN||0)+(+b.prDN||0)+(+b.purImport||0)
+                       -(+b.purNonCredBaseInc||0);
+        t.purNonCred  += (+b.purNonCreditable||0);
+        /* សរុប CN/DN ៖ ត្រូវការសម្រាប់ប្រអប់ 🔍 ព្រោះ CN/DN អាចវាយដោយដៃ
+           (គ្មានឈ្មោះក្រុមហ៊ុន) ហើយក្រុមតាមអ្នកផ្គត់ផ្គង់មិនឃើញវាទេ។ */
+        t.prCN        += (+b.prCN||0);
+        t.prDN        += (+b.prDN||0);
         /* ការទិញមិនជាប់អាករ ៖ តែ `purNonVatBase` ទេ — មើលកំណត់សម្គាល់ខាងលើ */
         t.purNon      += (+b.purNonVatBase||0);
         t.otherExp    += (+b.otherExpenses||0);
       });
+      /* ⚠ ជម្រើសបូកបន្ថែម ត្រូវចូល `mExp` ផងដែរ បើមិនដូច្នេះទេ តារាង
+         ធៀបជាដុល្លារនឹងខុសពីតារាងខាងលើ ពេលធីក។ ខែជាមូលដ្ឋាន ព្រោះ
+         ដុល្លារបែងចែកតាមអត្រាខែនីមួយៗ។ */
+      var sp=CC.tosSplit()[String(y)]||{}, wh=CC.wht()[String(y)]||{};
+      var onS=CC.riskAddOn("sal",y), onW=CC.riskAddOn("wht",y);
+      for(var i2=0;i2<12;i2++){
+        if(onS) t.mExp[i2] += ((sp.sal&&+sp.sal[i2])||0)+((sp.frg&&+sp.frg[i2])||0);
+        if(onW) t.mExp[i2] += (wh.mBase&&+wh.mBase[i2])||0;
+      }
       out[y]=t;
     });
   }catch(e){}
@@ -37817,9 +39520,16 @@ CC.riskData=function(){
     var eStkC  = g(sc6,y)+g(sc7,y)+g(mc6,y)+g(mc7,y);
     /* ចំណាយសុទ្ធ ៖ តាមរូបមន្តដែលគេផ្តល់ */
     var expY = eAsset + g(cos,y) + g(opx,y) - g(itx,y) - eDep - eStkO + eStkC;
-    var expM = (+m.purTaxable||0)+(+m.purNon||0)+(+m.otherExp||0);
+    var expM = (+m.purTaxable||0)+(+m.purNonCred||0)+(+m.purNon||0)+(+m.otherExp||0);
     var salY = g(sal5,y)+g(sal6,y)+g(sal7,y);
     var salM = (+t.salary||0)+(+t.fringe||0);
+    /* ជម្រើសធីក ៖ បៀវត្សប្រចាំខែ និង ទឹកប្រាក់ត្រូវបើកនៃពន្ធកាត់ទុក។
+       ⚠ តម្លៃបង្ហាញជានិច្ច (ដើម្បីអោយដឹងថាមានប៉ុន្មាន) តែបូកចូល `expM`
+         តែពេលធីក ; `expD` គណនាក្រោយ ដូច្នេះគំលាតដើរតាមភ្លាម។ */
+    var wy=CC.wht()[String(y)]||{};
+    var addSalV=salM, addWhtV=+wy.base||0;
+    if(CC.riskAddOn("sal",y)) expM += addSalV;
+    if(CC.riskAddOn("wht",y)) expM += addWhtV;
     var stk  = g(a15,y), pro = g(prod,y), cogs = g(cogs6,y)+g(cogs7,y);
     out[y]={
       incY:incY, incM:incM, incD:incY-incM,
@@ -37829,7 +39539,9 @@ CC.riskData=function(){
       eAsset:eAsset, eBuy:+A.buy||0, eSell:+A.sell||0,
       expCos:g(cos,y), expOpx:g(opx,y), expInt:g(itx,y),
       eDep:eDep, eStkO:eStkO, eStkC:eStkC,
-      expMT:+m.purTaxable||0, expMN:+m.purNon||0, expMO:+m.otherExp||0,
+      expMT:+m.purTaxable||0, expMC:+m.purNonCred||0, expMN:+m.purNon||0, expMO:+m.otherExp||0,
+      expMCN:+m.prCN||0, expMDN:+m.prDN||0,
+      expAddSal:addSalV, expAddWht:addWhtV, expAddWhtTax:+wy.tax||0,
       salY:salY, salM:salM, salD:salY-salM,
       sal5:g(sal5,y), sal6:g(sal6,y), sal7:g(sal7,y),
       salMS:+t.salary||0, salMF:+t.fringe||0,
@@ -37950,6 +39662,108 @@ CC.riskUsdBlock = function(kind, yrs){
   return h.join('');
 };
 
+/* ══ [stated] ២០២៦-០៨-១៨ ៖ «នៅផ្នែកវិភាគហានិភ័យជួយបង្កើតផ្នែកទាញយកជា
+   តារាង excel ផង ដោយបំបែក sheet ផ្សេងគ្នានៃប្រភេទនីមួយៗ» ══════════════
+   ⚠ បញ្ជីជួរនៅទីនេះត្រូវដូចនឹងអ្វីដែល `paneRisk` គូរ។ បើបន្ថែមជួរថ្មីលើ
+     អេក្រង់ ត្រូវបន្ថែមត្រង់នេះផង បើមិនដូច្នេះទេ Excel នឹងខ្វះស្ងាត់ៗ។
+   ⚠ ជួរ `pct` គណនាជា **អក្សរ** («+14.1%») មិនមែនលេខ ព្រោះកម្មវិធីសរសេរ
+     .xlsx ប្រើទម្រង់ `#,##0` ⇒ ០.១៤១ នឹងចេញជា ០។
+   ⚠ ជួរ `flag` ត្រឡប់ «បាទ/ចាស» ឬ «ទេ» ៖ ជម្រើសធីកមិនអាចបង្ហាញជាលេខទេ
+     តែអ្នកអានឯកសារត្រូវដឹងថាតួលេខនោះបានបូកចូលឬអត់។ */
+CC.RISK_XLS=[
+  { name:"១. ចំណូល", title:"១. ចំណូល ៖ ប្រកាសប្រចាំឆ្នាំ ធៀបនឹង ប្រកាសប្រចាំខែ", rows:[
+    ["ចំណូលប្រកាសប្រចាំឆ្នាំ","incY"],
+    ["   ចំណូលពីប្រតិបត្តិការ (B0)","incB0"],
+    ["   ចំណូលបន្ទាប់បន្សំ (B8)","incSub"],
+    ["   ចំណូលផ្សេងៗ (B12)","incOth"],
+    ["ចំណូលប្រកាសប្រចាំខែ","incM"],
+    ["   ការលក់ជាប់អតប (តម្លៃមិនរួមអតប)","incMT"],
+    ["   ការលក់អតប ០%","incMZ"],
+    ["   ការលក់មិនជាប់អតប","incMN"],
+    ["គំលាត (ឆ្នាំ − ខែ)","incD"],
+    ["គំលាត ធៀបនឹងប្រចាំឆ្នាំ","pct:incD/incY"]
+  ]},
+  { name:"២. ចំណាយ", title:"២. ចំណាយ ៖ ប្រកាសប្រចាំឆ្នាំ ធៀបនឹង ប្រកាសប្រចាំខែ", rows:[
+    ["ចំណាយសុទ្ធប្រកាសប្រចាំឆ្នាំ","expY"],
+    ["   ទ្រព្យសកម្ម (ទិញ − លក់)","eAsset"],
+    ["   ចំណាយថ្លៃដើម","expCos"],
+    ["   ចំណាយប្រតិបត្តិការ","expOpx"],
+    ["   ដក ៖ ចំណាយការប្រាក់","expInt"],
+    ["   ដក ៖ រំលស់","eDep"],
+    ["   ដក ៖ ស្តុកដើមគ្រា","eStkO"],
+    ["   បូក ៖ ស្តុកចុងគ្រា","eStkC"],
+    ["ចំណាយប្រកាសប្រចាំខែ","expM"],
+    ["   ការទិញជាប់អាករ (តម្លៃមិនរួមអាករ)","expMT"],
+    ["   ការទិញមិនអនុញ្ញាតឥណទាន (តម្លៃសរុបលើវិក្កយបត្រ)","expMC"],
+    ["   ការទិញមិនជាប់អាករ","expMN"],
+    ["   ចំណាយផ្សេងៗ","expMO"],
+    ["   ដក ៖ PR CN","expMCN"],
+    ["   បូក ៖ PR DN","expMDN"],
+    ["ចំណាយបៀវត្សប្រចាំខែ (ជម្រើស)","expAddSal"],
+    ["   បានធីកបូកចូល?","flag:sal"],
+    ["ចំណាយពន្ធកាត់ទុក ៖ ទឹកប្រាក់ត្រូវបើក (ជម្រើស)","expAddWht"],
+    ["   បានធីកបូកចូល?","flag:wht"],
+    ["គំលាត (ឆ្នាំ − ខែ)","expD"],
+    ["គំលាត ធៀបនឹងប្រចាំឆ្នាំ","pct:expD/expY"]
+  ]},
+  { name:"៣. បៀវត្ស", title:"៣. បៀវត្ស ៖ ប្រកាសប្រចាំឆ្នាំ ធៀបនឹង ប្រកាសប្រចាំខែ", rows:[
+    ["បៀវត្សប្រកាសប្រចាំឆ្នាំ","salY"],
+    ["   ជំហានទី៥ (B23)","sal5"],
+    ["   ជំហានទី៦ (C8)","sal6"],
+    ["   ជំហានទី៧ (C8)","sal7"],
+    ["បៀវត្សប្រកាសប្រចាំខែ","salM"],
+    ["   បៀវត្សត្រូវបើក","salMS"],
+    ["   អត្ថប្រយោជន៍បន្ថែមត្រូវបើក","salMF"],
+    ["គំលាត (ឆ្នាំ − ខែ)","salD"],
+    ["គំលាត ធៀបនឹងប្រចាំឆ្នាំ","pct:salD/salY"]
+  ]}
+];
+CC.riskXlsAoa=function(sec){
+  var yrs=CC.state.years||[], D=CC.riskData(), aoa=[];
+  aoa.push([sec.title]);
+  aoa.push(["រូបិយវត្ថុ ៖ រៀល (KHR)"]);
+  aoa.push([]);
+  aoa.push(["បរិយាយ"].concat(yrs.map(function(y){ return String(y); })));
+  sec.rows.forEach(function(r){
+    var lab=r[0], key=r[1], line=[lab];
+    yrs.forEach(function(y){
+      var o=D[y]||{};
+      if(key.indexOf("pct:")===0){
+        var p=key.slice(4).split("/"), v=+o[p[0]]||0, b=Math.abs(+o[p[1]]||0);
+        line.push(b?((v>0?"+":"")+((v/b)*100).toFixed(1)+"%"):"—");
+      }else if(key.indexOf("flag:")===0){
+        line.push(CC.riskAddOn(key.slice(5),y)?"បាទ/ចាស":"ទេ");
+      }else{
+        var n=+o[key]||0;
+        line.push(n?Math.round(n):"—");
+      }
+    });
+    aoa.push(line);
+  });
+  return aoa;
+};
+CC.riskExportXls=function(){
+  try{
+    if(typeof XLSX==="undefined" || !window.__xlsxSaveStyled){
+      alert("ផ្នែកបង្កើតឯកសារ Excel មិនទាន់ផ្ទុករួចទេ សូមព្យាយាមម្តងទៀត។"); return;
+    }
+    var wb=XLSX.utils.book_new();
+    CC.RISK_XLS.forEach(function(sec){
+      var ws=XLSX.utils.aoa_to_sheet(CC.riskXlsAoa(sec));
+      /* ⚠ ឈ្មោះ sheet កំណត់ត្រឹម ៣១ តួ ហើយហាមតួ : \ / ? * [ ] */
+      XLSX.utils.book_append_sheet(wb, ws, String(sec.name).slice(0,31));
+    });
+    /* ឈ្មោះឯកសារ ៖ ដាក់ឈ្មោះសហគ្រាសពី MTR បើមាន ដើម្បីកុំអោយឯកសារទាញ
+       ច្រើនសហគ្រាសច្រឡំគ្នាក្នុងថត Downloads។ */
+    var nm="";
+    try{
+      var ci=(window.__mtrCompanyInfo && window.__mtrCompanyInfo())||{};
+      if(ci && ci.name) nm=String(ci.name).replace(/[\\/:*?"<>|]/g,"").slice(0,40)+" - ";
+    }catch(e){}
+    window.__xlsxSaveStyled(wb, nm+"វិភាគហានិភ័យ.xlsx");
+  }catch(e){ alert("ទាញជា Excel មិនបានសម្រេច ៖ "+(e&&e.message?e.message:e)); }
+};
+
 function paneRisk(){
   var s=CC.state, yrs=s.years||[], D=CC.riskData(), h=[];
   if(!yrs.length) return '<div class="cc-empty">មិនទាន់មានឆ្នាំ — សូមទាញពី TOI ឬបន្ថែមឆ្នាំជាមុនសិន។</div>';
@@ -37990,6 +39804,24 @@ function paneRisk(){
     h.push('</tr>');
   };
 
+  /* [stated] ជួរជម្រើសបូកបន្ថែម ៖ បង្ហាញទឹកប្រាក់ជានិច្ច ហើយធីកដើម្បី
+     បូកចូលចំណាយប្រចាំខែ។ ⚠ គ្មាន `data-basis` ដោយចេតនា — បើមាន ការចុច
+     ប្រអប់ធីកនឹងបើកប្រអប់ 🔍 ឡើងជាមួយគ្នា។ */
+  var addRow=function(key,label,valKey){
+    var any=false;
+    yrs.forEach(function(y){ if(Math.round(+(D[y]||{})[valKey]||0)) any=true; });
+    if(!any) return;
+    h.push('<tr class="cc-cutrow"><td style="padding-left:26px">☑ '+esc(label)+'</td>');
+    yrs.forEach(function(y){
+      var v=Math.round(+(D[y]||{})[valKey]||0);
+      if(!v){ h.push('<td class="n cc-calc">—</td>'); return; }
+      h.push('<td class="n"><label class="cc-chk" title="'+fmt(v)+' ៛">'+
+        '<input type="checkbox" data-riskadd="'+esc(key)+'" data-y="'+y+'"'+
+        (CC.riskAddOn(key,y)?' checked':'')+'> '+fmt(v)+'</label></td>');
+    });
+    h.push('</tr>');
+  };
+
   /* ជួរគំលាត ៖ ពណ៌ក្រហមពេលខុសគ្នា ព្រោះនោះជាសញ្ញាហានិភ័យ */
   var diff=function(label,key,pctOf){
     h.push('<tr class="cc-sum" data-basis="'+esc(key)+'"><td>'+esc(label)+' <span class="cc-drill">🔍</span></td>');
@@ -38002,6 +39834,10 @@ function paneRisk(){
     });
     h.push('</tr></tbody></table></div>');
   };
+
+  /* [stated] ទាញជា Excel ៖ បំបែក sheet តាមប្រភេទ (ចំណូល · ចំណាយ · បៀវត្ស) */
+  h.push('<div class="cc-bar"><span class="cc-lbl">⚠️ វិភាគហានិភ័យ</span>'+
+    '<button class="btn ghost" data-act="riskXls">⬇ ទាញជា Excel (៣ sheet)</button></div>');
 
   head('១. ចំណូល ៖ ប្រកាសប្រចាំឆ្នាំ ធៀបនឹង ប្រកាសប្រចាំខែ','គំលាតលើស ៥% ដុះពណ៌ក្រហម');
   row('ចំណូលប្រកាសប្រចាំឆ្នាំ','incY','cc-tot',0,'rIncY');
@@ -38017,13 +39853,16 @@ function paneRisk(){
   diff('គំលាត (ឆ្នាំ − ខែ)','incD','incY');
   h.push(CC.riskUsdBlock('inc', yrs));
 
-  head('២. ចំណាយ ៖ ប្រកាសប្រចាំឆ្នាំ ធៀបនឹង ប្រកាសប្រចាំខែ','មិនរាប់អាករ ១០%');
+  head('២. ចំណាយ ៖ ប្រកាសប្រចាំឆ្នាំ ធៀបនឹង ប្រកាសប្រចាំខែ','មិនរាប់អាករ ១០% លើកលែងការទិញមិនអនុញ្ញាតឥណទាន');
   /* [stated] ជួររងចាស់ទាំង ៣ ដកចេញ — លម្អិតទាំងអស់នៅក្នុងប្រអប់ 🔍 */
   row('ចំណាយសុទ្ធប្រកាសប្រចាំឆ្នាំ','expY','cc-tot',0,'rExpY');
   row('ចំណាយប្រកាសប្រចាំខែ','expM','cc-tot',0,'rExpM');
-  row('ការទិញជាប់អាករ (តម្លៃមិនរួមអាករ)','expMT',null,1);
-  row('ការទិញមិនជាប់អាករ','expMN',null,1);
-  row('ចំណាយផ្សេងៗ','expMO',null,1);
+  row('ការទិញជាប់អាករ (តម្លៃមិនរួមអាករ)','expMT',null,1,'rExpMT');
+  row('ការទិញមិនអនុញ្ញាតឥណទាន (តម្លៃសរុបលើវិក្កយបត្រ)','expMC',null,1,'rExpMC');
+  row('ការទិញមិនជាប់អាករ','expMN',null,1,'rExpMN');
+  row('ចំណាយផ្សេងៗ','expMO',null,1,'rExpMO');
+  addRow('sal','ចំណាយបៀវត្សប្រចាំខែ (ធីកដើម្បីបូកជាចំណាយ)','expAddSal');
+  addRow('wht','ចំណាយពន្ធកាត់ទុក ៖ ទឹកប្រាក់ត្រូវបើក (ធីកដើម្បីបូកជាចំណាយ)','expAddWht');
   cutRow('expCut');
   diff('គំលាត (ឆ្នាំ − ខែ)','expD','expY');
 
@@ -39449,6 +41288,7 @@ function bind(el){
       var d=FIND_TYPES[0];
       s.toi.findings.push({type:d.t,vat:d.vat,cost:d.cost,costPct:d.cost?100:0,amt:byY(0)});re();
     }
+    else if(act==="riskXls"){ CC.riskExportXls(); return; }
     else if(act==="openProp"){ CC.openProp(+a.dataset.i); }
     else if(act==="openFuel"){ CC.openFuel(+a.dataset.i); }
     else if(act==="delCut"){
@@ -39562,6 +41402,7 @@ function bind(el){
     var t=e.target;
     /* [stated] ប្រអប់ធីកនៅផ្នែកវិភាគហានិភ័យ */
     if(t.dataset.riskcut){ CC.riskCutToggle(t.dataset.riskcut, t.dataset.y, t.checked); return; }
+    if(t.dataset.riskadd){ CC.riskAddToggle(t.dataset.riskadd, t.dataset.y, t.checked); return; }
     if(t.dataset.set==="mode"){ s.mode=t.value; return re(); }
     if(t.dataset.set==="tmAll"){ s.toi.tmarginAll=String(t.value).trim(); return re(); }
     if(t.dataset.set==="mkAll"){ s.toi.markupAll=String(t.value).trim(); return re(); }
@@ -40928,8 +42769,17 @@ else CC.init();
           if(!pk.groups[k]) pk.groups[k] = {key:k, company:f.company || k, tin:f.tin || '', owner:f.owner || '', items:[]};
           pk.groups[k].items.push(f);
         });
+        /* ⚠⚠ [stated] ២០២៦-០៨-១៨ ៖ «ថ្មីជាងគេអត់លោតទៅខាងលើ» ។ មូលហេតុ ៖
+           ការតម្រៀបប្រើតែ `ver` ។ ការរក្សាទុកជាន់ពីលើ (mode «over») រក្សា
+           លេខជំនាន់ដដែល ⇒ ឯកសារពីរជា V1 ទាំងពីរ ហើយលំដាប់ធ្លាក់ទៅតាមលំដាប់
+           ដែលឃ្លាំងត្រឡប់មកវិញ — ១៣/០៨ ឡើងលើ ១ ២១/០៨។
+           ⇒ តម្រៀបតាម **ពេលវេលា** ជាមុន (ដែលជាអ្វីដែលចំណងជើងសន្យា) រួច
+             ទើប `ver` ជាការកាត់ស្មើ។ */
         Object.keys(pk.groups).forEach(function(k){
-          pk.groups[k].items.sort(function(a,b){ return (b.ver||0) - (a.ver||0); });
+          pk.groups[k].items.sort(function(a,b){
+            var d = pkTime(b) - pkTime(a);
+            return d || ((b.ver || 0) - (a.ver || 0));
+          });
         });
         pk.note.textContent = pk.files.length
           ? ('សរុប ' + pk.files.length + ' ឯកសារ · ' + Object.keys(pk.groups).length + ' សហគ្រាស')
@@ -40962,6 +42812,14 @@ else CC.init();
     }else{ pk.gKey = ''; }
     renderVers();
   }
+
+/* «dd/mm/yyyy hh:mm» → លេខសម្រាប់ប្រៀបធៀប ; ០ ពេលអានមិនបាន (ឯកសារចាស់
+   ខ្លះគ្មាន `updated`) ⇒ ធ្លាក់ទៅប្រើ `ver` វិញ។ */
+function pkTime(f){
+  var m = String((f && f.updated) || '').match(/^(\d{2})\/(\d{2})\/(\d{4})(?:\s+(\d{2}):(\d{2}))?/);
+  if(!m) return 0;
+  return new Date(+m[3], +m[2] - 1, +m[1], +(m[4] || 0), +(m[5] || 0)).getTime() || 0;
+}
 
   function renderVers(){
     if(!pk) return;
