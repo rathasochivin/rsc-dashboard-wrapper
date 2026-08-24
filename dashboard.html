@@ -33161,8 +33161,12 @@ const WP_CSS = `
   .wp-tbl td.c{text-align:center; vertical-align:middle;}
   .wp-tbl td.code{font-size:11px;}
   /* ---- សន្លឹកមុខ COVER · ស្លាកកាត់បិទ · E/F ---- */
-  .cv-sheet{border:1px solid #333; padding:4px; box-sizing:border-box; min-height:calc(100vh - 2px);}
-  .cv-in{border:2px solid #333; padding:14px 20px 16px; box-sizing:border-box; min-height:calc(100vh - 12px);
+  /* ⚠ ដូច .cv-plain ៖ ចងទៅនឹង --rpt-ph ជំនួស 100vh ។ ច្បាប់ខាងក្រោមសម្រាប់
+     .cv-cover-page សរសេរជាន់តម្លៃទាំងនេះម្តងទៀត ដែលជាការចង់បាន។ */
+  .cv-sheet{border:1px solid #333; padding:4px; box-sizing:border-box;
+    min-height:var(--rpt-ph, 269mm);}
+  .cv-in{border:2px solid #333; padding:14px 20px 16px; box-sizing:border-box;
+    min-height:calc(var(--rpt-ph, 269mm) - 10mm);
     display:flex; flex-direction:column;}
   /* ⚠⚠ [stated] ២០២៦-០៨-១៨ ៖ «ព្រីនតាមទូរស័ព្ទ វាធ្លាក់ទៅទំព័រទី ២ ;
      តាមកុំព្យូទ័រត្រូវហើយ កុំកែ — កែតែតាមទូរស័ព្ទ ហើយតែផ្នែកនេះទេ» ។
@@ -33200,8 +33204,12 @@ const WP_CSS = `
      ហៀរទៅសន្លឹកទី ២។ ⇒ អនុវត្ត zoom ក្នុង @media print **គ្រប់ឧបករណ៍**។
      ⚠ 0.94 ជ្រើសពីការវាស់ ៖ មាតិកាធម្មជាតិ 268.4mm × 0.94 ≈ 252mm ដែល
        តូចជាងផ្ទៃបោះពុម្ពរបស់ថេប្លេត (~262mm តាមបន្ទាត់វាស់) និងកុំព្យូទ័រ។ */
+  /* ⚠⚠ វាស់រួច ៖ សន្លឹកសេចក្តីសន្និដ្ឋាន/អនុសាសន៍ ត្រូវការ 268.6mm (បន្ទាត់
+     ដាច់ៗ ២៦ បន្ទាត់ × 30px បូកចំណងជើង) — ស្មើនឹងប្រអប់ 269mm ដូច្នេះលើ
+     ឧបករណ៍ដែលផ្ទៃបោះពុម្ពតូចជាង វាហៀរជានិច្ច។ ⇒ ដាក់ការបង្រួមលើ **គ្រប់
+     សន្លឹក .cv-page** មិនមែនតែសន្លឹកមុខទេ ៖ 268.6 × 0.94 ≈ 252mm។ */
   @media print{
-    .cv-cover-page{ zoom:0.94; min-height:0 !important; }
+    .cv-page{ zoom:0.94; min-height:0 !important; }
   }
   html.rsc-mobile-print .cv-cover-page{ zoom:0.92; min-height:0; }
   .cv-cover-page .cv-sheet{ min-height:var(--rpt-ph, 269mm); }
@@ -33279,7 +33287,14 @@ const WP_CSS = `
      លាតពេញទទឹង ហើយ inline-block ក៏លែងបង្រួមដែរ។ */
   .cv-info-lab td.k,.cv-info-lab td.s,.cv-info-lab td.v{width:auto;}
   .cv-info-lab td.v{padding-right:10px;}
-  .cv-plain{border:1px solid #333; padding:22px 26px; box-sizing:border-box; min-height:calc(100vh - 2px);}
+  /* ⚠⚠ [stated] ២០២៦-០៨-២២ ៖ «ឯកសារការងារសវនកម្ម ត្រូវអស់ហើយ តែនៅមានធ្លាក់
+     ទំព័រចុងក្រោយមួយទៀត គឺសេចក្តីសន្និដ្ឋាន និងការផ្តល់អនុសាសន៍» ។
+     ⭐ ជាអន្ទាក់ 100vh ដដែល ៖ លើ iOS/Android vh មិនមែនជាកម្ពស់ប្រអប់ទំព័រ
+       ទេ ⇒ ប្រអប់ខ្ពស់ជាងក្រដាស ⇒ សន្លឹកបន្ថែម។ សន្លឹកមុខត្រូវកែរួចហើយ
+       តែសន្លឹកនេះនៅសល់ — ⚠ ស្វែងរក 100vh ទាំងអស់ពេលកែបញ្ហាបែបនេះ។
+     ⇒ ចងទៅនឹងអថេរតែមួយដដែល (--rpt-ph) ដូចសន្លឹកដទៃ។ */
+  .cv-plain{border:1px solid #333; padding:22px 26px; box-sizing:border-box;
+    min-height:var(--rpt-ph, 269mm);}
   .cv-wh{text-align:center; font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif;
     font-weight:700; font-size:13px; text-decoration:underline; margin:16px 0 12px;}
   .cv-wl{border-bottom:1px dotted #333; box-sizing:border-box; min-height:30px;
