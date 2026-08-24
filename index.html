@@ -13565,16 +13565,13 @@ function handleFileImport(evt, storeName, kind){
       return;
     }
     combined.forEach((r,i)=> r.no = i+1);
-    state[storeName] = combined;
-    state.selectedCategory[storeName] = null;
-    saveState();
-    renderAll();
-    if(statusEl){
-      statusEl.textContent = anyError
-        ? `✓ ផ្ទុកបាន ${combined.length} ជួរ (មានឯកសារខ្លះមិនអាចអានបាន)`
-        : `✓ ផ្ទុកបាន ${combined.length} ជួរ ពី ${validFiles.length} ឯកសារ`;
-      statusEl.className = anyError ? "import-status err" : "import-status ok";
-    }
+    /* ⚠⚠ [stated] ២០២៦-០៨-២២ ៖ «វាមិនចេញពណ៌បៃតងទេ ពេល upload ទាំងអស់ ;
+       នៅតែមានក្រុមហ៊ុនផ្សេងចូលមកដដែរ» — ការចំណាំម្ចាស់ធ្លាប់ដំណើរការ
+       **ក្រោយ** state[storeName] = combined; saveState(); renderAll();
+       ⇒ ការរក្សាទុក និងការគូរឡើងវិញ កើតឡើងលើជួរដែលមិនទាន់ចំណាំ ⇒ ទិន្នន័យ
+       ដែលរក្សាទុកគ្មានចំណាំសោះ (152,330 / 152,330) និងតារាងចេញក្រុមហ៊ុន
+       លើស។ ⭐ លំដាប់សំខាន់ជាងតក្កវិជ្ជា ៖ បំពេញទិន្នន័យអោយរួច **មុន**
+       រក្សាទុក និងគូរ។ */
     /* ══ [stated] ២០២៦-០៨-២០ ៖ «ខ្ញុំរើស folder ពីក្រុមហ៊ុនដៃគូ … តែវានៅតែ
        ចេញក្រុមហ៊ុនផ្សេងមកទៀត» ។ ការផ្គូតាម **ឈ្មោះ** ថតបរាជ័យញឹកញាប់ ៖ ថត
        សរសេរឡាតាំង ឯសៀវភៅសរសេរខ្មែរ ⇒ គ្មានចំណាំ ⇒ ការផ្គូតាមលេខវិក្កយបត្រ
@@ -13632,6 +13629,16 @@ function handleFileImport(evt, storeName, kind){
         }
       });
       combined.forEach(function(r){ delete r.__fold; });
+    }
+    state[storeName] = combined;
+    state.selectedCategory[storeName] = null;
+    saveState();
+    renderAll();
+    if(statusEl){
+      statusEl.textContent = anyError
+        ? `✓ ផ្ទុកបាន ${combined.length} ជួរ (មានឯកសារខ្លះមិនអាចអានបាន)`
+        : `✓ ផ្ទុកបាន ${combined.length} ជួរ ពី ${validFiles.length} ឯកសារ`;
+      statusEl.className = anyError ? "import-status err" : "import-status ok";
     }
     /* ⚠ ប្រាប់ជាក់ស្តែងថាថតរងណាទៅជាប់ក្រុមហ៊ុនណា — បើផ្គូមិនបាន អ្នកប្រើ
        ត្រូវដឹងភ្លាម ជាជាងឆ្ងល់ថាហេតុអ្វីក្រុមហ៊ុនលើសចេញក្នុងតារាងសង្ខេប។ */
@@ -31820,7 +31827,19 @@ const RPT_CSS = `
      ⇒ ទូរស័ព្ទ/ថេប្លេត ៖ ជំនួស vh ដោយ 240mm ដែលសមគ្រប់ឧបករណ៍។
      ⚠ កុំព្យូទ័រនៅ 100vh ដដែល — មិនប៉ះពាល់។
      ⚠⚠ គ្មាន backtick ក្នុងកំណត់សម្គាល់នេះ ៖ RPT_CSS ជា template literal។ */
-  html.rsc-mobile-print .rpt-page{ min-height:240mm !important; }
+  /* ══ [stated] ២០២៦-០៨-២២ ៖ «នៅលើ tablet ជួយធ្វើឱ្យ footer ដូចពេល Print
+     ដូចសេចក្តីបរិយាយ … សម្រាប់ យុទ្ធសាស្ត្រផែនការ · បរិយាយការកំណត់ពន្ធ ·
+     របាយការណ៍សង្ខេប · របាយការណ៍សវនកម្ម · ឯករាជ្យភាព» ។
+     ⚠⚠ មិនអាចប្រើ position:fixed ដូចឯកសារបរិយាយបានទេ ៖ ឯកសារទាំងនេះមាន
+       **ជើងទំព័រមួយក្នុងមួយទំព័រ** (លេខទំព័រផ្សេងគ្នា) ហើយធាតុ fixed ត្រូវ
+       គូរឡើងវិញលើ **គ្រប់សន្លឹក** ⇒ ជើងទំព័រ N × សន្លឹក N លាយគ្នាអស់។
+     ⇒ ជំនួសវិញ ធ្វើអោយ **បាតប្រអប់ទំព័រ = បាតសន្លឹក** តាមដែលអាចធ្វើបាន ៖
+       កម្ពស់ 246mm (ពី 240) ហើយ padding ក្រោម និងរឹមជើងទំព័រ = 0 ⇒ ជើងទំព័រ
+       អង្គុយជាប់បាតដូចឯកសារបរិយាយ។
+     ⚠ **246 ជាលេខតែមួយដែលត្រូវលៃ** ៖ បើជើងទំព័រហៀរទៅសន្លឹកបន្ទាប់វិញ
+       បន្ថយមក 240 ; បើនៅសល់ចន្លោះ បង្កើនម្តង ២mm (248 · 250)។ */
+  html.rsc-mobile-print .rpt-page{ min-height:246mm !important; padding-bottom:0 !important; }
+  html.rsc-mobile-print .rpt-page > .rpt-foot{ margin-bottom:0 !important; padding-bottom:0 !important; }
   .rpt-page:has(> .rpt-foot){display:flex; flex-direction:column;}
   .rpt-page > .rpt-foot{margin-top:auto;}
   /* បើមាតិកាវែងជាងមួយទំព័រ ទុកអោយវាបំបែកតាមធម្មតា */
@@ -34391,6 +34410,12 @@ const NARR_CSS = `
     padding-bottom:15mm; page-break-after:always; break-after:page;}
   .nr-page:last-child{page-break-after:auto; break-after:auto;}
   .nr-page > .nr-foot{position:absolute; left:0; right:0; bottom:0;}
+  /* [stated] ២០២៦-០៨-២២ ៖ ជើងទំព័រត្រូវអង្គុយជាប់បាតសន្លឹកដូចឯកសារបរិយាយ។
+     ជើងទំព័រនៅ bottom:0 រួចហើយ ⇒ អ្វីដែលបង្កើតចន្លោះគឺ padding ក្រោមនៃ
+     ប្រអប់ទំព័រ ។ ⚠ កុំដកវាចេញលើកុំព្យូទ័រ ៖ 266mm × រឹម @page ធ្លាប់
+     ត្រូវវាស់រួច ហើយការប្តូរនឹងរុញមាតិកាហៀរ។ ទូរស័ព្ទ/ថេប្លេតប៉ុណ្ណោះ។ */
+  html.rsc-mobile-print .nr-page{ padding-bottom:8mm !important; }
+  html.rsc-mobile-print .nr-page > .nr-foot{ bottom:0 !important; margin:0 !important; }
   /* ══ ទូរស័ព្ទ/ថេប្លេត ៖ កម្ពស់ស្វ័យប្រវត្តិ + ជើងទំព័រហូរតាមមាតិកា ══
      ⚠⚠ កុំដាក់ backtick ក្នុងកំណត់សម្គាល់នេះ ៖ NARR_CSS ជា template literal
        ⇒ backtick មួយបំបែកប្លុក script ទាំងមូល (ធ្លាប់កើតរួច ២០២៦-០៨-១៨)។
