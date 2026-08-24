@@ -36412,6 +36412,8 @@ function docsHtml(){
         <label title="កម្ពស់ទំព័រពេលព្រីន ៖ ទទេ = ស្វ័យប្រវត្តិ (ជើងទំព័រនៅក្រោមមាតិកា តែគ្មានសន្លឹកទទេ) ។ ដាក់លេខ (ឧ. 238) ដើម្បីអោយជើងទំព័រចុះបាតសន្លឹក — បើឃើញសន្លឹកទទេ សូមបន្ថយម្តង 2mm">កម្ពស់ទំព័រ mm
           <input type="number" id="rptPageMm" class="trk-in" style="width:82px;" min="150" max="320" step="1" placeholder="269">
         </label>
+        <button class="btn btn-outline" id="rptRuler" type="button" style="width:auto;"
+                title="ព្រីនបន្ទាត់វាស់មួយសន្លឹក ដើម្បីដឹងកម្ពស់ក្រដាសពិតរបស់ឧបករណ៍នេះ">📏 វាស់កម្ពស់</button>
         <button class="btn btn-primary" id="docsPrint" type="button" title="ព្រីនឯកសារនេះ">🖨️</button>
       </div>
     </div>
@@ -36598,7 +36600,37 @@ function applyRptPageMm(v){
   try{ if(typeof renderSummary === 'function') renderSummary(); }catch(e){}
 }
 try{ applyRptPageMm(localStorage.getItem(RPT_PH_KEY) || ''); }catch(e){}
+/* ══ 📏 បន្ទាត់វាស់កម្ពស់ក្រដាស ═══════════════════════════════════════
+   ⚠⚠ [stated] ២០២៦-០៨-២២ ៖ «កែលេខ mm បែបណាក៏មិនត្រូវដែរ» ។ ខ្ញុំបានទាយ
+     លេខ ៤ ដង ហើយសុំគេលៃម្តងទៀត — នោះជាការសុំអោយគេទាយជំនួសខ្ញុំ។
+   ⇒ ជំនួសការទាយ ៖ **វាស់លើឧបករណ៍នោះផ្ទាល់** ។ ប៊ូតុងនេះព្រីនសន្លឹកមួយ
+     ដែលមានខ្នាតជា mm ពី 180 ដល់ 300។ លេខចុងក្រោយដែលនៅ **លើសន្លឹក** គឺ
+     កម្ពស់បោះពុម្ពពិត។ ដកចេញ 2-3mm រួចដាក់ក្នុងប្រអប់ = ចប់រឿង។
+   ⚠ ខ្នាតត្រូវសង់ពី 0 នៃ **ប្រអប់មាតិកា** ដដែលនឹងឯកសារ ដូច្នេះវាវាស់អ្វី
+     ដែលឯកសារពិតទទួល មិនមែនអ្វីដែលក្រដាសមាន។ */
+function printPageRuler(){
+  let bands = '';
+  for(let mm = 10; mm <= 300; mm += 5){
+    const major = (mm % 50 === 0);
+    bands += '<div style="position:absolute; left:0; right:0; top:' + mm + 'mm;'
+      + ' border-top:' + (major ? '1.4px solid #0F3D3E' : '.6px dashed #9aa') + ';">'
+      + '<span style="position:absolute; left:2mm; top:-3.6mm; font-size:'
+      + (major ? '11pt' : '8pt') + '; font-weight:' + (major ? '700' : '400') + ';'
+      + ' color:' + (major ? '#0F3D3E' : '#667') + '; background:#fff; padding:0 1mm;">'
+      + mm + ' mm</span></div>';
+  }
+  const body = '<div style="position:relative; height:300mm;">'
+    + '<div style="font-size:12pt; font-weight:700; margin-bottom:4mm;">'
+    + '📏 បន្ទាត់វាស់កម្ពស់ក្រដាស — លេខចុងក្រោយដែលនៅលើសន្លឹកនេះ គឺកម្ពស់ពិត</div>'
+    + '<div style="font-size:9pt; margin-bottom:6mm;">ដកចេញ ២-៣mm រួចដាក់ក្នុងប្រអប់ «កម្ពស់ទំព័រ mm» ។'
+    + ' បើមានសន្លឹកទី ២ សូមមើលតែសន្លឹកទី ១ ប៉ុណ្ណោះ។</div>'
+    + bands + '</div>';
+  printInPage(body, '', '@page{ size:A4; margin:14mm 12mm; }');
+}
+
 function wireRptPageMm(host){
+  const rl = (host || document).querySelector('#rptRuler');
+  if(rl) rl.onclick = function(){ try{ printPageRuler(); }catch(e){ console.error('ruler:', e); } };
   const el = (host || document).querySelector('#rptPageMm');
   if(!el) return;
   let saved = '';
