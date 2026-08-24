@@ -35664,17 +35664,16 @@ function printSummary(){
    ត្រឹមត្រូវ។ វិធីដដែលនឹងបាតទំព័រ COVER ដែលដើរហើយ។
    ⚠ Safari/iOS មិនទាន់គាំទ្រ ⇒ ព្រីនពីកុំព្យូទ័រ។ */
 function printBasis(){
-  var bc = {};
-  try{ bc = basisCtx() || {}; }catch(e){}
-  var cssStr = function(v){ return String(v == null ? '' : v).replace(/["\\]/g, ' '); };
-  var pageCss =
-    '@page{ margin:14mm 12mm 18mm;' +
-    '  @bottom-left{ content:"សហគ្រាស៖ ' + cssStr(bc.name) +
-    '    អតប៖ ' + cssStr(bc.tin) + '    ការិយ៖ ' + cssStr(bc.period) + '";' +
-    '    font-family:\'Khmer OS Siemreap\',sans-serif; font-size:7.5pt; color:#000; }' +
-    '  @bottom-right{ content:"ទំព័រ៖ " counter(page) "/" counter(pages);' +
-    '    font-family:\'Khmer OS Siemreap\',sans-serif; font-size:7.5pt; color:#000; }' +
-    '}';
+  /* ⚠⚠ [stated] ២០២៦-០៨-២០ ៖ «ចុចព្រីនតាម tablet មាន ២ footer … តាមទូរស័ព្ទ
+     ចេញតែមួយ» ។ ឯកសារនេះមាន **ជើងទំព័រពីរប្រភព** ៖
+       ១. ប្រអប់រឹម @page (@bottom-left / @bottom-right) នៅទីនេះ
+       ២. div .rpt-foot ក្នុងតួឯកសារ (ដូចឯកសារផ្លូវការទាំង ៤ ដទៃ)
+     ម៉ាស៊ីនខ្លះគូរប្រអប់រឹម @page (ថេប្លេត) ខ្លះមិនគូរ (iOS · Chrome កុំព្យូទ័រ)
+     ⇒ ចេញ ២ លើឧបករណ៍មួយ និង ១ លើឧបករណ៍មួយទៀត — មិនអាចទុកបានទេ។
+     ⇒ ដកប្រភពទី ១ ចេញ ហើយទុកតែ div ដែលគូរដូចគ្នាគ្រប់ម៉ាស៊ីន និងមាន
+       រូបរាងដូចឯកសារយុទ្ធសាស្ត្រផែនការបេះបិទ (អ្វីដែលគេស្នើ)។
+     ⚠ រឹម @page នៅដដែល — ដកតែមាតិកាជើងទំព័រ។ */
+  var pageCss = '@page{ margin:14mm 12mm 18mm; }';
   printInPage(basisHtml(true),
     pageCss + `
      .bs-year{page-break-inside:auto;}
