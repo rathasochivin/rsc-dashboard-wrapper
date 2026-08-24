@@ -36594,10 +36594,34 @@ function wireDocs(host){
      (printInPage ចម្លងតួឯកសារ តែ variable លើ documentElement នៅដដែល)។ */
 const RPT_PH_KEY = 'rptPageMmV1';
 function applyRptPageMm(v){
+  /* ⚠⚠ [stated] ២០២៦-០៨-២២ ៖ «តែវាប៉ះពាល់ដល់របាយការណ៍ផ្សេងទៀត ដូច
+     បរិយាយកំណត់ពន្ធ · របាយការណ៍សវនកម្ម · របាយការណ៍សង្ខេប» ។
+     ⚠ ឯកសារទាំងបីនោះជាគ្រួសារ **ផ្សេង** ៖ .nr-page + --nr-ph (252 ទូរស័ព្ទ /
+       266 កុំព្យូទ័រ) ហើយកម្មវិធីបំបែកទំព័រ `narrPaginate` វាស់តាម
+       `window.__nrPageMm` ។ ដូច្នេះលេខតែមួយត្រូវកំណត់ **ទាំងពីរកន្លែង** ៖
+       បើប្តូរតែ CSS ការបំបែកទំព័រនឹងខុសពីប្រអប់ ⇒ អត្ថបទហៀរ ឬទំព័រពាក់កណ្តាល។
+     ⚠ ទុកទទេ = រក្សាតម្លៃលំនាំដើមរបស់ក្រុមនីមួយៗ (269 សម្រាប់ rpt តាមការ
+       វាស់របស់គេ ; 252/266 សម្រាប់ nr) — មិនប៉ះកុំព្យូទ័រ។
+     ⚠ បន្ទាប់ពីប្តូរ ត្រូវគូរការមើលជាមុនឡើងវិញ ព្រោះការបំបែកទំព័រកើតឡើង
+       ពេលគូរ មិនមែនពេលព្រីនទេ។ */
   const n = Number(v);
   const root = document.documentElement;
-  if(n >= 150 && n <= 290) root.style.setProperty('--rpt-ph', n + 'mm');
+  const ok = (n >= 150 && n <= 320);
+  if(ok) root.style.setProperty('--rpt-ph', n + 'mm');
   else root.style.removeProperty('--rpt-ph');
+  if(ok){
+    root.style.setProperty('--nr-ph', n + 'mm');
+    try{ window.__nrPageMm = n; }catch(e){}
+  }else{
+    root.style.removeProperty('--nr-ph');
+    try{ window.__nrPageMm = (typeof RSC_MOBILE_PRINT !== 'undefined' && RSC_MOBILE_PRINT) ? 252 : 266; }catch(e){}
+  }
+  /* គូរឡើងវិញ ៖ បរិយាយ · សវនកម្ម · សង្ខេប (បើផ្ទាំងនោះមានលើអេក្រង់) */
+  /* ⚠ មុខងារទាំងនេះមិននៅលើ `window` ទេ (ប្លុកនេះជា IIFE) ⇒ ត្រូវហៅតាម
+     ឈ្មោះផ្ទាល់ ជាមួយ typeof guard។ ការហៅ window[...] ស្ងាត់ៗគឺជាកំហុស។ */
+  try{ if(typeof renderNarr === 'function') renderNarr(); }catch(e){}
+  try{ if(typeof renderAudit === 'function') renderAudit(); }catch(e){}
+  try{ if(typeof renderSummary === 'function') renderSummary(); }catch(e){}
 }
 try{ applyRptPageMm(localStorage.getItem(RPT_PH_KEY) || ''); }catch(e){}
 function wireRptPageMm(host){
