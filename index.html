@@ -7135,6 +7135,7 @@ const LOCAL_BACKUP = [
   { exact:  'cdManualV1'         }, /* ✎ PR/SR CN·DN បញ្ចូលដោយដៃ (ជួរពេញ) */
   { exact:  'crossReviewedV1'     }, /* ✓ ក្រុមហ៊ុនដែលពិនិត្យរួច (crosscheck) */
   { exact:  'crossExcludeV1'       }, /* 🚫 ក្រុមហ៊ុនដែលដកចេញដោយដៃ (crosscheck) */
+  { exact:  'mtrManualV1'          }, /* 🧾 សាលកបត្រអនុរក្សបញ្ចូលដោយដៃ */
   { exact:  'crossCdV1'           }, /* 🧾 CN/DN របស់ដៃគូ (crosscheck) */
   { exact:  'crossManualV1'      }, /* 🤝 ការផ្គូផ្គងដោយដៃ (crosscheck) */
   { exact:  'narrLhV1'           }, /* គម្លាតបន្ទាត់ព្រីន */
@@ -16033,19 +16034,31 @@ function renderActiveView(){
   if (currentView === 'latepay') { renderLatePayView(); return; }
   /* ប្រវត្តិសវនកម្មបញ្ចូលដោយដៃទាំងស្រុង ដូច្នេះមិនត្រូវការឯកសារទេ */
   if (currentView === 'history') { renderHistoryView(); return; }
-  if (loadedWorkbooks.length === 0) return;
-  if (currentView === 'monthly') {
-    renderMonthlyView();
-  } else if (currentView === 'annual') {
-    renderAnnualView();
-  } else if (currentView === 'audit') {
-    renderAuditView();
-  } else if (currentView === 'vatcr') {
-    renderVATCRView();
-  } else if (currentView === 'mtrPrint') {
-    renderMTRPrintView();
-  } else if (currentView === 'vatPrint') {
-    renderVATPrintView();
+  /* ⚠⚠ [stated] ២០២៦-០៨-២២ ៖ សាលកបត្រអនុរក្សត្រូវបញ្ចូលដោយដៃបាន ⇒ ផ្ទាំង
+     នេះក៏មិនត្រូវការឯកសារដែរ។ បើទុកវាក្រោមការត្រឡប់ខាងក្រោម នឹងកើតជាប់គាំង
+     ដដែលនឹងទម្រង់ អតប ៖ គ្មានឯកសារ ⇒ មិនគូរ ⇒ គ្មានកន្លែងវាយ ⇒ គ្មានផ្លូវ
+     បង្កើតទិន្នន័យជារៀងរហូត។ */
+  /* ⚠⚠ [stated] ២០២៦-០៨-២២ ៖ «ពេលចុចប៊ូតុងប្រចាំឆ្នាំ MTR និង VAT · សវនកម្ម ·
+     VATCR អត់ដើរ» ។ មូលហេតុ ៖ បន្ទាត់ `if (loadedWorkbooks.length === 0) return;`
+     ⇒ គ្មានឯកសារ upload ⇒ ផ្ទាំងទាំងនោះមិនគូរអ្វីសោះ ហើយអេក្រង់នៅដដែល។
+     ⚠ ពីមុនវាមិនច្បាស់ ព្រោះគ្រប់ផ្ទាំងស្ងាត់ដូចគ្នា ; ឥឡូវផ្ទាំងប្រចាំខែ
+       ដើរដោយគ្មានឯកសារ ដូច្នេះភាពខុសគ្នាលេចចេញ។
+     ⇒ គ្រប់ផ្ទាំងគូរជានិច្ច ៖ សវនកម្ម និង VATCR មានការបញ្ចូលដោយដៃរួចហើយ ;
+       ប្រចាំឆ្នាំ · MTR · VAT សង់ចេញពីជួរប្រចាំខែ ដែលឥឡូវរួមទាំងជួរដៃ។
+     ⚠ រុំដោយ try/catch ៖ ជួរខ្លះនៃមុខងារទាំងនេះសន្មតថាមានឯកសារ ; កំហុស
+       មួយមិនត្រូវធ្វើអោយការចុចប៊ូតុងក្លាយជាគ្មានប្រតិកម្មទាំងស្រុងឡើយ។ */
+  const draw = { monthly:renderMonthlyView, annual:renderAnnualView, audit:renderAuditView,
+                 vatcr:renderVATCRView, mtrPrint:renderMTRPrintView, vatPrint:renderVATPrintView };
+  const fn = draw[currentView];
+  if(!fn) return;
+  try{ fn(); }
+  catch(e){
+    console.error('renderActiveView:', currentView, e);
+    try{
+      resultBody.innerHTML = '<div class="empty-state"><h4>មិនអាចបង្ហាញផ្ទាំងនេះបានទេ</h4>'
+        + '<p>' + String((e && e.message) || e) + '</p>'
+        + '<p>សូម upload ឯកសារ ឬបញ្ចូលទិន្នន័យដោយដៃជាមុនសិន។</p></div>';
+    }catch(_){}
   }
 }
 
@@ -20948,8 +20961,90 @@ function memoByVersion(key, fn){
 }
 
 function getAllExtractedMonthlyRows(){ return memoByVersion('monthly', getAllExtractedMonthlyRows_); }
+/* =========================================================================
+   ⚠⚠ [stated] ២០២៦-០៨-២២ ៖ «ផ្នែកសាលកបត្រអនុរក្សប្រចាំ អាចបញ្ចូលដោយដៃបាន
+   ក្នុងនោះមាន Dropdown ប្រភេទពន្ធ ឬបន្ថែមប្រភេទពន្ធថ្មី ខែ ឆ្នាំ ទឹកប្រាក់
+   ពន្ធបានបង់» ។
+   ⚠ ច្បាប់ដដែលនឹង VATCR និងសវនកម្ម ៖ មានឯកសារ ⇒ ឯកសារឈ្នះ ហើយការវាយ
+     ចាក់សោ រហូតដល់ធីក 🔓 ។
+   ⭐ ចំណុចបញ្ចូលតែមួយ ៖ `getAllExtractedMonthlyRows_` ។ គ្រប់អ្វីៗ (តារាង
+     ប្រចាំខែ · ប្រចាំឆ្នាំ · ការទាញទៅកាតគណនា · Access) អានពីមុខងារនេះ
+     ដូច្នេះការបញ្ចូលជួរដៃត្រង់នេះ គ្របគ្រប់កន្លែងដោយមិនចាំបាច់ភ្ជាប់ថ្មី។
+   ========================================================================= */
+const MTR_MAN_KEY = 'mtrManualV1';
+let mtrManual = [];
+try{ mtrManual = JSON.parse(localStorage.getItem(MTR_MAN_KEY) || '[]') || []; }catch(e){ mtrManual = []; }
+let mtrUnlocked = false;
+function saveMtrManual(){
+  try{ localStorage.setItem(MTR_MAN_KEY, JSON.stringify(mtrManual)); }catch(e){}
+  /* ⚠ ចាំបាច់ ៖ `getAllExtractedMonthlyRows` ជា memo តាម `__dataVersion` */
+  if(window.__bumpDataVersion) window.__bumpDataVersion();
+}
+/* មានឯកសារ MTR ដែរឬទេ? */
+function mtrHasFile(){
+  try{ return loadedWorkbooks.some(it => !!findMTRSheet(it.wb)); }catch(e){ return false; }
+}
+/* បញ្ជីប្រភេទពន្ធ ៖ ពីឯកសារដែលអាន + ពីជួរដៃ + បញ្ជីមូលដ្ឋាន ⇒ គ្រប់ករណី
+   រួមទាំងករណីគ្មានឯកសារសោះ។ */
+/* ⚠ [stated] ២០២៦-០៨-២២ ៖ «Dropdown ប្រភេទពន្ធអាចយកបានពីផ្នែកពន្ធផ្សេងៗ
+   ក្នុងនោះមានប្រភេទពន្ធមួយចំនួនមានស្រាប់» ⇒ ប្រភពដំបូងគឺបញ្ជីពន្ធរបស់
+   **កាតគណនា** (`window.CalcCard.state.taxes` ដែលមកពី TAX_DEFS ហើយរួម
+   ទាំងប្រភេទដែលគេបង្កើតដោយខ្លួនឯងផង) ⇒ ឈ្មោះដូចគ្នាបេះបិទនឹងផ្ទាំង
+   «ពន្ធផ្សេងៗ» ដូច្នេះការផ្គូផ្គងក្រោយៗមិនខុសដោយសារអក្ខរាវិរុទ្ធ។
+   ⚠ បញ្ជីខាងក្រោមជា **បម្រុងចុងក្រោយ** ប៉ុណ្ណោះ ៖ វាប្រើពេលកាតគណនាមិន
+     ទាន់បើកម្តង (state ទទេ) — កុំលុបវាចេញ។ */
+function mtrTaxesFromCalcCard(){
+  try{
+    const st = window.CalcCard && window.CalcCard.state;
+    const list = (st && st.taxes) || [];
+    return list.map(t => String((t && t.name) || '').trim()).filter(Boolean);
+  }catch(e){ return []; }
+}
+const MTR_TAX_BASE = ['អាករលើតម្លៃបន្ថែម','ពន្ធកាត់ទុក','ពន្ធលើប្រាក់បៀវត្សរ៍',
+  'ពន្ធលើប្រាក់ចំណូល','ពន្ធអប្បបរមា','ប្រាក់រំដោះពន្ធលើប្រាក់ចំណូល',
+  'អាករលើការស្នាក់នៅ','អាករពិសេស','ពន្ធប៉ាតង់','ពន្ធលើមធ្យោបាយដឹកជញ្ជូន',
+  'ពន្ធលើអចលនទ្រព្យ','ពន្ធលើដីធ្លីមិនបានប្រើប្រាស់'];
+function mtrTaxTypes(){
+  const set = {};
+  /* លំដាប់ ៖ កាតគណនា → បម្រុង → ឯកសារ → ជួរដៃ (សុទ្ធតែបញ្ចូលក្នុងសំណុំតែមួយ) */
+  const fromCC = mtrTaxesFromCalcCard();
+  fromCC.forEach(t => set[t] = 1);
+  MTR_TAX_BASE.forEach(t => set[t] = 1);
+  try{
+    (getAllExtractedMonthlyRows() || []).forEach(r => { if(r && r[1]) set[String(r[1]).trim()] = 1; });
+  }catch(e){}
+  mtrManual.forEach(r => { if(r && r.taxType) set[String(r.taxType).trim()] = 1; });
+  return Object.keys(set).sort();
+}
+/* ជួរដៃ → រូបរាងដូចជួរដែលអានពីឯកសារ ៖ {year, taxType, months[12]} */
+function mtrManualEntries(){
+  const map = new Map();
+  mtrManual.forEach(r => {
+    const y = String(deKh(r.year) || '').trim();
+    const t = String(r.taxType || '').trim();
+    const m = Number(deKh(r.month));
+    const a = Number(String(deKh(r.amount) || '').replace(/[^0-9.\-]/g, '')) || 0;
+    if(!/^20[0-5]\d$/.test(y) || !t || !(m >= 1 && m <= 12)) return;
+    const k = y + '|' + t;
+    if(!map.has(k)) map.set(k, { year:y, taxType:t, months:new Array(12).fill(0) });
+    map.get(k).months[m - 1] += a;
+  });
+  return map;
+}
+
 function getAllExtractedMonthlyRows_() {
   const aggregatedMap = new Map(); 
+
+  /* ⚠ ដាក់ជួរដៃចូល **មុន** ឯកសារ ៖ ជួរពីឯកសារបូកបន្ថែមលើគ្រាប់ចុចដដែល
+     ដូច្នេះឯកសារនៅតែជាគោល ; ហើយពេលចាក់សោ (មានឯកសារ ហើយមិនទាន់ដោះសោ)
+     ជួរដៃមិនចូលទាល់តែសោះ។ */
+  try{
+    if(!mtrHasFile() || mtrUnlocked){
+      mtrManualEntries().forEach((entry, key)=>{
+        aggregatedMap.set(key, { year:entry.year, taxType:entry.taxType, months:entry.months.slice() });
+      });
+    }
+  }catch(e){ console.error('mtrManual', e); }
 
   loadedWorkbooks.forEach(item => {
     const currentWorkbook = item.wb;
@@ -21122,6 +21217,73 @@ if(!window.__audDrillBound){
   });
 }
 
+/* ══ ប្រអប់បញ្ចូលសាលកបត្រអនុរក្សដោយដៃ ══════════════════════════════
+   ⚠ Dropdown ប្រភេទពន្ធ + ជម្រើស «＋ ប្រភេទថ្មី…» ដែលបើក prompt ⇒ អាច
+     បន្ថែមប្រភេទដែលមិនមានក្នុងបញ្ជីបាន ដូចដែលគេស្នើ។
+   ⚠ ការគូរឡើងវិញធ្វើលើ `change` ប៉ុណ្ណោះ (មិនមែន `input`) — កុំអោយ cursor
+     លោតពេលកំពុងវាយលេខ។ */
+function mtrManualPanel(){
+  /* ⚠⚠ `esc` មិនមែនជា global ក្នុងប្លុក MTR ទេ — វាជា const ក្នុងមុខងារ
+     នីមួយៗ (កំណត់ត្រាចាស់បានរៀបរាប់រួច ហើយខ្ញុំជាន់អន្ទាក់នេះម្តងទៀត ៖
+     «esc is not defined» ⇒ តារាងមិនចេញ ខណៈ localStorage មានទិន្នន័យ)។ */
+  const esc = v => String(v == null ? '' : v)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  const locked = mtrHasFile() && !mtrUnlocked;
+  const dis = locked ? ' disabled' : '';
+  const types = mtrTaxTypes();
+  const rows = mtrManual.map((r, i)=>{
+    const opts = types.map(t =>
+      `<option value="${String(t).replace(/"/g,'&quot;')}"${String(r.taxType||'')===t ? ' selected' : ''}>${esc(t)}</option>`).join('');
+    return `<tr>
+      <td><select class="mm" data-i="${i}" data-k="taxType" style="width:100%;"${dis}>
+        <option value=""${r.taxType ? '' : ' selected'}>— ជ្រើសប្រភេទពន្ធ —</option>
+        ${opts}<option value="__new">＋ ប្រភេទថ្មី…</option></select></td>
+      <td><input class="mm" data-i="${i}" data-k="year" value="${r.year||''}" placeholder="2024" style="width:100%; text-align:center;"${dis}></td>
+      <td><input class="mm" data-i="${i}" data-k="month" value="${r.month||''}" placeholder="1-12" style="width:100%; text-align:center;"${dis}></td>
+      <td><input class="mm" data-i="${i}" data-k="amount" value="${r.amount||''}" placeholder="0" style="width:100%; text-align:right;"${dis}></td>
+      <td style="text-align:center;"><button class="mm-del" data-i="${i}" title="លុប"${dis}>✕</button></td>
+    </tr>`;
+  }).join('');
+  return `
+  <div class="vm-panel">
+    <div class="vm-head">
+      <b>បញ្ចូលសាលកបត្រអនុរក្សដោយដៃ</b>
+      ${mtrHasFile()
+        ? `<label class="vm-lock"><input type="checkbox" id="mmUnlock"${mtrUnlocked ? ' checked' : ''}>
+             🔓 ដោះសោដើម្បីកែ (មានឯកសារ upload រួចហើយ)</label>`
+        : `<span class="vm-note">គ្មានឯកសារសាលកបត្រ — អាចបញ្ចូលដោយដៃបាន</span>`}
+      <button class="btn btn-plainlink" id="mmAdd" style="width:auto;"${dis}>＋ បន្ថែមជួរ</button>
+    </div>
+    ${locked ? '<div class="vm-note">🔒 ជួរទាំងនេះចាក់សោ ព្រោះទិន្នន័យពីឯកសារជាគោល។ ដោះសោខាងលើបើត្រូវកែករណីខុស។</div>' : ''}
+    ${mtrManual.length ? `<table class="ledger vm-tbl"><thead><tr>
+      <th>ប្រភេទពន្ធ</th><th style="width:90px;">ឆ្នាំ</th><th style="width:80px;">ខែ</th>
+      <th style="width:160px;">ពន្ធបានបង់ (៛)</th><th style="width:50px;"></th>
+    </tr></thead><tbody>${rows}</tbody></table>` : ''}
+  </div>`;
+}
+function wireMtrManual(){
+  const add = document.getElementById('mmAdd');
+  if(add) add.onclick = ()=>{
+    mtrManual.push({ taxType:'', year:new Date().getFullYear(), month:'', amount:'' });
+    saveMtrManual(); renderMonthlyView();
+  };
+  const un = document.getElementById('mmUnlock');
+  if(un) un.onchange = ()=>{ mtrUnlocked = un.checked; saveMtrManual(); renderMonthlyView(); };
+  document.querySelectorAll('.mm-del').forEach(b=> b.onclick = ()=>{
+    mtrManual.splice(Number(b.dataset.i), 1); saveMtrManual(); renderMonthlyView();
+  });
+  document.querySelectorAll('.mm').forEach(el=> el.addEventListener('change', ()=>{
+    const r = mtrManual[Number(el.dataset.i)]; if(!r) return;
+    if(el.dataset.k === 'taxType' && el.value === '__new'){
+      const nm = prompt('ឈ្មោះប្រភេទពន្ធថ្មី ៖', '');
+      r.taxType = (nm || '').trim();
+    }else{
+      r[el.dataset.k] = el.value;
+    }
+    saveMtrManual(); renderMonthlyView();
+  }));
+}
+
 function renderMonthlyView(){
   const rows = getAllExtractedMonthlyRows();
   const auditMap = getAuditDeductionsMap(true);       /* សញ្ញាសម្គាល់ជានិច្ច */
@@ -21158,7 +21320,11 @@ function renderMonthlyView(){
     html += '</tr>';
   });
   html += '</tbody></table></div>';
-  resultBody.innerHTML = html;
+  /* ⚠ ប្រអប់វាយនៅ **ខាងលើ** តារាង ⇒ ករណីគ្មានឯកសារសោះ តារាងទទេ តែប្រអប់
+     នៅឃើញ (កំហុសដដែលធ្លាប់កើតលើទម្រង់ អតប ៖ គ្មានទិន្នន័យ ⇒ គ្មានកន្លែងវាយ
+     ⇒ គ្មានផ្លូវបង្កើតទិន្នន័យ)។ */
+  resultBody.innerHTML = mtrManualPanel() + html;
+  wireMtrManual();
 }
 
 function renderAnnualView(){
@@ -22191,15 +22357,25 @@ window.__getTOICoverInfo = function(){
     businessActivity: hasCV('businessActivityOverride')
       ? getCV('businessActivityOverride')
       : (info.businessActivity || ''),
-    companyName: info.name || '',
-    tin: info.tin || '',
+    /* ⚠⚠ [stated] ២០២៦-០៨-២២ ៖ «ករណីមិនមានឯកសារ upload សោះ អាចឱ្យខ្ញុំ
+       បំពេញព័ត៌មានដោយដៃបាន ហើយវាដើរផ្នែកព្រីនលិខិតផងដែរ» ។
+       ⚠ ប្រអប់វាយ **មានស្រាប់** នៅ COVER (`companyNameOverride` ·
+         `companyTinOverride` — មើលជួរ hRows) តែស្ពានទៅលិខិតនេះអាន
+         `info.*` ដោយផ្ទាល់ ⇒ អ្វីដែលវាយបានបង្ហាញលើ COVER តែមិនដែល
+         ទៅដល់លិខិតទាំង ៧ សោះ។ ⇒ ដាក់តម្លៃដែលវាយឱ្យឈ្នះ ដូច
+         `companyAddress` និង `businessActivityOverride` ធ្វើរួចហើយ។
+       ⚠ ប្រើ `getCV(...) ||` មិនមែន `hasCV(...)` ៖ វាលទាំងនេះអាចត្រូវ
+         បានប៉ះរួច (ហើយសម្អាតវិញ) ⇒ តម្លៃទទេត្រូវធ្លាក់ទៅឯកសារវិញ។ */
+    companyName: getCV('companyNameOverride') || info.name || '',
+    tin: getCV('companyTinOverride') || info.tin || '',
     /* Everything the COVER panel, Data Entry and the parsed TOI file already
        hold about the company, so a TblCompanyInfo row written into Access is
        filled in rather than nearly empty. Typed COVER values win over the
        parsed ones, exactly as the COVER itself displays them. */
     address: (hasCV('companyAddress') ? getCV('companyAddress') : (info.address || '')),
-    owner: info.owner || '',
-    accountant: info.accountant || '',
+    /* ម្ចាស់/នាយក និងគណនេយ្យករ ៖ ដូចខាងលើ — ការវាយដោយដៃត្រូវឈ្នះ */
+    owner: getCV('companyOwnerOverride') || info.owner || '',
+    accountant: getCV('companyAccountantOverride') || info.accountant || '',
     latinName: ex.latinName || '',
     phone: ex.phone || '',
     email: ex.email || '',
@@ -22617,6 +22793,13 @@ function renderCoverPanel(){
   ], {table:infoTableTop});
   wrap.appendChild(infoTableTop);
   infoRowMulti([['អាសយដ្ឋាន', coverEditableInput('companyAddress', info.address||'', '100%')]]);
+  /* ⚠ [stated] ២០២៦-០៨-២២ ៖ ករណីគ្មានឯកសារ upload សោះ ⇒ ត្រូវវាយ ម្ចាស់/នាយក
+     និងគណនេយ្យករបានផងដែរ ព្រោះលិខិត និងឯកសារការងារប្រើវា។ តម្លៃដែលវាយ
+     ឈ្នះលើតម្លៃពីឯកសារ (មើល __getTOICoverInfo)។ */
+  infoRowMulti([
+    ['ម្ចាស់/នាយក', coverEditableInputDefault('companyOwnerOverride', info.owner || '', '100%')],
+    ['គណនេយ្យករ', coverEditableInputDefault('companyAccountantOverride', info.accountant || '', '100%')],
+  ]);
   infoRowMulti([['សកម្មភាពអាជីវកម្ម', coverEditableInput('businessActivityOverride', info.businessActivity||'', '100%')]]);
   /* ៧០% សម្រាប់ ទ្រង់ទ្រាយគតិយុត្ត (អត្ថបទវែង) និង ៣០% សម្រាប់ អនុលោមភាព
      (ជាបញ្ជីជ្រើសរើសខ្លីៗ) — តាមការកំណត់របស់អ្នកប្រើ។ */
