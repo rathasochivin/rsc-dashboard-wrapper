@@ -52,7 +52,17 @@
      iframe របស់វា នោះ token អាចធ្លាក់ទៅដៃគេ។ ដូច្នេះបើយើងមិនមែននៅ
      កម្រិតលើគេ ត្រូវផ្ទុះចេញភ្លាម មុនពេល iframe ត្រូវបានបង្កើត។
      ================================================================ */
-  if (window.top !== window.self) {
+  /* ⚠⚠ [stated] ២០២៦-០៨-២២ (រូបថត) ៖ ការចុច «បើកទំព័រចូលដោយផ្ទាល់» នាំទៅ
+     script.google.com/…/exec ហើយ **ទំព័រនេះឯង** លេចឡើងវិញនៅទីនោះ ៖ អត្ថបទ
+     frame-bust នៅជ្រុងឆ្វេងលើ បូកនឹងផ្ទាំងបម្រុងរបស់វា។
+     ⇒ នោះបញ្ជាក់ថា **Apps Script កំពុងបម្រើឯកសារនេះ (wrapper) ជំនួស
+       ទំព័រចូលពិត (Login.html)** ។ លទ្ធផល ៖ wrapper → exec → wrapper …
+       វិលជារង្វង់ ហើយគ្មានសំណុំបែបបទចូលឡើយ។
+     ⇒ ដូច្នេះ ៖ (១) កុំ frame-bust ពេលយើងដឹងថាកំពុងរត់លើ domain របស់
+       Google (វាតែងតែក្នុង frame នៅទីនោះ) ; (២) កុំបង្កើត iframe ដដែល
+       ម្តងទៀត — បង្ហាញការណែនាំច្បាស់លាស់វិញ។ */
+  var ON_GOOGLE = /(^|\.)script\.google\.com$|googleusercontent\.com$/.test(location.hostname);
+  if (!ON_GOOGLE && window.top !== window.self) {
     try { window.top.location = window.self.location.href; }
     catch (e) { document.write('ទំព័រនេះមិនអនុញ្ញាតឲ្យបើកក្នុង frame ទេ។'); }
     throw new Error('framed');
@@ -87,6 +97,23 @@
     allow="clipboard-write"
     referrerpolicy="no-referrer"
   ></iframe>
+
+  <!-- ⚠ បើឯកសារនេះកំពុងត្រូវបានបម្រើដោយ Apps Script ខ្លួនឯង ⇒ ការដាក់
+       iframe ទៅ /exec ម្តងទៀតគឺជារង្វង់វិល។ លាក់វា ហើយប្រាប់ពីរបៀបកែ។ -->
+  <div class="lg-fall" id="lgLoop">
+    <div class="lg-card">
+      <h2>ការកំណត់ Apps Script មិនត្រឹមត្រូវ</h2>
+      <div style="text-align:left">
+        ទំព័រនេះ (<b>login.html</b>) ជាទំព័ររុំសម្រាប់ teamsmos.com ប៉ុណ្ណោះ
+        តែ Apps Script កំពុងបម្រើវាជំនួស <b>ទំព័រចូលពិត</b> ⇒ វាវិលជារង្វង់។
+        <br><br>របៀបកែ ៖
+        <br>១. បើកគម្រោង Apps Script
+        <br>២. ធានាថា <b>doGet</b> បម្រើឯកសារ <b>Login.html</b> (ទំព័រដែលមាន
+        ប្រអប់ Email · ឈ្មោះ · លេខសម្ងាត់) មិនមែនឯកសារនេះទេ
+        <br>៣. Deploy → Manage deployments → ✏️ → <b>New version</b>
+      </div>
+    </div>
+  </div>
 
   <!-- ផ្លូវបម្រុងដែលមើលឃើញជានិច្ច -->
   <div class="lg-bar">
@@ -174,6 +201,13 @@
        domain គឺ `frame.contentWindow.length` ៖ Apps Script ដាក់ទំព័រ
        របស់វាក្នុង iframe ជាន់ទីពីរ ⇒ ដើរបាន ⇒ length ≥ 1 ; ទទេ/ត្រូវទប់
        ⇒ 0 ។ បូកនឹង «គ្មានសារពី Google សោះ» ទើបបង្ហាញផ្ទាំងបម្រុង។ */
+    /* រង្វង់វិល ៖ យើងកំពុងរត់លើ domain របស់ Google ⇒ លាក់ iframe ភ្លាម */
+    if(ON_GOOGLE){
+      try{ frame.remove(); }catch(e){}
+      var lp = document.getElementById('lgLoop');
+      if(lp) lp.style.display = 'flex';
+      return;
+    }
     setTimeout(function(){
       if(heard) return;
       var inner = 0;
