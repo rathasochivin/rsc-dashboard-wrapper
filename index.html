@@ -32200,8 +32200,21 @@ const RPT_CSS = `
        អង្គុយជាប់បាតដូចឯកសារបរិយាយ។
      ⚠ **246 ជាលេខតែមួយដែលត្រូវលៃ** ៖ បើជើងទំព័រហៀរទៅសន្លឹកបន្ទាប់វិញ
        បន្ថយមក 240 ; បើនៅសល់ចន្លោះ បង្កើនម្តង ២mm (248 · 250)។ */
-  html.rsc-mobile-print .rpt-page{ min-height:246mm !important; padding-bottom:0 !important; }
+  /* ⚠⚠ [stated] ២០២៦-០៨-២២ (រូបថតការមើលមុនព្រីនលើថេប្លេត) ៖ ឯកសារទាំង ៣
+     (យុទ្ធសាស្ត្រ · ឯករាជ្យភាព · មូលដ្ឋានកំណត់ពន្ធ) ចេញ **សន្លឹកទទេឆ្លាស់**
+     ៖ 2/4 · 2/10 · 2/2 ទទេ ដោយមានតែបន្ទាត់ជើងទំព័រនៅ **កំពូល** សន្លឹកនោះ។
+     នោះជាសញ្ញាច្បាស់ថា ប្រអប់ទំព័រ **ខ្ពស់ជាងផ្ទៃបោះពុម្ពពិត** ⇒ ជើងទំព័រ
+     (និងចន្លោះខាងក្រោមវា) ហៀរទៅសន្លឹកបន្ទាប់។
+     ⚠ ខ្ញុំបានបង្កើន 240 → 246 ក្នុងវេនមុនដើម្បីបិទចន្លោះ — នោះជាកំហុស ៖
+       ថេប្លេតរបស់គេទទួលបានតិចជាង ២៤៦mm។ ⇒ ត្រឡប់មក **238mm** ដែលទុក
+       គម្លាតសុវត្ថិភាព ; ចន្លោះតូចមួយនៅបាតល្អជាងសន្លឹកទទេមួយ។
+     ⚠ ច្បាប់មាស ៖ បើត្រូវជ្រើសរវាង «ស្អាតឥតខ្ចោះ» និង «មិនហៀរ» ជ្រើស
+       មិនហៀរជានិច្ច។ */
+  html.rsc-mobile-print .rpt-page{ min-height:238mm !important; padding-bottom:0 !important; }
   html.rsc-mobile-print .rpt-page > .rpt-foot{ margin-bottom:0 !important; padding-bottom:0 !important; }
+  /* ⚠ សន្លឹកទទេចុងក្រោយ ៖ page-break-after:always លើទំព័រចុងក្រោយបង្កើត
+     ការបំបែកមួយទៀត ⇒ សន្លឹកទទេ។ ទំព័រចុងក្រោយមិនត្រូវការការបំបែកទេ។ */
+  .rpt-page:last-child{ page-break-after:auto !important; break-after:auto !important; }
   .rpt-page:has(> .rpt-foot){display:flex; flex-direction:column;}
   .rpt-page > .rpt-foot{margin-top:auto;}
   /* បើមាតិកាវែងជាងមួយទំព័រ ទុកអោយវាបំបែកតាមធម្មតា */
@@ -33561,6 +33574,11 @@ const BASIS_CSS = `
       position:fixed; left:0; right:0; bottom:0;
       margin:0; padding-top:3px;
     }
+    /* ⚠⚠ [stated] ២០២៦-០៨-២២ ៖ ឯកសារនេះចេញ ២ សន្លឹក ដោយសន្លឹកទី ២ ទទេ។
+       ជើងទំព័រ fixed គូរម្តងក្នុងមួយសន្លឹក ដូច្នេះសន្លឹកទទេក៏មានវាដែរ —
+       តែឫសគល់គឺ **មាតិកាហៀស** ។ លើទូរស័ព្ទ/ថេប្លេត កម្ពស់អប្បបរមាត្រូវ
+       តូចជាងផ្ទៃបោះពុម្ព ; បើមិនដូច្នេះទេ ត្រឹមតែ ១mm ក៏បង្កើតសន្លឹកថ្មី។ */
+    html.rsc-mobile-print .bs-page{ min-height:0 !important; padding-bottom:14mm !important; }
   }
 
   .bs-rule{border:0; border-top:1.5px solid #1a237e; width:52%; margin:6px 0 10px;}
