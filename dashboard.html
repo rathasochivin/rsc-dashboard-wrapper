@@ -32211,10 +32211,21 @@ const RPT_CSS = `
   /* ✅ [stated] ២០២៦-០៨-២២ ៖ «យុទ្ធសាស្ត្រផែនការ · លិខិតបញ្ជាក់ឯករាជ្យភាព
      (ប្រើ 269mm ត្រូវ)» ⇒ 269mm ក្លាយជា **តម្លៃលំនាំដើម** ។ ប្រអប់នៅដដែល
      សម្រាប់លៃបើឧបករណ៍ផ្សេងត្រូវការលេខផ្សេង។ */
+  /* ⚠⚠⚠ [stated] ២០២៦-០៨-២២ ៖ «footer ខ្លះជាប់នៅនឹងតារាង វាមិននៅខាងក្រោម» ។
+     ⭐ ឫសគល់រកឃើញហើយ ៖ ទំព័រឯកសារបរិយាយកាន់ **ថ្នាក់ទាំងពីរ** —
+       class="rpt-page nr-doc … nr-page" (មើល narrPagesHtml)។ ដូច្នេះ
+       ច្បាប់ព្រីនរបស់ .rpt-page ខាងក្រោមដែលមាន height:auto !important
+       **សរសេរជាន់** .nr-page{height:var(--nr-ph)} ⇒ ទំព័រនោះបង្រួម
+       មកតាមមាតិកា ⇒ ជើងទំព័រ (absolute bottom:0) អង្គុយជាប់តារាងភ្លាម។
+     ⇒ ដក .nr-page ចេញពីច្បាប់នេះ ៖ :not(.nr-page) ។ គ្រួសារបរិយាយមាន
+       ច្បាប់កម្ពស់ផ្ទាល់ខ្លួនរួចហើយ (--nr-ph) ហើយឥឡូវវាលែងត្រូវលុប។
+     ⚠ មេរៀន ៖ មុននឹងសរសេរ !important លើថ្នាក់មួយ ត្រូវពិនិត្យថាធាតុណា
+       ខ្លះកាន់ថ្នាក់នោះ **រួមជាមួយថ្នាក់ដទៃ** — ជាន់ដោយចៃដន្យបែបនេះ
+       មើលមិនឃើញលើអេក្រង់ ព្រោះវាកើតតែក្នុង @media print។ */
   @media print{
-    .rpt-page{ min-height:var(--rpt-ph, 269mm) !important; height:auto !important;
+    .rpt-page:not(.nr-page){ min-height:var(--rpt-ph, 269mm) !important; height:auto !important;
                padding-bottom:6mm !important; }
-    .rpt-page > .rpt-foot{ margin-bottom:0 !important; padding-bottom:0 !important; }
+    .rpt-page:not(.nr-page) > .rpt-foot{ margin-bottom:0 !important; padding-bottom:0 !important; }
     .rpt-page:last-child{ page-break-after:auto !important; break-after:auto !important; }
   }
   /* ⚠ សន្លឹកទទេចុងក្រោយ ៖ page-break-after:always លើទំព័រចុងក្រោយបង្កើត
@@ -33586,7 +33597,11 @@ const BASIS_CSS = `
          កម្ពស់ថេរបូកនឹង padding គ្រាន់តែបន្ថែមកម្ពស់ដែលអាចហៀស ⇒ សន្លឹកទី ២។
          (ការដាក់ 300 «ដើរ» ព្រោះលេខធំហួសត្រូវបានកាត់ចេញ មិនមែនព្រោះវាត្រូវ។)
        ⇒ ដក --rpt-ph ចេញពី .bs-page **គ្រប់ឧបករណ៍** — មិនមែនតែទូរស័ព្ទទេ។ */
-    .bs-page{ min-height:0 !important; padding-bottom:14mm !important; }
+    /* ⚠ ជម្រើសត្រូវខ្លាំងជាង .rpt-page:not(.nr-page) (0,2,0) ⇒ ប្រើ
+       .rpt-page.bs-page (0,2,0 ដូចគ្នា តែមកក្រោយ) ។ ការសរសេរតែ
+       .bs-page (0,1,0) ចាញ់ ហើយឯកសារនេះទទួលកម្ពស់ 269mm វិញ។ */
+    .rpt-page.bs-page, .bs-page{ min-height:0 !important; height:auto !important;
+      padding-bottom:14mm !important; }
   }
 
   .bs-rule{border:0; border-top:1.5px solid #1a237e; width:52%; margin:6px 0 10px;}
