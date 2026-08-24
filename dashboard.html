@@ -1240,6 +1240,11 @@ td[contenteditable="true"]:focus{outline:2px solid var(--accent); outline-offset
   border:1px solid var(--line); border-radius:8px; padding:4px 4px 4px 12px;
 }
 .import-group span{font-size:12px; color:var(--muted); white-space:nowrap;}
+/* 📁 បៃតង = ក្រុមហ៊ុននេះមានឯកសារដៃគូរួចហើយ */
+.file-label.cp-has{
+  background:#E8F5E9; border-color:#2E7D32; color:#1B5E20;
+  box-shadow:inset 0 0 0 1px #2E7D32;
+}
 .file-label{
   font-family:inherit; font-size:12.5px; font-weight:600; cursor:pointer;
   border-radius:6px; padding:8px 14px; border:1px solid var(--accent);
@@ -10516,7 +10521,26 @@ function crosscheck(ourRows, cpRows){
     /* ⚠ ជួរដៃគូដែលមានម្ចាស់ថត (`cpOwnerTin`) ត្រូវផ្គូបានតែនឹងជួររបស់យើង
        ដែលមានអតបដូចម្ចាស់នោះ — កុំអោយថតរបស់ដៃគូ A ទៅផ្គូនឹងវិក្កយបត្រ
        របស់អតិថិជន B ដោយចៃដន្យ (លេខវិក្កយបត្រអាចដូចគ្នា)។ */
+    /* ⚠⚠ [stated] ២០២៦-០៨-២២ ៖ «upload ម្តងមួយក្រុមហ៊ុន វាអត់លោតក្រុមហ៊ុន
+       ផ្សេង … តែពេលរើសឯកសារទាំងអស់ វានៅតែចេញក្រុមហ៊ុនផ្សេងដែលមិនបាន
+       upload» ។ ភាពខុសគ្នា ៖ ប៊ូតុង Top 10 ចំណាំ **គ្រប់ជួរ** ដោយអតបដែល
+       គេជ្រើស ; ការរើសថតមេ ចំណាំបានតែជួរដែលរកឃើញម្ចាស់ (តាមឈ្មោះថត ឬ
+       តាមលេខវិក្កយបត្រ) ⇒ ជួរដែលនៅសល់គ្មានម្ចាស់ ហើយអាចទៅផ្គូនឹង
+       ក្រុមហ៊ុនណាក៏បាន។
+       ⇒ ច្បាប់ថ្មី ៖ បើ**ឯកសារនេះមានចំណាំម្ចាស់យ៉ាងតិចមួយ** នោះសំណុំ
+         ក្រុមហ៊ុនដែល upload = សំណុំម្ចាស់ទាំងនោះ ; ជួររបស់យើងសម្រាប់
+         ក្រុមហ៊ុនក្រៅសំណុំ **មិនផ្គូផ្គងសោះ** (covered:false ⇒ លាក់)។
+       ⚠ ឯកសារគ្មានចំណាំសោះ (ចាស់ ឬ upload តាមប៊ូតុងទូទៅដោយគ្មានថតរង)
+         ⇒ `anyOwn` false ⇒ ឥរិយាបថដូចមុនទាំងស្រុង។ */
+    const ownSet = {};
+    let anyOwn = false;
+    pool.forEach(r=>{ if(r && r.cpOwnerTin){ ownSet[r.cpOwnerTin] = 1; anyOwn = true; } });
+    const ourInScope = function(ourRow){
+      if(!anyOwn) return true;
+      return !!ownSet[tin9(ourRow.tin)];
+    };
     const ownOk = function(cpRow, ourRow){
+      if(!ourInScope(ourRow)) return false;
       const o = cpRow && cpRow.cpOwnerTin;
       if(!o) return true;                       /* ថតគ្មានម្ចាស់ ⇒ ដូចមុន */
       return o === tin9(ourRow.tin);
@@ -10527,7 +10551,11 @@ function crosscheck(ourRows, cpRows){
          អាចប្រើដោយអតិថិជនពីរនាក់ផ្សេងគ្នា។ ពីមុនក្រុមទាំងមូលចាប់គូ
          ជាមួយគ្នា ⇒ ក្រុមហ៊ុនដែលមិនបាន upload ថតក៏ក្លាយជា «covered»។ */
       const byTinOur = {};
-      ourG[i].forEach(r=>{ const t = tin9(r.tin) || ""; (byTinOur[t] = byTinOur[t] || []).push(r); });
+      ourG[i].forEach(r=>{
+        if(!ourInScope(r)) return;              /* ក្រុមហ៊ុនក្រៅសំណុំ upload */
+        const t = tin9(r.tin) || "";
+        (byTinOur[t] = byTinOur[t] || []).push(r);
+      });
       Object.keys(byTinOur).forEach(t=>{
         const os = byTinOur[t];
         const cs = csAll.filter(x=> !used.has(x) && ownOk(x, os[0]));
@@ -13976,13 +14004,29 @@ function renderTopCompaniesTable(containerId, storeName){
   years.forEach(y=> html += `<th>${y}</th>`);
   html += `<th>លម្អិត</th>`;
   html += `</tr></thead><tbody>`;
+  /* ⚠ [stated] ២០២៦-០៨-២២ ៖ «ឱ្យតែមានឈ្មោះ ជួយដាក់ពណ៌ folder ទៅជាពណ៌បៃតង
+     ដើម្បីសម្គាល់» ⇒ រាប់ជួរដៃគូដែលជាប់នឹងក្រុមហ៊ុននេះ។
+     ⚠ រាប់ ២ ផ្លូវ ៖ ចំណាំម្ចាស់ (`cpOwnerTin` — upload តាមប៊ូតុងនេះ ឬតាម
+       ថតរង) និង **ឈ្មោះ** (`cpOwnerName`) សម្រាប់ករណីអតបខុសទម្រង់។
+     ⚠ គណនាម្តងជាផែនទី មិនមែនរង្វិលក្នុងរង្វិល — តារាងនេះមាន ១០ ជួរ តែ
+       ឃ្លាំងដៃគូអាចមានរាប់ពាន់ជួរ។ */
+  const cpStore = storeName === "sale" ? "cpPurchase" : "cpSale";
+  const cpCount = {};
+  (state[cpStore] || []).forEach(function(r){
+    const t = r && r.cpOwnerTin ? String(r.cpOwnerTin) : "";
+    if(t) cpCount[t] = (cpCount[t] || 0) + 1;
+    const n = r && r.cpOwnerName ? String(r.cpOwnerName).trim().toLowerCase() : "";
+    if(n) cpCount["n:" + n] = (cpCount["n:" + n] || 0) + 1;
+  });
   top.forEach((c,i)=>{
+    const cpHas = cpCount[tin9(c.tin || "")] ||
+                  cpCount["n:" + String(c.name || "").trim().toLowerCase()] || 0;
     const pctTxt = c.pct.toFixed(1);
     const nameEsc = escJsAttr(c.name);
     const keyEsc = escJsAttr(c.key);
     html += `<tr class="partner-row" onclick="openCompanyDetail('${storeName}','${keyEsc}')" title="ចុចដើម្បីមើលលម្អិតការលក់/ទិញរបស់ ${escAttr(c.name)}">
       <td style="text-align:center; white-space:nowrap;" onclick="event.stopPropagation()">
-        <label class="file-label" style="padding:4px 8px; font-size:12px; display:inline-block;" title="ជ្រើសថតទាំងមូល របស់ ${escAttr(c.name)} — អានឯកសារ Excel គ្រប់ថតរង">📁
+        <label class="file-label${cpHas ? ' cp-has' : ''}" style="padding:4px 8px; font-size:12px; display:inline-block;" title="${cpHas ? 'មានឯកសារដៃគូរួចហើយ ៖ ' + cpHas + ' ជួរ — ចុចដើម្បីបន្ថែម' : 'ជ្រើសថតទាំងមូល របស់ ' + escAttr(c.name) + ' — អានឯកសារ Excel គ្រប់ថតរង'}">📁
           <input type="file" webkitdirectory directory multiple style="display:none" onchange="handleFileImportForCompany(event,'${targetStore}','${targetKind}','${nameEsc}','${escAttr(c.tin||'')}')">
         </label>
       </td>
@@ -32999,7 +33043,7 @@ function basisHtml(forPrint){
   const c = basisCtx();
   const line = (k, v)=> `<tr><td class="k">${esc(k)}</td><td class="s">៖</td><td class="v">${esc(v)}</td></tr>`;
   return `
-  <div class="rpt-page">
+  <div class="rpt-page bs-page">
     ${letterheadHtml(c.code
         ? `<div class="bs-bc">${barcode39Svg(c.code)}<div class="bs-bcn">${esc(c.code)}</div></div>`
         : '')}
@@ -33105,6 +33149,25 @@ const BASIS_CSS = `
   .bs-info td.k{white-space:nowrap; width:1%; padding-right:2px;}
   .bs-info td.s{width:14px; padding-left:0; padding-right:8px;}
   .bs-info td.v{font-weight:600; width:100%;}
+  /* ══ [stated] ២០២៦-០៨-២០ ៖ «ខាងវាពីមុនមាន ២ footer នៅលើ ១ និងក្រោម ១ …
+     ខ្ញុំចង់បាន footer នៅផ្នែកខាងក្រោម ដែលវាមិននៅដល់ footer ហើយស្អាត» ⇒
+     យកទីតាំង **ខាងក្រោមគេ** (ទីតាំងរបស់ប្រអប់រឹម @page ដែលគេពេញចិត្ត)
+     តែសរសេរដោយ div ដែលគ្រប់ម៉ាស៊ីនគូរបាន។
+     ⚠ position:fixed; bottom:0 នៅក្នុងការព្រីន ត្រូវបានគណនាធៀបនឹង
+       **ប្រអប់ទំព័រ** មិនមែនប្រអប់មាតិកា ⇒ វាចុះដល់គែមក្រោមពិតនៃសន្លឹក
+       ដូចប្រអប់រឹម @page បេះបិទ ដោយមិនអាស្រ័យលើកម្ពស់ .rpt-page ឡើយ។
+     ⚠ វាចេញពីលំហូរ ⇒ ត្រូវបម្រុងទំហំដោយ padding-bottom លើទំព័រ បើមិន
+       ដូច្នេះទេ អត្ថបទចុងក្រោយនឹងរត់ពីក្រោមវា។
+     ⚠ តែពេលព្រីនប៉ុណ្ណោះ — លើអេក្រង់ទុកឲ្យវាហូរតាមធម្មតា ដើម្បីកុំអោយ
+       ជាប់ជាប់អេក្រង់ពេលរមូរ។ */
+  @media print{
+    .bs-page{ padding-bottom:16mm; }
+    .bs-page > .rpt-foot{
+      position:fixed; left:0; right:0; bottom:0;
+      margin:0; padding-top:3px;
+    }
+  }
+
   .bs-rule{border:0; border-top:1.5px solid #1a237e; width:52%; margin:6px 0 10px;}
   .bs-lead{text-indent:2.4em; text-align:justify; margin:0 0 14px;}
   .bs-year{margin-bottom:16px;}
