@@ -32234,8 +32234,11 @@ const RPT_CSS = `
         មានតម្លៃ = ជើងទំព័រចុះបាតសន្លឹកតាមកម្ពស់នោះ
         កំណត់ពីប្រអប់ «កម្ពស់ទំព័រ (mm)» ក្នុងរបារឯកសារ · រក្សាទុក។
      ⚠ ចាប់ផ្តើមពី ២៣៨ រួចបន្ថយម្តង ២mm បើឃើញសន្លឹកទទេ ; បង្កើនបើចន្លោះធំ។ */
+  /* ✅ [stated] ២០២៦-០៨-២២ ៖ «យុទ្ធសាស្ត្រផែនការ · លិខិតបញ្ជាក់ឯករាជ្យភាព
+     (ប្រើ 269mm ត្រូវ)» ⇒ 269mm ក្លាយជា **តម្លៃលំនាំដើម** ។ ប្រអប់នៅដដែល
+     សម្រាប់លៃបើឧបករណ៍ផ្សេងត្រូវការលេខផ្សេង។ */
   @media print{
-    .rpt-page{ min-height:var(--rpt-ph, 0) !important; height:auto !important;
+    .rpt-page{ min-height:var(--rpt-ph, 269mm) !important; height:auto !important;
                padding-bottom:6mm !important; }
     .rpt-page > .rpt-foot{ margin-bottom:0 !important; padding-bottom:0 !important; }
     .rpt-page:last-child{ page-break-after:auto !important; break-after:auto !important; }
@@ -33602,11 +33605,14 @@ const BASIS_CSS = `
       position:fixed; left:0; right:0; bottom:0;
       margin:0; padding-top:3px;
     }
-    /* ⚠⚠ [stated] ២០២៦-០៨-២២ ៖ ឯកសារនេះចេញ ២ សន្លឹក ដោយសន្លឹកទី ២ ទទេ។
-       ជើងទំព័រ fixed គូរម្តងក្នុងមួយសន្លឹក ដូច្នេះសន្លឹកទទេក៏មានវាដែរ —
-       តែឫសគល់គឺ **មាតិកាហៀស** ។ លើទូរស័ព្ទ/ថេប្លេត កម្ពស់អប្បបរមាត្រូវ
-       តូចជាងផ្ទៃបោះពុម្ព ; បើមិនដូច្នេះទេ ត្រឹមតែ ១mm ក៏បង្កើតសន្លឹកថ្មី។ */
-    html.rsc-mobile-print .bs-page{ min-height:0 !important; padding-bottom:14mm !important; }
+    /* ⚠⚠ [stated] ២០២៦-០៨-២២ ៖ «សេចក្តីបរិយាយអំពីមូលដ្ឋាន ៖ ប្រើ 269mm វា
+       ចេញ ២ ទំព័រ ; ដាក់ 300mm ទើបចេញតែ ១ ទំព័រ» ។
+       ⭐ ឯកសារនេះ **មិនត្រូវការកម្ពស់ថេរសោះ** ៖ ជើងទំព័ររបស់វាជា
+         position:fixed; bottom:0 ⇒ វាចុះបាតសន្លឹកដោយខ្លួនឯងរួចហើយ។
+         កម្ពស់ថេរបូកនឹង padding គ្រាន់តែបន្ថែមកម្ពស់ដែលអាចហៀស ⇒ សន្លឹកទី ២។
+         (ការដាក់ 300 «ដើរ» ព្រោះលេខធំហួសត្រូវបានកាត់ចេញ មិនមែនព្រោះវាត្រូវ។)
+       ⇒ ដក --rpt-ph ចេញពី .bs-page **គ្រប់ឧបករណ៍** — មិនមែនតែទូរស័ព្ទទេ។ */
+    .bs-page{ min-height:0 !important; padding-bottom:14mm !important; }
   }
 
   .bs-rule{border:0; border-top:1.5px solid #1a237e; width:52%; margin:6px 0 10px;}
@@ -36430,7 +36436,7 @@ function docsHtml(){
         <button class="btn btn-outline hub-bssync" id="trkBsSync" type="button"
                 style="width:auto;">↻ ទាញពីតារាងកំណត់ពន្ធលើស</button>
         <label title="កម្ពស់ទំព័រពេលព្រីន ៖ ទទេ = ស្វ័យប្រវត្តិ (ជើងទំព័រនៅក្រោមមាតិកា តែគ្មានសន្លឹកទទេ) ។ ដាក់លេខ (ឧ. 238) ដើម្បីអោយជើងទំព័រចុះបាតសន្លឹក — បើឃើញសន្លឹកទទេ សូមបន្ថយម្តង 2mm">កម្ពស់ទំព័រ mm
-          <input type="number" id="rptPageMm" class="trk-in" style="width:82px;" min="150" max="290" step="1" placeholder="ស្វ័យ">
+          <input type="number" id="rptPageMm" class="trk-in" style="width:82px;" min="150" max="320" step="1" placeholder="269">
         </label>
         <button class="btn btn-primary" id="docsPrint" type="button" title="ព្រីនឯកសារនេះ">🖨️</button>
       </div>
