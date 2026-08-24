@@ -33185,9 +33185,27 @@ const WP_CSS = `
      ⚠ ច្បាប់ព្យួរលើ html.rsc-mobile-print ⇒ កុំព្យូទ័រគ្មាន class នេះ
        ដូច្នេះមិនប៉ះពាល់ទាល់តែសោះ ; ហើយ .cv-cover-page មានតែលើសន្លឹកមុខ
        ⇒ ស្លាកកាត់បិទ និង E/F នៅដដែល។ */
+  /* ⚠⚠ [stated] ២០២៦-០៨-២២ ៖ «ទំព័រតារាងតាមដានបញ្ជូនឯកសារ វាធ្លាក់ទៅទំព័រ
+     ទី ២» ។ សន្លឹកនេះមានស៊ុមពេញទំព័រ ដូច្នេះកម្ពស់របស់វាត្រូវតែស្មើ
+     **ផ្ទៃបោះពុម្ពពិត** ។ លេខថេរ 268/265mm ជាការទាយដដែលដែលបរាជ័យ
+     គ្រប់ជុំ — ហើយឥឡូវយើងមានប្រអប់ដែលអ្នកប្រើវាស់រួច។
+     ⇒ ចងវាទៅនឹងអថេរតែមួយ --rpt-ph (លំនាំដើម 269mm) ៖ ស៊ុមខាងក្រៅ
+       = តម្លៃនោះ ; ស៊ុមខាងក្នុង = តម្លៃនោះដក 3mm (ស៊ុម + padding)។
+     ⚠ zoom នៅដដែលសម្រាប់ទូរស័ព្ទ ព្រោះមាតិកាសន្លឹកនេះខ្ពស់ដោយធម្មជាតិ
+       (បានវាស់ 268.4mm) — បើដកវាចេញ វានឹងហៀរម្តងទៀត។
+     ⚠ គ្មាន !important ⇒ បើអ្នកប្រើដាក់លេខក្នុងប្រអប់ វាដើរតាមភ្លាម។ */
+  /* ⚠⚠ ការបង្រួមមិនត្រូវព្យួរលើការរកឃើញឧបករណ៍ទៀតទេ ៖ បើថ្នាក់
+     rsc-mobile-print មិនត្រូវបានដាក់ (UA ចម្លែក · ការមើលមុនព្រីនកម្មវិធី
+     ផ្សេង) នោះ zoom មិនអនុវត្ត ⇒ សន្លឹកកម្ពស់ធម្មជាតិ 268mm បូកស៊ុម ⇒
+     ហៀរទៅសន្លឹកទី ២។ ⇒ អនុវត្ត zoom ក្នុង @media print **គ្រប់ឧបករណ៍**។
+     ⚠ 0.94 ជ្រើសពីការវាស់ ៖ មាតិកាធម្មជាតិ 268.4mm × 0.94 ≈ 252mm ដែល
+       តូចជាងផ្ទៃបោះពុម្ពរបស់ថេប្លេត (~262mm តាមបន្ទាត់វាស់) និងកុំព្យូទ័រ។ */
+  @media print{
+    .cv-cover-page{ zoom:0.94; min-height:0 !important; }
+  }
   html.rsc-mobile-print .cv-cover-page{ zoom:0.92; min-height:0; }
-  html.rsc-mobile-print .cv-cover-page .cv-sheet{ min-height:268mm; }
-  html.rsc-mobile-print .cv-cover-page .cv-in{ min-height:265mm; }
+  .cv-cover-page .cv-sheet{ min-height:var(--rpt-ph, 269mm); }
+  .cv-cover-page .cv-in{ min-height:calc(var(--rpt-ph, 269mm) - 3mm); }
   .cv-lh{display:flex; align-items:flex-start; justify-content:space-between; gap:16px;}
   .cv-lh-l,.cv-lh-r{text-align:center; color:#1a237e;
     font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif;}
