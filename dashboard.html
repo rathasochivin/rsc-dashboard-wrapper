@@ -10532,9 +10532,26 @@ function crosscheck(ourRows, cpRows){
          ក្រុមហ៊ុនក្រៅសំណុំ **មិនផ្គូផ្គងសោះ** (covered:false ⇒ លាក់)។
        ⚠ ឯកសារគ្មានចំណាំសោះ (ចាស់ ឬ upload តាមប៊ូតុងទូទៅដោយគ្មានថតរង)
          ⇒ `anyOwn` false ⇒ ឥរិយាបថដូចមុនទាំងស្រុង។ */
+    /* ⚠⚠ [stated] ២០២៦-០៨-២២ ៖ «វាបាត់មួយ … តែក្រុមហ៊ុន ១ ទៀតនៅដដែល
+       folder upload អត់មានទេ តែវាចេញមកផ្គូផ្គង» — ក្រុមហ៊ុននោះមាន
+       «ត្រូវគ្នា ១ · គេមិនប្រកាស ១០» ៖ **លេខវិក្កយបត្រតែមួយចៃដន្យ** បាន
+       ចំណាំជួរមួយជាក្រុមហ៊ុននោះ ⇒ វាចូល ownSet ⇒ ជួរដទៃទាំង ១០ លេចជា
+       «គេមិនប្រកាស» ។
+       ⇒ វិសាលភាពត្រូវសង់ពី **ភស្តុតាងកម្រិតថត** ប៉ុណ្ណោះ (`cpOwnerSrc`
+         = 'folder' ៖ ឈ្មោះថត · ភាគច្រើន ≥៧៥% · ឬការជ្រើសផ្ទាល់ពី Top 10)។
+         ការទាយពីជួរតែមួយ ('inv') នៅបន្តជួយ **ហាមការផ្គូឆ្លងក្រុមហ៊ុន**
+         តែ **មិនបង្កើតវិសាលភាព** ទៀតទេ។
+       ⚠ បើគ្មានភស្តុតាងកម្រិតថតសោះ ធ្លាក់ទៅប្រើចំណាំទាំងអស់ (ដូចមុន)
+         ជាជាងបិទអ្វីៗទាំងអស់ដោយស្ងាត់។ */
     const ownSet = {};
     let anyOwn = false;
-    pool.forEach(r=>{ if(r && r.cpOwnerTin){ ownSet[r.cpOwnerTin] = 1; anyOwn = true; } });
+    pool.forEach(r=>{
+      const t = r && (r.cpFolderTin || (r.cpOwnerSrc === 'folder' ? r.cpOwnerTin : ""));
+      if(t){ ownSet[t] = 1; anyOwn = true; }
+    });
+    if(!anyOwn){
+      pool.forEach(r=>{ if(r && r.cpOwnerTin){ ownSet[r.cpOwnerTin] = 1; anyOwn = true; } });
+    }
     const ourInScope = function(ourRow){
       if(!anyOwn) return true;
       return !!ownSet[tin9(ourRow.tin)];
@@ -10622,6 +10639,10 @@ function crosscheck(ourRows, cpRows){
       /* ⚠ បន្តម្ចាស់ថត ⇒ តារាងសង្ខេបដាក់ជួរនេះនៅក្រុមហ៊ុនត្រឹមត្រូវ
          ជំនួសធាតុ «(មិនកំណត់ក្រុមហ៊ុន)» */
       cpOwnerTin:r.cpOwnerTin || "", cpOwnerName:r.cpOwnerName || "",
+      /* ⚠ ម្ចាស់ថត និងប្រភពត្រូវបន្តទៅជួរ `theirs` ដែរ — តារាងសង្ខេប
+         បង្គុំតាមវា ; បើបាត់ ធាតុថ្មីនឹងលេចឡើងវិញ។ */
+      cpFolderTin:r.cpFolderTin || "", cpFolderName:r.cpFolderName || "",
+      cpOwnerSrc:r.cpOwnerSrc || "",
       status:STATUS.OURMISS, dDays:null, dAmt:null, matchBy:"", covered:true, theirs:true
     }));
     /* [stated] ២០២៦-០៨-១៣ ៖ «ជួយរៀបឈ្មោះសហគ្រាសដៃគូ និងលេខអតប ដើម្បីដឹង
@@ -11786,7 +11807,9 @@ function crossPartnerSummary(which, scoped, partners){
     if(r.theirs){
       /* ⚠ អាទិភាព ៖ ម្ចាស់ថត → ដៃគូតែមួយ → ធាតុមិនកំណត់ ។ ជួរដៃគូសរសេរ
          អតប**យើង** ដូច្នេះ `r.tin` មិនអាចប្រើសម្គាល់ក្រុមហ៊ុនបានទេ។ */
-      const own = r.cpOwnerTin || "";
+      /* ⚠ ប្រើម្ចាស់ **ថត** ជាមុន ៖ ការទាយកម្រិតជួរមិនត្រូវបង្កើតធាតុថ្មី
+         ក្នុងតារាងសង្ខេបទេ (មើលកំណត់សម្គាល់ក្នុងផ្លូវនាំចូល)។ */
+      const own = r.cpFolderTin || (r.cpOwnerSrc === 'folder' ? (r.cpOwnerTin || "") : "");
       /* ⚠ ត្រូវប្រើ **គ្រាប់ចុចដដែល** នឹងជួររបស់យើង បើមិនដូច្នេះទេ ក្រុមហ៊ុន
          តែមួយនឹងចេញពីរជួរក្នុងតារាងសង្ខេប (ម្តងតាម partnerKey ម្តងតាមម្ចាស់ថត)។ */
       const pMatch = own ? (partners || []).filter(function(p){ return tin9(p.tin) === own; })[0] : null;
@@ -11823,8 +11846,11 @@ function renderCrossPartnerSummary(which, list){
     const ys = document.getElementById("ysum-"+which);
     host.parentNode.insertBefore(box, ys || host);
   }
-  /* ជ្រើសក្រុមហ៊ុនហើយ ⇒ លាក់តារាងសង្ខេប */
-  if(filters[which] || !list.length){ box.innerHTML = ""; return; }
+  /* ⚠⚠ ការត្រួតពិនិត្យ «ជ្រើសក្រុមហ៊ុនហើយ» ត្រូវផ្លាស់ទៅក្រោម ៖ បញ្ជីប្រភព
+     និងសារព្រមានត្រូវឃើញ **គ្រប់ពេល** ព្រោះនោះជាកន្លែងឆ្លើយសំណួរ «ហេតុអ្វី
+     ក្រុមហ៊ុននេះចេញមក» ។ តារាងសង្ខេបទើបលាក់ពេលជ្រើសក្រុមហ៊ុន។
+     ⚠ ជាមួយដៃគូតែម្នាក់ `populatePartnerSelect` ជ្រើសវាដោយស្វ័យប្រវត្តិ
+       ⇒ `filters[which]` មិនទទេ ⇒ មុននេះផ្ទាំងទាំងមូលទទេស្ងាត់។ */
   const ourWord = which==="crossSale" ? "យើងលក់ឱ្យគេ" : "យើងទិញពីគេ";
   const cpWord  = which==="crossSale" ? "គេប្រកាស" : "គេប្រកាស";
   const done = crossReviewed[which] || {};
@@ -11843,11 +11869,51 @@ function renderCrossPartnerSummary(which, list){
       + '<b>សូមចុច 🗑 លុប រួច ផ្ទុកឯកសារដៃគូឡើងវិញ</b> ដើម្បីអោយការចំណាំដំណើរការ។'
       + '</div>';
   }
+  /* ══ [stated] ២០២៦-០៨-២២ ៖ «folder មានតែ ៥ វានៅតែចេញ ៦ ហេតុអ្វី?» ⇒ ជំនួស
+     ការទាយ បង្ហាញ **ប្រភពពិត** ៖ ក្រុមហ៊ុននីមួយៗចូលមកតាមផ្លូវណា និងមកពី
+     ជួរប៉ុន្មាន។ បើឃើញ ៦ ធាតុក្នុងបញ្ជីនេះ មានន័យថាឯកសារដែលអានពិតជាមាន
+     ៦ ក្រុមហ៊ុន (ឧ. ថតរងទី ៦ · ឯកសារនៅក្រៅថតរង · ឬ upload ចាស់នៅសល់)។
+     ⚠ បញ្ជីនេះអានពី `state[cp*]` ដោយផ្ទាល់ — វាមិនអាចខុសពីអ្វីដែលការផ្គូ
+       ផ្គងប្រើឡើយ។ */
+  const provRows = {};
+  cpRows.forEach(function(r){
+    const k = (r.cpOwnerTin || "") + "|" + (r.cpOwnerName || "");
+    if(!provRows[k]) provRows[k] = {tin:r.cpOwnerTin || "", name:r.cpOwnerName || "", n:0, folder:0, inv:0};
+    provRows[k].n++;
+    if(r.cpOwnerSrc === 'folder') provRows[k].folder++;
+    else if(r.cpOwnerSrc === 'inv') provRows[k].inv++;
+  });
+  const provList = Object.keys(provRows).map(function(k){ return provRows[k]; })
+    .sort(function(a,b){ return b.n - a.n; });
+  /* ⚠ [stated] ២០២៦-០៨-២២ ៖ «បានហើយវាចេញតែ ៥ ទេ ដូចនេះមិនចាំបាច់បង្ហាញ
+     ប្រភពទិន្នន័យដៃគូទេ ព្រោះពេញតារាងពេក» ⇒ បង្រួមទៅមួយបន្ទាត់ ហើយបញ្ជី
+     ពេញលាក់ក្នុង <details> ។ រក្សាទុកវា (មិនលុប) ព្រោះវាជាឧបករណ៍ដែល
+     ដោះស្រាយរឿង «ក្រុមហ៊ុនលើស» បានក្នុងមួយវេន — គ្រាន់តែមិនបង្ហាញឡើយ។
+     ⚠ <details> មិនត្រូវការ JS ⇒ គ្មានហានិភ័យលើការគូរឡើងវិញ។ */
+  if(provList.length){
+    const nFold = provList.filter(function(p){ return p.folder; }).length;
+    const nInv  = provList.filter(function(p){ return !p.folder && p.inv; }).length;
+    const nNone = provList.filter(function(p){ return !p.folder && !p.inv; }).length;
+    h += '<details style="margin:0 0 8px"><summary class="hint" style="cursor:pointer">'
+      + '📁 ប្រភពទិន្នន័យដៃគូ ៖ 📁 ថត <b>' + nFold + '</b>'
+      + (nInv ? ' · 🔢 ទាយ ' + nInv : '')
+      + (nNone ? ' · — គ្មានចំណាំ ' + nNone : '')
+      + '</summary>'
+      + '<div class="hint" style="margin:6px 0 0;padding:8px 10px;border:1px dashed var(--line);border-radius:8px">'
+      + provList.map(function(p){
+          const src = p.folder ? '📁 ថត' : (p.inv ? '🔢 ទាយពីលេខវិក្កយបត្រ' : '— គ្មានចំណាំ');
+          return '· ' + escAttr(p.name || '(គ្មានឈ្មោះ)') + (p.tin ? ' · ' + escAttr(p.tin) : '')
+               + ' — ' + p.n + ' ជួរ · ' + src;
+        }).join('<br>')
+      + '</div></details>';
+  }
   const exN = Object.keys(crossExcluded[which] || {}).length;
   if(exN){
     h += '<div class="hint" style="margin:0 0 8px">🚫 ដកចេញដោយដៃ ' + exN + ' ក្រុមហ៊ុន · '
       + '<a href="javascript:void(0)" onclick="crossExclClear(\'' + which + '\')">↩ យកមកវិញទាំងអស់</a></div>';
   }
+  /* បញ្ជីប្រភព + សារព្រមាន គូររួច ⇒ ឥឡូវទើបសម្រេចថាតារាងសង្ខេបគួរចេញឬអត់ */
+  if(filters[which] || !list.length){ box.innerHTML = h; return; }
   h += '<div style="display:flex;align-items:center;gap:10px;margin:0 0 6px;font-size:13px;">'
     + '<b>📋 សង្ខេបគ្រប់ក្រុមហ៊ុន (' + list.length + ')</b>'
     + '<span style="flex:0 0 160px;height:8px;border-radius:99px;background:var(--line);overflow:hidden;display:inline-block">'
@@ -13520,7 +13586,15 @@ function handleFileImport(evt, storeName, kind){
           rows.forEach(function(r){ r.__fold = fold || ""; });
           if(own){
             const t = tin9(own.tin);
-            rows.forEach(function(r){ r.cpOwnerTin = t; r.cpOwnerName = own.name; });
+            /* `cpOwnerSrc` ៖ 'folder' = ភស្តុតាងកម្រិតថត (ឈ្មោះ ឬភាគច្រើន)
+               'inv' = ទាយពីលេខវិក្កយបត្រតែមួយជួរ — មើលកំណត់សម្គាល់នៅ
+               `crosscheck` ថាហេតុអ្វីភាពខុសគ្នានេះសំខាន់។ */
+            /* ⚠ `cpFolderTin` = ម្ចាស់ **ថត** ; `cpOwnerTin` = ការទាយល្អបំផុត
+               សម្រាប់ជួរនោះ។ ត្រូវរក្សាទាំងពីរ (មើលកំណត់សម្គាល់ខាងក្រោម)។ */
+            rows.forEach(function(r){
+              r.cpOwnerTin = t; r.cpOwnerName = own.name; r.cpOwnerSrc = 'folder';
+              r.cpFolderTin = t; r.cpFolderName = own.name;
+            });
             cpOwnerReport.push("✓ " + fold + " → " + own.name + " (តាមឈ្មោះថត)");
           }
         }
@@ -13594,6 +13668,7 @@ function handleFileImport(evt, storeName, kind){
           if(ks.length !== 1) return;                  /* លេខស្ទួនច្រើនក្រុមហ៊ុន ⇒ រំលង */
           r.cpOwnerTin = ks[0];
           r.cpOwnerName = nameOfTin(ks[0]);
+          r.cpOwnerSrc = 'inv';               /* ភស្តុតាងតែមួយជួរ */
           tally[ks[0]] = (tally[ks[0]] || 0) + 1;
           hits++;
         });
@@ -13604,7 +13679,31 @@ function handleFileImport(evt, storeName, kind){
         const strong = best && hits >= 3 && tally[best] >= hits * 0.75;
         if(strong){
           const nm = nameOfTin(best);
-          rows.forEach(function(r){ if(!r.cpOwnerTin){ r.cpOwnerTin = best; r.cpOwnerName = nm; } });
+          /* ⚠⚠ [stated] ២០២៦-០៨-២២ ៖ បញ្ជីប្រភពបង្ហាញ **២៦ ក្រុមហ៊ុន** ទាំងអស់
+             សម្គាល់ «📁 ថត» ខណៈមានតែ ៥ ថត ៖ ៥ ដំបូងមាន ៩៨,៤៣៧ … ៧,២៥០ ជួរ
+             ចំណែក ២១ ទៀតមាន ១–២ ជួរ។
+             មូលហេតុ ៖ បន្ទាត់ `r.cpOwnerSrc = 'folder'` ដើរលើ **គ្រប់ជួរ**
+             នៃថត ⇒ វាសរសេរជាន់លើ 'inv' នៃជួរដែលទាយពីលេខវិក្កយបត្រតែមួយ
+             ⇒ ការទាយទាំងនោះក្លាយជា «ភស្តុតាងកម្រិតថត» ហើយចូលវិសាលភាពវិញ។
+             ⇒ សម្គាល់ 'folder' **តែជួរដែលភាគច្រើនបំពេញ** ឬជួរដែលការទាយ
+               របស់វា **ស្របនឹងភាគច្រើន** ; ការទាយដែលខុសពីភាគច្រើន នៅ 'inv'
+               ⇒ ក្រៅវិសាលភាពដូចការរចនា។ */
+          rows.forEach(function(r){
+            if(!r.cpOwnerTin){
+              r.cpOwnerTin = best; r.cpOwnerName = nm; r.cpOwnerSrc = 'folder';
+            }else if(r.cpOwnerTin === best){
+              r.cpOwnerSrc = 'folder';
+            }
+            /* ⚠⚠ [stated] ២០២៦-០៨-២២ ៖ បញ្ជីប្រភពត្រូវហើយ (២១ ធាតុសម្គាល់
+               «🔢 ទាយ») តែតារាងសង្ខេបនៅចេញ ៦ ៖ ធាតុទី ៦ មាន «យើងលក់ 0 ·
+               គេប្រកាស 361,680 · យើងមិនប្រកាស 1» — វាមកពី **ជួរខាងដៃគូ**
+               ដែលមិនផ្គូបាន ហើយតារាងសង្ខេបបង្គុំវាតាម `cpOwnerTin` ដែលជា
+               ការទាយ ('inv') ⇒ បង្កើតក្រុមហ៊ុនថ្មី។
+               ⇒ រក្សា **ម្ចាស់ថត** ដាច់ដោយឡែក (`cpFolderTin`) លើគ្រប់ជួរ
+                 ទោះការទាយផ្ទាល់ជាអ្វី ⇒ វិសាលភាព និងការបង្គុំក្នុងតារាង
+                 សង្ខេប ប្រើម្ចាស់ថត ; ការផ្គូផ្គងប្រើការទាយ។ */
+            r.cpFolderTin = best; r.cpFolderName = nm;
+          });
         }
         if(best){
           cpOwnerReport.push((strong ? "✓ " : "◐ ") + (fold || "(ថតគ្មានឈ្មោះ)") + " → "
@@ -13937,6 +14036,9 @@ function handleFileImportForCompany(evt, storeName, kind, companyName, companyTi
     combined.forEach(r=>{
       if(ownTin) r.cpOwnerTin = ownTin;
       if(companyName) r.cpOwnerName = companyName;
+      if(ownTin || companyName) r.cpOwnerSrc = 'folder';   /* ជម្រើសផ្ទាល់របស់អ្នកប្រើ */
+      if(ownTin) r.cpFolderTin = ownTin;
+      if(companyName) r.cpFolderName = companyName;
     });
     const existing = state[storeName];
     let nextNo = existing.reduce((m,r)=> Math.max(m, Number(r.no)||0), 0);
