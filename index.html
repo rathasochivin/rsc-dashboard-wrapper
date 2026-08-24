@@ -32210,10 +32210,26 @@ const RPT_CSS = `
        គម្លាតសុវត្ថិភាព ; ចន្លោះតូចមួយនៅបាតល្អជាងសន្លឹកទទេមួយ។
      ⚠ ច្បាប់មាស ៖ បើត្រូវជ្រើសរវាង «ស្អាតឥតខ្ចោះ» និង «មិនហៀរ» ជ្រើស
        មិនហៀរជានិច្ច។ */
-  html.rsc-mobile-print .rpt-page{ min-height:238mm !important; padding-bottom:0 !important; }
-  html.rsc-mobile-print .rpt-page > .rpt-foot{ margin-bottom:0 !important; padding-bottom:0 !important; }
+  /* ⚠⚠⚠ [stated] ២០២៦-០៨-២២ (ជុំទី ៣) ៖ «បញ្ហាព្រីននៅ tablet នៅទាំង ៣
+     លិខិត នៅតែដដែរ» ។ ខ្ញុំបានលៃលេខ 240 → 246 → 238 ហើយ — នេះជាការទាយ
+     មិនចេះចប់ ព្រោះ ៖
+       ១. យើងមិនដឹងកម្ពស់បោះពុម្ពពិតរបស់ឧបករណ៍នោះ ហើយវាប្រែតាមម៉ាស៊ីនព្រីន
+          ទំហំក្រដាស និងការកំណត់រឹមរបស់អ្នកប្រើទៀត ;
+       ២. ច្បាប់ទាំងនោះព្យួរលើ html.rsc-mobile-print ⇒ បើការរកឃើញឧបករណ៍
+          ខកខាន (UA ចម្លែក · ការមើលមុនព្រីនលើកម្មវិធីផ្សេង) គ្មានអ្វីអនុវត្តទេ។
+     ⇒ ដំណោះស្រាយចុងក្រោយ ៖ **កម្ពស់ថេរត្រូវលុបចោលពេលព្រីន គ្រប់ឧបករណ៍** ។
+       ទំព័របញ្ចប់ត្រង់មាតិកាបញ្ចប់ ; ជើងទំព័រហូរតាមក្រោយវា ; គ្មានកន្ទុយ
+       ណាមួយអាចហៀរបានទៀតទេ ⇒ សន្លឹកទទេមិនអាចកើតឡើងតាមរូបមន្តនេះឡើយ។
+     ⚠ តម្លៃត្រូវបង់ ៖ ជើងទំព័រនឹងអង្គុយក្រោមមាតិកា មិនមែនបាតសន្លឹក។ នោះ
+       ជាការជ្រើសដោយចេតនា — សន្លឹកទទេធ្ងន់ធ្ងរជាងចន្លោះស។
+     ⚠ អេក្រង់មិនប៉ះ ៖ ការមើលជាមុននៅជាសន្លឹក A4 ដដែល។ */
+  @media print{
+    .rpt-page{ min-height:0 !important; height:auto !important; padding-bottom:8mm !important; }
+    .rpt-page > .rpt-foot{ margin-bottom:0 !important; padding-bottom:0 !important; }
+    .rpt-page:last-child{ page-break-after:auto !important; break-after:auto !important; }
+  }
   /* ⚠ សន្លឹកទទេចុងក្រោយ ៖ page-break-after:always លើទំព័រចុងក្រោយបង្កើត
-     ការបំបែកមួយទៀត ⇒ សន្លឹកទទេ។ ទំព័រចុងក្រោយមិនត្រូវការការបំបែកទេ។ */
+     ការបំបែកមួយទៀត ⇒ សន្លឹកទទេ (អនុវត្តទាំងអេក្រង់ និងព្រីន)។ */
   .rpt-page:last-child{ page-break-after:auto !important; break-after:auto !important; }
   .rpt-page:has(> .rpt-foot){display:flex; flex-direction:column;}
   .rpt-page > .rpt-foot{margin-top:auto;}
