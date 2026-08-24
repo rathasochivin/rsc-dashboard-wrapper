@@ -32197,8 +32197,20 @@ const RPT_CSS = `
      ⚠ តម្លៃត្រូវបង់ ៖ ជើងទំព័រនឹងអង្គុយក្រោមមាតិកា មិនមែនបាតសន្លឹក។ នោះ
        ជាការជ្រើសដោយចេតនា — សន្លឹកទទេធ្ងន់ធ្ងរជាងចន្លោះស។
      ⚠ អេក្រង់មិនប៉ះ ៖ ការមើលជាមុននៅជាសន្លឹក A4 ដដែល។ */
+  /* ⚠⚠⚠ [stated] ២០២៦-០៨-២២ (ជុំចុងក្រោយ) ៖ «ទំព័រពេលមើលនៅអេក្រង់ត្រូវ តែ
+     ចុចព្រីនវាខុស ដោយ footer ទៅជាប់នៅតារាងវិញ» ។ នោះជាផលនៃការដាក់កម្ពស់
+     ស្វ័យប្រវត្តិ — វាបិទសន្លឹកទទេបាន តែក៏ដកជើងទំព័រចេញពីបាតសន្លឹកដែរ។
+     ⇒ តម្រូវការពិតមានពីរ ហើយផ្ទុយគ្នា ៖ ជើងទំព័រនៅបាតសន្លឹក **និង** គ្មាន
+       សន្លឹកទទេ។ អ្វីដែលសម្រេចវាបានគឺ **កម្ពស់ត្រឹមត្រូវ** ដែលខ្ញុំមិនអាច
+       ដឹងបាន (ប្រែតាមឧបករណ៍ · ម៉ាស៊ីនព្រីន · រឹមដែលអ្នកប្រើកំណត់)។
+     ⇒ ដូច្នេះប្រគល់លេខនោះទៅ **អ្នកប្រើ** ៖ អថេរ --rpt-ph ។
+        ទទេ/០ = កម្ពស់ស្វ័យប្រវត្តិ (ការពារសន្លឹកទទេ ១០០%)
+        មានតម្លៃ = ជើងទំព័រចុះបាតសន្លឹកតាមកម្ពស់នោះ
+        កំណត់ពីប្រអប់ «កម្ពស់ទំព័រ (mm)» ក្នុងរបារឯកសារ · រក្សាទុក។
+     ⚠ ចាប់ផ្តើមពី ២៣៨ រួចបន្ថយម្តង ២mm បើឃើញសន្លឹកទទេ ; បង្កើនបើចន្លោះធំ។ */
   @media print{
-    .rpt-page{ min-height:0 !important; height:auto !important; padding-bottom:8mm !important; }
+    .rpt-page{ min-height:var(--rpt-ph, 0) !important; height:auto !important;
+               padding-bottom:6mm !important; }
     .rpt-page > .rpt-foot{ margin-bottom:0 !important; padding-bottom:0 !important; }
     .rpt-page:last-child{ page-break-after:auto !important; break-after:auto !important; }
   }
@@ -36391,6 +36403,9 @@ function docsHtml(){
         </label>
         <button class="btn btn-outline hub-bssync" id="trkBsSync" type="button"
                 style="width:auto;">↻ ទាញពីតារាងកំណត់ពន្ធលើស</button>
+        <label title="កម្ពស់ទំព័រពេលព្រីន ៖ ទទេ = ស្វ័យប្រវត្តិ (ជើងទំព័រនៅក្រោមមាតិកា តែគ្មានសន្លឹកទទេ) ។ ដាក់លេខ (ឧ. 238) ដើម្បីអោយជើងទំព័រចុះបាតសន្លឹក — បើឃើញសន្លឹកទទេ សូមបន្ថយម្តង 2mm">កម្ពស់ទំព័រ mm
+          <input type="number" id="rptPageMm" class="trk-in" style="width:82px;" min="150" max="290" step="1" placeholder="ស្វ័យ">
+        </label>
         <button class="btn btn-primary" id="docsPrint" type="button" title="ព្រីនឯកសារនេះ">🖨️</button>
       </div>
     </div>
@@ -36542,6 +36557,30 @@ function wireDocs(host){
   renderBasis();
 }
 
+/* ══ កម្ពស់ទំព័រព្រីន ៖ រក្សាទុក និងអនុវត្តជា CSS variable ══════════════
+   ⚠ ដាក់លើ <html> ដើម្បីអោយវាទៅដល់ទាំងការមើលជាមុន និងទំព័រព្រីនក្នុងទំព័រ
+     (printInPage ចម្លងតួឯកសារ តែ variable លើ documentElement នៅដដែល)។ */
+const RPT_PH_KEY = 'rptPageMmV1';
+function applyRptPageMm(v){
+  const n = Number(v);
+  const root = document.documentElement;
+  if(n >= 150 && n <= 290) root.style.setProperty('--rpt-ph', n + 'mm');
+  else root.style.removeProperty('--rpt-ph');
+}
+try{ applyRptPageMm(localStorage.getItem(RPT_PH_KEY) || ''); }catch(e){}
+function wireRptPageMm(host){
+  const el = (host || document).querySelector('#rptPageMm');
+  if(!el) return;
+  let saved = '';
+  try{ saved = localStorage.getItem(RPT_PH_KEY) || ''; }catch(e){}
+  el.value = saved;
+  el.onchange = function(){
+    const v = String(el.value || '').trim();
+    try{ if(v) localStorage.setItem(RPT_PH_KEY, v); else localStorage.removeItem(RPT_PH_KEY); }catch(e){}
+    applyRptPageMm(v);
+  };
+}
+
 window.__openDocsModal = function(){
   const prev = document.getElementById('docs-modal'); if(prev) prev.remove();
   const g = document.createElement('div');
@@ -36558,6 +36597,8 @@ window.__openDocsModal = function(){
   const body = g.querySelector('#docs-body');
   body.innerHTML = docsHtml();
   try{ wireDocs(body); }catch(e){ console.error('wireDocs:', e); }
+  /* កម្ពស់ទំព័រពេលព្រីន — អ្នកប្រើលៃដោយខ្លួនឯង (មើលកំណត់សម្គាល់ក្នុង RPT_CSS) */
+  try{ wireRptPageMm(body); }catch(e){ console.error('wireRptPageMm:', e); }
   /* បង្រួមសន្លឹកអោយសមផ្ទាំង (ថេប្លេត/ទូរស័ព្ទ) — មើល nrFitPaper */
   try{ nrFitPaper(); }catch(e){}
   const close = ()=> g.remove();
