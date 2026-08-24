@@ -22,6 +22,26 @@
 <style>
   html, body { margin:0; padding:0; height:100%; overflow:hidden; background:#0F3D3E; }
   iframe { width:100%; height:100%; border:none; display:block; }
+  /* ⚠⚠ [stated] ២០២៦-០៨-២២ ៖ «ចុចចាកចេញ រួចបើកវិញ អត់មានកន្លែងដើម្បី log
+     ចូលវិញបាន» ។ ឯកសារ login.html មានលើ host ពិតប្រាកដ ដូច្នេះមូលហេតុ
+     ដែលនៅសល់គឺ ៖ ទំព័រចូលរបស់ Apps Script ត្រូវផ្ទុកក្នុង **iframe ឆ្លង
+     domain** ។ Chrome (ជាពិសេសពេលបិទ third-party cookies ឬលើ iOS)
+     អាចទប់វា ⇒ iframe នៅទទេ ⇒ អេក្រង់ខៀវទទេ គ្មានអ្វីអោយចុច។
+     ⇒ ដាក់ផ្លូវបម្រុងដែល **មើលឃើញជានិច្ច** ៖ របារខាងក្រោមមួយបន្ទាត់
+       ហើយបើ iframe មិនបានផ្ទុកក្នុង ៦ វិនាទី បង្ហាញផ្ទាំងធំជាមួយប៊ូតុង
+       បើកទំព័រចូលដោយផ្ទាល់ (ចេញពី iframe ទាំងស្រុង)។ */
+  .lg-bar{ position:fixed; left:0; right:0; bottom:0; z-index:5;
+    background:rgba(15,61,62,.94); color:#EFE7D2; font:13px/1.6 system-ui,sans-serif;
+    text-align:center; padding:8px 12px; border-top:1px solid rgba(200,166,75,.5); }
+  .lg-bar a{ color:#F0C860; font-weight:700; }
+  .lg-fall{ position:fixed; inset:0; z-index:9; display:none; align-items:center;
+    justify-content:center; background:#0F3D3E; padding:24px; }
+  .lg-card{ max-width:420px; width:100%; background:#12484A; color:#EFE7D2;
+    border:1px solid rgba(200,166,75,.55); border-radius:14px; padding:22px 20px;
+    font:15px/1.7 system-ui,sans-serif; text-align:center; }
+  .lg-card h2{ margin:0 0 10px; font-size:18px; color:#F0C860; }
+  .lg-go{ display:inline-block; margin-top:14px; background:#C8A64B; color:#1B1B14;
+    text-decoration:none; font-weight:700; padding:11px 20px; border-radius:10px; }
 </style>
 </head>
 <body>
@@ -67,6 +87,20 @@
     allow="clipboard-write"
     referrerpolicy="no-referrer"
   ></iframe>
+
+  <!-- ផ្លូវបម្រុងដែលមើលឃើញជានិច្ច -->
+  <div class="lg-bar">
+    បើទំព័រចូលមិនលេចឡើង ៖
+    <a id="lgDirect" href="#" target="_top">បើកទំព័រចូលដោយផ្ទាល់ →</a>
+  </div>
+  <div class="lg-fall" id="lgFall">
+    <div class="lg-card">
+      <h2>មិនអាចបង្ហាញទំព័រចូលក្នុងទំព័រនេះបានទេ</h2>
+      <div>កម្មវិធីរុករករបស់អ្នកបានទប់ការបង្ហាញទំព័រចូលរបស់ Google ក្នុង frame
+        (ជាញឹកញាប់ដោយសារការបិទ third-party cookies)។</div>
+      <a class="lg-go" id="lgGo" href="#" target="_top">បើកទំព័រចូលដោយផ្ទាល់ →</a>
+    </div>
+  </div>
 
 <script>
   /* ================================================================
@@ -119,6 +153,36 @@
     try { localStorage.setItem('rsc_token', String(data.token)); } catch (e) {}
     location.replace('./?token=' + encodeURIComponent(data.token));
   }, false);
+
+  /* ══ ផ្លូវបម្រុង ៖ បើ iframe មិនរស់ ត្រូវនៅតែមានកន្លែងចូល ══════════
+     ⚠ យើងមិនអាចដឹងច្បាស់ថា iframe ត្រូវបានទប់ទេ (cross-origin) ដូច្នេះ
+       ប្រើសញ្ញាពីរ ៖ ព្រឹត្តិការណ៍ load មិនកើតឡើង ក្នុង ៦ វិនាទី ឬក៏
+       គ្មានសារណាមួយមកពី Google សោះ។ ទាំងពីរបញ្ជាក់ថាអ្នកប្រើកំពុងមើល
+       អេក្រង់ទទេ។ */
+  (function(){
+    var direct = BASE_URL;                       /* URL ចូលរបស់ Apps Script */
+    var a1 = document.getElementById('lgDirect');
+    var a2 = document.getElementById('lgGo');
+    if(a1) a1.href = direct;
+    if(a2) a2.href = direct;
+    var heard = false;
+    window.addEventListener('message', function(e){
+      if(GOOGLE_ORIGIN.test(e.origin)) heard = true;
+    }, false);
+    /* ⚠ ព្រឹត្តិការណ៍ `load` **មិនអាចប្រើជាសញ្ញា** ៖ ទំព័រកំហុស ឬ frame
+       ដែលត្រូវទប់ ក៏បាញ់ load ដែរ (បានសាកល្បង)។ សញ្ញាដែលអានបានឆ្លង
+       domain គឺ `frame.contentWindow.length` ៖ Apps Script ដាក់ទំព័រ
+       របស់វាក្នុង iframe ជាន់ទីពីរ ⇒ ដើរបាន ⇒ length ≥ 1 ; ទទេ/ត្រូវទប់
+       ⇒ 0 ។ បូកនឹង «គ្មានសារពី Google សោះ» ទើបបង្ហាញផ្ទាំងបម្រុង។ */
+    setTimeout(function(){
+      if(heard) return;
+      var inner = 0;
+      try{ inner = frame.contentWindow ? frame.contentWindow.length : 0; }catch(e){ inner = 0; }
+      if(inner > 0) return;
+      var f = document.getElementById('lgFall');
+      if(f) f.style.display = 'flex';
+    }, 6000);
+  })();
 </script>
 </body>
 </html>

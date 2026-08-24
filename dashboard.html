@@ -5226,7 +5226,13 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
               if(!window.__rscHasGsRun() && location.protocol.indexOf('http') === 0){
                 try{ localStorage.removeItem('rsc_token'); }catch(e){}
                 alert('មិនអាចផ្ទៀងផ្ទាត់វគ្គចូលប្រើប្រាស់បានទេ — សូមចូលម្តងទៀត។');
-                location.replace('./');
+                /* ⚠ ដូចផ្លូវចាកចេញ ៖ ទៅទំព័រចូលដោយផ្ទាល់ ហើយបើ login.html
+                   មិនមានលើ host ធ្លាក់ទៅទំព័រចូលរបស់ Apps Script ជំនួស
+                   ការទុកអ្នកប្រើនៅមុខទំព័រ 404។ */
+                var EXEC_LOGIN = window.__RSC_EXEC_URL || '';
+                fetch('./login.html', {method:'HEAD'})
+                  .then(function(r){ location.replace(r && r.ok ? './login.html' : (EXEC_LOGIN || './')); })
+                  .catch(function(){ location.replace(EXEC_LOGIN || './'); });
               }
             });
         } else {
@@ -5373,7 +5379,14 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
                    ត្រូវត្រឡប់ទៅ index.html ដែលជាទំព័រចូល — បើ reload
                    វានឹងចូលមកវិញភ្លាម ព្រោះ token នៅក្នុង localStorage។ */
                 if(!window.__rscHasGsRun() && location.protocol.indexOf('http') === 0){
-                  location.replace('./');
+                  /* ⚠⚠ [stated] ២០២៦-០៨-២២ ៖ ក្រោយចាកចេញ គ្មានកន្លែងចូលវិញ។
+                     `location.replace('./')` ពឹងលើឆ្មាំនៅ index.html ⇒ បញ្ជូន
+                     ទៅ ./login.html ⇒ បើឯកសារនោះមិនមានលើ host នោះជា 404។
+                     ⇒ ទៅទំព័រចូលដោយផ្ទាល់ ហើយបើវាមិនមាន ធ្លាក់ទៅ Apps Script។ */
+                  var EXEC_LOGIN = window.__RSC_EXEC_URL || '';
+                  fetch('./login.html', {method:'HEAD'})
+                    .then(function(r){ location.replace(r && r.ok ? './login.html' : (EXEC_LOGIN || './')); })
+                    .catch(function(){ location.replace(EXEC_LOGIN || './'); });
                   return;
                 }
                 const base = window.__appBaseUrl || '';
@@ -16014,6 +16027,58 @@ window.__mtrLateImport = function(list){
   if(currentView === 'latepay') renderLatePayView();
   notifyLatePayChanged();
 };
+
+/* ══ [stated] ២០២៦-០៨-២២ ៖ «ចូលតាម tablet ជ្រើសរើសឯកសារបើកពីម៉ាស៊ីន រួច
+   ចុចយកឯកសារនោះហើយ តែវាអត់ចូល» ═══════════════════════════════════════
+   ⚠⚠ មូលហេតុ ៖ ប្រអប់ជ្រើសទាំងអស់ជា `webkitdirectory` (ជ្រើស **ថត**)។
+     លើ Android/iPadOS ការជ្រើសថតមិនត្រូវបានគាំទ្រទេ ៖ ប្រអប់បើក អ្នកប្រើ
+     ជ្រើសឯកសារ តែ `evt.target.files` ត្រឡប់ **ទទេ** ⇒ គ្មានអ្វីកើតឡើង
+     ដោយគ្មានសារកំហុសសោះ។ (កុំព្យូទ័រដើរធម្មតា ដូច្នេះវាមិនលេចមុននេះ។)
+   ⇒ លើឧបករណ៍ចល័ត ដក `webkitdirectory`/`directory` ចេញ រួចប្តូរទៅជាការ
+     ជ្រើស **ឯកសារច្រើន** វិញ (`multiple` + `accept`) ។ មុខងារនាំចូល
+     ទាំងអស់ធ្វើការលើ `evt.target.files` ដដែល ដូច្នេះគ្មានអ្វីត្រូវកែទៀត។
+   ⚠ រត់ម្តងពេលចាប់ផ្តើម និងម្តងទៀតរាល់ពេលមាន input ថ្មីកើតឡើង (តារាង
+     Top 10 សង់ជួររបស់វាឡើងវិញ) — ដូច្នេះប្រើ MutationObserver ស្រាល។ */
+const RSC_NO_DIRPICK = (function(){
+  try{
+    const ua = navigator.userAgent || '';
+    const touchMac = /Macintosh/.test(ua) && navigator.maxTouchPoints > 1;   /* iPadOS */
+    return /Android|iPhone|iPad|iPod/i.test(ua) || touchMac;
+  }catch(e){ return false; }
+})();
+function rscFixFolderInputs(root){
+  if(!RSC_NO_DIRPICK) return;
+  try{
+    (root || document).querySelectorAll('input[type=file][webkitdirectory]').forEach(function(inp){
+      inp.removeAttribute('webkitdirectory');
+      inp.removeAttribute('directory');
+      inp.setAttribute('multiple', '');
+      if(!inp.getAttribute('accept')) inp.setAttribute('accept', '.xlsx,.xls,.csv');
+      inp.dataset.dirFallback = '1';
+      const lab = inp.closest('label');
+      if(lab && lab.title && lab.title.indexOf('ថត') >= 0){
+        lab.title = lab.title.replace('ជ្រើសថតទាំងមូល', 'ជ្រើសឯកសារ (ថតមិនអាចជ្រើសបានលើឧបករណ៍នេះ)');
+      }
+    });
+  }catch(e){ console.error('rscFixFolderInputs', e); }
+}
+try{
+  if(RSC_NO_DIRPICK){
+    const runFix = ()=> rscFixFolderInputs(document);
+    if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', runFix);
+    else runFix();
+    new MutationObserver(function(muts){
+      for(const m of muts){
+        for(const n of m.addedNodes){
+          if(n.nodeType === 1 && (n.matches && n.matches('input[type=file][webkitdirectory]')
+             || (n.querySelector && n.querySelector('input[type=file][webkitdirectory]')))){
+            rscFixFolderInputs(n.nodeType === 1 ? n : document);
+          }
+        }
+      }
+    }).observe(document.documentElement, {childList:true, subtree:true});
+  }
+}catch(e){}
 
 function renderActiveView(){
   /* ផ្ទាំងការបង់យឺតយ៉ាវបញ្ចូលដោយដៃ ដូច្នេះមិនត្រូវការឯកសារទេ */
