@@ -5327,6 +5327,32 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
             .then(function(res){
               window.__approvedTINs = (res && res.tins) || [];
               window.__isOwnerUser = !!(res && res.isOwner);
+              /* ⭐⭐⭐ [stated] ២០២៦-០៨-២៣ ៖ «នៅតែថាមិនមានក្នុងបញ្ជី» ទោះជួរ J
+                 មានលេខរួច។ ⚠⚠ មូលហេតុពិត ៖ ការត្រួតពិនិត្យចាស់
+                 `__checkTINAccess` អាន **`__approvedTINs`** ដែលមកពីសន្លឹក
+                 ClientAccess (ការអនុញ្ញាតម្តងមួយ) — វា **មិនដែលដឹងពីជួរ J**
+                 នៃ Whitelist ទេ ⇒ បញ្ជីថ្មីរបស់អ្នកគ្មានឥទ្ធិពលលើផ្លូវនោះ។
+                 ⇒ បញ្ចូលបញ្ជីជួរ J ចូលក្នុងបញ្ជីដដែល ⇒ ផ្លូវទាំងពីរ
+                   (ចាស់ និងថ្មី) ប្រើប្រភពតែមួយ។
+                 ⭐ មេរៀន ៖ ពេលបន្ថែម «ប្រភពសិទ្ធិថ្មី» ត្រូវរក **គ្រប់កន្លែង
+                   ដែលអានសិទ្ធិចាស់** — មិនដូច្នេះទេ ច្បាប់ថ្មីនៅដេកស្ងៀម។ */
+              if(window.__rscApi){
+                window.__rscApi('myAssignedTINs', [window.__loggedInUserToken])
+                  .then(function(a){
+                    var add = (a && a.tins) || [];
+                    if(a && a.owner) window.__isOwnerUser = true;
+                    if(add.length){
+                      var have = {};
+                      (window.__approvedTINs || []).forEach(function(x){
+                        have[String(x).replace(/\D/g,'').slice(-9)] = 1; });
+                      add.forEach(function(x){
+                        var k = String(x).replace(/\D/g,'').slice(-9);
+                        if(k && !have[k]){ have[k] = 1; window.__approvedTINs.push(k); }
+                      });
+                    }
+                  })
+                  .catch(function(e){ console.warn('myAssignedTINs:', e); });
+              }
               /* លើ GitHub Pages គ្មានការបញ្ចូលពី template ទេ ដូច្នេះឈ្មោះ
                  អ៊ីមែល និងពេលផុតកំណត់ មកជាមួយចម្លើយនេះវិញ។ បើគ្មានវា
                  អត្ថបទស្វាគមន៍ និងប៊ូតុងចាកចេញ 🚪↩ នឹងមិនលេចឡើយ។ */
@@ -5425,16 +5451,19 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
         }
         const t9 = __tin9(tin);
         if((window.__approvedTINs || []).some(function(a){ return __tin9(a) === t9; })) return true;
+        /* ⭐⭐ [stated] ២០២៦-០៨-២៣ ៖ «លុបផ្លូវចាស់ចេញទៅ ព្រោះមិនប្រើទៀតទេ» ។
+           ផ្លូវចាស់ = ការស្នើសុំសិទ្ធិម្តងមួយ (`requestClientAccess`) ដែល
+           បំពេញសន្លឹក ClientAccess ដោយជួរ pending ហើយត្រូវការការអនុម័ត។
+           ⇒ ដកចេញ ៖ **បញ្ជីជួរ J ជាប្រភពសិទ្ធិតែមួយគត់** ។ គ្មានសំណើទៀតទេ
+             — សារប្រាប់ត្រង់ថាត្រូវទាក់ទងម្ចាស់ប្រព័ន្ធ។
+           ⚠ សារបង្ហាញ **លេខអតបពិត** ⇒ អ្នកដឹងភ្លាមថាត្រូវបន្ថែមលេខណា។ */
         const already = window.__requestedTINs = window.__requestedTINs || {};
-        if(!already[tin]){
-          already[tin] = true;
-          try{
-            if(window.__rscApi){
-              window.__rscApi('requestClientAccess',
-                [window.__loggedInUserToken, tin, companyNameLatin || '']).catch(function(){});
-            }
-          }catch(e){}
-          alert('លេខអតប មិនអនុញ្ញាត ឬមិនទាន់មានក្នុងបញ្ជី សូមពិនិត្យលេខអតបឡើងវិញនៅពេលស្នើសុំ');
+        if(!already[t9]){
+          already[t9] = true;
+          var mine = (window.__approvedTINs || []).map(__tin9).filter(Boolean).join(' · ') || '(ទទេ)';
+          alert('🚫 លេខអតប ' + t9 + ' មិនស្ថិតក្នុងបញ្ជីរបស់អ្នកទេ។\n'
+              + 'បញ្ជីរបស់អ្នក ៖ ' + mine + '\n\n'
+              + 'សូមទាក់ទងម្ចាស់ប្រព័ន្ធដើម្បីបន្ថែមលេខអតបនេះ។');
         }
         return false;
       };
