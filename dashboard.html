@@ -44291,21 +44291,34 @@ else CC.init();
 
   /* បញ្ជីឯកសារក្នុងថត ៖ អានតែ metadata (ឈ្មោះ · ទំហំ · កាលបរិច្ឆេទ)
      ⚠ កុំអានខ្លឹមសារឯកសារនៅទីនេះ — ឯកសារនីមួយៗអាចធំ ១៣ MB */
+  /* ⚠⚠ [stated] ២០២៦-០៨-២៣ ៖ «នៅក្នុងថតឯកសារ វាស្គាល់ថាឯកសារនៅក្នុងថតនោះ
+     តែឯកសារខាងក្នុងនឹងមានថតបន្ត វាអត់ស្គាល់» ⇒ ការស្កេនអានតែជាន់ទី ១។
+     ⇒ ស្កេន **ថតរង** ដែរ ។
+     ⚠ កំណត់ជម្រៅ ៣ ជាន់ ៖ ថតឯកសារពិតមានរចនាសម្ព័ន្ធរាក់ ហើយការស្កេនគ្មាន
+       ដែនកំណត់អាចជាប់នៅថតធំ (ឬរង្វិលជុំតាមផ្លូវកាត់)។
+     ⚠ ឈ្មោះថតរងបញ្ចូលក្នុង `id` (ឧ. «2024/ABC_V1.json») ⇒ `fsRead` ត្រូវ
+       ដើរតាមផ្លូវនោះ ; ឈ្មោះឯកសារដដែលក្នុងថតពីរ លែងជាន់គ្នាទៀត។ */
   function fsList(){
     return fsDir().then(function(dir){
       if(!dir) return [];
-      var out = [], it = dir.values();
-      var step = function(){
-        return it.next().then(function(r){
-          if(r.done) return out;
-          var e = r.value;
-          if(e.kind === 'file' && /\.json(\.gz)?$/i.test(e.name)){
+      var out = [];
+      var walk = function(handle, prefix, depth){
+        var it = handle.values();
+        var step = function(){
+          return it.next().then(function(r){
+            if(r.done) return out;
+            var e = r.value;
+            if(e.kind === 'directory'){
+              if(depth >= 3) return step();
+              return walk(e, prefix + e.name + '/', depth + 1).then(step);
+            }
+            if(e.kind === 'file' && /\.json(\.gz)?$/i.test(e.name)){
             return e.getFile().then(function(f){
               var base = e.name.replace(/\.json(\.gz)?$/i, '');
               var m = base.match(/^(.*)_V(\d+)$/);
               var d = new Date(f.lastModified), p2 = function(n){ return (n < 10 ? '0' : '') + n; };
               out.push({
-                id: e.name, name: e.name,
+                id: prefix + e.name, name: e.name, folder: prefix,
                 base: m ? m[1] : base, ver: m ? +m[2] : 0,
                 company: (m ? m[1] : base).split('_')[0] || base,
                 tin: ((m ? m[1] : base).split('_')[1] || ''),
@@ -44315,11 +44328,13 @@ else CC.init();
               });
               return step();
             }).catch(step);
-          }
-          return step();
-        });
+            }
+            return step();
+          });
+        };
+        return step();
       };
-      return step();
+      return walk(dir, '', 0);
     }).catch(function(){ return []; });
   }
 
@@ -44351,7 +44366,17 @@ else CC.init();
   function fsRead(name){
     return fsDir().then(function(dir){
       if(!dir) throw new Error('មិនទាន់បានជ្រើសថតទេ');
-      return dir.getFileHandle(name).then(function(fh){ return fh.getFile(); })
+      /* ⚠ `id` អាចមានផ្លូវថតរង (ឧ. «2024/ABC_V1.json») ⇒ ដើរតាមថតមុន
+         រួចទើបបើកឯកសារ។ ឯកសារនៅជាន់ទី ១ គ្មាន «/» ⇒ ដំណើរការដដែល។ */
+      var parts = String(name).split('/');
+      var file = parts.pop();
+      var step = Promise.resolve(dir);
+      parts.forEach(function(seg){
+        if(!seg) return;
+        step = step.then(function(d){ return d.getDirectoryHandle(seg); });
+      });
+      return step.then(function(d){ return d.getFileHandle(file); })
+        .then(function(fh){ return fh.getFile(); })
         .then(function(f){ return f.arrayBuffer(); })
         .then(function(buf){
           var u8 = new Uint8Array(buf);
