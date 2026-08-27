@@ -1435,6 +1435,27 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
   input, select, textarea{ font-size:16px !important; }
   .btn, button, .nav button{ min-height:40px; }
 
+  /* ⚠⚠ [stated] ២០២៦-០៨-២៣ ៖ «ឲ្យតែមាន Dropdown ទំហំ Font នោះធំជាងអក្សរលើ
+     អេក្រង់ … ជួយដាក់ទំហំ Font ឲ្យស្មើគ្នាផង គ្រប់ផ្នែក» ។
+     ⭐ មូលហេតុ ៖ ច្បាប់ខាងលើបង្ខំប្រអប់ និង dropdown អោយ ១៦px (ដើម្បីកុំអោយ
+       iOS ពង្រីកអេក្រង់) ខណៈ **អ្វីៗជុំវិញនៅតូច** — វាស់បាន ៖ dropdown ១៦px ·
+       ប៊ូតុង ១២.៨px · ក្រឡាតារាង ១១px ⇒ dropdown លេចធ្លោហួស។
+     ⇒ ដំណោះស្រាយ ៖ **លើកអ្វីៗជុំវិញឡើង** ជំនួសការបន្ថយ dropdown (ការបន្ថយ
+       នឹងនាំការពង្រីកអេក្រង់របស់ iOS ត្រឡប់មកវិញ)។ ១៤px សម្រាប់អត្ថបទ និង
+       ប៊ូតុង · ១៣px សម្រាប់តារាងដែលមានជួរច្រើន ⇒ ចន្លោះពី ១១→១៦ បង្រួមមក
+       ១៣→១៦ ⇒ មើលទៅជាគ្រួសារតែមួយ។
+     ⚠ តារាងមិនលើកដល់ ១៤ ទេ ៖ ជួរឈរច្រើននឹងហៀរ។ */
+  .btn, button, .nav button, .tabs button, .toolbar button{ font-size:14px !important; }
+  label, .lbl, .hint, .muted, .sub, .note{ font-size:13.5px !important; }
+  /* ⚠ តារាងទិន្នន័យឆៅមានច្បាប់ខ្លាំងជាង (`table.raw-tbl td{…!important}`)
+     ⇒ ត្រូវសរសេរអោយជាក់លាក់ជាងវា បើមិនដូច្នេះទេ វានៅ ១១px ដដែល។
+     ⚠ វាស់រួច ៖ មុនកែ ក្រឡា ១១px ធៀបនឹង dropdown ១៦px។ */
+  td, th{ font-size:13px !important; }
+  table.raw-tbl{ font-size:13px !important; }
+  table.raw-tbl th, table.raw-tbl td,
+  table.raw-tbl tbody tr.raw-sum td{ font-size:13px !important; }
+  .badge, .tag, .chip{ font-size:12px !important; }
+
   /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «font អក្សរខ្លះធំខ្លះតូចមិនស៊ីគ្នាសោះ» ។
      មូលហេតុពិត ៖ ចំណងជើងខ្លះសង់ក្នុង JS ដោយ **គ្មានទំហំអក្សរកំណត់សោះ**
      (ឧ. ផ្ទាំង ព័ត៌មានផ្ទាល់ខ្លួន បង្កើត <h2> ដោយកំណត់តែ font-family និង
@@ -3026,6 +3047,22 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
   }
   body.mtr-print-single #mtr-embed .mtr-form:last-child{page-break-after:auto; break-after:auto;}
   body.mtr-print-single #mtr-embed .mtr-form{page-break-inside:avoid; break-inside:avoid;}
+  /* ⚠⚠ [stated] ២០២៦-០៨-២៣ ៖ «ព្រីនតាមទូរស័ព្ទសម្រាប់ MTR និង VAT ដាច់តារាង
+     នៅផ្នែកខាងស្តាំ» ។ មូលហេតុ ៖ តារាងខែមានជួរឈរច្រើន ⇒ ទទឹងធម្មជាតិរបស់វា
+     លើសទទឹងទំព័រ ; លើកុំព្យូទ័រ Chrome បង្រួមអោយសម (fit to page) តែ
+     កម្មវិធីរុករកលើទូរស័ព្ទ **មិនបង្រួមទេ** ⇒ ជួរខាងស្តាំដាច់ចោល។
+     ⇒ បង្ខំតារាងអោយសមនឹងទទឹងទំព័រ ៖ `table-layout:fixed; width:100%` ⇒
+       ជួរឈរចែកគ្នាតាមសមាមាត្រ ជំនួសការលាតលើសគែម។
+     ⚠ អក្សរតូចចុះបន្តិចនៅលើទូរស័ព្ទ ⇒ ល្អជាងបាត់ជួរឈរទាំងស្រុង។
+     ⚠ ការរុំពាក្យត្រូវអនុញ្ញាត បើមិនដូច្នេះទេ អត្ថបទវែងនៅតែហៀរក្រៅក្រឡា។ */
+  body.mtr-print-single #mtr-embed .mtr-form table{
+    table-layout:fixed !important; width:100% !important; max-width:100% !important;
+  }
+  body.mtr-print-single #mtr-embed .mtr-form th,
+  body.mtr-print-single #mtr-embed .mtr-form td{
+    word-break:break-word; overflow-wrap:anywhere; white-space:normal !important;
+  }
+  body.mtr-print-single #mtr-embed .mtr-form{ max-width:100%; overflow:visible; }
   body.mtr-print-single #mtr-embed table.mtr-grid{page-break-inside:avoid; break-inside:avoid;}
   body.mtr-print-single #mtr-embed .mtr-form-note{display:none !important;}
   body.mtr-print-single #mtr-embed table.mtr-grid{font-size:10px;}
@@ -14373,13 +14410,14 @@ async function handleAutoFileImport(evt){
     return;
   }
 
-  if(typeof window.__checkTINAccess === 'function' && !window.__checkTINAccess(permit || dt9 || detectedTin, detectedLatinName)){
-    if(statusEl){
-      statusEl.textContent = 'លេខអតប មិនអនុញ្ញាត ឬមិនទាន់មានក្នុងបញ្ជី សូមពិនិត្យលេខអតបឡើងវិញនៅពេលស្នើសុំ';
-      statusEl.className = "import-status err";
-    }
-    return;
-  }
+  /* ⚠⚠ [stated] ២០២៦-០៨-២៣ ៖ «ចុចផ្ទុកឯកសារនៅតែលោតទៅផ្ទាំងទិដ្ឋភាពទូទៅ» ។
+     ⭐⭐ មូលហេតុទី ២ (ចាប់បានពេលសាកល្បងលើទូរស័ព្ទ) ៖ ការនាំចូល**ជោគជ័យ**
+       តែត្រូវ **ផ្លូវចាស់** បដិសេធនៅចុងបញ្ចប់ ⇒ ០ ជួរ ហើយសារបញ្ចេញនៅ
+       កន្លែងដែលអ្នកប្រើមើលមិនឃើញ (`#status-auto` ក្រោមផ្ទាំង) ⇒ មើលទៅ
+       ដូចជា «លោតទៅផ្ទាំងទិដ្ឋភាពទូទៅ» ដោយគ្មានហេតុផល។
+     ⇒ ដកចេញតាមបញ្ជា «លុបផ្លូវចាស់ចោល» ។ ការត្រួតពិនិត្យពិតគឺ
+       `__rscVerifyEnterpriseAccess()` ដែលរត់ **ក្រោយ** នាំចូល លើលេខអតប
+       ដែលរកឃើញក្នុងឯកសារពិត ហើយលុបទិន្នន័យបើខុស។ */
 
   /* ══ សហគ្រាសផ្សេង = ទិន្នន័យចាស់ត្រូវលុប ═══════════════════════════
      [stated] 2026-08-12 ៖ «ទិន្នន័យចាស់ upload ថ្មី ឬ ចុច លុប ត្រូវបាត់»។
@@ -14619,14 +14657,8 @@ function handleFileImport(evt, storeName, kind){
       const c = (typeof window.__getTOICoverInfo === 'function') ? (window.__getTOICoverInfo() || {}) : {};
       curTin = c.tin || "";
     }catch(e){}
-    if(typeof window.__checkTINAccess === 'function' && !window.__checkTINAccess(curTin, '')){
-      if(statusEl){
-        statusEl.textContent = 'លេខអតប មិនអនុញ្ញាត ឬមិនទាន់មានក្នុងបញ្ជី សូមពិនិត្យលេខអតបឡើងវិញនៅពេលស្នើសុំ';
-        statusEl.className = "import-status err";
-      }
-      evt.target.value = "";
-      return;
-    }
+    /* ⚠ ផ្លូវចាស់ដកចេញដូចគ្នា ៖ ឯកសារដៃគូ (CP) ត្រូវបានត្រួតពិនិត្យតាម
+       លេខអតបម្ចាស់ក្រោយនាំចូលរួច មិនមែនមុនទេ។ */
   }
   const validFiles = files.filter(f => /\.(xlsx|xls|csv)$/i.test(f.name));
   if(validFiles.length === 0){
@@ -45901,11 +45933,48 @@ function pkTime(f){
      ហើយអ្នកឃើញតែផ្ទាំងទិដ្ឋភាពទូទៅ។
      ⇒ ចុច input **ក្នុងព្រឹត្តិការណ៍ចុចដដែល** មុនបិទផ្ទាំង ; បិទក្រោយ។
      ⚠ បើ input រកមិនឃើញ ⇒ ប្រាប់ត្រង់ជំនួសការបិទស្ងាត់។ */
+  /* ⚠⚠ [stated] ២០២៦-០៨-២៣ ៖ «ចុចផ្ទុកឯកសារនៅតែលោតទៅផ្ទាំងទិដ្ឋភាពទូទៅដដែល» ។
+     ⭐ មូលហេតុពិត ដែលខ្ញុំខកខានវេនមុន ៖ `#auto-folder-input` មាន
+       `webkitdirectory` ⇒ វាជាការជ្រើស **ថត** ។ លើទូរស័ព្ទ ការជ្រើសថត
+       មិនដំណើរការទេ (ដូចដែលយើងទើបបញ្ជាក់) ⇒ ប្រអប់មិនបើក ឬត្រឡប់ទទេ
+       ⇒ គ្មានអ្វីកើតឡើងក្រៅពីផ្ទាំងបិទ។ ការកែពីមុន (ចុចមុនបិទ) មិនអាច
+       ដោះស្រាយបានទេ ព្រោះបញ្ហាមិននៅត្រង់លំដាប់ការចុច។
+     ⇒ លើឧបករណ៍ដែលជ្រើសថតមិនបាន ៖ បើកប្រអប់ជ្រើស **ឯកសារ Excel ច្រើន**
+       ជំនួស រួចបញ្ជូនទៅផ្លូវនាំចូលដដែល (`handleAutoFileImport`)។
+     ⚠ ការរកមើល ៖ `showDirectoryPicker` អវត្តមាន **និង** ជាឧបករណ៍ចល័ត។ */
+  function dirPickWorks(){
+    if(window.showDirectoryPicker) return true;
+    return !/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent || '');
+  }
   function uploadRow(row){
-    var inp = document.getElementById('auto-folder-input');
-    if(!inp){ say('រកប្រអប់ផ្ទុកឯកសារមិនឃើញ — សូមផ្ទុកទំព័រឡើងវិញ', true); return; }
-    try{ inp.click(); }catch(e){ say('មិនអាចបើកប្រអប់ជ្រើសឯកសារបានទេ', true); return; }
-    hide();
+    if(dirPickWorks()){
+      var inp = document.getElementById('auto-folder-input');
+      if(!inp){ say('រកប្រអប់ផ្ទុកឯកសារមិនឃើញ — សូមផ្ទុកទំព័រឡើងវិញ', true); return; }
+      try{ inp.click(); }catch(e){ say('មិនអាចបើកប្រអប់ជ្រើសឯកសារបានទេ', true); return; }
+      hide();
+      return;
+    }
+    /* ── ផ្លូវទូរស័ព្ទ ៖ ជ្រើសឯកសារ Excel ដោយផ្ទាល់ ─────────────────── */
+    var mob = document.getElementById('rsc-upload-files');
+    if(!mob){
+      mob = document.createElement('input');
+      mob.type = 'file'; mob.id = 'rsc-upload-files';
+      mob.accept = '.xlsx,.xls,.csv';
+      mob.multiple = true; mob.style.display = 'none';
+      mob.onchange = function(ev){
+        if(!ev.target.files || !ev.target.files.length){
+          say('មិនបានជ្រើសឯកសារទេ', true);
+          return;
+        }
+        hide();
+        try{ handleAutoFileImport(ev); }
+        catch(e){ say('នាំចូលមិនបាន ៖ ' + ((e && e.message) || e), true); }
+      };
+      document.body.appendChild(mob);
+    }
+    say('សូមជ្រើសឯកសារ Excel ទាំងអស់របស់សហគ្រាសនេះ (ជ្រើសច្រើនបាន)');
+    mob.value = '';
+    mob.click();
   }
 
   function requestNew(){
