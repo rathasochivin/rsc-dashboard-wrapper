@@ -5374,16 +5374,19 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
                    sessionStorage ៖ វារស់តាមផ្ទាំងកម្មវិធីរុករក ⇒
                      · ការចូលថ្មី / ផ្ទាំងថ្មី ⇒ គ្មានសញ្ញា ⇒ **បង្ហាញ**
                      · refresh ក្នុងផ្ទាំងដដែល ⇒ មានសញ្ញា ⇒ រំលង បើមានទិន្នន័យ */
+              /* ⭐⭐ [stated] ២០២៦-០៨-២៣ ៖ «ពេល Log In ចូល វាមិនលោតទៅផ្ទាំង
+                 សហគ្រាសរបស់អ្នកតែម្តងទេ វាលោតទៅផ្ទាំងទិដ្ឋភាពទូទៅសិន» ។
+                 មូលហេតុ ៖ ការពន្យារ ៣០០ms ⇒ ផ្ទាំងគ្រប់គ្រងគូររួចជាមុន។
+                 ⇒ បង្ហាញ **ភ្លាមៗ គ្មានការពន្យារ** ; ការសម្រេចមិនត្រូវការ
+                   ម៉ាស៊ីនមេទេ ⇒ គិតបានភ្លាម។ */
               try{
-                setTimeout(function(){
-                  var seen = false;
-                  try{ seen = sessionStorage.getItem('rscGateSeen') === '1'; }catch(e){}
-                  var has = false;
-                  try{ has = (typeof hasAnyDataLoaded === 'function') && hasAnyDataLoaded(); }catch(e){}
-                  if((!seen || !has) && window.__rscCompanyGate) window.__rscCompanyGate();
-                  try{ sessionStorage.setItem('rscGateSeen', '1'); }catch(e){}
-                  try{ applyAdminOnly(); }catch(e){}
-                }, 300);
+                var seen = false;
+                try{ seen = sessionStorage.getItem('rscGateSeen') === '1'; }catch(e){}
+                var has = false;
+                try{ has = (typeof hasAnyDataLoaded === 'function') && hasAnyDataLoaded(); }catch(e){}
+                if((!seen || !has) && window.__rscCompanyGate) window.__rscCompanyGate();
+                try{ sessionStorage.setItem('rscGateSeen', '1'); }catch(e){}
+                try{ applyAdminOnly(); }catch(e){}
               }catch(e){}
               if(!window.__rscTinTimer){
                 window.__rscTinTimer = setInterval(function(){ window.__rscRefreshTINs(); }, 60000);
@@ -16256,6 +16259,24 @@ function __openDocs(){
 function init(){
   const start = function(){
     try{ loadState(); }catch(e){ console.error("init/loadState:", e); }
+    /* ⭐⭐⭐ [stated] ២០២៦-០៨-២៣ ៖ «វាលោតទៅផ្ទាំងទិដ្ឋភាពទូទៅសិន» ។
+       ⚠⚠ មូលហេតុពិត ៖ ខ្ញុំបង្ហាញផ្ទាំងសហគ្រាស **ក្នុងចម្លើយរបស់ម៉ាស៊ីនមេ**
+         (`getClientAccessInfoForCurrentUser`) ដែលចំណាយពេលច្រើនវិនាទី ⇒ ផ្ទាំង
+         គ្រប់គ្រងបង្ហាញមុនរហូត។ ការដកការពន្យារ ៣០០ms មិនគ្រប់គ្រាន់ទេ។
+       ⇒ បង្ហាញ **នៅពេលចាប់ផ្តើម** ភ្លាម ដរាបណាមាន token ⇒ មិនរង់ចាំម៉ាស៊ីនមេ។
+         បញ្ជីសហគ្រាសបំពេញនៅពេលចម្លើយមកដល់ (ផ្ទាំងបង្ហាញ «កំពុងទាញបញ្ជី…»)។
+       ⚠ ម្ចាស់ប្រព័ន្ធរំលង — តែយើងមិនទាន់ដឹងថាជា admin ទេនៅពេលនេះ ⇒ ផ្ទាំង
+         បិទខ្លួនឯងវិញនៅពេលចម្លើយប្រាប់ថា owner (មើល `__rscCompanyGate`)។ */
+    try{
+      if(window.__loggedInUserToken){
+        var gSeen = false, gHas = false;
+        try{ gSeen = sessionStorage.getItem('rscGateSeen') === '1'; }catch(e){}
+        try{ gHas = (typeof hasAnyDataLoaded === 'function') && hasAnyDataLoaded(); }catch(e){}
+        if((!gSeen || !gHas) && window.__rscCompanyGate) window.__rscCompanyGate();
+        try{ sessionStorage.setItem('rscGateSeen', '1'); }catch(e){}
+      }
+    }catch(e){}
+
     /* ⭐ ត្រឡប់មកផ្ទាំងចុងក្រោយក្រោយ refresh ។
        ⚠ រត់ **ក្រោយ** ការគូរដំបូង ⇒ `showView` មានច្បាប់ផ្ទាល់ខ្លួន (សិទ្ធិ ·
          ទិន្នន័យមិនទាន់មាន) ហើយវានឹងត្រឡប់ទៅ dashboard ដោយស្វ័យប្រវត្តិបើ
@@ -44523,6 +44544,9 @@ else CC.init();
     return {
       msg:  function(t){ msg.textContent = t; },
       pct:  function(p){ bar.style.width = Math.max(0, Math.min(100, p)) + '%'; },
+      /* ⚠ `hide`/`show` ជំនួសការបិទ-បើកឡើងវិញ ⇒ គ្មានការញ័រអេក្រង់ */
+      hide: function(){ d.style.display = 'none'; },
+      show: function(){ d.style.display = ''; },
       close:function(){ if(d.parentNode) d.parentNode.removeChild(d); try{ stageBar(''); }catch(e){} }
     };
   }
@@ -44919,15 +44943,24 @@ else CC.init();
     var ov0 = overlay('រក្សាទុកក្នុងម៉ាស៊ីន · ' + RSC_BUILD);
     ov0.msg(RSC_BUILD + ' · ១ ពិនិត្យឯកសារដែលមានស្រាប់…');
 
+    /* ⚠⚠ [stated] ២០២៦-០៨-២៣ ៖ «ពេលចុច save វារៀងញ័រផ្ទាំងអេក្រង់» ។
+       មូលហេតុ ៖ ការរក្សាទុកបង្កើត **ផ្ទាំងគ្រប ២ ដង** ៖ បិទផ្ទាំងទី ១ រួច
+       បើកផ្ទាំងទី ២ ⇒ អេក្រង់ភ្លឺ-ងងឹត-ភ្លឺ ⇒ មើលទៅដូចញ័រ។
+       ⇒ ប្រើ **ផ្ទាំងតែមួយ** ពីដើមដល់ចប់ ; ការជ្រើសជាន់លើ (បើមាន) លាក់វា
+         បណ្តោះអាសន្នរួចបង្ហាញវិញ ⇒ គ្មានការបង្កើតថ្មីទេ។ */
     ldbAll().catch(function(){ return []; }).then(function(all){
-      ov0.close();
       var mine = all.filter(function(f){ return f.base === meta.base; })
                     .sort(function(a, b){ return b.ver - a.ver; });
-      return mine.length ? askOverwrite(mine) : {mode:'new'};
+      if(!mine.length) return {mode:'new'};
+      try{ ov0.hide && ov0.hide(); }catch(e){}
+      return askOverwrite(mine).then(function(c){
+        try{ ov0.show && ov0.show(); }catch(e){}
+        return c;
+      });
     }).then(function(choice){
-      if(!choice) return;                       /* បោះបង់ */
+      if(!choice){ ov0.close(); return; }       /* បោះបង់ */
 
-      var ov = overlay('កំពុងរក្សាទុកក្នុងម៉ាស៊ីន · ' + RSC_BUILD);
+      var ov = ov0;                             /* ⚠ ផ្ទាំងដដែល មិនបង្កើតថ្មី */
       ov.msg(RSC_BUILD + ' · ២ ចាប់ផ្តើម…'); ov.pct(3);
 
       var go = function(){
@@ -45446,6 +45479,8 @@ function pkTime(f){
 #co-gate .cg-tag.no{ background:rgba(255,154,138,.14); color:#FF9A8A; }
 #co-gate .cg-tag.file{ background:rgba(200,166,75,.16); color:#F0C860; }
 #co-gate .cg-tag.none{ background:rgba(239,231,210,.08); color:rgba(239,231,210,.5); }
+#co-gate .cg-btn.spin{ opacity:.6; pointer-events:none; }
+#co-gate .cg-btn.spin::after{ content:''; }
 #co-gate .cg-vers{ margin:-4px 0 10px; padding:8px 0 6px 14px;
   border-left:2px solid rgba(200,166,75,.3); display:flex; flex-direction:column; gap:5px; }
 #co-gate .cg-ver{ display:flex; justify-content:space-between; align-items:center; gap:10px;
@@ -45531,7 +45566,19 @@ function pkTime(f){
            q: wrap.querySelector('#cg-q'), msg: wrap.querySelector('#cg-msg'), rows: [] };
 
     CG.q.addEventListener('input', render);
-    wrap.querySelector('#cg-reload').onclick = load;
+    /* ⚠ [stated] «ពេលចុច ↻ … ដើរយឺត» ⇒ យ៉ាងហោចណាស់ត្រូវ **មើលឃើញថាវាដើរ** ៖
+       ប៊ូតុងវិល · បិទការចុចស្ទួន · និងសារពេលវេលា។ ការហៅម៉ាស៊ីនមេនៅយឺតដដែល
+       តែអ្នកប្រើលែងឆ្ងល់ថាចុចចូលឬអត់។ */
+    wrap.querySelector('#cg-reload').onclick = function(){
+      var b = this;
+      if(b.disabled) return;
+      b.disabled = true; b.classList.add('spin');
+      var t0 = Date.now();
+      load(true).then(function(){
+        b.disabled = false; b.classList.remove('spin');
+        CG.sub.textContent += '  ·  ធ្វើបច្ចុប្បន្នភាពរួច (' + Math.round((Date.now()-t0)/1000) + 's)';
+      });
+    };
     wrap.querySelector('#cg-folder').onclick = function(){
       if(!window.__rscFsPick) return;
       window.__rscFsPick().then(function(){ load(); });
@@ -45540,17 +45587,20 @@ function pkTime(f){
   }
 
   /* ── ការទាញទិន្នន័យ ───────────────────────────────────────────── */
-  function load(){
-    if(!CG) return;
+  function load(fresh){
+    if(!CG) return Promise.resolve();
     CG.sub.textContent = 'កំពុងទាញបញ្ជី…';
-    var pServer = api('myCompanies', [window.__loggedInUserToken])
+    var pServer = api('myCompanies', [window.__loggedInUserToken, !!fresh])
       .catch(function(){ return { ok:false }; });
     var pFiles = (window.__rscFsList && window.__rscFsReady && window.__rscFsReady())
       ? window.__rscFsList().catch(function(){ return []; })
       : Promise.resolve([]);
 
-    Promise.all([pServer, pFiles]).then(function(r){
+    return Promise.all([pServer, pFiles]).then(function(r){
       var srv = r[0] || {}, files = r[1] || [];
+      /* ⚠ ម្ចាស់ប្រព័ន្ធមិនប្រើផ្ទាំងនេះទេ ៖ យើងបើកវាមុនដឹងតួនាទី ⇒ បិទវិញ
+         ភ្លាមនៅពេលម៉ាស៊ីនមេប្រាប់។ */
+      if(srv.owner){ window.__isOwnerUser = true; hide(); return; }
       var byTin = {};
       (srv.companies || []).forEach(function(c){
         var t = tin9(c.tin); if(!t) return;
@@ -45689,6 +45739,16 @@ function pkTime(f){
     say('');
     CG.sub.textContent = 'កំពុងបើក ៖ ' + f.name + ' …';
     window.__rscFsReadFile(f.id).then(function(text){
+      /* ⚠⚠ [stated] ២០២៦-០៨-២៣ ៖ «ពេលរើសសហគ្រាសផ្សេងចូល វានៅជាប់ទិន្នន័យ
+         ចាស់សិន មួយសន្ទុះទើបប្តូរវិញ» ⇒ ការនាំចូលដំណើរការជាដំណាក់ ហើយ
+         អេក្រង់នៅបង្ហាញសំណុំរឿងចាស់រហូតដល់ចប់។
+         ⇒ សម្អាតជាមុន រួចគូរឡើងវិញ **មុនបិទផ្ទាំង** ⇒ អ្នកប្រើមិនដែលឃើញ
+           ទិន្នន័យសហគ្រាសចាស់នៅក្រោមឈ្មោះថ្មីទេ។ */
+      try{
+        ['sale','purchase','cpSale','cpPurchase','saleCD','purchaseCD','otherExpenses']
+          .forEach(function(k){ if(state[k]) state[k] = []; });
+        if(typeof renderAll === 'function') renderAll();
+      }catch(e){}
       hide();
       window.__importAllDataFromText(text || '');
       try{ if(typeof showView === 'function') showView('dashboard'); }catch(e){}
