@@ -5310,22 +5310,17 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
                    (ចាស់ និងថ្មី) ប្រើប្រភពតែមួយ។
                  ⭐ មេរៀន ៖ ពេលបន្ថែម «ប្រភពសិទ្ធិថ្មី» ត្រូវរក **គ្រប់កន្លែង
                    ដែលអានសិទ្ធិចាស់** — មិនដូច្នេះទេ ច្បាប់ថ្មីនៅដេកស្ងៀម។ */
-              if(window.__rscApi){
-                window.__rscApi('myAssignedTINs', [window.__loggedInUserToken])
-                  .then(function(a){
-                    var add = (a && a.tins) || [];
-                    if(a && a.owner) window.__isOwnerUser = true;
-                    if(add.length){
-                      var have = {};
-                      (window.__approvedTINs || []).forEach(function(x){
-                        have[String(x).replace(/\D/g,'').slice(-9)] = 1; });
-                      add.forEach(function(x){
-                        var k = String(x).replace(/\D/g,'').slice(-9);
-                        if(k && !have[k]){ have[k] = 1; window.__approvedTINs.push(k); }
-                      });
-                    }
-                  })
-                  .catch(function(e){ console.warn('myAssignedTINs:', e); });
+              /* ⭐⭐ [stated] ២០២៦-០៨-២៣ ៖ «បំពេញចូល Whitelist ⇒ ដើរភ្លាម …
+                 មិនចាំបាច់ refresh ក៏បាន» ⇒ ទាញបញ្ជីឡើងវិញ ៖
+                   · រាល់ ៦០ វិនាទី
+                   · និងភ្លាមមុនការបើក/នាំចូលឯកសារនីមួយៗ
+                 ⚠ បើការទាញបរាជ័យ (បណ្តាញដាច់) ⇒ **រក្សាបញ្ជីចាស់** មិនលុប
+                   ⇒ ការដាច់បណ្តាញមួយភ្លែតមិនធ្វើអោយគេបាត់សិទ្ធិទេ។ */
+              /* ⚠ មុខងារកំណត់នៅខាងក្រៅ (មើល `__rscRefreshTINs`) ⇒ វាមានជានិច្ច
+                 ទោះការផ្ទុកដំបូងមិនបានរត់ក៏ដោយ។ */
+              window.__rscRefreshTINs();
+              if(!window.__rscTinTimer){
+                window.__rscTinTimer = setInterval(function(){ window.__rscRefreshTINs(); }, 60000);
               }
               /* លើ GitHub Pages គ្មានការបញ្ចូលពី template ទេ ដូច្នេះឈ្មោះ
                  អ៊ីមែល និងពេលផុតកំណត់ មកជាមួយចម្លើយនេះវិញ។ បើគ្មានវា
@@ -7511,8 +7506,44 @@ window.__rscWhyBlocked = function(){
   return out;
 };
 
+window.__rscRefreshTINs = function(){
+  if(!window.__loggedInUserToken || !window.__rscApi) return Promise.resolve(false);
+  return window.__rscApi('myAssignedTINs', [window.__loggedInUserToken])
+    .then(function(a){
+      if(!a || a.ok === false) return false;
+      if(a.owner) window.__isOwnerUser = true;
+      var norm = function(x){ return String(x).replace(/\D/g,'').slice(-9); };
+      var have = {}, list = [];
+      (a.tins || []).forEach(function(x){
+        var k = norm(x); if(k && !have[k]){ have[k] = 1; list.push(k); } });
+      window.__approvedTINs = list;
+      window.__approvedTINsLoaded = true;
+      /* ⚠ សិទ្ធិដែលទើបបន្ថែម ត្រូវលុបចម្លើយ «បដិសេធ» ដែលចាំទុក
+         បើមិនដូច្នេះទេ គេនៅឃើញសារចាស់ទោះមានសិទ្ធិរួច។ */
+      try{
+        Object.keys(window.__rscTinChecked || {}).forEach(function(k){
+          if(window.__rscTinChecked[k] === 'no' && have[k]) delete window.__rscTinChecked[k];
+        });
+        window.__requestedTINs = {};
+      }catch(e){}
+      return true;
+    })
+    .catch(function(e){ console.warn('myAssignedTINs:', e); return false; });
+};
+
 window.__rscTinChecked = {};
 window.__rscVerifyEnterpriseAccess = function(){
+  try{
+    if(!window.__loggedInUserToken) return Promise.resolve({skip:'local'});
+    /* ⚠ ទាញបញ្ជីថ្មីមុនពិនិត្យ ⇒ លេខអតបដែលអ្នកទើបបំពេញ ដំណើរការភ្លាម
+       ដោយមិនចាំបាច់ផ្ទុកទំព័រឡើងវិញ។ (ការទាញបរាជ័យ ⇒ ប្រើបញ្ជីចាស់។) */
+    if(typeof window.__rscRefreshTINs === 'function'){
+      return window.__rscRefreshTINs().then(function(){ return __rscVerifyNow(); });
+    }
+    return __rscVerifyNow();
+  }catch(e){ return Promise.resolve({skip:'error'}); }
+};
+function __rscVerifyNow(){
   try{
     if(!window.__loggedInUserToken) return Promise.resolve({skip:'local'});
     var info = window.__rscEnterpriseInfo ? window.__rscEnterpriseInfo() : {};
@@ -7546,7 +7577,7 @@ window.__rscVerifyEnterpriseAccess = function(){
         return {skip:'offline'};
       });
   }catch(e){ return Promise.resolve({skip:'error'}); }
-};
+}
 function __rscBlockEnterprise(t, res){
   try{
     ['sale','purchase','cpSale','cpPurchase','saleCD','purchaseCD','otherExpenses'].forEach(function(k){
