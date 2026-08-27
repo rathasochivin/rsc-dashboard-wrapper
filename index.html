@@ -44393,11 +44393,44 @@ else CC.init();
     return fsHandleGet().then(function(h){ return h ? (h.name || '') : ''; });
   }
 
+  /* ══════════════════════════════════════════════════════════════════
+     ⚠⚠ [stated] ២០២៦-០៨-២៣ ៖ «ពេលចុចថតឯកសារ វាចេញសារថា browser នេះមិន
+     គាំទ្រការជ្រើសថតទេ» — គេបើកតាម **ទូរស័ព្ទ** ។
+     `showDirectoryPicker` មានតែលើ Chrome/Edge លើកុំព្យូទ័រ ; ទូរស័ព្ទ
+     (Android និង iPhone) និង Safari/Firefox គ្មានទេ ⇒ សារនោះជាការបញ្ឈប់
+     ដោយគ្មានផ្លូវទៅមុខ។
+     ⇒ ផ្លូវជំនួស ៖ ជ្រើស **ឯកសារ .json/.gz ដោយផ្ទាល់** (ច្រើនក៏បាន) ⇒
+       ឯកសារទាំងនោះក្លាយជា «ថត» សម្រាប់វេននេះ ⇒ ផ្ទាំងសហគ្រាសដំណើរការដដែល។
+     ⚠ ភាពខុសគ្នាដែលត្រូវប្រាប់អ្នកប្រើ ៖ ការជ្រើសនេះ **មិនត្រូវបានចងចាំ**
+       ក្រោយបិទកម្មវិធី (កម្មវិធីរុករកមិនអនុញ្ញាត) ⇒ លើទូរស័ព្ទត្រូវជ្រើស
+       ម្តងក្នុងមួយវេន។ លើកុំព្យូទ័រនៅចងចាំដដែល។
+     ══════════════════════════════════════════════════════════════════ */
+  var fsFallback = [];          /* [{id, name, file}] សម្រាប់វេននេះ */
+  function fsFallbackPick(){
+    return new Promise(function(resolve){
+      var inp = document.getElementById('rsc-fs-fallback');
+      if(!inp){
+        inp = document.createElement('input');
+        inp.type = 'file'; inp.id = 'rsc-fs-fallback';
+        inp.accept = '.json,.gz,application/json,application/gzip';
+        inp.multiple = true; inp.style.display = 'none';
+        document.body.appendChild(inp);
+      }
+      inp.onchange = function(){
+        var list = Array.prototype.slice.call(inp.files || []);
+        fsFallback = list.map(function(f){
+          return { id: 'fb:' + f.name, name: f.name, file: f };
+        });
+        fsDirName = list.length ? (list.length + ' ឯកសារ') : '';
+        resolve(fsFallback.length ? { name: fsDirName } : null);
+      };
+      inp.value = '';
+      inp.click();
+    });
+  }
+
   function fsPick(){
-    if(!fsaSupported()){
-      alert('⚠ browser នេះមិនគាំទ្រការជ្រើសថតទេ។ សូមប្រើ Chrome ឬ Edge ជំនាន់ថ្មី។');
-      return Promise.resolve(null);
-    }
+    if(!fsaSupported()) return fsFallbackPick();
     return window.showDirectoryPicker({ mode:'readwrite', id:'rscSaveDir' })
       .then(function(h){ return fsHandleSet(h).then(function(){ return h; }); })
       .catch(function(){ return null; });     /* បោះបង់ — មិនមែនកំហុសទេ */
@@ -44413,6 +44446,21 @@ else CC.init();
      ⚠ ឈ្មោះថតរងបញ្ចូលក្នុង `id` (ឧ. «2024/ABC_V1.json») ⇒ `fsRead` ត្រូវ
        ដើរតាមផ្លូវនោះ ; ឈ្មោះឯកសារដដែលក្នុងថតពីរ លែងជាន់គ្នាទៀត។ */
   function fsList(){
+    /* ⚠ ផ្លូវជំនួស ៖ ឯកសារដែលអ្នកប្រើជ្រើសដោយផ្ទាល់ក្នុងវេននេះ */
+    if(!fsaSupported()){
+      return Promise.resolve(fsFallback.map(function(x){
+        var base = x.name.replace(/\.json(\.gz)?$/i, '');
+        var m = base.match(/^(.*)_V(\d+)$/);
+        var d = new Date(x.file.lastModified), p2 = function(n){ return (n<10?'0':'')+n; };
+        return { id: x.id, name: x.name, folder: '',
+                 base: m ? m[1] : base, ver: m ? +m[2] : 1,
+                 company: (m ? m[1] : base).split('_')[0] || '',
+                 tin: (base.match(/\d{9,}/) || [''])[0],
+                 size: x.file.size,
+                 when: d.getFullYear() + '-' + p2(d.getMonth()+1) + '-' + p2(d.getDate())
+                       + ' ' + p2(d.getHours()) + ':' + p2(d.getMinutes()) };
+      }));
+    }
     return fsDir().then(function(dir){
       if(!dir) return [];
       var out = [];
@@ -44478,6 +44526,20 @@ else CC.init();
     });
   }
   function fsRead(name){
+    /* ផ្លូវជំនួស ៖ អានពី File object ដែលកាន់ក្នុងអង្គចងចាំ */
+    if(String(name).indexOf('fb:') === 0){
+      var hit = null;
+      fsFallback.forEach(function(x){ if(x.id === name) hit = x; });
+      if(!hit) return Promise.reject(new Error('រកឯកសារនេះមិនឃើញទេ — សូមជ្រើសម្តងទៀត'));
+      return hit.file.arrayBuffer().then(function(buf){
+        var u8 = new Uint8Array(buf);
+        if(u8.length > 2 && u8[0] === 0x1f && u8[1] === 0x8b){
+          if(!canUngzip()) throw new Error('browser នេះមិនអាចពន្លា .gz បានទេ');
+          return window.__rscUngzipBytes(u8);
+        }
+        return new TextDecoder('utf-8').decode(u8);
+      });
+    }
     return fsDir().then(function(dir){
       if(!dir) throw new Error('មិនទាន់បានជ្រើសថតទេ');
       /* ⚠ `id` អាចមានផ្លូវថតរង (ឧ. «2024/ABC_V1.json») ⇒ ដើរតាមថតមុន
@@ -44935,7 +44997,8 @@ else CC.init();
      បញ្ជីឯកសារក្នុងថត · ការអានឯកសារមួយ · និងស្ថានភាពថត។ បញ្ចេញវាចេញមក
      ជំនួសការចម្លងកូដ ⇒ ការកែថតមួយកន្លែង មានប្រសិទ្ធភាពទាំងពីរផ្ទាំង។ */
   window.__rscFsReadFile = function(id){ return fsRead(id); };
-  window.__rscFsReady    = function(){ return fsOn(); };
+  /* ⚠ «ត្រៀមរួច» = មានថតចងភ្ជាប់ **ឬ** មានឯកសារជំនួសដែលទើបជ្រើស */
+  window.__rscFsReady    = function(){ return fsOn() || fsFallback.length > 0; };
 
   /* ══ រក្សាទុកក្នុងម៉ាស៊ីន ══════════════════════════════════════════
      ដំណើរការដូច Drive ៖ រកឈ្មោះគោល → បើមានរួច សួរជាន់លើ/ជំនាន់ថ្មី →
@@ -45570,12 +45633,33 @@ function pkTime(f){
 #co-gate .cg-new-row input:nth-child(2){ flex:1 1 auto; }
 #co-gate .cg-msg{ margin-top:9px; font-size:12.5px; min-height:17px; color:#8FE0A5; }
 #co-gate .cg-msg.bad{ color:#FF9A8A; }
+
+/* ⚠⚠ [stated] ២០២៦-០៨-២៣ ៖ «នៅពេលបើកតាមទូរស័ព្ទ ប្រអប់ផ្ទុកឯកសារ និងអក្សរ
+   ធំជាងប្រអប់ មានសិទ្ធិ និងគ្មានឯកសារ … ជួយធ្វើឲ្យវាស្មើគ្នាផង» ។
+   មូលហេតុ ៖ ប៊ូតុងសកម្មភាពប្រើទំហំអក្សរ និងគែមផ្សេងពីស្លាកតូច ⇒ នៅលើ
+   អេក្រង់តូច ជួរដេករុញខ្លួនហើយប៊ូតុងលេចធ្លោហួស។
+   ⇒ លើទូរស័ព្ទ ៖ ប៊ូតុងទៅជួរផ្ទាល់ខ្លួន ទទឹងពេញ កម្ពស់ស្មើ ហើយស្លាកទាំងអស់
+     មានទំហំអក្សរ និងគែមដូចគ្នា ⇒ មើលទៅជាបន្ទាត់តែមួយ។ */
+@media (max-width:560px){
+  #co-gate .cg-row{ display:block; padding:14px 0; }
+  #co-gate .cg-name{ white-space:normal; font-size:14px; line-height:1.5; }
+  #co-gate .cg-meta{ margin-top:6px; display:flex; flex-wrap:wrap; gap:5px; align-items:center; }
+  #co-gate .cg-tag{ margin-left:0; padding:3px 8px; font-size:11px; line-height:1.5; }
+  #co-gate .cg-row .cg-btn{ display:block; width:100%; margin-top:10px;
+    padding:11px 12px; font-size:13px; line-height:1.5; }
+  #co-gate .cg-vers{ margin-top:8px; }
+}
 @media (max-width:560px){
   #co-gate{ padding:0; }
   #co-gate .cg-box{ max-height:100vh; border-radius:0; border:0; }
-  #co-gate .cg-row{ flex-wrap:wrap; }
   #co-gate .cg-new-row{ flex-wrap:wrap; }
   #co-gate .cg-new-row input:first-child{ width:100%; }
+  /* ⚠ របារឧបករណ៍ហៀរខាងស្តាំលើទូរស័ព្ទ (ការស្វែងរក + ប៊ូតុង ២ លើជួរតែមួយ)
+     ⇒ រុំបន្ទាត់ ៖ ការស្វែងរកពេញទទឹង រួចប៊ូតុងពីរចែកគ្នាខាងក្រោម។ */
+  #co-gate .cg-tools{ flex-wrap:wrap; padding:10px 16px; }
+  #co-gate .cg-tools input{ flex:1 1 100%; }
+  #co-gate .cg-tools .cg-btn{ flex:1 1 0; }
+  #co-gate .cg-head, #co-gate .cg-list, #co-gate .cg-new{ padding-left:16px; padding-right:16px; }
 }
 </style>
 <script>
@@ -45617,7 +45701,7 @@ function pkTime(f){
         '</div>' +
         '<div class="cg-tools">' +
           '<input id="cg-q" type="text" placeholder="🔍 ស្វែងរក ឈ្មោះ ឬលេខអតប">' +
-          '<button class="cg-btn ghost" id="cg-folder">📁 ថតឯកសារ</button>' +
+          '<button class="cg-btn ghost" id="cg-folder">📁 ជ្រើសឯកសារ</button>' +
           '<button class="cg-btn ghost" id="cg-reload">↻</button>' +
         '</div>' +
         '<div class="cg-list" id="cg-list"></div>' +
@@ -45649,6 +45733,11 @@ function pkTime(f){
         CG.sub.textContent += '  ·  ធ្វើបច្ចុប្បន្នភាពរួច (' + Math.round((Date.now()-t0)/1000) + 's)';
       });
     };
+    /* ⚠ លើកុំព្យូទ័រ ៖ ជ្រើស **ថត** ហើយវាចងចាំ ; លើទូរស័ព្ទ ៖ ជ្រើស
+       **ឯកសារ** ដោយផ្ទាល់ សម្រាប់វេននេះ។ ស្លាកប៊ូតុងអាស្រ័យលើឧបករណ៍ ⇒
+       អ្នកប្រើមិនរំពឹងអ្វីដែលធ្វើមិនបាន។ */
+    var fsaOk = !!(window.showDirectoryPicker);
+    wrap.querySelector('#cg-folder').textContent = fsaOk ? '📁 ថតឯកសារ' : '📄 ជ្រើសឯកសារ';
     wrap.querySelector('#cg-folder').onclick = function(){
       if(!window.__rscFsPick) return;
       window.__rscFsPick().then(function(){ load(); });
@@ -45692,7 +45781,9 @@ function pkTime(f){
       var nAllowed = CG.rows.filter(function(x){ return x.allowed; }).length;
       var nFiles = CG.rows.filter(function(x){ return x.files.length; }).length;
       CG.sub.textContent = 'ក្នុងបញ្ជី ' + nAllowed + ' សហគ្រាស · មានឯកសារ ' + nFiles
-        + (window.__rscFsName && window.__rscFsName() ? '  ·  ថត ៖ ' + window.__rscFsName() : '  ·  មិនទាន់ជ្រើសថត');
+        + (window.__rscFsName && window.__rscFsName()
+             ? '  ·  ' + (window.showDirectoryPicker ? 'ថត ៖ ' : 'ឯកសារ ៖ ') + window.__rscFsName()
+             : (window.showDirectoryPicker ? '  ·  មិនទាន់ជ្រើសថត' : '  ·  មិនទាន់ជ្រើសឯកសារ'));
       render();
     });
   }
@@ -45829,10 +45920,18 @@ function pkTime(f){
 
   /* ⚠ «ផ្ទុកឯកសារ» ៖ សិទ្ធិមានរួច ⇒ **គ្មានការស្នើសុំម្តងទៀត** ។ ការត្រួតពិនិត្យ
      តាមឯកសារ (`__rscVerifyEnterpriseAccess`) នៅដំណើរការដដែលក្រោយនាំចូល។ */
+  /* ⚠⚠ [stated] ២០២៦-០៨-២៣ ៖ «ពេលចុចផ្ទុកឯកសារ វាលោតទៅផ្ទាំងទិដ្ឋភាពទូទៅវិញ
+     … វាគួរចុចទៅរើសឯកសារដើម្បី upload» ។
+     មូលហេតុ ៖ ខ្ញុំបិទផ្ទាំងមុនចុច input ⇒ លើកំុព្យូទ័រខ្លះ និងទូរស័ព្ទ
+     ការចុចនោះលែងរាប់ជា «សកម្មភាពរបស់អ្នកប្រើ» ⇒ ប្រអប់ជ្រើសឯកសារមិនបើក
+     ហើយអ្នកឃើញតែផ្ទាំងទិដ្ឋភាពទូទៅ។
+     ⇒ ចុច input **ក្នុងព្រឹត្តិការណ៍ចុចដដែល** មុនបិទផ្ទាំង ; បិទក្រោយ។
+     ⚠ បើ input រកមិនឃើញ ⇒ ប្រាប់ត្រង់ជំនួសការបិទស្ងាត់។ */
   function uploadRow(row){
-    hide();
     var inp = document.getElementById('auto-folder-input');
-    if(inp) inp.click();
+    if(!inp){ say('រកប្រអប់ផ្ទុកឯកសារមិនឃើញ — សូមផ្ទុកទំព័រឡើងវិញ', true); return; }
+    try{ inp.click(); }catch(e){ say('មិនអាចបើកប្រអប់ជ្រើសឯកសារបានទេ', true); return; }
+    hide();
   }
 
   function requestNew(){
