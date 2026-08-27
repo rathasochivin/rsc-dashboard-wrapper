@@ -5211,9 +5211,16 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     <div id="app-topbar">
       <div class="app-topbar-actions">
         <button class="atb-btn atb-icon" onclick="showView('dashboard')" title="ទិដ្ឋភាពទូទៅ" aria-label="ទិដ្ឋភាពទូទៅ">🏠</button>
-        <button class="atb-btn atb-icon" onclick="openUploadAndPickFolder()" title="UPLOAD ឯកសារ" aria-label="UPLOAD ឯកសារ">📥</button>
+        <!-- ⭐ ត្រឡប់ទៅផ្ទាំងជ្រើសសហគ្រាស — សម្រាប់ user និង team ជំនួស
+             ប៊ូតុង upload និងបើកឯកសារដែលដកចេញ -->
+        <button class="atb-btn atb-icon user-only" onclick="window.__rscBackToCompanies && window.__rscBackToCompanies()" title="ប្តូរសហគ្រាស" aria-label="ប្តូរសហគ្រាស">🏢</button>
+        <!-- ⭐⭐ [stated] ២០២៦-០៨-២៣ ៖ «user និង team នៅផ្នែកខាងក្នុងនឹងលែងមាន
+             កន្លែង upload ឯកសារ និងបើកឯកសារទៀតហើយ … ចាកចេញទៅផ្ទាំងរើស
+             ឯកសារឡើងវិញ» ⇒ ថ្នាក់ `admin-only` លាក់វាសម្រាប់ user និង team។
+             ⚠ ប៊ូតុងនៅដដែលសម្រាប់ admin និងការប្រើផ្ទាល់ខ្លួន (គ្មាន token)។ -->
+        <button class="atb-btn atb-icon admin-only" onclick="openUploadAndPickFolder()" title="UPLOAD ឯកសារ" aria-label="UPLOAD ឯកសារ">📥</button>
         <!-- [stated] «បើកឯកសារ» ជាប់នឹង UPLOAD ព្រោះទាំងពីរជាផ្លូវចូលទិន្នន័យ -->
-        <button type="button" class="atb-btn atb-icon atb-door" onclick="window.__rscOpenPicker ? window.__rscOpenPicker() : document.getElementById('saved-file-input').click()" title="បើកឯកសារ" aria-label="បើកឯកសារ"><span class="ic">🚪</span></button>
+        <button type="button" class="atb-btn atb-icon atb-door admin-only" onclick="window.__rscOpenPicker ? window.__rscOpenPicker() : document.getElementById('saved-file-input').click()" title="បើកឯកសារ" aria-label="បើកឯកសារ"><span class="ic">🚪</span></button>
         <!-- ⚠⚠ [stated] ២០២៦-០៨-១៤ ៖ «នៅក្នុងម៉ាស៊ីនមាន file zip តែពេលបើកមិនឃើញ» ។
              មូលហេតុ ៖ `accept=".json,.js"` — ប្រអប់ជ្រើសឯកសាររបស់ Windows
              លាក់ `.json.gz` ចោល ព្រោះវាមិនត្រូវនឹងតម្រង។ បន្ថែម .gz -->
@@ -5244,8 +5251,8 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
            ការសម្រេច មិនមែន CSS បន្ថែមទេ។ -->
       <div class="app-topbar-actions atb-tail">
         <button class="atb-btn atb-icon data-gated feat-docs" onclick="__openDocs()" title="ព្រីនឯកសារផ្លូវការ" aria-label="ព្រីនឯកសារផ្លូវការ">🖨️</button>
-        <button class="atb-btn atb-icon" id="cardViewBtn" title="ប្តូររវាង តារាង និង កាត" aria-label="ប្តូរទម្រង់មើល">▤</button>
-        <button class="atb-btn atb-icon atb-bin data-gated" onclick="clearAllData()" title="លុបឯកសារ" aria-label="លុបឯកសារ"><span class="ic">🗑️</span></button>
+        <button class="atb-btn atb-icon admin-only" id="cardViewBtn" title="ប្តូររវាង តារាង និង កាត" aria-label="ប្តូរទម្រង់មើល">▤</button>
+        <button class="atb-btn atb-icon atb-bin data-gated admin-only" onclick="clearAllData()" title="លុបឯកសារ" aria-label="លុបឯកសារ"><span class="ic">🗑️</span></button>
       </div>
     </div>
     <script>
@@ -5356,6 +5363,17 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
               /* ⚠ មុខងារកំណត់នៅខាងក្រៅ (មើល `__rscRefreshTINs`) ⇒ វាមានជានិច្ច
                  ទោះការផ្ទុកដំបូងមិនបានរត់ក៏ដោយ។ */
               window.__rscRefreshTINs();
+              /* ⭐⭐ ផ្ទាំងជ្រើសសហគ្រាស ៖ បង្ហាញក្រោយម៉ាស៊ីនមេប្រាប់រួចថាជា
+                 អ្នកណា (admin រំលង) ហើយ **តែពេលមិនទាន់មានទិន្នន័យបើក** ⇒
+                 ការផ្ទុកទំព័រឡើងវិញកណ្តាលការងារ មិនត្រូវបណ្តេញគេចេញទេ។ */
+              try{
+                setTimeout(function(){
+                  var has = false;
+                  try{ has = (typeof hasAnyDataLoaded === 'function') && hasAnyDataLoaded(); }catch(e){}
+                  if(!has && window.__rscCompanyGate) window.__rscCompanyGate();
+                  try{ applyAdminOnly(); }catch(e){}
+                }, 300);
+              }catch(e){}
               if(!window.__rscTinTimer){
                 window.__rscTinTimer = setInterval(function(){ window.__rscRefreshTINs(); }, 60000);
               }
@@ -5419,6 +5437,24 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
            ទាន់រក្សាទុកបាត់** ។ សិទ្ធិពិតនៅខាងម៉ាស៊ីនមេជានិច្ច ដូច្នេះការទុក
            អោយផ្ទាំងបើកបន្តិចទៀត គ្មានហានិភ័យទេ — ការសម្រេចនៅតែធ្វើនៅ
            ម៉ាស៊ីនមេពេលគេចុចធ្វើអ្វីមួយ។ */
+      /* ⭐⭐ [stated] ២០២៦-០៨-២៣ ៖ កាតខាងលើសម្រាប់ user និង team នៅសល់តែ
+         ទិដ្ឋភាពទូទៅ · រក្សាទុក · ចែករំលែក · ចាកចេញ (បូក docs/calc/risk/access
+         តាមសិទ្ធិ) ⇒ លាក់ `admin-only` ។
+         ⚠ ការប្រើផ្ទាល់ខ្លួន (គ្មាន token) និង admin ឃើញទាំងអស់ដដែល។
+         ⚠ រត់ម្តងទៀតក្រោយម៉ាស៊ីនមេឆ្លើយ ព្រោះ `__isOwnerUser` មិនទាន់ដឹង
+           នៅពេលគូរដំបូង។ */
+      function applyAdminOnly(){
+        var hide = !!window.__loggedInUserToken && !window.__isOwnerUser;
+        document.querySelectorAll('.admin-only').forEach(function(el){
+          el.style.display = hide ? 'none' : '';
+        });
+        /* ⚠ `user-only` គឺផ្ទុយ ៖ បង្ហាញតែសម្រាប់ user និង team */
+        document.querySelectorAll('.user-only').forEach(function(el){
+          el.style.display = hide ? '' : 'none';
+        });
+      }
+      window.applyAdminOnly = applyAdminOnly;
+      document.addEventListener('DOMContentLoaded', applyAdminOnly);
       function applyFeatureGates(opt){
         var quiet = !!(opt && opt.quiet);
         /* ⭐ `docs` បន្ថែម ២០២៦-០៨-២៣ ៖ ព្រីនឯកសារផ្លូវការ */
@@ -5430,6 +5466,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
         });
         try{ if(typeof renderNav === "function") renderNav(); }catch(e){}
         try{ if(typeof window.__toiRefresh === "function") window.__toiRefresh(); }catch(e){}
+        try{ applyAdminOnly(); }catch(e){}
         if(quiet) return;
         /* ការផ្ទុកទំព័រដំបូងប៉ុណ្ណោះ ៖ បើចាប់ផ្តើមនៅផ្ទាំងដែលគ្មានសិទ្ធិ ចេញ */
         try{
@@ -7099,9 +7136,27 @@ function saveState(){
     ? requestIdleCallback(run, {timeout:1500})
     : setTimeout(run, 400);
 }
+/* ⚠⚠ [stated] ២០២៦-០៨-២៣ ៖ «ករណីដែលមិនទាន់បានរក្សាទុក មិនបាត់អស់ទៅហើយ?»
+   ការសាកល្បងបញ្ជាក់ ៖ ការកែធម្មតារួច refresh ⇒ **មិនបាត់** (ការរក្សាទុក
+   ស្វ័យប្រវត្តិទាន់)។ តែករណីអាក្រក់បំផុត — កែរួច refresh **ក្នុងវិនាទីដដែល**
+   នឹងទិន្នន័យធំ — ការកែចុងក្រោយ **បាត់** ព្រោះការសរសេរទៅ IndexedDB ជា
+   អសមកាល ហើយទំព័របិទមុនវាចប់។
+   ⇒ ការការពារ ២ ជាន់ ៖
+     ១ `beforeunload` សរសេរ **សមកាល** ទៅ localStorage ជាច្បាប់ចម្លងសង្គ្រោះ
+       (សូម្បីទិន្នន័យធំ ៖ សរសេរតែសញ្ញាបញ្ជាក់ថាមានការកែមិនទាន់ចប់)
+     ២ បើសរសេរធំមិនទាន់ចប់ ⇒ ព្រមានអ្នកប្រើមុនចាកចេញ (ប្រអប់កម្មវិធីរុករក)
+   ⚠ ការព្រមានលេចឡើង **តែពេលពិតជាមានការសរសេរកំពុងដំណើរការ** ⇒ មិនរំខាន
+     ការចាកចេញធម្មតាទេ។ */
+var __idbWriting = 0;
+window.__idbBusy = function(){ return __idbWriting > 0; };
 try{
-  window.addEventListener('beforeunload', function(){
-    if(__saveTimer){ try{ saveStateNow(); }catch(e){} }
+  window.addEventListener('beforeunload', function(e){
+    if(__saveTimer){ try{ saveStateNow(); }catch(err){} }
+    if(__idbWriting > 0){
+      e.preventDefault();
+      e.returnValue = '';
+      return '';
+    }
   });
 }catch(e){}
 /* ══════════════════════════════════════════════════════════════════════
@@ -7178,10 +7233,15 @@ function saveStateNow(){
     .reduce(function(a,k){ return a + ((state[k] && state[k].length) || 0); }, 0);
   if(bigRows > 20000){
     try{ localStorage.removeItem(STORE_KEY); }catch(e){}
-    idbSet(STORE_KEY, snap).catch(function(e){
-      console.error('saveState/idb:', e);
-      try{ if(typeof toast === 'function') toast('⚠ រក្សាទុកទិន្នន័យមិនបាន — សូមកុំបិទទំព័រ'); }catch(_){}
-    });
+    /* ⚠ រាប់ការសរសេរដែលកំពុងដំណើរការ ⇒ `beforeunload` អាចព្រមានបាន */
+    __idbWriting++;
+    idbSet(STORE_KEY, snap)
+      .then(function(){ __idbWriting--; })
+      .catch(function(e){
+        __idbWriting--;
+        console.error('saveState/idb:', e);
+        try{ if(typeof toast === 'function') toast('⚠ រក្សាទុកទិន្នន័យមិនបាន — សូមកុំបិទទំព័រ'); }catch(_){}
+      });
     return;
   }
   let str = null;
@@ -7400,6 +7460,17 @@ function reloadApp(){
   }, 500);
 }
 window.__reloadApp = reloadApp;
+
+/* ⭐ [stated] ២០២៦-០៨-២៣ ៖ ការចង់បើក ឬ upload មានន័យថា **ចាកចេញទៅផ្ទាំង
+   រើសឯកសារឡើងវិញ** ⇒ ប៊ូតុង 🏠 សម្រាប់ user/team នាំត្រឡប់ទៅផ្ទាំងនោះ
+   ដោយ **មិនត្រូវបញ្ចូលលេខកូដឡើងវិញ** ។ admin និងការប្រើផ្ទាល់ខ្លួនមិនប៉ះ។ */
+window.__rscBackToCompanies = function(){
+  if(!window.__loggedInUserToken || window.__isOwnerUser){
+    try{ showView('dashboard'); }catch(e){}
+    return;
+  }
+  if(window.__rscCompanyGate) window.__rscCompanyGate();
+};
 
 function clearAllData(){
   appConfirm("តើអ្នកប្រាកដចិត្តថាចង់លុបទិន្នន័យនេះមែនទេ?").then(function(ok){
@@ -8024,13 +8095,15 @@ function importAllDataFromText(text){
           if(t){ snapshotTin = String(t).trim(); break; }
         }
       }
-      if(typeof window.__checkTINAccess === 'function' && !window.__checkTINAccess(snapshotTin, '')){
-        if(statusEl){
-          statusEl.textContent = 'លេខអតប មិនអនុញ្ញាត ឬមិនទាន់មានក្នុងបញ្ជី សូមពិនិត្យលេខអតបឡើងវិញនៅពេលស្នើសុំ';
-          statusEl.className = "import-status err";
-        }
-        return;
-      }
+      /* ⚠⚠ [stated] ២០២៦-០៨-២៣ ៖ «ចំណាំប្តូរទៅផ្លូវថ្មី លុបផ្លូវចាស់ចោល» ។
+         ការត្រួតពិនិត្យចាស់ត្រង់នេះ (`__checkTINAccess(snapshotTin)`) ត្រូវ
+         **ដកចេញ** ៖ វាបដិសេធ **មុន** នាំចូល ដោយផ្អែកលើ TIN ដែលមានតែក្នុង
+         ផ្នែក TOI ⇒ ឯកសារត្រឹមត្រូវដែលគ្មាន TOI ត្រូវបានបដិសេធស្ងាត់ៗ
+         (ចាប់បានពេលសាកល្បងផ្ទាំងជ្រើសសហគ្រាស ៖ បើកឯកសារ ⇒ សល់ ០ ជួរ)។
+         ⇒ ផ្លូវថ្មី ៖ នាំចូលមុន រួច `__rscVerifyEnterpriseAccess()` ពិនិត្យ
+           លេខអតបដែលរកឃើញ **ក្នុងឯកសារពិត** នៅចុងបញ្ចប់ ហើយលុបចោលបើខុស។
+         ⚠ សុវត្ថិភាពមិនចុះខ្សោយទេ ៖ ការត្រួតពិនិត្យនៅតែធ្វើ គ្រាន់តែធ្វើ
+           លើភស្តុតាងល្អជាង ហើយនៅខាងម៉ាស៊ីនមេដដែល។ */
       const main = parsed.main || parsed; // falls back to the flat (pre-unified) shape
       /* ⚠ ជួរអាចមកជាកញ្ចប់បង្រួម — ត្រូវបើកកញ្ចប់មុនគេ បើមិនដូច្នេះ
          `Array.isArray` ត្រឡប់ false ហើយទិន្នន័យបាត់ស្ងាត់ៗ។
@@ -8581,6 +8654,16 @@ function showView(id){
   }
   document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
   document.getElementById("view-"+id).classList.add("active");
+  /* ⭐⭐ [stated] ២០២៦-០៨-២៣ ៖ «ហេតុអ្វីពេល refresh វាលោតទៅទំព័រថ្មី» ⇒
+     ចងចាំផ្ទាំងចុងក្រោយ ដូច្នេះការផ្ទុកទំព័រឡើងវិញត្រឡប់មកកន្លែងដដែល។
+     ⚠ រក្សាក្នុង **sessionStorage** មិនមែន localStorage ៖ វាជារបស់ផ្ទាំង
+       កម្មវិធីរុករកនោះ ⇒ ការបើកផ្ទាំងថ្មីចាប់ផ្តើមស្អាត ហើយវាមិនចូលក្នុង
+       ឯកសារសំណុំរឿងទេ។
+     ⚠ មិនចាំផ្ទាំង `dashboard` ៖ នោះជាលំនាំដើមរួចហើយ។ */
+  try{
+    if(id === 'dashboard') sessionStorage.removeItem('rscLastView');
+    else sessionStorage.setItem('rscLastView', id);
+  }catch(e){}
   if(id !== "dashboard" && id !== "upload" && id !== "personalinfo"){
     try{ ensureXlsButton(id); }catch(e){}
   }
@@ -16162,6 +16245,19 @@ function __openDocs(){
 function init(){
   const start = function(){
     try{ loadState(); }catch(e){ console.error("init/loadState:", e); }
+    /* ⭐ ត្រឡប់មកផ្ទាំងចុងក្រោយក្រោយ refresh ។
+       ⚠ រត់ **ក្រោយ** ការគូរដំបូង ⇒ `showView` មានច្បាប់ផ្ទាល់ខ្លួន (សិទ្ធិ ·
+         ទិន្នន័យមិនទាន់មាន) ហើយវានឹងត្រឡប់ទៅ dashboard ដោយស្វ័យប្រវត្តិបើ
+         ផ្ទាំងនោះលែងបើកបាន ⇒ គ្មានផ្ទាំងទទេ។ */
+    try{
+      var __lastView = sessionStorage.getItem('rscLastView');
+      if(__lastView){
+        setTimeout(function(){
+          try{ if(document.getElementById('view-' + __lastView)) showView(__lastView); }
+          catch(e){ console.error('restore view:', e); }
+        }, 0);
+      }
+    }catch(e){}
     /* ⚠ ទិន្នន័យធំរក្សាក្នុង IndexedDB ⇒ អានបន្ថែមដោយអសមកាល រួចគូរឡើងវិញ */
     try{
       loadStateAsync().then(function(got){
@@ -44719,6 +44815,11 @@ else CC.init();
     buildPicker();
     loadList();
   };
+  /* ⭐⭐ ២០២៦-០៨-២៣ ៖ ផ្ទាំងជ្រើសសហគ្រាសថ្មីត្រូវការបីរឿងពីប្លុកនេះ ៖
+     បញ្ជីឯកសារក្នុងថត · ការអានឯកសារមួយ · និងស្ថានភាពថត។ បញ្ចេញវាចេញមក
+     ជំនួសការចម្លងកូដ ⇒ ការកែថតមួយកន្លែង មានប្រសិទ្ធភាពទាំងពីរផ្ទាំង។ */
+  window.__rscFsReadFile = function(id){ return fsRead(id); };
+  window.__rscFsReady    = function(){ return fsOn(); };
 
   /* ══ រក្សាទុកក្នុងម៉ាស៊ីន ══════════════════════════════════════════
      ដំណើរការដូច Drive ៖ រកឈ្មោះគោល → បើមានរួច សួរជាន់លើ/ជំនាន់ថ្មី →
@@ -45266,6 +45367,298 @@ function pkTime(f){
   }
 })();
 
+</script>
+
+<style>
+/* 🏢 ផ្ទាំងជ្រើសសហគ្រាស — ២០២៦-០៨-២៣
+   ⚠ ពណ៌យកតាមផ្ទាំងចូល (បៃតងជ្រៅ + មាស) ⇒ ការចូលទៅកម្មវិធីមើលទៅជាដំណើរ
+     តែមួយ មិនមែនផ្ទាំងពីរដែលមិនទាក់ទងគ្នា។ */
+#co-gate{ position:fixed; inset:0; z-index:9500; display:flex; align-items:center;
+  justify-content:center; padding:22px;
+  background:radial-gradient(120% 90% at 50% -20%, #16585A 0%, transparent 60%),
+             linear-gradient(180deg,#0F3D3E 0%,#0B2F30 100%); }
+#co-gate .cg-box{ width:100%; max-width:760px; max-height:92vh; display:flex; flex-direction:column;
+  background:linear-gradient(180deg,#114547,#0D3A3C); border:1px solid rgba(200,166,75,.28);
+  border-radius:5px; box-shadow:0 24px 60px rgba(0,0,0,.4); color:#EFE7D2; overflow:hidden; }
+#co-gate .cg-head{ padding:20px 22px 12px; border-bottom:1px solid rgba(200,166,75,.18); }
+#co-gate .cg-title{ font-size:17px; font-weight:700; letter-spacing:.02em; }
+#co-gate .cg-sub{ margin-top:5px; font-size:12.5px; color:rgba(239,231,210,.62); }
+#co-gate .cg-tools{ display:flex; gap:8px; padding:12px 22px; }
+#co-gate .cg-tools input{ flex:1 1 auto; }
+#co-gate input{ padding:10px 12px; border-radius:3px; border:1px solid rgba(200,166,75,.28);
+  background:rgba(6,32,33,.6); color:#EFE7D2; font:inherit; font-size:14px; }
+#co-gate input:focus{ outline:none; border-color:#C8A64B; background:rgba(6,32,33,.85); }
+#co-gate input:focus-visible{ outline:2px solid #F0C860; outline-offset:2px; }
+#co-gate .cg-btn{ padding:10px 15px; border:0; border-radius:3px; cursor:pointer; font:inherit;
+  font-weight:700; font-size:13.5px; background:linear-gradient(180deg,#F0C860,#C8A64B); color:#17170F;
+  white-space:nowrap; }
+#co-gate .cg-btn:hover{ filter:brightness(1.07); }
+#co-gate .cg-btn.ghost{ background:transparent; color:rgba(239,231,210,.8);
+  border:1px solid rgba(200,166,75,.32); font-weight:400; }
+#co-gate .cg-btn.ghost:hover{ color:#F0C860; border-color:rgba(200,166,75,.6); }
+#co-gate .cg-list{ flex:1 1 auto; overflow:auto; padding:4px 22px 12px; }
+#co-gate .cg-row{ display:flex; align-items:center; gap:12px; padding:13px 0;
+  border-bottom:1px solid rgba(200,166,75,.12); }
+#co-gate .cg-main{ flex:1 1 auto; min-width:0; }
+#co-gate .cg-name{ font-size:14.5px; font-weight:600; overflow:hidden; text-overflow:ellipsis;
+  white-space:nowrap; }
+#co-gate .cg-meta{ margin-top:4px; font-size:12px; color:rgba(239,231,210,.6);
+  font-family:ui-monospace,Menlo,Consolas,monospace; }
+#co-gate .cg-tag{ display:inline-block; padding:1px 7px; border-radius:2px; font-size:10.5px;
+  font-family:inherit; margin-left:4px; }
+#co-gate .cg-tag.ok{ background:rgba(143,224,165,.16); color:#8FE0A5; }
+#co-gate .cg-tag.no{ background:rgba(255,154,138,.14); color:#FF9A8A; }
+#co-gate .cg-tag.file{ background:rgba(200,166,75,.16); color:#F0C860; }
+#co-gate .cg-tag.none{ background:rgba(239,231,210,.08); color:rgba(239,231,210,.5); }
+#co-gate .cg-empty{ padding:34px 4px; text-align:center; font-size:13.5px;
+  color:rgba(239,231,210,.6); line-height:1.9; }
+#co-gate .cg-new{ padding:14px 22px 18px; border-top:1px solid rgba(200,166,75,.18);
+  background:rgba(6,32,33,.35); }
+#co-gate .cg-new-h{ font-size:12.5px; color:rgba(239,231,210,.7); margin-bottom:9px; }
+#co-gate .cg-new-row{ display:flex; gap:8px; }
+#co-gate .cg-new-row input:first-child{ width:150px; flex:none;
+  font-family:ui-monospace,Menlo,Consolas,monospace; letter-spacing:.08em; }
+#co-gate .cg-new-row input:nth-child(2){ flex:1 1 auto; }
+#co-gate .cg-msg{ margin-top:9px; font-size:12.5px; min-height:17px; color:#8FE0A5; }
+#co-gate .cg-msg.bad{ color:#FF9A8A; }
+@media (max-width:560px){
+  #co-gate{ padding:0; }
+  #co-gate .cg-box{ max-height:100vh; border-radius:0; border:0; }
+  #co-gate .cg-row{ flex-wrap:wrap; }
+  #co-gate .cg-new-row{ flex-wrap:wrap; }
+  #co-gate .cg-new-row input:first-child{ width:100%; }
+}
+</style>
+<script>
+/* ══════════════════════════════════════════════════════════════════════
+   🏢 ផ្ទាំងជ្រើសសហគ្រាស — [stated] ២០២៦-០៨-២៣
+   «មុននឹងទៅដល់ផ្ទាំងខាងក្នុង ត្រូវបង្ហាញលេខអតប និងឈ្មោះសហគ្រាសជាឡាតាំងសិន
+   ថាមានក្នុងបញ្ជីប៉ុន្មាន បន្ទាប់មកចុចចូលទៅមើលក្រុមហ៊ុនដែលរើសនោះ» ។
+   បញ្ជីមកពី **ពីរប្រភព រួមបញ្ចូលគ្នាតាមលេខអតប** ៖
+     · ម៉ាស៊ីនមេ (ជួរ J + ជួរ L) ⇒ សិទ្ធិ និងឈ្មោះ
+     · ថតឯកសាររបស់អ្នកប្រើ ⇒ ឯកសារដែលមាន
+   ⚠ ជួរដេកមាន ៣ ស្ថានភាព ៖
+     ១ មានឯកសារ ⇒ «បើក» (សូម្បីគ្មានសិទ្ធិ — [stated] អនុញ្ញាត)
+     ២ មានសិទ្ធិ តែគ្មានឯកសារ ⇒ «ផ្ទុកឯកសារ» ដោយ**មិនស្នើសុំសិទ្ធិម្តងទៀត**
+     ៣ គ្មានទាំងពីរ ⇒ «ស្នើសុំសិទ្ធិ»
+   ⚠ ថតត្រូវចងចាំ ⇒ អ្នកប្រើជ្រើសម្តងគត់ (មើល `__rscFsReady`)។
+   ══════════════════════════════════════════════════════════════════════ */
+(function(){
+  var CG = null;
+
+  function tin9(v){ return String(v || '').replace(/\D/g, '').slice(-9); }
+  function esc(s){ return String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+  function api(fn, args){
+    if(!window.__rscApi) return Promise.reject(new Error('offline'));
+    return window.__rscApi(fn, args);
+  }
+
+  /* ── ការសង់ផ្ទាំង ─────────────────────────────────────────────── */
+  function build(){
+    if(CG) { CG.wrap.style.display = 'flex'; return; }
+    var wrap = document.createElement('div');
+    wrap.id = 'co-gate';
+    wrap.innerHTML =
+      '<div class="cg-box">' +
+        '<div class="cg-head">' +
+          '<div class="cg-title">សហគ្រាសរបស់អ្នក</div>' +
+          '<div class="cg-sub" id="cg-sub">កំពុងទាញបញ្ជី…</div>' +
+        '</div>' +
+        '<div class="cg-tools">' +
+          '<input id="cg-q" type="text" placeholder="🔍 ស្វែងរក ឈ្មោះ ឬលេខអតប">' +
+          '<button class="cg-btn ghost" id="cg-folder">📁 ថតឯកសារ</button>' +
+          '<button class="cg-btn ghost" id="cg-reload">↻</button>' +
+        '</div>' +
+        '<div class="cg-list" id="cg-list"></div>' +
+        '<div class="cg-new">' +
+          '<div class="cg-new-h">➕ ស្នើសុំសហគ្រាសថ្មី</div>' +
+          '<div class="cg-new-row">' +
+            '<input id="cg-tin" type="text" inputmode="numeric" maxlength="14" placeholder="លេខអតប ៩ ខ្ទង់">' +
+            '<input id="cg-name" type="text" placeholder="ឈ្មោះជាឡាតាំង">' +
+            '<button class="cg-btn" id="cg-req">ផ្ញើសំណើ</button>' +
+          '</div>' +
+          '<div class="cg-msg" id="cg-msg"></div>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(wrap);
+    CG = { wrap: wrap, list: wrap.querySelector('#cg-list'), sub: wrap.querySelector('#cg-sub'),
+           q: wrap.querySelector('#cg-q'), msg: wrap.querySelector('#cg-msg'), rows: [] };
+
+    CG.q.addEventListener('input', render);
+    wrap.querySelector('#cg-reload').onclick = load;
+    wrap.querySelector('#cg-folder').onclick = function(){
+      if(!window.__rscFsPick) return;
+      window.__rscFsPick().then(function(){ load(); });
+    };
+    wrap.querySelector('#cg-req').onclick = requestNew;
+  }
+
+  /* ── ការទាញទិន្នន័យ ───────────────────────────────────────────── */
+  function load(){
+    if(!CG) return;
+    CG.sub.textContent = 'កំពុងទាញបញ្ជី…';
+    var pServer = api('myCompanies', [window.__loggedInUserToken])
+      .catch(function(){ return { ok:false }; });
+    var pFiles = (window.__rscFsList && window.__rscFsReady && window.__rscFsReady())
+      ? window.__rscFsList().catch(function(){ return []; })
+      : Promise.resolve([]);
+
+    Promise.all([pServer, pFiles]).then(function(r){
+      var srv = r[0] || {}, files = r[1] || [];
+      var byTin = {};
+      (srv.companies || []).forEach(function(c){
+        var t = tin9(c.tin); if(!t) return;
+        byTin[t] = { tin:t, name:c.name || '', allowed:true, files:[] };
+      });
+      files.forEach(function(f){
+        var t = tin9(f.tin || f.base || f.name);
+        if(t.length !== 9) t = '(' + (f.company || f.base || f.name) + ')';
+        if(!byTin[t]) byTin[t] = { tin:(t.length===9?t:''), name:f.company || '', allowed:false, files:[] };
+        if(!byTin[t].name && f.company) byTin[t].name = f.company;
+        byTin[t].files.push(f);
+      });
+      /* ⚠ ឯកសារថ្មីជាងគេនៅមុខ ⇒ ការចុច «បើក» យកជំនាន់ចុងក្រោយជានិច្ច */
+      Object.keys(byTin).forEach(function(k){
+        byTin[k].files.sort(function(a,b){ return (b.ver||0) - (a.ver||0); });
+      });
+      CG.rows = Object.keys(byTin).map(function(k){ return byTin[k]; });
+      CG.owner = !!srv.owner;
+      var nAllowed = CG.rows.filter(function(x){ return x.allowed; }).length;
+      var nFiles = CG.rows.filter(function(x){ return x.files.length; }).length;
+      CG.sub.textContent = 'ក្នុងបញ្ជី ' + nAllowed + ' សហគ្រាស · មានឯកសារ ' + nFiles
+        + (window.__rscFsName && window.__rscFsName() ? '  ·  ថត ៖ ' + window.__rscFsName() : '  ·  មិនទាន់ជ្រើសថត');
+      render();
+    });
+  }
+
+  function render(){
+    if(!CG) return;
+    var term = (CG.q.value || '').trim().toLowerCase();
+    var rows = CG.rows.filter(function(x){
+      if(!term) return true;
+      return ((x.name || '') + ' ' + (x.tin || '')).toLowerCase().indexOf(term) >= 0;
+    }).sort(function(a,b){
+      /* មានសិទ្ធិមុន រួចមានឯកសារ រួចតាមឈ្មោះ */
+      if(a.allowed !== b.allowed) return a.allowed ? -1 : 1;
+      if(!!a.files.length !== !!b.files.length) return a.files.length ? -1 : 1;
+      return (a.name || a.tin).localeCompare(b.name || b.tin);
+    });
+    if(!rows.length){
+      CG.list.innerHTML = '<div class="cg-empty">មិនទាន់មានសហគ្រាសទេ។<br>'
+        + 'សូមជ្រើសថតឯកសារ ឬស្នើសុំសហគ្រាសថ្មីខាងក្រោម។</div>';
+      return;
+    }
+    CG.list.innerHTML = '';
+    rows.forEach(function(x){
+      var el = document.createElement('div');
+      el.className = 'cg-row';
+      var badge = x.allowed
+        ? '<span class="cg-tag ok">✓ មានសិទ្ធិ</span>'
+        : '<span class="cg-tag no">មិនមានសិទ្ធិ</span>';
+      var fileTag = x.files.length
+        ? '<span class="cg-tag file">' + x.files.length + ' ឯកសារ</span>'
+        : '<span class="cg-tag none">គ្មានឯកសារ</span>';
+      /* ⭐⭐ [stated] ២០២៦-០៨-២៣ (កែតម្រូវ) ៖ «មានឯកសារក៏ដោយ ទាល់តែមានសិទ្ធិ
+         ទើបបើកមើលបាន» ⇒ **សិទ្ធិមកមុនឯកសារ** ។ ខ្ញុំធ្លាប់សួរ ហើយចម្លើយពេលនោះ
+         គឺអនុញ្ញាត — ឥឡូវប្តូរវិញ ៖ ការមានឯកសារក្នុងថត មិនមែនជាសិទ្ធិទេ។
+         ⇒ គ្មានសិទ្ធិ ⇒ «ស្នើសុំសិទ្ធិ» ជានិច្ច ទោះឯកសារនៅនឹងមុខ។ */
+      var act = !x.allowed
+        ? '<button class="cg-btn ghost" data-act="ask">ស្នើសុំសិទ្ធិ</button>'
+        : (x.files.length ? '<button class="cg-btn" data-act="open">បើក →</button>'
+                          : '<button class="cg-btn" data-act="up">📥 ផ្ទុកឯកសារ</button>');
+      el.innerHTML =
+        '<div class="cg-main">' +
+          '<div class="cg-name">' + esc(x.name || '(មិនស្គាល់ឈ្មោះ)') + '</div>' +
+          '<div class="cg-meta">' + esc(x.tin || '—') + ' &nbsp; ' + badge + ' ' + fileTag + '</div>' +
+        '</div>' + act;
+      var btn = el.querySelector('button');
+      if(btn) btn.onclick = function(){ act1(btn.getAttribute('data-act'), x); };
+      CG.list.appendChild(el);
+    });
+  }
+
+  /* ── សកម្មភាព ─────────────────────────────────────────────────── */
+  function act1(kind, row){
+    if(kind === 'open')  return openRow(row);
+    if(kind === 'up')    return uploadRow(row);
+    if(kind === 'ask'){
+      var el = CG.wrap.querySelector('#cg-tin');
+      el.value = row.tin || '';
+      CG.wrap.querySelector('#cg-name').value = row.name || '';
+      el.focus();
+      say('សូមបំពេញឈ្មោះជាឡាតាំង រួចចុច «ផ្ញើសំណើ»');
+    }
+  }
+
+  function say(t, bad){
+    if(!CG) return;
+    CG.msg.textContent = t || '';
+    CG.msg.className = 'cg-msg' + (bad ? ' bad' : '');
+  }
+
+  function openRow(row){
+    /* ⚠ ការការពារជាន់ទី ២ ៖ ការលាក់ប៊ូតុងជាការបង្ហាញ ; ការហៅផ្ទាល់ត្រូវបិទដែរ។
+       (ការត្រួតពិនិត្យពិតនៅខាងម៉ាស៊ីនមេក្រោយនាំចូលដដែល។) */
+    if(!row.allowed){
+      say('🚫 អ្នកមិនទាន់មានសិទ្ធិលើសហគ្រាសនេះទេ — សូមស្នើសុំជាមុន', true);
+      return;
+    }
+    var f = row.files[0];
+    if(!f) return;
+    say('');
+    CG.sub.textContent = 'កំពុងបើក ៖ ' + f.name + ' …';
+    window.__rscFsReadFile(f.id).then(function(text){
+      hide();
+      window.__importAllDataFromText(text || '');
+      try{ if(typeof showView === 'function') showView('dashboard'); }catch(e){}
+    }).catch(function(e){
+      CG.sub.textContent = '⚠ បើកឯកសារមិនបាន ៖ ' + (e && e.message ? e.message : e);
+    });
+  }
+
+  /* ⚠ «ផ្ទុកឯកសារ» ៖ សិទ្ធិមានរួច ⇒ **គ្មានការស្នើសុំម្តងទៀត** ។ ការត្រួតពិនិត្យ
+     តាមឯកសារ (`__rscVerifyEnterpriseAccess`) នៅដំណើរការដដែលក្រោយនាំចូល។ */
+  function uploadRow(row){
+    hide();
+    var inp = document.getElementById('auto-folder-input');
+    if(inp) inp.click();
+  }
+
+  function requestNew(){
+    var t = tin9(CG.wrap.querySelector('#cg-tin').value);
+    var n = (CG.wrap.querySelector('#cg-name').value || '').trim();
+    if(t.length !== 9) return say('សូមបំពេញលេខអតប ៩ ខ្ទង់', true);
+    if(!n) return say('សូមបំពេញឈ្មោះជាឡាតាំង', true);
+    say('កំពុងផ្ញើសំណើ…');
+    api('requestCompany', [window.__loggedInUserToken, t, n]).then(function(r){
+      if(r && r.ok && r.already) return say('សហគ្រាសនេះមានក្នុងបញ្ជីរបស់អ្នករួចហើយ');
+      if(r && r.ok && r.pending)  return say('សំណើនេះកំពុងរង់ចាំការអនុញ្ញាតរួចហើយ');
+      if(r && r.ok){
+        CG.wrap.querySelector('#cg-tin').value = '';
+        CG.wrap.querySelector('#cg-name').value = '';
+        return say('✓ បានផ្ញើសំណើ — ពេលអនុញ្ញាតរួច សូមចុច ↻ ដើម្បីធ្វើបច្ចុប្បន្នភាពបញ្ជី');
+      }
+      var m = { bad_tin:'លេខអតបមិនត្រឹមត្រូវ', need_name:'សូមបំពេញឈ្មោះ',
+                bad_session:'វេនផុតកំណត់ — សូមចូលម្តងទៀត' };
+      say(m[(r && r.reason)] || 'ផ្ញើសំណើមិនបានទេ', true);
+    }).catch(function(e){ say('ម៉ាស៊ីនមេមិនឆ្លើយតប ៖ ' + ((e && e.message) || e), true); });
+  }
+
+  function hide(){ if(CG) CG.wrap.style.display = 'none'; }
+
+  /* ⚠ ផ្ទាំងនេះសម្រាប់ **អ្នកប្រើតាមវេបសាយប៉ុណ្ណោះ** ៖ ការបើកឯកសារពីម៉ាស៊ីន
+     ផ្ទាល់ (គ្មាន token) មិនត្រូវជាប់ផ្ទាំងណាមួយឡើយ។
+     ⚠ ម្ចាស់ប្រព័ន្ធ (admin) ក៏រំលងដែរ — គាត់ធ្វើការលើគ្រប់សហគ្រាស។ */
+  window.__rscCompanyGate = function(){
+    if(!window.__loggedInUserToken) return;
+    if(window.__isOwnerUser) return;
+    build();
+    load();
+  };
+  window.__rscCompanyGateHide = hide;
+})();
 </script>
 </body>
 </html>
