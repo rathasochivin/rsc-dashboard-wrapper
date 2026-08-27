@@ -24508,7 +24508,13 @@ function renderDataEntryPanel(){
   const assessAllSelect = el('select',{class:'field-input', style:'width:230px;'});
   let assessYearRow = null;
   (function(){
-    if(!CCa){ assessAllSelect.disabled = true; return; }
+    /* ⚠⚠ [stated] ២០២៦-០៨-២៣ (រូប Console) ៖ «Cannot read properties of
+       undefined (reading 'assess')» លេចឡើងពីរដងពេលចាប់ផ្តើម ⇒ `CCa` មាន
+       តែ `CCa.state` **មិនទាន់មាន** នៅពេលនោះ (ម៉ូឌុលកំពុងផ្ទុក)។
+       ⭐ ការពិនិត្យ `if(!CCa)` មិនគ្រប់គ្រាន់ទេ — ត្រូវពិនិត្យ `CCa.state`
+         ដែរ ។ កំហុសនេះកាត់ការគូរផ្ទាំង ⇒ អ្វីៗខាងក្រោមមិនដំណើរការ
+         រួមទាំង **មុខងារបើកឯកសារ** ⇒ នេះជាមូលហេតុពិតដែល «បើកអត់បាន»។ */
+    if(!CCa || !CCa.state){ assessAllSelect.disabled = true; return; }
     if(!CCa.state.assess) CCa.state.assess = { def:'re', years:{} };
     const cur = CCa.state.assess.def || 're';
     ASSESS_OPT.forEach(function(o){
