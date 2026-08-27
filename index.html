@@ -1597,6 +1597,17 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
 #view-tracking .trk-chips, #docs-modal .trk-chips{display:flex; flex-wrap:wrap; gap:10px;}
 #view-tracking .trk-chip, #docs-modal .trk-chip{display:inline-flex; align-items:center; gap:6px; border:1px solid var(--line); border-radius:999px; padding:5px 12px; font-size:12.5px; background:#fff;}
 #view-tracking .trk-minutes, #docs-modal .trk-minutes{margin-top:14px; padding:18px 20px; border:1px solid var(--line); border-radius:10px; background:#fff; font-size:13px; line-height:1.9;}
+/* ⚠⚠ [stated] ២០២៦-០៨-២៣ ៖ «វាមាន background ដល់ទី ២ ជាន់ ៖ ផ្ទាំងស ១ និង
+   ផ្ទាំងក្រោយសនឹង ១ ទៀត … មើលទៅមិនស្អាតសោះ» — **នៅលើអេក្រង់** (មិនមែនពេល
+   ព្រីន)។ រកឃើញដោយស្កេនធាតុទាំងអស់ក្នុងផ្ទាំង ៖ `.trk-card` (ស ស៊ុម មូល)
+   ហើយខាងក្នុងវា `.trk-minutes.trk-letter` (ស ស៊ុម ស្រមោល) ⇒ ប្រអប់សពីរ
+   ជាន់គ្នា ដែលឃើញច្បាស់ជាងគេនៅឯកសារលិខិត។
+   ⇒ ពេលលិខិតស្ថិតក្នុងកាតរួចហើយ ដកស៊ុម ស្រមោល និងផ្ទៃរបស់វាចេញ ⇒ នៅសល់
+     សន្លឹកតែមួយ។ ⚠ កុំដក `padding` ៖ វារក្សាចន្លោះអត្ថបទពីគែមកាត។ */
+#view-tracking .trk-card > .trk-minutes, #docs-modal .trk-card > .trk-minutes{
+  margin-top:0; border:0; border-radius:0; background:transparent; box-shadow:none;
+  padding-left:0; padding-right:0;
+}
 /* [stated] ២០២៦-០៨-១៣ ៖ ចង្វាក់គម្លាតដូចគ្នាទាំងអេក្រង់ និងក្រដាស —
    ៦px រវាងប្លុកធម្មតា · ១២px មុនចំណងជើង។ ⚠ ត្រូវប្តូរទាំងពីរកន្លែង ;
    ការកែតែខាងព្រីន ធ្វើអោយផ្ទាំងមើលជាមុនខុសពីអ្វីដែលចេញមកពិត។ */
@@ -5232,7 +5243,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
            ទៅឈប់នៅកណ្តាលរបារ មិនមែនចុងស្តាំ។ លំដាប់ក្នុង DOM ទើបជា
            ការសម្រេច មិនមែន CSS បន្ថែមទេ។ -->
       <div class="app-topbar-actions atb-tail">
-        <button class="atb-btn atb-icon data-gated" onclick="__openDocs()" title="ព្រីនឯកសារផ្លូវការ" aria-label="ព្រីនឯកសារផ្លូវការ">🖨️</button>
+        <button class="atb-btn atb-icon data-gated feat-docs" onclick="__openDocs()" title="ព្រីនឯកសារផ្លូវការ" aria-label="ព្រីនឯកសារផ្លូវការ">🖨️</button>
         <button class="atb-btn atb-icon" id="cardViewBtn" title="ប្តូររវាង តារាង និង កាត" aria-label="ប្តូរទម្រង់មើល">▤</button>
         <button class="atb-btn atb-icon atb-bin data-gated" onclick="clearAllData()" title="លុបឯកសារ" aria-label="លុបឯកសារ"><span class="ic">🗑️</span></button>
       </div>
@@ -5401,7 +5412,8 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
       window.__featOn = featOn;
 
       function applyFeatureGates(){
-        ["access","calc","risk"].forEach(function(name){
+        /* ⭐ `docs` បន្ថែម ២០២៦-០៨-២៣ ៖ ព្រីនឯកសារផ្លូវការ */
+        ["access","calc","risk","docs"].forEach(function(name){
           const show = featOn(name);
           document.querySelectorAll(".feat-" + name).forEach(function(el){
             el.style.display = show ? "" : "none";
@@ -16090,6 +16102,12 @@ window.__wipeEnterpriseStorage = wipeEnterpriseStorage;
 /* ប៊ូតុង «ឯកសារ» នៅរបារខាងលើ ៖ ផ្ទាំងលោតត្រូវបានកសាងក្នុង script block
    របស់ ការតាមដាន ដែលអានក្រោយ block នេះ ដូច្នេះហៅតាមរយៈ window វិញ។ */
 function __openDocs(){
+  /* ⚠ ការលាក់ប៊ូតុងជាការបង្ហាញ មិនមែនការការពារ ៖ បិទផ្លូវនេះផងដែរ ដូច្នេះ
+     ការហៅផ្ទាល់ (ឧ. តាម Console) ក៏មិនបើកដែរ។ សិទ្ធិពិតមកពីម៉ាស៊ីនមេ។ */
+  if(window.__featOn && !window.__featOn('docs')){
+    alert('🚫 គណនីរបស់អ្នកមិនមានសិទ្ធិព្រីនឯកសារផ្លូវការទេ។\nសូមទាក់ទងម្ចាស់ប្រព័ន្ធ។');
+    return;
+  }
   if(typeof window.__openDocsModal === 'function'){ window.__openDocsModal(); return; }
   alert('ផ្នែកឯកសារមិនទាន់ផ្ទុករួចទេ សូមព្យាយាមម្តងទៀត។');
 }
@@ -19896,9 +19914,13 @@ function printSheetsInPage(sheets){
 }
 
 function openFormPrintWindow(sheets){
-  /* បើកឯកសារពីម៉ាស៊ីនផ្ទាល់ ៖ ផ្ទាំងថ្មីដំណើរការល្អ ហើយវាសាកល្បងរួចហើយ
-     ដូច្នេះទុកផ្លូវនោះដដែល។ ប្តូរតែនៅលើ Apps Script ប៉ុណ្ណោះ។ */
-  if(window.__loggedInUserToken && printSheetsInPage(sheets)) return;
+  /* ⭐⭐ [stated] ២០២៦-០៨-២៣ ៖ «ផ្នែក MTR និង VAT ពេលចុចព្រីន មិនចាំបាច់លោត
+     ចេញទៅផ្ទាំងថ្មីទេ» ⇒ ព្រីនក្នុងទំព័រ **ជានិច្ច** មិនមែនតែពេលចូលតាម
+     វេបសាយទេ។ ⚠ លក្ខខណ្ឌចាស់ `window.__loggedInUserToken &&` ធ្វើអោយការ
+     បើកឯកសារពីម៉ាស៊ីនផ្ទាល់ នៅតែលោតផ្ទាំងថ្មី។
+     ⚠ ផ្លូវផ្ទាំងថ្មីខាងក្រោមនៅរក្សាទុកជា **ផ្លូវបម្រុង** ៖ បើការព្រីន
+       ក្នុងទំព័របរាជ័យ (រកប្រអប់ mtr-embed មិនឃើញ) វានៅដំណើរការដដែល។ */
+  if(printSheetsInPage(sheets)) return;
   const css = `
     @page{ size:A4 landscape; margin:9mm 7mm; }
     *{box-sizing:border-box;}
