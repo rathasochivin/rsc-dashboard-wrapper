@@ -7503,7 +7503,7 @@ window.__rscVerifyEnterpriseAccess = function(){
         }
         if(st === 'not_assigned'){
           window.__rscTinChecked[t] = 'no';
-          __rscBlockEnterprise(t);
+          __rscBlockEnterprise(t, res);
           return {ok:false, tin:t, reason:'not_assigned'};
         }
         /* 'none' ⇒ គណនីចាស់ដែលមិនទាន់មានបញ្ជី ⇒ ទុកអោយផ្លូវចាស់ដំណើរការ */
@@ -7518,7 +7518,7 @@ window.__rscVerifyEnterpriseAccess = function(){
       });
   }catch(e){ return Promise.resolve({skip:'error'}); }
 };
-function __rscBlockEnterprise(t){
+function __rscBlockEnterprise(t, res){
   try{
     ['sale','purchase','cpSale','cpPurchase','saleCD','purchaseCD','otherExpenses'].forEach(function(k){
       if(state[k]) state[k] = [];
@@ -7528,12 +7528,19 @@ function __rscBlockEnterprise(t){
     if(typeof renderAll === 'function') renderAll();
   }catch(e){ console.error('block enterprise:', e); }
   try{
-    alert('🚫 លេខអតប ' + t + ' មិនស្ថិតក្នុងបញ្ជីរបស់អ្នកទេ។\n\n'
-        + 'ទិន្នន័យដែលទើបនាំចូលត្រូវបានលុបចេញ។\n'
-        + 'សូមទាក់ទងម្ចាស់ប្រព័ន្ធដើម្បីបន្ថែមលេខអតបនេះ។');
+    /* ⚠ បង្ហាញ **ទាំងលេខដែលរកឃើញក្នុងឯកសារ និងបញ្ជីពិតរបស់អ្នកប្រើ** ៖
+       ភាគច្រើនភាពខុសគ្នាតូច (ឯកសារជាសហគ្រាសផ្សេង ឬលេខវាយខុសមួយខ្ទង់)
+       ហើយការឃើញលេខទាំងពីរក្បែរគ្នា ដោះស្រាយបានភ្លាម។ */
+    var lst = (res && res.assigned && res.assigned.length) ? res.assigned.join(' · ') : '(ទទេ)';
+    alert('🚫 លេខអតបក្នុងឯកសារ ៖ ' + t + '\n'
+        + 'បញ្ជីរបស់អ្នក ៖ ' + lst + '\n\n'
+        + 'ទាំងពីរមិនត្រូវគ្នា ⇒ ទិន្នន័យត្រូវបានលុបចេញ។\n'
+        + 'បើលេខក្នុងឯកសារត្រឹមត្រូវ សូមទាក់ទងម្ចាស់ប្រព័ន្ធដើម្បីបន្ថែមវា។');
   }catch(e){}
-  /* ⚠ ជូនដំណឹងម្ចាស់ប្រព័ន្ធ ៖ នេះជាព្រឹត្តិការណ៍សំខាន់ខាងសុវត្ថិភាព */
-  try{ window.__rscApi('requestUploadPermission', [window.__loggedInUserToken, t, '(ចាប់បានពីឯកសារ)']); }catch(e){}
+  /* ⚠ ជូនដំណឹងម្ចាស់ប្រព័ន្ធ **ដោយមិនបង្កើតសំណើថ្មី** ៖ ការហៅ
+     `requestUploadPermission` ធ្លាប់បំពេញសន្លឹក ClientAccess ដោយជួរ pending
+     រាល់ការបដិសេធ ⇒ មើលទៅដូចជាត្រូវ approve ថែមទៀត។ */
+  try{ window.__rscApi('reportBlockedTin', [window.__loggedInUserToken, t]); }catch(e){}
 }
 
 window.__rscEnterpriseInfo = function(){
