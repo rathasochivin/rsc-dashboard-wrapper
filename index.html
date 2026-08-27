@@ -5411,7 +5411,16 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
       }
       window.__featOn = featOn;
 
-      function applyFeatureGates(){
+      /* ⚠ `quiet` = កុំប្តូរផ្ទាំងដែល user កំពុងមើល ។
+         [stated] ២០២៦-០៨-២៣ ៖ «បើលោតទៅផ្ទាំងដើម តើ user ដែលកំពុងមើល ឬបានកែ
+         ព័ត៌មាននឹងត្រូវបាត់បង់ … ក្រោយពីបន្ថែមសិទ្ធិ ឬកាត់ផ្តាច់សិទ្ធិណាមួយ
+         មិនបាច់លោតទៅផ្ទាំងណាទេ ចាំ user refresh ខ្លួនឯង» ។
+         ⭐ គេនិយាយត្រូវ ៖ ការលោតចេញកណ្តាលការងារ **អាចធ្វើអោយការកែដែលមិន
+           ទាន់រក្សាទុកបាត់** ។ សិទ្ធិពិតនៅខាងម៉ាស៊ីនមេជានិច្ច ដូច្នេះការទុក
+           អោយផ្ទាំងបើកបន្តិចទៀត គ្មានហានិភ័យទេ — ការសម្រេចនៅតែធ្វើនៅ
+           ម៉ាស៊ីនមេពេលគេចុចធ្វើអ្វីមួយ។ */
+      function applyFeatureGates(opt){
+        var quiet = !!(opt && opt.quiet);
         /* ⭐ `docs` បន្ថែម ២០២៦-០៨-២៣ ៖ ព្រីនឯកសារផ្លូវការ */
         ["access","calc","risk","docs"].forEach(function(name){
           const show = featOn(name);
@@ -5421,7 +5430,8 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
         });
         try{ if(typeof renderNav === "function") renderNav(); }catch(e){}
         try{ if(typeof window.__toiRefresh === "function") window.__toiRefresh(); }catch(e){}
-        /* បើកំពុងមើលផ្ទាំងដែលលែងមានសិទ្ធិ ត្រូវចេញភ្លាម */
+        if(quiet) return;
+        /* ការផ្ទុកទំព័រដំបូងប៉ុណ្ណោះ ៖ បើចាប់ផ្តើមនៅផ្ទាំងដែលគ្មានសិទ្ធិ ចេញ */
         try{
           if(!featOn("calc") && document.getElementById("view-calc") &&
              document.getElementById("view-calc").classList.contains("active")){
@@ -5431,6 +5441,32 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
       }
       window.applyFeatureGates = applyFeatureGates;
       document.addEventListener("DOMContentLoaded", applyFeatureGates);
+
+      /* ⭐⭐ សិទ្ធិមុខងារ (ជួរ K) ដើរភ្លាមដូចបញ្ជីលេខអតប ៖ សួរម៉ាស៊ីនមេរាល់
+         ៦០ វិនាទី ហើយបើប្តូរ ⇒ បង្ហាញ/លាក់ប៊ូតុង **ដោយស្ងាត់** ។
+         ⚠ សិទ្ធិដែលបន្ថែម ⇒ ប៊ូតុងលេចភ្លាម (គ្មានផលប៉ះពាល់)។
+         ⚠ សិទ្ធិដែលដក ⇒ ប៊ូតុងលាក់ តែផ្ទាំងដែលកំពុងបើកនៅដដែលរហូតដល់គេ
+           ផ្ទុកទំព័រឡើងវិញ — តាមការសម្រេចរបស់គេ។ */
+      window.__rscRefreshFeatures = function(){
+        if(!window.__loggedInUserToken || !window.__rscApi) return Promise.resolve(false);
+        return window.__rscApi('getClientAccessInfoForCurrentUser', [window.__loggedInUserToken])
+          .then(function(res){
+            if(!res) return false;
+            var next = (res && res.features) || [];
+            var before = (window.__features || []).slice().sort().join(',');
+            if(next.slice().sort().join(',') === before) return false;
+            window.__features = next;
+            if(res.role) window.__userRole = res.role;
+            applyFeatureGates({quiet:true});
+            return true;
+          })
+          .catch(function(e){ console.warn('refresh features:', e); return false; });
+      };
+      if(!window.__rscFeatTimer){
+        window.__rscFeatTimer = setInterval(function(){
+          try{ window.__rscRefreshFeatures(); }catch(e){}
+        }, 60000);
+      }
 
       // Call before processing an upload for a given TIN. Returns true if
       // allowed. If not, shows a one-time "request access" prompt (which
