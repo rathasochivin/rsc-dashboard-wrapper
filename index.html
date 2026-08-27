@@ -7481,6 +7481,33 @@ window.__rscShareCase = function(){
     .catch(function(e){ alert('ម៉ាស៊ីនមេមិនឆ្លើយតប ៖ ' + ((e && e.message) || e)); });
 };
 
+/* ⭐ ឧបករណ៍រកមូលហេតុខាងអេក្រង់ ៖ រត់ `__rscWhyBlocked()` ក្នុង Console (F12)
+   ⇒ បង្ហាញអ្វីដែល **កម្មវិធី** ឃើញ ធៀបនឹងអ្វីដែល **ម៉ាស៊ីនមេ** ឆ្លើយ។
+   ⚠ ការត្រួតពិនិត្យខាងម៉ាស៊ីនមេអាចត្រឹមត្រូវទាំងស្រុង ខណៈបញ្ហានៅខាង
+     អេក្រង់ (ឧ. លេខអតបក្នុងឯកសារខុស ឬកម្មវិធីមិនស្គាល់សហគ្រាសសោះ)។ */
+window.__rscWhyBlocked = function(){
+  var info = window.__rscEnterpriseInfo ? window.__rscEnterpriseInfo() : {};
+  var raw = String((info && info.tin) || '');
+  var t = raw.replace(/\D/g, '').slice(-9);
+  var out = {
+    'ចូលប្រើតាមវេបសាយ': !!window.__loggedInUserToken,
+    'ឈ្មោះសហគ្រាសក្នុងឯកសារ': info.name || '(មិនស្គាល់)',
+    'លេខអតបឆៅ': raw || '(គ្មាន)',
+    'លេខអតប ៩ ខ្ទង់': t || '(អានមិនចេញ)',
+    'ប្រភព': info.src || {},
+    'ស្ថានភាពដែលចាំទុក': window.__rscTinChecked || {},
+    'ចំនួនជួរលក់': (window.state && state.sale ? state.sale.length : 0)
+  };
+  console.log(out);
+  if(!window.__loggedInUserToken){ console.log('⇒ ប្រើផ្ទាល់ខ្លួន ៖ គ្មានការត្រួតពិនិត្យទេ'); return out; }
+  if(t.length !== 9){ console.log('⇒ កម្មវិធីមិនស្គាល់សហគ្រាស ⇒ មិនត្រួតពិនិត្យ ហើយមិនរារាំង'); return out; }
+  window.__rscApi('checkUploadPermission', [window.__loggedInUserToken, t])
+    .then(function(r){ console.log('ម៉ាស៊ីនមេឆ្លើយ ៖', r,
+      (r && r.status === 'approved') ? '⇒ ✓ គួរតែបើកបាន' : '⇒ 🚫 នេះជាមូលហេតុ'); })
+    .catch(function(e){ console.log('ហៅម៉ាស៊ីនមេមិនបាន ៖', e); });
+  return out;
+};
+
 window.__rscTinChecked = {};
 window.__rscVerifyEnterpriseAccess = function(){
   try{
@@ -44922,7 +44949,18 @@ else CC.init();
     fb.title = 'រក្សាទុក និងបើកចេញពីថតរបស់អ្នកផ្ទាល់ (ឧ. Google Drive ក្នុងម៉ាស៊ីន)';
     if(!fsaSupported()) fb.style.display = 'none';
     fb.onclick = function(){
-      window.__rscFsPick().then(function(h){ if(h){ closePicker(); openPicker(); } });
+      /* ⚠⚠ [stated] ២០២៦-០៨-២៣ (រូបអេក្រង់) ៖ «ពេលជ្រើសថត ចេញក្រហមបែបនេះ ៖
+         openPicker is not defined» ។ មុខងារនេះឈ្មោះ **`__rscOpenPicker`**
+         (សកល) មិនមែន `openPicker` ទេ — ឈ្មោះមូលដ្ឋាននោះមិនធ្លាប់មាន។
+         ⇒ បើកផ្ទាំងឡើងវិញតាមឈ្មោះពិត។ ⚠ ការហៅឡើងវិញត្រូវរង់ចាំ ១ frame
+           ដើម្បីអោយផ្ទាំងចាស់ចេញផុតជាមុន។ */
+      window.__rscFsPick().then(function(h){
+        if(!h) return;
+        closePicker();
+        setTimeout(function(){
+          if(typeof window.__rscOpenPicker === 'function') window.__rscOpenPicker();
+        }, 0);
+      }).catch(function(e){ console.warn('fs pick:', e); });
     };
     foot.appendChild(lb); foot.appendChild(fb); foot.appendChild(sp); foot.appendChild(ob);
 
