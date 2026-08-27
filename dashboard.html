@@ -5363,8 +5363,15 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
                 try{ applyAdminOnly(); }catch(e){}
               }catch(e){}
               if(!window.__rscTinTimer){
-                window.__rscTinTimer = setInterval(function(){ window.__rscRefreshTINs(); }, 60000);
+                window.__rscTinTimer = setInterval(function(){
+                  window.__rscRefreshTINs();
+                  try{ window.__rscCheckNotices && window.__rscCheckNotices(); }catch(e){}
+                }, 60000);
               }
+              /* ⚠ ពិនិត្យម្តងភ្លាមពេលចូល ⇒ ការសម្រេចដែលកើតឡើងខណៈគេចាកចេញ
+                 ក៏ឃើញដែរ (មិនរង់ចាំមួយនាទីទេ)។ */
+              try{ setTimeout(function(){
+                window.__rscCheckNotices && window.__rscCheckNotices(); }, 1200); }catch(e){}
               /* លើ GitHub Pages គ្មានការបញ្ចូលពី template ទេ ដូច្នេះឈ្មោះ
                  អ៊ីមែល និងពេលផុតកំណត់ មកជាមួយចម្លើយនេះវិញ។ បើគ្មានវា
                  អត្ថបទស្វាគមន៍ និងប៊ូតុងចាកចេញ 🚪↩ នឹងមិនលេចឡើយ។ */
@@ -7662,6 +7669,55 @@ window.__rscRefreshTINs = function(){
       return true;
     })
     .catch(function(e){ console.warn('myAssignedTINs:', e); return false; });
+};
+
+
+/* ══════════════════════════════════════════════════════════════════════
+   🔔 សារជូនដំណឹងក្នុងកម្មវិធី — [stated] ២០២៦-០៨-២៣ ៖ រាល់សំណើដែលម្ចាស់
+   ប្រព័ន្ធសម្រេច (អនុញ្ញាត ឬបដិសេធ) ត្រូវប្រាប់អ្នកប្រើក្នុងកម្មវិធីផង។
+   ⚠ សួររាល់ ៦០ វិនាទី ក្បែរការទាញបញ្ជីលេខអតប ⇒ គ្មានការហៅបន្ថែមញឹកញាប់។
+   ⚠ ការអនុញ្ញាត ⇒ ទាញបញ្ជីសហគ្រាសឡើងវិញភ្លាម ⇒ សហគ្រាសថ្មីលេចដោយខ្លួនឯង។
+   ══════════════════════════════════════════════════════════════════════ */
+window.__rscShowNotice = function(text, ok){
+  var host = document.getElementById('rsc-notices');
+  if(!host){
+    host = document.createElement('div');
+    host.id = 'rsc-notices';
+    document.body.appendChild(host);
+  }
+  var n = document.createElement('div');
+  n.className = 'rsc-note' + (ok ? ' ok' : ' bad');
+  n.innerHTML = '<span>' + text + '</span><button aria-label="បិទ">×</button>';
+  n.querySelector('button').onclick = function(){ n.remove(); };
+  host.appendChild(n);
+  /* ⚠ បិទដោយខ្លួនឯងក្រោយ ១២ វិនាទី ៖ យូរល្មមអានទាន់ តែមិនជាប់រហូត */
+  setTimeout(function(){ if(n.parentNode) n.remove(); }, 12000);
+};
+
+window.__rscCheckNotices = function(){
+  if(!window.__loggedInUserToken || !window.__rscApi) return Promise.resolve(0);
+  return window.__rscApi('myNotices', [window.__loggedInUserToken])
+    .then(function(r){
+      var list = (r && r.notices) || [];
+      var granted = 0;
+      list.forEach(function(n){
+        var who = n.name || ('អតប ' + n.tin);
+        if(n.ok){
+          granted++;
+          window.__rscShowNotice('✅ ម្ចាស់ប្រព័ន្ធបានអនុញ្ញាត ៖ <b>' + who + '</b><br>'
+            + 'អ្នកអាចផ្ទុកឯកសារសហគ្រាសនេះបានហើយ។', true);
+        }else{
+          window.__rscShowNotice('🚫 សំណើមិនត្រូវបានអនុញ្ញាត ៖ <b>' + who + '</b><br>'
+            + 'សូមទាក់ទងម្ចាស់ប្រព័ន្ធបើមានចម្ងល់។', false);
+        }
+      });
+      if(granted){
+        try{ if(window.__rscRefreshTINs) window.__rscRefreshTINs(); }catch(e){}
+        try{ if(window.__rscCompanyGateReload) window.__rscCompanyGateReload(); }catch(e){}
+      }
+      return list.length;
+    })
+    .catch(function(){ return 0; });
 };
 
 window.__rscTinChecked = {};
@@ -45455,6 +45511,20 @@ function pkTime(f){
 #co-gate .cg-tag.none{ background:rgba(239,231,210,.08); color:rgba(239,231,210,.5); }
 #co-gate .cg-btn.spin{ opacity:.6; pointer-events:none; }
 #co-gate .cg-btn.spin::after{ content:''; }
+
+#rsc-notices{ position:fixed; right:16px; bottom:16px; z-index:10000;
+  display:flex; flex-direction:column; gap:9px; max-width:340px; }
+#rsc-notices .rsc-note{ display:flex; align-items:flex-start; gap:10px;
+  padding:12px 13px; border-radius:4px; font-size:13px; line-height:1.65;
+  background:#114547; color:#EFE7D2; border:1px solid rgba(200,166,75,.35);
+  box-shadow:0 10px 28px rgba(0,0,0,.34); animation:rscNoteIn .3s ease both; }
+#rsc-notices .rsc-note.ok{ border-left:3px solid #8FE0A5; }
+#rsc-notices .rsc-note.bad{ border-left:3px solid #FF9A8A; }
+#rsc-notices .rsc-note button{ background:none; border:0; color:rgba(239,231,210,.6);
+  font-size:17px; line-height:1; cursor:pointer; padding:0 2px; }
+#rsc-notices .rsc-note button:hover{ color:#F0C860; }
+@keyframes rscNoteIn{ from{ opacity:0; transform:translateY(8px); } to{ opacity:1; transform:none; } }
+@media (prefers-reduced-motion:reduce){ #rsc-notices .rsc-note{ animation:none; } }
 #co-gate .cg-vers{ margin:-4px 0 10px; padding:8px 0 6px 14px;
   border-left:2px solid rgba(200,166,75,.3); display:flex; flex-direction:column; gap:5px; }
 #co-gate .cg-ver{ display:flex; justify-content:space-between; align-items:center; gap:10px;
@@ -45747,7 +45817,18 @@ function pkTime(f){
     say('កំពុងផ្ញើសំណើ…');
     api('requestCompany', [window.__loggedInUserToken, t, n]).then(function(r){
       if(r && r.ok && r.already) return say('សហគ្រាសនេះមានក្នុងបញ្ជីរបស់អ្នករួចហើយ');
-      if(r && r.ok && r.pending)  return say('សំណើនេះកំពុងរង់ចាំការអនុញ្ញាតរួចហើយ');
+      /* ⚠⚠ [stated] ២០២៦-០៨-២៣ ៖ «វាលោតថាកំពុងរង់ចាំ តែមិនឃើញសារតាម email» ។
+         ឥឡូវម៉ាស៊ីនមេ **ផ្ញើឡើងវិញ** ហើយប្រាប់មកថាបានផ្ញើឬអត់ ⇒ សារត្រូវ
+         និយាយពីលទ្ធផលពិត មិនមែនត្រឹម «កំពុងរង់ចាំ» ដែលបញ្ឈប់អ្នកប្រើ។ */
+      if(r && r.ok && r.mailed === false){
+        return say('⚠ សំណើត្រូវបានកត់ត្រា តែផ្ញើអ៊ីមែលមិនបាន — សូមទាក់ទង'
+                 + 'ម្ចាស់ប្រព័ន្ធដោយផ្ទាល់ (អតប ' + t + ')', true);
+      }
+      if(r && r.ok && r.resent){
+        CG.wrap.querySelector('#cg-tin').value = '';
+        CG.wrap.querySelector('#cg-name').value = '';
+        return say('✓ សំណើមានរួចហើយ — បានផ្ញើអ៊ីមែលទៅម្ចាស់ប្រព័ន្ធម្តងទៀត');
+      }
       if(r && r.ok){
         CG.wrap.querySelector('#cg-tin').value = '';
         CG.wrap.querySelector('#cg-name').value = '';
