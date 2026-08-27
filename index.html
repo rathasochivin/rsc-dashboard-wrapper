@@ -45570,7 +45570,9 @@ function pkTime(f){
                           : '<button class="cg-btn" data-act="up">📥 ផ្ទុកឯកសារ</button>');
       el.innerHTML =
         '<div class="cg-main">' +
-          '<div class="cg-name">' + esc(x.name || '(មិនស្គាល់ឈ្មោះ)') + '</div>' +
+          /* ⚠ ឈ្មោះទទេ **មិនមែនមានន័យថាគ្មានសិទ្ធិទេ** ៖ សិទ្ធិមកពីលេខអតប
+             ប៉ុណ្ណោះ។ បង្ហាញលេខអតបជាចំណងជើងជំនួស ដើម្បីកុំអោយច្រឡំ។ */
+          '<div class="cg-name">' + esc(x.name || ('អតប ' + (x.tin || '—'))) + '</div>' +
           '<div class="cg-meta">' + esc(x.tin || '—') + ' &nbsp; ' + badge + ' ' + fileTag + '</div>' +
         '</div>' + act;
       var btn = el.querySelector('button');
