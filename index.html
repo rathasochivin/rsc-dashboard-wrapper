@@ -3134,7 +3134,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
        វាយបញ្ចូលបាន។
      ⚠ ច្បាប់នេះជាច្បាប់ **បន្ថែម** ៖ គ្មានបន្ទាត់ចាស់ណាមួយត្រូវកែទេ ⇒
        អ្វីៗក្រៅពីទម្ងន់អក្សរនៅដដែលបេះបិទ។ */
-  /* RSCBUILD-MTRPAGE3 */
+  /* RSCBUILD-LOGOUT4 */
   #mtr-embed .mtr-form-title,
   #mtr-embed .mtr-form-meta .val,
   #mtr-embed .mtr-filled,
@@ -5812,7 +5812,16 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
         function render(){
           const el = document.getElementById('userGreeting');
           if(!el) return;
-          const name = window.__loggedInUserName;
+          /* ⚠⚠ [stated] ២០២៦-០៨-២៨ ៖ «ចង់ចាកចេញពី admin តែគ្មានកន្លែងចុច» ។
+     មូលហេតុ ៖ ប៊ូតុងចាកចេញកើតឡើងខាងក្នុងអត្ថបទស្វាគមន៍ ហើយបន្ទាត់
+     ខាងក្រោមចេញមុន បើគ្មានឈ្មោះ ⇒ ជួរ Whitelist ដែលក្រឡាឈ្មោះទទេ
+     ធ្វើឱ្យអ្នកប្រើ **ជាប់គាំងក្នុងប្រព័ន្ធ** ដោយគ្មានផ្លូវចេញ ក្រៅពី
+     DevTools ។ ⇒ បើមាន token តែគ្មានឈ្មោះ ប្រើពាក្យជំនួស ⇒ ប៊ូតុង
+     ចាកចេញលេចជានិច្ចនៅពេលចូលរួច។
+     ⚠ ពេលគ្មាន token (ឯកសារ offline · មិនទាន់ចូល) នៅតែគ្មានអ្វីលេច
+       ដូចដើម ⇒ ការប្រើ offline មិនប៉ះពាល់។ */
+          const name = window.__loggedInUserName
+            || (window.__loggedInUserToken ? 'អ្នកប្រើ' : '');
           if(!name){ el.textContent = ''; return; }
           const greeting = isKhmerText(name) ? 'សួស្ដី! ' + name : 'Hi! ' + name;
           let countdownText = '';
