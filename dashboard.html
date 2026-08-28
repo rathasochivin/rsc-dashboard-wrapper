@@ -3108,7 +3108,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
        វាយបញ្ចូលបាន។
      ⚠ ច្បាប់នេះជាច្បាប់ **បន្ថែម** ៖ គ្មានបន្ទាត់ចាស់ណាមួយត្រូវកែទេ ⇒
        អ្វីៗក្រៅពីទម្ងន់អក្សរនៅដដែលបេះបិទ។ */
-  /* RSCBUILD-MTRWEIGHT400 */
+  /* RSCBUILD-MTRFIT2 */
   #mtr-embed .mtr-form-title,
   #mtr-embed .mtr-form-meta .val,
   #mtr-embed .mtr-filled,
@@ -3200,6 +3200,18 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
      ដែលទើបបញ្ចូល ដូច្នេះមាតិកាធម្មតារបស់ផ្ទាំង MTR មិនព្រីនជាប់មកជាមួយ។ */
   body.mtr-print-single #mtr-embed > *:not(#mtr-print-host){display:none !important;}
   body.mtr-print-single #mtr-print-host{display:block !important;}
+  /* ⚠⚠ [stated] ២០២៦-០៨-២៨ ៖ «ព្រីនតាមប្រព័ន្ធមាន blank page» ។
+     មូលហេតុ ៖ ការព្រីនក្នុងទំព័រប្រើឯកសារដដែលនឹង dashboard ⇒ សំបករបស់
+     dashboard នៅតែយកកន្លែង ៖ «main» មាន padding ២៨px ខាងលើ និង ៦០px
+     ខាងក្រោម ហើយ «.app» មាន min-height:100vh ។ សន្លឹកមួយដែលខ្ពស់ជិត
+     ពេញទំព័រ ⇒ លែងសមក្នុងកន្លែងដែលសល់ ⇒ «break-inside:avoid» រុញវាទៅ
+     ទំព័របន្ទាប់ ហើយទុកទំព័រមុនទទេ។
+     ⇒ ដកចន្លោះនោះចេញ **តែពេលព្រីន MTR/VAT** ⇒ សន្លឹកចាប់ផ្តើមត្រង់គែម
+       ខាងលើនៃទំព័រ ហើយទទួលបានកម្ពស់ពេញលេញ (សន្សំ ~២៣mm)។
+     ⚠ ច្បាប់នេះជាប់នឹង «body.mtr-print-single» ⇒ ការព្រីន TOI · COVER ·
+       ឯកសារផ្លូវការ មិនប៉ះពាល់ទាល់តែសោះ។ */
+  body.mtr-print-single > .app{ min-height:0 !important; }
+  body.mtr-print-single > .app > main{ padding:0 !important; }
   body.mtr-print-single #mtrPrintArea table, body.mtr-print-single #vatPrintArea table{font-size:11px;}
   body.mtr-print-single #mtrPrintArea th, body.mtr-print-single #mtrPrintArea td,
   body.mtr-print-single #vatPrintArea th, body.mtr-print-single #vatPrintArea td{padding:4px 6px;}
@@ -20395,7 +20407,7 @@ function printSheetsInPage(sheets){
              ធ្លាក់ត្រូវព្រំដែនភីកសែលដូចគ្នា។ */
         var base = parseFloat(getComputedStyle(form).fontSize) || 12;
         var size = Math.max(6, base * Math.max(0.4, ratio));
-        form.style.fontSize = size.toFixed(2) + 'px';
+        form.style.fontSize = Math.max(6, Math.floor(size)) + 'px';
       });
       /* ⚠ ជុំទី ២ ៖ វាស់ឡើងវិញនឹងទំហំអក្សរថ្មី ហើយកែបន្ថែមបើនៅធំ */
       try{
@@ -20422,7 +20434,7 @@ function printSheetsInPage(sheets){
           if(!w2 || w2 <= pagePx) return;
           var cur = parseFloat(form.style.fontSize) || 0;
           if(!cur) return;
-          form.style.fontSize = Math.max(6, cur * (pagePx / w2)).toFixed(2) + 'px';
+          form.style.fontSize = Math.max(6, Math.floor(cur * (pagePx / w2))) + 'px';
         });
       }catch(e){}
       host.style.display = prevDisp; host.style.position = prevPos; host.style.left = prevLeft;
