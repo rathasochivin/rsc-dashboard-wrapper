@@ -3081,8 +3081,12 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
        ជួរឈរចែកគ្នាតាមសមាមាត្រ ជំនួសការលាតលើសគែម។
      ⚠ អក្សរតូចចុះបន្តិចនៅលើទូរស័ព្ទ ⇒ ល្អជាងបាត់ជួរឈរទាំងស្រុង។
      ⚠ ការរុំពាក្យត្រូវអនុញ្ញាត បើមិនដូច្នេះទេ អត្ថបទវែងនៅតែហៀរក្រៅក្រឡា។ */
+  /* ⚠ `table-layout:fixed` ត្រូវដកចេញ ៖ វាបង្ខំជួរឈរអោយស្មើគ្នា ដែលធ្វើអោយ
+     តារាងហិរញ្ញវត្ថុអានពិបាក ហើយវានៅតែហៀរពេលមាតិកាធំ។ ការបង្រួមដោយ `zoom`
+     (មើល `fitSheetsToPage`) ដោះស្រាយបានត្រឹមត្រូវជាង ៖ ទម្រង់នៅដដែល
+     គ្រាន់តែតូចជាង។ */
   body.mtr-print-single #mtr-embed .mtr-form table{
-    table-layout:fixed !important; width:100% !important; max-width:100% !important;
+    width:auto !important; max-width:none !important;
   }
   body.mtr-print-single #mtr-embed .mtr-form th,
   body.mtr-print-single #mtr-embed .mtr-form td{
@@ -20158,12 +20162,86 @@ function printSheetsInPage(sheets){
      ទេ — កូដបន្តរត់ភ្លាម ខណៈ Chrome នៅកំពុងបង្កើតទំព័រមើលជាមុន។ ការលុប
      នៅ ២ វិនាទីធ្វើអោយមាតិកាបាត់មុនវាថត ហើយចេញផ្ទាំងស។ ដូច្នេះលុបតែ
      ពេល afterprint បាញ់ ជាមួយបម្រុងវែងសម្រាប់ករណីវាមិនបាញ់។ */
+  /* ══════════════════════════════════════════════════════════════════
+     ⚠⚠ [stated] ២០២៦-០៨-២៣ ៖ «ព្រីន MTR និង VAT នៅសល់ខាងស្តាំច្រើន វាអត់
+     fit ដូចព្រីនមើល PC» ។
+     ⭐ មូលហេតុ ៖ លើកុំព្យូទ័រ Chrome មានជម្រើស «Fit to page» ដែលបង្រួម
+       មាតិកាធំជាងទំព័រ ; កម្មវិធីរុករកលើទូរស័ព្ទ **គ្មានជម្រើសនោះទេ** ។
+       `table-layout:fixed` (ការកែមុន) ធ្វើអោយជួរឈរចែកគ្នា តែពេលមាតិកា
+       ធំពេក វានៅតែហៀរ ព្រោះក្រឡាមានទទឹងអប្បបរមារបស់វា។
+     ⇒ ធ្វើ «Fit to page» ដោយខ្លួនឯង ៖ វាស់ទទឹងពិតរបស់សន្លឹកនីមួយៗ ធៀបនឹង
+       ទទឹងទំព័រ រួចដាក់ `zoom` អោយសម (បង្រួមតែប៉ុណ្ណោះ អតិបរមា ១)។
+     ⚠ ប្រើ `zoom` មិនមែន `transform:scale` ៖ scale មិនបង្រួមកន្លែងដែល
+       ធាតុកាន់ ⇒ ទំព័រទទេបន្ថែមចេញពីក្រោយ។ (យើងធ្លាប់ជួបរឿងនេះនឹងក្រប។)
+     ⚠ ការវាស់ត្រូវធ្វើ **ក្រោយ** `mtr-print-single` ត្រូវដាក់ ⇒ ទទឹងជាទទឹង
+       ពិតនៃការព្រីន មិនមែនទទឹងអេក្រង់។
+     ══════════════════════════════════════════════════════════════════ */
+  function fitSheetsToPage(){
+    try{
+      /* ទទឹងដែលព្រីនបាន ៖ A4 ដេក ២៩៧mm ដក margin ១២mm ⇒ ~២៨៥mm ។
+         ១mm ≈ 3.7795px នៅ 96dpi។ បើ iOS បង្វិល ⇒ ប្រើទំហំឈរជំនួស។ */
+      var mm = 3.7795;
+      var pageMm = __mtrIOS ? 285 : 285;      /* ការបង្វិលធ្វើអោយវាដេកដដែល */
+      var pagePx = pageMm * mm;
+      /* ⚠⚠ ចាប់បានពេលសាកល្បង ៖ `#mtr-print-host` លាក់នៅលើអេក្រង់ (វាបង្ហាញ
+         តែក្នុង @media print) ⇒ `scrollWidth` ត្រឡប់ **០** ហើយការគណនា
+         បរាជ័យស្ងាត់។ ⇒ បង្ហាញវាបណ្តោះអាសន្ននៅក្រៅអេក្រង់ដើម្បីវាស់
+         រួចដាក់ត្រឡប់ដូចដើម។ */
+      /* ⚠⚠ ការវាស់បរាជ័យព្រោះ **ផ្ទាំង MTR ខ្លួនឯងអាចបិទ** (`#view-mtr` មាន
+         `display:none` ពេលអ្នកប្រើនៅផ្ទាំងផ្សេង) ⇒ គ្រប់អ្វីខាងក្នុងមានទទឹង ០។
+         ⇒ វាស់ក្នុងច្បាប់ចម្លងបណ្តោះអាសន្នដែលភ្ជាប់ទៅ `document.body`
+           ដោយផ្ទាល់ ⇒ មិនពឹងលើផ្ទាំងណាមួយឡើយ។ */
+      var probe = document.createElement('div');
+      probe.style.cssText = 'position:absolute; left:-99999px; top:0; width:auto; visibility:hidden;';
+      probe.innerHTML = host.innerHTML;
+      /* ⚠⚠ ការវាស់នៅតែខុសដដែល ៖ ច្បាប់សកលរបស់កម្មវិធីដាក់ `table{width:100%}`
+         ⇒ តារាងទាំងអស់លាតតាមកុងតឺន័រ ហើយកុងតឺន័រធំតាមតារាងធំជាងគេ
+         ⇒ គ្រប់សន្លឹកទទួលលេខដូចគ្នា (វាស់បាន ១៦១៨ ទាំងពីរ)។
+         ⇒ បង្ខំក្នុងប្រូបតែប៉ុណ្ណោះ ៖ សន្លឹកជា `inline-block` និងតារាង
+           `width:auto` ⇒ ធាតុនីមួយៗ **រួមខ្លួនតាមមាតិកាពិត** របស់វា។ */
+      probe.querySelectorAll('.mtr-form').forEach(function(f){
+        f.style.cssText += ';display:inline-block; width:auto; max-width:none; zoom:1;';
+      });
+      probe.querySelectorAll('table').forEach(function(t){
+        t.style.cssText += ';width:auto !important; max-width:none !important; table-layout:auto !important;';
+      });
+      document.body.appendChild(probe);
+      var natural = [];
+      /* ⚠⚠ វាស់ **តារាងតែប៉ុណ្ណោះ** ។ ការវាស់ `.mtr-form` ខ្លួនឯងខុស ៖ វាជា
+         ធាតុប្លុក ⇒ ទទឹងរបស់វាស្មើទទឹងកុងតឺន័រ ដែលកំណត់ដោយសន្លឹក**ធំជាងគេ**
+         ⇒ សន្លឹកតូចៗទទួលបានលេខរបស់សន្លឹកធំ ហើយត្រូវបង្រួមដោយឥតប្រយោជន៍
+         (វាស់បាន ៖ ១៦១៨ ដូចគ្នាទាំងពីរ ខណៈមួយមាន ៣ ជួរឈរប៉ុណ្ណោះ)។ */
+      probe.querySelectorAll('.mtr-form').forEach(function(f){
+        var w = 0;
+        f.querySelectorAll('table').forEach(function(t){ w = Math.max(w, t.scrollWidth || 0); });
+        natural.push(w);
+      });
+      probe.remove();
+      var idx = 0;
+      var prevDisp = host.style.display, prevPos = host.style.position, prevLeft = host.style.left;
+      host.querySelectorAll('.mtr-form').forEach(function(form){
+        form.style.zoom = '';
+        var w = natural[idx++] || 0;
+        if(!w) return;
+        var z = pagePx / w;
+        if(z < 1) form.style.zoom = String(Math.max(0.35, z));   /* បង្រួមតែប៉ុណ្ណោះ */
+      });
+      host.style.display = prevDisp; host.style.position = prevPos; host.style.left = prevLeft;
+    }catch(e){ console.warn('fitSheetsToPage:', e); }
+  }
+
   setTimeout(()=>{
+    fitSheetsToPage();
     try{ window.print(); }catch(e){}
     setTimeout(cleanup, 120000);
   }, 400);
   return true;
 }
+
+/* ⚠ បញ្ចេញសម្រាប់ការសាកល្បង និងការរកមូលហេតុ ៖ ម៉ូឌុល MTR ស្ថិតក្នុងប្លុកបិទ
+   ⇒ បើគ្មានស្ពាននេះ ការព្រីនមិនអាចដំណើរការពីខាងក្រៅបានទេ (យើងធ្លាប់ជាប់
+   ដែនកំណត់នេះពេលសាកល្បងវេនមុន)។ */
+window.__rscPrintSheets = function(sheets){ return printSheetsInPage(sheets); };
 
 function openFormPrintWindow(sheets){
   /* ⭐⭐ [stated] ២០២៦-០៨-២៣ ៖ «ផ្នែក MTR និង VAT ពេលចុចព្រីន មិនចាំបាច់លោត
@@ -44461,8 +44539,35 @@ else CC.init();
     });
   }
 
+  /* ⚠⚠ [stated] ២០២៦-០៨-២៣ ៖ «ពេលបើកតាម PC ក៏វាចេញរើសឯកសារ អត់មានចេញ
+     រើសថតឯកសារផង» ។
+     ⭐ មូលហេតុ ៖ កម្មវិធីរត់ក្នុង **iframe ឆ្លងដែន** (Apps Script រុំទំព័រ
+       ក្នុង googleusercontent ហើយ teamsmos.com រុំម្តងទៀត)។ File System
+       Access API **មិនត្រូវបានផ្តល់ក្នុង iframe ឆ្លងដែនទេ** ⇒ `showDirectoryPicker`
+       អវត្តមាន ⇒ កូដយល់ថាជាទូរស័ព្ទ ហើយធ្លាក់ទៅផ្លូវជ្រើសឯកសារ។
+     ⇒ បែងចែក ៖ «គ្មានលើឧបករណ៍នេះ» (ទូរស័ព្ទ) ធៀបនឹង «មានលើកុំព្យូទ័រ តែ
+       ត្រូវបានរារាំងព្រោះនៅក្នុងស៊ុម» ⇒ ករណីទី ២ ស្នើអោយបើកក្នុងផ្ទាំងពេញ
+       ដែលដោះស្រាយបានពិត។ */
+  function inFrame(){
+    try{ return window.top !== window.self; }catch(e){ return true; }
+  }
+  function isMobileUA(){
+    return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
+  }
   function fsPick(){
-    if(!fsaSupported()) return fsFallbackPick();
+    if(!fsaSupported()){
+      if(!isMobileUA() && inFrame()){
+        var url = (window.__appBaseUrl || location.href);
+        var go = confirm('ការជ្រើស«ថត» ត្រូវបានរារាំង ព្រោះកម្មវិធីកំពុងរត់ក្នុងស៊ុម។\n\n'
+                       + 'ចុច OK ដើម្បីបើកក្នុងផ្ទាំងពេញ (ជ្រើសថតបាន) ។\n'
+                       + 'ចុច Cancel ដើម្បីជ្រើសឯកសារម្តងមួយៗជំនួស។');
+        if(go){
+          try{ window.open(url, '_blank', 'noopener'); }catch(e){ window.top.location = url; }
+          return Promise.resolve(null);
+        }
+      }
+      return fsFallbackPick();
+    }
     return window.showDirectoryPicker({ mode:'readwrite', id:'rscSaveDir' })
       .then(function(h){ return fsHandleSet(h).then(function(){ return h; }); })
       .catch(function(){ return null; });     /* បោះបង់ — មិនមែនកំហុសទេ */
@@ -45593,6 +45698,14 @@ function pkTime(f){
 /* 🏢 ផ្ទាំងជ្រើសសហគ្រាស — ២០២៦-០៨-២៣
    ⚠ ពណ៌យកតាមផ្ទាំងចូល (បៃតងជ្រៅ + មាស) ⇒ ការចូលទៅកម្មវិធីមើលទៅជាដំណើរ
      តែមួយ មិនមែនផ្ទាំងពីរដែលមិនទាក់ទងគ្នា។ */
+/* ⚠ ពុម្ពអក្សរតែមួយសម្រាប់ផ្ទាំងទាំងមូល ⇒ គ្មានផ្នែកណាធ្លាក់ទៅពុម្ពអក្សរ
+   ប្រព័ន្ធ។ (Khmer OS Muol Light រក្សាទុកសម្រាប់ចំណងជើងឯកសារផ្លូវការតែប៉ុណ្ណោះ
+   មិនប្រើក្នុងផ្ទាំងប្រតិបត្តិការទេ។) */
+#co-gate, #co-gate input, #co-gate button, #co-gate .cg-tag, #co-gate .cg-meta,
+#co-gate .cg-name, #co-gate .cg-msg, #co-gate .cg-sub, #co-gate .cg-title,
+#rsc-notices, #rsc-notices .rsc-note{
+  font-family:'Khmer OS Siemreap','Noto Sans Khmer',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
 #co-gate{ position:fixed; inset:0; z-index:9500; display:flex; align-items:center;
   justify-content:center; padding:22px;
   background:radial-gradient(120% 90% at 50% -20%, #16585A 0%, transparent 60%),
@@ -45623,7 +45736,13 @@ function pkTime(f){
 #co-gate .cg-name{ font-size:14.5px; font-weight:600; overflow:hidden; text-overflow:ellipsis;
   white-space:nowrap; }
 #co-gate .cg-meta{ margin-top:4px; font-size:12px; color:rgba(239,231,210,.6);
-  font-family:ui-monospace,Menlo,Consolas,monospace; }
+  /* ⚠⚠ [stated] ២០២៦-០៨-២៣ ៖ «ជួយប្រើ font khmer os siemreap សម្រាប់អក្សរ
+     មានសិទ្ធិ · គ្មានឯកសារ · លេខអតប ៩ ខ្ទង់ និងកន្លែងផ្សេងទៀត» ។
+     មូលហេតុ ៖ ខ្ញុំដាក់ monospace អោយជួរលេខអតប ⇒ អក្សរខ្មែរដែលនៅជាមួយវា
+     (ស្លាក និង placeholder) ធ្លាក់ទៅពុម្ពអក្សរប្រព័ន្ធ ⇒ មិនស៊ីនឹងកម្មវិធី។
+     ⇒ ប្រើ Khmer OS Siemreap គ្រប់កន្លែងក្នុងផ្ទាំងនេះ ; លេខរក្សា
+       `tabular-nums` ⇒ ជួរលេខនៅតម្រឹមគ្នាដដែល ដោយមិនប្តូរពុម្ពអក្សរ។ */
+  font-family:'Khmer OS Siemreap','Noto Sans Khmer',system-ui,-apple-system,'Segoe UI',sans-serif; font-variant-numeric:tabular-nums; }
 #co-gate .cg-tag{ display:inline-block; padding:1px 7px; border-radius:2px; font-size:10.5px;
   font-family:inherit; margin-left:4px; }
 #co-gate .cg-tag.ok{ background:rgba(143,224,165,.16); color:#8FE0A5; }
@@ -45661,7 +45780,7 @@ function pkTime(f){
 #co-gate .cg-new-h{ font-size:12.5px; color:rgba(239,231,210,.7); margin-bottom:9px; }
 #co-gate .cg-new-row{ display:flex; gap:8px; }
 #co-gate .cg-new-row input:first-child{ width:150px; flex:none;
-  font-family:ui-monospace,Menlo,Consolas,monospace; letter-spacing:.08em; }
+  font-family:'Khmer OS Siemreap','Noto Sans Khmer',system-ui,-apple-system,'Segoe UI',sans-serif; font-variant-numeric:tabular-nums; letter-spacing:.06em; }
 #co-gate .cg-new-row input:nth-child(2){ flex:1 1 auto; }
 #co-gate .cg-msg{ margin-top:9px; font-size:12.5px; min-height:17px; color:#8FE0A5; }
 #co-gate .cg-msg.bad{ color:#FF9A8A; }
@@ -45768,8 +45887,14 @@ function pkTime(f){
     /* ⚠ លើកុំព្យូទ័រ ៖ ជ្រើស **ថត** ហើយវាចងចាំ ; លើទូរស័ព្ទ ៖ ជ្រើស
        **ឯកសារ** ដោយផ្ទាល់ សម្រាប់វេននេះ។ ស្លាកប៊ូតុងអាស្រ័យលើឧបករណ៍ ⇒
        អ្នកប្រើមិនរំពឹងអ្វីដែលធ្វើមិនបាន។ */
+    /* ⚠ ស្លាកតាមអ្វីដែលនឹងកើតឡើងពិត ៖ ក្នុងស៊ុមលើកុំព្យូទ័រ ការជ្រើសថត
+       ត្រូវរារាំង ⇒ កុំសរសេរ «ថតឯកសារ» ដែលធ្វើអោយរំពឹងខុស។ */
     var fsaOk = !!(window.showDirectoryPicker);
     wrap.querySelector('#cg-folder').textContent = fsaOk ? '📁 ថតឯកសារ' : '📄 ជ្រើសឯកសារ';
+    if(!fsaOk && !/Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '')){
+      wrap.querySelector('#cg-folder').title =
+        'ការជ្រើសថតត្រូវរារាំងក្នុងស៊ុម — ចុចដើម្បីបើកក្នុងផ្ទាំងពេញ';
+    }
     wrap.querySelector('#cg-folder').onclick = function(){
       if(!window.__rscFsPick) return;
       window.__rscFsPick().then(function(){ load(); });
