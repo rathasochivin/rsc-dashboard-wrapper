@@ -3101,7 +3101,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
      ⭐ 'Khmer OS Muol Light' មាន face តែ ៤០០ ⇒ ៧០០ ធ្វើអោយកម្មវិធីរុករក
        សំយោគអក្សរដិតដោយខ្លួនឯង (faux bold) ដែលមើលទៅក្រាស់ស្រពិចស្រពិល។
      ⚠ ធ្វើតែពេលព្រីន ⇒ លើអេក្រង់នៅដិតដដែល។ */
-  /* RSCBUILD-CD1H9 */
+  /* RSCBUILD-DATEASK11 */
   #mtr-embed .mtr-form-title,
   #mtr-embed .mtr-form-meta .val,
   #mtr-embed .mtr-filled,
@@ -20301,7 +20301,92 @@ function bindMTRPrintToolbar(){
    the data — not scraped from the DOM — so years that aren't currently on
    screen are included, while still picking up anything typed into the
    editable header / signature fields. */
-function printMTRForm(years){
+/* ⭐⭐ [stated] ២០២៦-០៨-២៨ ៖ «នៅផ្នែកដែលត្រូវការបញ្ចូលថ្ងៃខែឆ្នាំ ពេលចុច
+   ព្រីនអាចលោតឱ្យរើសថ្ងៃខែឆ្នាំបានដែរឬទេ ជៀសវាងមិនបានបញ្ចូល» ។
+   បញ្ហា ៖ ប្រអប់រើសថ្ងៃនៅលើរបារឧបករណ៍ ហើយវា **ទទេដោយចេតនា** (មើល
+   ចំណាំលើ mtrFormDateLine ៖ ថ្ងៃត្រូវសរសេរដៃពេលចុះហត្ថលេខា ដូច្នេះវា
+   មិនត្រូវដាក់ថ្ងៃដែលព្រីនដោយស្វ័យប្រវត្តិឡើយ) ⇒ ងាយភ្លេច។
+   ⇒ ដាក់ **ការសួរមុនព្រីន** ៖ បើថ្ងៃនៅទទេ លោតប្រអប់ឱ្យរើស។
+   ⭐ រក្សាជម្រើស «ទុកទទេ ដើម្បីសរសេរដៃ» ដោយចេតនា — នោះជាការប្រើពិត
+     របស់ទម្រង់នេះ ; បើបង្ខំឱ្យរើស នឹងខូចលំហូរការងារចាស់។
+   ⚠ ការសួរកើតតែពេល **ទទេ** ៖ បើរើសរួច ព្រីនដើរភ្លាមដូចដើម។
+   ⚠⚠ ការចូលឡើងវិញ ៖ សញ្ញា __dateAsked ធានាថាការហៅខ្លួនឯងកើតតែម្តងគត់។
+     ចំណាំមេរៀនចាស់ ៖ ការហៅចូលខ្លួនឯងដោយគ្មានសញ្ញាបែបនេះ ធ្លាប់ធ្វើឱ្យ
+     ទំព័រគាំងទាំងស្រុង (រង្វិលជុំ microtask ក្នុង __rscSave) ។
+   ⚠ MTR និង VAT ចែក mtrFormOverride.docDate ដូចគ្នា ⇒ ច្រកតែមួយគ្រប់ពីរ។ */
+function mtrAskDocDate(onReady){
+  var old = document.getElementById('mtrDateAsk');
+  if(old) old.remove();
+
+  var wrap = document.createElement('div');
+  wrap.id = 'mtrDateAsk';
+  wrap.style.cssText = 'position:fixed; inset:0; z-index:2147483000; display:flex;'
+    + 'align-items:center; justify-content:center; background:rgba(8,26,27,.55); padding:20px;';
+
+  var card = document.createElement('div');
+  card.style.cssText = 'background:#fff; color:#171B1A; border-radius:10px; padding:22px 24px;'
+    + 'max-width:380px; width:100%; font-family:inherit; font-size:14px; line-height:1.7;'
+    + 'box-shadow:0 24px 60px rgba(0,0,0,.35);';
+
+  var h = document.createElement('div');
+  h.textContent = 'ថ្ងៃខែឆ្នាំលើឯកសារ';
+  h.style.cssText = 'font-weight:700; font-size:16px; margin-bottom:6px;';
+
+  var p = document.createElement('div');
+  p.textContent = 'ថ្ងៃខែឆ្នាំនៅទទេ។ សូមរើស ឬទុកទទេដើម្បីសរសេរដោយដៃ។';
+  p.style.cssText = 'color:#4a5250; margin-bottom:14px;';
+
+  var inp = document.createElement('input');
+  inp.type = 'date';
+  inp.style.cssText = 'width:100%; padding:9px 10px; font:inherit; font-size:15px;'
+    + 'border:1px solid #d8d2c2; border-radius:6px; box-sizing:border-box;';
+
+  var rowBtn = document.createElement('div');
+  rowBtn.style.cssText = 'display:flex; gap:8px; margin-top:16px; flex-wrap:wrap;';
+
+  function mk(label, bg, fg){
+    var b = document.createElement('button');
+    b.textContent = label;
+    b.style.cssText = 'flex:1 1 auto; padding:9px 12px; border:0; border-radius:6px;'
+      + 'cursor:pointer; font:inherit; font-weight:700; font-size:13px;'
+      + 'background:' + bg + '; color:' + fg + ';';
+    return b;
+  }
+  var ok    = mk('✓ ប្រើថ្ងៃនេះ រួចព្រីន', '#0F3D3E', '#fff');
+  var blank = mk('ទុកទទេ រួចព្រីន', '#EDE8DA', '#3a3a30');
+  var no    = mk('បោះបង់', 'transparent', '#7a827f');
+
+  function close(){ try{ wrap.remove(); }catch(e){} }
+
+  ok.onclick = function(){
+    if(!inp.value){ inp.focus(); return; }
+    mtrFormOverride.docDate = inp.value;
+    /* រក្សាប្រអប់លើរបារឧបករណ៍ឱ្យត្រូវគ្នា ⇒ អេក្រង់មិនផ្ទុយនឹងក្រដាស */
+    var tb = document.getElementById('mtrFormDate');
+    if(tb) tb.value = inp.value;
+    close();
+    onReady();
+  };
+  blank.onclick = function(){ close(); onReady(); };
+  no.onclick    = close;
+
+  rowBtn.appendChild(ok); rowBtn.appendChild(blank); rowBtn.appendChild(no);
+  card.appendChild(h); card.appendChild(p); card.appendChild(inp); card.appendChild(rowBtn);
+  wrap.appendChild(card);
+  wrap.onclick = function(e){ if(e.target === wrap) close(); };
+  document.body.appendChild(wrap);
+  try{ inp.focus(); }catch(e){}
+}
+function mtrDocDateMissing(){
+  return !String((typeof mtrFormOverride === 'object' && mtrFormOverride
+                  && mtrFormOverride.docDate) || '').trim();
+}
+
+function printMTRForm(years, __dateAsked){
+  if(!__dateAsked && mtrDocDateMissing()){
+    mtrAskDocDate(function(){ printMTRForm(years, true); });
+    return;
+  }
   const allRows = getAllExtractedMonthlyRows();
   const available = Array.from(new Set(allRows.map(r => r[0]))).sort(); // ascending
   const wanted = (years && years.length ? years.filter(y => available.includes(y)) : available);
@@ -21777,7 +21862,11 @@ function bindVATPrintToolbar(){
   });
 }
 
-function printVATForm(years){
+function printVATForm(years, __dateAsked){
+  if(!__dateAsked && mtrDocDateMissing()){
+    mtrAskDocDate(function(){ printVATForm(years, true); });
+    return;
+  }
   const agg = getVATMonthlyAggregates();
   const available = Object.keys(agg).sort(); // ascending
   const wanted = (years && years.length ? years.filter(y => available.includes(y)) : available);
@@ -26627,11 +26716,105 @@ function withCoverFooter(fn){
   window.addEventListener('afterprint', clean);
   try{ fn(); } finally { setTimeout(clean, 2000); }
 }
-document.getElementById('btnPrintCurrent').onclick = ()=>{
+/* ⭐⭐ [stated] ២០២៦-០៨-២៨ ៖ «មាននៅសន្លឹក cover និងលិខិតផ្លូវការមួយចំនួន
+   ទៀតដែរ មានថ្ងៃខែឆ្នាំត្រូវបញ្ចូលដែរ» ។
+   ⭐ អ្វីដែលការស៊ើបអង្កេតបង្ហាញ ហើយសំខាន់ជាងសំណួរខ្លួនឯង ៖ ថ្ងៃខែទាំងនោះ
+     **មិនមែនវាលច្រើនដាច់ៗគ្នាទេ** — វាមកពី **ប្រភពតែ ២** ក្នុង Data Entry ៖
+       · auditStartDate → ថ្ងៃចុះហត្ថលេខាលើ **សន្លឹក COVER** (defaultSignDate)
+       · auditEndDate   → ថ្ងៃលើ **គ្រប់លិខិតផ្លូវការ** តាម khSignDate() /
+         smSignDate() ; ពេលទទេវាបញ្ចេញ «ថ្ងៃទី ......... ខែ .........»
+   ⇒ ដូច្នេះការសួរតែម្តងលើប្រភព ជួសជុលគ្រប់ឯកសារក្នុងពេលតែមួយ ។
+   ⚠ ការរើសនឹង **រក្សាទុកចូល Data Entry ពិត** (setDE) ⇒ គ្រប់ឯកសារ
+     ព្រមព្រៀងគ្នា ហើយលេខនោះនៅតែមានលើកក្រោយ ។ នេះជាការសរសេរទិន្នន័យ
+     មិនមែនត្រឹមតែតុបតែងការព្រីនទេ ។
+   ⚠ រក្សាជម្រើស «ទុកទទេ» ៖ ទម្រង់ខ្លះត្រូវសរសេរដៃពេលចុះហត្ថលេខា ។
+   ⚠⚠ __dateAsked ៖ ការហៅចូលខ្លួនឯងកើតតែម្តងគត់ (មេរៀនរង្វិលជុំ __rscSave) ។ */
+window.__rscAskAuditDate = function(keys, onReady){
+  var miss = keys.filter(function(k){ return !String(getDE(k) || '').trim(); });
+  if(!miss.length){ onReady(); return; }
+
+  var LABEL = { auditStartDate:'ថ្ងៃចាប់ផ្តើមធ្វើសវនកម្ម (សន្លឹក COVER)',
+                auditEndDate:'ថ្ងៃបញ្ចប់ធ្វើសវនកម្ម (លិខិតផ្លូវការ)' };
+
+  var old = document.getElementById('rscDateAsk'); if(old) old.remove();
+  var wrap = document.createElement('div');
+  wrap.id = 'rscDateAsk';
+  wrap.style.cssText = 'position:fixed; inset:0; z-index:2147483000; display:flex;'
+    + 'align-items:center; justify-content:center; background:rgba(8,26,27,.55); padding:20px;';
+  var card = document.createElement('div');
+  card.style.cssText = 'background:#fff; color:#171B1A; border-radius:10px; padding:22px 24px;'
+    + 'max-width:400px; width:100%; font-family:inherit; font-size:14px; line-height:1.7;'
+    + 'box-shadow:0 24px 60px rgba(0,0,0,.35);';
+  var h = document.createElement('div');
+  h.textContent = 'ថ្ងៃខែឆ្នាំមិនទាន់បំពេញ';
+  h.style.cssText = 'font-weight:700; font-size:16px; margin-bottom:6px;';
+  var p = document.createElement('div');
+  p.textContent = 'សូមរើស ដើម្បីអោយវាលេចលើឯកសារ ឬទុកទទេដើម្បីសរសេរដោយដៃ។';
+  p.style.cssText = 'color:#4a5250; margin-bottom:14px;';
+  card.appendChild(h); card.appendChild(p);
+
+  var inputs = {};
+  miss.forEach(function(k){
+    var lab = document.createElement('div');
+    lab.textContent = LABEL[k] || k;
+    lab.style.cssText = 'font-size:12.5px; color:#4a5250; margin:10px 0 4px;';
+    var i = document.createElement('input');
+    i.type = 'date';
+    i.style.cssText = 'width:100%; padding:9px 10px; font:inherit; font-size:15px;'
+      + 'border:1px solid #d8d2c2; border-radius:6px; box-sizing:border-box;';
+    inputs[k] = i;
+    card.appendChild(lab); card.appendChild(i);
+  });
+
+  var row = document.createElement('div');
+  row.style.cssText = 'display:flex; gap:8px; margin-top:16px; flex-wrap:wrap;';
+  function mk(label, bg, fg){
+    var b = document.createElement('button');
+    b.textContent = label;
+    b.style.cssText = 'flex:1 1 auto; padding:9px 12px; border:0; border-radius:6px;'
+      + 'cursor:pointer; font:inherit; font-weight:700; font-size:13px;'
+      + 'background:' + bg + '; color:' + fg + ';';
+    return b;
+  }
+  var ok    = mk('✓ រក្សាទុក រួចព្រីន', '#0F3D3E', '#fff');
+  var blank = mk('ទុកទទេ រួចព្រីន', '#EDE8DA', '#3a3a30');
+  var no    = mk('បោះបង់', 'transparent', '#7a827f');
+  function close(){ try{ wrap.remove(); }catch(e){} }
+  ok.onclick = function(){
+    var any = false;
+    miss.forEach(function(k){
+      var v = inputs[k].value;
+      if(v){ setDE(k, v); any = true; }
+    });
+    if(!any){ try{ inputs[miss[0]].focus(); }catch(e){} return; }
+    close(); onReady();
+  };
+  blank.onclick = function(){ close(); onReady(); };
+  no.onclick = close;
+  row.appendChild(ok); row.appendChild(blank); row.appendChild(no);
+  card.appendChild(row); wrap.appendChild(card);
+  wrap.onclick = function(e){ if(e.target === wrap) close(); };
+  document.body.appendChild(wrap);
+  try{ inputs[miss[0]].focus(); }catch(e){}
+};
+
+document.getElementById('btnPrintCurrent').onclick = (ev, __dateAsked)=>{
+  if(!__dateAsked){
+    window.__rscAskAuditDate(['auditStartDate'], function(){
+      document.getElementById('btnPrintCurrent').onclick(null, true);
+    });
+    return;
+  }
   autoFitPrintArea(document.getElementById('content'), -2);   // អក្សរតូចជាង ២px
   withCoverFooter(()=> window.print());
 };
-document.getElementById('btnPrintAll').onclick = ()=>{
+document.getElementById('btnPrintAll').onclick = (ev, __dateAsked)=>{
+  if(!__dateAsked){
+    window.__rscAskAuditDate(['auditStartDate'], function(){
+      document.getElementById('btnPrintAll').onclick(null, true);
+    });
+    return;
+  }
   const overlay = document.createElement('div');
   overlay.id = 'printAllContainer';
   overlay.className = 'print-all-container';
@@ -38461,7 +38644,19 @@ function printStrategyReport(){
    head ធ្វើអោយ @page របស់យើងឈ្នះលើ @page ដែលមានស្រាប់ក្នុងទំព័រ។
    សម្អាតវិញនៅ afterprint ព្រមទាំងកំណត់ពេលបម្រុង ១២០ វិនាទី។
    ========================================================================= */
-function printInPage(bodyHtml, css, pageRule){
+function printInPage(bodyHtml, css, pageRule, __dateAsked){
+  /* [stated] ២០២៦-០៨-២៨ ៖ ថ្ងៃលើលិខិតផ្លូវការមកពី auditEndDate តាម
+     khSignDate() ។ ឯកសារផ្លូវការទាំង ៦ ហូរកាត់មុខងារនេះទាំងអស់ ⇒ ច្រកតែ
+     មួយគ្រប់ទាំងអស់ ⇒ មិនចាំបាច់កែឯកសារនីមួយៗឡើយ។
+     ⚠ __rscAskAuditDate រស់នៅប្លុក script ផ្សេង ⇒ ត្រូវហៅតាម window
+       (មេរៀន IIFE ៖ ឈ្មោះក្នុងប្លុកមួយមើលមិនឃើញពីប្លុកមួយទៀត) ។
+     ⚠ បើវាមិនទាន់មាន (ការផ្ទុកមិនពេញ) ⇒ ព្រីនតទៅ មិនរារាំងទេ។ */
+  if(!__dateAsked && typeof window.__rscAskAuditDate === 'function'){
+    window.__rscAskAuditDate(['auditEndDate'], function(){
+      printInPage(bodyHtml, css, pageRule, true);
+    });
+    return;
+  }
   const oldH = document.getElementById('trk-print-host'); if(oldH) oldH.remove();
   const oldS = document.getElementById('trk-print-style'); if(oldS) oldS.remove();
 
