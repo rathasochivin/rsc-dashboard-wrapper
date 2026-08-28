@@ -3095,20 +3095,13 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
   #mtr-embed table.mtr-grid tbody td{
     font-weight:400 !important;
   }
-  /* ⚠⚠ [stated] ២០២៦-០៨-២៨ ៖ «ព្រីន MTR និង VAT មានកន្លែងខ្លះចេញដិត
-     ខ្លះធម្មតា ; ផ្នែកតារាងដែលដិត ដាក់ធម្មតាផង» ។
-     ⇒ សន្លឹកទាំងមូលព្រីនចេញ **ទម្ងន់អក្សរតែមួយ** ៖ ចំណងជើង · វាលបំពេញ
-       ក្បាល (ឈ្មោះសហគ្រាស · អតប · សកម្មភាព) · គ្រប់ក្រឡាតារាង · តួនាទី
-       និងឈ្មោះអ្នកចុះហត្ថលេខា។
-     ⭐ ចំណុចដែលគួរដឹង ៖ 'Khmer OS Muol Light' មាន face តែ ៤០០ ប៉ុណ្ណោះ
-       (មើល @font-face ខាងដើមឯកសារ) ⇒ «font-weight:700» ធ្វើអោយកម្មវិធី
-       រុករក **សំយោគ** អក្សរដិតដោយខ្លួនឯង (faux bold) ដែលមើលទៅក្រាស់
-       ហើយស្រពិចស្រពិល ; ៤០០ ប្រើ glyph ពិត ⇒ ស្អាតជាង មិនត្រឹមតែស្តើងជាង។
-     ⚠ ធ្វើតែពេលព្រីន ⇒ លើអេក្រង់នៅដិតដដែល ព្រោះវាជួយមើលឃើញវាលដែល
-       វាយបញ្ចូលបាន។
-     ⚠ ច្បាប់នេះជាច្បាប់ **បន្ថែម** ៖ គ្មានបន្ទាត់ចាស់ណាមួយត្រូវកែទេ ⇒
-       អ្វីៗក្រៅពីទម្ងន់អក្សរនៅដដែលបេះបិទ។ */
-  /* RSCBUILD-LOGOUT4 */
+  /* [stated] ២០២៦-០៨-២៨ ៖ «ព្រីន MTR និង VAT មានកន្លែងខ្លះចេញដិត ខ្លះធម្មតា» ។
+     ⇒ សន្លឹកទាំងមូលព្រីនចេញទម្ងន់អក្សរតែមួយ ៖ ចំណងជើង · វាលបំពេញក្បាល ·
+       គ្រប់ក្រឡាតារាង · តួនាទី និងឈ្មោះអ្នកចុះហត្ថលេខា។
+     ⭐ 'Khmer OS Muol Light' មាន face តែ ៤០០ ⇒ ៧០០ ធ្វើអោយកម្មវិធីរុករក
+       សំយោគអក្សរដិតដោយខ្លួនឯង (faux bold) ដែលមើលទៅក្រាស់ស្រពិចស្រពិល។
+     ⚠ ធ្វើតែពេលព្រីន ⇒ លើអេក្រង់នៅដិតដដែល។ */
+  /* RSCBUILD-SESSWARN5 */
   #mtr-embed .mtr-form-title,
   #mtr-embed .mtr-form-meta .val,
   #mtr-embed .mtr-filled,
@@ -3200,16 +3193,9 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
      ដែលទើបបញ្ចូល ដូច្នេះមាតិកាធម្មតារបស់ផ្ទាំង MTR មិនព្រីនជាប់មកជាមួយ។ */
   body.mtr-print-single #mtr-embed > *:not(#mtr-print-host){display:none !important;}
   body.mtr-print-single #mtr-print-host{display:block !important;}
-  /* ⚠⚠ [stated] ២០២៦-០៨-២៨ ៖ «ព្រីនតាមប្រព័ន្ធមាន blank page» ។
-     មូលហេតុ ៖ ការព្រីនក្នុងទំព័រប្រើឯកសារដដែលនឹង dashboard ⇒ សំបករបស់
-     dashboard នៅតែយកកន្លែង ៖ «main» មាន padding ២៨px ខាងលើ និង ៦០px
-     ខាងក្រោម ហើយ «.app» មាន min-height:100vh ។ សន្លឹកមួយដែលខ្ពស់ជិត
-     ពេញទំព័រ ⇒ លែងសមក្នុងកន្លែងដែលសល់ ⇒ «break-inside:avoid» រុញវាទៅ
-     ទំព័របន្ទាប់ ហើយទុកទំព័រមុនទទេ។
-     ⇒ ដកចន្លោះនោះចេញ **តែពេលព្រីន MTR/VAT** ⇒ សន្លឹកចាប់ផ្តើមត្រង់គែម
-       ខាងលើនៃទំព័រ ហើយទទួលបានកម្ពស់ពេញលេញ (សន្សំ ~២៣mm)។
-     ⚠ ច្បាប់នេះជាប់នឹង «body.mtr-print-single» ⇒ ការព្រីន TOI · COVER ·
-       ឯកសារផ្លូវការ មិនប៉ះពាល់ទាល់តែសោះ។ */
+  /* [stated] ២០២៦-០៨-២៨ ៖ សំបករបស់ dashboard នៅតែយកកន្លែងពេលព្រីនក្នុងទំព័រ ៖
+     main មាន padding ២៨px ខាងលើ និង ៦០px ខាងក្រោម ហើយ .app មាន min-height:100vh
+     ⇒ ដកចេញតែពេលព្រីន MTR/VAT ⇒ សន្លឹកទទួលកម្ពស់ពេញលេញ (~២៣mm បន្ថែម)។ */
   body.mtr-print-single > .app{ min-height:0 !important; }
   body.mtr-print-single > .app > main{ padding:0 !important; }
   body.mtr-print-single #mtrPrintArea table, body.mtr-print-single #vatPrintArea table{font-size:11px;}
@@ -3222,20 +3208,12 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     border:none; border-radius:0; padding:0; margin:0;
   }
   body.mtr-print-single #mtr-embed .mtr-form:last-child{page-break-after:auto; break-after:auto;}
-  /* ⚠⚠ [stated] ២០២៦-០៨-២៨ ៖ «ព្រីនតាមប្រព័ន្ធមាន blank page» — នៅសល់
-     បន្ទាប់ពីដកចន្លោះ padding របស់សំបក ⇒ មូលហេតុពិតជា **ឈ្មោះទំព័រ**។
-     ច្បាប់ខាងលើដាក់ «page:mtr-form-landscape» លើសន្លឹកនីមួយៗ។ តាមស្តង់ដារ
-     CSS ពេលតម្លៃ «page» ប្តូរពីប្រអប់មួយទៅប្រអប់មួយ កម្មវិធីរុករក
-     **បង្កើតការកាត់ទំព័រដោយបង្ខំ** ។ ធាតុមេ (body · .app · main · .view ·
-     #mtr-embed) ប្រើទំព័រគ្មានឈ្មោះ ⇒ ទំព័រទី ១ ត្រូវបានបើករួច ហើយសន្លឹក
-     ទី ១ ទាមទារទំព័រឈ្មោះផ្សេង ⇒ លោតទៅទំព័រទី ២ ទុកទី ១ ទទេ។
-     ⭐ ឈ្មោះទំព័រនោះ **គ្មានប្រយោជន៍រួចទៅហើយ** ៖ Chrome មិនអោយ @page
-       ដែលមានឈ្មោះ ប្តូរទិសទំព័រទេ ; ទិសដេកមកពី stylesheet ដែល
-       printSheetsInPage បញ្ចូលក្នុង head មុនព្រីន (mtr-page-style)។
-     ⇒ ដាក់ត្រឡប់ទៅ «auto» ⇒ សន្លឹកប្រើទំព័រដដែលនឹងធាតុមេ ⇒ គ្មានការកាត់
-       ដោយបង្ខំ ⇒ គ្មានទំព័រទទេ ; ទិសដេកនៅដដែល។
-     ⚠ ច្បាប់នេះជាច្បាប់បន្ថែម ហើយជាប់នឹង body.mtr-print-single ⇒ ការព្រីន
-       ម៉ូឌុលដទៃមិនប៉ះពាល់។ */
+  /* [stated] ២០២៦-០៨-២៨ ៖ «ព្រីនតាមប្រព័ន្ធមាន blank page» ។
+     តាមស្តង់ដារ CSS ពេលតម្លៃ page ប្តូរពីប្រអប់មួយទៅប្រអប់មួយ កម្មវិធីរុករក
+     បង្កើតការកាត់ទំព័រដោយបង្ខំ ៖ ធាតុមេប្រើទំព័រគ្មានឈ្មោះ ហើយសន្លឹកទី ១
+     ទាមទារ mtr-form-landscape ⇒ ទំព័រទី ១ ត្រូវទុកទទេ។
+     ⭐ ឈ្មោះទំព័រនោះគ្មានប្រយោជន៍រួចទៅហើយ ៖ Chrome មិនអោយ @page ដែលមានឈ្មោះ
+       ប្តូរទិសទំព័រទេ — ទិសដេកមកពី stylesheet ដែល printSheetsInPage បញ្ចូល។ */
   body.mtr-print-single #mtr-embed .mtr-form{ page:auto !important; }
   body.mtr-print-single #mtr-embed .mtr-form{page-break-inside:avoid; break-inside:avoid;}
   /* ⚠⚠ [stated] ២០២៦-០៨-២៣ ៖ «ព្រីនតាមទូរស័ព្ទសម្រាប់ MTR និង VAT ដាច់តារាង
@@ -5786,14 +5764,11 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
         function render(){
           const el = document.getElementById('userGreeting');
           if(!el) return;
-          /* ⚠⚠ [stated] ២០២៦-០៨-២៨ ៖ «ចង់ចាកចេញពី admin តែគ្មានកន្លែងចុច» ។
-     មូលហេតុ ៖ ប៊ូតុងចាកចេញកើតឡើងខាងក្នុងអត្ថបទស្វាគមន៍ ហើយបន្ទាត់
-     ខាងក្រោមចេញមុន បើគ្មានឈ្មោះ ⇒ ជួរ Whitelist ដែលក្រឡាឈ្មោះទទេ
-     ធ្វើឱ្យអ្នកប្រើ **ជាប់គាំងក្នុងប្រព័ន្ធ** ដោយគ្មានផ្លូវចេញ ក្រៅពី
-     DevTools ។ ⇒ បើមាន token តែគ្មានឈ្មោះ ប្រើពាក្យជំនួស ⇒ ប៊ូតុង
-     ចាកចេញលេចជានិច្ចនៅពេលចូលរួច។
-     ⚠ ពេលគ្មាន token (ឯកសារ offline · មិនទាន់ចូល) នៅតែគ្មានអ្វីលេច
-       ដូចដើម ⇒ ការប្រើ offline មិនប៉ះពាល់។ */
+          /* [stated] ២០២៦-០៨-២៨ ៖ «ចង់ចាកចេញពី admin តែគ្មានកន្លែងចុច» ។
+             ប៊ូតុងចាកចេញកើតខាងក្នុងអត្ថបទស្វាគមន៍ ហើយបន្ទាត់ខាងក្រោមចេញមុន
+             បើគ្មានឈ្មោះ ⇒ ជួរ Whitelist ដែលក្រឡាឈ្មោះទទេ ធ្វើឱ្យអ្នកប្រើ
+             ជាប់គាំងក្នុងប្រព័ន្ធដោយគ្មានផ្លូវចេញ ក្រៅពី DevTools ។
+             ⚠ ពេលគ្មាន token (offline · មិនទាន់ចូល) នៅតែគ្មានអ្វីលេចដូចដើម។ */
           const name = window.__loggedInUserName
             || (window.__loggedInUserToken ? 'អ្នកប្រើ' : '');
           if(!name){ el.textContent = ''; return; }
@@ -5802,6 +5777,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
           if(window.__sessionExpiresAtMs){
             const remain = window.__sessionExpiresAtMs - Date.now();
             countdownText = ' · ⏳ ' + fmtCountdown(remain);
+            try{ sessionWarn(remain); }catch(e){}
           }
           /* អត្ថបទស្វាគមន៍ + ប៊ូតុងចាកចេញ។ ចាកចេញលុប token នៅ server ផង
              និងលុបទិន្នន័យសហគ្រាសក្នុង browser ផង ដូច្នេះម៉ាស៊ីនរួម
@@ -5911,6 +5887,58 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
               });
           };
           host.insertBefore(b, host.firstChild);
+        }
+        /* [stated] ២០២៦-០៨-២៨ ៖ «មានការកំណត់ម៉ោង ១២ ម៉ោង … គួរមុន ៥ នាទី
+           ដើម្បីអោយចុចរក្សាទុក file» ។
+           មុននេះនាឡិការាប់ថយបង្ហាញតែលេខ — គ្មានការព្រមាន និងគ្មានការបញ្ចប់
+           ដោយបង្ខំទេ។ គ្រោះថ្នាក់ពិតគឺ អ្នកប្រើមិនដឹងខ្លួន រួចរក្សាទុកមិនបាន
+           នៅពេលផុតកំណត់។
+           ⇒ បង្ហាញរបាព្រមានមួយនៅគែមខាងលើ មុនផុតកំណត់ ៥ នាទី ព្រមទាំង
+             ប៊ូតុង រក្សាទុកឥឡូវនេះ ; មួយនាទីចុងក្រោយ ប្តូរពណ៌ក្រហម។
+           ⚠ មិនកាត់ផ្តាច់ការធ្វើការទេ ៖ វាមិនមែនម៉ូដាល និងបិទចោលបាន។
+           ⚠ កែតែខាងអតិថិជន ៖ ការបញ្ចប់ session ពិតកើតនៅម៉ាស៊ីនមេ។ */
+        var warnBox = null;
+        var WARN_MS = 5 * 60 * 1000;
+        function sessionWarn(remain){
+          if(!window.__loggedInUserToken) return;
+          if(remain > WARN_MS || remain <= 0){
+            if(warnBox && remain <= 0){ warnBox.remove(); warnBox = null; }
+            return;
+          }
+          if(!warnBox){
+            warnBox = document.createElement('div');
+            warnBox.id = 'rsc-session-warn';
+            warnBox.style.cssText =
+              'position:fixed; left:0; right:0; top:0; z-index:2147482000;' +
+              'display:flex; align-items:center; justify-content:center; gap:14px;' +
+              'padding:10px 16px; font-size:14px; font-weight:600;' +
+              'font-family:inherit; color:#3a2a00; background:#FFD75E;' +
+              'box-shadow:0 2px 10px rgba(0,0,0,.22);';
+            var msg = document.createElement('span');
+            msg.className = 'rsw-msg';
+            var save = document.createElement('button');
+            save.textContent = '💾 រក្សាទុកឥឡូវនេះ';
+            save.style.cssText = 'padding:6px 14px; border:0; border-radius:6px; cursor:pointer;'
+              + 'background:#0F3D3E; color:#fff; font-weight:700; font-family:inherit; font-size:13px;';
+            save.onclick = function(){
+              if(window.__rscSave) window.__rscSave({});
+              else alert('មិនអាចរក្សាទុកបានទេ ។');
+            };
+            var hide = document.createElement('button');
+            hide.textContent = '✕';
+            hide.title = 'បិទ';
+            hide.style.cssText = 'padding:4px 9px; border:0; border-radius:6px; cursor:pointer;'
+              + 'background:rgba(0,0,0,.12); color:#3a2a00; font-weight:700; font-family:inherit;';
+            hide.onclick = function(){ if(warnBox){ warnBox.remove(); warnBox = null; } };
+            warnBox.appendChild(msg);
+            warnBox.appendChild(save);
+            warnBox.appendChild(hide);
+            document.body.appendChild(warnBox);
+          }
+          var m = warnBox.querySelector('.rsw-msg');
+          if(m) m.textContent = '⚠ វេនប្រើប្រាស់អ្នកនឹងផុតកំណត់ក្នុង '
+            + fmtCountdown(remain) + ' — សូមរក្សាទុកការងាររបស់អ្នក។';
+          warnBox.style.background = (remain <= 60000) ? '#FF8A7A' : '#FFD75E';
         }
         window.renderUserGreeting = render;
         render();
