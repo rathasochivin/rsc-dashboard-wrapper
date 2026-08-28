@@ -3007,6 +3007,170 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
 #mtr-embed table.mtr-grid tr.mtr-total td{
   font-weight:700; background:#f7f5ee; border-top:2px solid #333;
 }
+/* ⚠⚠ [stated] ២០២៦-០៨-២៣ ៖ «ស៊ុមតារាង (Border) នៅ MTR និង VAT ខ្លះដិត
+   ខ្លះមិនដិត ជួយធ្វើវាឱ្យដូចគ្នា» ។
+   មូលហេតុ ៖ `border-collapse:collapse` អោយក្រឡាជាប់គ្នាចែករំលែកគែម ⇒
+     ពេលក្រឡាមួយមានគែម ២px (ជួរសរុប) ឬពណ៌ផ្សេង វាឈ្នះលើអ្នកជិតខាង ⇒
+     បន្ទាត់ខ្លះក្រាស់ ខ្លះស្តើង។ ការបង្រួម (`zoom`) ក៏ធ្វើអោយ ១px ក្លាយជា
+     ០.៦៧px ⇒ កម្មវិធីរុករកបង្គត់ខុសៗគ្នារវាងបន្ទាត់។
+   ⇒ ក្បួនតែមួយ ៖ គែម ១px ពណ៌ដូចគ្នាគ្រប់ក្រឡា ; ជួរសរុបខុសដោយ **ពណ៌ផ្ទៃ
+     និងអក្សរដិត** មិនមែនដោយគែមក្រាស់ទេ ⇒ គ្មានការឈ្នះគ្នា។
+   ⚠ ធ្វើតែពេលព្រីន ⇒ ទម្រង់លើអេក្រង់នៅដដែល។ */
+@media print{
+  /* ⚠⚠ [stated] ២០២៦-០៨-២៣ ៖ «ស៊ុមតារាងមាន ៣ ជាន់ ឬប្រើ border ៣ ផ្សេងគ្នា
+     មិនប្រើតែ ១» ។ ⭐ គេរាប់ត្រូវ ៖ មានស៊ុម **៣ ស្រទាប់ពិត** ៖
+       ១ `.mtr-form` — ស៊ុមកាតជុំវិញសន្លឹក (មានគែមមូល ១០px)
+       ២ `table.mtr-grid` — ស៊ុមតារាងខ្លួនឯង
+       ៣ `th/td` — គែមក្រឡានីមួយៗ
+     នៅលើអេក្រង់វាមើលទៅជាកាតស្អាត តែលើក្រដាសវាក្លាយជាបន្ទាត់ជាន់គ្នា។
+     ⇒ ពេលព្រីន ៖ ដកស្រទាប់ ១ និង ២ ចោល ⇒ **គែមក្រឡាតែមួយស្រទាប់** ។ */
+  #mtr-embed .mtr-form{
+    border:0 !important; border-radius:0 !important; box-shadow:none !important;
+    padding-left:0 !important; padding-right:0 !important;
+  }
+  /* ⚠⚠ [stated] ២០២៦-០៨-២៣ ៖ «នៅតែឃើញតារាង ៣ ផ្សេងគ្នា ១ ស្រាល ១ ដិត
+     ១ ទៀតដិតខ្លាំង» ។ ⭐ ការកែមុនរបស់ខ្ញុំចាប់តែ `table.mtr-grid` — តែ
+     សន្លឹកមាន **បន្ទាត់ច្រើនប្រភេទ** ៖
+       · គែមក្រឡាតារាង (១px ធ្ងន់)
+       · បន្ទាត់ចុចៗក្រោមវាលបំពេញក្បាល (`.mtr-form-meta .val` ១px dotted)
+       · បន្ទាត់ចុះហត្ថលេខា និងតារាងផ្សេងទៀតដែលមិនមែន `.mtr-grid`
+     ⇒ ភ្នែកឃើញជា «តារាង ៣ បែប» ។
+     ⇒ ក្បួនតែមួយសម្រាប់ក្រដាស ៖ **គ្រប់តារាង គ្រប់ក្រឡា ក្នុងសន្លឹក** ⇒
+       គែម ១px ដិត ពណ៌ដូចគ្នា ; បន្ទាត់ចុចៗក្លាយជាបន្ទាត់ដិតដូចគ្នាដែរ។ */
+  /* ⚠⚠⚠ [stated] ២០២៦-០៨-២៣ ៖ «ឥឡូវអាចធ្វើម៉េចឱ្យព្រីនមកចេញតែ ១ ទម្រង់បានទេ
+     បច្ចុប្បន្ននៅឃើញ ៣ ទម្រង់នៅតារាង» ។ បន្ទាប់ពីកែម្តងហើយម្តងទៀត ខ្ញុំឈប់
+     តាមប្រភេទធាតុម្តងមួយ ⇒ ប្រើវិធី **លុបជាមុន រួចគូរឡើងវិញ** ៖
+       ១ ធាតុ **គ្រប់យ៉ាង** ក្នុងសន្លឹក ⇒ `border:0` (លុបគ្រប់បន្ទាត់)
+       ២ រួច **តែក្រឡាតារាង** ⇒ `border:1px solid #333`
+     ⇒ គ្មានធាតុណាមួយអាចនាំបន្ទាត់ផ្ទាល់ខ្លួនចូលបានទៀតទេ ⇒ **ទម្រង់តែ ១**។
+     ⚠ ការលើកលែងតែមួយ ៖ បន្ទាត់ក្រោមវាលក្បាល និងកន្លែងចុះហត្ថលេខា ដែលគេ
+       សម្រេចរួចថាមិនព្រីន / ជាចន្លោះសរសេរដោយដៃ (ច្បាប់ខាងក្រោមកាន់វា)។ */
+  #mtr-embed .mtr-form,
+  #mtr-embed .mtr-form *{
+    border:0 !important;
+    box-shadow:none !important;
+    border-radius:0 !important;
+  }
+  /* ══════════════════════════════════════════════════════════════════
+     ⭐⭐⭐ [stated] ២០២៦-០៨-២៣ (ការពន្យល់លម្អិតរបស់គេ ដែលដោះស្រាយរឿងនេះ) ៖
+       «ផ្នែកតារាងត្រឹមខែ border ធម្មតា · ផ្នែកចាប់ពីខែ ១ ដល់សរុប border ដិត ·
+        ផ្នែកចន្លោះ header អក្សរខាងក្រោម និងកណ្តាល ស្រាល»
+     ⇒ ភាពខុសគ្នាតាម **តំបន់នៃតារាងតែមួយ** ៖ ក្បាល · តួ · ជួរសរុប។
+     ⭐ មូលហេតុពិត ៖ `border-collapse:collapse` ។ ពេលក្រឡាពីរជាប់គ្នា គែម
+       ពីរ **រួមបញ្ចូលគ្នាជាបន្ទាត់តែមួយ** ; តែនៅគែមខាងក្រៅ និងនៅព្រំដែន
+       `thead`/`tbody` ព្រមទាំងក្រឡា `rowspan` («ខែ») មានតែម្ខាងចូលរួម ⇒
+       កម្មវិធីរុករកដោះស្រាយខុសៗគ្នា ⇒ បន្ទាត់ខ្លះមើលទៅដិត ខ្លះស្រាល។
+       ការកំណត់ `1px` អោយគ្រប់ក្រឡា **មិនអាចដោះស្រាយបានទេ** ព្រោះបញ្ហា
+       មិននៅត្រង់តម្លៃ តែនៅត្រង់ **របៀបរួមបញ្ចូល** ។
+     ⇒ ដំណោះស្រាយ ៖ ប្តូរទៅ `border-collapse:separate; border-spacing:0`
+       ហើយអោយក្រឡានីមួយៗគូរតែ **ខាងស្តាំ និងខាងក្រោម** ; តារាងគូរតែ
+       **ខាងលើ និងខាងឆ្វេង** ⇒ រាល់បន្ទាត់ត្រូវគូរ **តែម្តងគត់ ដោយធាតុតែមួយ**
+       ⇒ គ្មានការរួមបញ្ចូល គ្មានការដោះស្រាយ ⇒ ដិតស្មើគ្នាទាំងអស់។
+     ══════════════════════════════════════════════════════════════════ */
+  #mtr-embed .mtr-form table{
+    border-collapse:separate !important;
+    border-spacing:0 !important;
+    border-top:1px solid #333 !important;
+    border-left:1px solid #333 !important;
+    print-color-adjust:exact; -webkit-print-color-adjust:exact;
+  }
+  #mtr-embed .mtr-form table th,
+  #mtr-embed .mtr-form table td{
+    border:0 !important;
+    border-right:1px solid #333 !important;
+    border-bottom:1px solid #333 !important;
+    background:#fff !important;
+    color:#000 !important;
+    /* ⚠⚠ [stated] ២០២៦-០៨-២៣ ៖ «ឥឡូវតារាងដិតជាងមុនកាន់តែច្រើន» — ការកែ
+       ជុំមុនរបស់ខ្ញុំ (បង្ខំកម្ពស់ជួរ ២០px · ហាមរុំបន្ទាត់ · លាក់អ្វីដែល
+       ហួស) **ធ្វើអោយអាក្រក់ជាងមុន** ⇒ ដកចេញវិញទាំងស្រុង។
+       ⭐ ក្បួនដែលខ្ញុំគួរតាមតាំងពីដំបូង ៖ ពេលការកែធ្វើអោយអាក្រក់ជាងមុន
+         **ត្រឡប់ទៅស្ថានភាពដែលគេថាល្អ** មុននឹងសាកអ្វីថ្មី។ ជុំមុនទៀត
+         (គែមម្ខាង + border-collapse:separate) គេថា «កែល្អបានច្រើនហើយ» ⇒
+         នោះជាមូលដ្ឋានត្រឹមត្រូវ។ */
+    vertical-align:middle !important;
+  }
+  /* ⚠ បន្ទាត់ក្រោមវាលក្បាល ៖ គេធ្លាប់ស្នើកុំអោយព្រីនវា (មើលច្បាប់ខាងក្រោម
+     `body.mtr-print-single … .val{border-bottom:0}`) ⇒ **រក្សាការសម្រេច
+     នោះទុក** ។ ខ្ញុំទើបនឹងសរសេរជាន់វាដោយច្រឡំ — ដកចេញវិញ។
+     ⚠ បន្ទាត់ចុះហត្ថលេខាក៏ដូចគ្នា ៖ វាជាចន្លោះទទេសម្រាប់សរសេរដោយដៃ
+       មិនមែនគែមតារាងទេ ⇒ ទុកអោយវាដូចដើម។ */
+  /* ⚠ កន្លែងចុះហត្ថលេខាត្រូវនៅជាមួយសន្លឹក ៖ ហាមកាត់ទំព័រនៅចន្លោះ
+     តារាង និងជើងឯកសារ ហើយបង្រួមចន្លោះទទេបន្តិច ⇒ សន្សំកន្លែងលើក្រដាស។ */
+  #mtr-embed .mtr-form-foot{
+    break-inside:avoid; page-break-inside:avoid;
+    break-before:avoid; page-break-before:avoid;
+    margin-top:12px !important;
+  }
+  #mtr-embed .mtr-signs .mtr-sign-space{ height:44px !important; }
+  #mtr-embed .mtr-form-date{ margin-bottom:14px !important; }
+  /* ⚠⚠ [stated] ២០២៦-០៨-២៣ ៖ «ពេលព្រីនស៊ុមតារាងមិនបាច់ប្រើដិតទេ ប្រើដូចៗគ្នា
+     ពេលមើលទៅទើបមិនឃើញខុសគ្នា» ⇒ **គែមតែមួយបែប គ្រប់ក្រឡា គ្រប់ជួរ** ។
+     ⚠ រួមទាំងជួរសរុប ៖ ខ្ញុំធ្លាប់ទុកអក្សរដិតជាសញ្ញាសម្គាល់ តែគេចង់បាន
+       ភាពដូចគ្នាទាំងស្រុង ⇒ លែងដិតទៀត។
+     ⚠ គែមខាងក្រៅតារាងក៏ ១px ដែរ ⇒ គ្មានស៊ុមក្រាស់ជុំវិញ។ */
+  /* ⚠⚠ ច្បាប់ចាស់ត្រង់នេះ (គែម ១px គ្រប់ជ្រុង) **ឈ្នះ** លើវិធីថ្មី (គូរតែ
+     ខាងស្តាំ និងខាងក្រោម) ព្រោះវាមានជាក់លាក់ជាង (`table.mtr-grid`) ⇒ ក្រឡា
+     ត្រឡប់មកមានគែម ៤ ជ្រុងវិញ ហើយបញ្ហាបន្ទាត់ជាន់គ្នាកើតឡើងដដែល។
+     ⇒ រក្សាតែទម្ងន់អក្សរ ; ទុកគែមអោយវិធីថ្មីគ្រប់គ្រងតែម្នាក់ឯង។
+     ⭐ មេរៀន ៖ ការបន្ថែមច្បាប់ថ្មីដោយមិនដកច្បាប់ចាស់ចេញ បង្កើតការប្រកួត
+       ដែលមើលមិនឃើញ — ហើយច្បាប់ជាក់លាក់ជាងតែងតែឈ្នះ។ */
+  #mtr-embed table.mtr-grid tr.mtr-total td,
+  #mtr-embed table.mtr-grid tr.vat-credit-row td,
+  #mtr-embed table.mtr-grid thead th,
+  #mtr-embed table.mtr-grid tbody td{
+    font-weight:400 !important;
+  }
+  /* ⚠⚠ [stated] ២០២៦-០៨-២៨ ៖ «ព្រីន MTR និង VAT មានកន្លែងខ្លះចេញដិត
+     ខ្លះធម្មតា ; ផ្នែកតារាងដែលដិត ដាក់ធម្មតាផង» ។
+     ⇒ សន្លឹកទាំងមូលព្រីនចេញ **ទម្ងន់អក្សរតែមួយ** ៖ ចំណងជើង · វាលបំពេញ
+       ក្បាល (ឈ្មោះសហគ្រាស · អតប · សកម្មភាព) · គ្រប់ក្រឡាតារាង · តួនាទី
+       និងឈ្មោះអ្នកចុះហត្ថលេខា។
+     ⭐ ចំណុចដែលគួរដឹង ៖ 'Khmer OS Muol Light' មាន face តែ ៤០០ ប៉ុណ្ណោះ
+       (មើល @font-face ខាងដើមឯកសារ) ⇒ «font-weight:700» ធ្វើអោយកម្មវិធី
+       រុករក **សំយោគ** អក្សរដិតដោយខ្លួនឯង (faux bold) ដែលមើលទៅក្រាស់
+       ហើយស្រពិចស្រពិល ; ៤០០ ប្រើ glyph ពិត ⇒ ស្អាតជាង មិនត្រឹមតែស្តើងជាង។
+     ⚠ ធ្វើតែពេលព្រីន ⇒ លើអេក្រង់នៅដិតដដែល ព្រោះវាជួយមើលឃើញវាលដែល
+       វាយបញ្ចូលបាន។
+     ⚠ ច្បាប់នេះជាច្បាប់ **បន្ថែម** ៖ គ្មានបន្ទាត់ចាស់ណាមួយត្រូវកែទេ ⇒
+       អ្វីៗក្រៅពីទម្ងន់អក្សរនៅដដែលបេះបិទ។ */
+  /* RSCBUILD-MTRWEIGHT400 */
+  #mtr-embed .mtr-form-title,
+  #mtr-embed .mtr-form-meta .val,
+  #mtr-embed .mtr-filled,
+  #mtr-embed .mtr-signs .mtr-sign-role,
+  #mtr-embed .mtr-signs .mtr-sign-name .val,
+  #mtr-embed .mtr-form table th,
+  #mtr-embed .mtr-form table td{
+    font-weight:400 !important;
+  }
+  /* ⚠⚠ [stated] ២០២៦-០៨-២៣ ៖ «តារាងកុំដាក់ពណ៌ ឱ្យវាចេញធម្មតា» ⇒ ក្រដាស
+     ត្រូវជាស និងខ្មៅ ៖ ក្បាលតារាង · ជួរសរុប · ជួរឥណទាន · ជួរគណនា
+     ទាំងអស់លែងមានផ្ទៃពណ៌។ ភាពខុសគ្នាបង្ហាញដោយ **អក្សរដិត** ប៉ុណ្ណោះ។
+     ⚠ ធ្វើតែពេលព្រីន ⇒ អេក្រង់នៅមានពណ៌ដដែល (វាជួយអានពេលធ្វើការ)។ */
+  #mtr-embed table.mtr-grid thead th,
+  #mtr-embed table.mtr-grid thead th.mtr-note,
+  #mtr-embed table.mtr-grid tr.mtr-total td,
+  #mtr-embed table.mtr-grid tr.vat-credit-row td,
+  #mtr-embed table.mtr-grid .vat-calc,
+  #mtr-embed table.mtr-grid .vat-diff{
+    background:#fff !important; background-color:#fff !important; color:#000 !important;
+  }
+  /* ⭐⭐ «ពេលព្រីន VAT នៅតែមិនពេញដូច MTR» ៖ MTR ប្រើ `table-layout:fixed`
+     ⇒ វាលាតពេញទទឹងទំព័រ ; សន្លឹក VAT ត្រូវបានដាក់ `table-layout:auto`
+     ដោយចេទនា (ជួរឈរច្រើន អាចរំកិលលើអេក្រង់) ⇒ ពេលព្រីន វាធំតាមមាតិកា
+     ហើយ**មិនលាតពេញ** ⇒ សល់ទំនេរខាងស្តាំ។
+     ⇒ ពេលព្រីនតែប៉ុណ្ណោះ ៖ អោយ VAT ប្រព្រឹត្តដូច MTR — លាតពេញទទឹង។
+     ⚠ `min-width` លើក្បាលត្រូវដកចេញផង បើមិនដូច្នេះទេ វាបង្ខំទទឹងអប្បបរមា
+       ហើយការលាតពេញធ្វើមិនបាន។ */
+  #mtr-embed table.mtr-grid.vat-grid{
+    table-layout:fixed !important; width:100% !important;
+  }
+  #mtr-embed table.mtr-grid.vat-grid th{ min-width:0 !important; }
+  #mtr-embed table.mtr-grid.vat-grid th .mtr-th-label{
+    white-space:normal; overflow:visible; text-overflow:clip;
+  }
+}
 /* VAT sheet: many more columns than MTR, so let it size to content and
    scroll sideways on screen instead of squeezing every column. */
 #mtr-embed table.mtr-grid.vat-grid{table-layout:auto; font-size:11px;}
@@ -3081,18 +3245,18 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
        ជួរឈរចែកគ្នាតាមសមាមាត្រ ជំនួសការលាតលើសគែម។
      ⚠ អក្សរតូចចុះបន្តិចនៅលើទូរស័ព្ទ ⇒ ល្អជាងបាត់ជួរឈរទាំងស្រុង។
      ⚠ ការរុំពាក្យត្រូវអនុញ្ញាត បើមិនដូច្នេះទេ អត្ថបទវែងនៅតែហៀរក្រៅក្រឡា។ */
-  /* ⚠ `table-layout:fixed` ត្រូវដកចេញ ៖ វាបង្ខំជួរឈរអោយស្មើគ្នា ដែលធ្វើអោយ
-     តារាងហិរញ្ញវត្ថុអានពិបាក ហើយវានៅតែហៀរពេលមាតិកាធំ។ ការបង្រួមដោយ `zoom`
-     (មើល `fitSheetsToPage`) ដោះស្រាយបានត្រឹមត្រូវជាង ៖ ទម្រង់នៅដដែល
-     គ្រាន់តែតូចជាង។ */
-  body.mtr-print-single #mtr-embed .mtr-form table{
-    width:auto !important; max-width:none !important;
-  }
-  body.mtr-print-single #mtr-embed .mtr-form th,
-  body.mtr-print-single #mtr-embed .mtr-form td{
-    word-break:break-word; overflow-wrap:anywhere; white-space:normal !important;
-  }
-  body.mtr-print-single #mtr-embed .mtr-form{ max-width:100%; overflow:visible; }
+  /* ⚠⚠ [stated] ២០២៦-០៨-២៣ ៖ «ព្រីន VAT អត់ពេញ ដូច MTR ទាំងដែលខ្ញុំធ្លាប់
+     បានប្រាប់ថាពេលកែ កុំប៉ះលើ PC» ។
+     ⭐ គេនិយាយត្រូវ ហើយនេះជាកំហុសរបស់ខ្ញុំ ៖ ដើម្បីដោះស្រាយការព្រីនលើ
+       ទូរស័ព្ទ ខ្ញុំបានប្តូរច្បាប់ **រួម** (`.mtr-form table`) ដែល VAT ក៏
+       ប្រើដែរ (សន្លឹក VAT មាន class ដដែល) ⇒ ការព្រីនលើ PC ដែលធ្លាប់ល្អ
+       ត្រូវខូច។
+     ⇒ ដក `width:auto !important` និង `white-space:normal !important` ចេញ
+       ⇒ ទម្រង់ត្រឡប់ទៅដូចដើមបេះបិទសម្រាប់ MTR និង VAT លើ PC។
+     ⇒ ការសមនឹងទំព័រសម្រាប់ទូរស័ព្ទ ធ្វើដោយ `fitSheetsToPage()` (JS) ដែល
+       ប៉ះតែ `zoom` នៃសន្លឹកដែល**ធំជាងទំព័រពិត** ⇒ លើ PC ដែលសមស្រាប់
+       វាមិនប៉ះអ្វីទាល់តែសោះ។
+     ⭐ មេរៀន ៖ ការកែសម្រាប់ឧបករណ៍មួយ មិនត្រូវសរសេរលើច្បាប់រួមទេ។ */
   body.mtr-print-single #mtr-embed table.mtr-grid{page-break-inside:avoid; break-inside:avoid;}
   body.mtr-print-single #mtr-embed .mtr-form-note{display:none !important;}
   body.mtr-print-single #mtr-embed table.mtr-grid{font-size:10px;}
@@ -20211,21 +20375,82 @@ function printSheetsInPage(sheets){
          ធាតុប្លុក ⇒ ទទឹងរបស់វាស្មើទទឹងកុងតឺន័រ ដែលកំណត់ដោយសន្លឹក**ធំជាងគេ**
          ⇒ សន្លឹកតូចៗទទួលបានលេខរបស់សន្លឹកធំ ហើយត្រូវបង្រួមដោយឥតប្រយោជន៍
          (វាស់បាន ៖ ១៦១៨ ដូចគ្នាទាំងពីរ ខណៈមួយមាន ៣ ជួរឈរប៉ុណ្ណោះ)។ */
+      var naturalH = [];
       probe.querySelectorAll('.mtr-form').forEach(function(f){
         var w = 0;
         f.querySelectorAll('table').forEach(function(t){ w = Math.max(w, t.scrollWidth || 0); });
         natural.push(w);
+        /* ⚠ កម្ពស់យកពីសន្លឹកទាំងមូល (រាប់បញ្ចូលកន្លែងចុះហត្ថលេខា) */
+        naturalH.push(f.scrollHeight || 0);
       });
       probe.remove();
       var idx = 0;
       var prevDisp = host.style.display, prevPos = host.style.position, prevLeft = host.style.left;
       host.querySelectorAll('.mtr-form').forEach(function(form){
         form.style.zoom = '';
+        form.style.fontSize = '';
         var w = natural[idx++] || 0;
         if(!w) return;
-        var z = pagePx / w;
-        if(z < 1) form.style.zoom = String(Math.max(0.35, z));   /* បង្រួមតែប៉ុណ្ណោះ */
+        /* ⚠⚠ [stated] ២០២៦-០៨-២៣ ៖ «ពេលព្រីនតារាងនៅតែខ្លះដិត និងខ្លះមិនដិត
+           ឬក៏មកពីប្រើ border ខុសគ្នា?» — គេសួរត្រូវទិសតែមិនមែនមូលហេតុ ៖
+           គែម **ដូចគ្នាបេះបិទ** រួចហើយ (វាស់លើ ៨០ ក្រឡា ៖ 1px ទាំងអស់)។
+           ⭐ មូលហេតុពិតគឺ **`zoom`** ៖ ១px × ០.៦៧ = ០.៦៧px ⇒ កម្មវិធីរុករក
+             បង្គត់បន្ទាត់ខ្លះទៅ ១px និងខ្លះទៅ ០ ⇒ មើលទៅដិតមិនស្មើគ្នា។
+           ⇒ បង្រួមដោយ **ទំហំអក្សរ** ជំនួស ៖ តារាងតូចតាមអក្សរ ហើយគែមនៅ
+             **១px ពិតប្រាកដ** គ្រប់បន្ទាត់ ⇒ ដិតដូចគ្នាទាំងអស់។
+           ⚠ ធ្វើម្តងហើយវាស់ម្តងទៀត (២ ជុំ) ៖ ទទឹងតារាងមិនផ្លាស់ជាសមាមាត្រ
+             នឹងអក្សរបេះបិទទេ (គែម និង padding ថេរ)។ */
+        /* ⚠⚠ [stated] ២០២៦-០៨-២៣ ៖ «ឈ្មោះកន្លែងចុះហត្ថលេខានៅ VAT ធ្លាក់ទៅ
+           ទំព័រទី ២» ⇒ ការសមត្រូវពិនិត្យ **កម្ពស់ផង** មិនត្រឹមទទឹងទេ។
+           A4 ដេក ៖ ខ្ពស់ ២១០mm ដក margin ១៦mm ⇒ ~១៩៤mm ។
+           ⇒ យកសមាមាត្រតូចជាងគេក្នុងចំណោមទទឹង និងកម្ពស់។ */
+        var hMm = 194, pageH = hMm * mm;
+        var hNat = naturalH[idx - 1] || 0;
+        var ratioW = pagePx / w;
+        var ratioH = hNat ? (pageH / hNat) : 1;
+        var ratio = Math.min(ratioW, ratioH);
+        if(ratio >= 0.98) return;                 /* សមស្រាប់ ⇒ មិនប៉ះ */
+        /* ⚠⚠ [stated] ២០២៦-០៨-២៣ ៖ «នៅសល់ចន្លោះៗ ដែលមានដិត … ក្រោមជួរខែ ៤ ·
+           ក្រោមជួរខែ ១០ · ក្រោមជួរសរុប …» — បន្ទាត់ដិត **តែនៅជួរខ្លះ** ។
+           ⭐ មូលហេតុ ៖ ទំហំអក្សរប្រភាគ (៨.៨៦px) ⇒ កម្ពស់ជួរប្រភាគ ⇒ គែម
+             ខាងក្រោមរបស់ជួរខ្លះធ្លាក់ត្រូវព្រំដែនភីកសែល និងខ្លះចន្លោះ
+             ភីកសែល ⇒ កម្មវិធីរុករកគូរខ្លះ ១px ច្បាស់ និងខ្លះ ២ ភីកសែល
+             ស្រអាប់ ⇒ មើលទៅដិតមិនស្មើ។
+           ⇒ ប្រើ **ចំនួនគត់** ៖ ទំហំអក្សរជាចំនួនគត់ px ហើយ line-height និង
+             padding ជាចំនួនគត់ (មើល CSS) ⇒ កម្ពស់ជួរជាចំនួនគត់ ⇒ គ្រប់គែម
+             ធ្លាក់ត្រូវព្រំដែនភីកសែលដូចគ្នា។ */
+        var base = parseFloat(getComputedStyle(form).fontSize) || 12;
+        var size = Math.max(6, base * Math.max(0.4, ratio));
+        form.style.fontSize = size.toFixed(2) + 'px';
       });
+      /* ⚠ ជុំទី ២ ៖ វាស់ឡើងវិញនឹងទំហំអក្សរថ្មី ហើយកែបន្ថែមបើនៅធំ */
+      try{
+        var probe2 = document.createElement('div');
+        probe2.style.cssText = 'position:absolute; left:-99999px; top:0; width:auto; visibility:hidden;';
+        var forms = host.querySelectorAll('.mtr-form');
+        probe2.innerHTML = host.innerHTML;
+        probe2.querySelectorAll('.mtr-form').forEach(function(f){
+          f.style.cssText += ';display:inline-block; width:auto; max-width:none;';
+        });
+        probe2.querySelectorAll('table').forEach(function(t){
+          t.style.cssText += ';width:auto !important; max-width:none !important; table-layout:auto !important;';
+        });
+        document.body.appendChild(probe2);
+        var again = [];
+        probe2.querySelectorAll('.mtr-form').forEach(function(f){
+          var w2 = 0;
+          f.querySelectorAll('table').forEach(function(t){ w2 = Math.max(w2, t.scrollWidth || 0); });
+          again.push(w2);
+        });
+        probe2.remove();
+        forms.forEach(function(form, i){
+          var w2 = again[i] || 0;
+          if(!w2 || w2 <= pagePx) return;
+          var cur = parseFloat(form.style.fontSize) || 0;
+          if(!cur) return;
+          form.style.fontSize = Math.max(6, cur * (pagePx / w2)).toFixed(2) + 'px';
+        });
+      }catch(e){}
       host.style.display = prevDisp; host.style.position = prevPos; host.style.left = prevLeft;
     }catch(e){ console.warn('fitSheetsToPage:', e); }
   }
@@ -20270,41 +20495,48 @@ function openFormPrintWindow(sheets){
     .mtr-form-head{position:relative; margin-bottom:10px; padding-top:14px;}
     .mtr-form-title{
       font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif;
-      font-size:14px; font-weight:700; text-align:center; margin:0 100px 12px; line-height:1.6;
+      font-size:14px; font-weight:400; text-align:center; margin:0 100px 12px; line-height:1.6;
     }
     .mtr-sheet-no{position:absolute; top:14px; right:0; border:1px solid #333;
       padding:0 12px; height:22px; line-height:20px; box-sizing:border-box; font-size:11.5px;}
     .mtr-form-meta{font-size:12px; line-height:1.9;}
     .mtr-form-meta .row{display:flex; justify-content:space-between; gap:24px;}
     /* [stated] គ្មានបន្ទាត់ចុចៗពីក្រោមអក្សរពេលព្រីនទេ */
-    .mtr-form-meta .val{border-bottom:0; padding:0 8px; min-width:170px; display:inline-block; font-weight:600;}
+    .mtr-form-meta .val{border-bottom:0; padding:0 8px; min-width:170px; display:inline-block; font-weight:400;}
+    /* ⚠ ផ្លូវផ្ទាំងថ្មី (បម្រុង) ត្រូវមានទម្រង់ដដែលនឹងការព្រីនក្នុងទំព័រ ៖
+       លុបគ្រប់បន្ទាត់ជាមុន រួចគូរតែក្រឡាតារាង។ បើមិនដូច្នេះទេ ផ្លូវពីរផ្តល់
+       លទ្ធផលពីរបែប ហើយអ្នកប្រើមិនដឹងថាមួយណា។ */
+    .mtr-form, .mtr-form *{ border:0 !important; box-shadow:none !important; border-radius:0 !important; }
     table.mtr-grid{width:100%; border-collapse:collapse; table-layout:fixed; font-size:10px;}
-    table.mtr-grid th, table.mtr-grid td{border:1px solid #333; padding:3px 4px; text-align:center;}
-    table.mtr-grid thead th{background:#f2efe6; font-weight:700;}
-    table.mtr-grid thead th.mtr-note{background:#faf8f2; font-weight:400; font-size:9px; color:#555; white-space:nowrap;}
+    table.mtr-grid th, table.mtr-grid td{
+      border:1px solid #333 !important; border-width:1px !important;
+      padding:3px 4px; text-align:center;
+    }
+    table.mtr-grid thead th{background:#fff; font-weight:400;}
+    table.mtr-grid thead th.mtr-note{background:#fff; font-weight:400; font-size:9px; color:#555; white-space:nowrap;}
     .mtr-th-label{display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
     table.mtr-grid.vat-grid{table-layout:auto; font-size:9px;}
     table.mtr-grid.vat-grid .mtr-th-label{white-space:normal; overflow:visible; text-overflow:clip;}
-    table.mtr-grid tr.vat-credit-row td{text-align:center; font-weight:600; background:#faf8f2;}
+    table.mtr-grid tr.vat-credit-row td{text-align:center; font-weight:400; background:#fff;}
     .vat-calc{display:none !important;}
     table.mtr-grid td.mtr-num{text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap;}
-    table.mtr-grid tr.mtr-total td{font-weight:700; background:#f7f5ee; border-top:2px solid #333;}
+    table.mtr-grid tr.mtr-total td{font-weight:400; background:#fff; border-top:1px solid #333 !important;}
     table.mtr-grid tr{page-break-inside:avoid;}
     .mtr-form-foot{margin-top:16px; font-size:11.5px;}
     .mtr-form-date{text-align:right; margin-bottom:24px;}
     .mtr-blank{display:inline-block; width:56px; border-bottom:1px dotted #666; margin:0 3px;}
     .mtr-blank-wide{width:78px;}
-    .mtr-filled{display:inline-block; padding:0 8px; font-weight:600; border:0;}
+    .mtr-filled{display:inline-block; padding:0 8px; font-weight:400; border:0;}
     .mtr-signs{display:flex; justify-content:flex-end; gap:38px; text-align:center;}
     .mtr-signs .mtr-sign{min-width:150px;}
     .mtr-signs .mtr-sign-role{
-      font-weight:700; font-size:11px;
+      font-weight:400; font-size:11px;
       font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif;
     }
     .mtr-signs .mtr-sign-space{height:58px;}
     .mtr-signs .mtr-sign-name .val{
       border-bottom:none; min-width:0; width:100%; text-align:center;
-      font-weight:700; padding:0; display:block;
+      font-weight:400; padding:0; display:block;
     }
     [contenteditable]{outline:none;}
   `;
@@ -44495,7 +44727,9 @@ else CC.init();
   /* ⚠ សុំសិទ្ធិ **readwrite ជានិច្ច** ទោះជាការអានក៏ដោយ ៖ បើសុំ 'read'
      មុន រួច 'readwrite' ក្រោយ Chrome សួរ **ពីរដង** ក្នុងវេនតែមួយ។
      ការសុំម្តងគ្រប់ជ្រុងជ្រោយ = ចុចម្តង រួចស្ងាត់ពេញវេន។ */
+  var __fsTestDir = null;
   function fsDir(){
+    if(__fsTestDir) return Promise.resolve(__fsTestDir);
     if(!fsaSupported()) return Promise.resolve(null);
     return fsHandleGet().then(function(h){ return fsPerm(h, 'readwrite'); });
   }
@@ -44554,9 +44788,53 @@ else CC.init();
   function isMobileUA(){
     return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
   }
+  /* ⚠⚠ [stated] ២០២៦-០៨-២៣ ៖ «បើកតាម PC នៅតែចេញជ្រើសឯកសារដដែល» ។
+     ការទាយពីរដងមិនបានផល ⇒ ធ្វើអោយកម្មវិធី **ប្រាប់មូលហេតុពិត** ជំនួស។
+     មូលហេតុដែលអាចធ្វើអោយ `showDirectoryPicker` អវត្តមានលើកុំព្យូទ័រ ៖
+       ១ កម្មវិធីរុករកមិនគាំទ្រ (Firefox · Safari) — Chrome/Edge/Opera ទេ
+       ២ នៅក្នុងស៊ុមឆ្លងដែន (Apps Script + teamsmos.com)
+       ៣ **បើកឯកសារពីថាសដោយផ្ទាល់ (file://)** — API នេះត្រូវការ https
+       ៤ របៀបឯកជន ឬការកំណត់សុវត្ថិភាពរបស់អង្គភាព
+     ⇒ រាយវាចេញអោយច្បាស់ ហើយស្នើផ្លូវទៅមុខសមស្រប។ */
+  window.__rscFsDiag = function(){
+    var d = {
+      'មាន showDirectoryPicker': (typeof window.showDirectoryPicker === 'function'),
+      'នៅក្នុងស៊ុម': inFrame(),
+      'ប្រូតូកូល': location.protocol,
+      'secure context': !!window.isSecureContext,
+      'ជាទូរស័ព្ទ': isMobileUA(),
+      'browser': (navigator.userAgent || '').slice(0, 90)
+    };
+    console.table ? console.table(d) : console.log(d);
+    return d;
+  };
+  function fsWhyNoDir(){
+    if(isMobileUA()) return 'ទូរស័ព្ទ';
+    if(location.protocol === 'file:') return 'file';
+    if(inFrame()) return 'frame';
+    if(!window.isSecureContext) return 'insecure';
+    return 'browser';
+  }
   function fsPick(){
     if(!fsaSupported()){
-      if(!isMobileUA() && inFrame()){
+      var why = fsWhyNoDir();
+      if(why === 'file'){
+        alert('⚠ ការជ្រើស«ថត» ត្រូវការ https ។\n'
+            + 'ឯកសារនេះបើកពីថាសដោយផ្ទាល់ (file://) ⇒ កម្មវិធីរុករកបិទមុខងារនោះ។\n\n'
+            + 'សូមប្រើតំណវេបសាយ ឬជ្រើសឯកសារម្តងមួយៗជំនួស។');
+        return fsFallbackPick();
+      }
+      if(why === 'browser'){
+        alert('⚠ កម្មវិធីរុករកនេះមិនគាំទ្រការជ្រើស«ថត»ទេ។\n'
+            + 'សូមប្រើ Chrome ឬ Edge (Firefox និង Safari មិនមានមុខងារនេះ)។\n\n'
+            + 'ឥឡូវនេះ សូមជ្រើសឯកសារម្តងមួយៗជំនួស។');
+        return fsFallbackPick();
+      }
+      if(why === 'insecure'){
+        alert('⚠ ការជ្រើស«ថត» ត្រូវការការតភ្ជាប់សុវត្ថិភាព (https)។');
+        return fsFallbackPick();
+      }
+      if(why === 'frame'){
         var url = (window.__appBaseUrl || location.href);
         var go = confirm('ការជ្រើស«ថត» ត្រូវបានរារាំង ព្រោះកម្មវិធីកំពុងរត់ក្នុងស៊ុម។\n\n'
                        + 'ចុច OK ដើម្បីបើកក្នុងផ្ទាំងពេញ (ជ្រើសថតបាន) ។\n'
@@ -44601,39 +44879,49 @@ else CC.init();
     return fsDir().then(function(dir){
       if(!dir) return [];
       var out = [];
+      /* ⚠⚠ [stated] ២០២៦-០៨-២៣ ៖ «បើកថត យឺតខ្លាំង» — យឺតចាប់តាំងពីខ្ញុំបន្ថែម
+         ការស្កេនថតរង។ ⭐ មូលហេតុ ៖ ការស្កេនហៅ `getFile()` **ម្តងមួយ រង់ចាំ
+         តគ្នា** ⇒ ឯកសារ ១០០ = ១០០ ការរង់ចាំជាប់គ្នា ហើយថតរងគុណវាឡើង។
+         ⇒ ២ ដំណាក់ ៖ ១ ប្រមូលឈ្មោះទាំងអស់ (លឿន គ្មាន I/O) · ២ អាន
+           metadata **ស្របគ្នា** ដោយ `Promise.all` ⇒ រង់ចាំតែម្តង។
+         ⚠ ជម្រៅ ២ គ្រប់គ្រាន់ (ថត → ឆ្នាំ → ឯកសារ) ហើយកាត់ការស្កេនវែង។ */
+      var pending = [];
       var walk = function(handle, prefix, depth){
         var it = handle.values();
         var step = function(){
           return it.next().then(function(r){
-            if(r.done) return out;
+            if(r.done) return null;
             var e = r.value;
             if(e.kind === 'directory'){
-              if(depth >= 3) return step();
+              if(depth >= 2) return step();
               return walk(e, prefix + e.name + '/', depth + 1).then(step);
             }
             if(e.kind === 'file' && /\.json(\.gz)?$/i.test(e.name)){
-            return e.getFile().then(function(f){
-              var base = e.name.replace(/\.json(\.gz)?$/i, '');
-              var m = base.match(/^(.*)_V(\d+)$/);
-              var d = new Date(f.lastModified), p2 = function(n){ return (n < 10 ? '0' : '') + n; };
-              out.push({
-                id: prefix + e.name, name: e.name, folder: prefix,
-                base: m ? m[1] : base, ver: m ? +m[2] : 0,
-                company: (m ? m[1] : base).split('_')[0] || base,
-                tin: ((m ? m[1] : base).split('_')[1] || ''),
-                updated: p2(d.getDate()) + '/' + p2(d.getMonth() + 1) + '/' + d.getFullYear()
-                         + ' ' + p2(d.getHours()) + ':' + p2(d.getMinutes()),
-                size: f.size
-              });
-              return step();
-            }).catch(step);
+              pending.push({ h: e, prefix: prefix });
             }
             return step();
           });
         };
         return step();
       };
-      return walk(dir, '', 0);
+      return walk(dir, '', 0).then(function(){
+        return Promise.all(pending.map(function(p){
+          return p.h.getFile().then(function(f){
+            var base = p.h.name.replace(/\.json(\.gz)?$/i, '');
+            var m = base.match(/^(.*)_V(\d+)$/);
+            var d = new Date(f.lastModified), p2 = function(n){ return (n < 10 ? '0' : '') + n; };
+            out.push({
+              id: p.prefix + p.h.name, name: p.h.name, folder: p.prefix,
+              base: m ? m[1] : base, ver: m ? +m[2] : 0,
+              company: (m ? m[1] : base).split('_')[0] || base,
+              tin: ((m ? m[1] : base).split('_')[1] || ''),
+              updated: p2(d.getDate()) + '/' + p2(d.getMonth() + 1) + '/' + d.getFullYear()
+                       + ' ' + p2(d.getHours()) + ':' + p2(d.getMinutes()),
+              size: f.size
+            });
+          }).catch(function(){});
+        })).then(function(){ return out; });
+      });
     }).catch(function(){ return []; });
   }
 
@@ -44738,6 +45026,8 @@ else CC.init();
   window.__rscFsName  = function(){ return fsDirName; };
   /* ជំនួយពិនិត្យ ៖ បញ្ជីឯកសារក្នុងថត (ឈ្មោះ · ជំនាន់ · ទំហំ) */
   window.__rscFsList  = function(){ return fsList(); };
+  /* ⚠ ការសាកល្បងល្បឿន ៖ ជំនួសថតដោយវត្ថុសាកល្បង ⇒ វាស់បានដោយគ្មានថតពិត */
+  window.__rscFsTestDir = function(h){ __fsTestDir = h || null; };
   window.__rscFsOn    = fsOn;
   window.__rscFsForget = function(){
     return fsHandleSet(null).then(fsRefresh).then(function(){ alert('ថតរក្សាទុកត្រូវបានដោះរួច'); });
