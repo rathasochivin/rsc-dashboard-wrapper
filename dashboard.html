@@ -3101,7 +3101,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
      ⭐ 'Khmer OS Muol Light' មាន face តែ ៤០០ ⇒ ៧០០ ធ្វើអោយកម្មវិធីរុករក
        សំយោគអក្សរដិតដោយខ្លួនឯង (faux bold) ដែលមើលទៅក្រាស់ស្រពិចស្រពិល។
      ⚠ ធ្វើតែពេលព្រីន ⇒ លើអេក្រង់នៅដិតដដែល។ */
-  /* RSCBUILD-SESSWARN5 */
+  /* RSCBUILD-CD1H9 */
   #mtr-embed .mtr-form-title,
   #mtr-embed .mtr-form-meta .val,
   #mtr-embed .mtr-filled,
@@ -5776,7 +5776,14 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
           let countdownText = '';
           if(window.__sessionExpiresAtMs){
             const remain = window.__sessionExpiresAtMs - Date.now();
-            countdownText = ' · ⏳ ' + fmtCountdown(remain);
+            /* [stated] ២០២៦-០៨-២៨ ៖ «រក្សា Session វិញ ខ្ញុំបារម្ភករណីបើកចោល
+               ហើយគេចូលមើលបាន» ⇒ ដែនកំណត់ ១២ ម៉ោងនៅ Code.gs ដដែល។
+               ⭐ [stated] ជម្រើស «ខ» ៖ «លាក់វា រហូតដល់នៅសល់ក្រោម ១ ម៉ោង
+                  ទើបលេចឡើង» ⇒ ១១ ម៉ោងដំបូងស្ងាត់ ; ម៉ោងចុងក្រោយបង្ហាញ។
+               ⚠ លាក់លេខ **មិនមែន** លាក់ការផុតកំណត់ទេ ៖ វេននៅតែផុតដដែល។
+                 ដូច្នេះ sessionWarn (របាព្រមាន ៥ នាទី) ត្រូវតែនៅ — វាជា
+                 សុវត្ថិភាពចុងក្រោយ បើអ្នកប្រើមិនកត់សម្គាល់លេខ។ */
+            if(remain < 3600000) countdownText = ' · ⏳ ' + fmtCountdown(remain);
             try{ sessionWarn(remain); }catch(e){}
           }
           /* អត្ថបទស្វាគមន៍ + ប៊ូតុងចាកចេញ។ ចាកចេញលុប token នៅ server ផង
@@ -5960,11 +5967,15 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
       <div id="module-overview-container"></div>
       <div id="dashboard-analytics">
 
-      <div class="section-title" id="title-kpi-sale">📋 SALE Crosscheck (ធៀបនឹង CP_PURCHASE)<div class="rule"></div></div>
-      <div class="kpi-row" id="kpi-sale"></div>
-
-      <div class="section-title" id="title-kpi-purchase">📋 PURCHASE Crosscheck (ធៀបនឹង CP_SALE)<div class="rule"></div></div>
-      <div class="kpi-row" id="kpi-purchase"></div>
+      <!-- [stated] ២០២៦-០៨-២៨ ៖ «លុបផ្នែកនេះនៅទិដ្ឋភាពទូទៅចេញ» ⇒ ប្លុក KPI
+           ពីរ (SALE Crosscheck ធៀបនឹង CP_PURCHASE · PURCHASE Crosscheck ធៀបនឹង
+           CP_SALE) ត្រូវដកចេញពីទំព័រទិដ្ឋភាពទូទៅ។
+           ⚠ ការផ្គូផ្គងខ្លួនឯង **មិនត្រូវបានលុបទេ** ៖ runCrosscheck នៅដំណើរការ
+             ដដែល ហើយផ្ទាំង ផ្គូផ្គង នៅដដែលបេះបិទ — ដកតែសេចក្តីសង្ខេបនៅ
+             ទិដ្ឋភាពទូទៅប៉ុណ្ណោះ។
+           ⚠ renderKPI ត្រូវបានបន្ថែម null guard (មើលខាងក្រោម) ព្រោះវាហៅមក
+             រកធាតុទាំងនេះជានិច្ច — បើគ្មាន guard វានឹងបោះកំហុស ហើយឈប់
+             ដំណើរការពាក់កណ្តាល runCrosscheck។ -->
 
       <div class="section-title">📈 ស្ថានភាព SALE / PURCHASE (ប្រៀបធៀបតាមឆ្នាំ)<div class="rule"></div></div>
       <div class="chart-row">
@@ -13246,6 +13257,10 @@ function computeCounts(rows){
 }
 function renderKPI(containerId, rows, hasData){
   const el = document.getElementById(containerId);
+  /* [stated] ២០២៦-០៨-២៨ ៖ ប្លុក KPI នៅទិដ្ឋភាពទូទៅត្រូវបានលុប ⇒ ធាតុលែងមាន។
+     ការចេញស្ងាត់ៗត្រឹមត្រូវជាងការបោះកំហុស ព្រោះអ្នកហៅមកគឺ runCrosscheck
+     ដែលនៅមានការងារត្រូវធ្វើបន្តទៀត។ */
+  if(!el) return;
   const titleId = containerId==="kpi-sale" ? "title-kpi-sale" : containerId==="kpi-purchase" ? "title-kpi-purchase" : null;
   const titleEl = titleId ? document.getElementById(titleId) : null;
   if(hasData === false){

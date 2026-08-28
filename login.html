@@ -30,10 +30,6 @@
      ⇒ ដាក់ផ្លូវបម្រុងដែល **មើលឃើញជានិច្ច** ៖ របារខាងក្រោមមួយបន្ទាត់
        ហើយបើ iframe មិនបានផ្ទុកក្នុង ៦ វិនាទី បង្ហាញផ្ទាំងធំជាមួយប៊ូតុង
        បើកទំព័រចូលដោយផ្ទាល់ (ចេញពី iframe ទាំងស្រុង)។ */
-  .lg-bar{ position:fixed; left:0; right:0; bottom:0; z-index:5;
-    background:rgba(15,61,62,.94); color:#EFE7D2; font:13px/1.6 system-ui,sans-serif;
-    text-align:center; padding:8px 12px; border-top:1px solid rgba(200,166,75,.5); }
-  .lg-bar a{ color:#F0C860; font-weight:700; }
   .lg-fall{ position:fixed; inset:0; z-index:9; display:none; align-items:center;
     justify-content:center; background:#0F3D3E; padding:24px; }
   .lg-card{ max-width:420px; width:100%; background:#12484A; color:#EFE7D2;
@@ -115,11 +111,13 @@
     </div>
   </div>
 
-  <!-- ផ្លូវបម្រុងដែលមើលឃើញជានិច្ច -->
-  <div class="lg-bar">
-    បើទំព័រចូលមិនលេចឡើង ៖
-    <a id="lgDirect" href="#" target="_top">បើកទំព័រចូលដោយផ្ទាល់ →</a>
-  </div>
+  <!-- [stated] ២០២៦-០៨-២៨ ៖ «លុបផ្នែកនេះចេញ» ⇒ របារខាងក្រោមដែលមើលឃើញ
+       ជានិច្ច («បើទំព័រចូលមិនលេចឡើង ៖ បើកទំព័រចូលដោយផ្ទាល់ →») ត្រូវលុប។
+       ⚠ ផ្លូវសង្គ្រោះមិនត្រូវបានលុបទេ — វាផ្លាស់ទៅផ្ទាំង #lgFall ខាងក្រោម
+         ដែលលេចឡើង **តែពេល iframe ពិតជាផ្ទុកមិនចេញ** ។ បើលុបទាំងពីរ
+         អ្នកប្រើនឹងឃើញអេក្រង់ទទេគ្មានផ្លូវចូល ដូចករណី ២២/០៨ ។
+       ⚠ #lgDirect ត្រូវបានលុបជាមួយ ⇒ JS ខាងក្រោមមាន null guard រួចហើយ
+         (if(a1) …) ដូច្នេះគ្មានកំហុសទេ។ -->
   <div class="lg-fall" id="lgFall">
     <div class="lg-card">
       <h2>មិនអាចបង្ហាញទំព័រចូលក្នុងទំព័រនេះបានទេ</h2>
@@ -208,6 +206,12 @@
       if(lp) lp.style.display = 'flex';
       return;
     }
+    /* [stated] ២០២៦-០៨-២៨ ៖ «យកខ តែក្រោយ ៣០ វិនាទី ពេលខ្លះមកពី internet
+       យឺត» ⇒ ៦ វិនាទីខ្លីពេក ៖ បណ្តាញយឺតធ្វើឱ្យផ្ទាំងបម្រុងលេចឡើង
+       ទាំងដែល iframe កំពុងផ្ទុកធម្មតា ⇒ អ្នកប្រើភ័យឥតហេតុ។
+       ⚠ តម្លៃដែលត្រូវលះបង់ ៖ អ្នកដែល iframe ត្រូវទប់ពិតៗ ត្រូវរង់ចាំ
+         ៣០ វិនាទី ទើបឃើញផ្លូវចេញ។ នេះជាការជំនួសដោយចេតនា។
+       ⭐ លេខតែមួយត្រូវកែ បើចង់ប្តូរ ៖ 30000 ។ */
     setTimeout(function(){
       if(heard) return;
       var inner = 0;
@@ -215,7 +219,7 @@
       if(inner > 0) return;
       var f = document.getElementById('lgFall');
       if(f) f.style.display = 'flex';
-    }, 6000);
+    }, 30000);
   })();
 </script>
 </body>
