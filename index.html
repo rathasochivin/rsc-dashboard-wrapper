@@ -3134,7 +3134,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
        វាយបញ្ចូលបាន។
      ⚠ ច្បាប់នេះជាច្បាប់ **បន្ថែម** ៖ គ្មានបន្ទាត់ចាស់ណាមួយត្រូវកែទេ ⇒
        អ្វីៗក្រៅពីទម្ងន់អក្សរនៅដដែលបេះបិទ។ */
-  /* RSCBUILD-MTRFIT2 */
+  /* RSCBUILD-MTRPAGE3 */
   #mtr-embed .mtr-form-title,
   #mtr-embed .mtr-form-meta .val,
   #mtr-embed .mtr-filled,
@@ -3248,6 +3248,21 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     border:none; border-radius:0; padding:0; margin:0;
   }
   body.mtr-print-single #mtr-embed .mtr-form:last-child{page-break-after:auto; break-after:auto;}
+  /* ⚠⚠ [stated] ២០២៦-០៨-២៨ ៖ «ព្រីនតាមប្រព័ន្ធមាន blank page» — នៅសល់
+     បន្ទាប់ពីដកចន្លោះ padding របស់សំបក ⇒ មូលហេតុពិតជា **ឈ្មោះទំព័រ**។
+     ច្បាប់ខាងលើដាក់ «page:mtr-form-landscape» លើសន្លឹកនីមួយៗ។ តាមស្តង់ដារ
+     CSS ពេលតម្លៃ «page» ប្តូរពីប្រអប់មួយទៅប្រអប់មួយ កម្មវិធីរុករក
+     **បង្កើតការកាត់ទំព័រដោយបង្ខំ** ។ ធាតុមេ (body · .app · main · .view ·
+     #mtr-embed) ប្រើទំព័រគ្មានឈ្មោះ ⇒ ទំព័រទី ១ ត្រូវបានបើករួច ហើយសន្លឹក
+     ទី ១ ទាមទារទំព័រឈ្មោះផ្សេង ⇒ លោតទៅទំព័រទី ២ ទុកទី ១ ទទេ។
+     ⭐ ឈ្មោះទំព័រនោះ **គ្មានប្រយោជន៍រួចទៅហើយ** ៖ Chrome មិនអោយ @page
+       ដែលមានឈ្មោះ ប្តូរទិសទំព័រទេ ; ទិសដេកមកពី stylesheet ដែល
+       printSheetsInPage បញ្ចូលក្នុង head មុនព្រីន (mtr-page-style)។
+     ⇒ ដាក់ត្រឡប់ទៅ «auto» ⇒ សន្លឹកប្រើទំព័រដដែលនឹងធាតុមេ ⇒ គ្មានការកាត់
+       ដោយបង្ខំ ⇒ គ្មានទំព័រទទេ ; ទិសដេកនៅដដែល។
+     ⚠ ច្បាប់នេះជាច្បាប់បន្ថែម ហើយជាប់នឹង body.mtr-print-single ⇒ ការព្រីន
+       ម៉ូឌុលដទៃមិនប៉ះពាល់។ */
+  body.mtr-print-single #mtr-embed .mtr-form{ page:auto !important; }
   body.mtr-print-single #mtr-embed .mtr-form{page-break-inside:avoid; break-inside:avoid;}
   /* ⚠⚠ [stated] ២០២៦-០៨-២៣ ៖ «ព្រីនតាមទូរស័ព្ទសម្រាប់ MTR និង VAT ដាច់តារាង
      នៅផ្នែកខាងស្តាំ» ។ មូលហេតុ ៖ តារាងខែមានជួរឈរច្រើន ⇒ ទទឹងធម្មជាតិរបស់វា
