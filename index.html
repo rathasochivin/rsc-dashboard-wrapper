@@ -3127,7 +3127,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
      ⭐ 'Khmer OS Muol Light' មាន face តែ ៤០០ ⇒ ៧០០ ធ្វើអោយកម្មវិធីរុករក
        សំយោគអក្សរដិតដោយខ្លួនឯង (faux bold) ដែលមើលទៅក្រាស់ស្រពិចស្រពិល។
      ⚠ ធ្វើតែពេលព្រីន ⇒ លើអេក្រង់នៅដិតដដែល។ */
-  /* RSCBUILD-DATEASK11 */
+  /* RSCBUILD-DATEASK12 */
   #mtr-embed .mtr-form-title,
   #mtr-embed .mtr-form-meta .val,
   #mtr-embed .mtr-filled,
@@ -20359,11 +20359,15 @@ function mtrAskDocDate(onReady){
   h.style.cssText = 'font-weight:700; font-size:16px; margin-bottom:6px;';
 
   var p = document.createElement('div');
-  p.textContent = 'ថ្ងៃខែឆ្នាំនៅទទេ។ សូមរើស ឬទុកទទេដើម្បីសរសេរដោយដៃ។';
+  /* [stated] ២០២៦-០៨-២៨ ៖ «ទោះបីមានថ្ងៃខែឆ្នាំស្រាប់ក៏ដោយ គួរតែលោតមក …
+     បើមិនមែនថ្ងៃនឹងអាចដូរបាន» ⇒ ប្រអប់លោតរាល់ដង មិនមែនតែពេលទទេទេ ។ */
+  p.textContent = 'សូមពិនិត្យ ឬប្តូរថ្ងៃខែឆ្នាំ មុនព្រីន។ ទុកទទេ = សរសេរដោយដៃ។';
   p.style.cssText = 'color:#4a5250; margin-bottom:14px;';
 
   var inp = document.createElement('input');
   inp.type = 'date';
+  /* បំពេញតម្លៃដែលមានស្រាប់ ⇒ ចុច ព្រីន ភ្លាមក៏បាន បើវាត្រូវរួចហើយ */
+  try{ inp.value = String((mtrFormOverride && mtrFormOverride.docDate) || ''); }catch(e){}
   inp.style.cssText = 'width:100%; padding:9px 10px; font:inherit; font-size:15px;'
     + 'border:1px solid #d8d2c2; border-radius:6px; box-sizing:border-box;';
 
@@ -20378,25 +20382,24 @@ function mtrAskDocDate(onReady){
       + 'background:' + bg + '; color:' + fg + ';';
     return b;
   }
-  var ok    = mk('✓ ប្រើថ្ងៃនេះ រួចព្រីន', '#0F3D3E', '#fff');
-  var blank = mk('ទុកទទេ រួចព្រីន', '#EDE8DA', '#3a3a30');
-  var no    = mk('បោះបង់', 'transparent', '#7a827f');
+  var ok = mk('✓ ព្រីន', '#0F3D3E', '#fff');
+  var no = mk('បោះបង់', 'transparent', '#7a827f');
 
   function close(){ try{ wrap.remove(); }catch(e){} }
 
+  /* ⚠ រក្សាទុក **អ្វីដែលឃើញក្នុងប្រអប់** ៖ បើលុបចោលទទេ ថ្ងៃនឹងទទេវិញ
+     ដើម្បីសរសេរដៃ។ នេះជាចេតនា — អ្នកប្រើឃើញអ្វី ក្រដាសចេញអ្វីនោះ។ */
   ok.onclick = function(){
-    if(!inp.value){ inp.focus(); return; }
-    mtrFormOverride.docDate = inp.value;
+    mtrFormOverride.docDate = inp.value || '';
     /* រក្សាប្រអប់លើរបារឧបករណ៍ឱ្យត្រូវគ្នា ⇒ អេក្រង់មិនផ្ទុយនឹងក្រដាស */
     var tb = document.getElementById('mtrFormDate');
-    if(tb) tb.value = inp.value;
+    if(tb) tb.value = inp.value || '';
     close();
     onReady();
   };
-  blank.onclick = function(){ close(); onReady(); };
-  no.onclick    = close;
+  no.onclick = close;
 
-  rowBtn.appendChild(ok); rowBtn.appendChild(blank); rowBtn.appendChild(no);
+  rowBtn.appendChild(ok); rowBtn.appendChild(no);
   card.appendChild(h); card.appendChild(p); card.appendChild(inp); card.appendChild(rowBtn);
   wrap.appendChild(card);
   wrap.onclick = function(e){ if(e.target === wrap) close(); };
@@ -20409,7 +20412,7 @@ function mtrDocDateMissing(){
 }
 
 function printMTRForm(years, __dateAsked){
-  if(!__dateAsked && mtrDocDateMissing()){
+  if(!__dateAsked){
     mtrAskDocDate(function(){ printMTRForm(years, true); });
     return;
   }
@@ -21889,7 +21892,7 @@ function bindVATPrintToolbar(){
 }
 
 function printVATForm(years, __dateAsked){
-  if(!__dateAsked && mtrDocDateMissing()){
+  if(!__dateAsked){
     mtrAskDocDate(function(){ printVATForm(years, true); });
     return;
   }
@@ -26756,8 +26759,9 @@ function withCoverFooter(fn){
    ⚠ រក្សាជម្រើស «ទុកទទេ» ៖ ទម្រង់ខ្លះត្រូវសរសេរដៃពេលចុះហត្ថលេខា ។
    ⚠⚠ __dateAsked ៖ ការហៅចូលខ្លួនឯងកើតតែម្តងគត់ (មេរៀនរង្វិលជុំ __rscSave) ។ */
 window.__rscAskAuditDate = function(keys, onReady){
-  var miss = keys.filter(function(k){ return !String(getDE(k) || '').trim(); });
-  if(!miss.length){ onReady(); return; }
+  /* [stated] ២០២៦-០៨-២៨ ៖ ប្រអប់លោត **រាល់ដង** មិនមែនតែពេលទទេទេ ⇒
+     អ្នកអាចផ្ទៀងផ្ទាត់ ឬប្តូរថ្ងៃមុនព្រីនជានិច្ច។ */
+  var miss = keys.slice();
 
   var LABEL = { auditStartDate:'ថ្ងៃចាប់ផ្តើមធ្វើសវនកម្ម (សន្លឹក COVER)',
                 auditEndDate:'ថ្ងៃបញ្ចប់ធ្វើសវនកម្ម (លិខិតផ្លូវការ)' };
@@ -26772,10 +26776,10 @@ window.__rscAskAuditDate = function(keys, onReady){
     + 'max-width:400px; width:100%; font-family:inherit; font-size:14px; line-height:1.7;'
     + 'box-shadow:0 24px 60px rgba(0,0,0,.35);';
   var h = document.createElement('div');
-  h.textContent = 'ថ្ងៃខែឆ្នាំមិនទាន់បំពេញ';
+  h.textContent = 'ថ្ងៃខែឆ្នាំលើឯកសារ';
   h.style.cssText = 'font-weight:700; font-size:16px; margin-bottom:6px;';
   var p = document.createElement('div');
-  p.textContent = 'សូមរើស ដើម្បីអោយវាលេចលើឯកសារ ឬទុកទទេដើម្បីសរសេរដោយដៃ។';
+  p.textContent = 'សូមពិនិត្យ ឬប្តូរថ្ងៃខែឆ្នាំ មុនព្រីន។ ទុកទទេ = សរសេរដោយដៃ។';
   p.style.cssText = 'color:#4a5250; margin-bottom:14px;';
   card.appendChild(h); card.appendChild(p);
 
@@ -26786,6 +26790,7 @@ window.__rscAskAuditDate = function(keys, onReady){
     lab.style.cssText = 'font-size:12.5px; color:#4a5250; margin:10px 0 4px;';
     var i = document.createElement('input');
     i.type = 'date';
+    i.value = String(getDE(k) || '');   /* បំពេញតម្លៃដែលមានស្រាប់ */
     i.style.cssText = 'width:100%; padding:9px 10px; font:inherit; font-size:15px;'
       + 'border:1px solid #d8d2c2; border-radius:6px; box-sizing:border-box;';
     inputs[k] = i;
@@ -26802,22 +26807,17 @@ window.__rscAskAuditDate = function(keys, onReady){
       + 'background:' + bg + '; color:' + fg + ';';
     return b;
   }
-  var ok    = mk('✓ រក្សាទុក រួចព្រីន', '#0F3D3E', '#fff');
-  var blank = mk('ទុកទទេ រួចព្រីន', '#EDE8DA', '#3a3a30');
-  var no    = mk('បោះបង់', 'transparent', '#7a827f');
+  var ok = mk('✓ ព្រីន', '#0F3D3E', '#fff');
+  var no = mk('បោះបង់', 'transparent', '#7a827f');
   function close(){ try{ wrap.remove(); }catch(e){} }
+  /* ⚠ រក្សាទុកអ្វីដែលឃើញក្នុងប្រអប់ រួមទាំងការលុបចោលឱ្យទទេ ⇒ ថ្ងៃនឹង
+     ត្រឡប់ជាចន្លោះសរសេរដៃវិញ។ */
   ok.onclick = function(){
-    var any = false;
-    miss.forEach(function(k){
-      var v = inputs[k].value;
-      if(v){ setDE(k, v); any = true; }
-    });
-    if(!any){ try{ inputs[miss[0]].focus(); }catch(e){} return; }
+    miss.forEach(function(k){ setDE(k, inputs[k].value || ''); });
     close(); onReady();
   };
-  blank.onclick = function(){ close(); onReady(); };
   no.onclick = close;
-  row.appendChild(ok); row.appendChild(blank); row.appendChild(no);
+  row.appendChild(ok); row.appendChild(no);
   card.appendChild(row); wrap.appendChild(card);
   wrap.onclick = function(e){ if(e.target === wrap) close(); };
   document.body.appendChild(wrap);
