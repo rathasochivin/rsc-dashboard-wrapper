@@ -3127,7 +3127,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
      ⭐ 'Khmer OS Muol Light' មាន face តែ ៤០០ ⇒ ៧០០ ធ្វើអោយកម្មវិធីរុករក
        សំយោគអក្សរដិតដោយខ្លួនឯង (faux bold) ដែលមើលទៅក្រាស់ស្រពិចស្រពិល។
      ⚠ ធ្វើតែពេលព្រីន ⇒ លើអេក្រង់នៅដិតដដែល។ */
-  /* RSCBUILD-DATEASK12 */
+  /* RSCBUILD-WIZARD13 */
   #mtr-embed .mtr-form-title,
   #mtr-embed .mtr-form-meta .val,
   #mtr-embed .mtr-filled,
@@ -14834,6 +14834,20 @@ async function handleAutoFileImport(evt){
   try{
     if(typeof window.__rscVerifyEnterpriseAccess === 'function'){
       setTimeout(function(){ window.__rscVerifyEnterpriseAccess(); }, 400);
+    }
+  }catch(e){}
+
+  /* ⭐⭐ [stated] ២០២៦-០៨-២៨ ៖ ផ្ទាំងណែនាំបំពេញព័ត៌មាន បន្ទាប់ពី upload
+     ឯកសារ **ថ្មី** ។ សញ្ញាសម្គាល់ «ថ្មី» ដែលព្រមព្រៀងគ្នា ៖ ការិយបរិច្ឆេទ
+     ( auditPeriod ) នៅទទេ ⇒ អតបនេះមិនទាន់ត្រូវបានរៀបចំ ។
+     ⚠ ដូច្នេះឯកសារចាស់ដែលបំពេញរួច នឹងមិនត្រូវរំខានឡើយ ។
+     ⚠ ពន្យារ ៩០០ms ៖ ម៉ូឌុល TOI/COMPANYINFO បំពេញអត្តសញ្ញាណក្នុងការគូរ ⇒
+       ការហៅភ្លាមនឹងបង្ហាញវាលទទេទាំងអស់ ។ ( ដូចហេតុផលរបស់ការពិនិត្យ
+       សិទ្ធិ ៤០០ms ខាងលើ តែយូរជាង ព្រោះនេះត្រូវការតម្លៃដែលបានគូររួច ) */
+  try{
+    if(!String(getDE('auditPeriod') || '').trim()
+       && typeof window.__rscSetupWizard === 'function'){
+      setTimeout(function(){ window.__rscSetupWizard(); }, 900);
     }
   }catch(e){}
 
@@ -26758,6 +26772,335 @@ function withCoverFooter(fn){
      មិនមែនត្រឹមតែតុបតែងការព្រីនទេ ។
    ⚠ រក្សាជម្រើស «ទុកទទេ» ៖ ទម្រង់ខ្លះត្រូវសរសេរដៃពេលចុះហត្ថលេខា ។
    ⚠⚠ __dateAsked ៖ ការហៅចូលខ្លួនឯងកើតតែម្តងគត់ (មេរៀនរង្វិលជុំ __rscSave) ។ */
+/* ⭐⭐⭐ [stated] ២០២៦-០៨-២៨ ៖ ផ្ទាំងណែនាំបន្ទាប់ពី upload ឯកសារថ្មី ។
+   គោលការណ៍សំខាន់បំផុតនៃការសង់នេះ ៖ វា **មិនបង្កើតវាលទិន្នន័យថ្មីសោះ** —
+   វាសរសេរចូលវាលដែលមានស្រាប់ទាំងអស់ ( setCV / extraCompanyInfo / setDE )
+   ដូច្នេះ COVER · Data Entry · លិខិតផ្លូវការ · Access ទទួលបានភ្លាម ដោយ
+   មិនចាំបាច់ភ្ជាប់ខ្សែថ្មីណាមួយឡើយ ។
+   ⚠ ការសរសេរធ្វើ **រាល់ជំហាន** មិនរង់ចាំដល់ចប់ទេ ⇒ បិទពាក់កណ្តាល
+     ក៏អ្វីដែលបំពេញរួចនៅដដែល ។
+   ⚠ នាយកដ្ឋាន/សាខា ត្រូវបានរក្សាទុក **មួយសម្រាប់សវនករមួយគូ**
+     ( mixedDept_1, mixedDept_2 … ) ព្រោះនោះជារបៀបដែល Data Entry
+     រក្សាទុករួចហើយ ។ ការសួរម្នាក់ម្តងនឹងបង្កើតលេខសោរដែល Data Entry
+     មិនចេះអាន ⇒ ទិន្នន័យនឹងបាត់ស្ងាត់ៗ ។ ការផ្គូផ្គងនឹងឃ្លាំងផ្ទុកដែល
+     មានស្រាប់ សំខាន់ជាងការផ្គូផ្គងនឹងសំណើដើម ។
+   ⚠ គ្មានតួអក្សរ backtick ក្នុងប្លុកនេះទេ ដោយចេតនា ( ការការពារ template
+     literal ដែលធ្លាប់បំបែកឯកសារទាំងមូល ) ។ */
+function rscSetupWizardOpen(){
+  if(document.getElementById('rscSetupWiz')) return;
+
+  var ci = {};
+  try{ if(typeof window.__getTOICoverInfo === 'function') ci = window.__getTOICoverInfo() || {}; }catch(e){}
+  var ex = (state.extraCompanyInfo = state.extraCompanyInfo || {});
+
+  var ov = document.createElement('div');
+  ov.id = 'rscSetupWiz';
+  ov.style.cssText = 'position:fixed; inset:0; z-index:2147483200; background:rgba(8,26,27,.62);'
+    + 'display:flex; align-items:flex-start; justify-content:center; overflow:auto; padding:22px 14px;';
+  var card = document.createElement('div');
+  card.style.cssText = 'background:#fff; color:#171B1A; border-radius:12px; width:100%; max-width:760px;'
+    + 'padding:20px 22px 16px; font-family:inherit; font-size:14px; line-height:1.8;'
+    + 'box-shadow:0 30px 70px rgba(0,0,0,.4);';
+  ov.appendChild(card);
+  document.body.appendChild(ov);
+
+  var TOTAL = 5;
+  var step = 1;
+
+  function close(){ try{ ov.remove(); }catch(e){} }
+  function esc2(s){ return String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+  /* ── ជំហានទី ២ ៖ ការិយបរិច្ឆេទ ⇒ ឆ្នាំតែប៉ុណ្ណោះចូល auditPeriod ──
+     [stated] «នៅ data entry មានតែ 2022-2025 ដោយមិនមានថ្ងៃខែពីខាងមុខ
+     ដើម្បីងាយស្រួលចាប់យោងទៅផ្នែកផ្សេងៗដែលពាក់ព័ន្ធ» ។ */
+  function yearsFrom(a, b){
+    var y1 = String(a || '').slice(0, 4), y2 = String(b || '').slice(0, 4);
+    if(!/^\d{4}$/.test(y1) && !/^\d{4}$/.test(y2)) return '';
+    if(!/^\d{4}$/.test(y2) || y2 === y1) return y1;
+    if(!/^\d{4}$/.test(y1)) return y2;
+    return y1 + '-' + y2;
+  }
+
+  function h(txt, sub){
+    return '<div style="font-weight:700; font-size:17px;">' + esc2(txt) + '</div>'
+      + (sub ? '<div style="color:#4a5250; font-size:13px; margin-bottom:12px;">' + esc2(sub) + '</div>'
+             : '<div style="margin-bottom:12px;"></div>');
+  }
+  function bar(){
+    var s = '<div style="display:flex; gap:5px; margin-bottom:14px;">';
+    for(var i = 1; i <= TOTAL; i++){
+      s += '<div style="flex:1; height:4px; border-radius:3px; background:'
+        + (i <= step ? '#0F3D3E' : '#E2DED0') + ';"></div>';
+    }
+    return s + '</div>';
+  }
+  function row(label, inner, hint){
+    return '<div style="margin-bottom:9px;">'
+      + '<div style="font-size:12.5px; color:#4a5250;">' + esc2(label)
+      + (hint ? ' <span style="color:#9aa3a0;">' + esc2(hint) + '</span>' : '')
+      + '</div>' + inner + '</div>';
+  }
+  var INP = 'width:100%; padding:8px 10px; font:inherit; font-size:14px; border:1px solid #d8d2c2;'
+    + 'border-radius:6px; box-sizing:border-box; background:#fff;';
+  function txt(id, val, ph){
+    return '<input id="' + id + '" type="text" value="' + esc2(val) + '"'
+      + (ph ? ' placeholder="' + esc2(ph) + '"' : '')
+      + ' style="' + INP + (String(val || '').trim() ? '' : ' background:#FFFBEA;') + '">';
+  }
+  function dat(id, val){
+    return '<input id="' + id + '" type="date" value="' + esc2(String(val || '').slice(0,10))
+      + '" style="' + INP + '">';
+  }
+  function sel(id, opts, cur){
+    var s = '<select id="' + id + '" style="' + INP + '">';
+    for(var i = 0; i < opts.length; i++){
+      s += '<option' + (String(opts[i]) === String(cur) ? ' selected' : '') + '>' + esc2(opts[i]) + '</option>';
+    }
+    return s + '</select>';
+  }
+  function nav(backLabel, nextLabel){
+    return '<div style="display:flex; gap:8px; margin-top:16px; flex-wrap:wrap; align-items:center;">'
+      + '<button id="wizSkip" style="background:none; border:0; color:#8a918e; font:inherit;'
+      + 'font-size:13px; cursor:pointer; padding:6px 2px;">រំលង</button>'
+      + '<div style="flex:1"></div>'
+      + (backLabel ? '<button id="wizBack" style="padding:9px 16px; border:1px solid #d8d2c2;'
+          + 'border-radius:7px; background:#fff; font:inherit; font-weight:700; font-size:13px;'
+          + 'cursor:pointer;">' + esc2(backLabel) + '</button>' : '')
+      + '<button id="wizNext" style="padding:9px 20px; border:0; border-radius:7px;'
+      + 'background:#0F3D3E; color:#fff; font:inherit; font-weight:700; font-size:13px;'
+      + 'cursor:pointer;">' + esc2(nextLabel) + '</button></div>';
+  }
+  function V(id){ var e = document.getElementById(id); return e ? String(e.value || '').trim() : ''; }
+
+  function progCount(){ return Math.max(1, Math.min(6, parseInt(getDE('programCount'), 10) || 1)); }
+  function isClosing(){ var a = String(getDE('wizAuditType') || ''); return a.indexOf('បិទ') >= 0 || a.indexOf('ជម្រះ') >= 0; }
+
+  function render(){
+    var html = bar();
+
+    if(step === 1){
+      html += h('ព័ត៌មានសហគ្រាស', 'បំពេញស្វ័យប្រវត្តិពីឯកសារ — សូមពិនិត្យ ; វាលពណ៌លឿងគឺនៅទទេ។');
+      html += row('១. ឈ្មោះជាភាសាខ្មែរ', txt('w_name', ci.companyName));
+      html += row('២. ឈ្មោះជាឡាតាំង', txt('w_latin', ci.latinName));
+      html += row('៣. លេខអតប', txt('w_tin', ci.tin));
+      html += row('៤. អាសយដ្ឋាន', txt('w_addr', ci.address));
+      html += row('៥. សកម្មភាពអាជីវកម្ម', txt('w_act', ci.businessActivity));
+      html += row('៦. ទ្រង់ទ្រាយគតិយុត្ត', txt('w_legal', ci.legalForm));
+      html += '<div style="display:flex; gap:10px;"><div style="flex:1;">'
+        + row('៧. លេខទូរស័ព្ទ', txt('w_phone', ci.phone))
+        + '</div><div style="flex:1;">' + row('Email', txt('w_email', ci.email)) + '</div></div>';
+      html += '<div style="display:flex; gap:10px;"><div style="flex:1;">'
+        + row('៨. ថ្ងៃចុះបញ្ជីពន្ធដារ', txt('w_taxreg', ci.taxRegDate))
+        + '</div><div style="flex:1;">'
+        + row('៩. ថ្ងៃចុះបញ្ជីពាណិជ្ជកម្ម', txt('w_comreg', ci.commerceRegDate))
+        + '</div></div>';
+      html += nav('', 'បន្ទាប់ →');
+    }
+
+    else if(step === 2){
+      html += h('ការិយបរិច្ឆេទសវនកម្ម', 'តើសវនកម្មនេះចាប់ពីថ្ងៃខែឆ្នាំណា ដល់ថ្ងៃខែឆ្នាំណា?');
+      html += '<div style="display:flex; gap:10px;"><div style="flex:1;">'
+        + row('ចាប់ពី', dat('w_from', getDE('auditStartDate')))
+        + '</div><div style="flex:1;">'
+        + row('ដល់', dat('w_to', getDE('auditEndDate'))) + '</div></div>';
+      html += '<div id="w_pv" style="margin-top:6px; font-size:13px; color:#4a5250;"></div>';
+      html += nav('← ថយក្រោយ', 'បន្ទាប់ →');
+    }
+
+    else if(step === 3){
+      html += h('កម្មវិធីសវនកម្ម', 'សំណួរអំពីកម្មវិធីនៃការិយបរិច្ឆេទនេះ។');
+      html += row('តើមានប៉ុន្មានកម្មវិធី?', sel('w_pcount', ['1','2','3','4','5','6'], String(progCount())));
+      html += row('តើជាកម្មវិធីបែបណា?',
+        sel('w_atype', ['ធម្មតា','ជម្រះ','សុំបិទ'], getDE('wizAuditType') || 'ធម្មតា'));
+      html += '<div id="w_adate_box">' + row('ថ្ងៃខែឆ្នាំ សុំបិទ ឬជម្រះ', dat('w_adate', getDE('auditTypeDate'))) + '</div>';
+      html += row('តើកម្មវិធីធម្មតា ឬចម្រុះ?',
+        sel('w_ptype', ['កម្មវិធីធម្មតា','កម្មវិធីចម្រុះ'], getDE('programType') || 'កម្មវិធីធម្មតា'));
+      html += '<div id="w_mix_box">'
+        + row('តើមានសវនករចម្រុះប៉ុន្មាននាក់?',
+              sel('w_mcount', ['1','2','3','4','5','6'], String(parseInt(getDE('mixedAuditorCount'),10) || 1)))
+        + '<div id="w_which" style="margin-top:4px;"></div></div>';
+      html += nav('← ថយក្រោយ', 'បន្ទាប់ →');
+    }
+
+    else if(step === 4){
+      var mixed = (getDE('programType') === 'កម្មវិធីចម្រុះ');
+      if(!mixed){ step = 5; render(); return; }
+      var mc = Math.max(1, Math.min(6, parseInt(getDE('mixedAuditorCount'), 10) || 1));
+      var pairs = Math.ceil(mc / 2);
+      html += h('សវនករចម្រុះ', 'ឈ្មោះ និងនាយកដ្ឋាន ឬសាខាដែលមកពី។');
+      html += '<datalist id="wizUnits">';
+      try{ for(var u = 0; u < GDT_UNITS.length; u++) html += '<option value="' + esc2(GDT_UNITS[u]) + '"></option>'; }catch(e){}
+      html += '</datalist>';
+      for(var p = 0; p < pairs; p++){
+        var a = p * 2 + 1, b = p * 2 + 2;
+        html += '<div style="border:1px solid #e6e1d3; border-radius:8px; padding:10px 12px; margin-bottom:10px;">';
+        html += row('ឈ្មោះសវនករចម្រុះទី ' + a, txt('w_ma_' + a, getDE('mixedAuditor_' + a)));
+        if(b <= mc) html += row('ឈ្មោះសវនករចម្រុះទី ' + b, txt('w_ma_' + b, getDE('mixedAuditor_' + b)));
+        html += row('មកពីនាយកដ្ឋាន ឬសាខា',
+          '<input id="w_md_' + (p+1) + '" list="wizUnits" type="text" value="'
+          + esc2(getDE('mixedDept_' + (p+1))) + '" placeholder="រើស ឬវាយបញ្ចូល" style="' + INP + '">',
+          b <= mc ? '(សម្រាប់សវនករទី ' + a + ' និង ' + b + ')' : '');
+        html += '</div>';
+      }
+      html += nav('← ថយក្រោយ', 'បន្ទាប់ →');
+    }
+
+    else {
+      var n = progCount(), i;
+      html += h('ព័ត៌មានកម្មវិធី', 'មួយជួរក្នុងមួយកម្មវិធី។');
+      html += '<div style="overflow:auto;"><table style="width:100%; border-collapse:collapse; font-size:12.5px;">'
+        + '<thead><tr>'
+        + '<th style="text-align:left; padding:4px;">កម្មវិធី</th>'
+        + '<th style="text-align:left; padding:4px;">ការិយសវនកម្ម</th>'
+        + '<th style="text-align:left; padding:4px;">PCode</th>'
+        + '<th style="text-align:left; padding:4px;">P កម្មវិធី</th>'
+        + '<th style="text-align:left; padding:4px;">លេខជូនដំណឹង</th>'
+        + '<th style="text-align:left; padding:4px;">ថ្ងៃលិខិត</th>'
+        + (isClosing() ? '<th style="text-align:left; padding:4px;">លេខ DT</th>' : '')
+        + '</tr></thead><tbody>';
+      var LBL = ['', 'កម្មវិធីទី១', 'កម្មវិធីទី២', 'កម្មវិធីទី៣', 'កម្មវិធីទី៤', 'កម្មវិធីទី៥', 'កម្មវិធីទី៦'];
+      var CELL = 'width:100%; padding:5px 6px; font:inherit; font-size:12.5px; border:1px solid #e0dbcc;'
+        + 'border-radius:5px; box-sizing:border-box;';
+      for(i = 1; i <= n; i++){
+        html += '<tr><td style="padding:3px 4px; white-space:nowrap;">' + LBL[i] + '</td>'
+          + '<td style="padding:3px;"><input id="w_pp_' + i + '" type="text" value="'
+            + esc2(getDE('prog_period_' + i) || getDE('auditPeriod')) + '" style="' + CELL + '"></td>'
+          + '<td style="padding:3px;"><input id="w_pc_' + i + '" type="text" value="'
+            + esc2(getDE('prog_pcode_' + i)) + '" style="' + CELL + '"></td>'
+          + '<td style="padding:3px;"><input id="w_pt_' + i + '" type="text" value="'
+            + esc2(getDE('prog_ptype_' + i)) + '" placeholder="P1" style="' + CELL + '"></td>'
+          + '<td style="padding:3px;"><input id="w_pn_' + i + '" type="text" value="'
+            + esc2(getDE('prog_noticeNo_' + i)) + '" style="' + CELL + '"></td>'
+          + '<td style="padding:3px;"><input id="w_pd_' + i + '" type="date" value="'
+            + esc2(String(getDE('prog_noticeDate_' + i)).slice(0,10)) + '" style="' + CELL + '"></td>'
+          + (isClosing() ? '<td style="padding:3px;"><input id="w_pdt_' + i + '" type="text" value="'
+            + esc2(getDE('prog_dtNo_' + i)) + '" style="' + CELL + '"></td>' : '')
+          + '</tr>';
+      }
+      html += '</tbody></table></div>';
+      html += nav('← ថយក្រោយ', '✓ បើកចូលកម្មវិធី');
+    }
+
+    card.innerHTML = html;
+    wire();
+  }
+
+  function saveStep(){
+    if(step === 1){
+      setCV('companyNameOverride', V('w_name'));
+      setCV('companyTinOverride', V('w_tin'));
+      setCV('companyAddress', V('w_addr'));
+      setCV('businessActivityOverride', V('w_act'));
+      setCV('legalForm', V('w_legal'));
+      setCV('taxRegDate', V('w_taxreg'));
+      ex.latinName = V('w_latin');
+      ex.phone = V('w_phone');
+      ex.email = V('w_email');
+      ex.commerceRegDate = V('w_comreg');
+      try{ saveState(); }catch(e){}
+    }
+    else if(step === 2){
+      var a = V('w_from'), b = V('w_to');
+      setDE('auditStartDate', a);
+      setDE('auditEndDate', b);
+      var y = yearsFrom(a, b);
+      if(y) setDE('auditPeriod', y);
+    }
+    else if(step === 3){
+      setDE('programCount', V('w_pcount'));
+      setDE('wizAuditType', V('w_atype'));
+      setDE('programType', V('w_ptype'));
+      /* ជម្រះ / សុំបិទ ៖ វាលដែល COVER និង Access អានរួចហើយ */
+      var at = V('w_atype');
+      ex.auditType = (at === 'ធម្មតា') ? 'កម្មវិធី' : at;
+      setCV('programAuditType', ex.auditType);
+      if(at === 'ធម្មតា'){ setCV('auditTypeChoice', ''); setCV('auditTypeDate', ''); }
+      else { setCV('auditTypeChoice', at); setCV('auditTypeDate', V('w_adate')); }
+      if(V('w_ptype') === 'កម្មវិធីចម្រុះ'){
+        setDE('mixedAuditorCount', V('w_mcount'));
+        var n3 = progCount();
+        for(var i = 1; i <= n3; i++){
+          var cb = document.getElementById('w_kind_' + i);
+          if(cb) setDE('prog_kind_' + i, cb.checked ? 'ចម្រុះ' : 'ធម្មតា');
+        }
+      }
+      try{ saveState(); }catch(e){}
+    }
+    else if(step === 4){
+      var mc = Math.max(1, Math.min(6, parseInt(getDE('mixedAuditorCount'), 10) || 1));
+      for(var k = 1; k <= mc; k++){ if(document.getElementById('w_ma_' + k)) setDE('mixedAuditor_' + k, V('w_ma_' + k)); }
+      for(var p2 = 1; p2 <= Math.ceil(mc / 2); p2++){ if(document.getElementById('w_md_' + p2)) setDE('mixedDept_' + p2, V('w_md_' + p2)); }
+    }
+    else {
+      var n2 = progCount();
+      for(var j = 1; j <= n2; j++){
+        setDE('prog_period_' + j, V('w_pp_' + j));
+        setDE('prog_pcode_' + j, V('w_pc_' + j));
+        setDE('prog_ptype_' + j, V('w_pt_' + j));
+        setDE('prog_noticeNo_' + j, V('w_pn_' + j));
+        setDE('prog_noticeDate_' + j, V('w_pd_' + j));
+        if(document.getElementById('w_pdt_' + j)) setDE('prog_dtNo_' + j, V('w_pdt_' + j));
+      }
+    }
+  }
+
+  function wire(){
+    var sk = document.getElementById('wizSkip');
+    if(sk) sk.onclick = function(){ close(); try{ renderAll(); }catch(e){} };
+    var bk = document.getElementById('wizBack');
+    if(bk) bk.onclick = function(){ saveStep(); step = Math.max(1, step - 1); render(); };
+    var nx = document.getElementById('wizNext');
+    if(nx) nx.onclick = function(){
+      saveStep();
+      if(step >= TOTAL){ close(); try{ renderAll(); }catch(e){} return; }
+      step++; render();
+    };
+
+    if(step === 2){
+      var upd = function(){
+        var y = yearsFrom(V('w_from'), V('w_to'));
+        var pv = document.getElementById('w_pv');
+        if(pv) pv.textContent = y ? ('ការិយបរិច្ឆេទនៅ Data Entry នឹងក្លាយជា ៖ ' + y) : '';
+      };
+      ['w_from','w_to'].forEach(function(id){
+        var e = document.getElementById(id); if(e) e.onchange = upd;
+      });
+      upd();
+    }
+
+    if(step === 3){
+      var refresh = function(){
+        var closing = (V('w_atype') !== 'ធម្មតា');
+        var box = document.getElementById('w_adate_box');
+        if(box) box.style.display = closing ? '' : 'none';
+        var mix = (V('w_ptype') === 'កម្មវិធីចម្រុះ');
+        var mb = document.getElementById('w_mix_box');
+        if(mb) mb.style.display = mix ? '' : 'none';
+        var wh = document.getElementById('w_which');
+        if(!wh) return;
+        var n = Math.max(1, Math.min(6, parseInt(V('w_pcount'), 10) || 1));
+        if(!mix || n < 2){ wh.innerHTML = ''; return; }
+        var s = '<div style="font-size:12.5px; color:#4a5250; margin-top:6px;">តើកម្មវិធីណាខ្លះជាចម្រុះ?</div>';
+        for(var i = 1; i <= n; i++){
+          var on = (getDE('prog_kind_' + i) || (i === 1 ? 'ចម្រុះ' : 'ធម្មតា')) === 'ចម្រុះ';
+          s += '<label style="display:inline-flex; align-items:center; gap:5px; margin:4px 12px 0 0; font-size:13px;">'
+            + '<input type="checkbox" id="w_kind_' + i + '"' + (on ? ' checked' : '') + '> កម្មវិធីទី' + i
+            + ' <span style="color:#9aa3a0;">' + esc2(getDE('prog_period_' + i) || '') + '</span></label>';
+        }
+        wh.innerHTML = s;
+      };
+      ['w_atype','w_ptype','w_pcount'].forEach(function(id){
+        var e = document.getElementById(id); if(e) e.onchange = refresh;
+      });
+      refresh();
+    }
+  }
+
+  render();
+}
+window.__rscSetupWizard = rscSetupWizardOpen;
+
 window.__rscAskAuditDate = function(keys, onReady){
   /* [stated] ២០២៦-០៨-២៨ ៖ ប្រអប់លោត **រាល់ដង** មិនមែនតែពេលទទេទេ ⇒
      អ្នកអាចផ្ទៀងផ្ទាត់ ឬប្តូរថ្ងៃមុនព្រីនជានិច្ច។ */
