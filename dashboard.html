@@ -3101,7 +3101,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
      ⭐ 'Khmer OS Muol Light' មាន face តែ ៤០០ ⇒ ៧០០ ធ្វើអោយកម្មវិធីរុករក
        សំយោគអក្សរដិតដោយខ្លួនឯង (faux bold) ដែលមើលទៅក្រាស់ស្រពិចស្រពិល។
      ⚠ ធ្វើតែពេលព្រីន ⇒ លើអេក្រង់នៅដិតដដែល។ */
-  /* RSCBUILD-WIZARD13 */
+  /* RSCBUILD-WIZARD14 */
   #mtr-embed .mtr-form-title,
   #mtr-embed .mtr-form-meta .val,
   #mtr-embed .mtr-filled,
@@ -26782,6 +26782,9 @@ function rscSetupWizardOpen(){
   var step = 1;
 
   function close(){ try{ ov.remove(); }catch(e){} }
+  /* ⚠ សម្គាល់ថា «អតបនេះរៀបចំរួច» ⇒ ផ្ទាំងនេះលោតតែម្តងក្នុងមួយសហគ្រាស ។
+     រក្សាទុកតាមលេខអតប មិនមែនតាមទង់ធម្មតា ⇒ ប្តូរសហគ្រាសថ្មី វាលោតវិញ ។ */
+  function markDone(){ try{ setDE('wizDoneTin', rscWizTin() || '1'); }catch(e){} }
   function esc2(s){ return String(s == null ? '' : s)
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
@@ -27021,13 +27024,13 @@ function rscSetupWizardOpen(){
 
   function wire(){
     var sk = document.getElementById('wizSkip');
-    if(sk) sk.onclick = function(){ close(); try{ renderAll(); }catch(e){} };
+    if(sk) sk.onclick = function(){ markDone(); close(); try{ renderAll(); }catch(e){} };
     var bk = document.getElementById('wizBack');
     if(bk) bk.onclick = function(){ saveStep(); step = Math.max(1, step - 1); render(); };
     var nx = document.getElementById('wizNext');
     if(nx) nx.onclick = function(){
       saveStep();
-      if(step >= TOTAL){ close(); try{ renderAll(); }catch(e){} return; }
+      if(step >= TOTAL){ markDone(); close(); try{ renderAll(); }catch(e){} return; }
       step++; render();
     };
 
@@ -27074,6 +27077,45 @@ function rscSetupWizardOpen(){
   render();
 }
 window.__rscSetupWizard = rscSetupWizardOpen;
+
+/* ⚠⚠ [stated] ២០២៦-០៨-២៨ ៖ «File ថ្មីហើយ តែពេលចុច Upload រួច អត់ចេញ
+   ព័ត៌មានពិនិត្យ និងបញ្ចូលនោះទេ» — ការបើកតាម handleAutoFileImport មិនបាន
+   បាញ់ ។ ខ្ញុំមិនដឹងច្បាស់ថាហេតុអ្វី ( មានផ្លូវនាំចូលច្រើន ៖ ផ្ទុកតាមថត ·
+   ផ្ទុកតាមផ្ទាំងជ្រើសសហគ្រាស · បើកឯកសារដែលរក្សាទុក ) ។
+   ⭐ ដូច្នេះឈប់ទាយផ្លូវ ៖ ប្រើ **អ្នកយាម** ដែលមើលលទ្ធផល មិនមែនមើលព្រឹត្តិការណ៍ ។
+     រាល់ ១.៥ វិនាទី ៖ បើមានលេខអតប ហើយអតបនោះមិនទាន់រៀបចំ ⇒ បើកផ្ទាំង ។
+     វាដើរដូចគ្នាគ្រប់ផ្លូវនាំចូល ទាំងផ្លូវដែលនឹងបន្ថែមថ្ងៃក្រោយ ។
+   ⚠ សញ្ញា «ថ្មី» ប្តូរពី auditPeriod ទៅ **លេខអតប** ៖ auditPeriod អាចត្រូវ
+     បំពេញដោយអ្នកប្រើ ⇒ ជាសញ្ញាមិនជឿជាក់ ។ ( «2022-2026» ដែលឃើញក្នុង
+     Data Entry គ្រាន់តែជា placeholder មិនមែនតម្លៃទេ ។ )
+   ⚠ សហគ្រាសដែលរៀបចំរួចមុនកំណែនេះ ៖ បើ auditPeriod និង Pcode មានរួច
+     យើងចាត់ទុកថារួច ហើយសម្គាល់ស្ងាត់ៗ ⇒ មិនរំខានការងារចាស់ ។
+   ⚠ ឈប់ក្រោយ ១០ នាទី ⇒ គ្មាន timer រត់អស់កល្បទេ ។ */
+function rscWizTin(){
+  try{
+    var ci = (typeof window.__getTOICoverInfo === 'function') ? (window.__getTOICoverInfo() || {}) : {};
+    return String(ci.tin || '').replace(/\D/g, '').slice(-9);
+  }catch(e){ return ''; }
+}
+(function rscWizWatch(){
+  var tries = 0;
+  var iv = setInterval(function(){
+    tries++;
+    if(tries > 400){ clearInterval(iv); return; }
+    try{
+      if(document.getElementById('rscSetupWiz')) return;
+      var tin = rscWizTin();
+      if(!tin) return;
+      if(String(getDE('wizDoneTin') || '') === tin) return;
+      /* រៀបចំរួចពីមុន ⇒ សម្គាល់ស្ងាត់ៗ មិនបើកផ្ទាំង */
+      if(String(getDE('auditPeriod') || '').trim() && String(getDE('prog_pcode_1') || '').trim()){
+        setDE('wizDoneTin', tin);
+        return;
+      }
+      rscSetupWizardOpen();
+    }catch(e){}
+  }, 1500);
+})();
 
 window.__rscAskAuditDate = function(keys, onReady){
   /* [stated] ២០២៦-០៨-២៨ ៖ ប្រអប់លោត **រាល់ដង** មិនមែនតែពេលទទេទេ ⇒
