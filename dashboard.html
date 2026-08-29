@@ -3101,7 +3101,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
      ⭐ 'Khmer OS Muol Light' មាន face តែ ៤០០ ⇒ ៧០០ ធ្វើអោយកម្មវិធីរុករក
        សំយោគអក្សរដិតដោយខ្លួនឯង (faux bold) ដែលមើលទៅក្រាស់ស្រពិចស្រពិល។
      ⚠ ធ្វើតែពេលព្រីន ⇒ លើអេក្រង់នៅដិតដដែល។ */
-  /* RSCBUILD-WIZARD15 */
+  /* RSCBUILD-WIZARD16 */
   #mtr-embed .mtr-form-title,
   #mtr-embed .mtr-form-meta .val,
   #mtr-embed .mtr-filled,
@@ -14818,12 +14818,10 @@ async function handleAutoFileImport(evt){
      ⚠ ពន្យារ ៩០០ms ៖ ម៉ូឌុល TOI/COMPANYINFO បំពេញអត្តសញ្ញាណក្នុងការគូរ ⇒
        ការហៅភ្លាមនឹងបង្ហាញវាលទទេទាំងអស់ ។ ( ដូចហេតុផលរបស់ការពិនិត្យ
        សិទ្ធិ ៤០០ms ខាងលើ តែយូរជាង ព្រោះនេះត្រូវការតម្លៃដែលបានគូររួច ) */
-  try{
-    if(!String(getDE('auditPeriod') || '').trim()
-       && typeof window.__rscSetupWizard === 'function'){
-      setTimeout(function(){ window.__rscSetupWizard(); }, 900);
-    }
-  }catch(e){}
+  /* [stated] ២០២៦-០៨-២៨ ៖ «ផ្ទាំងនោះវាលោតនៅលើផ្ទាំងទិដ្ឋភាពទូទៅ វាគួរចេញ
+     នៅពេលចុចបើកចូលកម្មវិធី» ⇒ មិនបើកដោយខ្លួនឯងទៀតទេ ។ គ្រាន់តែដាក់ទង់ ;
+     អ្នកយាមខាងក្រោមទើបបើក បន្ទាប់ពីផ្ទាំងជ្រើសសហគ្រាសបិទរួច ។ */
+  try{ window.__rscJustOpened = true; }catch(e){}
 
   let msg = updatedStores.length
     ? "✓ បានបែងចែកដោយស្វ័យប្រវត្តិ៖ " + updatedStores.map(s=> `${labelMap[s]} (${buckets[s].length} ${s==="mtrFiles"?"ឯកសារ":"ជួរ"})`).join(", ")
@@ -26780,6 +26778,8 @@ function rscSetupWizardOpen(){
 
   var TOTAL = 5;
   var step = 1;
+  var dir = 1;      /* ១ = ទៅមុខ · -១ = ថយក្រោយ ( ប្រើពេលរំលងជំហាន ) */
+  var lastN = -1;   /* ចំនួនកម្មវិធីដែលតារាងបានសង់ចុងក្រោយ */
 
   function close(){ try{ ov.remove(); }catch(e){} }
   /* ⚠ សម្គាល់ថា «អតបនេះរៀបចំរួច» ⇒ ផ្ទាំងនេះលោតតែម្តងក្នុងមួយសហគ្រាស ។
@@ -26823,7 +26823,7 @@ function rscSetupWizardOpen(){
   function txt(id, val, ph){
     return '<input id="' + id + '" type="text" value="' + esc2(val) + '"'
       + (ph ? ' placeholder="' + esc2(ph) + '"' : '')
-      + ' style="' + INP + (String(val || '').trim() ? '' : ' background:#FFFBEA;') + '">';
+      + ' style="' + INP + (String(val || '').trim() ? '' : ' background:#FFE4EF;') + '">';
   }
   /* [stated] ២០២៦-០៨-២៨ ៖ «ផ្នែកទី៨ និងទី៩ ប្រើលេខឡាតាំង DD-MM-YYYY» ។
      ប្រភពមកច្រើនទម្រង់ ៖ «០៣ ឧសភា ២០២៤» ( ខ្មែរ ) · «2024-04-25» ( ISO ) ·
@@ -26878,6 +26878,73 @@ function rscSetupWizardOpen(){
   function V(id){ var e = document.getElementById(id); return e ? String(e.value || '').trim() : ''; }
 
   function progCount(){ return Math.max(1, Math.min(6, parseInt(getDE('programCount'), 10) || 1)); }
+
+  /* [stated] ២០២៦-០៨-២៨ ៖ «នៅពេលរើសកម្មវិធីសវនកម្ម ១ ឬ ២ ឬ ៣ ឱ្យរើសឆ្នាំ
+     Pcode រហូតដល់លេខ DT ឱ្យហើយ ។ និងកន្លែងព័ត៌មានកម្មវិធីចេញដើម្បីពិនិត្យ
+     មើលឡើងវិញ» ⇒ តារាងតែមួយ ប្រើ ២ កន្លែង ៖ បំពេញនៅជំហាន ៣ ·
+     ពិនិត្យឡើងវិញនៅជំហានចុងក្រោយ ។ លេខសោរដូចគ្នា ⇒ ទិន្នន័យតែមួយ ។
+     ⚠ តារាងទាំងពីរមិនដែលនៅលើអេក្រង់ក្នុងពេលតែមួយទេ ⇒ id មិនជាន់គ្នា ។ */
+  function pTableHtml(n, closing){
+    var TH = 'text-align:center; padding:5px 4px;';
+    var CELL = 'width:100%; min-width:0; max-width:100%; padding:5px 6px; font:inherit;'
+      + 'font-size:12.5px; border:1px solid #e0dbcc; border-radius:5px; box-sizing:border-box;'
+      + '-webkit-appearance:none; appearance:none;';
+    var LBL = ['', 'កម្មវិធីទី១', 'កម្មវិធីទី២', 'កម្មវិធីទី៣', 'កម្មវិធីទី៤', 'កម្មវិធីទី៥', 'កម្មវិធីទី៦'];
+    var s = '<div style="overflow:auto; -webkit-overflow-scrolling:touch;">'
+      + '<table style="width:100%; min-width:' + (closing ? '760' : '660')
+      + 'px; table-layout:fixed; border-collapse:collapse; font-size:12.5px;">'
+      + '<colgroup><col style="width:78px"><col style="width:112px"><col style="width:104px">'
+      + '<col style="width:86px"><col style="width:112px"><col style="width:130px">'
+      + (closing ? '<col style="width:100px">' : '') + '</colgroup><thead><tr>'
+      + '<th style="' + TH + '">កម្មវិធី</th><th style="' + TH + '">ការិយសវនកម្ម</th>'
+      + '<th style="' + TH + '">PCode</th><th style="' + TH + '">P កម្មវិធី</th>'
+      + '<th style="' + TH + '">លេខជូនដំណឹង</th><th style="' + TH + '">ថ្ងៃលិខិត</th>'
+      + (closing ? '<th style="' + TH + '">លេខ DT</th>' : '') + '</tr></thead><tbody>';
+    for(var i = 1; i <= n; i++){
+      s += '<tr><td style="padding:3px 4px; white-space:nowrap;">' + LBL[i] + '</td>'
+        + '<td style="padding:3px;"><input id="w_pp_' + i + '" type="text" value="'
+          + esc2(getDE('prog_period_' + i) || getDE('auditPeriod')) + '" style="' + CELL + '"></td>'
+        + '<td style="padding:3px;"><input id="w_pc_' + i + '" type="text" value="'
+          + esc2(getDE('prog_pcode_' + i)) + '" style="' + CELL + '"></td>'
+        + '<td style="padding:3px;"><input id="w_pt_' + i + '" type="text" value="'
+          + esc2(getDE('prog_ptype_' + i)) + '" placeholder="P1" style="' + CELL + '"></td>'
+        + '<td style="padding:3px;"><input id="w_pn_' + i + '" type="text" value="'
+          + esc2(getDE('prog_noticeNo_' + i)) + '" style="' + CELL + '"></td>'
+        + '<td style="padding:3px;"><input id="w_pd_' + i + '" type="date" value="'
+          + esc2(String(getDE('prog_noticeDate_' + i)).slice(0,10)) + '" style="' + CELL + '"></td>'
+        + (closing ? '<td style="padding:3px;"><input id="w_pdt_' + i + '" type="text" value="'
+          + esc2(getDE('prog_dtNo_' + i)) + '" style="' + CELL + '"></td>' : '')
+        + '</tr>';
+    }
+    return s + '</tbody></table></div>';
+  }
+  var PKEY = { pp:'prog_period_', pc:'prog_pcode_', pt:'prog_ptype_',
+               pn:'prog_noticeNo_', pd:'prog_noticeDate_', pdt:'prog_dtNo_' };
+  function savePTab(n){
+    for(var i = 1; i <= n; i++){
+      for(var k in PKEY){
+        var e = document.getElementById('w_' + k + '_' + i);
+        if(e) setDE(PKEY[k] + i, e.value);
+      }
+    }
+  }
+  /* ⚠ រក្សាទុកភ្លាមតាមការវាយ ដោយ **មិនគូរឡើងវិញ** ។ នេះជាការជួសជុលរបស់
+     [stated] «ពេលចុចកែលេខឆ្នាំ ពេលកែ ១ វាលោតចេញ ១» ៖ មុននេះ oninput ហៅ
+     refresh() ដែលសង់ប្រអប់ថ្មី ⇒ ការផ្តោតបាត់រាល់តួអក្សរ ។ */
+  function bindPTab(n, onYear){
+    for(var i = 1; i <= n; i++){
+      for(var k in PKEY){
+        (function(kk, idx){
+          var e = document.getElementById('w_' + kk + '_' + idx);
+          if(!e) return;
+          e.oninput = function(){
+            setDE(PKEY[kk] + idx, e.value);
+            if(kk === 'pp' && onYear) onYear(idx, e.value);
+          };
+        })(k, i);
+      }
+    }
+  }
   function isClosing(){ var a = String(getDE('wizAuditType') || ''); return a.indexOf('បិទ') >= 0 || a.indexOf('ជម្រះ') >= 0; }
 
   function render(){
@@ -26913,16 +26980,16 @@ function rscSetupWizardOpen(){
     }
 
     else if(step === 3){
+      /* [stated] ២០២៦-០៨-២៨ ៖ លំដាប់សំណួរដែលគេចង់បាន ៖
+         ១ បែបណា ( ធម្មតា · បិទ · ជម្រះ ) → ២ ប៉ុន្មានកម្មវិធី →
+         តារាងបំពេញឆ្នាំ · Pcode … លេខ DT → ៣ ធម្មតា ឬចម្រុះ ។ */
       html += h('កម្មវិធីសវនកម្ម', 'សំណួរអំពីកម្មវិធីនៃការិយបរិច្ឆេទនេះ។');
-      html += row('តើមានប៉ុន្មានកម្មវិធី?', sel('w_pcount', ['1','2','3','4','5','6'], String(progCount())));
-      /* [stated] ២០២៦-០៨-២៨ ៖ «ករណីកម្មវិធីលើសពី ១ ត្រូវសួរកម្មវិធីទី១ ឆ្នាំណា
-         ទី២ ឆ្នាំណា» ⇒ សួរនៅទីនេះ មុនសំណួរចម្រុះ ⇒ បញ្ជីធីកបង្ហាញឆ្នាំ ហើយ
-         តារាងចុងក្រោយមានឆ្នាំស្រាប់ ។ */
-      html += '<div id="w_years"></div>';
-      html += row('តើជាកម្មវិធីបែបណា?',
+      html += row('១. តើកម្មវិធីសវនកម្មបែបណា?',
         sel('w_atype', ['ធម្មតា','ជម្រះ','សុំបិទ'], getDE('wizAuditType') || 'ធម្មតា'));
       html += '<div id="w_adate_box">' + row('ថ្ងៃខែឆ្នាំ សុំបិទ ឬជម្រះ', dat('w_adate', getDE('auditTypeDate'))) + '</div>';
-      html += row('តើកម្មវិធីធម្មតា ឬចម្រុះ?',
+      html += row('២. តើមានប៉ុន្មានកម្មវិធី?', sel('w_pcount', ['1','2','3','4','5','6'], String(progCount())));
+      html += '<div id="w_ptab" style="margin:6px 0 10px;"></div>';
+      html += row('៣. តើកម្មវិធីធម្មតា ឬចម្រុះ?',
         sel('w_ptype', ['កម្មវិធីធម្មតា','កម្មវិធីចម្រុះ'], getDE('programType') || 'កម្មវិធីធម្មតា'));
       html += '<div id="w_mix_box">'
         + row('តើមានសវនករចម្រុះប៉ុន្មាននាក់?',
@@ -26933,7 +27000,7 @@ function rscSetupWizardOpen(){
 
     else if(step === 4){
       var mixed = (getDE('programType') === 'កម្មវិធីចម្រុះ');
-      if(!mixed){ step = 5; render(); return; }
+      if(!mixed){ step = (dir < 0 ? 3 : 5); render(); return; }
       var mc = Math.max(1, Math.min(6, parseInt(getDE('mixedAuditorCount'), 10) || 1));
       var pairs = Math.ceil(mc / 2);
       html += h('សវនករចម្រុះ', 'ឈ្មោះ និងនាយកដ្ឋាន ឬសាខាដែលមកពី។');
@@ -26956,28 +27023,14 @@ function rscSetupWizardOpen(){
 
     else {
       var n = progCount(), i;
-      html += h('ព័ត៌មានកម្មវិធី', 'មួយជួរក្នុងមួយកម្មវិធី។');
+      html += h('ព័ត៌មានកម្មវិធី', 'ពិនិត្យមើលឡើងវិញ — បើខុសអាចកែនៅទីនេះបាន។');
       /* [stated] ២០២៦-០៨-២៨ ៖ ក្បាលតារាងដាក់ចំកណ្តាល ; ហើយប្រអប់ថ្ងៃលិខិត
          ហៀរទៅជាន់ជួរ DT ។
          ⚠ ដំណោះស្រាយ ៖ table-layout:fixed + min-width លើតារាង ⇒ ជួរឈរមិន
            អាចលូតលើសទទឹងដែលកំណត់ ហើយប្រអប់ខាងក្នុងត្រូវ min-width:0 ⇒
            input មិនរុញជួរឈររបស់វា ។ ការរមូរផ្តេកទទួលបន្ទុកនៅខាងក្រៅ ។ */
-      var TH = 'text-align:center; padding:5px 4px;';
-      html += '<div style="overflow:auto; -webkit-overflow-scrolling:touch;">'
-        + '<table style="width:100%; min-width:' + (isClosing() ? '760' : '660')
-        + 'px; table-layout:fixed; border-collapse:collapse; font-size:12.5px;">'
-        + '<colgroup><col style="width:78px"><col style="width:112px"><col style="width:104px">'
-        + '<col style="width:86px"><col style="width:112px"><col style="width:130px">'
-        + (isClosing() ? '<col style="width:100px">' : '') + '</colgroup>'
-        + '<thead><tr>'
-        + '<th style="' + TH + '">កម្មវិធី</th>'
-        + '<th style="' + TH + '">ការិយសវនកម្ម</th>'
-        + '<th style="' + TH + '">PCode</th>'
-        + '<th style="' + TH + '">P កម្មវិធី</th>'
-        + '<th style="' + TH + '">លេខជូនដំណឹង</th>'
-        + '<th style="' + TH + '">ថ្ងៃលិខិត</th>'
-        + (isClosing() ? '<th style="' + TH + '">លេខ DT</th>' : '')
-        + '</tr></thead><tbody>';
+      html += pTableHtml(n, isClosing());
+      html += '<div style="display:none">';
       var LBL = ['', 'កម្មវិធីទី១', 'កម្មវិធីទី២', 'កម្មវិធីទី៣', 'កម្មវិធីទី៤', 'កម្មវិធីទី៥', 'កម្មវិធីទី៦'];
       var CELL = 'width:100%; min-width:0; max-width:100%; padding:5px 6px; font:inherit;'
         + 'font-size:12.5px; border:1px solid #e0dbcc; border-radius:5px; box-sizing:border-box;'
@@ -27037,6 +27090,7 @@ function rscSetupWizardOpen(){
       setCV('programAuditType', ex.auditType);
       if(at === 'ធម្មតា'){ setCV('auditTypeChoice', ''); setCV('auditTypeDate', ''); }
       else { setCV('auditTypeChoice', at); setCV('auditTypeDate', V('w_adate')); }
+      savePTab(Math.max(1, Math.min(6, parseInt(V('w_pcount'), 10) || 1)));
       if(V('w_ptype') === 'កម្មវិធីចម្រុះ'){
         setDE('mixedAuditorCount', V('w_mcount'));
         var n3 = progCount();
@@ -27052,29 +27106,22 @@ function rscSetupWizardOpen(){
       for(var k = 1; k <= mc; k++){ if(document.getElementById('w_ma_' + k)) setDE('mixedAuditor_' + k, V('w_ma_' + k)); }
       for(var p2 = 1; p2 <= Math.ceil(mc / 2); p2++){ if(document.getElementById('w_md_' + p2)) setDE('mixedDept_' + p2, V('w_md_' + p2)); }
     }
-    else {
-      var n2 = progCount();
-      for(var j = 1; j <= n2; j++){
-        setDE('prog_period_' + j, V('w_pp_' + j));
-        setDE('prog_pcode_' + j, V('w_pc_' + j));
-        setDE('prog_ptype_' + j, V('w_pt_' + j));
-        setDE('prog_noticeNo_' + j, V('w_pn_' + j));
-        setDE('prog_noticeDate_' + j, V('w_pd_' + j));
-        if(document.getElementById('w_pdt_' + j)) setDE('prog_dtNo_' + j, V('w_pdt_' + j));
-      }
-    }
+    else { savePTab(progCount()); }
   }
 
   function wire(){
     var sk = document.getElementById('wizSkip');
     if(sk) sk.onclick = function(){ markDone(); close(); try{ renderAll(); }catch(e){} };
     var bk = document.getElementById('wizBack');
-    if(bk) bk.onclick = function(){ saveStep(); step = Math.max(1, step - 1); render(); };
+    /* ⚠ [stated] ២០២៦-០៨-២៨ ៖ «មកដល់ផ្ទាំងព័ត៌មានកម្មវិធី មិនអាចចុចថយក្រោយ
+       បាន» ។ មូលហេតុ ៖ ជំហាន ៤ ( សវនករចម្រុះ ) រំលងខ្លួនឯងដោយ step = 5
+       ជានិច្ច ⇒ ថយពី ៥ ទៅ ៤ រួចលោតមក ៥ វិញភ្លាម ។ ⇒ ត្រូវចាំទិសដៅ ។ */
+    if(bk) bk.onclick = function(){ saveStep(); dir = -1; step = Math.max(1, step - 1); render(); };
     var nx = document.getElementById('wizNext');
     if(nx) nx.onclick = function(){
       saveStep();
       if(step >= TOTAL){ markDone(); close(); try{ renderAll(); }catch(e){} return; }
-      step++; render();
+      dir = 1; step++; render();
     };
 
     if(step === 2){
@@ -27099,29 +27146,17 @@ function rscSetupWizardOpen(){
         if(mb) mb.style.display = mix ? '' : 'none';
         var n = Math.max(1, Math.min(6, parseInt(V('w_pcount'), 10) || 1));
 
-        /* ការិយសវនកម្មរបស់កម្មវិធីនីមួយៗ ⇒ រក្សាទុកភ្លាមតាម input
-           ដូច្នេះការគូរឡើងវិញមិនបាត់អ្វីដែលវាយទេ ។ */
-        var yb = document.getElementById('w_years');
-        if(yb){
-          if(n < 2){ yb.innerHTML = ''; }
-          else {
-            var ys = '<div style="font-size:12.5px; color:#4a5250; margin:8px 0 4px;">'
-              + 'ការិយសវនកម្មរបស់កម្មវិធីនីមួយៗ</div>';
-            for(var q = 1; q <= n; q++){
-              ys += '<div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">'
-                + '<span style="font-size:13px; min-width:86px;">កម្មវិធីទី' + q + '</span>'
-                + '<input id="w_py_' + q + '" type="text" value="'
-                + esc2(getDE('prog_period_' + q) || getDE('auditPeriod'))
-                + '" placeholder="2022-2023" style="' + INP + ' flex:1; min-width:0;"></div>';
-            }
-            yb.innerHTML = ys;
-            for(var q2 = 1; q2 <= n; q2++){
-              (function(k){
-                var e2 = document.getElementById('w_py_' + k);
-                if(e2) e2.oninput = function(){ setDE('prog_period_' + k, e2.value); refresh(); };
-              })(q2);
-            }
-          }
+        /* ⚠ សង់តារាងឡើងវិញ **តែពេលចំនួនកម្មវិធីប្តូរ** ។ ការសង់ឡើងវិញរាល់
+           ការវាយ គឺជាមូលហេតុដែលការផ្តោតលោតចេញ ។ */
+        var tb = document.getElementById('w_ptab');
+        if(tb && n !== lastN){
+          savePTab(lastN > 0 ? lastN : 0);
+          tb.innerHTML = pTableHtml(n, closing);
+          bindPTab(n, function(idx, val){
+            var sp = document.getElementById('w_kyr_' + idx);
+            if(sp) sp.textContent = val;
+          });
+          lastN = n;
         }
 
         var wh = document.getElementById('w_which');
@@ -27130,9 +27165,11 @@ function rscSetupWizardOpen(){
         var s = '<div style="font-size:12.5px; color:#4a5250; margin-top:6px;">តើកម្មវិធីណាខ្លះជាចម្រុះ?</div>';
         for(var i = 1; i <= n; i++){
           var on = (getDE('prog_kind_' + i) || (i === 1 ? 'ចម្រុះ' : 'ធម្មតា')) === 'ចម្រុះ';
+          var yv = document.getElementById('w_pp_' + i);
           s += '<label style="display:inline-flex; align-items:center; gap:5px; margin:4px 12px 0 0; font-size:13px;">'
             + '<input type="checkbox" id="w_kind_' + i + '"' + (on ? ' checked' : '') + '> កម្មវិធីទី' + i
-            + ' <span style="color:#9aa3a0;">' + esc2(getDE('prog_period_' + i) || '') + '</span></label>';
+            + ' <span id="w_kyr_' + i + '" style="color:#9aa3a0;">'
+            + esc2((yv ? yv.value : '') || getDE('prog_period_' + i) || '') + '</span></label>';
         }
         wh.innerHTML = s;
       };
@@ -27173,6 +27210,11 @@ function rscWizTin(){
     if(tries > 400){ clearInterval(iv); return; }
     try{
       if(document.getElementById('rscSetupWiz')) return;
+      /* ⚠ ផ្ទាំងជ្រើសសហគ្រាសនៅបើក ⇒ រង់ចាំ ។ ការបិទរបស់វា = «បានចុចបើក» ។ */
+      var gate = document.getElementById('co-gate');
+      if(gate && gate.offsetParent !== null){ window.__rscGateSeen = true; return; }
+      /* មិនដែលបើកសហគ្រាសក្នុងវេននេះទេ ⇒ កុំលោតលើផ្ទាំងទិដ្ឋភាពទូទៅ */
+      if(!window.__rscJustOpened && !window.__rscGateSeen) return;
       var tin = rscWizTin();
       if(!tin) return;
       if(String(getDE('wizDoneTin') || '') === tin) return;
