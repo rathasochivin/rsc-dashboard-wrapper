@@ -3127,7 +3127,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
      ⭐ 'Khmer OS Muol Light' មាន face តែ ៤០០ ⇒ ៧០០ ធ្វើអោយកម្មវិធីរុករក
        សំយោគអក្សរដិតដោយខ្លួនឯង (faux bold) ដែលមើលទៅក្រាស់ស្រពិចស្រពិល។
      ⚠ ធ្វើតែពេលព្រីន ⇒ លើអេក្រង់នៅដិតដដែល។ */
-  /* RSCBUILD-WIZARD16 */
+  /* RSCBUILD-WIZARD18 */
   #mtr-embed .mtr-form-title,
   #mtr-embed .mtr-form-meta .val,
   #mtr-embed .mtr-filled,
@@ -26796,7 +26796,12 @@ function rscSetupWizardOpen(){
   ov.style.cssText = 'position:fixed; inset:0; z-index:2147483200; background:rgba(8,26,27,.62);'
     + 'display:flex; align-items:flex-start; justify-content:center; overflow:auto; padding:22px 14px;';
   var card = document.createElement('div');
-  card.style.cssText = 'background:#fff; color:#171B1A; border-radius:12px; width:100%; max-width:760px;'
+  /* [stated] ២០២៦-០៨-២៨ ៖ «អាចពង្រីកផ្ទាំង POPUP ឱ្យធំជាងនឹងបន្តិច ដើម្បី
+     អាចបំពេញផ្នែក DT បាន ដោយមិនចាំបាច់អូសទៅខាងស្តាំ» ។
+     តារាងត្រូវការ ៧៦០px ពេលមានជួរ DT ; ជាមួយ padding ២២px សងខាង
+     ⇒ ៧៦០ + ៤៤ = ៨០៤ ជាអប្បបរមា ។ ១០៤០ ផ្តល់ចន្លោះបន្ថែមគ្រប់គ្រាន់ ។
+     ⚠ width:100% នៅដដែល ⇒ លើទូរស័ព្ទវានៅតែសមនឹងអេក្រង់ ។ */
+  card.style.cssText = 'background:#fff; color:#171B1A; border-radius:12px; width:100%; max-width:1040px;'
     + 'padding:20px 22px 16px; font-family:inherit; font-size:14px; line-height:1.8;'
     + 'box-shadow:0 30px 70px rgba(0,0,0,.4);';
   ov.appendChild(card);
@@ -26811,6 +26816,19 @@ function rscSetupWizardOpen(){
   /* ⚠ សម្គាល់ថា «អតបនេះរៀបចំរួច» ⇒ ផ្ទាំងនេះលោតតែម្តងក្នុងមួយសហគ្រាស ។
      រក្សាទុកតាមលេខអតប មិនមែនតាមទង់ធម្មតា ⇒ ប្តូរសហគ្រាសថ្មី វាលោតវិញ ។ */
   function markDone(){ try{ setDE('wizDoneTin', rscWizTin() || '1'); }catch(e){} }
+  /* ⭐ ការចេញពីបញ្ជីសហគ្រាសកើតឡើង **តែនៅទីនេះ** ៖ ឈ្មោះប៊ូតុង
+     «បើកចូលកម្មវិធី» សន្យាថានឹងនាំចូល ⇒ វាត្រូវនាំចូលពិត ។
+     ⚠ ធ្វើតែពេលការ upload ចាប់ផ្តើមពីក្នុងផ្ទាំងនោះ ⇒ ការបើកតាមផ្លូវ
+       ធម្មតា ( ចុច «បើក →» ) មិនប៉ះពាល់ ព្រោះផ្ទាំងបិទរួចទៅហើយ ។ */
+  function leaveGate(){
+    try{
+      if(!window.__rscUploadFromGate) return;
+      window.__rscUploadFromGate = false;
+      var g = document.getElementById('co-gate');
+      if(g) g.style.display = 'none';
+      if(typeof showView === 'function') showView('dashboard');
+    }catch(e){}
+  }
   function esc2(s){ return String(s == null ? '' : s)
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
@@ -27137,7 +27155,7 @@ function rscSetupWizardOpen(){
 
   function wire(){
     var sk = document.getElementById('wizSkip');
-    if(sk) sk.onclick = function(){ markDone(); close(); try{ renderAll(); }catch(e){} };
+    if(sk) sk.onclick = function(){ markDone(); close(); leaveGate(); try{ renderAll(); }catch(e){} };
     var bk = document.getElementById('wizBack');
     /* ⚠ [stated] ២០២៦-០៨-២៨ ៖ «មកដល់ផ្ទាំងព័ត៌មានកម្មវិធី មិនអាចចុចថយក្រោយ
        បាន» ។ មូលហេតុ ៖ ជំហាន ៤ ( សវនករចម្រុះ ) រំលងខ្លួនឯងដោយ step = 5
@@ -27146,7 +27164,7 @@ function rscSetupWizardOpen(){
     var nx = document.getElementById('wizNext');
     if(nx) nx.onclick = function(){
       saveStep();
-      if(step >= TOTAL){ markDone(); close(); try{ renderAll(); }catch(e){} return; }
+      if(step >= TOTAL){ markDone(); close(); leaveGate(); try{ renderAll(); }catch(e){} return; }
       dir = 1; step++; render();
     };
 
@@ -27236,9 +27254,14 @@ function rscWizTin(){
     if(tries > 400){ clearInterval(iv); return; }
     try{
       if(document.getElementById('rscSetupWiz')) return;
-      /* ⚠ ផ្ទាំងជ្រើសសហគ្រាសនៅបើក ⇒ រង់ចាំ ។ ការបិទរបស់វា = «បានចុចបើក» ។ */
+      /* ⚠ ផ្ទាំងជ្រើសសហគ្រាសនៅបើក ⇒ រង់ចាំ ។ ការបិទរបស់វា = «បានចុចបើក» ។
+         ⭐ លើកលែងតែការ upload ដែលទើបចាប់ផ្តើមពីក្នុងផ្ទាំងនោះ ៖ ក្នុងករណី
+           នោះផ្ទាំងណែនាំត្រូវលេច **នៅលើ** បញ្ជីសហគ្រាស តាមសំណើរបស់គេ ។ */
       var gate = document.getElementById('co-gate');
-      if(gate && gate.offsetParent !== null){ window.__rscGateSeen = true; return; }
+      if(gate && gate.offsetParent !== null){
+        window.__rscGateSeen = true;
+        if(!window.__rscUploadFromGate) return;
+      }
       /* មិនដែលបើកសហគ្រាសក្នុងវេននេះទេ ⇒ កុំលោតលើផ្ទាំងទិដ្ឋភាពទូទៅ */
       if(!window.__rscJustOpened && !window.__rscGateSeen) return;
       var tin = rscWizTin();
@@ -47162,7 +47185,15 @@ function pkTime(f){
       var inp = document.getElementById('auto-folder-input');
       if(!inp){ say('រកប្រអប់ផ្ទុកឯកសារមិនឃើញ — សូមផ្ទុកទំព័រឡើងវិញ', true); return; }
       try{ inp.click(); }catch(e){ say('មិនអាចបើកប្រអប់ជ្រើសឯកសារបានទេ', true); return; }
-      hide();
+      /* ⭐⭐ [stated] ២០២៦-០៨-២៨ ៖ «ករណី Upload ឯកសារ ពេលចុច វាចូលទៅ
+         ទិដ្ឋភាពទូទៅ ; វាគួរស្ថិតនៅក្នុងផ្ទាំងទី ១ សិន ពេលបំពេញព័ត៌មានរួច
+         និងចុចចូល ចាំទៅកាន់ផ្ទាំងទី ២» ⇒ **មិនបិទផ្ទាំងជ្រើសសហគ្រាសទេ** ។
+         ផ្ទាំងណែនាំលេចនៅពីលើវា ( z-index ខ្ពស់ជាង ) ហើយការចុច
+         «✓ បើកចូលកម្មវិធី» ទើបបិទផ្ទាំង និងនាំទៅទិដ្ឋភាពទូទៅ ។
+         ⚠ ផលចំណេញបន្ថែម ៖ បើអ្នកប្រើបោះបង់ប្រអប់ជ្រើសឯកសារ គេនៅតែ
+           ស្ថិតក្នុងបញ្ជីសហគ្រាស មិនត្រូវបោះចោលទៅផ្ទាំងទទេឡើយ ។ */
+      window.__rscUploadFromGate = true;
+      say('សូមជ្រើសឯកសារ — បន្ទាប់មកផ្ទាំងបំពេញព័ត៌មាននឹងលេចឡើង');
       return;
     }
     /* ── ផ្លូវទូរស័ព្ទ ៖ ជ្រើសឯកសារ Excel ដោយផ្ទាល់ ─────────────────── */
@@ -47177,7 +47208,7 @@ function pkTime(f){
           say('មិនបានជ្រើសឯកសារទេ', true);
           return;
         }
-        hide();
+        window.__rscUploadFromGate = true;   /* ដូចផ្លូវកុំព្យូទ័រ ៖ មិនបិទផ្ទាំង */
         try{ handleAutoFileImport(ev); }
         catch(e){ say('នាំចូលមិនបាន ៖ ' + ((e && e.message) || e), true); }
       };
