@@ -3101,7 +3101,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
      ⭐ 'Khmer OS Muol Light' មាន face តែ ៤០០ ⇒ ៧០០ ធ្វើអោយកម្មវិធីរុករក
        សំយោគអក្សរដិតដោយខ្លួនឯង (faux bold) ដែលមើលទៅក្រាស់ស្រពិចស្រពិល។
      ⚠ ធ្វើតែពេលព្រីន ⇒ លើអេក្រង់នៅដិតដដែល។ */
-  /* RSCBUILD-WIZARD14 */
+  /* RSCBUILD-WIZARD15 */
   #mtr-embed .mtr-form-title,
   #mtr-embed .mtr-form-meta .val,
   #mtr-embed .mtr-filled,
@@ -26825,9 +26825,36 @@ function rscSetupWizardOpen(){
       + (ph ? ' placeholder="' + esc2(ph) + '"' : '')
       + ' style="' + INP + (String(val || '').trim() ? '' : ' background:#FFFBEA;') + '">';
   }
+  /* [stated] ២០២៦-០៨-២៨ ៖ «ផ្នែកទី៨ និងទី៩ ប្រើលេខឡាតាំង DD-MM-YYYY» ។
+     ប្រភពមកច្រើនទម្រង់ ៖ «០៣ ឧសភា ២០២៤» ( ខ្មែរ ) · «2024-04-25» ( ISO ) ·
+     «25/04/2024» ។ បំប្លែងទាំងអស់ទៅទម្រង់តែមួយ ។
+     ⚠ អ្វីដែលអានមិនចេញ ត្រឡប់ដដែល — មិនបោះចោលអត្ថបទរបស់អ្នកប្រើឡើយ ។ */
+  var KHMON = ['មករា','កុម្ភៈ','មីនា','មេសា','ឧសភា','មិថុនា',
+               'កក្កដា','សីហា','កញ្ញា','តុលា','វិច្ឆិកា','ធ្នូ'];
+  function wizDMY(v){
+    var s = String(v == null ? '' : v).trim();
+    if(!s) return '';
+    s = s.replace(/[០-៩]/g, function(d){ return String(d.charCodeAt(0) - 0x17E0); });
+    var m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if(m) return m[3] + '-' + m[2] + '-' + m[1];
+    m = s.match(/^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{4})/);
+    if(m) return ('0' + m[1]).slice(-2) + '-' + ('0' + m[2]).slice(-2) + '-' + m[3];
+    m = s.match(/(\d{1,2})\s*(?:ខែ)?\s*([\u1780-\u17FF]+)\s*(?:ឆ្នាំ)?\s*(\d{4})/);
+    if(m){
+      for(var i = 0; i < 12; i++){
+        if(m[2].indexOf(KHMON[i]) >= 0){
+          return ('0' + m[1]).slice(-2) + '-' + ('0' + (i + 1)).slice(-2) + '-' + m[3];
+        }
+      }
+    }
+    return s;
+  }
+  /* ⚠ [stated] ២០២៦-០៨-២៨ ៖ «ប្រអប់ថ្ងៃខែឆ្នាំសុំបិទ ឬជម្រះ វែងជាងគេ» ។
+     នៅលើ iOS, input[type=date] យកទទឹងតាមខ្លឹមសាររបស់វា ហើយឡើងធំជាង
+     ប្រអប់ដទៃ ទោះ width:100% ក៏ដោយ ។ min-width:0 បញ្ឈប់វា ។ */
   function dat(id, val){
     return '<input id="' + id + '" type="date" value="' + esc2(String(val || '').slice(0,10))
-      + '" style="' + INP + '">';
+      + '" style="' + INP + ' min-width:0; max-width:100%; -webkit-appearance:none; appearance:none;">';
   }
   function sel(id, opts, cur){
     var s = '<select id="' + id + '" style="' + INP + '">';
@@ -26867,10 +26894,10 @@ function rscSetupWizardOpen(){
       html += '<div style="display:flex; gap:10px;"><div style="flex:1;">'
         + row('៧. លេខទូរស័ព្ទ', txt('w_phone', ci.phone))
         + '</div><div style="flex:1;">' + row('Email', txt('w_email', ci.email)) + '</div></div>';
-      html += '<div style="display:flex; gap:10px;"><div style="flex:1;">'
-        + row('៨. ថ្ងៃចុះបញ្ជីពន្ធដារ', txt('w_taxreg', ci.taxRegDate))
-        + '</div><div style="flex:1;">'
-        + row('៩. ថ្ងៃចុះបញ្ជីពាណិជ្ជកម្ម', txt('w_comreg', ci.commerceRegDate))
+      html += '<div style="display:flex; gap:10px;"><div style="flex:1; min-width:0;">'
+        + row('៨. ថ្ងៃចុះបញ្ជីពន្ធដារ', txt('w_taxreg', wizDMY(ci.taxRegDate)), '(DD-MM-YYYY)')
+        + '</div><div style="flex:1; min-width:0;">'
+        + row('៩. ថ្ងៃចុះបញ្ជីពាណិជ្ជកម្ម', txt('w_comreg', wizDMY(ci.commerceRegDate)), '(DD-MM-YYYY)')
         + '</div></div>';
       html += nav('', 'បន្ទាប់ →');
     }
@@ -26888,6 +26915,10 @@ function rscSetupWizardOpen(){
     else if(step === 3){
       html += h('កម្មវិធីសវនកម្ម', 'សំណួរអំពីកម្មវិធីនៃការិយបរិច្ឆេទនេះ។');
       html += row('តើមានប៉ុន្មានកម្មវិធី?', sel('w_pcount', ['1','2','3','4','5','6'], String(progCount())));
+      /* [stated] ២០២៦-០៨-២៨ ៖ «ករណីកម្មវិធីលើសពី ១ ត្រូវសួរកម្មវិធីទី១ ឆ្នាំណា
+         ទី២ ឆ្នាំណា» ⇒ សួរនៅទីនេះ មុនសំណួរចម្រុះ ⇒ បញ្ជីធីកបង្ហាញឆ្នាំ ហើយ
+         តារាងចុងក្រោយមានឆ្នាំស្រាប់ ។ */
+      html += '<div id="w_years"></div>';
       html += row('តើជាកម្មវិធីបែបណា?',
         sel('w_atype', ['ធម្មតា','ជម្រះ','សុំបិទ'], getDE('wizAuditType') || 'ធម្មតា'));
       html += '<div id="w_adate_box">' + row('ថ្ងៃខែឆ្នាំ សុំបិទ ឬជម្រះ', dat('w_adate', getDE('auditTypeDate'))) + '</div>';
@@ -26926,19 +26957,31 @@ function rscSetupWizardOpen(){
     else {
       var n = progCount(), i;
       html += h('ព័ត៌មានកម្មវិធី', 'មួយជួរក្នុងមួយកម្មវិធី។');
-      html += '<div style="overflow:auto;"><table style="width:100%; border-collapse:collapse; font-size:12.5px;">'
+      /* [stated] ២០២៦-០៨-២៨ ៖ ក្បាលតារាងដាក់ចំកណ្តាល ; ហើយប្រអប់ថ្ងៃលិខិត
+         ហៀរទៅជាន់ជួរ DT ។
+         ⚠ ដំណោះស្រាយ ៖ table-layout:fixed + min-width លើតារាង ⇒ ជួរឈរមិន
+           អាចលូតលើសទទឹងដែលកំណត់ ហើយប្រអប់ខាងក្នុងត្រូវ min-width:0 ⇒
+           input មិនរុញជួរឈររបស់វា ។ ការរមូរផ្តេកទទួលបន្ទុកនៅខាងក្រៅ ។ */
+      var TH = 'text-align:center; padding:5px 4px;';
+      html += '<div style="overflow:auto; -webkit-overflow-scrolling:touch;">'
+        + '<table style="width:100%; min-width:' + (isClosing() ? '760' : '660')
+        + 'px; table-layout:fixed; border-collapse:collapse; font-size:12.5px;">'
+        + '<colgroup><col style="width:78px"><col style="width:112px"><col style="width:104px">'
+        + '<col style="width:86px"><col style="width:112px"><col style="width:130px">'
+        + (isClosing() ? '<col style="width:100px">' : '') + '</colgroup>'
         + '<thead><tr>'
-        + '<th style="text-align:left; padding:4px;">កម្មវិធី</th>'
-        + '<th style="text-align:left; padding:4px;">ការិយសវនកម្ម</th>'
-        + '<th style="text-align:left; padding:4px;">PCode</th>'
-        + '<th style="text-align:left; padding:4px;">P កម្មវិធី</th>'
-        + '<th style="text-align:left; padding:4px;">លេខជូនដំណឹង</th>'
-        + '<th style="text-align:left; padding:4px;">ថ្ងៃលិខិត</th>'
-        + (isClosing() ? '<th style="text-align:left; padding:4px;">លេខ DT</th>' : '')
+        + '<th style="' + TH + '">កម្មវិធី</th>'
+        + '<th style="' + TH + '">ការិយសវនកម្ម</th>'
+        + '<th style="' + TH + '">PCode</th>'
+        + '<th style="' + TH + '">P កម្មវិធី</th>'
+        + '<th style="' + TH + '">លេខជូនដំណឹង</th>'
+        + '<th style="' + TH + '">ថ្ងៃលិខិត</th>'
+        + (isClosing() ? '<th style="' + TH + '">លេខ DT</th>' : '')
         + '</tr></thead><tbody>';
       var LBL = ['', 'កម្មវិធីទី១', 'កម្មវិធីទី២', 'កម្មវិធីទី៣', 'កម្មវិធីទី៤', 'កម្មវិធីទី៥', 'កម្មវិធីទី៦'];
-      var CELL = 'width:100%; padding:5px 6px; font:inherit; font-size:12.5px; border:1px solid #e0dbcc;'
-        + 'border-radius:5px; box-sizing:border-box;';
+      var CELL = 'width:100%; min-width:0; max-width:100%; padding:5px 6px; font:inherit;'
+        + 'font-size:12.5px; border:1px solid #e0dbcc; border-radius:5px; box-sizing:border-box;'
+        + '-webkit-appearance:none; appearance:none;';
       for(i = 1; i <= n; i++){
         html += '<tr><td style="padding:3px 4px; white-space:nowrap;">' + LBL[i] + '</td>'
           + '<td style="padding:3px;"><input id="w_pp_' + i + '" type="text" value="'
@@ -26970,11 +27013,11 @@ function rscSetupWizardOpen(){
       setCV('companyAddress', V('w_addr'));
       setCV('businessActivityOverride', V('w_act'));
       setCV('legalForm', V('w_legal'));
-      setCV('taxRegDate', V('w_taxreg'));
+      setCV('taxRegDate', wizDMY(V('w_taxreg')));
       ex.latinName = V('w_latin');
       ex.phone = V('w_phone');
       ex.email = V('w_email');
-      ex.commerceRegDate = V('w_comreg');
+      ex.commerceRegDate = wizDMY(V('w_comreg'));
       try{ saveState(); }catch(e){}
     }
     else if(step === 2){
@@ -27054,9 +27097,35 @@ function rscSetupWizardOpen(){
         var mix = (V('w_ptype') === 'កម្មវិធីចម្រុះ');
         var mb = document.getElementById('w_mix_box');
         if(mb) mb.style.display = mix ? '' : 'none';
+        var n = Math.max(1, Math.min(6, parseInt(V('w_pcount'), 10) || 1));
+
+        /* ការិយសវនកម្មរបស់កម្មវិធីនីមួយៗ ⇒ រក្សាទុកភ្លាមតាម input
+           ដូច្នេះការគូរឡើងវិញមិនបាត់អ្វីដែលវាយទេ ។ */
+        var yb = document.getElementById('w_years');
+        if(yb){
+          if(n < 2){ yb.innerHTML = ''; }
+          else {
+            var ys = '<div style="font-size:12.5px; color:#4a5250; margin:8px 0 4px;">'
+              + 'ការិយសវនកម្មរបស់កម្មវិធីនីមួយៗ</div>';
+            for(var q = 1; q <= n; q++){
+              ys += '<div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">'
+                + '<span style="font-size:13px; min-width:86px;">កម្មវិធីទី' + q + '</span>'
+                + '<input id="w_py_' + q + '" type="text" value="'
+                + esc2(getDE('prog_period_' + q) || getDE('auditPeriod'))
+                + '" placeholder="2022-2023" style="' + INP + ' flex:1; min-width:0;"></div>';
+            }
+            yb.innerHTML = ys;
+            for(var q2 = 1; q2 <= n; q2++){
+              (function(k){
+                var e2 = document.getElementById('w_py_' + k);
+                if(e2) e2.oninput = function(){ setDE('prog_period_' + k, e2.value); refresh(); };
+              })(q2);
+            }
+          }
+        }
+
         var wh = document.getElementById('w_which');
         if(!wh) return;
-        var n = Math.max(1, Math.min(6, parseInt(V('w_pcount'), 10) || 1));
         if(!mix || n < 2){ wh.innerHTML = ''; return; }
         var s = '<div style="font-size:12.5px; color:#4a5250; margin-top:6px;">តើកម្មវិធីណាខ្លះជាចម្រុះ?</div>';
         for(var i = 1; i <= n; i++){
