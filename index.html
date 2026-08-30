@@ -3121,7 +3121,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
      ⭐ 'Khmer OS Muol Light' មាន face តែ ៤០០ ⇒ ៧០០ ធ្វើអោយកម្មវិធីរុករក
        សំយោគអក្សរដិតដោយខ្លួនឯង (faux bold) ដែលមើលទៅក្រាស់ស្រពិចស្រពិល។
      ⚠ ធ្វើតែពេលព្រីន ⇒ លើអេក្រង់នៅដិតដដែល។ */
-  /* RSCBUILD-MANUAL75 */
+  /* RSCBUILD-GREET77 */
   #mtr-embed .mtr-form-title,
   #mtr-embed .mtr-form-meta .val,
   #mtr-embed .mtr-filled,
@@ -49812,6 +49812,46 @@ function pkTime(f){
   }
 
   function hide(){ if(CG) CG.wrap.style.display = 'none'; }
+  /* ⭐⭐ [stated] ២០២៦-០៨-២៨ ៖ «ផ្នែកឈ្មោះ សហគ្រាសរបស់អ្នក ជួយដាក់ជា
+     បើគេដាក់ឈ្មោះឡាតាំង Hi! XXX បើខ្មែរ សួស្តី កខគ ។ អាចបន្ថែមពាក្យ
+     ស្វាគមន៍មួយចំនួនផង ឱ្យស្របនឹងការងារ» ។
+     ⚠ ការសម្គាល់អក្សរ ៖ ពិនិត្យថាឈ្មោះមាន **អក្សរខ្មែរ** ( U+1780–U+17FF )
+       ⇒ «សួស្តី» ; បើគ្មាន ⇒ «Hi!» ។ ឈ្មោះទទេ ⇒ អត្ថបទដើមវិញ ។
+     ⚠ ពាក្យស្វាគមន៍ជ្រើសតាម **ម៉ោង** មិនមែនចៃដន្យ ⇒ វាមិនប្តូរខ្លួនឯង
+       រាល់ការគូរឡើងវិញ ដែលនឹងមើលទៅដូចកំហុស ។ */
+  function greetTitle(){
+    var el = CG && CG.wrap ? CG.wrap.querySelector('.cg-title') : null;
+    if(!el) return;
+    var nm = '';
+    try{ nm = String(window.__loggedInUserName || '').trim(); }catch(e){}
+    if(!nm) return;                       /* រក្សាចំណងជើងដើម */
+    var isKh = /[\u1780-\u17FF]/.test(nm);
+    el.textContent = (isKh ? 'សួស្តី ' : 'Hi! ') + nm;
+
+    /* [stated] ២០២៦-០៨-២៨ ៖ ព្រំដែនម៉ោងតាមម៉ោងធ្វើការពិត ៖
+         < ១២:០០ ព្រឹក · < ១៦:៣០ រសៀល · < ១៨:៣០ ល្ងាច · ក្រោយនោះ យឺត ។
+       ⚠ ត្រូវរាប់ជា **នាទី** ព្រោះព្រំដែនមាននាទី ( ១៦:៣០ ) ⇒ getHours()
+         តែម្នាក់ឯងមិនគ្រប់គ្រាន់ទេ ។ */
+    var d0 = new Date();
+    var mins = d0.getHours() * 60 + d0.getMinutes();
+    var line = isKh
+      ? (mins < 12 * 60      ? 'អរុណសួស្តី — សូមជ្រើសសហគ្រាសដើម្បីចាប់ផ្តើមការងារ។'
+        : mins < 16 * 60 + 30 ? 'ទិវាសួស្តី — សូមជ្រើសសហគ្រាសដែលត្រូវពិនិត្យ។'
+        : mins < 18 * 60 + 30 ? 'សាយ័ណ្ហសួស្តី — កុំភ្លេចរក្សាទុកការងារមុនចាកចេញ។'
+                              : 'រាត្រីសួស្តី — ធ្វើការយឺតហើយ សូមថែរក្សាសុខភាព។')
+      : (mins < 12 * 60      ? 'Good morning — pick an enterprise to begin.'
+        : mins < 16 * 60 + 30 ? 'Good afternoon — pick the enterprise to review.'
+        : mins < 18 * 60 + 30 ? 'Good evening — remember to save before signing out.'
+                              : 'Working late — take care.');
+    var sub = CG.wrap.querySelector('.cg-greet');
+    if(!sub){
+      sub = document.createElement('div');
+      sub.className = 'cg-greet';
+      sub.style.cssText = 'font-size:12.5px; color:rgba(239,231,210,.72); margin-top:2px;';
+      el.parentNode.insertBefore(sub, el.nextSibling);
+    }
+    sub.textContent = line;
+  }
   function wireSignOut(){
     var b = document.getElementById('cg-signout');
     if(!b || b.__wired) return;
@@ -49848,6 +49888,9 @@ function pkTime(f){
     build();
     load();
     setTimeout(wireSignOut, 0);   /* ⇒ ប៊ូតុងចាកចេញរស់ភ្លាមពេលផ្ទាំងលេច */
+    setTimeout(greetTitle, 0);
+    /* ⚠ ឈ្មោះមកពីម៉ាស៊ីនមេ ⇒ អាចមកយឺតជាងការគូរផ្ទាំង ⇒ សាកម្តងទៀត */
+    setTimeout(greetTitle, 900);
   };
   window.__rscCompanyGateHide = hide;
 })();
