@@ -3095,7 +3095,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
      ⭐ 'Khmer OS Muol Light' មាន face តែ ៤០០ ⇒ ៧០០ ធ្វើអោយកម្មវិធីរុករក
        សំយោគអក្សរដិតដោយខ្លួនឯង (faux bold) ដែលមើលទៅក្រាស់ស្រពិចស្រពិល។
      ⚠ ធ្វើតែពេលព្រីន ⇒ លើអេក្រង់នៅដិតដដែល។ */
-  /* RSCBUILD-ADMIN65 */
+  /* RSCBUILD-ZIP70 */
   #mtr-embed .mtr-form-title,
   #mtr-embed .mtr-form-meta .val,
   #mtr-embed .mtr-filled,
@@ -5813,6 +5813,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
             el.appendChild(txt);
             const out = document.createElement('button');
             out.className = 'atb-btn atb-icon';
+            out.id = 'rscSignOutBtn';   /* ⇒ ផ្ទាំងជ្រើសសហគ្រាសហៅវាឡើងវិញបាន */
             out.title = 'ចាកចេញ';
             out.textContent = '🚪↩';
             out.style.marginLeft = '8px';
@@ -6057,7 +6058,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
           📁 ជ្រើសរើសឯកសារ Excel (ច្រើន)
         </button>
-        <input type="file" id="fileInput" accept=".xlsx" multiple style="display:none;">
+        <input type="file" id="fileInput" accept=".xlsx,.zip" multiple style="display:none;">
       </div>
     </div>
     <div class="step" style="flex:1; display:flex; flex-direction:column; min-height:0;">
@@ -6167,7 +6168,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
       <div class="toolbar-row" style="display:none;" title="ឯកសារត្រូវផ្ទុកតាមប្រអប់ UPLOAD ឯកសារ ដែលមានស្រាប់រួចហើយ">
         <button class="btn primary" id="btnSelectFiles">📄 ជ្រើសរើសឯកសារ (.xlsx)</button>
         <button class="btn primary" id="btnSelectFolder">📁 ជ្រើសរើសថតឯកសារ</button>
-        <input type="file" id="inputFiles" accept=".xlsx" multiple>
+        <input type="file" id="inputFiles" accept=".xlsx,.zip" multiple>
         <input type="file" id="inputFolder" webkitdirectory directory multiple>
         <button class="btn gold" id="btnLoad" disabled>⏳ ផ្ទុកទិន្នន័យ</button>
         <span class="file-chip" id="fileChip">មិនទាន់មានឯកសារជ្រើសរើសទេ</span>
@@ -8074,6 +8075,12 @@ const LOCAL_BACKUP = [
   { exact:  'crossReviewedV1'     }, /* ✓ ក្រុមហ៊ុនដែលពិនិត្យរួច (crosscheck) */
   { exact:  'crossExcludeV1'       }, /* 🚫 ក្រុមហ៊ុនដែលដកចេញដោយដៃ (crosscheck) */
   { exact:  'mtrManualV1'          }, /* 🧾 សាលកបត្រអនុរក្សបញ្ចូលដោយដៃ */
+  /* ⚠⚠ [stated] ២០២៦-០៨-២៨ ៖ «ខ្លាចរក្សាទុកវាមិនជាប់» — ការត្រួតពិនិត្យ
+     រកឃើញថាការងារត្រួតពិនិត្យវិក្កយបត្រ **មិនត្រូវរក្សាទុកមែន** ។
+     វារស់ក្នុង rscInvChk:<អតប>:<ឈ្មោះឯកសារ> ⇒ បិទកម្មវិធីរុករក ឬប្តូរ
+     ម៉ាស៊ីន ⇒ សញ្ញា ✗ · ទឹកប្រាក់ · ចំណាំ · លេខក្រុម **បាត់ទាំងអស់** ។
+     ⇒ បញ្ចូលជា prefix ⇒ គ្រប់ឯកសារ PDF របស់អតបនោះទៅជាមួយសំណុំរឿង ។ */
+  { prefix: 'rscInvChk:'          }, /* 🧾 ការត្រួតពិនិត្យវិក្កយបត្រ */
   /* ⚠ កម្ពស់ទំព័រព្រីនជាការកំណត់របស់ **ឧបករណ៍** មិនមែនរបស់សំណុំរឿងទេ ⇒
      កុំដាក់ក្នុងឯកសាររក្សាទុក បើមិនដូច្នេះទេ ការបើកឯកសារនៅឧបករណ៍មួយ
      នឹងនាំតម្លៃរបស់ឧបករណ៍មួយទៀតមកជាមួយ — នោះជាកំហុសដដែលដែលទើបកែ។ */
@@ -14661,12 +14668,139 @@ function forwardCompanyInfoToTOI(sheet, sourceName){
   }
 }
 
+/* ⭐⭐⭐ [stated] ២០២៦-០៨-២៨ ៖ «បើសិនខ្ញុំប្រើ zip file ដើម្បី upload តើ
+   ប្រព័ន្ធស្គាល់ទេ» ⇒ ឥឡូវស្គាល់ ។
+
+   ⚠⚠ អន្ទាក់សំខាន់បំផុត ៖ **.xlsx គឺជា ZIP រួចទៅហើយ** ។ បើយើងសម្គាល់
+     កញ្ចប់តាមខ្លឹមសារ ( លេខសម្គាល់ PK ) នោះគ្រប់ឯកសារ Excel នឹងត្រូវ
+     ចាត់ជាកញ្ចប់ ហើយប្រព័ន្ធនឹងព្យាយាមបើកវាចេញ ⇒ ការនាំចូលធម្មតាខូច ។
+   ⇒ ច្បាប់ ៖ សម្គាល់តាម **ឈ្មោះឯកសារ .zip** ប៉ុណ្ណោះ ។ ការការពារជាន់ទី ២ ៖
+     បើខាងក្នុងមាន xl/workbook.xml នោះជា .xlsx ដែលដាក់ឈ្មោះខុស ⇒ បញ្ជូន
+     វាទៅដដែល មិនបើកចេញទេ ។
+
+   ⚠ គ្មាន library ថ្មីទេ ៖ DecompressionStream('deflate-raw') មានស្រាប់
+     ក្នុងកម្មវិធីរុករក ( កម្មវិធីនេះប្រើវារួចសម្រាប់ .gz ) ។
+   ⚠ ZIP ដែលមានពាក្យសម្ងាត់ ឬ method ដទៃក្រៅពី ០/៨ ⇒ រំលងដោយប្រាប់ឈ្មោះ
+     មិនមែនបរាជ័យស្ងាត់ ។ */
+async function rscUnzipToFiles(file){
+  var buf = await file.arrayBuffer();
+  var u = new Uint8Array(buf);
+  var dv = new DataView(buf);
+
+  /* រក End of Central Directory ( ស្កេនថយក្រោយ ព្រោះមានចំណាំនៅចុង ) */
+  var eocd = -1;
+  for(var i = u.length - 22; i >= 0 && i >= u.length - 66000; i--){
+    if(dv.getUint32(i, true) === 0x06054b50){ eocd = i; break; }
+  }
+  if(eocd < 0) throw new Error('មិនមែនជាកញ្ចប់ ZIP ត្រឹមត្រូវទេ');
+  var count = dv.getUint16(eocd + 10, true);
+  var cdOff = dv.getUint32(eocd + 16, true);
+
+  var out = [], skipped = [], looksXlsx = false;
+  var p = cdOff;
+  for(var n = 0; n < count; n++){
+    if(dv.getUint32(p, true) !== 0x02014b50) break;
+    var method = dv.getUint16(p + 10, true);
+    var csize  = dv.getUint32(p + 20, true);
+    var usize  = dv.getUint32(p + 24, true);
+    var nlen   = dv.getUint16(p + 28, true);
+    var elen   = dv.getUint16(p + 30, true);
+    var clen   = dv.getUint16(p + 32, true);
+    var lho    = dv.getUint32(p + 42, true);
+    var name   = new TextDecoder('utf-8').decode(u.subarray(p + 46, p + 46 + nlen));
+    p += 46 + nlen + elen + clen;
+
+    /* ⚠ ការការពារជាន់ទី ២ ដែលខ្ញុំបានសន្យាក្នុងការណែនាំខាងលើ តែភ្លេច
+       សរសេរ ៖ .xlsx ដែលដាក់ឈ្មោះជា .zip ។ សញ្ញាច្បាស់លាស់គឺ xl/workbook.xml
+       ⇒ បញ្ជូនឯកសារដើមទៅដដែល មិនបើកចេញទេ ។ បើមិនដូច្នេះ អ្នកប្រើទទួល
+       «គ្មានឯកសារ Excel/CSV ខាងក្នុង» ដែលបំភាន់ ព្រោះវា **ជា** Excel ។ */
+    if(name === 'xl/workbook.xml' || name === 'xl/workbook.bin'){ looksXlsx = true; break; }
+    if(/\/$/.test(name)) continue;                       /* ថត */
+    if(/(^|\/)__MACOSX\//.test(name)) continue;          /* សំណល់ macOS */
+    if(/(^|\/)\._/.test(name)) continue;
+    if(!/\.(xlsx|xls|csv)$/i.test(name)) continue;       /* យកតែឯកសារដែលអានបាន */
+
+    /* ក្បាលមូលដ្ឋាន ៖ ប្រវែងឈ្មោះ/extra អាចខុសពីបញ្ជីកណ្តាល */
+    if(dv.getUint32(lho, true) !== 0x04034b50){ skipped.push(name); continue; }
+    var lnlen = dv.getUint16(lho + 26, true);
+    var lelen = dv.getUint16(lho + 28, true);
+    var start = lho + 30 + lnlen + lelen;
+    var data  = u.subarray(start, start + csize);
+
+    var bytes;
+    if(method === 0){
+      bytes = data;
+    } else if(method === 8){
+      try{
+        var ds = new DecompressionStream('deflate-raw');
+        var blob = new Blob([data]);
+        bytes = new Uint8Array(await new Response(blob.stream().pipeThrough(ds)).arrayBuffer());
+      }catch(e){ skipped.push(name); continue; }
+    } else {
+      skipped.push(name); continue;      /* ⚠ មានពាក្យសម្ងាត់ ឬ method ដទៃ */
+    }
+    if(usize && bytes.length !== usize){ skipped.push(name); continue; }
+
+    var short = name.split('/').pop();
+    out.push(new File([bytes], short, { type:'application/octet-stream' }));
+  }
+  if(looksXlsx) return { files: [], skipped: [], isXlsx: true };
+  return { files: out, skipped: skipped };
+}
+
+/* បំបែកកញ្ចប់ចេញពីបញ្ជីឯកសារដែលអ្នកប្រើជ្រើស ⇒ ត្រឡប់បញ្ជីរាបស្មើ */
+async function rscExpandZips(list){
+  var out = [], notes = [];
+  for(var i = 0; i < list.length; i++){
+    var f = list[i];
+    if(!/\.zip$/i.test(f.name)){ out.push(f); continue; }
+    try{
+      var r = await rscUnzipToFiles(f);
+      if(r.isXlsx){
+        /* ⇒ ជា Excel ដែលដាក់ឈ្មោះខុស ៖ ប្តូរឈ្មោះជា .xlsx ដើម្បីអោយការត្រង
+           ខាងក្រោយទទួលវា ( ការត្រងពឹងលើផ្នែកបន្ថែមឈ្មោះ ) ។ */
+        var fixed = f;
+        try{ fixed = new File([await f.arrayBuffer()], f.name.replace(/\.zip$/i, '.xlsx')); }catch(e){}
+        out.push(fixed);
+        notes.push(f.name + ' ៖ ជាឯកសារ Excel ( មិនមែនកញ្ចប់ ) ⇒ នាំចូលដោយផ្ទាល់');
+        continue;
+      }
+      if(!r.files.length){
+        notes.push(f.name + ' ៖ គ្មានឯកសារ Excel/CSV ខាងក្នុង');
+      } else {
+        notes.push(f.name + ' ៖ បើកចេញ ' + r.files.length + ' ឯកសារ'
+          + (r.skipped.length ? ' ( រំលង ' + r.skipped.length + ' )' : ''));
+        out = out.concat(r.files);
+      }
+    }catch(e){
+      notes.push(f.name + ' ៖ បើកមិនបាន — ' + ((e && e.message) || e));
+    }
+  }
+  return { files: out, notes: notes };
+}
+window.__rscExpandZips = rscExpandZips;
+
 async function handleAutoFileImport(evt){
   const statusEl = document.getElementById("status-auto");
-  const files = Array.from(evt.target.files || []).filter(f => /\.(xlsx|xls|csv)$/i.test(f.name));
+  /* ⭐ បើកកញ្ចប់ ZIP **មុនការត្រង** ⇒ ឯកសារខាងក្នុងដើរតាមផ្លូវធម្មតាទាំងអស់
+     ( សម្គាល់ប្រភេទ · COMPANYINFO · MTR/TOI/TOS ) ដោយមិនកែអ្វីទៀត ។ */
+  let picked = Array.from(evt.target.files || []);
+  let zipNotes = [];
+  if(picked.some(f => /\.zip$/i.test(f.name))){
+    if(statusEl){ statusEl.textContent = "កំពុងបើកកញ្ចប់ ZIP…"; statusEl.className = "import-status"; }
+    try{
+      const ex = await rscExpandZips(picked);
+      picked = ex.files; zipNotes = ex.notes;
+    }catch(e){ zipNotes = ['បើកកញ្ចប់មិនបាន ៖ ' + ((e && e.message) || e)]; }
+  }
+  const files = picked.filter(f => /\.(xlsx|xls|csv)$/i.test(f.name));
   evt.target.value = "";
   if(files.length === 0){
-    if(statusEl){ statusEl.textContent = "⚠ គ្មានឯកសារ Excel/CSV រកឃើញ"; statusEl.className = "import-status err"; }
+    if(statusEl){
+      statusEl.textContent = "⚠ គ្មានឯកសារ Excel/CSV រកឃើញ"
+        + (zipNotes.length ? " — " + zipNotes.join(' · ') : "");
+      statusEl.className = "import-status err";
+    }
     return;
   }
   if(statusEl){ statusEl.textContent = `កំពុងវិភាគ និងបែងចែក ${files.length} ឯកសារ...`; statusEl.className = "import-status"; }
@@ -15089,6 +15223,10 @@ async function handleAutoFileImport(evt){
     }
   }catch(e){}
 
+  /* ⚠ ប្រាប់ថាកញ្ចប់ណាបើកចេញប៉ុន្មានឯកសារ ⇒ បើឯកសារខ្វះ អ្នកឃើញភ្លាម */
+  if(zipNotes.length && statusEl){
+    try{ statusEl.setAttribute('data-zip', zipNotes.join(' · ')); }catch(e){}
+  }
   let msg = updatedStores.length
     ? "✓ បានបែងចែកដោយស្វ័យប្រវត្តិ៖ " + updatedStores.map(s=> `${labelMap[s]} (${buckets[s].length} ${s==="mtrFiles"?"ឯកសារ":"ជួរ"})`).join(", ")
     : "⚠ មិនអាចបែងចែកឯកសារណាមួយបានទេ";
@@ -16790,8 +16928,25 @@ const ENTERPRISE_KEYS = [
   "narrLhV1",                       /* គម្លាតបន្ទាត់ព្រីន — បរិយាយការកំណត់ពន្ធ */
   "narrPageLhV1",                   /* គម្លាតបន្ទាត់ព្រីនតាមទំព័រ */
   "abc_dashboard_access_unlocked_v1",
+  /* ⚠⚠ ២០២៦-០៨-២៨ ៖ ការត្រួតពិនិត្យប្រៀបធៀបបញ្ជីទាំងពីររកឃើញកូនសោ ៦
+     ដែលមានក្នុង LOCAL_BACKUP ( ⇒ រក្សាទុក ) តែ **ខ្វះទីនេះ** ។
+     ផលវិបាក ៖ ជួរបញ្ចូលដោយដៃ និងការផ្គូផ្គងរបស់សហគ្រាសមួយ **នៅសល់**
+     ពេលប្តូរទៅសហគ្រាសមួយទៀត ⇒ លេខរបស់ក្រុមហ៊ុន ក លេចក្នុងសំណុំរឿង ខ ។
+     នេះជាកំហុសដែលរកឃើញយឺតបំផុត ព្រោះវាមិនបញ្ចេញសារអ្វីទេ ។
+     ⚠ ច្បាប់ដែលសរសេរនៅខាងលើមានស្រាប់ថា កូនសោថ្មីត្រូវដាក់ **ទាំងពីរ
+       កន្លែង** — ទាំង ៦ នេះខកខាន ។ */
+  "cdManualV1",                     /* ✎ PR/SR CN·DN បញ្ចូលដោយដៃ */
+  "mtrManualV1",                    /* 🧾 សាលកបត្រអនុរក្សបញ្ចូលដោយដៃ */
+  "crossManualV1",                  /* 🤝 ការផ្គូផ្គងដោយដៃ */
+  "crossReviewedV1",                /* ✓ ក្រុមហ៊ុនដែលពិនិត្យរួច */
+  "crossExcludeV1",                 /* 🚫 ក្រុមហ៊ុនដែលដកចេញដោយដៃ */
+  "crossCdV1",                      /* 🧾 CN/DN របស់ដៃគូ */
 ];
-const ENTERPRISE_PREFIXES = ["trackingData_", "accessProAudit_", "accessProMap_"];
+const ENTERPRISE_PREFIXES = ["trackingData_", "accessProAudit_", "accessProMap_",
+  /* ⚠ ការត្រួតពិនិត្យវិក្កយបត្រតាមអតប ៖ ការលុបទិន្នន័យសហគ្រាសត្រូវលុបវាដែរ ។
+     ( វាមិនលេចឆ្លងសហគ្រាសទេ ព្រោះកូនសោមានអតបនៅក្នុង តែ «លុបទាំងអស់»
+       ត្រូវលុបវាពិតប្រាកដ ) ។ */
+  "rscInvChk:"];
 
 function wipeEnterpriseStorage(){
   try{
@@ -27684,10 +27839,24 @@ function rscInvCheckOpen(){
      ⚠ ផ្នែកខាងលើប៉ុណ្ណោះដោយចេតនា ៖ ខ្លឹមសារសរសេរដៃខាងក្រោមខុសគ្នា
        គ្រប់ទំព័រ ហើយវានឹងបំបែកក្រុមខុស ។ */
   var pdfjsReady = null;
+  /* បញ្ចូលកូដពីប្លុក text/plain ទៅ DOM ⇒ វាបំប្លែង និងរត់ត្រង់ពេលនោះ */
+  function runBlock(id){
+    var s = document.getElementById(id);
+    if(!s) return false;
+    var el = document.createElement('script');
+    el.textContent = s.textContent;
+    document.head.appendChild(el);
+    return true;
+  }
   function ensurePdfJs(){
     if(pdfjsReady) return pdfjsReady;
     pdfjsReady = new Promise(function(res, rej){
       try{
+        if(!window.pdfjsLib){
+          /* ⚠ លំដាប់សំខាន់ ៖ lib មុន worker */
+          runBlock('rsc-pdfjs-lib');
+          runBlock('rsc-pdfjs-worker');
+        }
         var lib = window.pdfjsLib;
         if(!lib) return rej(new Error('pdf.js មិនបានផ្ទុក'));
         /* ⚠ គ្មាន workerSrc ដោយចេតនា ៖ globalThis.pdfjsWorker ធ្វើអោយ pdf.js
@@ -49210,9 +49379,22 @@ function pkTime(f){
     wrap.id = 'co-gate';
     wrap.innerHTML =
       '<div class="cg-box">' +
-        '<div class="cg-head">' +
+          /* ⭐⭐ [stated] ២០២៦-០៨-២៨ ៖ «មកដល់ផ្ទាំងនេះ បើ User ចង់ចាកចេញ
+             អត់មានកន្លែងចុចចាកចេញ» ។ ផ្ទាំងនេះគ្របពេញអេក្រង់ ⇒ របារខាងលើ
+             ( ដែលមានប៊ូតុងចាកចេញ ) នៅពីក្រោម ចុចមិនបាន ⇒ អ្នកប្រើជាប់គាំង ។
+             ⚠ ខ្ញុំ **មិនសរសេរតក្កវិជ្ជាចាកចេញឡើងវិញទេ** ៖ វាមាន ៥០ បន្ទាត់
+               ( លុប token នៅ server · សម្អាតឃ្លាំង · ផ្លូវត្រឡប់ ៣ បែប
+               សម្រាប់ wrapper / GitHub Pages / Apps Script ) ។ ការចម្លងវា
+               មានន័យថាកំហុសណាមួយត្រូវជួសជុល ២ កន្លែង ⇒ មួយនឹងត្រូវភ្លេច ។
+             ⇒ ចុចប៊ូតុងដើមតាម id ជំនួស ⇒ តក្កវិជ្ជាតែមួយគត់ជានិច្ច ។ */
+        '<div class="cg-head" style="position:relative;">' +
           '<div class="cg-title">សហគ្រាសរបស់អ្នក</div>' +
           '<div class="cg-sub" id="cg-sub">កំពុងទាញបញ្ជី…</div>' +
+          '<button id="cg-signout" title="ចាកចេញ" style="position:absolute;'
+              + 'top:0; right:0; padding:6px 12px; border-radius:8px; cursor:pointer;'
+              + 'border:1px solid rgba(200,166,75,.55); background:transparent;'
+              + 'color:#EFE7D2; font:inherit; font-size:12.5px; font-weight:700;">'
+            + '🚪↩ ចាកចេញ</button>' +
         '</div>' +
         '<div class="cg-tools">' +
           '<input id="cg-q" type="text" placeholder="🔍 ស្វែងរក ឈ្មោះ ឬលេខអតប">' +
@@ -49532,6 +49714,32 @@ function pkTime(f){
   }
 
   function hide(){ if(CG) CG.wrap.style.display = 'none'; }
+  function wireSignOut(){
+    var b = document.getElementById('cg-signout');
+    if(!b || b.__wired) return;
+    b.__wired = 1;
+    b.onclick = function(){
+      var real = document.getElementById('rscSignOutBtn');
+      if(real){ real.click(); return; }
+      /* ⚠ ជម្រើសបម្រុង ៖ អត្ថបទស្វាគមន៍មិនទាន់គូរ ⇒ ប៊ូតុងដើមមិនទាន់មាន ។
+         សម្អាតយ៉ាងតិចបំផុត រួចត្រឡប់ទៅទំព័រចូល ⇒ មិនជាប់គាំង ។ */
+      try{
+        if(window.__loggedInUserToken && window.__rscApi){
+          window.__rscApi('revokeSession', [window.__loggedInUserToken]).catch(function(){});
+        }
+        localStorage.removeItem('rsc_token');
+      }catch(e){}
+      try{ if(window.__wipeEnterpriseStorage) window.__wipeEnterpriseStorage(); }catch(e){}
+      try{ sessionStorage.clear(); }catch(e){}
+      try{ window.top.postMessage({ type:'rsc-dashboard-logout' }, '*'); }catch(e){}
+      setTimeout(function(){
+        var EXEC = window.__RSC_EXEC_URL || '';
+        fetch('./login.html', { method:'HEAD' })
+          .then(function(r){ location.replace(r && r.ok ? './login.html' : (EXEC || './')); })
+          .catch(function(){ location.replace(EXEC || './'); });
+      }, 400);
+    };
+  }
 
   /* ⚠ ផ្ទាំងនេះសម្រាប់ **អ្នកប្រើតាមវេបសាយប៉ុណ្ណោះ** ៖ ការបើកឯកសារពីម៉ាស៊ីន
      ផ្ទាល់ (គ្មាន token) មិនត្រូវជាប់ផ្ទាំងណាមួយឡើយ។
@@ -49541,6 +49749,7 @@ function pkTime(f){
     if(window.__isOwnerUser) return;
     build();
     load();
+    setTimeout(wireSignOut, 0);   /* ⇒ ប៊ូតុងចាកចេញរស់ភ្លាមពេលផ្ទាំងលេច */
   };
   window.__rscCompanyGateHide = hide;
 })();
@@ -49551,7 +49760,16 @@ function pkTime(f){
      ⚠ ពិនិត្យរួច ៖ អត្ថបទរបស់ pdf.js គ្មានលំនាំដែលបំបែក HTML ទេ ។
      ⚠ កូដ worker ដាក់ក្នុង script type=text/plain ⇒ កម្មវិធីរុករកមិន
        រត់វាដោយផ្ទាល់ ; យើងសង់ Blob URL ពីវាពេលត្រូវការ ។ -->
-<script id="rsc-pdfjs-lib">
+<!-- ⭐⭐ [stated] ២០២៦-០៨-២៨ ៖ «តើការបន្ថែមមុខងារធ្វើឱ្យប្រព័ន្ធដើរយឺតទេ?»
+     ការវាស់រកឃើញ ៖ pdf.js ( ១,៤៧៥ KB ) **រត់រាល់ពេលបើកទំព័រ** ទោះមិន
+     ប្រើការត្រួតពិនិត្យវិក្កយបត្រក៏ដោយ ⇒ ចំណាយពេលបំប្លែងកូដ និងអង្គចងចាំ
+     ដោយឥតប្រយោជន៍សម្រាប់ការងារធម្មតា ។
+     ⇒ ប្តូរជា type="text/plain" ⇒ កម្មវិធីរុករក **មិនបំប្លែងវាទេ** ; កូដ
+       បញ្ចូលវាទៅ DOM តែពេលចុច 🧾 ។
+     ⚠ ត្រូវបញ្ចូល lib មុន worker ⇒ globalThis.pdfjsWorker ត្រូវមានវត្តមាន
+       មុន getDocument ដំបូង បើមិនដូច្នេះវាព្យាយាមបង្កើត Worker ពិត
+       ហើយដួលលើ file:// ( កំហុសដដែលដែលយើងទើបជួសជុល ) ។ -->
+<script type="text/plain" id="rsc-pdfjs-lib">
 /**
  * @licstart The following is the entire license notice for the
  * JavaScript code in this page
@@ -49586,7 +49804,7 @@ function pkTime(f){
        ដោយខ្លួនឯង ហើយបញ្ហា blob រលាយបាត់ទាំងស្រុង ។
      ⚠ ថ្លៃដែលបង់ ៖ ការអានទំព័ររត់លើ main thread ⇒ អាចធ្វើអោយផ្ទាំង
        រឹងបន្តិច ។ ⇒ កូដដាក់ការឈប់សម្រាកខ្លីរវាងទំព័រនីមួយៗ ។ -->
-<script id="rsc-pdfjs-worker">
+<script type="text/plain" id="rsc-pdfjs-worker">
 /**
  * @licstart The following is the entire license notice for the
  * JavaScript code in this page
