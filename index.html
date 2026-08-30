@@ -3121,7 +3121,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
      ⭐ 'Khmer OS Muol Light' មាន face តែ ៤០០ ⇒ ៧០០ ធ្វើអោយកម្មវិធីរុករក
        សំយោគអក្សរដិតដោយខ្លួនឯង (faux bold) ដែលមើលទៅក្រាស់ស្រពិចស្រពិល។
      ⚠ ធ្វើតែពេលព្រីន ⇒ លើអេក្រង់នៅដិតដដែល។ */
-  /* RSCBUILD-ZIPPICK71 */
+  /* RSCBUILD-ZIPFIX73 */
   #mtr-embed .mtr-form-title,
   #mtr-embed .mtr-form-meta .val,
   #mtr-embed .mtr-filled,
@@ -5432,7 +5432,15 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
              កន្លែង upload ឯកសារ និងបើកឯកសារទៀតហើយ … ចាកចេញទៅផ្ទាំងរើស
              ឯកសារឡើងវិញ» ⇒ ថ្នាក់ `admin-only` លាក់វាសម្រាប់ user និង team។
              ⚠ ប៊ូតុងនៅដដែលសម្រាប់ admin និងការប្រើផ្ទាល់ខ្លួន (គ្មាន token)។ -->
-        <button class="atb-btn atb-icon admin-only" onclick="openUploadAndPickFolder()" title="UPLOAD ឯកសារ" aria-label="UPLOAD ឯកសារ">📥</button>
+        <button class="atb-btn atb-icon admin-only" onclick="openUploadAndPickFolder()" title="UPLOAD ថត" aria-label="UPLOAD ថត">📥</button>
+        <!-- ⭐⭐ [stated] ២០២៦-០៨-២៨ ៖ «សាកបើកឯកសារ offline នៅអត់ទាន់ឃើញ
+             មានកន្លែងរើស file zip ផង» ។ កំហុសរបស់ខ្ញុំ ៖ ខ្ញុំដាក់ប៊ូតុង
+             📦 តែក្នុង **ផ្ទាំងជ្រើសសហគ្រាស** ដែល **មិនលេចឡើងពេលប្រើ
+             offline** ( វារំលងពេលគ្មាន token ) ⇒ ការប្រើ offline មានតែ
+             ប្រអប់ជ្រើស **ថត** ⇒ ជ្រើស .zip មិនបានដដែល ។
+             ⇒ ដាក់ប៊ូតុងនៅរបារខាងលើ ⇒ មានគ្រប់ផ្លូវ ៖ offline · admin ·
+               និងក្នុងផ្ទាំងជ្រើសសហគ្រាស ។ -->
+        <button class="atb-btn atb-icon admin-only" onclick="(function(){var i=document.getElementById('auto-file-input'); if(i) i.click();})()" title="UPLOAD ឯកសារ ឬ ZIP" aria-label="UPLOAD ឯកសារ ឬ ZIP">📦</button>
         <!-- [stated] «បើកឯកសារ» ជាប់នឹង UPLOAD ព្រោះទាំងពីរជាផ្លូវចូលទិន្នន័យ -->
         <button type="button" class="atb-btn atb-icon atb-door admin-only" onclick="window.__rscOpenPicker ? window.__rscOpenPicker() : document.getElementById('saved-file-input').click()" title="បើកឯកសារ" aria-label="បើកឯកសារ"><span class="ic">🚪</span></button>
         <!-- ⚠⚠ [stated] ២០២៦-០៨-១៤ ៖ «នៅក្នុងម៉ាស៊ីនមាន file zip តែពេលបើកមិនឃើញ» ។
@@ -49574,8 +49582,17 @@ function pkTime(f){
           '<div class="cg-name">' + esc(x.name || ('អតប ' + (x.tin || '—'))) + '</div>' +
           '<div class="cg-meta">' + esc(x.tin || '—') + ' &nbsp; ' + badge + ' ' + fileTag + '</div>' +
         '</div>' + act;
-      var btn = el.querySelector('button');
-      if(btn) btn.onclick = function(){ act1(btn.getAttribute('data-act'), x, el); };
+      /* ⚠⚠ [stated] ២០២៦-០៨-២៨ ៖ «ចុចថត ដើរ តែចុច zip អត់ដើរ» ។
+         មូលហេតុ ៖ បន្ទាត់នេះភ្ជាប់ព្រឹត្តិការណ៍ត្រឹម **ប៊ូតុងទី ១** ក្នុង
+         ជួរ ( querySelector មិនមែន querySelectorAll ) ។ វាដើរត្រឹមត្រូវ
+         អស់រយៈពេលយូរ ព្រោះជួរនីមួយៗមានប៊ូតុងតែមួយ ។ ខ្ញុំបន្ថែមប៊ូតុងទី ២
+         ( 📦 ឯកសារ / ZIP ) តែភ្លេចកែបន្ទាត់នេះ ⇒ ប៊ូតុងថ្មីគ្មានអ្នកស្តាប់
+         ⇒ ចុចហើយគ្មានអ្វីកើតឡើង ។
+         ⚠ មេរៀន ៖ ការបន្ថែមធាតុទី ២ ចូលកន្លែងដែលធ្លាប់មានតែមួយ តែងតែ
+           ទាមទារពិនិត្យកូដដែលសន្មតថា «មានតែមួយ» ។ */
+      el.querySelectorAll('button').forEach(function(btn){
+        btn.onclick = function(){ act1(btn.getAttribute('data-act'), x, el); };
+      });
       CG.list.appendChild(el);
     });
   }
