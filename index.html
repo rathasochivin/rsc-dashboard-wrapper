@@ -3121,7 +3121,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
      ⭐ 'Khmer OS Muol Light' មាន face តែ ៤០០ ⇒ ៧០០ ធ្វើអោយកម្មវិធីរុករក
        សំយោគអក្សរដិតដោយខ្លួនឯង (faux bold) ដែលមើលទៅក្រាស់ស្រពិចស្រពិល។
      ⚠ ធ្វើតែពេលព្រីន ⇒ លើអេក្រង់នៅដិតដដែល។ */
-  /* RSCBUILD-ZIPFIX73 */
+  /* RSCBUILD-MANUAL74 */
   #mtr-embed .mtr-form-title,
   #mtr-embed .mtr-form-meta .val,
   #mtr-embed .mtr-filled,
@@ -24329,6 +24329,9 @@ function saveCoverData(){
   try{ localStorage.setItem(COVER_STORAGE_KEY, JSON.stringify(state.coverData)); }catch(e){}
 }
 function getCV(key){ return state.coverData[key] ?? ''; }
+/* ⚠ ស្ពាន ៖ ផ្ទាំងជ្រើសសហគ្រាសរស់នៅប្លុក script មួយផ្សេង ⇒ ការហៅ setCV
+   ដោយផ្ទាល់ពីទីនោះនឹងរលាយស្ងាត់ៗ ( មេរៀន IIFE ដដែល ) ។ */
+window.__rscSetCV = function(k, v){ try{ setCV(k, v); }catch(e){} };
 function setCV(key, value){ state.coverData[key] = value; saveCoverData(); }
 // Whether this key has ever been explicitly set (even to an empty string
 // by clearing it) — different from getCV(key)!=='' , which can't tell
@@ -49573,8 +49576,14 @@ function pkTime(f){
         : (x.files.length ? ('<button class="cg-btn" data-act="open">'
               + (x.files.length > 1 ? 'ជ្រើសឯកសារ (' + x.files.length + ') ▾' : 'បើក →')
               + '</button>')
-                          : '<button class="cg-btn" data-act="up">📁 ថត</button>'
-                            + '<button class="cg-btn" data-act="upfile">📦 ឯកសារ / ZIP</button>');
+                          /* [stated] ២០២៦-០៨-២៨ ៖ 📁 រូបតែម្នាក់ឯង ; ប៊ូតុងទី ២
+                             ជាអក្សរ FILE/ZIP ដោយគ្មានរូប ⇒ ខុសគ្នាច្បាស់ ។
+                             ⭐ ជម្រើសទី ៣ ៖ សហគ្រាសខ្លះ **គ្មានឯកសារត្រូវ
+                               upload សោះ** ( ការិយបរិច្ឆេទថ្មី ) ⇒ មុននេះគេ
+                               ជាប់គាំង ព្រោះផ្លូវចូលទាំងអស់ទាមទារឯកសារ ។ */
+                          : '<button class="cg-btn" data-act="up" title="ផ្ទុកថត">📁</button>'
+                            + '<button class="cg-btn" data-act="upfile">FILE/ZIP</button>'
+                            + '<button class="cg-btn ghost" data-act="manual" title="គ្មានឯកសារ — បំពេញព័ត៌មានដោយផ្ទាល់">✎ បំពេញព័ត៌មាន</button>');
       el.innerHTML =
         '<div class="cg-main">' +
           /* ⚠ ឈ្មោះទទេ **មិនមែនមានន័យថាគ្មានសិទ្ធិទេ** ៖ សិទ្ធិមកពីលេខអតប
@@ -49602,6 +49611,7 @@ function pkTime(f){
     if(kind === 'open')  return openRow(row, el);
     if(kind === 'up')    return uploadRow(row);
     if(kind === 'upfile') return uploadFileRow(row);
+    if(kind === 'manual') return manualRow(row);
     if(kind === 'ask'){
       var el = CG.wrap.querySelector('#cg-tin');
       el.value = row.tin || '';
@@ -49702,6 +49712,28 @@ function pkTime(f){
   }
   /* ជ្រើសឯកសារដោយផ្ទាល់ ( រួមទាំង .zip ) ⇒ ដើរលើទូរស័ព្ទផងដែរ ព្រោះវា
      មិនពឹងលើការជ្រើសថត ។ */
+  /* ⭐ គ្មានឯកសារ ⇒ ចូលដោយផ្ទាល់ រួចបើកផ្ទាំងបំពេញព័ត៌មាន ។
+     ⚠ ដាក់លេខអតបចូល COVER ជាមុន ⇒ ផ្ទាំងណែនាំបង្ហាញវាស្រាប់ ហើយកំណត់ត្រា
+       ត្រូវភ្ជាប់នឹងសហគ្រាសត្រឹមត្រូវ ( លេខសោររក្សាទុកប្រើអតប ) ។ */
+  function manualRow(row){
+    try{
+      window.__approvedTINs = window.__approvedTINs || [];
+      if(row && row.tin && window.__approvedTINs.indexOf(row.tin) === -1){
+        window.__approvedTINs.push(row.tin);
+      }
+      if(row && row.tin && typeof window.__rscSetCV === 'function'){
+        window.__rscSetCV('companyTinOverride', row.tin);
+        if(row.name) window.__rscSetCV('companyNameOverride', row.name);
+      }
+    }catch(e){}
+    hide();
+    try{ if(typeof showView === 'function') showView('dashboard'); }catch(e){}
+    setTimeout(function(){
+      try{
+        if(typeof window.__rscSetupWizard === 'function') window.__rscSetupWizard();
+      }catch(e){}
+    }, 300);
+  }
   function uploadFileRow(row){
     var inp = document.getElementById('auto-file-input');
     if(!inp){ say('រកប្រអប់ជ្រើសឯកសារមិនឃើញ — សូមផ្ទុកទំព័រឡើងវិញ', true); return; }
