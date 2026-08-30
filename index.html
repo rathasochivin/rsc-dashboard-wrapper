@@ -3121,7 +3121,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
      ⭐ 'Khmer OS Muol Light' មាន face តែ ៤០០ ⇒ ៧០០ ធ្វើអោយកម្មវិធីរុករក
        សំយោគអក្សរដិតដោយខ្លួនឯង (faux bold) ដែលមើលទៅក្រាស់ស្រពិចស្រពិល។
      ⚠ ធ្វើតែពេលព្រីន ⇒ លើអេក្រង់នៅដិតដដែល។ */
-  /* RSCBUILD-ZIP70 */
+  /* RSCBUILD-ZIPPICK71 */
   #mtr-embed .mtr-form-title,
   #mtr-embed .mtr-form-meta .val,
   #mtr-embed .mtr-filled,
@@ -6509,6 +6509,14 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
          ត្រូវរក្សាទុក ព្រោះប៊ូតុងទាំងនោះហៅ .click() លើវា។ -->
     <div id="upload-inputs" style="display:none;">
       <input type="file" webkitdirectory directory multiple id="auto-folder-input" onchange="handleAutoFileImport(event)">
+      <!-- ⭐⭐ [stated] ២០២៦-០៨-២៨ ៖ «ទាល់ដាក់ zip file នៅក្នុង folder សិន
+           ទើបរើសបាន ដោយមិនអាចរើសដោយផ្ទាល់នៃ file zip នោះបានទេ» ។
+           មូលហេតុ ៖ #auto-folder-input មាន **webkitdirectory** ⇒ ប្រអប់
+           របស់វាជ្រើសបាន **តែថត** ។ ការបន្ថែម .zip ទៅ accept គ្មានប្រយោជន៍
+           ព្រោះប្រអប់មិនបង្ហាញឯកសារទាល់តែសោះ ។
+           ⇒ ត្រូវការប្រអប់ **ទី ២** គ្មាន webkitdirectory ⇒ ជ្រើសឯកសារ
+             ដោយផ្ទាល់ ។ ទាំងពីរហៅ handleAutoFileImport ដដែល ។ -->
+      <input type="file" multiple id="auto-file-input" accept=".xlsx,.xls,.csv,.zip" onchange="handleAutoFileImport(event)">
       <input type="file" webkitdirectory directory multiple id="cp-purchase-folder-input" onchange="handleFileImport(event,'cpPurchase','purchase')">
       <input type="file" webkitdirectory directory multiple id="cp-sale-folder-input" onchange="handleFileImport(event,'cpSale','sale')">
     </div>
@@ -9428,7 +9436,11 @@ function openUploadAndPickFolder(prefill){
       window.__approvedTINsLoaded = true;
     }catch(e){}
     close();
-    const inp = document.getElementById("auto-folder-input"); if(inp) inp.click();
+    /* ⚠ ថតជាផ្លូវធម្មតា ; តែបើកម្មវិធីរុករកមិនអាចជ្រើសថត ( ទូរស័ព្ទ )
+       ⇒ ធ្លាក់ទៅប្រអប់ឯកសារ ⇒ អ្នកប្រើមិនជាប់គាំង ។ */
+    const canDir = !/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent || '');
+    const inp = document.getElementById(canDir ? "auto-folder-input" : "auto-file-input");
+    if(inp) inp.click();
   }
   function say(text, ok){
     msg.textContent = text;
@@ -49553,7 +49565,8 @@ function pkTime(f){
         : (x.files.length ? ('<button class="cg-btn" data-act="open">'
               + (x.files.length > 1 ? 'ជ្រើសឯកសារ (' + x.files.length + ') ▾' : 'បើក →')
               + '</button>')
-                          : '<button class="cg-btn" data-act="up">📥 ផ្ទុកឯកសារ</button>');
+                          : '<button class="cg-btn" data-act="up">📁 ថត</button>'
+                            + '<button class="cg-btn" data-act="upfile">📦 ឯកសារ / ZIP</button>');
       el.innerHTML =
         '<div class="cg-main">' +
           /* ⚠ ឈ្មោះទទេ **មិនមែនមានន័យថាគ្មានសិទ្ធិទេ** ៖ សិទ្ធិមកពីលេខអតប
@@ -49571,6 +49584,7 @@ function pkTime(f){
   function act1(kind, row, el){
     if(kind === 'open')  return openRow(row, el);
     if(kind === 'up')    return uploadRow(row);
+    if(kind === 'upfile') return uploadFileRow(row);
     if(kind === 'ask'){
       var el = CG.wrap.querySelector('#cg-tin');
       el.value = row.tin || '';
@@ -49668,6 +49682,15 @@ function pkTime(f){
   function dirPickWorks(){
     if(window.showDirectoryPicker) return true;
     return !/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent || '');
+  }
+  /* ជ្រើសឯកសារដោយផ្ទាល់ ( រួមទាំង .zip ) ⇒ ដើរលើទូរស័ព្ទផងដែរ ព្រោះវា
+     មិនពឹងលើការជ្រើសថត ។ */
+  function uploadFileRow(row){
+    var inp = document.getElementById('auto-file-input');
+    if(!inp){ say('រកប្រអប់ជ្រើសឯកសារមិនឃើញ — សូមផ្ទុកទំព័រឡើងវិញ', true); return; }
+    try{ inp.click(); }catch(e){ say('មិនអាចបើកប្រអប់ជ្រើសឯកសារបានទេ', true); return; }
+    window.__rscUploadFromGate = true;
+    say('សូមជ្រើសឯកសារ ឬកញ្ចប់ ZIP');
   }
   function uploadRow(row){
     if(dirPickWorks()){
