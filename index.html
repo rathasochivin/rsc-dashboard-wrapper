@@ -3121,7 +3121,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
      ⭐ 'Khmer OS Muol Light' មាន face តែ ៤០០ ⇒ ៧០០ ធ្វើអោយកម្មវិធីរុករក
        សំយោគអក្សរដិតដោយខ្លួនឯង (faux bold) ដែលមើលទៅក្រាស់ស្រពិចស្រពិល។
      ⚠ ធ្វើតែពេលព្រីន ⇒ លើអេក្រង់នៅដិតដដែល។ */
-  /* RSCBUILD-SESSFIX97 */
+  /* RSCBUILD-WIZOPEN98 */
   #mtr-embed .mtr-form-title,
   #mtr-embed .mtr-form-meta .val,
   #mtr-embed .mtr-filled,
@@ -5866,7 +5866,15 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
              បើគ្មានឈ្មោះ ⇒ ជួរ Whitelist ដែលក្រឡាឈ្មោះទទេ ធ្វើឱ្យអ្នកប្រើ
              ជាប់គាំងក្នុងប្រព័ន្ធដោយគ្មានផ្លូវចេញ ក្រៅពី DevTools ។
              ⚠ ពេលគ្មាន token (offline · មិនទាន់ចូល) នៅតែគ្មានអ្វីលេចដូចដើម។ */
+          /* ⚠⚠ [stated] ២០២៦-០៨-២៨ ៖ «ផ្ទាំងខាងក្រៅអត់ចេញឈ្មោះ user
+             ផ្ទាំងខាងក្នុងក៏អត់» ។ ⇒ __loggedInUserName ទទេ ៖ ម៉ាស៊ីនមេ
+             មិនបានផ្ញើ name មកវិញ ( ឬក្រឡាឈ្មោះក្នុង Whitelist ទទេ ) ។
+             កូដចាស់ធ្លាក់ទៅពាក្យទូទៅ «អ្នកប្រើ» ដែលគ្មានប្រយោជន៍ ។
+             ⇒ ធ្លាក់ទៅ **អ៊ីមែល** ( ផ្នែកមុន @ ) ជាមុនសិន ⇒ អ្នកឃើញថា
+               កំពុងចូលជាគណនីណា ដែលជាព័ត៌មានពិតដែលអ្នកត្រូវការ ។ */
+          const mail = String(window.__loggedInUserEmail || '');
           const name = window.__loggedInUserName
+            || (mail ? mail.split('@')[0] : '')
             || (window.__loggedInUserToken ? 'អ្នកប្រើ' : '');
           if(!name){ el.textContent = ''; return; }
           const greeting = isKhmerText(name) ? 'សួស្ដី! ' + name : 'Hi! ' + name;
@@ -49751,9 +49759,16 @@ function pkTime(f){
          ⇒ គ្មានសិទ្ធិ ⇒ «ស្នើសុំសិទ្ធិ» ជានិច្ច ទោះឯកសារនៅនឹងមុខ។ */
       var act = !x.allowed
         ? '<button class="cg-btn ghost" data-act="ask">ស្នើសុំសិទ្ធិ</button>'
+        /* ⚠⚠ [stated] ២០២៦-០៨-២៨ ៖ «ពេលចុច upload file អត់ចេញព័ត៌មាន
+           បំពេញ … ឬដោយសារវាធ្លាប់ចេញម្តងវាលែងចេញទៀត» ⇒ **ត្រូវហើយ ៖
+           វាធ្លាប់ចេញម្តងហើយ** ។ ផ្ទាំងណែនាំចាំក្នុង wizDoneTin ⇒ បើកតែ
+           **ម្តងគត់ក្នុងមួយអតប** ។ នោះជាការរចនាដោយចេតនា ( មិនរំខានរាល់
+           ការ upload ) តែវាទុកអ្នកគ្មានផ្លូវបើកវាឡើងវិញ ។
+           ⇒ ប៊ូតុង ✎ បង្ហាញ **គ្រប់ជួរ** ឥឡូវ មិនមែនតែជួរដែលគ្មានឯកសារទេ ។ */
         : (x.files.length ? ('<button class="cg-btn" data-act="open">'
               + (x.files.length > 1 ? 'ជ្រើសឯកសារ (' + x.files.length + ') ▾' : 'បើក →')
-              + '</button>')
+              + '</button>'
+              + '<button class="cg-btn ghost" data-act="manual" title="បំពេញ/កែព័ត៌មានសហគ្រាស">✎</button>')
                           /* [stated] ២០២៦-០៨-២៨ ៖ 📁 រូបតែម្នាក់ឯង ; ប៊ូតុងទី ២
                              ជាអក្សរ FILE/ZIP ដោយគ្មានរូប ⇒ ខុសគ្នាច្បាស់ ។
                              ⭐ ជម្រើសទី ៣ ៖ សហគ្រាសខ្លះ **គ្មានឯកសារត្រូវ
@@ -49908,6 +49923,9 @@ function pkTime(f){
     try{ if(typeof showView === 'function') showView('dashboard'); }catch(e){}
     setTimeout(function(){
       try{
+        /* ⚠ ឆ្មាំ «បើកម្តងគត់» ( wizDoneTin ) ស្ថិតក្នុង **អ្នកយាម** មិនមែន
+           ក្នុងអនុគមន៍បើកទេ ⇒ ការហៅដោយផ្ទាល់បើកបានជានិច្ច ។ ខ្ញុំបានពិនិត្យ
+           កូដមុននឹងសរសេរបន្ទាត់នេះ ⇒ គ្មានស្រទាប់ខ្ចប់បន្ថែមត្រូវការទេ ។ */
         if(typeof window.__rscSetupWizard === 'function') window.__rscSetupWizard();
       }catch(e){}
     }, 300);
@@ -50001,7 +50019,13 @@ function pkTime(f){
     var el = CG && CG.wrap ? CG.wrap.querySelector('.cg-title') : null;
     if(!el) return;
     var nm = '';
-    try{ nm = String(window.__loggedInUserName || '').trim(); }catch(e){}
+    try{
+      nm = String(window.__loggedInUserName || '').trim();
+      if(!nm){
+        var mail = String(window.__loggedInUserEmail || '');
+        if(mail) nm = mail.split('@')[0];
+      }
+    }catch(e){}
     if(!nm) return;                       /* រក្សាចំណងជើងដើម */
     var isKh = /[\u1780-\u17FF]/.test(nm);
     el.textContent = (isKh ? 'សួស្តី ' : 'Hi! ') + nm;
