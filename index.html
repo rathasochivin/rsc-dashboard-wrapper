@@ -3096,7 +3096,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     break-before:avoid; page-break-before:avoid;
     margin-top:12px !important;
   }
-  #mtr-embed .mtr-signs .mtr-sign-space{ height:44px !important; }
+  #mtr-embed .mtr-signs .mtr-sign-space{ height:92px !important; }
   #mtr-embed .mtr-form-date{ margin-bottom:14px !important; }
   /* ⚠⚠ [stated] ២០២៦-០៨-២៣ ៖ «ពេលព្រីនស៊ុមតារាងមិនបាច់ប្រើដិតទេ ប្រើដូចៗគ្នា
      ពេលមើលទៅទើបមិនឃើញខុសគ្នា» ⇒ **គែមតែមួយបែប គ្រប់ក្រឡា គ្រប់ជួរ** ។
@@ -3121,7 +3121,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
      ⭐ 'Khmer OS Muol Light' មាន face តែ ៤០០ ⇒ ៧០០ ធ្វើអោយកម្មវិធីរុករក
        សំយោគអក្សរដិតដោយខ្លួនឯង (faux bold) ដែលមើលទៅក្រាស់ស្រពិចស្រពិល។
      ⚠ ធ្វើតែពេលព្រីន ⇒ លើអេក្រង់នៅដិតដដែល។ */
-  /* RSCBUILD-GLFLAT99 */
+  /* RSCBUILD-TOIAUTO109 */
   #mtr-embed .mtr-form-title,
   #mtr-embed .mtr-form-meta .val,
   #mtr-embed .mtr-filled,
@@ -3188,7 +3188,11 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
   font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif; color:var(--mtr-navy);
 }
 /* Deliberate blank gap — this is where the signature goes. */
-#mtr-embed .mtr-signs .mtr-sign-space{height:62px;}
+/* [stated] ២០២៦-០៨-២៨ ៖ ចន្លោះចុះហត្ថលេខាធំជាងមុន ( ទាំង MTR និង VAT
+   ព្រោះទាំងពីរប្រើ #mtr-embed ដដែល ) ⇒ ហត្ថលេខា និងត្រាមានកន្លែងគ្រប់គ្រាន់ ។ */
+/* [stated] ២០២៦-០៨-២៨ ៖ ចន្លោះរវាងតួនាទី ( ប្រធានការិយាល័យ … ) និងឈ្មោះ
+   ត្រូវធំជាងនេះទៀត ⇒ ហត្ថលេខា និងត្រាមានកន្លែងគ្រប់គ្រាន់ ។ */
+#mtr-embed .mtr-signs .mtr-sign-space{height:112px;}
 #mtr-embed .mtr-signs .mtr-sign-name .val{
   min-width:0; width:100%; text-align:center; border-bottom:none;
   font-weight:700; padding:0;
@@ -5490,6 +5494,10 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
              ការត្រួតពិនិត្យតុល្យភាពស្វ័យប្រវត្តិ ⇒ វាយខុសមិនអាចឆ្លងកាត់។
              ⚠ ទិន្នន័យមិនចេញពីម៉ាស៊ីនអ្នកសោះ ( សំណើរបស់ម្ចាស់ប្រព័ន្ធ )។ -->
         <button class="atb-btn atb-icon admin-only" onclick="if(window.__rscBank){window.__rscBank();}else{alert('ម៉ូឌុលរបាយការណ៍ធនាគារមិនបានផ្ទុក — សូមផ្ទុកទំព័រឡើងវិញ (Ctrl+Shift+R)');}" title="របាយការណ៍ធនាគារ" aria-label="របាយការណ៍ធនាគារ">🏦</button>
+        <!-- ⭐ ២០២៦-០៨-២៨ ៖ បំពេញ TOI ដោយដៃ ៖ សម្រាប់សហគ្រាសដែលប្រកាស
+             លើក្រដាស ⇒ គ្មានឯកសារ TOI ។ តួលេខសរសេរចូលរចនាសម្ព័ន្ធដដែល
+             នឹងឯកសារពិត ⇒ កាតគណនាដំណើរការដោយមិនកែអ្វី។ -->
+        <button class="atb-btn atb-icon admin-only" onclick="if(window.__rscToiManual){window.__rscToiManual();}else{alert('ម៉ូឌុលមិនបានផ្ទុក — សូមផ្ទុកទំព័រឡើងវិញ');}" title="បំពេញ TOI ដោយដៃ" aria-label="បំពេញ TOI ដោយដៃ">📝</button>
         <button class="atb-btn atb-icon atb-bin data-gated admin-only" onclick="clearAllData()" title="លុបឯកសារ" aria-label="លុបឯកសារ"><span class="ic">🗑️</span></button>
       </div>
     </div>
@@ -20575,15 +20583,24 @@ function buildMTRFormSheets(year, allRows, info, defaults){
        header row keeps one uniform height. Hover shows the full name. */
     const thLabel = (c) => `<span class="mtr-th-label" title="${esc(c.full)}">${esc(c.short)}</span>`;
 
+    /* ⚠⚠ [stated] ២០២៦-០៨-២៨ ៖ «ពេលមានប្រាក់រំដោះ និងផលរបរគ្មាន VAT
+       តារាងចេញត្រូវ ; តែពេលអត់មានប្រាក់រំដោះ តារាងមើលទៅមានបន្ទាត់ពីរ» ។
+       ⭐ ការប្រៀបធៀបរូបទាំងពីររបស់អ្នកបង្ហាញច្បាស់ ៖ ជួរដេកទី ២ នៃក្បាល
+         ផ្ទុក **រូបមន្ត** ( «12 = 1 + 2 + 3» · «13 = 12 × 1%» ) ។ ពេលគ្មាន
+         ជួរឈរណាមួយត្រូវការរូបមន្ត ជួរដេកនោះនៅតែគូរ **តែទទេ** ⇒ បន្ទាត់
+         ស្តើងមួយបន្ថែមក្រោមក្បាល = «បន្ទាត់ពីរ» ដែលអ្នកឃើញ ។
+       ⇒ គូរជួរដេកទី ២ **តែពេលមានអត្ថបទពិត** ; បើគ្មាន «ខែ» លែងត្រូវការ
+         rowspan=2 ដែរ ។ */
+    const hasNote = showRevenue || cols.some(c => c.full === MTR_FORM_PREPAY_FULL);
     const headRow1 = `<tr>
-      <th rowspan="2">ខែ</th>
+      <th${hasNote ? ' rowspan="2"' : ''}>ខែ</th>
       ${showRevenue ? `<th><span class="mtr-th-label" title="ផលរបរគ្មាន VAT">ផលរបរគ្មាន VAT</span></th>` : ''}
       ${cols.map(c=>`<th>${thLabel(c)}</th>`).join('')}${padCells('th')}
     </tr>`;
-    const headRow2 = `<tr>
+    const headRow2 = hasNote ? `<tr>
       ${showRevenue ? `<th class="mtr-note">${esc(MTR_FORM_NOTE_REVENUE)}</th>` : ''}
       ${cols.map(c=>`<th class="mtr-note">${c.full === MTR_FORM_PREPAY_FULL ? esc(MTR_FORM_NOTE_PREPAY) : ''}</th>`).join('')}${padCells('th')}
-    </tr>`;
+    </tr>` : '';
 
     const bodyRows = Array.from({length:12}, (_,mIdx)=>`
       <tr>
@@ -21209,7 +21226,7 @@ function openFormPrintWindow(sheets){
       font-weight:400; font-size:11px;
       font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif;
     }
-    .mtr-signs .mtr-sign-space{height:58px;}
+    .mtr-signs .mtr-sign-space{height:106px;}
     .mtr-signs .mtr-sign-name .val{
       border-bottom:none; min-width:0; width:100%; text-align:center;
       font-weight:400; padding:0; display:block;
@@ -32768,6 +32785,245 @@ window.__toiGoStep = function(key){
     renderAll();
     return true;
   }catch(e){ console.error('toiGoStep:', e); return false; }
+};
+
+/* ⭐⭐⭐ [stated] ២០២៦-០៨-២៨ ៖ «សហគ្រាសប្រកាស TOI ដោយដៃ ⇒ មិនមាន FILE TOI
+   ទេ ; តើអាចបង្កើតឱ្យខ្ញុំបំពេញព័ត៌មានបានទេ» ។
+
+   ⭐ ការរកឃើញដែលធ្វើឱ្យវាតូច ៖ កម្មវិធីមិនត្រូវការឯកសារ TOI ទាំងមូលទេ ។
+     ការគណនាពន្ធឡើងវិញអានត្រឹម **១០ តួលេខក្នុងមួយឆ្នាំ** តាមរយៈ
+     __toiDeclaredByYear() ⇒ ដូច្នេះទម្រង់បំពេញដោយដៃត្រូវការត្រឹមប៉ុណ្ណោះ ។
+
+   ⚠⚠ ការសម្រេចរចនាសំខាន់ ៖ ខ្ញុំ **មិនបង្កើតផ្លូវទិន្នន័យទី ២** ទេ ។
+     តម្លៃដែលអ្នកវាយសរសេរចូល state.refSteps ដោយប្រើ **លេខយោងដដែល**
+     នឹងឯកសារពិត ( Step5 B0 · Step8 E37…E56 ) ⇒ អ្វីៗខាងក្រោយ
+     ( កាតគណនា · ឆ្នាំក្នុង COVER · របាយការណ៍ · រក្សាទុក/បើក ) ដំណើរការ
+     ដោយមិនកែអ្វីទាំងអស់ ។ ផ្លូវទី ២ នឹងបង្កើតកន្លែងដែលលេខពីរឈុតខុសគ្នា ។
+   ⚠ បើឆ្នាំនោះមានឯកសារពិតរួចហើយ ការវាយដោយដៃនឹងសរសេរជាន់លើ ⇒ ប្រាប់
+     អ្នកជាមុន មិនធ្វើស្ងាត់ ។ */
+window.__toiManualFields = [
+  { k:'turnover', s:'Step5', ref:'B0',      lb:'ចំណូលពីប្រតិបត្តិការ',            hint:'ចំណូលសរុប' },
+  { k:'pbt',      s:'Step5', ref:'B_PBT',   lb:'លទ្ធផលមុនបង់ពន្ធ',                hint:'ចំណេញ/ខាតមុនពន្ធ' },
+  { k:'lossCF',   s:'Step8', ref:'E41',     lb:'ខាតយោងពីឆ្នាំមុន',                hint:'' },
+  { k:'charity',  s:'Step8', ref:'E37',     lb:'អំណោយសប្បុរសធម៌',                hint:'' },
+  { k:'intAdj',   s:'Step8', ref:'E39',     lb:'និយតកម្មលើការប្រាក់',            hint:'បូក ឬ ដក' },
+  { k:'foreign',  s:'Step8', ref:'E46',     lb:'ឥណទានពន្ធបរទេស',                 hint:'' },
+  { k:'dividend', s:'Step8', ref:'E49',     lb:'ឥណទានពន្ធភាគលាភ',                hint:'' },
+  { k:'minTax',   s:'Step8', ref:'E51',     lb:'ពន្ធអប្បបរមា',                    hint:'' },
+  { k:'wht',      s:'Step8', ref:'E55',     lb:'ឥណទានពន្ធកាត់ទុក',               hint:'' },
+  { k:'prepaid',  s:'Step8', ref:'E56',     lb:'ប្រាក់រំដោះពន្ធលើប្រាក់ចំណូល',   hint:'' }
+];
+
+/* តើឆ្នាំនេះមកពីឯកសារពិតឬ? ( មិនមែនការវាយដោយដៃ ) */
+window.__toiYearFromFile = function(y){
+  try{ return !!(state.companyInfo && state.companyInfo[y]); }catch(e){ return false; }
+};
+
+window.__toiManualGet = function(y){
+  var out = {};
+  try{
+    window.__toiManualFields.forEach(function(f){
+      var rs = state.refSteps && state.refSteps[f.s];
+      var v = rs && rs.values && rs.values[f.ref] && rs.values[f.ref][y];
+      out[f.k] = (typeof v === 'number') ? v : '';
+    });
+  }catch(e){}
+  return out;
+};
+
+window.__toiManualSet = function(y, vals){
+  y = String(y || '').trim();
+  if(!/^\d{4}$/.test(y)) return { ok:false, msg:'ឆ្នាំត្រូវមាន ៤ ខ្ទង់' };
+  try{
+    window.__toiManualFields.forEach(function(f){
+      var raw = vals[f.k];
+      if(raw === '' || raw === undefined || raw === null) return;
+      var n = parseFloat(String(raw).replace(/[^0-9.\-]/g, ''));
+      if(!isFinite(n)) return;
+      if(!state.refSteps[f.s]){
+        state.refSteps[f.s] = { title:(f.s === 'Step5' ? 'គណនីលទ្ធផល' : 'និយតកម្មពន្ធ'),
+                                order:[], labels:{}, values:{}, prevValues:{} };
+      }
+      var rs = state.refSteps[f.s];
+      if(!(f.ref in rs.labels)){ rs.labels[f.ref] = f.lb; rs.order.push(f.ref); }
+      if(!rs.values[f.ref]) rs.values[f.ref] = {};
+      rs.values[f.ref][y] = n;
+      if(!rs.prevValues) rs.prevValues = {};
+      if(!rs.prevValues[f.ref]) rs.prevValues[f.ref] = {};
+    });
+    if(!state.years.includes(y)) state.years.push(y);
+    state.years.sort();
+    /* ⚠ សញ្ញាថាឆ្នាំនេះបំពេញដោយដៃ ⇒ របាយការណ៍ «ឯកសារដែលបានផ្ទុក» និង
+       អ្នកអានក្រោយៗ ដឹងប្រភព ។ */
+    state.extraCompanyInfo = state.extraCompanyInfo || {};
+    state.extraCompanyInfo.toiManualYears =
+      Array.from(new Set(String(state.extraCompanyInfo.toiManualYears || '')
+        .split(',').map(function(s){ return s.trim(); }).filter(Boolean).concat([y]))).sort().join(',');
+    if(window.__dashSave) window.__dashSave();
+    if(window.__bumpDataVersion) window.__bumpDataVersion();
+    if(typeof window.__toiRefresh === 'function') window.__toiRefresh();
+    return { ok:true };
+  }catch(e){ return { ok:false, msg:(e && e.message) || String(e) }; }
+};
+
+window.__toiManualRemove = function(y){
+  try{
+    window.__toiManualFields.forEach(function(f){
+      var rs = state.refSteps && state.refSteps[f.s];
+      if(rs && rs.values && rs.values[f.ref]) delete rs.values[f.ref][y];
+    });
+    var i = state.years.indexOf(String(y));
+    if(i >= 0) state.years.splice(i, 1);
+    if(window.__dashSave) window.__dashSave();
+    if(typeof window.__toiRefresh === 'function') window.__toiRefresh();
+    return { ok:true };
+  }catch(e){ return { ok:false, msg:(e && e.message) || String(e) }; }
+};
+
+
+/* ⭐⭐⭐ [stated] ២០២៦-០៨-២៨ ៖ «ខ្ញុំត្រូវបំពេញទាំងតារាងតុល្យការ និងតារាង
+   គណនីលទ្ធផល ព្រោះត្រូវព្រីនយុទ្ធសាស្រ្តផែនការ» ។
+   ⚠ របាយការណ៍យុទ្ធសាស្ត្រព្រីនតារាង ក.១ ពី __getTOIStepTable('Step4')
+     និង ('Step5') ⇒ វាព្រីន **គ្រប់ជួរដែលមានក្នុង order/labels/values** ។
+     ដូច្នេះការបំពេញដោយដៃត្រូវសរសេរចូលរចនាសម្ព័ន្ធដដែល ⇒ ព្រីនចេញភ្លាម ។
+   ⚠⚠ ខ្ញុំ **មិនប្រឌិតបញ្ជីជួរនៃទម្រង់ អ.ព.ដ ទេ** ៖ ខ្ញុំមិនដឹងវាច្បាស់
+     គ្រប់ជួរ ហើយការទាយនឹងបង្កើតតារាងដែលមើលទៅត្រឹមត្រូវតែខុស ។
+     ⇒ អ្នកវាយឈ្មោះជួរដោយខ្លួនឯង ( ឬចម្លងរចនាសម្ព័ន្ធពីឆ្នាំដែលមាន
+       ឯកសារពិតរួច ) ⇒ អ្វីដែលព្រីនចេញជាអ្វីដែលអ្នកបញ្ជាក់ ។ */
+window.__toiStepRows = function(stepKey, y){
+  var out = [];
+  try{
+    var rs = state.refSteps && state.refSteps[stepKey];
+    if(!rs) return out;
+    (rs.order || []).forEach(function(ref){
+      var v = rs.values[ref] && rs.values[ref][y];
+      /* [stated] ២០២៦-០៨-២៨ ៖ «បន្ថែមទឹកប្រាក់បញ្ចូល ការិយបរិច្ឆេទនេះ (N)
+         និងការិយបរិច្ឆេទមុន (N-1)» ⇒ prevValues មានក្នុងរចនាសម្ព័ន្ធស្រាប់
+         ( អ្នកនាំចូលឯកសារពិតសរសេរវាដដែល ) ⇒ គ្រាន់តែបើកឱ្យវាយបាន ។ */
+      var p = rs.prevValues && rs.prevValues[ref] && rs.prevValues[ref][y];
+      out.push({ ref:ref, label:String(rs.labels[ref] || ''),
+                 value:(typeof v === 'number') ? v : '',
+                 prev:(typeof p === 'number') ? p : '' });
+    });
+  }catch(e){}
+  return out;
+};
+
+/* ⭐ [stated] «ផ្នែកនេះគួរតែ DROPDOWN រើស ហើយឱ្យចេញអូតូបាន ព្រោះលេខយោង
+   និងឈ្មោះជួរមានស្រាប់» ។
+   ⚠ ខ្ញុំគ្មានបញ្ជីផ្លូវការនៃទម្រង់ អ.ព.ដ ⇒ ខ្ញុំមិនប្រឌិតវាទេ ។ តែបញ្ជី
+     **កើតឡើងដោយខ្លួនឯង** ពីអ្វីដែលឆ្លងកាត់ប្រព័ន្ធ ៖ រាល់ជួរដែលអានពី
+     ឯកសារ TOI ពិត និងរាល់ជួរដែលអ្នកវាយ ត្រូវចងចាំជាវចនានុក្រម ។
+   ⇒ សហគ្រាសទី ២ ឡើងទៅ ៖ ជ្រើសពី dropdown ហើយឈ្មោះជួរបំពេញស្វ័យប្រវត្តិ ។ */
+var TOI_DICT_KEY = 'rscToiDict:';
+/* ⭐⭐ [stated] ២០២៦-០៨-២៨ ៖ «ចុះមិនយោងពីជំហានទី៤ និងជំហានទី៥ នៃពន្ធលើ
+   ប្រាក់ចំណូល» ⇒ ត្រូវហើយ ៖ កម្មវិធី **ដឹងស៊េរីលេខយោងរួចហើយ** ។
+   TOTAL_REFS ក្នុងកូដកំណត់ជួរសរុបជា A0…A42 ( ជំហានទី៤ ) និង B0…B48
+   ( ជំហានទី៥ ) ⇒ ស៊េរីអក្សរ និងព្រំដែនលេខមកពីទម្រង់ពិត មិនមែនការទាយ ។
+   ⇒ បញ្ជីស្នើឡើងគ្របស៊េរីពេញ ; ជួរណាដែល TOTAL_REFS ស្គាល់ ដាក់ស្លាក
+     «( ជួរសរុប )» ⇒ អ្នកដឹងភ្លាមថាជួរណាជាសរុប ។
+   ⚠ ខ្ញុំនៅតែ **មិនប្រឌិតឈ្មោះជួរទេ** — ឈ្មោះមកពីឯកសារពិត ឬពីអ្វីដែល
+     អ្នកវាយ ។ បញ្ជីនេះផ្តល់ត្រឹម **លេខយោង** ដែលកម្មវិធីដឹងច្បាស់ ។ */
+/* ⭐⭐⭐ [stated] ២០២៦-០៨-២៨ ៖ អ្នកផ្ញើ FILE_TEST_TOI.xlsx មក ⇒ ខ្ញុំដក
+   ឈ្មោះជួរ **ពិត** ចេញពីវា ហើយបង្កប់ចូលកម្មវិធី ៖ ជំហានទី៤ ៥៣ ជួរ ·
+   ជំហានទី៥ ៤៩ ជួរ ( ~៤ KB ) ។
+   ⇒ dropdown មានឈ្មោះពេញ **តាំងពីដំបូង** សម្រាប់សហគ្រាសទាំងអស់ ⇒
+     អ្នកលែងត្រូវ «រៀន» ម្តងទៀតទេ ។
+   ⚠ ទាំងនេះមិនមែនការប្រឌិតទេ — វាចម្លងពីឯកសារពិតរបស់អ្នកអក្សរដោយអក្សរ ។
+   ⚠ ការរៀនពីឯកសារនៅតែដំណើរការ ហើយ **ជាន់លើបញ្ជីនេះ** ⇒ ទម្រង់ថ្មីរបស់
+     អ.ព.ដ អ្នកអាចធ្វើបច្ចុប្បន្នភាពដោយខ្លួនឯង ។ */
+var TOI_BASE_DICT = {"Step4":{"A0":"I- ទ្រព្យសកម្ម (A0=A1+ A13)","A1":"ទ្រព្យសកម្មរយៈពេលវែង [A1=សរុប(A2:A12)]","A2":"ដីធ្លីរបស់សហគ្រាស","A3":"ការរៀបចំតុបតែងលម្អដីធ្លីរបស់សហគ្រាស","A4":"សំណង់អគាររបស់សហគ្រាស","A5":"សំណង់អគារលើដីធ្លីក្រោមភតិសន្យា","A6":"ទ្រព្យសកម្មរយៈពេលវែងកំពុងដំណើរការ","A7":"រោងចក្រ ( ក្រៅពីអគារ) និងបរិក្ខារ","A8":"កេរ្តិ៍ឈ្មោះ/មូលនិធិពាណិជ្ជកម្ម","A9":"ចំណាយបង្កើតសហគ្រាសដំបូង","A10":"ទ្រព្យសកម្មក្រោមភតិសន្យា និងបុព្វលាភនៃការប្រើប្រាស់","A11":"វិនិយោគក្នុងសហគ្រាសដទៃ","A12":"ទ្រព្យសកម្មរយៈពេលវែងផ្សេងៗ","A13":"ទ្រព្យសកម្មរយៈពេលខ្លី [A13=សរុប(A14:A27)]","A14":"ស្តុកវត្ថុធាតុដើម និងសម្ភារផ្គត់ផ្គង់","A15":"ស្តុកទំនិញ","A16":"ស្តុកផលិតផលសម្រេច","A17":"ផលិតផលកំពុងផលិត","A18":"គណនីត្រូវទទួល / អតិថិជន","A19":"គណនីត្រូវទទួលផ្សេងៗ","A20":"ចំណាយបានកត់ត្រាមុន","A21":"សាច់ប្រាក់នៅក្នុងបេឡា","A22":"សាច់ប្រាក់នៅធនាគារ","A23":"ឥណទានប្រាក់រំដោះពន្ធលើប្រាក់ចំណូល","A24":"ឥណទានអាករលើតម្លៃបន្ថែម","A25":"ឥណទានពន្ធ-អាករដទៃទៀត","A26":"ទ្រព្យសកម្មរយៈពេលខ្លីផ្សេងៗ","A27":"លម្អៀងពីការប្តូរប្រាក់នៃទ្រព្យសកម្ម","A28":"II- មូលនិធិ/ទុនម្ចាស់ទ្រព្យ និងបំណុល [A28=សរុប(A29+A37+A42)]","A29":"មូលនិធិ/ទុនម្ចាស់ទ្រព្យ  [A29=សរុប(A30:A36)]","A30":"មូលធន/មូលធនភាគហ៊ុន/ មូលនិធិសាខាក្រុមហ៊ុនបរទេស ឬការិយាល័យតំណាង","A31":"តម្លៃលើសនៃការលក់ប័ណ្ណភាគហ៊ុន","A32":"មូលធនបម្រុងតាមច្បាប់","A33":"លម្អៀងលើសនៃការវាយតម្លៃឡើងវិញនូវទ្រព្យសកម្ម","A34":"មូលធនបម្រុងផ្សេងៗ","A35":"លទ្ធផលចំណេញ / ( ខាត) យោងពីមុន (+ ឬ  -)","A36":"លទ្ធផលចំណេញ/( ខាត) នៃការិយបរិច្ឆេទនេះ( + ឬ - )","A37":"បំណុលរយៈពេលវែង [A37=សរុប(A38:A41)]","A38":"បំណុលភាគីជាប់ទាក់ទិន","A39":"បំណុលធនាគារ និងបំណុលភាគីមិនជាប់ទាក់ទិនផ្សេងៗ","A40":"សំវិធានធន","A41":"បំណុលរយៈពេលវែងផ្សេងៗ","A42":"បំណុលរយៈពេលខ្លី  [A42=សរុប(A43:A52)]","A43":"សាច់ប្រាក់ដកពីធនាគារលើសប្រាក់បញ្ញើ (ឥណទានវិបារូបន៍)","A44":"ចំណែកចរន្តនៃបំណុលមានការប្រាក់","A45":"គណនីត្រូវសងបុគ្គលជាប់ទាក់ទិន ( ភាគីសម្ព័ន្ធញាតិ)","A46":"គណនីត្រូវសងផ្សេងៗ","A47":"ចំណូលកត់មុន","A48":"គណនីចំណាយបង្គរ និងបំណុលរយៈពេលខ្លីផ្សេងៗ","A49":"សំវិធានធន","A50":"ពន្ធលើប្រាក់ចំណូលត្រូវបង់","A51":"ពន្ធ-អាករផ្សេងៗត្រូវបង់","A52":"លម្អៀងពីការប្តូរប្រាក់នៃទ្រព្យអកម្ម"},"Step5":{"B0":"ចំណូលប្រតិបត្តិការ [B0=សរុប(B1:B3)]","B1":"ការលក់ផលិតផល","B2":"ការលក់ទំនិញ","B3":"ការផ្គត់ផ្គង់សេវា","B4":"ថ្លៃដើមផលិតផលបានលក់របស់សហគ្រាសផលិតកម្ម (TOI 01/V,C20)","B5":"ថ្លៃដើមទំនិញបានលក់របស់សហគ្រាសក្រៅពីផលិតកម្ម (TOI 01/VI, D9)","B6":"ថ្លៃដើមសេវាបានផ្គត់ផ្គង់","B7":"ចំណេញដុល (B7=B0-B4-B5-B6)","B8":"ចំណូលបន្ទាប់បន្សំ  [B8=សរុប(B9:B11)]","B9":"ចំណូលពីការជួលបានទទួល ឬត្រូវទទួល","B10":"ចំណូលពីសួយសារបានទទួល ឬត្រូវទទួល","B11":"ចំណូលបន្ទាប់បន្សំដទៃទៀត","B12":"ចំណូលផ្សេងៗ [B12=សរុប(B13:B21)]","B13":"ឧបត្ថម្ភកធន","B14":"ចំណូលពីភាគលាភបានទទួល ឬត្រូវទទួល","B15":"ចំណូលពីការប្រាក់បានទទួល ឬត្រូវទទួល","B16":"ផលចំណេញ/តម្លៃលើសពីការលក់ទ្រព្យសកម្មរយៈពេលវែង","B17":"ផលចំណេញពីការលក់មូលបត្រ/សញ្ញាប័ណ្ណ","B18":"ភាគចំណេញពីប្រតិបត្តិការរួមគ្នា","B19":"ផលចំណេញពីការប្តូរប្រាក់សម្រេចបាន","B20":"ផលចំណេញពីការប្តូរប្រាក់មិនទាន់សម្រេចបាន","B21":"ចំណូលដទៃទៀត","B22":"ចំណាយប្រតិបត្តិការ [B22=សរុប(B23:B41)]","B23":"ចំណាយបៀវត្ស","B24":"ចំណាយប្រេង ឧស្ម័ន អគ្គិសនី និងទឹក","B25":"ចំណាយធ្វើដំណើរ និងចំណាយស្នាក់នៅ","B26":"ចំណាយដឹកជញ្ជូន","B27":"ចំណាយលើការជួល","B28":"ចំណាយលើការថែទាំ និងជួសជុល","B29":"ចំណាយលើការកម្សាន្តសប្បាយ","B30":"ចំណាយកម្រៃជើងសា ផ្សាយពាណិជ្ជកម្ម និងចំណាយការលក់","B31":"ចំណាយបង់ពន្ធ និងអាករផ្សេងៗ","B32":"ចំណាយលើអំណោយ","B33":"ចំណាយសេវាគ្រប់គ្រង ពិគ្រោះយោបល់ បច្ចេកទេស និងសេវាប្រហាក់ប្រហែល","B34":"ចំណាយលើសួយសារ","B35":"ចំណាយលើបំណុលទារមិនបាន","B36":"ចំណាយរំលស់","B37":"ការកើនឡើង/ថយចុះ នូវសំវិធានធន","B38":"ខាតពីការលក់ទ្រព្យសកម្មរយៈពេលវែង","B39":"ខាតពីការប្តូរប្រាក់សម្រេចបាន","B40":"ខាតពីការប្តូរប្រាក់មិនទាន់សម្រេចបាន","B41":"ចំណាយផ្សេងៗ","B42":"ប្រាក់ចំណេញ/(ខាត) ពីប្រតិបត្តិការ (B42=B7+B8+B12-B22)","B43":"ចំណាយការប្រាក់បង់ឱ្យនិវាសនជន","B44":"ចំណាយការប្រាក់បង់ឱ្យអនិវាសនជន","B45":"ចំណាយការប្រាក់សន្មត*","B46":"ប្រាក់ចំណេញ/(ខាត) មុនបង់ពន្ធ [B46=(B42-B43-B44-B45)]","B47":"ពន្ធលើប្រាក់ចំណូល","B48":"ប្រាក់ចំណេញក្រោយបង់ពន្ធ (B48=B46-B47)"}};
+var TOI_STEP_SERIES = { Step4:{ p:'A', n:52 }, Step5:{ p:'B', n:48 } };
+window.__toiDict = function(stepKey){
+  var d = {};
+  var ser = TOI_STEP_SERIES[stepKey];
+  if(ser){
+    for(var i = 0; i <= ser.n; i++){
+      var code = ser.p + i;
+      try{ d[code] = (typeof TOTAL_REFS !== 'undefined' && TOTAL_REFS.has(code)) ? '( ជួរសរុប )' : ''; }
+      catch(e){ d[code] = ''; }
+    }
+  }
+  /* ឈ្មោះពិតពីទម្រង់ អ.ព.ដ ⇒ ជាន់លើកន្លែងទទេ */
+  try{
+    var base = TOI_BASE_DICT[stepKey] || {};
+    Object.keys(base).forEach(function(k){ d[k] = base[k]; });
+  }catch(e){}
+  try{
+    var rs = state.refSteps && state.refSteps[stepKey];
+    if(rs) (rs.order || []).forEach(function(ref){ if(rs.labels[ref]) d[ref] = rs.labels[ref]; });
+  }catch(e){}
+  try{
+    var saved = JSON.parse(localStorage.getItem(TOI_DICT_KEY + stepKey) || '{}');
+    Object.keys(saved).forEach(function(k){ if(saved[k]) d[k] = saved[k]; });
+  }catch(e){}
+  return d;
+};
+window.__toiDictLearn = function(stepKey, rows){
+  try{
+    var saved = {};
+    try{ saved = JSON.parse(localStorage.getItem(TOI_DICT_KEY + stepKey) || '{}'); }catch(e){}
+    (rows || []).forEach(function(r){
+      var ref = String(r.ref || '').trim(), lb = String(r.label || '').trim();
+      if(ref && lb) saved[ref] = lb;
+    });
+    localStorage.setItem(TOI_DICT_KEY + stepKey, JSON.stringify(saved));
+  }catch(e){}
+};
+
+/* ឆ្នាំដែលមានជួរក្នុងជំហាននេះរួចហើយ ⇒ សម្រាប់ការចម្លងរចនាសម្ព័ន្ធ */
+window.__toiStepYears = function(stepKey){
+  var ys = {};
+  try{
+    var rs = state.refSteps && state.refSteps[stepKey];
+    if(rs) Object.keys(rs.values || {}).forEach(function(ref){
+      Object.keys(rs.values[ref] || {}).forEach(function(y){ ys[y] = 1; });
+    });
+  }catch(e){}
+  return Object.keys(ys).sort();
+};
+
+window.__toiStepSet = function(stepKey, y, rows){
+  y = String(y || '').trim();
+  if(!/^\d{4}$/.test(y)) return { ok:false, msg:'ឆ្នាំត្រូវមាន ៤ ខ្ទង់' };
+  try{
+    if(!state.refSteps[stepKey]){
+      state.refSteps[stepKey] = {
+        title: (stepKey === 'Step4' ? 'តារាងតុល្យការ' : 'តារាងគណនីលទ្ធផល'),
+        order:[], labels:{}, values:{}, prevValues:{}
+      };
+    }
+    var rs = state.refSteps[stepKey];
+    (rows || []).forEach(function(r){
+      var ref = String(r.ref || '').trim();
+      if(!ref) return;
+      if(!(ref in rs.labels)){ rs.labels[ref] = String(r.label || ''); rs.order.push(ref); }
+      else if(r.label) rs.labels[ref] = String(r.label);
+      if(!rs.values[ref]) rs.values[ref] = {};
+      if(!rs.prevValues) rs.prevValues = {};
+      if(!rs.prevValues[ref]) rs.prevValues[ref] = {};
+      var num1 = function(raw){
+        if(raw === '' || raw === undefined || raw === null) return null;
+        var n = parseFloat(String(raw).replace(/[^0-9.\-]/g, ''));
+        return isFinite(n) ? n : null;
+      };
+      var a = num1(r.value), b = num1(r.prev);
+      if(a === null) delete rs.values[ref][y]; else rs.values[ref][y] = a;
+      if(b === null) delete rs.prevValues[ref][y]; else rs.prevValues[ref][y] = b;
+    });
+    window.__toiDictLearn(stepKey, rows);
+    /* ⚠ ជួរដែលអ្នកលុបចេញពីទម្រង់ ⇒ ដកតម្លៃឆ្នាំនេះចេញផង ។ */
+    var keep = {};
+    (rows || []).forEach(function(r){ if(r.ref) keep[String(r.ref).trim()] = 1; });
+    (rs.order || []).slice().forEach(function(ref){
+      if(!keep[ref] && rs.values[ref]) delete rs.values[ref][y];
+    });
+    if(!state.years.includes(y)){ state.years.push(y); state.years.sort(); }
+    if(window.__dashSave) window.__dashSave();
+    if(window.__bumpDataVersion) window.__bumpDataVersion();
+    if(typeof window.__toiRefresh === 'function') window.__toiRefresh();
+    return { ok:true, n:(rows || []).length };
+  }catch(e){ return { ok:false, msg:(e && e.message) || String(e) }; }
 };
 
 window.__toiExport = function(){
@@ -51371,6 +51627,423 @@ function rscBankAutoRead(file, onDone){
 window.__rscBankAutoRead = rscBankAutoRead;
 
 window.__rscBank = rscBankOpen;
+</script>
+
+<script>
+/* ⭐⭐ ផ្ទាំងបំពេញ TOI ដោយដៃ — សម្រាប់សហគ្រាសដែលប្រកាសលើក្រដាស ។
+   ⚠ ផ្ទាំងនេះរស់ក្នុងប្លុករបស់វាផ្ទាល់ ⇒ ការដួលនៅកន្លែងផ្សេងមិនអាច
+     រារាំងវាបានទេ ( មេរៀនពីម៉ូឌុលធនាគារ ) ។ */
+function rscToiManualOpen(){
+  if(document.getElementById('rscToiMan')) return;
+  if(typeof window.__toiManualSet !== 'function'){
+    alert('ម៉ូឌុល TOI មិនបានផ្ទុក — សូមផ្ទុកទំព័រឡើងវិញ (Ctrl+Shift+R)');
+    return;
+  }
+  var F = window.__toiManualFields || [];
+
+  var ov = document.createElement('div');
+  ov.id = 'rscToiMan';
+  ov.style.cssText = 'position:fixed; inset:0; z-index:2147483210; background:rgba(8,26,27,.62);'
+    + 'display:flex; align-items:flex-start; justify-content:center; overflow:auto; padding:22px 14px;';
+  var card = document.createElement('div');
+  card.style.cssText = 'background:#fff; color:#171B1A; border-radius:12px; width:100%;'
+    + 'max-width:760px; padding:18px 20px 16px; font-family:inherit; font-size:14px;'
+    + 'box-shadow:0 30px 70px rgba(0,0,0,.4);';
+  ov.appendChild(card);
+  document.body.appendChild(ov);
+
+  function esc(s){
+    return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  function money(v){
+    var n = parseFloat(String(v == null ? '' : v).replace(/,/g, ''));
+    if(!isFinite(n)) return '';
+    var p = (Math.round(n * 100) / 100).toFixed(2).replace(/\.00$/, '').split('.');
+    p[0] = p[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return p.join('.');
+  }
+
+
+  /* ⭐ ផ្ទាំងបីជា ៖ តួលេខគណនា · តារាងតុល្យការ · តារាងគណនីលទ្ធផល */
+  var tab = 'calc';
+  var stepRows = [];
+  var cur = '';
+  /* ⚠⚠ [stated] ២០២៦-០៨-២៨ ៖ «ឈ្មោះគួរតែយកពីការិយបរិច្ឆេទសវនកម្មដែល
+     ខ្ញុំបានបញ្ចូល» ⇒ បញ្ជីឆ្នាំចាស់អានតែ state.years ដែលទទេ រហូតដល់មាន
+     ឯកសារ TOI ⇒ សម្រាប់សហគ្រាសដែលប្រកាសលើក្រដាស វាទទេជានិច្ច ។
+     ⇒ បញ្ចូលឆ្នាំពី **ការិយបរិច្ឆេទសវនកម្ម** ( __auditYears ) ⇒ អ្នកមិន
+       ចាំបាច់វាយឆ្នាំម្តងទៀតទេ ; ឆ្នាំដែលមានទិន្នន័យរួច លេចជាមួយគ្នា ។ */
+  function years(){
+    var a = [], b = [];
+    try{ a = (window.__dashState && window.__dashState().years) ? window.__dashState().years.slice() : []; }catch(e){}
+    try{ b = (typeof window.__auditYears === 'function') ? (window.__auditYears() || []) : []; }catch(e){}
+    var seen = {}, out = [];
+    a.concat(b).forEach(function(y){
+      y = String(y || '').trim();
+      if(/^\d{4}$/.test(y) && !seen[y]){ seen[y] = 1; out.push(y); }
+    });
+    out.sort();
+    return out;
+  }
+
+  function draw(){
+    var ys = years();
+    if(!cur && ys.length) cur = ys[ys.length - 1];
+    var fromFile = cur && window.__toiYearFromFile && window.__toiYearFromFile(cur);
+    var v = cur ? window.__toiManualGet(cur) : {};
+
+    var IN = 'padding:5px 7px; font:inherit; font-size:13px; border:1px solid #d8d2c2;'
+      + 'border-radius:6px; text-align:right; width:150px;';
+    function tb(id, lb){
+      var on = (tab === id);
+      return '<button data-tab="' + id + '" style="padding:6px 13px; border-radius:14px;'
+        + 'cursor:pointer; font:inherit; font-size:12.5px; font-weight:700; border:1px solid '
+        + (on ? '#0F3D3E' : '#d8d2c2') + '; background:' + (on ? '#0F3D3E' : '#fff')
+        + '; color:' + (on ? '#fff' : '#3a3a30') + ';">' + lb + '</button>';
+    }
+    var h = '<div style="font-weight:700; font-size:17px;">📝 បំពេញ TOI ដោយដៃ</div>'
+      + '<div style="color:#4a5250; font-size:12.5px; margin-bottom:10px;">'
+      + 'សម្រាប់សហគ្រាសដែលប្រកាសលើក្រដាស ( គ្មានឯកសារ TOI ) ។</div>'
+      + '<div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px;">'
+      + tb('calc', 'តួលេខគណនាពន្ធ')
+      + tb('Step4', 'តារាងតុល្យការ')
+      + tb('Step5', 'តារាងគណនីលទ្ធផល') + '</div>'
+
+      + '<div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;'
+      + 'padding:8px 10px; background:#F6F3E9; border-radius:8px; margin-bottom:10px;">'
+      + '<span style="font-size:12.5px;">ឆ្នាំ ៖</span>'
+      + '<select id="tm_y" style="' + IN + ' width:auto; text-align:left;">'
+      + (ys.length ? ys.map(function(y){
+            return '<option' + (y === cur ? ' selected' : '') + '>' + esc(y) + '</option>';
+          }).join('') : '<option value="">( មិនទាន់មានឆ្នាំ )</option>')
+      + '</select>'
+      + '<input id="tm_new" placeholder="ឆ្នាំថ្មី ឧ. 2024" style="' + IN + ' width:140px; text-align:left;">'
+      + '<button id="tm_add" style="padding:6px 12px; border:0; border-radius:6px; cursor:pointer;'
+      + 'font:inherit; font-weight:700; font-size:12.5px; background:#2E6B6D; color:#fff;">'
+      + '＋ បន្ថែមឆ្នាំ</button></div>';
+
+    if(fromFile){
+      /* ⚠ ការសរសេរជាន់លើឯកសារពិតត្រូវប្រាប់ជាមុន មិនធ្វើស្ងាត់ */
+      h += '<div style="margin-bottom:10px; padding:8px 10px; border-radius:8px;'
+        + 'background:#FFF3D6; border:1px solid #E8CE84; font-size:12.5px;">'
+        + '⚠ ឆ្នាំ <b>' + esc(cur) + '</b> មានឯកសារ TOI ពិតរួចហើយ។ '
+        + 'ការរក្សាទុកនឹង<b>សរសេរជាន់លើ</b>តួលេខទាំងនោះ។</div>';
+    }
+
+    if(tab !== 'calc'){ card.innerHTML = h + stepHtml(); wireStep(); return; }
+
+    h += '<div style="overflow:auto;"><table style="width:100%; border-collapse:collapse; font-size:13px;">'
+      + '<tbody>';
+    F.forEach(function(f){
+      h += '<tr><td style="padding:5px 6px; border-bottom:1px solid #ece7d8;">' + esc(f.lb)
+        + (f.hint ? ' <span style="color:#9aa3a0; font-size:11.5px;">( ' + esc(f.hint) + ' )</span>' : '')
+        + '</td>'
+        + '<td style="padding:4px 6px; border-bottom:1px solid #ece7d8; text-align:right;">'
+        + '<input data-k="' + f.k + '" value="' + esc(money(v[f.k])) + '" inputmode="decimal" style="'
+        + IN + '"></td></tr>';
+    });
+    h += '</tbody></table></div>'
+      + '<div style="margin-top:8px; font-size:12px; color:#6b736f;">'
+      + '⚠ ចំណាយត្រូវគណនាដោយស្វ័យប្រវត្តិ ៖ ចំណូល − លទ្ធផលមុនបង់ពន្ធ។</div>'
+      + '<div style="margin-top:14px; display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap;">'
+      + '<span id="tm_msg" style="margin-right:auto; font-size:12.5px; color:#1c6b35;"></span>'
+      + '<button id="tm_del" style="padding:8px 14px; border:1px solid #d8d2c2; border-radius:7px;'
+      + 'background:#fff; font:inherit; font-weight:700; font-size:13px; cursor:pointer; color:#7a4030;">'
+      + '🗑 លុបឆ្នាំនេះ</button>'
+      + '<button id="tm_close" style="padding:8px 14px; border:1px solid #d8d2c2; border-radius:7px;'
+      + 'background:#fff; font:inherit; font-weight:700; font-size:13px; cursor:pointer;">បិទ</button>'
+      + '<button id="tm_save" style="padding:8px 20px; border:0; border-radius:7px; background:#0F3D3E;'
+      + 'color:#fff; font:inherit; font-weight:700; font-size:13px; cursor:pointer;">💾 រក្សាទុក</button>'
+      + '</div>';
+    card.innerHTML = h;
+    wire();
+  }
+
+  /* ── តារាងតុល្យការ / គណនីលទ្ធផល ─────────────────────────────── */
+  function stepHtml(){
+    if(!cur) return '<div style="color:#A83A26;">សូមបន្ថែមឆ្នាំជាមុនសិន។</div>';
+    var IN = 'padding:4px 6px; font:inherit; font-size:12.5px; border:1px solid #d8d2c2;'
+      + 'border-radius:5px; box-sizing:border-box;';
+    var others = (window.__toiStepYears(tab) || []).filter(function(y){ return y !== cur; });
+    var s = '<div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;'
+      + 'margin-bottom:8px; font-size:12.5px;">'
+      + '<b>' + (tab === 'Step4' ? 'តារាងតុល្យការ' : 'តារាងគណនីលទ្ធផល')
+      + '</b> — ឆ្នាំ <b>' + esc(cur) + '</b>'
+      + (others.length
+          ? ' &nbsp;·&nbsp; ចម្លងរចនាសម្ព័ន្ធពី <select id="tm_copy" style="' + IN + '">'
+            + '<option value="">( ជ្រើសឆ្នាំ )</option>'
+            + others.map(function(y){ return '<option>' + esc(y) + '</option>'; }).join('')
+            + '</select>' : '')
+      + '</div>';
+    s += '<div style="overflow:auto; max-height:46vh;">'
+      + '<table style="width:100%; border-collapse:collapse; font-size:12.5px;"><thead><tr>'
+      + '<th style="padding:5px; background:#0F3D3E; color:#EFE7D2; width:110px;">លេខយោង</th>'
+      + '<th style="padding:5px; background:#0F3D3E; color:#EFE7D2;">ឈ្មោះជួរ</th>'
+      + '<th style="padding:5px; background:#0F3D3E; color:#EFE7D2; width:140px;">'
+      + esc(cur) + ' ( N )</th>'
+      + '<th style="padding:5px; background:#0F3D3E; color:#EFE7D2; width:140px;">'
+      + esc(String(Number(cur) - 1)) + ' ( N-1 )</th>'
+      + '<th style="padding:5px; background:#0F3D3E; color:#EFE7D2; width:40px;"></th></tr></thead><tbody>';
+    var dict = window.__toiDict(tab) || {};
+    var dictRefs = Object.keys(dict).sort(function(a, b){
+      var ma = /^([A-Z]+)(\d+)$/.exec(a), mb = /^([A-Z]+)(\d+)$/.exec(b);
+      if(ma && mb && ma[1] === mb[1]) return (+ma[2]) - (+mb[2]);   /* A2 មុន A10 */
+      return a.localeCompare(b);
+    });
+    stepRows.forEach(function(r, i){
+      s += '<tr><td style="padding:3px 4px;"><input data-r="ref" data-i="' + i + '" list="tm_dl"'
+        + ' value="' + esc(r.ref) + '" style="' + IN + ' width:100%;"></td>'
+        + '<td style="padding:3px 4px;"><input data-r="label" data-i="' + i + '" value="'
+        + esc(r.label) + '" style="' + IN + ' width:100%;"></td>'
+        + '<td style="padding:3px 4px;"><input data-r="value" data-i="' + i + '" value="'
+        + esc(money(r.value)) + '" inputmode="decimal" style="' + IN + ' width:100%; text-align:right;"></td>'
+        + '<td style="padding:3px 4px;"><input data-r="prev" data-i="' + i + '" value="'
+        + esc(money(r.prev)) + '" inputmode="decimal" style="' + IN + ' width:100%; text-align:right;"></td>'
+        + '<td style="padding:3px 4px; text-align:center;"><button data-rm="' + i + '"'
+        + ' style="border:0; background:none; cursor:pointer; color:#A83A26;">✕</button></td></tr>';
+    });
+    s += '</tbody></table></div>'
+      + '<datalist id="tm_dl">'
+      /* ⚠⚠ [stated] ២០២៦-០៨-២៨ ៖ «ខ្ញុំចុច A2 តែវាអត់ចេញឈ្មោះជួរឱ្យ» ។
+         មូលហេតុ ៖ បញ្ជីមានលេខយោង តែ **គ្មានឈ្មោះ** ⇒ គ្មានអ្វីត្រូវបំពេញ ។
+         ⚠ សារជំនួយចាស់សន្យា «ឈ្មោះបំពេញស្វ័យប្រវត្តិ» ដោយឥតលក្ខខណ្ឌ ⇒
+           បំភាន់ ។ ⇒ បង្ហាញឱ្យឃើញភ្លាមក្នុងបញ្ជីថាមួយណាមានឈ្មោះ ។ */
+      + dictRefs.map(function(k){
+          var lb = dict[k];
+          var show = (lb && lb !== '( ជួរសរុប )') ? lb
+                   : (lb === '( ជួរសរុប )' ? '( ជួរសរុប — មិនទាន់មានឈ្មោះ )'
+                                            : '( មិនទាន់មានឈ្មោះ )');
+          return '<option value="' + esc(k) + '">' + esc(show) + '</option>';
+        }).join('') + '</datalist>'
+      + '<div style="margin-top:8px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">'
+      + '<button id="tm_addrow" style="padding:6px 12px; border:0; border-radius:6px; cursor:pointer;'
+      + 'font:inherit; font-weight:700; font-size:12.5px; background:#2E6B6D; color:#fff;">＋ ជួរថ្មី</button>'
+      /* ⭐ [stated] «លេខយោង ឈ្មោះជួរ អត់មាន DROPDOWN ឱ្យរើស» ⇒ បញ្ជីទទេ
+         ព្រោះមិនទាន់មានឯកសារ TOI ណាមួយឆ្លងកាត់ប្រព័ន្ធ ។
+         ⚠ ខ្ញុំមិនប្រឌិតបញ្ជីផ្លូវការទេ — តែខ្ញុំអាច **រៀនពីឯកសារពិត** ៖
+           ជ្រើសឯកសារ TOI ណាមួយ ( សូម្បីតែសហគ្រាសផ្សេង ឬឆ្នាំចាស់ ) ⇒
+           យកតែ **លេខយោង និងឈ្មោះជួរ** ; **មិនយកតម្លៃ** ⇒ គ្មានលេខអ្នកដទៃ
+           ចូលមកក្នុងសំណុំរឿងនេះទេ ។ */
+      + '<span style="font-size:12px; color:#6b736f;">'
+      + (function(){
+          var named = dictRefs.filter(function(k){
+            return dict[k] && dict[k] !== '( ជួរសរុប )';
+          }).length;
+          if(!dictRefs.length) return 'វាយលេខយោង និងឈ្មោះ ⇒ ប្រព័ន្ធចងចាំសម្រាប់លើកក្រោយ';
+          if(named) return 'លេខយោង ' + dictRefs.length + ' · មានឈ្មោះរួច ' + named
+            + ' ⇒ ជ្រើសមួយដែលមានឈ្មោះ ⇒ បំពេញស្វ័យប្រវត្តិ';
+          /* ⚠ និយាយត្រង់ ៖ លេខយោងមាន តែឈ្មោះមិនទាន់មាន */
+          return '⚠ លេខយោង ' + dictRefs.length + ' មាន តែ **ឈ្មោះជួរមិនទាន់មាន** ⇒ '
+            + 'វាយឈ្មោះដោយដៃ ឬចុច 📥 រៀនរចនាសម្ព័ន្ធពីឯកសារ TOI ម្តង';
+        })()
+      + '</span></div>'
+      + '<div style="margin-top:14px; display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap;">'
+      + '<span id="tm_msg" style="margin-right:auto; font-size:12.5px; color:#1c6b35;"></span>'
+      + '<button id="tm_close" style="padding:8px 14px; border:1px solid #d8d2c2; border-radius:7px;'
+      + 'background:#fff; font:inherit; font-weight:700; font-size:13px; cursor:pointer;">បិទ</button>'
+      + '<button id="tm_savestep" style="padding:8px 20px; border:0; border-radius:7px;'
+      + 'background:#0F3D3E; color:#fff; font:inherit; font-weight:700; font-size:13px; cursor:pointer;">'
+      + '💾 រក្សាទុក</button></div>';
+    return s;
+  }
+
+  function wireStep(){
+    card.querySelectorAll('[data-tab]').forEach(function(b){
+      b.onclick = function(){ switchTab(b.getAttribute('data-tab')); };
+    });
+    var sel = document.getElementById('tm_y');
+    if(sel) sel.onchange = function(){ cur = sel.value; loadStep(); draw(); };
+    var dict2 = window.__toiDict(tab) || {};
+    card.querySelectorAll('[data-r]').forEach(function(e){
+      var i = parseInt(e.getAttribute('data-i'), 10), k = e.getAttribute('data-r');
+      e.oninput = function(){
+        stepRows[i][k] = e.value;
+        /* ⚠⚠ [stated] ២០២៦-០៨-២៨ ៖ «ពេលខ្ញុំបញ្ចូល A21 វាចេញ A2 វិញ» ។
+           មូលហេតុ ៖ ការបំពេញធ្វើរាល់តួអក្សរ ⇒ វាយ «A2» ⇒ បំពេញឈ្មោះ A2 ;
+           វាយ «1» បន្ថែម ⇒ ក្លាយជា A21 តែឈ្មោះ **មិនទទេទៀតទេ** ⇒ លក្ខខណ្ឌ
+           «បំពេញតែពេលទទេ» រារាំងការកែ ⇒ ឈ្មោះ A2 ជាប់នៅលើ A21 ។
+           ( ជួរ A10 ក្នុងរូបរបស់អ្នកក៏ដូចគ្នា ៖ វាកាន់ឈ្មោះ A1 ។ )
+           ⇒ ចាំថាឈ្មោះនោះ **បំពេញដោយស្វ័យប្រវត្តិ** ( auto ) ⇒ ពេលលេខយោង
+             ប្តូរ ជំនួសវាបាន ; ឈ្មោះដែល **អ្នកវាយផ្ទាល់** មិនប៉ះឡើយ ។ */
+        if(k === 'label'){ stepRows[i].auto = false; return; }
+        if(k === 'ref'){
+          var lb = dict2[String(e.value || '').trim()];
+          if(lb === '( ជួរសរុប )') lb = '';
+          var curLb = String(stepRows[i].label || '').trim();
+          if(lb && (!curLb || stepRows[i].auto)){
+            stepRows[i].label = lb;
+            stepRows[i].auto = true;
+            var le = card.querySelector('[data-r="label"][data-i="' + i + '"]');
+            if(le) le.value = lb;
+          }
+        }
+      };
+      if(k === 'value' || k === 'prev'){
+        e.onfocus = function(){ e.value = String(e.value || '').replace(/,/g, ''); };
+        e.onblur  = function(){
+          var n = parseFloat(String(e.value || '').replace(/[^0-9.\-]/g, ''));
+          e.value = isFinite(n) ? money(n) : '';
+          stepRows[i][k] = e.value;
+        };
+      }
+    });
+    card.querySelectorAll('[data-rm]').forEach(function(b){
+      b.onclick = function(){
+        stepRows.splice(parseInt(b.getAttribute('data-rm'), 10), 1);
+        draw();
+      };
+    });
+    var ar = document.getElementById('tm_addrow');
+    if(ar) ar.onclick = function(){ stepRows.push({ ref:'', label:'', value:'', prev:'' }); draw(); };
+    /* [stated] ២០២៦-០៨-២៨ ៖ ដកប៊ូតុងរៀនចេញ ( បញ្ជីឈ្មោះបង្កប់ក្នុងកម្មវិធី
+       រួចហើយ ) ។ ⚠ តក្កវិជ្ជានៅទុក ⇒ បើថ្ងៃណា អ.ព.ដ ប្តូរទម្រង់ ខ្ញុំបើកវិញ
+       បានក្នុងបន្ទាត់តែមួយ ជាជាងសរសេរឡើងវិញ ។ */
+    var lr = null && document.getElementById('tm_learn');
+    if(lr) lr.onclick = function(){
+      var fi = document.createElement('input');
+      fi.type = 'file'; fi.accept = '.xlsx,.xls';
+      fi.onchange = function(ev){
+        var f = ev.target.files && ev.target.files[0];
+        if(!f) return;
+        msg('កំពុងអាន ' + f.name + '…');
+        var fr = new FileReader();
+        fr.onload = function(){
+          try{
+            if(typeof window.__ensureXLSX === 'function') window.__ensureXLSX();
+            var wb = XLSX.read(new Uint8Array(fr.result), { type:'array' });
+            var found = [];
+            wb.SheetNames.forEach(function(sn){
+              if(String(sn).replace(/\s/g, '').toLowerCase() !== tab.toLowerCase()) return;
+              var aoa = XLSX.utils.sheet_to_json(wb.Sheets[sn], { header:1, defval:'', raw:true });
+              /* ⚠⚠ [stated] «ខ្ញុំផ្ញើ FILE ជូន … រៀនរចនាសម្ព័ន្ធចេញ» ⇒ វាបរាជ័យ
+                 ព្រោះខ្ញុំសន្មតថាលេខយោងនៅមុនឈ្មោះ ។ ក្នុងឯកសារពិត ៖
+                   ជួរឈរ ១ = បរិយាយ · ជួរឈរ ២ = យោង  ( បញ្ច្រាស់ )
+                 ⇒ រកលេខយោងនៅកន្លែងណាក៏បាន រួចយកឈ្មោះជា **ក្រឡាអក្សរ
+                   ជិតបំផុតខាងឆ្វេង** ; បើគ្មាន ទើបមើលខាងស្តាំ ។ */
+              aoa.forEach(function(row){
+                var cells = [], ri = -1, ref = '';
+                for(var i = 0; i < Math.min(row.length, 6); i++){
+                  cells.push(String(row[i] == null ? '' : row[i]).trim());
+                }
+                for(var j = 0; j < cells.length; j++){
+                  if(/^[A-Z]{1,2}[0-9]{1,3}$/.test(cells[j])){ ref = cells[j]; ri = j; break; }
+                }
+                if(!ref) return;
+                var lb = '';
+                for(var k = ri - 1; k >= 0; k--){
+                  if(cells[k] && !/^[\d.,\-]+$/.test(cells[k])){ lb = cells[k]; break; }
+                }
+                if(!lb) for(var m = ri + 1; m < cells.length; m++){
+                  if(cells[m] && !/^[\d.,\-]+$/.test(cells[m])){ lb = cells[m]; break; }
+                }
+                if(lb) found.push({ ref:ref, label:lb });
+              });
+            });
+            if(!found.length){
+              msg('រកជួរក្នុងសន្លឹក ' + tab + ' មិនឃើញទេ', true);
+              return;
+            }
+            window.__toiDictLearn(tab, found);
+            draw();
+            msg('រៀនបាន ' + found.length + ' ជួរ ⇒ ឥឡូវ dropdown មានឱ្យជ្រើស ( តម្លៃមិនបានយកទេ )');
+          }catch(e){ msg('អានឯកសារមិនបាន ៖ ' + ((e && e.message) || e), true); }
+        };
+        fr.readAsArrayBuffer(f);
+      };
+      fi.click();
+    };
+    var cp = document.getElementById('tm_copy');
+    if(cp) cp.onchange = function(){
+      if(!cp.value) return;
+      /* ⚠ ចម្លងតែ **រចនាសម្ព័ន្ធ** ( លេខយោង និងឈ្មោះជួរ ) មិនចម្លងតម្លៃ ⇒
+         លេខឆ្នាំមុនមិនលេចចូលឆ្នាំនេះដោយចៃដន្យ ។ */
+      var src = window.__toiStepRows(tab, cp.value) || [];
+      stepRows = src.map(function(r){ return { ref:r.ref, label:r.label, value:'', prev:'' }; });
+      draw();
+      msg('ចម្លងរចនាសម្ព័ន្ធ ' + stepRows.length + ' ជួរ ( តម្លៃទទេ )');
+    };
+    var cl = document.getElementById('tm_close');
+    if(cl) cl.onclick = function(){ try{ ov.remove(); }catch(e){} };
+    var sv = document.getElementById('tm_savestep');
+    if(sv) sv.onclick = function(){
+      var r = window.__toiStepSet(tab, cur, stepRows);
+      msg(r.ok ? ('✓ រក្សាទុក ' + r.n + ' ជួរ សម្រាប់ឆ្នាំ ' + cur
+                  + ' — របាយការណ៍យុទ្ធសាស្ត្រព្រីនចេញភ្លាម')
+               : (r.msg || 'រក្សាទុកមិនបាន'), !r.ok);
+    };
+  }
+
+  function loadStep(){
+    stepRows = (cur && tab !== 'calc') ? (window.__toiStepRows(tab, cur) || []) : [];
+  }
+  function switchTab(t){ tab = t; loadStep(); draw(); }
+
+  function wire(){
+    card.querySelectorAll('[data-tab]').forEach(function(b){
+      b.onclick = function(){ switchTab(b.getAttribute('data-tab')); };
+    });
+    var sel = document.getElementById('tm_y');
+    if(sel) sel.onchange = function(){ cur = sel.value; draw(); };
+    var add = document.getElementById('tm_add');
+    if(add) add.onclick = function(){
+      var y = String((document.getElementById('tm_new') || {}).value || '').trim();
+      if(!/^\d{4}$/.test(y)){ msg('ឆ្នាំត្រូវមាន ៤ ខ្ទង់', true); return; }
+      var r = window.__toiManualSet(y, {});      /* បង្កើតឆ្នាំទទេ */
+      if(!r.ok){ msg(r.msg || 'បន្ថែមមិនបាន', true); return; }
+      cur = y; draw(); msg('បន្ថែមឆ្នាំ ' + y + ' រួច');
+    };
+    var cl = document.getElementById('tm_close');
+    if(cl) cl.onclick = function(){ try{ ov.remove(); }catch(e){} };
+    ov.onclick = function(e){ if(e.target === ov && cl) cl.onclick(); };
+
+    var sv = document.getElementById('tm_save');
+    if(sv) sv.onclick = function(){
+      if(!cur){ msg('សូមបន្ថែមឆ្នាំជាមុនសិន', true); return; }
+      var vals = {};
+      card.querySelectorAll('[data-k]').forEach(function(e){
+        vals[e.getAttribute('data-k')] = e.value;
+      });
+      var r = window.__toiManualSet(cur, vals);
+      msg(r.ok ? ('✓ រក្សាទុកឆ្នាំ ' + cur + ' រួច — កាតគណនាប្រើតួលេខនេះភ្លាម')
+               : (r.msg || 'រក្សាទុកមិនបាន'), !r.ok);
+    };
+
+    /* ⚠ លុបមិនអាចត្រឡប់វិញ ⇒ ចុចពីរដងក្នុង ៤ វិនាទី */
+    var dl = document.getElementById('tm_del'), t = null;
+    if(dl) dl.onclick = function(){
+      if(!cur) return;
+      if(dl.__a){
+        clearTimeout(t); dl.__a = false;
+        var r = window.__toiManualRemove(cur);
+        cur = ''; draw();
+        msg(r.ok ? 'លុបឆ្នាំរួច' : (r.msg || 'លុបមិនបាន'), !r.ok);
+        return;
+      }
+      dl.__a = true; dl.textContent = '⚠ ចុចម្តងទៀតដើម្បីលុប';
+      t = setTimeout(function(){ dl.__a = false; dl.textContent = '🗑 លុបឆ្នាំនេះ'; }, 4000);
+    };
+
+    card.querySelectorAll('[data-k]').forEach(function(e){
+      e.onfocus = function(){ e.value = String(e.value || '').replace(/,/g, ''); };
+      e.onblur  = function(){
+        var n = parseFloat(String(e.value || '').replace(/[^0-9.\-]/g, ''));
+        e.value = isFinite(n) ? money(n) : '';
+      };
+    });
+  }
+
+  function msg(s, bad){
+    var m = document.getElementById('tm_msg');
+    if(!m) return;
+    m.style.color = bad ? '#A83A26' : '#1c6b35';
+    m.textContent = s;
+    if(!bad) setTimeout(function(){ if(m) m.textContent = ''; }, 5000);
+  }
+
+  draw();
+}
+window.__rscToiManual = rscToiManualOpen;
 </script>
 
 <script>
