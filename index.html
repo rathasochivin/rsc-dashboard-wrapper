@@ -3121,7 +3121,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
      ⭐ 'Khmer OS Muol Light' មាន face តែ ៤០០ ⇒ ៧០០ ធ្វើអោយកម្មវិធីរុករក
        សំយោគអក្សរដិតដោយខ្លួនឯង (faux bold) ដែលមើលទៅក្រាស់ស្រពិចស្រពិល។
      ⚠ ធ្វើតែពេលព្រីន ⇒ លើអេក្រង់នៅដិតដដែល។ */
-  /* RSCBUILD-WIZOPEN98 */
+  /* RSCBUILD-GLFLAT99 */
   #mtr-embed .mtr-form-title,
   #mtr-embed .mtr-form-meta .val,
   #mtr-embed .mtr-filled,
@@ -29571,6 +29571,86 @@ function rscGLOpen(){
     return { rows:out, err:'' };
   }
 
+  /* ⭐⭐ [stated] ២០២៦-០៨-២៨ ៖ «នេះជាប្រភេទ GL ប្រភេទផ្សេងទៀត … សម្គាល់
+     ផ្នែកមុនត្រូវតែនៅតែស្គាល់ដដែល កុំកែហើយឯកសារផ្សេងបើកមិនស្គាល់» ។
+     ⚠⚠ សំណើនោះកំណត់ការរចនា ៖ ខ្ញុំ **មិនប៉ះអ្នកអានចាស់សោះ** ។ អ្នកអានថ្មី
+       ជាផ្លូវ **ទី ២** ដែលសាកតែពេលអ្នកអានទី ១ រកជួរមិនឃើញ ⇒ ឯកសារ
+       QuickBooks ទាំង ៤ ដែលដើរស្រាប់ មិនអាចខូចដោយការបន្ថែមនេះទេ ។
+
+     ទម្រង់ថ្មី ៖ តារាងរាបស្មើ ក្បាលនៅជួរ ១ ៖
+       VOUCHER TYP · VOUCHER NO. · Y&M · DATE · NO. · SUMMARY ·
+       SUPPLIER OR CUSTOMER · INVOICE NO. · INVOICE DATE · G/L ·
+       Dr.AMT · Cr.AMT · BALANCE
+     ⚠ គណនីស្ថិតក្នុងក្រឡាតែមួយ ៖ «5101 Revenue from Main Business Operation»
+       ⇒ លេខជាពាក្យដំបូង ឈ្មោះជាអ្វីដែលនៅសល់ ។
+     ⚠ ជួរឈរ DATE មានតែថ្ងៃ ( «17» ) ⇒ ប្រើ INVOICE DATE ដែលជាកាលបរិច្ឆេទ
+       ពេញ ; បើគ្មាន ផ្សំ Y&M នឹងថ្ងៃ ។ */
+  function normHdr(s){
+    return String(s == null ? '' : s).toUpperCase().replace(/[^A-Z&]/g, '');
+  }
+  function parseFlat(aoa, fileName){
+    var hdr = -1, H = null;
+    for(var i = 0; i < Math.min(aoa.length, 30); i++){
+      var v = (aoa[i] || []).map(normHdr);
+      var hasAcc = v.some(function(x){ return x === 'GL' || x === 'ACCOUNT' || x === 'ACCOUNTCODE'; });
+      var hasDr  = v.some(function(x){ return x.indexOf('DRAMT') === 0 || x === 'DEBIT' || x === 'DR'; });
+      var hasCr  = v.some(function(x){ return x.indexOf('CRAMT') === 0 || x === 'CREDIT' || x === 'CR'; });
+      if(hasAcc && hasDr && hasCr){ hdr = i; H = v; break; }
+    }
+    if(hdr < 0) return { rows:[], err:'' };
+    function find(test){
+      for(var k = 0; k < H.length; k++) if(test(H[k])) return k;
+      return -1;
+    }
+    var cAcc  = find(function(x){ return x === 'GL' || x === 'ACCOUNT' || x === 'ACCOUNTCODE'; });
+    var cDr   = find(function(x){ return x.indexOf('DRAMT') === 0 || x === 'DEBIT' || x === 'DR'; });
+    var cCr   = find(function(x){ return x.indexOf('CRAMT') === 0 || x === 'CREDIT' || x === 'CR'; });
+    var cBal  = find(function(x){ return x.indexOf('BALANCE') === 0; });
+    var cInvD = find(function(x){ return x === 'INVOICEDATE'; });
+    var cYM   = find(function(x){ return x === 'Y&M' || x === 'YM'; });
+    var cDay  = find(function(x){ return x === 'DATE'; });
+    var cType = find(function(x){ return x.indexOf('VOUCHERTYP') === 0 || x === 'TYPE'; });
+    var cNum  = find(function(x){ return x.indexOf('VOUCHERNO') === 0 || x === 'NUM' || x === 'VOUCHER'; });
+    var cName = find(function(x){ return x.indexOf('SUPPLIER') === 0 || x === 'NAME'; });
+    var cMemo = find(function(x){ return x === 'SUMMARY' || x === 'MEMO' || x === 'DESCRIPTION'; });
+    var cInvN = find(function(x){ return x === 'INVOICENO'; });
+
+    var out = [];
+    for(var r = hdr + 1; r < aoa.length; r++){
+      var row = aoa[r] || [];
+      var accRaw = String(row[cAcc] == null ? '' : row[cAcc]).trim();
+      var d = num(cDr >= 0 ? row[cDr] : 0), c = num(cCr >= 0 ? row[cCr] : 0);
+      if(!accRaw && !d && !c) continue;              /* ជួរទទេ */
+      if(/^total/i.test(accRaw)) continue;           /* ជួរសរុប */
+      var m = /^\s*([0-9][0-9A-Za-z\-\.]*)\s+(.*)$/.exec(accRaw);
+      var code = m ? m[1] : accRaw;
+      var name = m ? m[2].trim() : '';
+      var dt = '';
+      if(cInvD >= 0 && row[cInvD]) dt = row[cInvD];
+      else if(cYM >= 0 && row[cYM]){
+        /* Y&M ជាចុងខែ ⇒ ផ្សំនឹងថ្ងៃក្នុងជួរ DATE បើមាន */
+        var day = cDay >= 0 ? parseInt(String(row[cDay] || '').replace(/\D/g, ''), 10) : NaN;
+        var ym = row[cYM];
+        if(ym instanceof Date && isFinite(day)){
+          dt = new Date(ym.getFullYear(), ym.getMonth(), day);
+        } else dt = ym;
+      }
+      out.push({
+        f: fileName, date: dt, code: code, acc: name, path: accRaw,
+        type: cType >= 0 ? String(row[cType] == null ? '' : row[cType]).trim() : '',
+        num:  cNum  >= 0 ? String(row[cNum]  == null ? '' : row[cNum]).trim()  : '',
+        name: cName >= 0 ? String(row[cName] == null ? '' : row[cName]).trim() : '',
+        memo: [cMemo >= 0 ? row[cMemo] : '', cInvN >= 0 ? row[cInvN] : '']
+                .map(function(z){ return String(z == null ? '' : z).trim(); })
+                .filter(Boolean).join(' · '),
+        split: '',
+        deb: d, cred: c,
+        bal: cBal >= 0 ? num(row[cBal]) : 0
+      });
+    }
+    return { rows:out, err:'' };
+  }
+
   inp.onchange = function(ev){
     var fl = ev.target.files; if(!fl || !fl.length) return;
     var pend = fl.length;
@@ -29585,9 +29665,13 @@ function rscGLOpen(){
             var got = [], errs = [];
             wb.SheetNames.forEach(function(sn){
               var aoa = XLSX.utils.sheet_to_json(wb.Sheets[sn], { header:1, defval:'', raw:true });
+              /* ផ្លូវទី ១ ៖ QuickBooks ( មិនប៉ះ ) */
               var res = parseSheet(aoa, file.name);
-              if(res.rows.length) got = got.concat(res.rows);
-              else if(res.err) errs.push(sn + ' ៖ ' + res.err);
+              if(res.rows.length){ got = got.concat(res.rows); return; }
+              /* ផ្លូវទី ២ ៖ តារាងរាបស្មើ — សាកតែពេលទី ១ រកមិនឃើញ */
+              var res2 = parseFlat(aoa, file.name);
+              if(res2.rows.length){ got = got.concat(res2.rows); return; }
+              if(res.err) errs.push(sn + ' ៖ ' + res.err);
             });
             files.push({ name:file.name, n:got.length, err:got.length ? '' : errs.join(' · ') });
             rows = rows.concat(got);
