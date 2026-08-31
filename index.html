@@ -3121,7 +3121,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
      ⭐ 'Khmer OS Muol Light' មាន face តែ ៤០០ ⇒ ៧០០ ធ្វើអោយកម្មវិធីរុករក
        សំយោគអក្សរដិតដោយខ្លួនឯង (faux bold) ដែលមើលទៅក្រាស់ស្រពិចស្រពិល។
      ⚠ ធ្វើតែពេលព្រីន ⇒ លើអេក្រង់នៅដិតដដែល។ */
-  /* RSCBUILD-BANKMULTI96 */
+  /* RSCBUILD-SESSFIX97 */
   #mtr-embed .mtr-form-title,
   #mtr-embed .mtr-form-meta .val,
   #mtr-embed .mtr-filled,
@@ -5650,24 +5650,67 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
               applyFeatureGates();
               try{ if(typeof renderUserGreeting === "function") renderUserGreeting(); }catch(e){}
             })
-            .catch(function(){
+            .catch(function(err){
+              /* ⚠⚠ [stated] ២០២៦-០៨-២៨ ៖ «log in យឺត ហើយចូលបានហើយក៏ចេញ
+                 មកវិញ» ។ ⭐ មូលហេតុរកឃើញនៅទីនេះ ៖ កូដចាស់ចាត់ទុក
+                 **បរាជ័យណាមួយ** នៃការសួរម៉ាស៊ីនមេ ជា «វគ្គផុតកំណត់» ⇒ លុប
+                 token ហើយបញ្ជូនត្រឡប់ទៅទំព័រចូល ។
+                 តែបរាជ័យភាគច្រើន **មិនមែនរឿងវគ្គទេ** ៖ អ៊ីនធឺណិតយឺត ·
+                 Apps Script ភ្ញាក់ពីដំណេក ( cold start អាចយូរជាង ១០ វិនាទី ) ·
+                 កំហុសបណ្ដោះអាសន្ន ។ ⇒ អ្នកប្រើត្រូវបានបណ្តេញចេញទាំងដែល
+                 វគ្គនៅមានសុពលភាព — ត្រូវនឹងរោគសញ្ញាដែលអ្នករាយការណ៍ ។
+                 ⇒ ១ សាកឡើងវិញ ២ ដង ( ២ វិ. រួច ៥ វិ. ) មុននឹងសន្និដ្ឋាន ។
+                   ២ បណ្តេញចេញ **តែពេលម៉ាស៊ីនមេឆ្លើយច្បាស់ថាវគ្គមិនត្រឹមត្រូវ** ។
+                   ៣ បរាជ័យបណ្ដាញ ⇒ រក្សាការចូល ហើយប្រាប់ដោយមិនបណ្តេញ ។ */
+              var msg = String((err && err.message) || '');
+              var authBad = /token|session|វគ្គ|ផុតកំណត់|មិនត្រឹមត្រូវ|unauthor|forbidden|403|401/i.test(msg);
               window.__approvedTINsLoaded = true;
-              window.__features = [];      // សួរមិនបាន = មិនអនុញ្ញាត
+              window.__features = [];
               applyFeatureGates();
-              /* លើ GitHub Pages ៖ token ដែលរក្សាទុកអាចផុតកំណត់។ ប្រាប់
-                 ឱ្យច្បាស់ រួចត្រឡប់ទៅទំព័រចូល ជាជាងទុកឱ្យអង្គុយមើលផ្ទាំង
-                 ដែលមុខងារបិទអស់ដោយមិនដឹងមូលហេតុ។ */
-              if(!window.__rscHasGsRun() && location.protocol.indexOf('http') === 0){
-                try{ localStorage.removeItem('rsc_token'); }catch(e){}
-                alert('មិនអាចផ្ទៀងផ្ទាត់វគ្គចូលប្រើប្រាស់បានទេ — សូមចូលម្តងទៀត។');
-                /* ⚠ ដូចផ្លូវចាកចេញ ៖ ទៅទំព័រចូលដោយផ្ទាល់ ហើយបើ login.html
-                   មិនមានលើ host ធ្លាក់ទៅទំព័រចូលរបស់ Apps Script ជំនួស
-                   ការទុកអ្នកប្រើនៅមុខទំព័រ 404។ */
-                var EXEC_LOGIN = window.__RSC_EXEC_URL || '';
-                fetch('./login.html', {method:'HEAD'})
-                  .then(function(r){ location.replace(r && r.ok ? './login.html' : (EXEC_LOGIN || './')); })
-                  .catch(function(){ location.replace(EXEC_LOGIN || './'); });
+              if(!(!window.__rscHasGsRun() && location.protocol.indexOf('http') === 0)) return;
+
+              if(!authBad){
+                /* បណ្ដាញ ៖ សាកម្តងទៀត ជាជាងបណ្តេញ */
+                window.__sessRetry = (window.__sessRetry || 0) + 1;
+                if(window.__sessRetry <= 2){
+                  setTimeout(loadApprovedTINs, window.__sessRetry === 1 ? 2000 : 5000);
+                  return;
+                }
+                /* នៅតែមិនបាន ⇒ **កុំបណ្តេញ** ; ប្រាប់ហើយទុកឱ្យសាកឡើងវិញ */
+                try{
+                  var w = document.getElementById('rscNetWarn');
+                  if(!w){
+                    w = document.createElement('div');
+                    w.id = 'rscNetWarn';
+                    w.style.cssText = 'position:fixed; left:12px; right:12px; bottom:12px;'
+                      + 'z-index:2147483000; padding:10px 14px; border-radius:10px;'
+                      + 'background:#FFF3D6; border:1px solid #E8CE84; color:#6b5300;'
+                      + 'font:inherit; font-size:13px; box-shadow:0 8px 24px rgba(0,0,0,.18);';
+                    document.body.appendChild(w);
+                  }
+                  w.innerHTML = '⚠ ភ្ជាប់ម៉ាស៊ីនមេមិនបាន — មុខងារខ្លះបិទជាបណ្ដោះអាសន្ន។ '
+                    + 'ការចូលប្រើប្រាស់របស់អ្នក <b>មិនត្រូវបានលុបទេ</b>។ ';
+                  var b = document.createElement('button');
+                  b.textContent = '↻ សាកម្តងទៀត';
+                  b.style.cssText = 'margin-left:8px; padding:5px 12px; border:0; border-radius:6px;'
+                    + 'cursor:pointer; font:inherit; font-weight:700; background:#0F3D3E; color:#fff;';
+                  b.onclick = function(){
+                    window.__sessRetry = 0;
+                    w.remove();
+                    loadApprovedTINs();
+                  };
+                  w.appendChild(b);
+                }catch(e){}
+                return;
               }
+
+              /* ម៉ាស៊ីនមេឆ្លើយច្បាស់ថាវគ្គមិនត្រឹមត្រូវ ⇒ ទើបបណ្តេញ */
+              try{ localStorage.removeItem('rsc_token'); }catch(e){}
+              alert('វគ្គចូលប្រើប្រាស់ផុតកំណត់ — សូមចូលម្តងទៀត។');
+              var EXEC_LOGIN = window.__RSC_EXEC_URL || '';
+              fetch('./login.html', {method:'HEAD'})
+                .then(function(r){ location.replace(r && r.ok ? './login.html' : (EXEC_LOGIN || './')); })
+                .catch(function(){ location.replace(EXEC_LOGIN || './'); });
             });
         } else {
           window.__approvedTINsLoaded = true; // standalone/local file — no gate
