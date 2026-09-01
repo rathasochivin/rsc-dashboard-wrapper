@@ -3064,6 +3064,13 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     overflow:auto; box-shadow:var(--toi-shadow); margin-bottom:24px;
   }
   #toi-embed table{border-collapse:collapse; width:100%; font-size:14px; letter-spacing:.2px;}
+  /* តារាងកន្ទុយនៃជំហាន ( ខ.១ · គ ) ៖ ត្រូវអានបានពេញអេក្រង់ ដោយមិនអូសទៅស្តាំ */
+  #toi-embed .toi-tail table{table-layout:fixed; width:100%; font-size:11.5px;}
+  #toi-embed .toi-tail th, #toi-embed .toi-tail td{
+    white-space:normal; overflow-wrap:anywhere; word-break:break-word;
+    padding:4px 6px; vertical-align:top; line-height:1.45;
+  }
+  #toi-embed .toi-tail td.num, #toi-embed .toi-tail td.n{white-space:nowrap;}
   #toi-embed table caption{
     text-align:left; padding:12px 16px; font-weight:700; color:var(--toi-navy);
     background:var(--toi-paper-dim); border-bottom:1px solid var(--toi-line);
@@ -4899,6 +4906,10 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
              ប្រអប់ជ្រើស **ថត** ⇒ ជ្រើស .zip មិនបានដដែល ។
              ⇒ ដាក់ប៊ូតុងនៅរបារខាងលើ ⇒ មានគ្រប់ផ្លូវ ៖ offline · admin ·
                និងក្នុងផ្ទាំងជ្រើសសហគ្រាស ។ -->
+        <!-- ⭐ [stated] ២០២៦-០៩-០១ ៖ កន្លែងចុចពិនិត្យឯកសារដែលបានផ្ទុករួច
+             ហើយផ្ទុកបន្ថែមពីទីនោះតែម្តង ។ មិនមែន admin-only ៖ ការពិនិត្យ
+             ជាការមើលសុទ្ធសាធ ហើយផ្លូវនាំចូលនៅតែមានឆ្មាំអតបដដែល ។ -->
+        <button class="atb-btn atb-icon" onclick="if(window.__rscUploadReport){window.__rscUploadReport();}" title="ឯកសារដែលបានផ្ទុក · ផ្ទុកបន្ថែម" aria-label="ឯកសារដែលបានផ្ទុក">🗂</button>
         <button class="atb-btn atb-icon admin-only" onclick="(function(){var i=document.getElementById('auto-file-input'); if(i) i.click();})()" title="UPLOAD ឯកសារ ឬ ZIP" aria-label="UPLOAD ឯកសារ ឬ ZIP">📦</button>
         <!-- [stated] «បើកឯកសារ» ជាប់នឹង UPLOAD ព្រោះទាំងពីរជាផ្លូវចូលទិន្នន័យ -->
         <button type="button" class="atb-btn atb-icon atb-door admin-only" onclick="window.__rscOpenPicker ? window.__rscOpenPicker() : document.getElementById('saved-file-input').click()" title="បើកឯកសារ" aria-label="បើកឯកសារ"><span class="ic">🚪</span></button>
@@ -7321,11 +7332,28 @@ function rscUploadReport(){
       + 'តែសូមពិនិត្យថាមិនមែនដោយសារឯកសារខ្វះ។</div>';
   }
 
-  h += '<div style="margin-top:14px; display:flex; gap:8px; justify-content:flex-end;">'
+  /* ⭐⭐ [stated] ២០២៦-០៩-០១ ៖ «ចង់បានកន្លែងចុចពិនិត្យមើលឯកសារដែលបាន upload
+     រួចរាល់» និង «កន្លែងដើម្បីអាច upload បន្ថែម ករណីខ្វះឯកសារ ឬត្រូវ upload
+     ឡើងវិញ» ។
+     ⇒ របាយការណ៍នេះឆ្លើយសំណួរទី ១ រួចស្រាប់ ( វាអានពី **ទិន្នន័យបច្ចុប្បន្ន**
+       មិនមែនពីកំណត់ហេតុ ⇒ ត្រឹមត្រូវជានិច្ច ) ។ ត្រូវការតែផ្លូវបើកវាគ្រប់ពេល
+       ( ប៊ូតុង 🗂 លើរបារខាងលើ ) និងប៊ូតុងផ្ទុកបន្ថែមនៅទីនេះ ។
+     ⚠ ប៊ូតុងផ្ទុកបន្ថែម **ចុចលើ input ដដែល** ដែល 📥 ប្រើ ⇒ ដើរតាមផ្លូវនាំចូល
+       ដែលគេប្រើរាល់ថ្ងៃ ( រួមទាំងការត្រួតពិនិត្យអតប និងការព្រមានប្តូរសហគ្រាស )
+       ⇒ គ្មានផ្លូវថ្មីត្រូវថែទាំ និងគ្មានច្រកជៀស ។ */
+  h += '<div style="margin-top:14px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">'
+    + '<button id="urAdd" style="padding:8px 14px; border:0; border-radius:7px; background:#C8A64B;'
+    + 'color:#17170F; font:inherit; font-weight:700; font-size:13px; cursor:pointer;">📥 ផ្ទុកឯកសារបន្ថែម</button>'
+    + '<button id="urAddDir" style="padding:8px 14px; border:1px solid #d8d2c2; border-radius:7px;'
+    + 'background:#fff; font:inherit; font-weight:700; font-size:13px; cursor:pointer;">📁 ផ្ទុកទាំងថត</button>'
+    + '<span style="flex:1 1 auto;"></span>'
     + '<button id="urCopy" style="padding:8px 14px; border:1px solid #d8d2c2; border-radius:7px;'
     + 'background:#fff; font:inherit; font-weight:700; font-size:13px; cursor:pointer;">⧉ ចម្លង</button>'
     + '<button id="urOk" style="padding:8px 20px; border:0; border-radius:7px; background:#0F3D3E;'
-    + 'color:#fff; font:inherit; font-weight:700; font-size:13px; cursor:pointer;">យល់ព្រម</button></div>';
+    + 'color:#fff; font:inherit; font-weight:700; font-size:13px; cursor:pointer;">យល់ព្រម</button></div>'
+    + '<div style="margin-top:6px; font-size:12px; color:#6b736f;">'
+    + 'ការផ្ទុកឯកសារដដែលឡើងវិញ ៖ PR/SR/CN-DN ជំនួសទាំងស្រុង · WHT បញ្ចូលបន្ថែមតាមខែ '
+    + '( ខែដដែលត្រូវសរសេរជាន់ មិនស្ទួន ) ។</div>';
 
   card.innerHTML = h;
   document.body.appendChild(ov);
@@ -7333,6 +7361,24 @@ function rscUploadReport(){
   var ok = document.getElementById('urOk');
   if(ok) ok.onclick = function(){ try{ ov.remove(); }catch(e){} };
   ov.onclick = function(e){ if(e.target === ov) ok.onclick(); };
+  /* ⚠ បិទផ្ទាំងជាមុន ៖ ប្រអប់ជ្រើសឯកសាររបស់កម្មវិធីរុករកបើកនៅខាងលើគេ
+     ហើយបើទុកផ្ទាំងនេះនៅ អ្នកប្រើនឹងឃើញរបាយការណ៍ចាស់ខណៈកំពុងនាំចូល ។ */
+  var addF = document.getElementById('urAdd');
+  if(addF) addF.onclick = function(){
+    try{ ov.remove(); }catch(e){}
+    var i = document.getElementById('auto-file-input'); if(i) i.click();
+  };
+  var addD = document.getElementById('urAddDir');
+  if(addD){
+    /* ការជ្រើស **ថត** ដើរតែលើកុំព្យូទ័រ ⇒ លាក់វានៅលើទូរស័ព្ទ ជាជាងបើកប្រអប់ទទេ */
+    var canDir = ('webkitdirectory' in document.createElement('input'))
+              && !/Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
+    if(!canDir) addD.style.display = 'none';
+    addD.onclick = function(){
+      try{ ov.remove(); }catch(e){}
+      var i = document.getElementById('auto-folder-input'); if(i) i.click();
+    };
+  }
   var cp = document.getElementById('urCopy');
   if(cp) cp.onclick = function(){
     var t = 'ឯកសារដែលបានផ្ទុក\nTOI ៖ ' + (toiY.join(' · ') || 'គ្មាន') + '\n';
@@ -26254,10 +26300,23 @@ function getStepTitle(aoa){
   }
   return '';
 }
+/* ⭐⭐ [stated] ២០២៦-០៩-០១ ៖ «នៅ TOI ជំហានទី៩ ជួយបន្ថែមចំនុច ខ.១ ដល់ចំនុច គ» ។
+   ⚠ មូលហេតុពិតដែលវាមិនលេច ៖ ជំហានទី៩ ក្លាយជា **refStep** ( មានលេខយោង
+     F1…G8 ) ហើយផ្ទាំង refStep គូរតែជួរដែលមានលេខយោង ។ តារាង ខ.១ ( G9–G13 )
+     និងតារាង គ ជា **តារាងច្រើនជួរឈរ** គ្មានលេខយោងក្នុងជួរដេក ⇒ ធ្លាក់ចោល
+     ស្ងាត់ៗ ។ ( ការនាំចេញជា Excel យកសន្លឹកឆៅ ⇒ ទីនោះវាមានគ្រប់ — នោះជា
+     ភស្តុតាងថាទិន្នន័យមិនបាត់ គឺការបង្ហាញទេដែលខ្វះ ។ )
+   ⇒ កត់ទុកលេខជួរដេកចុងក្រោយដែល **បានទទួលយក** ជា ref រួចរក្សាអ្វីៗខាងក្រោម
+     នោះជា «កន្ទុយ» ដើម្បីគូរបន្ត ។ ⚠ ត្រូវជាជួរដេកដែលទទួលយកពិត មិនមែន
+     ជួរដេកដែលត្រូវនឹងលំនាំ ៖ ក្បាលតារាង ខ.១ មាន «(G9)» ជាដើម ដែលត្រូវ
+     នឹងលំនាំ តែត្រូវបានបដិសេធព្រោះគ្មានស្លាក ⇒ បើរាប់វា កន្ទុយនឹងកាត់
+     ក្បាលតារាងចោល ។ */
 function extractRefRows(aoa){
   const rows = [];
   const seen = new Set();
-  for(const row of aoa){
+  rows.lastIdx = -1;
+  for(let __i = 0; __i < aoa.length; __i++){
+    const row = aoa[__i];
     if(!row) continue;
     let refIdx=-1, refVal=null;
     for(let i=0;i<row.length;i++){
@@ -26283,8 +26342,30 @@ function extractRefRows(aoa){
     }
     seen.add(refVal);
     rows.push({ref:refVal, label, value, prevValue});
+    rows.lastIdx = __i;
   }
   return rows;
+}
+/* ជួរដេកខាងក្រោមជួរយោងចុងក្រោយ ៖ សម្គាល់ ៖ · ខ.១ · គ … ។ កាត់ជួរទទេ
+   នៅដើម និងចុង ដើម្បីកុំអោយមានចន្លោះទទេធំក្រោមតារាង ។ */
+function extractStepTail(aoa, lastIdx){
+  if(!(lastIdx >= 0)) return [];
+  const isBlank = r => !r || r.every(c => c === null || c === '');
+  let a = aoa.slice(lastIdx + 1);
+  while(a.length && isBlank(a[0])) a = a.slice(1);
+  while(a.length && isBlank(a[a.length - 1])) a = a.slice(0, -1);
+  /* ⚠ [stated] ២០២៦-០៩-០១ ៖ កថាខណ្ឌច្បាប់ពីរនៅ **បាតតារាង** ( មាត្រា ១៧ …
+     ប្រការ ៥៥ … ) វែងជាង ៣០០ តួអក្សរ ⇒ វាទាញតារាងឱ្យវែងទៅស្តាំ ។ គេសុំឱ្យ
+     ដកចេញ ។ ⇒ កាត់តែជួរ **ចុងក្រោយបំផុត** ដែលជាអត្ថបទតែមួយវែងលើស ១៥០
+     តួអក្សរ ⇒ សម្គាល់ខ្លីៗ ( ដូច «** ឆ្នាំ N គឺជាឆ្នាំចរន្ត» ) និងសម្គាល់
+     នៅចន្លោះតារាង ( ពន្យល់ G8 ) នៅដដែល ។ */
+  const isLongNote = r => {
+    const c = (r || []).filter(x => x !== null && x !== '');
+    return c.length === 1 && typeof c[0] === 'string' && c[0].length > 150;
+  };
+  while(a.length && isLongNote(a[a.length - 1])) a = a.slice(0, -1);
+  while(a.length && isBlank(a[a.length - 1])) a = a.slice(0, -1);
+  return a.length ? a : [];
 }
 /* ══ ការស្គាល់ព័ត៌មានសហគ្រាស — ច្រើនផ្លូវ ═══════════════════════════
    [stated] ២០២៦-០៨-១៤ ៖ «ជួយធ្វើឱ្យការចាប់យកព័ត៌មានសហគ្រាសពី companyinfo
@@ -26804,6 +26885,11 @@ function mergeIntoState(perFileData){
           if(!rs.prevValues[ref]) rs.prevValues[ref] = {};
           rs.prevValues[ref][year] = prevValue;
         });
+        /* ⚠ រក្សាកន្ទុយ **ក្នុង rs ខ្លួនវា** ⇒ វាចូល state.refSteps ដែល
+           ត្រូវរក្សាទុក និងផ្ទុកឡើងវិញរួចស្រាប់ ⇒ គ្មានបញ្ជីថ្មីត្រូវបន្ថែម
+           ទៅផ្លូវ save/open ( កន្លែងដែលងាយភ្លេចបំផុត ) ។ */
+        const tailRows = extractStepTail(aoa, refRows.lastIdx);
+        if(tailRows.length){ if(!rs.tail) rs.tail = {}; rs.tail[year] = tailRows; }
       } else {
         if(!state.rawSteps[stepKey]) state.rawSteps[stepKey] = {title, byYear:{}};
         state.rawSteps[stepKey].title = title;
@@ -32542,6 +32628,36 @@ function renderRefStepPanel(stepKey){
   }
   if(showPrev){
     wrap.appendChild(el('p',{class:'panel-sub'}, 'ជួរឈរ ' + prevYearLabel + ' (N-1) ទាញយកពីជួរឈរ "ការិយបរិច្ឆេទមុន" នៅក្នុងឯកសារ ' + yrs[0] + ' ដដែល (មិនមែនឯកសារដាច់ដោយឡែកទេ)'));
+  }
+  /* ⭐ តារាងដែលគ្មានលេខយោង ( ជំហានទី៩ ៖ សម្គាល់ · ខ.១ · គ ) គូរបន្តខាងក្រោម
+     ក្នុងទម្រង់ដើមរបស់សន្លឹក ។ ⚠ ជំហានផ្សេងដែលគ្មានកន្ទុយ មិនប្រែប្រួល ។ */
+  if(rs.tail){
+    const tailYrs = yrs.filter(y => (rs.tail[y] || []).length);
+    if(tailYrs.length){
+      /* [stated] ២០២៦-០៩-០១ ៖ «ដាក់ឆ្នាំជា tab វិញ … ជាជាងបង្ហាញតារាងទាំងអស់
+         គ្រប់ឆ្នាំ វាវែងត្រូវអូសចុះក្រោម» ។ ⚠ ប្រើ `state.activeRawYear` ដដែល
+         នឹងផ្ទាំងទម្រង់ដើម ៖ ជំហានមួយមិនអាចជាទាំង refStep និង rawStep ក្នុង
+         ពេលតែមួយបានទេ ⇒ គ្មានការប៉ះទង្គិចកូនសោ ហើយគ្មានវាលថ្មីត្រូវបន្ថែម
+         ចូលផ្លូវ save/open ។ */
+      let ty = state.activeRawYear[stepKey];
+      if(!ty || !tailYrs.includes(ty)) ty = tailYrs[0];
+      state.activeRawYear[stepKey] = ty;
+      if(tailYrs.length > 1){
+        const tabs = el('div',{class:'year-tabs no-print'});
+        tailYrs.forEach(y=>{
+          const tab = el('div',{class:'year-tab'+(ty===y?' active':'')}, y);
+          tab.onclick = ()=>{ state.activeRawYear[stepKey] = y; renderAll(); };
+          tabs.appendChild(tab);
+        });
+        wrap.appendChild(tabs);
+      }
+      /* ⚠ តារាងទាំងនេះមាន ៧ ជួរឈរ ហើយក្បាលជួរជាឃ្លាវែង ⇒ ក្នុងទទឹងធម្មតា
+         វាហៀរទៅស្តាំ ។ `toi-tail` ចាក់សោទទឹង ( table-layout:fixed ) ហើយ
+         អនុញ្ញាតឱ្យអក្សរចុះបន្ទាត់ ⇒ អានបានពេញអេក្រង់ដោយមិនអូសទៅស្តាំ ។ */
+      const tailBox = el('div',{class:'toi-tail'});
+      tailBox.appendChild(renderAoaTable(rs.tail[ty], null, {stepKey}));
+      wrap.appendChild(tailBox);
+    }
   }
   return wrap;
 }
@@ -44361,11 +44477,11 @@ CC.compute=function(){
      មុននេះ E41 អាន `t.lossCF[y]` ដែលជាតួលេខ **តាមការប្រកាស** ⇒ ឆ្នាំ ២០២២
      កាត់ចំណាយរួច E36 ក្លាយជាវិជ្ជមាន តែឆ្នាំ ២០២៣ នៅតែដកខាតយោង
      ១០០,៩៤០,០២៨ ដដែល — ខាតដែលលែងមាន។
-     ដំណោះស្រាយ ៖ ដើរឆ្នាំពី **ចាស់ទៅថ្មី** ហើយរក្សា «អាងខាត» ៖
-       ប្រើ  = min(អាងខាត, E40 វិជ្ជមាន)          ← កាត់កងបានតែប៉ុណ្ណឹង
-       អាង  = អាង − ប្រើ + max(0, −E40)            ← ខាតថ្មីបញ្ចូលអាង
-     ⚠ ចាប់ផ្តើមអាងដោយតួលេខប្រកាសរបស់ឆ្នាំដំបូង (ខាតពីឆ្នាំក្រៅឯកសារ) ;
-       បើឆ្នាំមុនភ្ជាប់គ្នាបាត់ (ចន្លោះឆ្នាំ) ចាប់ផ្តើមអាងឡើងវិញពីតួលេខ
+     ដំណោះស្រាយ ៖ ដើរឆ្នាំពី **ចាស់ទៅថ្មី** ហើយរក្សា «ខាតយោង» ៖
+       ប្រើ  = min(ខាតយោង, E40 វិជ្ជមាន)          ← កាត់កងបានតែប៉ុណ្ណឹង
+       ខាតយោង = ខាតយោង − ប្រើ + max(0, −E40)      ← ខាតថ្មីបញ្ចូលខាតយោង
+     ⚠ ចាប់ផ្តើមខាតយោងដោយតួលេខប្រកាសរបស់ឆ្នាំដំបូង (ខាតពីឆ្នាំក្រៅឯកសារ) ;
+       បើឆ្នាំមុនភ្ជាប់គ្នាបាត់ (ចន្លោះឆ្នាំ) ចាប់ផ្តើមខាតយោងឡើងវិញពីតួលេខ
        ប្រកាសរបស់ឆ្នាំនោះ — ខ្សែសង្វាក់កាត់ផ្តាច់ មិនអាចសន្មតបានទេ។
      ⚠ មិនដកលើសពីតួលេខប្រកាសឡើយ (`Math.min(use, declared)`) ៖ ការកំណត់
        ឡើងវិញអាចធ្វើអោយខាតតិចជាង តែមិនអាចបង្កើតខាតថ្មីអោយសហគ្រាសទេ។
@@ -44382,6 +44498,14 @@ CC.compute=function(){
       if(use>declared) use=declared;
       if(!(use>=0)) use=0;
       o.lossCFDecl=declared;
+      /* ⭐ [stated] ២០២៦-០៩-០១ ៖ E41 ត្រូវចុចមើលការគណនាខាតយោងតាមឆ្នាំបាន
+         ក្នុងទម្រង់ដូចតារាង «គ» នៃជំហានទី៩ តែតាមការគណនាជាក់ស្តែងរបស់យើង ។
+         ⚠ កត់ត្រា **មុន** ការត្រឡប់ខាងក្រោម ៖ ឆ្នាំដែលប្រើត្រូវនឹងតួលេខ
+           ប្រកាស ចេញមុនដល់បន្ទាត់នោះ ⇒ បើកត់ក្រោយ ឆ្នាំទាំងនោះនឹងគ្មាន
+           មូលដ្ឋានបង្ហាញ ហើយប្រអប់នឹងទទេដោយមិនដឹងមូលហេតុ ។ */
+      o.lossPool={ before:pool, use:use, declared:declared,
+                   profit:Math.max(0, o.e40), loss:Math.max(0, -o.e40),
+                   after:pool-use+Math.max(0, -o.e40) };
       pool=pool-use+Math.max(0, -o.e40);
       prevN=n;
       if(Math.round(use)===Math.round(declared)) return;   /* គ្មានអ្វីប្តូរ */
@@ -45695,6 +45819,19 @@ CC.BASIS={
     }
     a.push(Bn("E41 ខាតយោង (ប្រើពិត)",-o.lossCF));
     return a; }],
+  /* ⭐ តារាងតាមដានលទ្ធផលសារពើពន្ធខាតយោងទៅមុខ — ជួរដេកជាធាតុ ជួរឈរជាឆ្នាំ
+     ( ប្រអប់នេះរៀបបញ្ច្រាសពីទម្រង់ក្រដាស តែជាលេខដដែល ហើយត្រូវនឹងគ្រប់
+     ប្រអប់ដទៃក្នុងកាតគណនា ) ។ */
+  lossCF:["ខាតយោងដើរពីឆ្នាំចាស់ទៅឆ្នាំថ្មី ៖ ប្រើ = min( ខាតយោងដើមគ្រា , E40 វិជ្ជមាន ) និងមិនលើសតួលេខប្រកាស",function(y,o){
+    var L=o.lossPool;
+    if(!L) return [];
+    return [Bn("(1) លទ្ធផលចំណេញសារពើពន្ធក្នុងការិយបរិច្ឆេទ (E40)",L.profit),
+            Bn("(2) លទ្ធផលខាតសារពើពន្ធក្នុងការិយបរិច្ឆេទ",L.loss),
+            Bn("ខាតយោងដើមគ្រា ( មកពីឆ្នាំមុន )",L.before),
+            Bn("ខាតយោងតាមការប្រកាស",L.declared),
+            Bn("(4) ខាតអនុញ្ញាតប្រើប្រាស់កាត់កងក្នុងការិយបរិច្ឆេទ = E41",L.use),
+            Bn("(5) ខាតនៅសល់អនុញ្ញាតប្រើប្រាស់យោងទៅមុខ",L.after)]; },
+    {left:true, noResult:true}],
   e43:["E42 × អត្រាពន្ធលើប្រាក់ចំណូល",function(y,o,s){
     return [Bn("E42 ចំណូលជាប់ពន្ធ",o.e42),Bn("អត្រា "+(s.rate.toi*100)+"%",null)]; }],
   e47:["E45 − ឥណទានពន្ធបរទេស",function(y,o){ return [Bn("E45",o.e45),Bn("E46 ឥណទានពន្ធបរទេស",-o.foreign)]; }],
