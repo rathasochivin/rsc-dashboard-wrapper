@@ -2576,7 +2576,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
      ⭐ 'Khmer OS Muol Light' មាន face តែ ៤០០ ⇒ ៧០០ ធ្វើអោយកម្មវិធីរុករក
        សំយោគអក្សរដិតដោយខ្លួនឯង (faux bold) ដែលមើលទៅក្រាស់ស្រពិចស្រពិល។
      ⚠ ធ្វើតែពេលព្រីន ⇒ លើអេក្រង់នៅដិតដដែល។ */
-  /* RSCBUILD-TOITOT120 */
+  /* RSCBUILD-MTRYEAR124 */
   #mtr-embed .mtr-form-title,
   #mtr-embed .mtr-form-meta .val,
   #mtr-embed .mtr-filled,
@@ -7757,13 +7757,35 @@ window.__rscShareCase = function(){
                         : ('✓ បានចែករំលែកទៅ ' + (r.name || ('ID ' + id)) + ' រួចរាល់។'));
         return;
       }
-      var m = { not_yours:'អ្នកមិនមានសិទ្ធិលើសហគ្រាសនេះទេ',
-                no_such_id:'រកលេខសម្គាល់នេះមិនឃើញ',
+      /* ⚠⚠ [stated] ២០២៦-០៨-២៨ ៖ «ចុចចែករំលែកសហគ្រាសនេះ តែវាលោតថាអ្នក
+         មិនមានសិទ្ធិ» ។
+         ⭐ សារ not_yours មកពី **ម៉ាស៊ីនមេ** មិនមែនពីអេក្រង់ទេ ៖ វាពិនិត្យ
+           ថាអ្នកចែកមានលេខអតបនោះក្នុងជួររបស់ខ្លួនក្នុងសន្លឹក Whitelist ។
+           បើគណនីអ្នកគ្រប់គ្រងមិនមានលេខអតបនោះចុះក្នុងជួររបស់វា ⇒ បដិសេធ
+           ទោះជាម្ចាស់ប្រព័ន្ធក៏ដោយ ។
+         ⚠ សារចាស់ប្រាប់តែរោគសញ្ញា ⇒ អ្នកប្រើជាប់គាំងដោយមិនដឹងត្រូវធ្វើអ្វី ។
+           ⇒ បង្ហាញ **លេខអតបពិតដែលបានផ្ញើ** និងជំហានដោះស្រាយ ។
+         ⚠ ការជួសជុលពិតនៅខាងម៉ាស៊ីនមេ ( Code.gs ) ដែលខ្ញុំមិនប៉ះ ។ */
+      var why = (r && r.reason) || '';
+      if(why === 'not_yours'){
+        /* ⚠ [stated] ២០២៦-០៨-២៨ ៖ «លេខអតប និងឈ្មោះ គឺស្ថិតនៅក្នុង sheet
+           companies» ⇒ សារមុនរបស់ខ្ញុំចង្អុលទៅសន្លឹក Whitelist ដែល **ខុស**
+           ⇒ វានឹងនាំអ្នកប្រើទៅរកកន្លែងមិនត្រូវ ។ កែឱ្យចង្អុលទៅ Companies ។
+           ⚠ ខ្ញុំមិនដឹងឈ្មោះជួរឈរពិតក្នុងសន្លឹកនោះទេ ⇒ ខ្ញុំមិនប្រឌិតវា ។ */
+        alert('🚫 ម៉ាស៊ីនមេថាលេខអតប ' + tin + ' មិនត្រូវបានផ្សារភ្ជាប់នឹងគណនីអ្នកទេ។'
+          + '\n\nសូមពិនិត្យសន្លឹក Companies ៖'
+          + '\n· តើមានជួរដែលមានលេខអតប ' + tin + ' ដែរឬទេ?'
+          + '\n· តើជួរនោះផ្សារភ្ជាប់នឹងគណនីរបស់អ្នកដែរឬទេ?'
+          + '\n\nក្រោយកែ សូមចាកចេញ រួចចូលម្តងទៀត។'
+          + '\n\n⚠ ការចែករំលែកតម្រូវឱ្យអ្នកចែកមានសិទ្ធិលើសហគ្រាសនោះជាមុនសិន។');
+        return;
+      }
+      var m = { no_such_id:'រកលេខសម្គាល់នេះមិនឃើញ',
                 self:'នេះជាគណនីរបស់អ្នកផ្ទាល់',
                 bad_id:'លេខសម្គាល់មិនត្រឹមត្រូវ',
-                bad_tin:'លេខអតបមិនត្រឹមត្រូវ',
-                bad_session:'វេនផុតកំណត់ — សូមចូលម្តងទៀត' };
-      alert('🚫 ' + (m[(r && r.reason)] || 'ចែករំលែកមិនបានទេ'));
+                bad_tin:'លេខអតបមិនត្រឹមត្រូវ ( បានផ្ញើ ៖ ' + tin + ' )',
+                bad_session:'វេនផុតកំណត់ — សូមចាកចេញ រួចចូលម្តងទៀត' };
+      alert('🚫 ' + (m[why] || ('ចែករំលែកមិនបានទេ' + (why ? (' ៖ ' + why) : ''))));
     })
     .catch(function(e){ alert('ម៉ាស៊ីនមេមិនឆ្លើយតប ៖ ' + ((e && e.message) || e)); });
 };
@@ -14146,6 +14168,16 @@ function detectIsVATCRSheet(aoa){
    expected — which is how "ពន្ធប្រថាប់ត្រា…" ended up in the SALE ledger.
    "អាករលើតម្លៃបន្ថែម" on its own is NOT a safe marker: SALE has a column by
    that name, so ប្រភេទពន្ធ has to appear next to something MTR-only. */
+/* ជួរក្បាលឆ្នាំ ៖ មានតែស្លាក គ្មានតួលេខ ១២ ខែ */
+function isYearHeaderRow(row){
+  var n = 0;
+  for (var i = 0; i < (row || []).length; i++){
+    var v = row[i];
+    if (v !== null && v !== undefined && String(v).trim() !== '') n++;
+    if (n > 2) return false;
+  }
+  return true;
+}
 function detectIsMTRSheet(aoa){
   if(!aoa || !aoa.length) return false;
   const head = aoa.slice(0, 30).map(r => (r || []).join(' ')).join(' ');
@@ -23077,7 +23109,24 @@ function getAllExtractedMonthlyRows_() {
         if (cellVal.includes('ប្រចាំឆ្នាំ')) {
           const m = cellVal.match(/(20[0-5]\d)/);
           if (m) { currentYear = m[1]; break; }
-        } else if (/^20[0-5]\d$/.test(cellVal)) {
+        } else if (c <= 1 && /^20[0-5]\d$/.test(cellVal) && isYearHeaderRow(row)) {
+          /* ⚠⚠ [stated] ២០២៦-០៨-២៨ ៖ «ឯកសារមានតែទិន្នន័យឆ្នាំ ២០២១ តែវា
+             ចេញជាឆ្នាំ ២០៣៤» ។
+             ⭐ រកឃើញក្នុងឯកសារពិតរបស់អ្នក ( ជួរ ២០៦ ) ៖
+                 4 | ប្រាក់រំដោះពន្ធលើប្រាក់ចំណូល | 4865 | **2034** | 13041 …
+               ២០៣៤ ជា **ទឹកប្រាក់ខែកុម្ភៈ** មិនមែនឆ្នាំទេ ។
+             ⚠ កូដចាស់ស្កេន **គ្រប់ក្រឡាក្នុងគ្រប់ជួរ** ហើយទទួលលេខ ៤ ខ្ទង់
+               ណាមួយក្នុងចន្លោះ 2000–2059 ជាឆ្នាំ ⇒ ទឹកប្រាក់ដែលធ្លាក់ក្នុង
+               ចន្លោះនោះ ( 2000–2059 ៛ ) ក្លាយជាឆ្នាំ ⇒ ជួរបន្តបន្ទាប់
+               ទាំងអស់ចូលឆ្នាំខុស ។
+             ⚠⚠ នេះជាកំហុសដែល **រកឃើញយឺត និងគ្រោះថ្នាក់** ៖ តួលេខមិនបាត់ទេ
+               វាគ្រាន់តែទៅឆ្នាំខុស ⇒ របាយការណ៍មើលទៅធម្មតា តែខុស ។
+             ⇒ ព្រំដែនពីរជាន់ ៖
+               ១ ក្រឡាត្រូវនៅ **ជួរឈរ ១ ឬ ២** ( ស្លាកឆ្នាំនៅឆ្វេង ; ទឹកប្រាក់
+                 ចាប់ពីជួរឈរ ៣ )
+               ២ ជួរដេកនោះត្រូវជា **ជួរក្បាល** ( មានក្រឡាមានតម្លៃ ≤ ២ ) ;
+                 ជួរទឹកប្រាក់មាន ១២ ខែ ⇒ មិនឆ្លងកាត់ ។
+             ⚠ ជួរ «ប្រចាំឆ្នាំ 2021» នៅតែដំណើរការតាមសាខាខាងលើដដែល ។ */
           currentYear = cellVal;
           break;
         }
@@ -27453,7 +27502,38 @@ function rscInvCheckOpen(){
       return String(ci.tin || '').replace(/\D/g, '').slice(-9) || 'x';
     }catch(e){ return 'x'; }
   }
-  function keyOf(name){ return SKEY + tinNow() + ':' + name; }
+  /* ⭐⭐⭐ [stated] ២០២៦-០៨-២៨ ៖ «បន្ថែមការរក្សាទុកសម្រាប់សហគ្រាសនេះ ហើយ
+     បន្ថែមឆ្នាំដើម្បី upload ឯកសារ PDF នោះ ឆ្នាំយកតាម data entry ហើយអាច
+     រើស PDF ផ្សេងៗគ្នាបានយកមកពិនិត្យ ដោយសារវិក្កយបត្រខ្លះតាម GL អាចមួយ
+     ឆ្នាំមាន ៤ ទៅ ៥ វិក្កយបត្រ» ។
+     ⭐ ការរក្សាទុកតាមសហគ្រាសមានស្រាប់ ( rscInvChk:<អតប>:<ឈ្មោះឯកសារ> ) ។
+       អ្វីដែលខ្វះគឺ **ឆ្នាំ** ⇒ ឯកសារឈ្មោះដូចគ្នាក្នុងឆ្នាំផ្សេង
+       សរសេរជាន់លើគ្នា ។
+     ⇒ លេខសោរថ្មី ៖ rscInvChk:<អតប>:<ឆ្នាំ>:<ឈ្មោះឯកសារ>
+     ⚠⚠ ការអានត្រូវ **ធ្លាក់ទៅលេខសោរចាស់** បើថ្មីគ្មាន ⇒ ការងារដែលធីក
+       រួចមុនការកែនេះ មិនបាត់ទេ ។ នេះជាច្បាប់ដដែលដែលយើងកាន់ជានិច្ច ៖
+       ការផ្លាស់ប្តូររចនាសម្ព័ន្ធរក្សាទុក មិនត្រូវលុបការងារចាស់ ។
+     ⚠ ការរើស PDF ច្រើនមានស្រាប់ ( ប៊ូតុង ＋ និងបញ្ជីទម្លាក់ ) ⇒ វិក្កយបត្រ
+       ៤–៥ ក្នុងមួយឆ្នាំដំណើរការរួចហើយ ; ឆ្នាំគ្រាន់តែធ្វើឱ្យវាដាច់ដោយឡែក ។ */
+  var invYear = '';
+  function yearsList(){
+    var out = [];
+    try{
+      if(typeof window.__auditYears === 'function') out = window.__auditYears() || [];
+    }catch(e){}
+    if(!out.length){
+      try{
+        var ys = (window.__dashState && window.__dashState().years) || [];
+        out = ys.slice();
+      }catch(e){}
+    }
+    return out.filter(function(y){ return /^\d{4}$/.test(String(y)); });
+  }
+  function keyOf(name){
+    return SKEY + tinNow() + ':' + (invYear || '-') + ':' + name;
+  }
+  /* លេខសោរចាស់ ៖ អានតែប៉ុណ្ណោះ មិនសរសេរទៀតទេ */
+  function keyOld(name){ return SKEY + tinNow() + ':' + name; }
   var files = [];      /* [{name, url, pages, rows}] */
   var cur = -1;
   /* [stated] ២០២៦-០៨-២៨ ៖ «មិនអាច filter ដើម្បីចេញតាមក្រុមហ៊ុនពិនិត្យបាន» ។
@@ -27500,7 +27580,13 @@ function rscInvCheckOpen(){
   function load(name){
     try{
       var v = localStorage.getItem(keyOf(name));
-      if(v == null) v = localStorage.getItem(SKEY + name);   /* លេខសោរចាស់ */
+      /* ⚠⚠ ធ្លាក់ទៅលេខសោរចាស់ពីរជាន់ ⇒ ការងារដែលធីករួច **មិនបាត់** ៖
+           ១ rscInvChk:<អតប>:<ឈ្មោះ>   ( មុនបន្ថែមឆ្នាំ )
+           ២ rscInvChk:<ឈ្មោះ>          ( មុនបន្ថែមអតប )
+         នេះជាច្បាប់ដដែលដែលយើងកាន់ ៖ ការផ្លាស់ប្តូររចនាសម្ព័ន្ធរក្សាទុក
+         មិនត្រូវលុបការងារចាស់ ។ */
+      if(v == null) v = localStorage.getItem(keyOld(name));
+      if(v == null) v = localStorage.getItem(SKEY + name);   /* លេខសោរចាស់បំផុត */
       return JSON.parse(v || 'null');
     }catch(e){ return null; }
   }
@@ -27932,11 +28018,60 @@ function rscInvCheckOpen(){
     });
   };
 
+  /* ប្រអប់ឆ្នាំ ៖ តម្លៃមកពី ការិយបរិច្ឆេទសវនកម្ម ក្នុង DATA ENTRY */
+  var yWrap = document.createElement('span');
+  yWrap.style.cssText = 'display:inline-flex; align-items:center; gap:6px; margin-right:6px;';
+  var yLab = document.createElement('span');
+  yLab.textContent = 'ឆ្នាំ ៖';
+  yLab.style.cssText = 'font-size:12.5px; color:#EFE7D2;';
+  var ySel = document.createElement('select');
+  ySel.id = 'ic_year';
+  ySel.style.cssText = 'padding:5px 8px; font:inherit; font-size:12.5px;'
+    + 'border:1px solid #d8d2c2; border-radius:6px;';
+  (function fillYears(){
+    var ys = yearsList();
+    ySel.innerHTML = '';
+    if(!ys.length){
+      var o0 = document.createElement('option');
+      o0.value = ''; o0.textContent = '( គ្មានឆ្នាំក្នុង DATA ENTRY )';
+      ySel.appendChild(o0);
+      return;
+    }
+    ys.forEach(function(y){
+      var o = document.createElement('option');
+      o.value = y; o.textContent = y;
+      ySel.appendChild(o);
+    });
+    /* ⚠ ជ្រើសឆ្នាំចុងក្រោយជាលំនាំដើម ⇒ ករណីប្រើញឹកញាប់បំផុត */
+    invYear = ys[ys.length - 1];
+    ySel.value = invYear;
+  })();
+  ySel.onchange = function(){
+    /* ⚠⚠ ការប្តូរឆ្នាំ ⇒ ការធីកជាកម្មសិទ្ធិឆ្នាំផ្សេង ⇒ សម្អាតបញ្ជីឯកសារ
+       ជាជាងលាយវា ។ ការលាយនឹងសរសេរការធីករបស់ឆ្នាំមួយ ចូលលេខសោរឆ្នាំមួយ
+       ទៀត ដោយស្ងាត់ — នោះជាទិន្នន័យខូចដែលរកឃើញយឺត ។ */
+    if(files.length && !confirm('ប្តូរឆ្នាំ ⇒ បញ្ជីឯកសារនឹងសម្អាត។\n'
+        + 'ការធីកដែលរក្សាទុករួច មិនបាត់ទេ។ បន្តទេ?')){
+      ySel.value = invYear; return;
+    }
+    invYear = ySel.value || '';
+    files = []; cur = -1; fillSel(); showFile();
+  };
+  yWrap.appendChild(yLab); yWrap.appendChild(ySel);
+
+  head.appendChild(yWrap);
   head.appendChild(bAdd); head.appendChild(sel); head.appendChild(pgWrap);
   head.appendChild(bGrp); head.appendChild(bXls); head.appendChild(info); head.appendChild(bClose);
 
   inp.onchange = function(ev){
     var fl = ev.target.files; if(!fl || !fl.length) return;
+    /* ⚠ បើគ្មានឆ្នាំ ⇒ ការធីកនឹងចូលលេខសោរ «-» ហើយលាយឆ្នាំទាំងអស់ ⇒ ប្រាប់
+       អ្នកប្រើឥឡូវ ជាជាងឱ្យរកឃើញយឺត ។ */
+    if(!invYear){
+      alert('សូមបំពេញការិយបរិច្ឆេទសវនកម្មក្នុង DATA ENTRY ជាមុនសិន\n'
+          + 'ដើម្បីឱ្យប្រព័ន្ធដឹងថាវិក្កយបត្រនេះជារបស់ឆ្នាំណា។');
+      ev.target.value = ''; return;
+    }
     var pend = fl.length;
     for(var i = 0; i < fl.length; i++){
       (function(file){
@@ -27955,7 +28090,7 @@ function rscInvCheckOpen(){
             rows.push(s || { no:'', a:1, b:1, c:1, d:1, e:1, f:1, note:'' });
           }
           files.push({ name:file.name, file:file, url:URL.createObjectURL(file),
-                       pages:pages, rows:rows });
+                       pages:pages, rows:rows, year:invYear });
           if(--pend === 0){ cur = files.length - 1; fillSel(); showFile(); }
         };
         fr.readAsArrayBuffer(file);
@@ -27968,7 +28103,8 @@ function rscInvCheckOpen(){
     sel.innerHTML = '';
     files.forEach(function(f, i){
       var o = document.createElement('option');
-      o.value = i; o.textContent = f.name + '  (' + f.pages + ' ទំព័រ)';
+      o.value = i; o.textContent = (f.year ? ('[' + f.year + '] ') : '')
+        + f.name + '  (' + f.pages + ' ទំព័រ)';
       if(i === cur) o.selected = true;
       sel.appendChild(o);
     });
