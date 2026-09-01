@@ -29583,8 +29583,26 @@ function rscGLOpen(){
       return true;
     }catch(e){ return false; }
   }
+  /* ⚠⚠ អន្ទាក់ «កូនសោមានអត្តសញ្ញាណដែលបំពេញក្រោយ» ( ធ្លាប់កើតនឹង
+     trackingData_ មកហើយ ) ៖ បើបើក 📒 ខណៈកម្មវិធីមិនទាន់ស្គាល់លេខអតប
+     ការរក្សាទុកធ្លាក់ចូល rscGL:default ។ ក្រោយឯកសារ TOI/COMPANYINFO ចូល
+     អតបលេចឡើង ⇒ ការបើកលើកក្រោយរកតាមកូនសោថ្មី ហើយ **មើលទៅដូចបាត់**
+     ទោះទិន្នន័យនៅក្នុងឃ្លាំងដដែល ។
+     ⇒ ផ្ទេរម្តងជាស្វ័យប្រវត្តិ តែពេលកូនសោថ្មី **ទទេ** ⇒ ការងារពិតមិនត្រូវ
+       សរសេរជាន់ដោយច្បាប់ចម្លងចាស់ឡើយ ។ */
+  function glMigrateDefault(){
+    try{
+      if(!GL_TIN) return;
+      if(localStorage.getItem(glKey())) return;
+      var d = localStorage.getItem('rscGL:default');
+      if(!d) return;
+      localStorage.setItem(glKey(), d);
+      localStorage.removeItem('rscGL:default');
+    }catch(e){}
+  }
   function glLoad(){
     try{
+      glMigrateDefault();
       var raw = localStorage.getItem(glKey());
       if(!raw) return;
       var o = JSON.parse(raw);
@@ -30142,7 +30160,11 @@ function rscGLOpen(){
             : '⚠ មិនតុល្យភាព ៖ ផលដក ' + money(bD - bC))
         + '</div>';
       body.innerHTML = h;
-      info.textContent = files.length + ' ឯកសារ · ' + rows.length + ' ជួរ · ' + ks.length + ' គណនី';
+      /* [stated] ២០២៦-០៩-០១ ៖ «អត់ឃើញផ្នែករក្សាទុក ពេលចុចបិទតើវាបាត់ឬទេ?»
+         ⇒ ការរក្សាទុកជាស្វ័យប្រវត្តិ តែគ្មានអ្វីនៅលើអេក្រង់ប្រាប់ ⇒ សរសេរវា
+           ចេញមក ។ ភាពស្ងាត់ជ្រៅជាមូលហេតុនៃសំណួរនេះ ។ */
+      info.textContent = files.length + ' ឯកសារ · ' + rows.length + ' ជួរ · ' + ks.length + ' គណនី'
+                       + (rows.length ? '  ·  💾 រក្សាទុកស្វ័យប្រវត្តិតាមសហគ្រាស' : '');
       wireFilters();
       body.querySelectorAll('[data-acc]').forEach(function(tr){
         tr.onclick = function(){
