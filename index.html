@@ -2576,7 +2576,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
      ⭐ 'Khmer OS Muol Light' មាន face តែ ៤០០ ⇒ ៧០០ ធ្វើអោយកម្មវិធីរុករក
        សំយោគអក្សរដិតដោយខ្លួនឯង (faux bold) ដែលមើលទៅក្រាស់ស្រពិចស្រពិល។
      ⚠ ធ្វើតែពេលព្រីន ⇒ លើអេក្រង់នៅដិតដដែល។ */
-  /* RSCBUILD-SLIM118 */
+  /* RSCBUILD-SHEETNO119 */
   #mtr-embed .mtr-form-title,
   #mtr-embed .mtr-form-meta .val,
   #mtr-embed .mtr-filled,
@@ -20418,6 +20418,38 @@ function bindMTRPrintToolbar(){
      ចំណាំមេរៀនចាស់ ៖ ការហៅចូលខ្លួនឯងដោយគ្មានសញ្ញាបែបនេះ ធ្លាប់ធ្វើឱ្យ
      ទំព័រគាំងទាំងស្រុង (រង្វិលជុំ microtask ក្នុង __rscSave) ។
    ⚠ MTR និង VAT ចែក mtrFormOverride.docDate ដូចគ្នា ⇒ ច្រកតែមួយគ្រប់ពីរ។ */
+/* ⭐⭐⭐ [stated] ២០២៦-០៨-២៨ ៖ «ពេលចុចព្រីនដើម្បីរើសថ្ងៃ បន្ថែមការជ្រើស
+   រើស បង្ហាញសន្លឹក១ (VAT) បង្ហាញសន្លឹក២ (MTR) ។ បើរើសបង្ហាញទើបព្រីនចេញ
+   អក្សរសន្លឹកនោះ បើមិនបង្ហាញ នឹងមិនចេញពេលព្រីនទេ» ។
+   ⭐ ការបែងចែកមានស្រាប់ក្នុងកូដ ៖ VAT សង់ជា data-vat-year ហើយ MTR ជា
+     data-mtr-year ⇒ ខ្ញុំកំណត់គោលដៅសន្លឹកនីមួយៗបានច្បាស់ដោយមិនប៉ះ
+     អ្វីផ្សេង ។
+   ⚠ លាក់ដោយ **visibility:hidden មិនមែន display:none** ៖ ប្រអប់លេខសន្លឹក
+     ស្ថិតនៅ position:absolute ហើយកម្ពស់របស់វាតម្រឹមនឹងបន្ទាត់ចំណងជើង ។
+     display:none នឹងផ្លាស់ប្តូរប្លង់ក្បាលទំព័រ ; visibility រក្សាទំហំដដែល
+     ⇒ ក្រដាសនៅដដែលបេះបិទ គ្រាន់តែអក្សរមិនចេញ ។
+   ⚠ ក្បួនអនុវត្តទាំង **លើអេក្រង់ និងលើក្រដាស** ⇒ អ្នកឃើញអ្វី ក្រដាសចេញ
+     អ្វីនោះ ។ នោះជាច្បាប់ដដែលដែលយើងកាន់តាំងពីដើម ។ */
+var mtrSheetNoShow = { vat:true, mtr:true };
+function applySheetNoRule(){
+  var id = 'rsc-sheetno-rule';
+  var st = document.getElementById(id);
+  if(!st){
+    st = document.createElement('style');
+    st.id = id;
+    document.head.appendChild(st);
+  }
+  var css = '';
+  if(!mtrSheetNoShow.vat){
+    css += '.mtr-form[data-vat-year] .mtr-sheet-no{visibility:hidden !important;}';
+  }
+  if(!mtrSheetNoShow.mtr){
+    css += '.mtr-form[data-mtr-year] .mtr-sheet-no{visibility:hidden !important;}';
+  }
+  st.textContent = css;
+}
+window.__applySheetNoRule = applySheetNoRule;
+
 function mtrAskDocDate(onReady){
   var old = document.getElementById('mtrDateAsk');
   if(old) old.remove();
@@ -20449,6 +20481,32 @@ function mtrAskDocDate(onReady){
   inp.style.cssText = 'width:100%; padding:9px 10px; font:inherit; font-size:15px;'
     + 'border:1px solid #d8d2c2; border-radius:6px; box-sizing:border-box;';
 
+  /* ⚠ ធីកទាំងពីរជាលំនាំដើម ⇒ ឥរិយាបថចាស់មិនប្រែសម្រាប់អ្នកដែលមិនប៉ះ */
+  var boxWrap = document.createElement('div');
+  boxWrap.style.cssText = 'margin-top:14px; padding-top:12px; border-top:1px solid #ece7d8;';
+  var bTitle = document.createElement('div');
+  bTitle.textContent = 'បង្ហាញលេខសន្លឹកលើក្រដាស';
+  bTitle.style.cssText = 'font-weight:700; font-size:13px; margin-bottom:8px;';
+  boxWrap.appendChild(bTitle);
+
+  function mkChk(key, label){
+    var lab = document.createElement('label');
+    lab.style.cssText = 'display:flex; align-items:center; gap:8px; font-size:13.5px;'
+      + 'padding:4px 0; cursor:pointer;';
+    var c = document.createElement('input');
+    c.type = 'checkbox';
+    c.checked = !!mtrSheetNoShow[key];
+    c.style.cssText = 'width:16px; height:16px; cursor:pointer;';
+    c.onchange = function(){ mtrSheetNoShow[key] = c.checked; applySheetNoRule(); };
+    var sp = document.createElement('span');
+    sp.textContent = label;
+    lab.appendChild(c); lab.appendChild(sp);
+    boxWrap.appendChild(lab);
+    return c;
+  }
+  mkChk('vat', 'សន្លឹកទី ១ ( VAT )');
+  mkChk('mtr', 'សន្លឹកទី ២ ( MTR )');
+
   var rowBtn = document.createElement('div');
   rowBtn.style.cssText = 'display:flex; gap:8px; margin-top:16px; flex-wrap:wrap;';
 
@@ -20468,6 +20526,7 @@ function mtrAskDocDate(onReady){
   /* ⚠ រក្សាទុក **អ្វីដែលឃើញក្នុងប្រអប់** ៖ បើលុបចោលទទេ ថ្ងៃនឹងទទេវិញ
      ដើម្បីសរសេរដៃ។ នេះជាចេតនា — អ្នកប្រើឃើញអ្វី ក្រដាសចេញអ្វីនោះ។ */
   ok.onclick = function(){
+    applySheetNoRule();   /* ⚠ អនុវត្តម្តងទៀតមុនព្រីន ⇒ ធានាថាក្បួនមាន */
     mtrFormOverride.docDate = inp.value || '';
     /* រក្សាប្រអប់លើរបារឧបករណ៍ឱ្យត្រូវគ្នា ⇒ អេក្រង់មិនផ្ទុយនឹងក្រដាស */
     var tb = document.getElementById('mtrFormDate');
@@ -20478,7 +20537,8 @@ function mtrAskDocDate(onReady){
   no.onclick = close;
 
   rowBtn.appendChild(ok); rowBtn.appendChild(no);
-  card.appendChild(h); card.appendChild(p); card.appendChild(inp); card.appendChild(rowBtn);
+  card.appendChild(h); card.appendChild(p); card.appendChild(inp);
+  card.appendChild(boxWrap); card.appendChild(rowBtn);
   wrap.appendChild(card);
   wrap.onclick = function(e){ if(e.target === wrap) close(); };
   document.body.appendChild(wrap);
