@@ -3121,7 +3121,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
      ⭐ 'Khmer OS Muol Light' មាន face តែ ៤០០ ⇒ ៧០០ ធ្វើអោយកម្មវិធីរុករក
        សំយោគអក្សរដិតដោយខ្លួនឯង (faux bold) ដែលមើលទៅក្រាស់ស្រពិចស្រពិល។
      ⚠ ធ្វើតែពេលព្រីន ⇒ លើអេក្រង់នៅដិតដដែល។ */
-  /* RSCBUILD-TINFIX111 */
+  /* RSCBUILD-CATFLT112 */
   #mtr-embed .mtr-form-title,
   #mtr-embed .mtr-form-meta .val,
   #mtr-embed .mtr-filled,
@@ -10722,6 +10722,18 @@ function filteredRows(storeName){
   if(invSearchVal){
     rows = rows.filter(r=> (r.invoiceNo||"").toLowerCase().includes(invSearchVal));
   }
+  /* ⭐ តម្រងតាមប្រភេទ ៖ រក្សាតែជួរដែល **មានតម្លៃក្នុងប្រភេទនោះ** ។
+     ⚠ ជម្រើស «តម្លៃសរុបលើវិក្កយបត្រ» ( ALL_CATEGORIES_MARKER ) មិនត្រង
+       ទេ ព្រោះគ្រប់ជួរមានតម្លៃសរុប ⇒ ការត្រងនឹងគ្មានន័យ ។ */
+  try{
+    var cat = state.selectedCategory && state.selectedCategory[storeName];
+    if(cat && cat !== ALL_CATEGORIES_MARKER){
+      rows = rows.filter(function(r){
+        var bd = r.breakdown || {};
+        return (Number(bd[cat]) || 0) !== 0;
+      });
+    }
+  }catch(e){}
   return rows;
 }
 
@@ -10934,15 +10946,13 @@ function populateCategoryOptions(storeName){
   sel.innerHTML = html;
 }
 function catPick(storeName, val){
-  /* ⚠ ជម្រើសទទេ ⇒ ត្រឡប់ទៅទម្រង់ដើម ; ជ្រើសប្រភេទ ⇒ បង្ហាញតារាងតាម
-     ក្រុមហ៊ុនរបស់ប្រភេទនោះ (ដូចការចុចជួរកាលពីមុន)។ */
-  if(!val){
-    state.selectedCategory[storeName] = null;
-    rawViewOn[storeName] = true;
-  }else{
-    state.selectedCategory[storeName] = val;
-    rawViewOn[storeName] = false;
-  }
+  /* ⭐⭐ [stated] ២០២៦-០៨-២៨ ៖ «ចុចយក តម្លៃមិនរួមអាករ · ការទិញក្នុងស្រុក
+     គឺវា filter យកតែប្រភេទនោះ ហើយបង្ហាញតាមទម្រង់ដើមទាំងអស់» ។
+     ⚠ ឥរិយាបថចាស់ ៖ ជ្រើសប្រភេទ ⇒ **ប្តូរទៅតារាងសង្ខេបតាមក្រុមហ៊ុន**
+       ⇒ អ្នកបាត់ជួរឈរដើម ( លេខវិក្កយបត្រ · កាលបរិច្ឆេទ · ទំនិញ … ) ។
+     ⇒ ឥឡូវ ៖ **រក្សាទម្រង់ដើមជានិច្ច** ; ប្រភេទក្លាយជា **តម្រងជួរ** ។ */
+  state.selectedCategory[storeName] = val || null;
+  rawViewOn[storeName] = true;
   dataPage[storeName] = 0;
   refreshDataView(storeName);
 }
@@ -46382,8 +46392,8 @@ CC.render=function(){
   CC._lastRes=res;
   var h=[];
 
-  h.push('<div class="cc-head"><div class="cc-title">ការគណនាពន្ធឡើងវិញ'+
-    '<span class="cc-sub">កំណត់ឡើងវិញលើផលរបរ បន្ទុកចំណាយ កម្រិតចំណេញ និងពន្ធគ្រប់ប្រភេទ</span></div>');
+  /* [stated] ២០២៦-០៨-២៨ ៖ ដកអក្សររៀបរាប់ក្រោមចំណងជើងចេញ */
+  h.push('<div class="cc-head"><div class="cc-title">ការគណនាពន្ធឡើងវិញ</div></div>');
   h.push('<span class="cc-lbl">បង្ហាញ</span><select data-set="mode">'+MODES.map(function(m){
     return '<option value="'+m[0]+'"'+(s.mode===m[0]?" selected":"")+'>'+m[1]+'</option>';}).join("")+'</select>');
   h.push('<button class="btn ghost" data-act="print">🖨️ បោះពុម្ព</button>');
@@ -46705,10 +46715,8 @@ function paneRisk(){
 
 function paneSum(res){
   var s=CC.state,sm=CC.summary(res);
-  if(!sm) return '<div class="cc-empty">មិនទាន់មានចំនួនពន្ធត្រូវបង់។<br><br>'+
-    'ចាប់ផ្តើមដោយចុច <b>↺ ទាញពីតារាងពន្ធលើប្រាក់ចំណូល</b> (ផ្ទាំង 💰), '+
-    '<b>↺ ទាញពីទិន្នានុប្បវត្តិទិញ-លក់ និង VATCR</b> (ផ្ទាំង 🧾) និង '+
-    '<b>↺ ទាញ «បានបង់» ពីសាលកបត្រ</b> (ផ្ទាំង 🧮) — ឬវាយតួលេខដោយផ្ទាល់។</div>';
+  /* [stated] ២០២៦-០៨-២៨ ៖ ដកការណែនាំវែងចេញ ⇒ សល់តែសេចក្តីពិត */
+  if(!sm) return '<div class="cc-empty">មិនទាន់មានចំនួនពន្ធត្រូវបង់។</div>';
   var h=['<div class="cc-scroll"><table><thead><tr><th>Draft</th>'];
   sm.cols.forEach(function(y){h.push('<th class="n">'+y+'</th>');});
   h.push('<th class="n">Total Riel</th><th class="n">Total ($)</th></tr></thead><tbody>');
