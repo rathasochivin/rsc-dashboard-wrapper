@@ -4910,7 +4910,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
              ហើយផ្ទុកបន្ថែមពីទីនោះតែម្តង ។ មិនមែន admin-only ៖ ការពិនិត្យ
              ជាការមើលសុទ្ធសាធ ហើយផ្លូវនាំចូលនៅតែមានឆ្មាំអតបដដែល ។ -->
         <button class="atb-btn atb-icon" onclick="if(window.__rscUploadReport){window.__rscUploadReport();}" title="ឯកសារដែលបានផ្ទុក · ផ្ទុកបន្ថែម" aria-label="ឯកសារដែលបានផ្ទុក">🗂</button>
-        <button class="atb-btn atb-icon admin-only" onclick="(function(){var i=document.getElementById('auto-file-input'); if(i) i.click();})()" title="UPLOAD ឯកសារ ឬ ZIP" aria-label="UPLOAD ឯកសារ ឬ ZIP">📦</button>
+        <button class="atb-btn atb-icon admin-only" onclick="(function(){var i=document.getElementById('auto-file-input'); if(i){ i.removeAttribute('data-add-mode'); i.click(); }})()" title="UPLOAD ឯកសារ ឬ ZIP ( ជំនួសទាំងស្រុង )" aria-label="UPLOAD ឯកសារ ឬ ZIP">📦</button>
         <!-- [stated] «បើកឯកសារ» ជាប់នឹង UPLOAD ព្រោះទាំងពីរជាផ្លូវចូលទិន្នន័យ -->
         <button type="button" class="atb-btn atb-icon atb-door admin-only" onclick="window.__rscOpenPicker ? window.__rscOpenPicker() : document.getElementById('saved-file-input').click()" title="បើកឯកសារ" aria-label="បើកឯកសារ"><span class="ic">🚪</span></button>
         <!-- ⚠⚠ [stated] ២០២៦-០៨-១៤ ៖ «នៅក្នុងម៉ាស៊ីនមាន file zip តែពេលបើកមិនឃើញ» ។
@@ -7138,8 +7138,29 @@ window.__rscIdb = { set:idbSet, get:idbGet, del:idbDel };
      ជាពណ៌ក្រហម ⇒ មិនអាចមើលរំលង ។
    ⚠ ខ្វះខែ **មិនមែនតែងតែជាកំហុសទេ** ( សហគ្រាសអាចគ្មានប្រតិបត្តិការក្នុង
      ខែនោះ ) ⇒ អត្ថបទសរសេរជា «ត្រូវពិនិត្យ» មិនមែន «ខុស» ។ */
+/* ⭐⭐ [stated] ២០២៦-០៩-០១ ៖ «បន្ថែមកន្លែងសរសេរសម្គាល់លើឆ្នាំដែលខ្វះ ដើម្បី
+   ឱ្យដឹងថាសហគ្រាសមិនបានប្រកាស មិនមែនសវនករ download ឯកសារខ្វះទេ … ចុចរួច
+   ហាយឡាយឱ្យដឹងថាបាន noted បើមិនបាន noted រក្សាធម្មតា» ។
+   ⚠ នេះជាភស្តុតាងសវនកម្ម មិនមែនចំណូលចិត្តអេក្រង់ទេ ⇒ ត្រូវរស់ក្នុងកូនសោ
+     ដែលចូល **បញ្ជីទាំងពីរ** ( លុបពេលប្តូរសហគ្រាស · ចូលឯកសារ 💾 ) ។
+   ⚠ កូនសោសម្គាល់ = «ឃ្លាំង|ឆ្នាំ» ⇒ នៅជាប់នឹងឆ្នាំនោះ ទោះខែដែលខ្វះប្តូរ
+     ក្រោយពេលផ្ទុកឯកសារបន្ថែម ។ ខែដែលខ្វះ **នៅពេលកត់** ក៏រក្សាទុកដែរ
+     ដើម្បីឱ្យដឹងថាសម្គាល់នោះនិយាយពីខែណា ។ */
+var GAPNOTE_KEY = 'rscGapNoteV1';
+function rscGapNotes(){
+  try{ return JSON.parse(localStorage.getItem(GAPNOTE_KEY) || '{}') || {}; }catch(e){ return {}; }
+}
+function rscGapNoteSet(k, txt, missTxt){
+  var all = rscGapNotes();
+  if(txt) all[k] = { t:txt, m:missTxt || '', at:Date.now() };
+  else delete all[k];
+  try{ localStorage.setItem(GAPNOTE_KEY, JSON.stringify(all)); }catch(e){}
+}
+window.__rscGapNotes = rscGapNotes;
+
 function rscUploadReport(){
   var CI = {};
+  var gapNotes = rscGapNotes();
   try{ if(typeof window.__getTOICoverInfo === 'function') CI = window.__getTOICoverInfo() || {}; }catch(e){}
 
   /* ទទួល «2022-01-15» និង «15-01-2022» និង «15/01/2022» និងលេខខ្មែរ */
@@ -7176,7 +7197,7 @@ function rscUploadReport(){
     ['otherExpenses', 'ចំណាយផ្សេងៗ']
   ];
 
-  var rows = [], anyGap = false;
+  var rows = [], anyGap = false, noted = 0, gapYears = 0;
   STORES.forEach(function(st){
     var arr = [];
     try{ arr = state[st[0]] || []; }catch(e){ arr = []; }
@@ -7188,10 +7209,10 @@ function rscUploadReport(){
       (byY[d.y] = byY[d.y] || {})[d.m] = (byY[d.y][d.m] || 0) + 1;
     });
     var years = Object.keys(byY).sort();
-    rows.push({ label:st[1], n:arr.length, years:years, byY:byY, noDate:noDate });
+    rows.push({ key:st[0], label:st[1], n:arr.length, years:years, byY:byY, noDate:noDate });
     years.forEach(function(y){
       var have = Object.keys(byY[y]).map(Number);
-      if(have.length < 12) anyGap = true;
+      if(have.length && have.length < 12){ anyGap = true; gapYears++; }
     });
   });
 
@@ -7209,12 +7230,12 @@ function rscUploadReport(){
           (byY[r.y] = byY[r.y] || {})[r.m] = (byY[r.y][r.m] || 0) + 1;
         });
         var ys = Object.keys(byY).sort();
-        rows.push({ label:'ពន្ធលើប្រាក់បៀវត្សរ៍ (TOS)', n:tc.rows.length,
+        rows.push({ key:'tos', label:'ពន្ធលើប្រាក់បៀវត្សរ៍ (TOS)', n:tc.rows.length,
                     years:ys, byY:byY, noDate:0,
                     note: noM ? (noM + ' ជួរ ខែមិនកំណត់ ( ឈ្មោះឯកសារគ្មានខែ )') : '' });
         ys.forEach(function(y){
           var k = Object.keys(byY[y]).length;
-          if(k && k < 12) anyGap = true;
+          if(k && k < 12){ anyGap = true; gapYears++; }
         });
       }
     }
@@ -7299,10 +7320,27 @@ function rscUploadReport(){
         }
         var miss = [];
         for(var i = 1; i <= 12; i++) if(have.indexOf(i) < 0) miss.push(i);
+        if(!miss.length){
+          return '<div style="margin:1px 0;"><b>' + esc(y) + '</b> ( ' + ranges(have) + ' )'
+            + ' <span style="color:#1c6b35;">✓ គ្រប់ ១២ ខែ</span></div>';
+        }
+        /* ខ្វះខែ ⇒ ចុចបាន ។ មានសម្គាល់ ⇒ ហាយឡាយបៃតង ( ដឹងថាពិនិត្យរួច ) ;
+           គ្មានសម្គាល់ ⇒ ក្រហមដដែល ( នៅតែត្រូវពិនិត្យ ) ។ */
+        var nk = (r.key || r.label) + '|' + y;
+        var nt = gapNotes[nk];
+        if(nt) noted++;
         return '<div style="margin:1px 0;"><b>' + esc(y) + '</b> ( ' + ranges(have) + ' )'
-          + (miss.length
-              ? ' <span style="color:#A83A26; font-weight:700;">⚠ ខ្វះខែ ' + ranges(miss) + '</span>'
-              : ' <span style="color:#1c6b35;">✓ គ្រប់ ១២ ខែ</span>')
+          + ' <span data-gap="' + esc(nk) + '" data-miss="' + esc(ranges(miss)) + '"'
+          + ' data-lab="' + esc(r.label + ' ' + y) + '" title="ចុចដើម្បីសរសេរសម្គាល់"'
+          + ' style="cursor:pointer; font-weight:700; border-radius:5px; padding:1px 6px;'
+          + (nt ? 'color:#125c2e; background:#DCF0DF; border:1px solid #A9D6B4;">📝 ខ្វះខែ '
+                : 'color:#A83A26;">⚠ ខ្វះខែ ')
+          + ranges(miss) + '</span>'
+          + (nt ? '<div style="color:#3d6b4c; font-size:11.5px; padding-left:2px;">'
+                  + esc(nt.t) + (nt.m && nt.m !== ranges(miss)
+                      ? ' <span style="color:#8a8f88;">( សម្គាល់ធ្វើពេលខ្វះខែ ' + esc(nt.m) + ' )</span>'
+                      : '') + '</div>'
+                : '')
           + '</div>';
       }).join('');
       h += '<tr><td style="padding:4px 5px; border-bottom:1px solid #ece7d8;">' + esc(r.label) + '</td>'
@@ -7326,10 +7364,17 @@ function rscUploadReport(){
   }
 
   if(anyGap){
-    h += '<div style="margin-top:10px; padding:8px 10px; background:#FFF3D6;'
-      + 'border:1px solid #E8CE84; border-radius:8px; font-size:12.5px;">'
-      + '⚠ មានខែខ្វះ។ វាមិនមែនតែងតែជាកំហុសទេ ( សហគ្រាសអាចគ្មានប្រតិបត្តិការក្នុងខែនោះ ) '
-      + 'តែសូមពិនិត្យថាមិនមែនដោយសារឯកសារខ្វះ។</div>';
+    /* ⚠ បញ្ជាក់ចំនួនដែលនៅសល់ ⇒ ការព្រមានឈប់ស្រែកពេលពិនិត្យអស់ហើយ ។ */
+    var left = gapYears - noted;
+    h += '<div style="margin-top:10px; padding:8px 10px; border-radius:8px; font-size:12.5px;'
+      + (left > 0 ? 'background:#FFF3D6; border:1px solid #E8CE84;">'
+                  : 'background:#E9F4EC; border:1px solid #A9D6B4;">')
+      + (left > 0
+          ? '⚠ មានខែខ្វះ ' + left + ' ឆ្នាំដែលមិនទាន់មានសម្គាល់។ វាមិនមែនតែងតែជាកំហុសទេ '
+            + '( សហគ្រាសអាចមិនបានប្រកាស ) ⇒ ចុចលើ «ខ្វះខែ …» ដើម្បីសរសេរមូលហេតុ '
+            + 'ទុកជាភស្តុតាងថាមិនមែនឯកសារខ្វះ។'
+          : '✓ ខែដែលខ្វះទាំងអស់មានសម្គាល់រួចហើយ ( ' + noted + ' ឆ្នាំ )។')
+      + '</div>';
   }
 
   /* ⭐⭐ [stated] ២០២៦-០៩-០១ ៖ «ចង់បានកន្លែងចុចពិនិត្យមើលឯកសារដែលបាន upload
@@ -7352,8 +7397,10 @@ function rscUploadReport(){
     + '<button id="urOk" style="padding:8px 20px; border:0; border-radius:7px; background:#0F3D3E;'
     + 'color:#fff; font:inherit; font-weight:700; font-size:13px; cursor:pointer;">យល់ព្រម</button></div>'
     + '<div style="margin-top:6px; font-size:12px; color:#6b736f;">'
-    + 'ការផ្ទុកឯកសារដដែលឡើងវិញ ៖ PR/SR/CN-DN ជំនួសទាំងស្រុង · WHT បញ្ចូលបន្ថែមតាមខែ '
-    + '( ខែដដែលត្រូវសរសេរជាន់ មិនស្ទួន ) ។</div>';
+    + 'ប៊ូតុងទាំងពីរនេះដើរជា <b>របៀបបន្ថែម</b> ៖ ជួរដែលមានស្រាប់នៅដដែល ឯកសារខែថ្មី '
+    + 'បន្ថែមចូល ។ វិក្កយបត្រដដែល ( កាលបរិច្ឆេទ · លេខ · អតប ) <b>សរសេរជាន់</b> '
+    + 'ជួរចាស់ ⇒ មិនស្ទួន សូម្បីទឹកប្រាក់ខុសពីមុន ។<br>'
+    + '📦 នៅរបារខាងលើ នៅតែជា <b>ជំនួសទាំងស្រុង</b> សម្រាប់ការផ្ទុកសំណុំពេញ។</div>';
 
   card.innerHTML = h;
   document.body.appendChild(ov);
@@ -7363,10 +7410,28 @@ function rscUploadReport(){
   ov.onclick = function(e){ if(e.target === ov) ok.onclick(); };
   /* ⚠ បិទផ្ទាំងជាមុន ៖ ប្រអប់ជ្រើសឯកសាររបស់កម្មវិធីរុករកបើកនៅខាងលើគេ
      ហើយបើទុកផ្ទាំងនេះនៅ អ្នកប្រើនឹងឃើញរបាយការណ៍ចាស់ខណៈកំពុងនាំចូល ។ */
+  /* ⚠ ចងជាមួយ card មិនមែនជាមួយឯកសារទាំងមូល ⇒ បិទផ្ទាំង អ្នកស្តាប់រលាយតាម */
+  card.querySelectorAll('[data-gap]').forEach(function(sp){
+    sp.onclick = function(ev){
+      ev.stopPropagation();
+      var k = sp.getAttribute('data-gap');
+      var cur = (rscGapNotes()[k] || {}).t || '';
+      var v = prompt('សម្គាល់សម្រាប់ ' + sp.getAttribute('data-lab')
+                     + '\n( ខ្វះខែ ' + sp.getAttribute('data-miss') + ' )\n\n'
+                     + 'ឧ. សហគ្រាសមិនបានប្រកាសខែទាំងនេះ · គ្មានប្រតិបត្តិការ\n'
+                     + 'ទុកទទេ ⇒ លុបសម្គាល់ចេញ', cur);
+      if(v === null) return;
+      rscGapNoteSet(k, String(v).trim(), sp.getAttribute('data-miss'));
+      try{ ov.remove(); }catch(e){}
+      rscUploadReport();          /* គូរឡើងវិញ ⇒ ហាយឡាយប្តូរភ្លាម */
+    };
+  });
+
   var addF = document.getElementById('urAdd');
   if(addF) addF.onclick = function(){
     try{ ov.remove(); }catch(e){}
-    var i = document.getElementById('auto-file-input'); if(i) i.click();
+    var i = document.getElementById('auto-file-input');
+    if(i){ i.setAttribute('data-add-mode', '1'); i.click(); }
   };
   var addD = document.getElementById('urAddDir');
   if(addD){
@@ -7376,7 +7441,8 @@ function rscUploadReport(){
     if(!canDir) addD.style.display = 'none';
     addD.onclick = function(){
       try{ ov.remove(); }catch(e){}
-      var i = document.getElementById('auto-folder-input'); if(i) i.click();
+      var i = document.getElementById('auto-folder-input');
+      if(i){ i.setAttribute('data-add-mode', '1'); i.click(); }
     };
   }
   var cp = document.getElementById('urCopy');
@@ -7389,7 +7455,9 @@ function rscUploadReport(){
         var have = Object.keys(r.byY[y]).map(Number).sort(function(a, b){ return a - b; });
         var miss = [];
         for(var i = 1; i <= 12; i++) if(have.indexOf(i) < 0) miss.push(i);
-        return y + ' (' + ranges(have) + ')' + (miss.length ? ' ខ្វះ ' + ranges(miss) : '');
+        var nt = gapNotes[(r.key || r.label) + '|' + y];
+        return y + ' (' + ranges(have) + ')' + (miss.length ? ' ខ្វះ ' + ranges(miss) : '')
+             + (nt ? ' [សម្គាល់ ៖ ' + nt.t + ']' : '');
       }).join(' · ') + '\n';
     });
     try{
@@ -7737,6 +7805,7 @@ const LOCAL_BACKUP = [
   { prefix: 'rscInvChk:'          }, /* 🧾 ការត្រួតពិនិត្យវិក្កយបត្រ */
   { prefix: 'rscBank:'            }, /* 🏦 របាយការណ៍ធនាគារ */
   { prefix: 'rscGL:'              }, /* 📒 សៀវភៅធំ (GL) តាមសហគ្រាស */
+  { exact:  'rscGapNoteV1'        }, /* 📝 សម្គាល់ឆ្នាំដែលខ្វះខែ */
   /* ⚠ កម្ពស់ទំព័រព្រីនជាការកំណត់របស់ **ឧបករណ៍** មិនមែនរបស់សំណុំរឿងទេ ⇒
      កុំដាក់ក្នុងឯកសាររក្សាទុក បើមិនដូច្នេះទេ ការបើកឯកសារនៅឧបករណ៍មួយ
      នឹងនាំតម្លៃរបស់ឧបករណ៍មួយទៀតមកជាមួយ — នោះជាកំហុសដដែលដែលទើបកែ។ */
@@ -14102,6 +14171,47 @@ function whtRowKey(r){
   return [String(r.date||"").trim(), String(r.invoiceNo||"").trim().toLowerCase(),
           normName(r.name), String(r.whtType||"").trim().toLowerCase()].join("|");
 }
+/* ⭐⭐ [stated] ២០២៦-០៩-០១ ៖ «ចុះពេលចុច Upload ឯកសារបន្ថែមលើឯកសារខ្វះ
+   វានៅស្គាល់ទេ?» — សំណួរត្រូវកន្លែង ៖ ចម្លើយពីមុនគឺ **ទេ** ។ ការនាំចូល
+   ធម្មតា ធ្វើ `state[store] = buckets[store]` ⇒ ផ្ទុកតែឯកសារខែ ៦ ចូល
+   នឹង **លុប** ៩៨៥ ជួរដែលមានស្រាប់ ។ វាត្រឹមត្រូវសម្រាប់ការផ្ទុកថតទាំងមូល
+   ( សំណុំពេញ ) តែខុសទាំងស្រុងសម្រាប់ការបំពេញអ្វីដែលខ្វះ ។
+   ⇒ របៀប «បន្ថែម» ៖ បញ្ចូលចូលគ្នាតាមកូនសោ កាលបរិច្ឆេទ|វិក្កយបត្រ|អតប|ទឹកប្រាក់
+     ⇒ ឯកសារខែថ្មី **បន្ថែម** ; ឯកសារដដែលផ្ទុកម្តងទៀត **សរសេរជាន់** ជួរដដែល
+     មិនស្ទួន ( លំនាំដដែលនឹង mergeWHTRows ដែលដើរស្រាប់ ) ។
+   ⚠ ទឹកប្រាក់ចូលក្នុងកូនសោដោយចេតនា ៖ បើវិក្កយបត្រដដែលត្រូវបានកែតម្លៃ
+     វាជាជួរផ្សេង ហើយសវនករត្រូវឃើញទាំងពីរ មិនមែនបាត់មួយស្ងាត់ៗ ។ */
+/* ⚠⚠ [stated] ២០២៦-០៩-០១ ៖ «overwrite ល្អជាងបង្ហាញវិក្កយបត្រស្ទួន» ។
+   ដូច្នេះ **ទឹកប្រាក់ចេញពីកូនសោ** ៖ វិក្កយបត្រដដែល ( កាលបរិច្ឆេទ · លេខ · អតប )
+   ជាជួរដដែល ⇒ ឯកសារថ្មីសរសេរជាន់ ។ នេះជាការសម្រេចរបស់គេ មិនមែនកំហុស —
+   កុំដាក់ទឹកប្រាក់ចូលកូនសោវិញ ។
+   ⚠ អ្វីដែលរក្សាទុកជាថ្នូរ ៖ ការសរសេរជាន់ដែល **ទឹកប្រាក់ខុសពីមុន** ត្រូវរាប់
+     ហើយប្រាប់ ⇒ តម្លៃមិនប្តូរស្ងាត់ៗ ។ */
+function journalRowKey(r){
+  return [String(r.date || '').trim(),
+          String(r.invoiceNo || '').trim().toLowerCase(),
+          String(r.tin || '').trim()].join('|');
+}
+function mergeJournalRows(existing, incoming){
+  const byKey = new Map();
+  let changed = 0;
+  (existing || []).forEach(r=> byKey.set(journalRowKey(r), r));
+  (incoming || []).forEach(r=>{
+    const k = journalRowKey(r), old = byKey.get(k);
+    if(old && Number(old.amount || 0) !== Number(r.amount || 0)) changed++;
+    byKey.set(k, r);                                  /* ថ្មីឈ្នះ ⇒ សរសេរជាន់ */
+  });
+  mergeJournalRows.changed = (mergeJournalRows.changed || 0) + changed;
+  const merged = Array.from(byKey.values());
+  merged.sort((a,b)=>{
+    const da = parseDMY(a.date), db = parseDMY(b.date);
+    if(da && db && da - db !== 0) return da - db;
+    return String(a.invoiceNo || '').localeCompare(String(b.invoiceNo || ''));
+  });
+  merged.forEach((r,i)=> r.no = i + 1);
+  return merged;
+}
+
 function mergeWHTRows(existing, incoming){
   const byKey = new Map();
   existing.forEach(r=> byKey.set(whtRowKey(r), r));
@@ -14538,6 +14648,11 @@ async function handleAutoFileImport(evt){
     }catch(e){ zipNotes = ['បើកកញ្ចប់មិនបាន ៖ ' + ((e && e.message) || e)]; }
   }
   const files = picked.filter(f => /\.(xlsx|xls|csv)$/i.test(f.name));
+  /* ⚠ របៀបអានពី **ធាតុ input ខ្លួនវា** មិនមែនអថេររួម ៖ បើអ្នកប្រើបើកប្រអប់
+     រួចបោះបង់ ទង់រួមនឹងនៅជាប់ ហើយការផ្ទុកលើកក្រោយនឹងបន្ថែមទាំងមិនចង់ ។
+     ប៊ូតុង 📦 លុបលក្ខណៈនេះមុនចុច ⇒ ស្ថានភាពច្បាស់លាស់ជានិច្ច ។ */
+  const addMode = evt.target.getAttribute('data-add-mode') === '1';
+  try{ evt.target.removeAttribute('data-add-mode'); }catch(e){}
   evt.target.value = "";
   if(files.length === 0){
     if(statusEl){
@@ -14922,6 +15037,9 @@ async function handleAutoFileImport(evt){
         state.whtSelectedType = null;
         state.whtSelectedName = null;
         whtCurrentPage = 1;
+      }else if(addMode){
+        /* បន្ថែម ៖ រក្សាអ្វីដែលមាន ហើយបញ្ចូលឯកសារថ្មីចូល */
+        state[store] = mergeJournalRows(state[store] || [], buckets[store]);
       }else{
         buckets[store].forEach((r,i)=> r.no = i+1);
         state[store] = buckets[store];
@@ -14935,6 +15053,15 @@ async function handleAutoFileImport(evt){
     saveState();
     renderAll();
   }
+
+  /* ⚠ ការសរសេរជាន់ដែលទឹកប្រាក់ប្តូរ ⇒ ប្រាប់ម្តង ។ សូន្យ ⇒ ស្ងាត់ ។ */
+  if(addMode && mergeJournalRows.changed){
+    const nChg = mergeJournalRows.changed;
+    mergeJournalRows.changed = 0;
+    setTimeout(function(){
+      try{ toast('↻ សរសេរជាន់ ' + nChg + ' ជួរ ដែលទឹកប្រាក់ខុសពីឯកសារចាស់', 'warn'); }catch(e){}
+    }, 600);
+  }else{ mergeJournalRows.changed = 0; }
 
   /* ⭐⭐ ការផ្ទៀងផ្ទាត់សិទ្ធិតាមឯកសារ ៖ រត់ក្រោយការនាំចូលរួមរាល់ដង។
      ⚠ ត្រូវរង់ចាំ ១ frame ៖ ម៉ូឌុល TOI/COMPANYINFO បំពេញអត្តសញ្ញាណរបស់វា
@@ -16685,6 +16812,7 @@ const ENTERPRISE_KEYS = [
   "crossReviewedV1",                /* ✓ ក្រុមហ៊ុនដែលពិនិត្យរួច */
   "crossExcludeV1",                 /* 🚫 ក្រុមហ៊ុនដែលដកចេញដោយដៃ */
   "crossCdV1",                      /* 🧾 CN/DN របស់ដៃគូ */
+  "rscGapNoteV1",                   /* 📝 សម្គាល់ឆ្នាំដែលខ្វះខែ */
 ];
 const ENTERPRISE_PREFIXES = ["trackingData_", "accessProAudit_", "accessProMap_",
   /* ⚠ ការត្រួតពិនិត្យវិក្កយបត្រតាមអតប ៖ ការលុបទិន្នន័យសហគ្រាសត្រូវលុបវាដែរ ។
