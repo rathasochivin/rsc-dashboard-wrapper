@@ -2576,7 +2576,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
      ⭐ 'Khmer OS Muol Light' មាន face តែ ៤០០ ⇒ ៧០០ ធ្វើអោយកម្មវិធីរុករក
        សំយោគអក្សរដិតដោយខ្លួនឯង (faux bold) ដែលមើលទៅក្រាស់ស្រពិចស្រពិល។
      ⚠ ធ្វើតែពេលព្រីន ⇒ លើអេក្រង់នៅដិតដដែល។ */
-  /* RSCBUILD-SHEETNO119 */
+  /* RSCBUILD-TOITOT120 */
   #mtr-embed .mtr-form-title,
   #mtr-embed .mtr-form-meta .val,
   #mtr-embed .mtr-filled,
@@ -32638,6 +32638,34 @@ window.__toiComputeTotals = function(stepKey, y){
   try{
     var rs = state.refSteps && state.refSteps[stepKey];
     if(!rs) return { ok:false, msg:'គ្មានទិន្នន័យ' };
+    /* ⭐⭐⭐ [stated] ២០២៦-០៨-២៨ ៖ «ខ្ញុំឃើញលោតចូល A29 និង A42 តែមិនឃើញ
+       A0 · A1 និង A13 ទេ» ។
+       ⭐ មូលហេតុ ៖ ការគណនាដើរតែលើជួរដែល **មានក្នុងតារាង** ។ អ្នកបានវាយ
+         A29 និង A42 ⇒ វាគណនា ។ A0 · A1 · A13 អ្នកមិនបានវាយ ⇒ គ្មានជួរ
+         ⇒ គ្មានរូបមន្តត្រូវអាន ⇒ គ្មានអ្វីលេច ។
+       ⇒ បង្កើតជួរសរុបដែលខ្វះ **ដោយស្វ័យប្រវត្តិ** ពីបញ្ជីឈ្មោះពិតដែល
+         បង្កប់ក្នុងកម្មវិធី ( TOI_BASE_DICT ) ⇒ គ្រប់ជួរសរុបនៃទម្រង់លេច
+         ដោយមិនតម្រូវឱ្យអ្នកវាយវាមុន ។
+       ⚠ បន្ថែម **តែជួរដែលឈ្មោះផ្ទុករូបមន្តរបស់ខ្លួនឯង** ⇒ ជួរទិន្នន័យ
+         ធម្មតា ( A2 · A30 … ) មិនត្រូវបានបន្ថែមទេ ; អ្នកនៅតែជាអ្នក
+         សម្រេចថាវាយជួរណា ។ */
+    try{
+      var base = (typeof TOI_BASE_DICT !== 'undefined' && TOI_BASE_DICT[stepKey]) || {};
+      Object.keys(base).forEach(function(ref){
+        if(ref in rs.labels) return;
+        var bf = toiParseFormula(base[ref]);
+        if(!bf || bf.target !== ref) return;
+        rs.labels[ref] = base[ref];
+        rs.order.push(ref);
+      });
+      /* តម្រៀបតាមលេខ ⇒ A0 · A1 · A2 … A13 មិនមែន A0 · A1 · A13 · A2 */
+      rs.order.sort(function(a, b){
+        var ma = /^([A-Z]+)(\d+)$/.exec(a), mb = /^([A-Z]+)(\d+)$/.exec(b);
+        if(ma && mb && ma[1] === mb[1]) return (+ma[2]) - (+mb[2]);
+        return String(a).localeCompare(String(b));
+      });
+    }catch(e){}
+
     var forms = [];
     (rs.order || []).forEach(function(ref){
       var f = toiParseFormula(rs.labels[ref]);
