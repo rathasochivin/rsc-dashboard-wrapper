@@ -1782,8 +1782,10 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
 #calcCard .cc-tabs{display:flex; flex-wrap:wrap; gap:4px; border-bottom:2px solid var(--line); margin-bottom:14px;}
 #calcCard .cc-tab{border:0; background:none; font:inherit; font-size:13px; font-weight:700; color:var(--muted);
   padding:8px 13px; cursor:pointer; border-bottom:3px solid transparent; margin-bottom:-2px; border-radius:8px 8px 0 0;}
-#calcCard .cc-tab:hover{background:#F1F0E9;}
-#calcCard .cc-tab.on{color:var(--primary); border-bottom-color:var(--accent); background:#F1F0E9;}
+#calcCard .cc-tab:hover{background:none; color:var(--primary);}
+#calcCard /* [stated] ២០២៦-០៩-០១ ៖ tab មិនប្រើប្រអប់ជាផ្ទៃខាងក្រោយ ⇒ សញ្ញាសម្គាល់
+     ជា **បន្ទាត់ក្រោម** តែមួយគត់ ⇒ គ្មានប្រអប់ជាន់គ្នា ។ */
+  .cc-tab.on{color:var(--primary); border-bottom-color:var(--accent); background:none;}
 #calcCard .cc-pane{display:none;}
 #calcCard .cc-pane.on{display:block;}
 
@@ -2171,15 +2173,19 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
 #mtr-embed .toolrow .right{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
 #mtr-embed .toolrow .btn{width:auto;}
 #mtr-embed .tabs{
-  display:flex; background:#e8e4d5; padding:4px; border-radius:8px; gap:4px; flex-wrap:wrap;
+  /* [stated] ២០២៦-០៩-០១ ៖ ដកប្រអប់ចេញ ⇒ បន្ទាត់ក្រោមតែមួយសម្រាប់ជួរ tab */
+  display:flex; background:none; padding:0; border-radius:0; gap:2px; flex-wrap:wrap;
+  border-bottom:2px solid #ddd8c6;
 }
 #mtr-embed .tab-btn{
-  background:transparent; border:none; padding:6px 14px; font-size:13px; font-weight:600;
-  font-family:'Khmer OS Siemreap',sans-serif; color:var(--mtr-muted); border-radius:6px; cursor:pointer;
-  transition:background .15s, color .15s;
+  background:transparent; border:none; padding:7px 13px 6px; font-size:13px; font-weight:600;
+  font-family:'Khmer OS Siemreap',sans-serif; color:var(--mtr-muted); border-radius:0; cursor:pointer;
+  border-bottom:3px solid transparent; margin-bottom:-2px;
+  transition:color .15s, border-color .15s;
 }
+#mtr-embed .tab-btn:hover{ color:var(--mtr-navy); }
 #mtr-embed .tab-btn.active{
-  background:var(--mtr-navy); color:#fff;
+  background:none; color:var(--mtr-navy); border-bottom-color:var(--mtr-brass);
 }
 #mtr-embed .table-wrap{overflow:auto; max-height:68vh;}
 #mtr-embed table.ledger{
@@ -3141,11 +3147,13 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
   #toi-embed .neg{color:var(--toi-bad);}
 
   #toi-embed .year-tabs{display:flex; gap:6px; margin-bottom:12px; flex-wrap:wrap;}
+  /* [stated] ២០២៦-០៩-០១ ៖ គ្មានប្រអប់ជាផ្ទៃខាងក្រោយ ⇒ បន្ទាត់ក្រោមប៉ុណ្ណោះ */
   #toi-embed .year-tab{
-    padding:6px 14px; border-radius:8px 8px 0 0; border:1px solid var(--toi-line); border-bottom:none;
-    background:var(--toi-paper-dim); font-size:12.5px; font-weight:600; cursor:pointer; color:var(--toi-ink-soft);
+    padding:6px 12px; border:0; border-bottom:3px solid transparent; border-radius:0;
+    background:none; font-size:12.5px; font-weight:600; cursor:pointer; color:var(--toi-ink-soft);
   }
-  #toi-embed .year-tab.active{background:var(--toi-card); color:var(--toi-navy); border-color:var(--toi-gold);}
+  #toi-embed .year-tab:hover{color:var(--toi-navy);}
+  #toi-embed .year-tab.active{background:none; color:var(--toi-navy); border-bottom-color:var(--toi-gold);}
   #toi-embed .raw-year-panel{display:none;}
   #toi-embed .raw-year-panel.active{display:block;}
 
@@ -6108,10 +6116,11 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
       #upload-status-dock .import-status.err{ border-left-color:var(--red); }
       /* វាជាប្រអប់អណ្តែត position:fixed ដូច្នេះវាបោះពុម្ពលើគ្រប់ទំព័រ។ */
       .top10-tab{
-        font-family:inherit; font-size:12.5px; padding:5px 14px; cursor:pointer;
-        border:0; background:#fff; color:var(--muted);
+        font-family:inherit; font-size:12.5px; padding:5px 12px; cursor:pointer;
+        border:0; border-bottom:3px solid transparent; background:none; color:var(--muted);
       }
-      .top10-tab.is-on{ background:var(--brand,#0F3D3E); color:#fff; font-weight:600; }
+      .top10-tab.is-on{ background:none; color:var(--brand,#0F3D3E); font-weight:600;
+        border-bottom-color:var(--brand,#0F3D3E); }
       @media print{ #top10-switch{ display:none !important; } }
       #docs-modal{
         position:fixed; inset:0; z-index:9400; background:rgba(10,30,30,.55);
@@ -7411,19 +7420,59 @@ function rscUploadReport(){
   /* ⚠ បិទផ្ទាំងជាមុន ៖ ប្រអប់ជ្រើសឯកសាររបស់កម្មវិធីរុករកបើកនៅខាងលើគេ
      ហើយបើទុកផ្ទាំងនេះនៅ អ្នកប្រើនឹងឃើញរបាយការណ៍ចាស់ខណៈកំពុងនាំចូល ។ */
   /* ⚠ ចងជាមួយ card មិនមែនជាមួយឯកសារទាំងមូល ⇒ បិទផ្ទាំង អ្នកស្តាប់រលាយតាម */
+  /* ⚠⚠ [stated] ២០២៦-០៩-០១ ៖ «ជួយកែប្រើ font Khmer OS Siemreap ផង» ។
+     ការស្កេនរកបានបញ្ជាក់ថា **គ្រប់ស៊ុមអក្សរខ្មែរក្នុងកូដ** ប្រើ Siemreap ឬ
+     Muol Light រួចហើយ ។ អក្សរដែលខុសនៅក្នុងរូបគឺ `prompt()` របស់កម្មវិធី
+     រុករក — វាជាប្រអប់របស់កម្មវិធីរុករកខ្លួនឯង ⇒ **គ្មានកូដណាកែ font វាបាន**
+     ( ហើយវាក៏ជាកន្លែងដែលបន្ទាត់ «teamsmos.com says» មកពី ) ។
+     ⇒ ដំណោះស្រាយតែមួយគត់ ៖ សរសេរប្រអប់ក្នុងទំព័រខ្លួនឯង ⇒ ទទួល font
+       ជាមរតកពី body ( Siemreap ) ។ ធ្វើបានត្រង់នេះព្រោះអ្នកហៅមិនត្រូវការ
+       តម្លៃត្រឡប់ជាបែបសមកាល ( មិនដូច confirm/prompt ដទៃក្នុងកម្មវិធី ) ។ */
+  function gapEdit(k, lab, miss){
+    var cur = (rscGapNotes()[k] || {}).t || '';
+    var w = document.createElement('div');
+    w.style.cssText = 'position:fixed; inset:0; z-index:2147483300; background:rgba(10,30,30,.55);'
+      + 'display:flex; align-items:center; justify-content:center; padding:16px; font:inherit;';
+    w.innerHTML = '<div style="background:#fff; border-radius:12px; padding:16px 18px; width:min(520px,96vw);'
+      + 'box-shadow:0 18px 44px rgba(0,0,0,.3); font:inherit;">'
+      + '<div style="font-weight:700; margin-bottom:2px;">សម្គាល់ ៖ ' + esc(lab) + '</div>'
+      + '<div style="font-size:12.5px; color:#A83A26; margin-bottom:10px;">ខ្វះខែ ' + esc(miss) + '</div>'
+      + '<textarea id="gnTa" rows="3" placeholder="ឧ. សហគ្រាសមិនបានប្រកាសខែទាំងនេះ · គ្មានប្រតិបត្តិការ"'
+      + ' style="width:100%; box-sizing:border-box; font:inherit; font-size:13px; padding:9px 10px;'
+      + 'border:1px solid #d8d2c2; border-radius:8px; resize:vertical;"></textarea>'
+      + '<div style="margin-top:12px; display:flex; gap:8px; align-items:center;">'
+      + '<button id="gnDel" style="padding:8px 12px; border:1px solid #E3C6BE; border-radius:7px;'
+      + 'background:#fff; color:#A83A26; font:inherit; font-weight:700; font-size:13px; cursor:pointer;">🗑 លុបសម្គាល់</button>'
+      + '<span style="flex:1 1 auto;"></span>'
+      + '<button id="gnCancel" style="padding:8px 14px; border:1px solid #d8d2c2; border-radius:7px;'
+      + 'background:#fff; font:inherit; font-weight:700; font-size:13px; cursor:pointer;">បោះបង់</button>'
+      + '<button id="gnSave" style="padding:8px 20px; border:0; border-radius:7px; background:#0F3D3E;'
+      + 'color:#fff; font:inherit; font-weight:700; font-size:13px; cursor:pointer;">រក្សាទុក</button>'
+      + '</div></div>';
+    document.body.appendChild(w);
+    var ta = w.querySelector('#gnTa');
+    ta.value = cur; ta.focus();
+    function close(){ try{ w.remove(); }catch(e){} }
+    function done(txt){
+      rscGapNoteSet(k, txt, miss);
+      close();
+      try{ ov.remove(); }catch(e){}
+      rscUploadReport();          /* គូរឡើងវិញ ⇒ ហាយឡាយប្តូរភ្លាម */
+    }
+    w.querySelector('#gnSave').onclick   = function(){ done(String(ta.value).trim()); };
+    w.querySelector('#gnDel').onclick    = function(){ done(''); };
+    w.querySelector('#gnCancel').onclick = close;
+    w.onclick = function(e){ if(e.target === w) close(); };
+    /* Ctrl+Enter រក្សាទុក · Escape បោះបង់ — ដូចប្រអប់ដទៃក្នុងកម្មវិធី */
+    ta.onkeydown = function(e){
+      if(e.key === 'Escape'){ close(); }
+      else if(e.key === 'Enter' && (e.ctrlKey || e.metaKey)){ done(String(ta.value).trim()); }
+    };
+  }
   card.querySelectorAll('[data-gap]').forEach(function(sp){
     sp.onclick = function(ev){
       ev.stopPropagation();
-      var k = sp.getAttribute('data-gap');
-      var cur = (rscGapNotes()[k] || {}).t || '';
-      var v = prompt('សម្គាល់សម្រាប់ ' + sp.getAttribute('data-lab')
-                     + '\n( ខ្វះខែ ' + sp.getAttribute('data-miss') + ' )\n\n'
-                     + 'ឧ. សហគ្រាសមិនបានប្រកាសខែទាំងនេះ · គ្មានប្រតិបត្តិការ\n'
-                     + 'ទុកទទេ ⇒ លុបសម្គាល់ចេញ', cur);
-      if(v === null) return;
-      rscGapNoteSet(k, String(v).trim(), sp.getAttribute('data-miss'));
-      try{ ov.remove(); }catch(e){}
-      rscUploadReport();          /* គូរឡើងវិញ ⇒ ហាយឡាយប្តូរភ្លាម */
+      gapEdit(sp.getAttribute('data-gap'), sp.getAttribute('data-lab'), sp.getAttribute('data-miss'));
     };
   });
 
