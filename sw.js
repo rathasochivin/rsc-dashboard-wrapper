@@ -12,9 +12,18 @@
      · រូបតំណាង/manifest ⇒ cache មុនគេ ( វាមិនប្តូរញឹកញាប់ ) ។
      · skipWaiting + clients.claim ⇒ កំណែថ្មីចាប់ការភ្លាម មិនរង់ចាំបិទផ្ទាំង ។
    ⚠ ប្តូរលេខ CACHE រាល់ពេលចេញកំណែថ្មី ⇒ cache ចាស់ត្រូវលុបចោល ។ */
-var CACHE = 'rsc-audit-v1';
+/* ⭐ ២០២៦-០៨-២៨ ៖ law.json ( ១.៧ MB ) ផ្លាស់ចេញពី index.html ⇒ ទាញតែពេល
+   ចុច 📖 ។ ⚠ វា **មិនប្តូរញឹកញាប់** ⇒ cache មុនគេដូចរូបតំណាង ⇒ ការចុច
+   លើកទី ២ ឡើងទៅមិនទាញឡើងវិញ ហើយដើរបានពេលអ៊ីនធឺណិតដាច់ ។
+   ⚠ តែវាមិនស្ថិតក្នុង SHELL ដែលទាញពេលដំឡើងទេ ⇒ បើមិនចុច 📖 សោះ
+     អ្នកប្រើមិនបាច់ទាញវាឡើយ ។ នោះជាចំណុចទាំងមូលនៃការផ្លាស់នេះ ។ */
+var CACHE = 'rsc-audit-v3';
 var SHELL = ['./manifest.json', './icon-192.png', './icon-512.png',
              './icon-maskable-512.png', './apple-touch-icon.png'];
+/* ⭐ ២០២៦-០៨-២៨ ៖ បន្ថែម ៖ xlsx.b64.txt · pdfjs.lib.js · pdfjs.worker.js
+   ផ្លាស់ចេញពី index.html ដែរ ⇒ ទាញតែពេលប្រើ ។ ទាំងអស់ **មិនប្តូរ** ⇒
+   cache មុនគេ ⇒ ការប្រើលើកទី ២ ឡើងទៅភ្លាម និងដើរពេលអ៊ីនធឺណិតដាច់ ។ */
+var LAZY  = ['law.json', 'xlsx.b64.txt', 'pdfjs.lib.js', 'pdfjs.worker.js'];
 
 self.addEventListener('install', function(e){
   self.skipWaiting();
@@ -38,6 +47,23 @@ self.addEventListener('activate', function(e){
 self.addEventListener('fetch', function(e){
   var req = e.request;
   if(req.method !== 'GET') return;
+
+  /* ទិន្នន័យធំដែលមិនប្តូរ ⇒ cache មុនគេ រួចទាញបណ្តាញតែពេលគ្មានក្នុង cache */
+  if(LAZY.some(function(n){ return req.url.indexOf(n) >= 0; })){
+    e.respondWith(
+      caches.match(req).then(function(hit){
+        if(hit) return hit;
+        return fetch(req).then(function(res){
+          if(res && res.ok){
+            var copy = res.clone();
+            caches.open(CACHE).then(function(c){ c.put(req, copy); });
+          }
+          return res;
+        });
+      })
+    );
+    return;
+  }
 
   var url;
   try{ url = new URL(req.url); }catch(err){ return; }
