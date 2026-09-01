@@ -4943,9 +4943,12 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
      មូលដ្ឋានទិន្នន័យទាញតែពេលចុច ⇒ មិនធ្វើឱ្យការចូលដំបូងយឺត។ -->
         <button class="atb-btn atb-icon" onclick="window.__rscLawClick && window.__rscLawClick(this)" title="ស្វែងរកច្បាប់ និងប្រកាស" aria-label="ស្វែងរកច្បាប់ និងប្រកាស">📖</button>
         <!-- ⭐ ២០២៦-០៨-២៨ ៖ អ្នកអាន General Ledger ៖ បំប្លែង GL របស់សហគ្រាស
-             ( QuickBooks និងប្រព័ន្ធស្រដៀង ) ជាតារាងតែមួយដែល filter បាន។
-             ⚠ admin-only តាមការសម្រេចរបស់ម្ចាស់ប្រព័ន្ធ ( ២០២៦-០៨-២៨ )។ -->
-        <button class="atb-btn atb-icon admin-only" onclick="window.__rscGL && window.__rscGL()" title="អាន General Ledger" aria-label="អាន General Ledger">📒</button>
+             ( QuickBooks · តារាងរាបស្មើ · ក្បាលគណនី ) ជាតារាងតែមួយដែល filter បាន។
+             ⭐ [stated] ២០២៦-០៩-០១ ៖ «ជួយដាក់ផ្នែកអាន GL ឱ្យ user ផង» ⇒ ថ្នាក់
+                «admin-only» ត្រូវដកចេញ ⇒ user និង team ឃើញប៊ូតុងនេះដែរ ។
+             ⚠ គ្មានហានិភ័យទិន្នន័យ ៖ ម៉ូឌុលនេះអានតែឯកសារដែលអ្នកប្រើជ្រើស
+               ដោយខ្លួនឯង មិនប៉ះសំណុំរឿង មិនរក្សាទុក និងមិនហៅម៉ាស៊ីនមេទេ ។ -->
+        <button class="atb-btn atb-icon" onclick="window.__rscGL && window.__rscGL()" title="អាន General Ledger" aria-label="អាន General Ledger">📒</button>
         <!-- ⭐ ២០២៦-០៨-២៨ ៖ របាយការណ៍ធនាគារ ៖ PDF ស្កេន ⇒ វាយដោយដៃ តែមាន
              ការត្រួតពិនិត្យតុល្យភាពស្វ័យប្រវត្តិ ⇒ វាយខុសមិនអាចឆ្លងកាត់។
              ⚠ ទិន្នន័យមិនចេញពីម៉ាស៊ីនអ្នកសោះ ( សំណើរបស់ម្ចាស់ប្រព័ន្ធ )។ -->
@@ -35704,7 +35707,11 @@ function renderTrackingView(){
     const rows = rd.items.map((it, ii)=>`
       <tr>
         <td style="text-align:center;">${kh(ii+1)}</td>
-        <td class="trk-lbl">${primary ? esc(it.label) : txt('rounds.'+ri+'.items.'+ii+'.label', 2)}</td>
+        <!-- ⭐ [stated] ២០២៦-០៩-០១ ៖ «ផ្នែក ឯកសារបឋម … ពី១ដល់១០នោះអាចកែបាន» ។
+             ឈ្មោះឯកសាររស់នៅក្នុង rd.items[ii].label ជាស្ថានភាពស្រាប់
+             ( blankRound បង្កាប់វាពី TRK_DOCS ) ⇒ ការប្តូរទៅជាប្រអប់វាយ
+             រក្សាទុក និងផ្ទុកឡើងវិញដោយស្វ័យប្រវត្តិ គ្មានផ្លូវថ្មីត្រូវតម្រង់ ។ -->
+        <td class="trk-lbl">${txt('rounds.'+ri+'.items.'+ii+'.label', primary ? 1 : 2)}</td>
         ${primary ? '' : `<td style="text-align:center;">${sel('rounds.'+ri+'.items.'+ii+'.reqMtg', meetingOptionsOpen(), '110px')}</td>`}
         <td style="text-align:center;">${chk('rounds.'+ri+'.items.'+ii+'.received')}</td>
         <td style="text-align:center;">${it.received
@@ -37152,7 +37159,14 @@ function letterSkipped(){
 }
 function letterDocRows(){
   const skip = letterSkipped();
-  return TRK_DOCS.map((label, i)=>({ label:label, en:TRK_DOCS_EN[i] || '', i:i }))
+  /* ⚠ ឈ្មោះយកពីអ្វីដែលអ្នកប្រើវាយក្នុងតារាង «ឯកសារស្នើសុំបឋម» ⇒ លិខិត
+     ស្នើសុំនិយាយដូចតារាងបេះបិទ ។ ទទេ ⇒ ត្រឡប់ទៅឈ្មោះលំនាំដើមវិញ
+     ដូច្នេះឯកសារចាស់ និងករណីដែលមិនទាន់កែ នៅដដែល ។ */
+  let edited = [];
+  try{ edited = ((trkState.rounds || [])[0] || {}).items || []; }catch(e){ edited = []; }
+  return TRK_DOCS.map((label, i)=>({
+                   label: String((edited[i] || {}).label || '').trim() || label,
+                   en: TRK_DOCS_EN[i] || '', i:i }))
                  .filter(r => skip.indexOf(r.i) === -1);
 }
 
