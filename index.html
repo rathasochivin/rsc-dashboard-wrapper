@@ -29346,6 +29346,10 @@ function rscGLOpen(){
     var m = String(v || '').match(/^(\d{4})-(\d{2})/);
     return m ? { y:+m[1], m:+m[2] } : null;
   }
+  /* ⭐ សោគណនី ៖ GL ខ្លះគ្មានលេខកូដ ( «Withholding Tax Credit» ) ⇒ បើគ្មានលេខ
+     ប្រើឈ្មោះជាសោ ។ សម្រាប់ QuickBooks លេខមានជានិច្ច ⇒ លទ្ធផលដដែល ។ */
+  function accKey(r){ return r.code || r.acc || ''; }
+
   function num(v){
     if(typeof v === 'number') return v;
     var n = parseFloat(String(v == null ? '' : v).replace(/[^0-9.\-]/g, ''));
@@ -29483,6 +29487,125 @@ function rscGLOpen(){
     return { rows:out, err:'' };
   }
 
+  /* ⭐⭐⭐ [stated] ២០២៦-០៩-០១ ៖ «GL ប្រភេទនេះវាអត់ស្គាល់» ⇒ ទម្រង់ទី ៣ ។
+     ⚠⚠ ច្បាប់ដដែលនៅតែអនុវត្ត ៖ **មិនប៉ះអ្នកអានទី ១ និងទី ២** ។ អ្នកអានថ្មី
+       ជាផ្លូវ **ទី ៣** សាកតែពេលទី ១ និងទី ២ រកជួរមិនឃើញ ⇒ ឯកសារចាស់
+       ទាំងអស់មិនអាចខូចដោយការបន្ថែមនេះទេ ។
+
+     ទម្រង់ថ្មី ( ឧ. Leader Energy Co., Ltd — GENERAL LEDGER ) ៖
+       ជួរ ១-៣ ៖ ឈ្មោះក្រុមហ៊ុន · GENERAL LEDGER · AS OF …   ( រំលង )
+       ក្បាលតារាង ៖ Account Name | Normal Balance | Date | Descriptions |
+                     Reference No | Debit | Credit | Balance
+       រួច ៖ ជួរ **ក្បាលគណនី** ( មានតែ Account Name + Normal Balance )
+             ហើយជួរប្រតិបត្តិការខាងក្រោមទុក Account Name ទទេ ។
+     ⚠ គណនីគ្មានលេខកូដ ( «Withholding Tax Credit» ) ⇒ code នៅទទេ ហើយ
+       ការដាក់ជាក្រុមប្រើ accKey() = code បើមាន បើអត់ប្រើឈ្មោះគណនី ។
+     ⚠ កាលបរិច្ឆេទជាអក្សរ «13/01/2022» ⇒ បម្លែងទៅ Date ពិត បើមិនដូច្នេះ
+       តម្រងឆ្នាំ/ខែ ( ymOf ) ចាប់មិនបាន ។ ថ្ងៃ/ខែ ឬ ខែ/ថ្ងៃ សម្រេចដោយ
+       អានឯកសារទាំងមូលជាមុន ( បើឃើញផ្នែកទី ១ > ១២ ⇒ ថ្ងៃមុន ) ។
+     ⚠ «-» ក្នុងជួរឈរទឹកប្រាក់ = សូន្យ ; «(1,234)» = អវិជ្ជមាន ។
+     ⚠ ជួរ «Total …» ( សរុបរង និងសរុបធំ ) ដកចេញ ⇒ មិនបូកទ្វេដង ។ */
+  function parseBlock(aoa, fileName){
+    function nh(s){ return String(s == null ? '' : s).toUpperCase().replace(/[^A-Z]/g, ''); }
+    var hdr = -1, H = null;
+    for(var i = 0; i < Math.min(aoa.length, 40); i++){
+      var v = (aoa[i] || []).map(nh);
+      var hasAcc = v.some(function(x){ return x.indexOf('ACCOUNT') === 0; });
+      var hasDeb = v.indexOf('DEBIT') >= 0 || v.indexOf('DR') >= 0;
+      var hasCre = v.indexOf('CREDIT') >= 0 || v.indexOf('CR') >= 0;
+      var hasDat = v.some(function(x){ return x.indexOf('DATE') >= 0; });
+      if(hasAcc && hasDeb && hasCre && hasDat){ hdr = i; H = v; break; }
+    }
+    if(hdr < 0) return { rows:[], err:'' };
+
+    function find(test){ for(var k = 0; k < H.length; k++) if(test(H[k])) return k; return -1; }
+    var cAcc  = find(function(x){ return x.indexOf('ACCOUNT') === 0; });
+    var cNorm = find(function(x){ return x === 'NORMALBALANCE'; });
+    var cDate = find(function(x){ return x === 'DATE' || x === 'TRANSACTIONDATE' || x === 'POSTINGDATE'; });
+    var cDesc = find(function(x){ return x.indexOf('DESCRIPTION') === 0 || x === 'DESCRIPTIONS'
+      || x === 'PARTICULARS' || x === 'NARRATION' || x === 'MEMO'; });
+    var cRef  = find(function(x){ return x.indexOf('REFERENCE') === 0 || x === 'REFNO' || x === 'REF'
+      || x === 'VOUCHERNO' || x === 'DOCNO'; });
+    var cDeb  = find(function(x){ return x === 'DEBIT' || x === 'DR'; });
+    var cCre  = find(function(x){ return x === 'CREDIT' || x === 'CR'; });
+    var cBal  = find(function(x){ return x === 'BALANCE' || x === 'RUNNINGBALANCE'; });
+
+    function cell(row, k){ return k >= 0 ? String(row[k] == null ? '' : row[k]).trim() : ''; }
+    function amt(v){
+      if(typeof v === 'number') return isFinite(v) ? v : 0;
+      var s = String(v == null ? '' : v).trim();
+      if(!s || s === '-' || s === '–' || s === '—') return 0;
+      var neg = /^\(.*\)$/.test(s) || /^-/.test(s);
+      var n = parseFloat(s.replace(/[^0-9.]/g, ''));
+      return isFinite(n) ? (neg ? -n : n) : 0;
+    }
+
+    /* ជំហានទី ១ ៖ ថ្ងៃ/ខែ ឬ ខែ/ថ្ងៃ ? អានឯកសារទាំងមូលជាមុន */
+    var gt1 = 0, gt2 = 0, RX = /^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})$/;
+    for(var r0 = hdr + 1; r0 < aoa.length; r0++){
+      var m0 = RX.exec(cell(aoa[r0] || [], cDate));
+      if(!m0) continue;
+      if(+m0[1] > 12) gt1++;
+      if(+m0[2] > 12) gt2++;
+    }
+    var dmy = !(gt2 > gt1);
+    function toDate(v){
+      if(v instanceof Date && !isNaN(v)) return v;
+      var s = String(v == null ? '' : v).trim();
+      if(!s) return '';
+      var m = RX.exec(s);
+      if(m){
+        var y = +m[3]; if(y < 100) y += (y > 70 ? 1900 : 2000);
+        var d = dmy ? +m[1] : +m[2], mo = dmy ? +m[2] : +m[1];
+        var dt = new Date(y, mo - 1, d);
+        return isNaN(dt) ? s : dt;
+      }
+      m = /^(\d{4})-(\d{1,2})-(\d{1,2})/.exec(s);
+      if(m) return new Date(+m[1], +m[2] - 1, +m[3]);
+      return s;
+    }
+
+    /* ជំហានទី ២ ៖ អានជួរ — ក្បាលគណនីបំពេញចុះក្រោមដល់ក្បាលបន្ទាប់ */
+    var out = [], cur = { code:'', name:'', raw:'', norm:'' };
+    for(var r = hdr + 1; r < aoa.length; r++){
+      var row = aoa[r] || [];
+      var accRaw = cell(row, cAcc);
+      var desc   = cell(row, cDesc);
+      var ref    = cell(row, cRef);
+      var dRaw   = cDate >= 0 ? row[cDate] : '';
+      var d = amt(cDeb >= 0 ? row[cDeb] : 0), c = amt(cCre >= 0 ? row[cCre] : 0);
+
+      if(/^total\b/i.test(accRaw) || /^(grand\s+)?total\b/i.test(desc)) continue;  /* ជួរសរុប */
+
+      if(accRaw){                                   /* ⇒ ក្បាលគណនីថ្មី */
+        var ma = /^\s*([0-9][0-9A-Za-z\-.]*)\s+(.+)$/.exec(accRaw);   /* «5101 Revenue …» */
+        var nb = cell(row, cNorm);
+        cur = ma ? { code:ma[1], name:ma[2].trim(), raw:accRaw, norm:nb }
+                 : { code:'',    name:accRaw,       raw:accRaw, norm:nb };
+        if(!dRaw && !d && !c) continue;              /* ក្បាលសុទ្ធ ⇒ គ្មានប្រតិបត្តិការ */
+      }
+      if(!dRaw && !desc && !ref && !d && !c) continue;             /* ជួរទទេ */
+      if(!cur.name && !cur.code) continue;                        /* មិនទាន់ដល់គណនីណា */
+
+      var vt = /^([A-Za-z]{2,})[\s\-]?\d/.exec(ref);              /* CPV0052 ⇒ CPV */
+      out.push({
+        f: fileName,
+        date: toDate(dRaw),
+        code: cur.code,
+        acc:  cur.name,
+        path: cur.raw,
+        type: vt ? vt[1].toUpperCase() : '',
+        num:  ref,
+        name: '',
+        memo: desc,
+        split: cur.norm || (cNorm >= 0 ? cell(row, cNorm) : ''),
+        deb: d, cred: c,
+        bal: cBal >= 0 ? amt(row[cBal]) : 0
+      });
+    }
+    return { rows:out, err:'' };
+  }
+
   inp.onchange = function(ev){
     var fl = ev.target.files; if(!fl || !fl.length) return;
     var pend = fl.length;
@@ -29503,6 +29626,9 @@ function rscGLOpen(){
               /* ផ្លូវទី ២ ៖ តារាងរាបស្មើ — សាកតែពេលទី ១ រកមិនឃើញ */
               var res2 = parseFlat(aoa, file.name);
               if(res2.rows.length){ got = got.concat(res2.rows); return; }
+              /* ផ្លូវទី ៣ ៖ ក្បាលគណនី + ជួរប្រតិបត្តិការខាងក្រោម — សាកចុងក្រោយ */
+              var res3 = parseBlock(aoa, file.name);
+              if(res3.rows.length){ got = got.concat(res3.rows); return; }
               if(res.err) errs.push(sn + ' ៖ ' + res.err);
             });
             files.push({ name:file.name, n:got.length, err:got.length ? '' : errs.join(' · ') });
@@ -29523,7 +29649,7 @@ function rscGLOpen(){
   function filtered(){
     var q = F.q.toLowerCase();
     return rows.filter(function(r){
-      if(F.acc && r.code !== F.acc) return false;
+      if(F.acc && accKey(r) !== F.acc) return false;
       if(F.type && r.type !== F.type) return false;
       if(F.y || F.m){
         var d = ymOf(r.date);
@@ -29544,7 +29670,9 @@ function rscGLOpen(){
   function draw(){
     if(!rows.length){
       body.innerHTML = '<div style="padding:12px; color:#6b736f; font-size:13px;">'
-        + 'ជ្រើសឯកសារ GL ( .xlsx · .csv ) ។ ទម្រង់ QuickBooks និងប្រព័ន្ធស្រដៀងអានបានស្វ័យប្រវត្តិ។<br><br>'
+        + 'ជ្រើសឯកសារ GL ( .xlsx · .csv ) ។ អានបានស្វ័យប្រវត្តិ ៖ ទម្រង់ QuickBooks · '
+        + 'តារាងរាបស្មើ ( G/L · Dr.AMT · Cr.AMT ) · និងទម្រង់ក្បាលគណនី '
+        + '( Account Name · Date · Descriptions · Debit · Credit ) ។<br><br>'
         + (files.length
             ? files.map(function(f){
                 return '· ' + esc(f.name) + ' ៖ ' + (f.n ? f.n + ' ជួរ'
@@ -29556,7 +29684,7 @@ function rscGLOpen(){
     }
     var accs = {}, types = {}, years = {};
     rows.forEach(function(r){
-      if(r.code) accs[r.code] = r.acc;
+      var ak = accKey(r); if(ak) accs[ak] = r.acc || '';
       if(r.type) types[r.type] = 1;
       var d = ymOf(r.date); if(d) years[d.y] = 1;
     });
@@ -29574,7 +29702,7 @@ function rscGLOpen(){
       + Object.keys(accs).length + ')</option>'
       + Object.keys(accs).sort().map(function(c){
           return '<option value="' + esc(c) + '"' + (F.acc === c ? ' selected' : '') + '>'
-            + esc(c + ' · ' + accs[c]) + '</option>';
+            + esc(accs[c] && accs[c] !== c ? c + ' · ' + accs[c] : c) + '</option>';
         }).join('') + '</select>'
       + '<select id="gl_y" style="' + SEL + '"><option value="">ឆ្នាំទាំងអស់</option>'
       + Object.keys(years).sort().map(function(y){
@@ -29614,8 +29742,8 @@ function rscGLOpen(){
     if(mode === 'tb'){
       var acc = {};
       list.forEach(function(r){
-        var k = r.code || '(គ្មានលេខ)';
-        if(!acc[k]) acc[k] = { code:k, name:r.acc || '', d:0, c:0, n:0 };
+        var k = accKey(r) || '(គ្មានលេខ)';
+        if(!acc[k]) acc[k] = { key:k, code:r.code || '', name:r.acc || '', d:0, c:0, n:0 };
         acc[k].d += r.deb; acc[k].c += r.cred; acc[k].n++;
         if(!acc[k].name && r.acc) acc[k].name = r.acc;
       });
@@ -29631,7 +29759,7 @@ function rscGLOpen(){
         var a = acc[k], bal = a.d - a.c;
         sD += a.d; sC += a.c;
         if(bal >= 0) bD += bal; else bC += -bal;
-        h += '<tr data-acc="' + esc(a.code) + '" style="cursor:pointer; background:'
+        h += '<tr data-acc="' + esc(a.key || a.code) + '" style="cursor:pointer; background:'
           + (i % 2 ? '#fbfaf6' : '#fff') + ';" title="ចុចដើម្បីមើលលម្អិត">'
           + '<td style="' + TD + ' font-weight:700; color:#0F3D3E;">' + esc(a.code) + '</td>'
           + '<td style="' + TD + '">' + esc(a.name) + '</td>'
