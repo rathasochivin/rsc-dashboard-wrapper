@@ -7690,6 +7690,7 @@ const LOCAL_BACKUP = [
      ⇒ បញ្ចូលជា prefix ⇒ គ្រប់ឯកសារ PDF របស់អតបនោះទៅជាមួយសំណុំរឿង ។ */
   { prefix: 'rscInvChk:'          }, /* 🧾 ការត្រួតពិនិត្យវិក្កយបត្រ */
   { prefix: 'rscBank:'            }, /* 🏦 របាយការណ៍ធនាគារ */
+  { prefix: 'rscGL:'              }, /* 📒 សៀវភៅធំ (GL) តាមសហគ្រាស */
   /* ⚠ កម្ពស់ទំព័រព្រីនជាការកំណត់របស់ **ឧបករណ៍** មិនមែនរបស់សំណុំរឿងទេ ⇒
      កុំដាក់ក្នុងឯកសាររក្សាទុក បើមិនដូច្នេះទេ ការបើកឯកសារនៅឧបករណ៍មួយ
      នឹងនាំតម្លៃរបស់ឧបករណ៍មួយទៀតមកជាមួយ — នោះជាកំហុសដដែលដែលទើបកែ។ */
@@ -16643,7 +16644,7 @@ const ENTERPRISE_PREFIXES = ["trackingData_", "accessProAudit_", "accessProMap_"
   /* ⚠ ការត្រួតពិនិត្យវិក្កយបត្រតាមអតប ៖ ការលុបទិន្នន័យសហគ្រាសត្រូវលុបវាដែរ ។
      ( វាមិនលេចឆ្លងសហគ្រាសទេ ព្រោះកូនសោមានអតបនៅក្នុង តែ «លុបទាំងអស់»
        ត្រូវលុបវាពិតប្រាកដ ) ។ */
-  "rscInvChk:", "rscBank:"];
+  "rscInvChk:", "rscBank:", "rscGL:"];
 
 function wipeEnterpriseStorage(){
   try{
@@ -29285,11 +29286,77 @@ function rscGLOpen(){
      openNum ៖ លេខឯកសារ ( JV01-24-15 ) ដែលកំពុងបើកមើលធាតុទល់មុខ ។ */
   var mode = 'tb', openNum = null;
 
+  /* ⭐⭐ [stated] ២០២៦-០៩-០១ ៖ «ជួយកែផ្នែក GL អាចរក្សាទុកតាមក្រុមហ៊ុនបាន
+     ផងដែរ ទៅតាមក្រុមហ៊ុននីមួយៗ» ។
+     ⇒ កូនសោ rscGL:<អតប ៩ ខ្ទង់> ដូចលំនាំ rscInvChk: និង rscBank: ។
+     ⚠ កូនសោនេះត្រូវដាក់ក្នុង **បញ្ជីទាំងពីរ** ៖ ENTERPRISE_PREFIXES ( លុប
+       ពេលប្តូរសហគ្រាស ) និង LOCAL_BACKUP ( ចូលក្នុងឯកសារ 💾 ) — បើខ្វះ
+       មួយណាមួយ ទិន្នន័យសហគ្រាសចាស់នៅសល់ ឬការងារបាត់ពេលបើកឡើងវិញ ។
+     ⚠ ទំហំ ៖ GL មាន ៣,៨០០ ជួរឡើងទៅ ⇒ រក្សាទុកជា **អារេ** មិនមែនវត្ថុ
+       ហើយឈ្មោះគណនី និងឈ្មោះឯកសារ **ចុះបញ្ជីម្តងគត់** រួចយោងតាមលេខសន្ទស្សន៍
+       ⇒ តូចជាង ៣-៤ ដង ⇒ ជៀសផុតពី QuotaExceededError ។ */
+  var GL_TIN = (function(){
+    try{
+      var i = window.__rscEnterpriseInfo ? window.__rscEnterpriseInfo() : {};
+      return String((i && i.tin) || '').replace(/\D/g, '').slice(-9);
+    }catch(e){ return ''; }
+  })();
+  function glKey(){ return 'rscGL:' + (GL_TIN || 'default'); }
+
+  function glSave(){
+    try{
+      var aIx = {}, accs = [], fIx = {}, fl = [];
+      var R = rows.map(function(r){
+        var ak = (r.code || '') + '\u0001' + (r.acc || '') + '\u0001' + (r.path || '');
+        if(!(ak in aIx)){ aIx[ak] = accs.length; accs.push([r.code || '', r.acc || '', r.path || '']); }
+        var fk = r.f || '';
+        if(!(fk in fIx)){ fIx[fk] = fl.length; fl.push(fk); }
+        var d = r.date;
+        var dv = (d instanceof Date && !isNaN(d)) ? d.getTime() : (d == null ? '' : String(d));
+        return [fIx[fk], aIx[ak], dv, r.type || '', r.num || '', r.name || '',
+                r.memo || '', r.split || '', r.deb || 0, r.cred || 0, r.bal || 0];
+      });
+      localStorage.setItem(glKey(), JSON.stringify({ v:1, files:files, fl:fl, accs:accs, rows:R }));
+      return true;
+    }catch(e){ return false; }
+  }
+  function glLoad(){
+    try{
+      var raw = localStorage.getItem(glKey());
+      if(!raw) return;
+      var o = JSON.parse(raw);
+      if(!o || !Array.isArray(o.rows)) return;
+      var accs = o.accs || [], fl = o.fl || [];
+      rows = o.rows.map(function(a){
+        var ac = accs[a[1]] || ['', '', ''];
+        var d = a[2];
+        return { f: fl[a[0]] || '', date: (typeof d === 'number' ? new Date(d) : (d || '')),
+                 code: ac[0], acc: ac[1], path: ac[2],
+                 type: a[3] || '', num: a[4] || '', name: a[5] || '', memo: a[6] || '',
+                 split: a[7] || '', deb: a[8] || 0, cred: a[9] || 0, bal: a[10] || 0 };
+      });
+      files = o.files || [];
+    }catch(e){}
+  }
+
   var ov = document.createElement('div');
   ov.id = 'rscGL';
   ov.style.cssText = 'position:fixed; inset:0; z-index:2147483120; background:#0d2b2c;'
     + 'display:flex; flex-direction:column; font-family:inherit; color:#171B1A;';
   document.body.appendChild(ov);
+  /* ⭐ [stated] ២០២៦-០៩-០១ ៖ «មាន scroll ដល់ពីរនៅផ្នែកខាងស្តាំ» ។
+     ផ្ទាំងនេះគ្របពេញអេក្រង់ ហើយមានរបាររមូរផ្ទាល់ខ្លួន តែទំព័រពីក្រោម
+     នៅតែរមូរបាន ⇒ របារពីរ ។ ⇒ បិទការរមូរទំព័រខណៈផ្ទាំងបើក រួចដាក់
+     តម្លៃដើមត្រឡប់វិញពេលបិទ ( មិនសរសេរ auto ជាន់លើអ្វីដែលគេកំណត់ ) ។ */
+  var __glPrevHtmlOv = document.documentElement.style.overflow;
+  var __glPrevBodyOv = document.body.style.overflow;
+  document.documentElement.style.overflow = 'hidden';
+  document.body.style.overflow = 'hidden';
+  function closeGL(){
+    try{ document.documentElement.style.overflow = __glPrevHtmlOv; }catch(e){}
+    try{ document.body.style.overflow = __glPrevBodyOv; }catch(e){}
+    try{ ov.remove(); }catch(e){}
+  }
 
   var head = document.createElement('div');
   head.style.cssText = 'flex:0 0 auto; padding:10px 14px; background:#0F3D3E; color:#EFE7D2;'
@@ -29315,11 +29382,26 @@ function rscGLOpen(){
   var bAdd = btn('📂 ជ្រើសឯកសារ GL', '#C8A64B', '#17170F');
   bAdd.onclick = function(){ inp.click(); };
   var bXls = btn('⬇ ទាញជា Excel', '#EDE8DA', '#3a3a30');
+  /* ⚠ ការជ្រើសឯកសារ **បន្ថែម** ជួរចូលបញ្ជីដដែល ⇒ ពេលមានការរក្សាទុក
+     តាមសហគ្រាស ការផ្ទុកឯកសារដដែលម្តងទៀតនឹងស្ទួន បើគ្មានផ្លូវសម្អាត ។ */
+  var bClr = btn('🗑 សម្អាត', 'rgba(255,255,255,.14)', '#EFE7D2');
+  bClr.onclick = function(){
+    if(!rows.length && !files.length) return;
+    var ask = (window.appConfirm ? window.appConfirm
+                                 : function(m){ return Promise.resolve(confirm(m)); });
+    ask('លុបទិន្នន័យ GL ដែលរក្សាទុកសម្រាប់សហគ្រាសនេះ?').then(function(ok){
+      if(!ok) return;
+      rows = []; files = []; page = 0; openNum = null;
+      try{ localStorage.removeItem(glKey()); }catch(e){}
+      draw();
+    });
+  };
   var bClose = btn('✕ បិទ', 'rgba(255,255,255,.14)', '#EFE7D2');
-  bClose.onclick = function(){ try{ ov.remove(); }catch(e){} };
+  bClose.onclick = function(){ closeGL(); };
   var info = document.createElement('span');
   info.style.cssText = 'margin-left:auto; font-size:12.5px; opacity:.9;';
-  head.appendChild(bAdd); head.appendChild(bXls); head.appendChild(info); head.appendChild(bClose);
+  head.appendChild(bAdd); head.appendChild(bXls); head.appendChild(bClr);
+  head.appendChild(info); head.appendChild(bClose);
 
   function esc(s){
     return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
@@ -29639,7 +29721,16 @@ function rscGLOpen(){
           }catch(e){
             files.push({ name:file.name, n:0, err:(e && e.message) || String(e) });
           }
-          if(--pend === 0){ page = 0; draw(); }
+          if(--pend === 0){
+            page = 0;
+            /* ⚠ រក្សាទុកភ្លាមក្រោយអាន ⇒ បិទផ្ទាំង ឬបិទកម្មវិធីរុករក
+               ក៏ការងារនៅដដែល ។ បរាជ័យ ( ធំពេក ) ⇒ ប្រាប់ត្រង់ៗ មិនស្ងាត់ ។ */
+            var saved = glSave();
+            draw();
+            if(!saved && rows.length){
+              info.textContent += '  ·  ⚠ រក្សាទុកមិនបាន ( ទិន្នន័យធំពេក )';
+            }
+          }
         };
         fr.readAsArrayBuffer(file);
       })(fl[i]);
@@ -29930,6 +30021,7 @@ function rscGLOpen(){
     }catch(e){ alert('ទាញជា Excel មិនបាន ៖ ' + ((e && e.message) || e)); }
   };
 
+  glLoad();          /* ⇐ ទិន្នន័យរបស់សហគ្រាសនេះ ត្រឡប់មកវិញដោយស្វ័យប្រវត្តិ */
   draw();
 }
 window.__rscGL = rscGLOpen;
