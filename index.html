@@ -3121,7 +3121,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
      ⭐ 'Khmer OS Muol Light' មាន face តែ ៤០០ ⇒ ៧០០ ធ្វើអោយកម្មវិធីរុករក
        សំយោគអក្សរដិតដោយខ្លួនឯង (faux bold) ដែលមើលទៅក្រាស់ស្រពិចស្រពិល។
      ⚠ ធ្វើតែពេលព្រីន ⇒ លើអេក្រង់នៅដិតដដែល។ */
-  /* RSCBUILD-TOIAUTO109 */
+  /* RSCBUILD-TINFIX111 */
   #mtr-embed .mtr-form-title,
   #mtr-embed .mtr-form-meta .val,
   #mtr-embed .mtr-filled,
@@ -5586,6 +5586,15 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
         // is approved for, once, at page load. The owner (admin) is never
         // restricted — OWNER_EMAIL is checked server-side too, but we also
         // short-circuit here so the owner's own uploads never wait on this.
+        /* ⚠⚠ [stated] ២០២៦-០៨-២៨ ៖ «កំហុស ( promise ) ៖ loadApprovedTINs is
+           not defined» ។ កំហុសរបស់ខ្ញុំពីការជួសជុលវគ្គចូល ៖ ខ្ញុំសរសេរផ្លូវ
+           **សាកឡើងវិញ** ដែលហៅ loadApprovedTINs() តែការហៅដើមស្ថិតក្នុង IIFE
+           **គ្មានឈ្មោះ** ⇒ អនុគមន៍នោះមិនដែលមាន ។
+           ⚠ ផលវិបាកធ្ងន់ ៖ ការសាកឡើងវិញដួល ⇒ __approvedTINs នៅ [] ⇒
+             **admin ក៏ឃើញ «មិនមានសិទ្ធិ» គ្រប់សហគ្រាស** ហើយគ្មានប៊ូតុងបើក
+             ឬផ្ទុកឯកសារ — ត្រូវនឹងអ្វីដែលអ្នករាយការណ៍បេះបិទ ។
+           ⇒ ដាក់ឈ្មោះឱ្យវា ⇒ ការសាកឡើងវិញហៅបានពិត ។ */
+        function loadApprovedTINs(){
         if(window.__loggedInUserToken && window.__rscApi){
           window.__rscApi('getClientAccessInfoForCurrentUser', [window.__loggedInUserToken])
             .then(function(res){
@@ -5723,6 +5732,9 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
         } else {
           window.__approvedTINsLoaded = true; // standalone/local file — no gate
         }
+        }
+        loadApprovedTINs();
+        window.__reloadApprovedTINs = loadApprovedTINs;
       })();
 
       /* =====================================================================
@@ -32890,6 +32902,112 @@ window.__toiManualRemove = function(y){
      គ្រប់ជួរ ហើយការទាយនឹងបង្កើតតារាងដែលមើលទៅត្រឹមត្រូវតែខុស ។
      ⇒ អ្នកវាយឈ្មោះជួរដោយខ្លួនឯង ( ឬចម្លងរចនាសម្ព័ន្ធពីឆ្នាំដែលមាន
        ឯកសារពិតរួច ) ⇒ អ្វីដែលព្រីនចេញជាអ្វីដែលអ្នកបញ្ជាក់ ។ */
+/* ⭐⭐⭐ [stated] ២០២៦-០៨-២៨ ៖ «បន្ទាប់ពីបញ្ចូលផ្នែកខ្លះ វាអត់គណនាឱ្យ» ។
+   ⭐ ការរកឃើញ ៖ **ឈ្មោះជួរផ្ទុករូបមន្តរួចហើយ** ៖
+       [A1=សរុប(A2:A12)]  ·  [A28=សរុប(A29+A37+A42)]
+       (B7=B0-B4-B5-B6)   ·  (B42=B7+B8+B12-B22)  ·  [B46=(B42-B43-B44-B45)]
+     ⇒ ខ្ញុំអានរូបមន្តចេញពីស្លាក ហើយគណនា — **មិនប្រឌិតរូបមន្តទេ** ។
+   ⚠ ការគណនាធ្វើឡើងវិញច្រើនជុំ ព្រោះជួរសរុបពឹងលើគ្នា ( A0 ត្រូវការ A1 និង
+     A13 ដែលខ្លួនវាជាសរុប ) ⇒ ធ្វើរហូតដល់លេខលែងប្រែ ( អតិបរមា ១០ ជុំ ) ។
+   ⚠ ការវាយតម្លៃប្រើកម្មវិធីវិភាគតូចផ្ទាល់ខ្លួន ( + − និងវង់ក្រចក ) ⇒
+     **មិនប្រើ eval()** លើអត្ថបទពីឯកសារ ។ */
+function toiParseFormula(label){
+  var s = String(label || '');
+  /* រកលំនាំ  REF = …  ក្នុងវង់ក្រចកបួន ឬវង់ក្រចកមូល */
+  var m = /\[\s*([A-Z]{1,2}\d{1,3})\s*=\s*([^\]]+)\]/.exec(s)
+       || /\(\s*([A-Z]{1,2}\d{1,3})\s*=\s*([^)]+(?:\([^)]*\))?[^)]*)\)/.exec(s);
+  if(!m) return null;
+  var target = m[1], expr = m[2];
+  /* សរុប(A2:A12) ⇒ A2+A3+…+A12 ; សរុប(A29+A37) ⇒ A29+A37 */
+  expr = expr.replace(/សរុប\s*\(([^)]*)\)/g, function(_, inner){
+    var rng = /^\s*([A-Z]{1,2})(\d{1,3})\s*:\s*([A-Z]{1,2})(\d{1,3})\s*$/.exec(inner);
+    if(rng && rng[1] === rng[3]){
+      var out = [];
+      for(var i = parseInt(rng[2], 10); i <= parseInt(rng[4], 10); i++) out.push(rng[1] + i);
+      return '(' + out.join('+') + ')';
+    }
+    return '(' + inner + ')';
+  });
+  return { target: target, expr: expr };
+}
+
+/* កម្មវិធីវិភាគតូច ៖ ទទួល ref · លេខ · + − និងវង់ក្រចក ប៉ុណ្ណោះ */
+function toiEval(expr, get){
+  var toks = String(expr).match(/[A-Z]{1,2}\d{1,3}|\d+(?:\.\d+)?|[+\-()]/g);
+  if(!toks) return null;
+  var i = 0, bad = false;
+  function peek(){ return toks[i]; }
+  function next(){ return toks[i++]; }
+  function factor(){
+    var tk = next();
+    if(tk === '('){
+      var v = expr2();
+      if(peek() === ')') next(); else bad = true;
+      return v;
+    }
+    if(tk === '-') return -factor();
+    if(tk === '+') return factor();
+    if(/^[A-Z]{1,2}\d{1,3}$/.test(tk)) return get(tk);
+    var n = parseFloat(tk);
+    if(!isFinite(n)){ bad = true; return 0; }
+    return n;
+  }
+  function expr2(){
+    var v = factor();
+    while(peek() === '+' || peek() === '-'){
+      var op = next();
+      v = (op === '+') ? (v + factor()) : (v - factor());
+    }
+    return v;
+  }
+  var val = expr2();
+  if(bad || i < toks.length) return null;
+  return val;
+}
+
+/* គណនាជួរសរុបទាំងអស់សម្រាប់ឆ្នាំមួយ ( ទាំង N និង N-1 ) */
+window.__toiComputeTotals = function(stepKey, y){
+  var done = [];
+  try{
+    var rs = state.refSteps && state.refSteps[stepKey];
+    if(!rs) return { ok:false, msg:'គ្មានទិន្នន័យ' };
+    var forms = [];
+    (rs.order || []).forEach(function(ref){
+      var f = toiParseFormula(rs.labels[ref]);
+      /* ⚠ ទទួលតែរូបមន្តដែលគោលដៅត្រូវនឹងលេខយោងជួរនោះ ⇒ ស្លាកដែលនិយាយ
+         ពីជួរដទៃ ( ឧ. «…ដូច A1» ) មិនត្រូវយកមកគណនាទេ ។ */
+      if(f && f.target === ref) forms.push({ ref:ref, expr:f.expr });
+    });
+    if(!forms.length) return { ok:false, msg:'រកមិនឃើញរូបមន្តក្នុងឈ្មោះជួរ' };
+
+    ['values', 'prevValues'].forEach(function(bag){
+      if(!rs[bag]) rs[bag] = {};
+      function get(ref){
+        var v = rs[bag][ref] && rs[bag][ref][y];
+        return (typeof v === 'number') ? v : 0;
+      }
+      for(var pass = 0; pass < 10; pass++){
+        var changed = false;
+        forms.forEach(function(f){
+          var v = toiEval(f.expr, get);
+          if(v === null || !isFinite(v)) return;
+          v = Math.round(v * 100) / 100;
+          if(!rs[bag][f.ref]) rs[bag][f.ref] = {};
+          var old = rs[bag][f.ref][y];
+          if(old !== v){ rs[bag][f.ref][y] = v; changed = true; }
+        });
+        if(!changed) break;
+      }
+      forms.forEach(function(f){
+        if(bag === 'values' && done.indexOf(f.ref) < 0) done.push(f.ref);
+      });
+    });
+    if(window.__dashSave) window.__dashSave();
+    if(typeof window.__toiRefresh === 'function') window.__toiRefresh();
+    return { ok:true, n:done.length, refs:done };
+  }catch(e){ return { ok:false, msg:(e && e.message) || String(e) }; }
+};
+
 window.__toiStepRows = function(stepKey, y){
   var out = [];
   try{
@@ -33019,6 +33137,8 @@ window.__toiStepSet = function(stepKey, y, rows){
       if(!keep[ref] && rs.values[ref]) delete rs.values[ref][y];
     });
     if(!state.years.includes(y)){ state.years.push(y); state.years.sort(); }
+    /* ⭐ គណនាជួរសរុបភ្លាមក្រោយរក្សាទុក ⇒ អ្នកមិនត្រូវចុចអ្វីបន្ថែម */
+    try{ window.__toiComputeTotals(stepKey, y); }catch(e){}
     if(window.__dashSave) window.__dashSave();
     if(window.__bumpDataVersion) window.__bumpDataVersion();
     if(typeof window.__toiRefresh === 'function') window.__toiRefresh();
@@ -51819,6 +51939,9 @@ function rscToiManualOpen(){
       + '<div style="margin-top:8px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">'
       + '<button id="tm_addrow" style="padding:6px 12px; border:0; border-radius:6px; cursor:pointer;'
       + 'font:inherit; font-weight:700; font-size:12.5px; background:#2E6B6D; color:#fff;">＋ ជួរថ្មី</button>'
+      + '<button id="tm_calc" style="padding:6px 12px; border:1px solid #d8d2c2;'
+      + 'border-radius:6px; cursor:pointer; font:inherit; font-weight:700; font-size:12.5px;'
+      + 'background:#fff; color:#3a3a30;">Σ គណនាជួរសរុប</button>'
       /* ⭐ [stated] «លេខយោង ឈ្មោះជួរ អត់មាន DROPDOWN ឱ្យរើស» ⇒ បញ្ជីទទេ
          ព្រោះមិនទាន់មានឯកសារ TOI ណាមួយឆ្លងកាត់ប្រព័ន្ធ ។
          ⚠ ខ្ញុំមិនប្រឌិតបញ្ជីផ្លូវការទេ — តែខ្ញុំអាច **រៀនពីឯកសារពិត** ៖
@@ -51896,6 +52019,16 @@ function rscToiManualOpen(){
     });
     var ar = document.getElementById('tm_addrow');
     if(ar) ar.onclick = function(){ stepRows.push({ ref:'', label:'', value:'', prev:'' }); draw(); };
+    var ca = document.getElementById('tm_calc');
+    if(ca) ca.onclick = function(){
+      /* រក្សាទុកជាមុន ⇒ គណនាលើអ្វីដែលអ្នកទើបវាយ */
+      var r0 = window.__toiStepSet(tab, cur, stepRows);
+      if(!r0.ok){ msg(r0.msg || 'រក្សាទុកមិនបាន', true); return; }
+      var r = window.__toiComputeTotals(tab, cur);
+      if(!r.ok){ msg(r.msg || 'គណនាមិនបាន', true); return; }
+      loadStep(); draw();
+      msg('Σ គណនាជួរសរុប ' + r.n + ' ជួរ ៖ ' + r.refs.join(' · '));
+    };
     /* [stated] ២០២៦-០៨-២៨ ៖ ដកប៊ូតុងរៀនចេញ ( បញ្ជីឈ្មោះបង្កប់ក្នុងកម្មវិធី
        រួចហើយ ) ។ ⚠ តក្កវិជ្ជានៅទុក ⇒ បើថ្ងៃណា អ.ព.ដ ប្តូរទម្រង់ ខ្ញុំបើកវិញ
        បានក្នុងបន្ទាត់តែមួយ ជាជាងសរសេរឡើងវិញ ។ */
