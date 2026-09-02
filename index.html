@@ -5217,9 +5217,11 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
               try{ localStorage.removeItem('rsc_token'); }catch(e){}
               alert('វគ្គចូលប្រើប្រាស់ផុតកំណត់ — សូមចូលម្តងទៀត។');
               var EXEC_LOGIN = window.__RSC_EXEC_URL || '';
-              fetch('./login.html', {method:'HEAD'})
-                .then(function(r){ location.replace(r && r.ok ? './login.html' : (EXEC_LOGIN || './')); })
-                .catch(function(){ location.replace(EXEC_LOGIN || './'); });
+              /* ⚠ ២០២៦-០៩-០២ ៖ កុំបោះទៅទំព័រ Apps Script ដោយសារការតភ្ជាប់
+                   ដាច់មួយភ្លែត ។ ទៅ ./login.html ជានិច្ច លើកលែង ៤០៤ ពិត ។ */
+               fetch('./login.html', {method:'HEAD', cache:'no-store'})
+                .then(function(r){ location.replace(r && r.status === 404 ? (EXEC_LOGIN || './login.html') : './login.html'); })
+                .catch(function(){ location.replace('./login.html'); });
             });
         } else {
           window.__approvedTINsLoaded = true; // standalone/local file — no gate
@@ -5471,9 +5473,11 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
                      ទៅ ./login.html ⇒ បើឯកសារនោះមិនមានលើ host នោះជា 404។
                      ⇒ ទៅទំព័រចូលដោយផ្ទាល់ ហើយបើវាមិនមាន ធ្លាក់ទៅ Apps Script។ */
                   var EXEC_LOGIN = window.__RSC_EXEC_URL || '';
-                  fetch('./login.html', {method:'HEAD'})
-                    .then(function(r){ location.replace(r && r.ok ? './login.html' : (EXEC_LOGIN || './')); })
-                    .catch(function(){ location.replace(EXEC_LOGIN || './'); });
+                  /* ⚠ ២០២៦-០៩-០២ ៖ កុំបោះទៅទំព័រ Apps Script ដោយសារការតភ្ជាប់
+                       ដាច់មួយភ្លែត ។ ទៅ ./login.html ជានិច្ច លើកលែង ៤០៤ ពិត ។ */
+                   fetch('./login.html', {method:'HEAD', cache:'no-store'})
+                    .then(function(r){ location.replace(r && r.status === 404 ? (EXEC_LOGIN || './login.html') : './login.html'); })
+                    .catch(function(){ location.replace('./login.html'); });
                   return;
                 }
                 const base = window.__appBaseUrl || '';
@@ -52999,7 +53003,37 @@ window.__rscToiManual = rscToiManualOpen;
         var up = reg && reg.update && reg.update();
         if(up && up.catch) up.catch(function(){});
       }catch(e){}
-    }).catch(function(){});
+    }).catch(function(){
+      /* ⭐⭐⭐ [stated] ២០២៦-០៩-០២ ៖ រកឃើញដោយការសាកបីតំណ ៖
+           teamsmos.com/login.html    ✅ បើកបាន
+           teamsmos.com/xlsx.b64.txt  ✅ បើកបាន
+           teamsmos.com/sw.js         ❌ ERR_FAILED ( មិនមែន 404 )
+         ⇒ ឯកសារនៅលើ host គ្មានបញ្ហា ; សំណើទៅ sw.js ត្រូវបានរារាំងនៅ
+           កម្រិតបណ្តាញ ( ផ្នែកបន្ថែមកម្មវិធីរុករក · កម្មវិធីកំចាត់មេរោគ ·
+           ឬច្រកបណ្តាញការិយាល័យ ) ។
+         ⚠⚠ លទ្ធផលដ៏អាក្រក់ ៖ service worker **ចាស់ដែលដំឡើងរួច** នៅតែ
+           កាន់កាប់ដែននេះ ហើយដោយសារ sw.js ទាញមិនបាន វា **មិនអាចត្រូវ
+           ជំនួស ឬលុបដោយខ្លួនឯងបានឡើយ** ។ វាបន្តឆ្លើយសំណើតាមកូដចាស់ ⇒
+           ការពិនិត្យ login.html បរាជ័យ ⇒ ឆ្មាំបោះអ្នកទៅទំព័រ Apps Script
+           ហើយវិលជារង្វង់ ។
+         ⇒ ការជួសជុលដោយខ្លួនឯង ៖ ពេលចុះឈ្មោះមិនបាន **លុប worker ចាស់
+           និងឃ្លាំងរបស់វាចោល** ។ គ្មាន worker ⇒ គ្មានអ្នកឆ្លើយជំនួស ⇒
+           គ្រប់សំណើទៅបណ្តាញផ្ទាល់ ហើយកម្មវិធីដើរធម្មតា ។
+         ⚠ តម្លៃ ៖ បាត់មុខងារ «ដំឡើងជា app» និងការប្រើពេលអ៊ីនធឺណិតដាច់
+           នៅលើម៉ាស៊ីននោះ — តូចជាងការចូលប្រព័ន្ធមិនបានច្រើន ។ */
+      try{
+        navigator.serviceWorker.getRegistrations().then(function(rs){
+          rs.forEach(function(r){ try{ r.unregister(); }catch(e){} });
+        }).catch(function(){});
+      }catch(e){}
+      try{
+        if(window.caches && caches.keys){
+          caches.keys().then(function(ks){
+            ks.forEach(function(k){ try{ caches.delete(k); }catch(e){} });
+          }).catch(function(){});
+        }
+      }catch(e){}
+    });
   });
 })();
 </script>
