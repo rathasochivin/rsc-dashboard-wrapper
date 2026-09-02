@@ -6562,6 +6562,31 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
       <div class="table-scroll"><table id="summary-saleCD"></table></div>
     </section>
 
+    <!-- VAT REVERSE CHARGE — ផ្នែកមួយនៃទិន្នានុប្បវត្តិលក់ ដូច CN/DN -->
+    <section class="view" id="view-vat-rvc">
+      <div class="topbar">
+        <h2>VAT Reverse Charge (អាករបញ្ច្រាស)</h2>
+        <p>អាករលើតម្លៃបន្ថែមលើសេវាពីអនិវាសនជន — ការបង់នេះ <b>មិនមែន</b>ជាផ្នែកនៃខ្សែសង្វាក់ ធាតុចេញ − ធាតុចូល ⇒ វាចូលទៅសន្លឹក MTR មិនមែនជួរ «អាករបានបង់» នៃទម្រង់ VAT</p>
+      </div>
+      <div class="toolbar">
+        <div class="import-group">
+          <span>📅 ឆ្នាំ:</span>
+          <select id="vrc-year" class="partner-select" style="min-width:110px;" onchange="renderVatRvc()"></select>
+        </div>
+        <div class="import-group">
+          <span>ទម្រង់:</span>
+          <select id="vrc-kind" class="partner-select" style="min-width:150px;" onchange="renderVatRvc()">
+            <option value="">ទាំងអស់</option>
+            <option value="sum">សង្ខេប (ប្រកាសប្រចាំខែ)</option>
+            <option value="det">លម្អិត (តាមវិក្កយបត្រ)</option>
+          </select>
+        </div>
+        <button class="btn ghost" onclick="vrcAddManual()">➕ បញ្ចូលដោយដៃ</button>
+        <button class="btn ghost" onclick="vrcClearAll()">🗑 សម្អាត</button>
+      </div>
+      <div id="vrc-body"></div>
+    </section>
+
     <!-- PURCHASE_CD (Credit/Debit Note — PURCHASE) -->
     <section class="view" id="view-purchase-cd">
       <div class="topbar">
@@ -6810,6 +6835,7 @@ let state = {
   cpPurchase: [],
   cpSale: [],
   saleCD: [],
+  vatRvc: [],                       /* VAT Reverse Charge (សង្ខេប + លម្អិត + បញ្ចូលដោយដៃ) */
   purchaseCD: [],
   otherExpenses: [],
   wht: [],
@@ -7523,7 +7549,7 @@ function stateSnapshot(){
     cpPurchase: state.cpPurchase, cpSale: state.cpSale,
     saleCD: state.saleCD, purchaseCD: state.purchaseCD,
     otherExpenses: state.otherExpenses,
-    wht: state.wht,
+    wht: state.wht, vatRvc: state.vatRvc,
     companyNotes: state.companyNotes
   };
 }
@@ -7585,6 +7611,7 @@ function applyParsedState(parsed){
   if(parsed.purchaseCD) state.purchaseCD = parsed.purchaseCD;
   if(parsed.otherExpenses) state.otherExpenses = parsed.otherExpenses;
   if(parsed.wht) state.wht = parsed.wht;
+  if(parsed.vatRvc) state.vatRvc = parsed.vatRvc;
   if(parsed.companyNotes) state.companyNotes = parsed.companyNotes;
 }
 function loadState(){
@@ -7600,6 +7627,7 @@ function loadState(){
       if(parsed.purchaseCD) state.purchaseCD = parsed.purchaseCD;
       if(parsed.otherExpenses) state.otherExpenses = parsed.otherExpenses;
       if(parsed.wht) state.wht = parsed.wht;
+      if(parsed.vatRvc) state.vatRvc = parsed.vatRvc;
       if(parsed.companyNotes) state.companyNotes = parsed.companyNotes;
     }
   }catch(e){}
@@ -7783,6 +7811,7 @@ function clearAllData(){
   state.cpPurchase = [];
   state.cpSale = [];
   state.saleCD = [];
+  state.vatRvc = [];
   state.purchaseCD = [];
   state.otherExpenses = [];
   state.wht = [];
@@ -8329,6 +8358,7 @@ function buildFullDump(pre){
       sale: packRows(state.sale), purchase: packRows(state.purchase),
       cpPurchase: packRows(state.cpPurchase), cpSale: packRows(state.cpSale),
       saleCD: packRows(state.saleCD), purchaseCD: packRows(state.purchaseCD),
+      vatRvc: packRows(state.vatRvc),
       otherExpenses: packRows(state.otherExpenses),
       wht: packRows(state.wht),
       companyNotes: state.companyNotes,
@@ -8491,7 +8521,7 @@ function importAllDataFromText(text){
       /* ⚠ ជួរអាចមកជាកញ្ចប់បង្រួម — ត្រូវបើកកញ្ចប់មុនគេ បើមិនដូច្នេះ
          `Array.isArray` ត្រឡប់ false ហើយទិន្នន័យបាត់ស្ងាត់ៗ។
          ឯកសារចាស់ (គ្មាន __p) ឆ្លងកាត់ដោយមិនប៉ះពាល់។ */
-      ["sale","purchase","cpPurchase","cpSale","saleCD","purchaseCD","otherExpenses","wht"]
+      ["sale","purchase","cpPurchase","cpSale","saleCD","purchaseCD","otherExpenses","wht","vatRvc"]
         .forEach(function(k){ try{ main[k] = unpackRows(main[k]); }catch(e){} });
       /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ពេលបើកឯកសារនៅតែជាប់ទិន្នន័យចាស់ ហើយ
          គ្មានកន្លែងអាចលុបបានទេ ព្រោះទិន្នន័យនោះមិនមានការប្រកាសអ្វីសោះ» ។
@@ -8503,7 +8533,7 @@ function importAllDataFromText(text){
          ក្នុងឯកសារ មានន័យថា «គ្មាន» មិនមែន «កុំប៉ះ» ។
          ⚠ នេះក៏ពន្យល់ចំណុចទី ៣ ដែរ (CN/DN មិនកាត់កងរហូតដល់កែដោយដៃ) ៖
          ការកែដោយដៃសរសេរជាន់តារាងចាស់ ទើបលទ្ធផលត្រូវ។ */
-      ['sale','purchase','cpPurchase','cpSale','saleCD','purchaseCD','otherExpenses','wht']
+      ['sale','purchase','cpPurchase','cpSale','saleCD','purchaseCD','otherExpenses','wht','vatRvc']
         .forEach(function(k){ state[k] = Array.isArray(main[k]) ? main[k] : []; });
       /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ទិន្នន័យចាស់នៃ CN DN នៅតែជាប់ដដែល»
          ទោះតារាងត្រូវសម្អាតរួច ។ មូលហេតុទី ២ ៖ ការបូកសរុបអតបត្រូវ
@@ -8632,7 +8662,7 @@ function exportStateToFile(){
     cpPurchase: state.cpPurchase, cpSale: state.cpSale,
     saleCD: state.saleCD, purchaseCD: state.purchaseCD,
     otherExpenses: state.otherExpenses,
-    wht: state.wht,
+    wht: state.wht, vatRvc: state.vatRvc,
     companyNotes: state.companyNotes,
     exportedAt: new Date().toISOString(),
   };
@@ -8680,6 +8710,7 @@ function importStateFromFile(evt){
       if(Array.isArray(parsed.purchaseCD)) state.purchaseCD = parsed.purchaseCD;
       if(Array.isArray(parsed.otherExpenses)) state.otherExpenses = parsed.otherExpenses;
       if(Array.isArray(parsed.wht)) state.wht = parsed.wht;
+      if(Array.isArray(parsed.vatRvc)) state.vatRvc = parsed.vatRvc;
       if(parsed.companyNotes && typeof parsed.companyNotes==="object") state.companyNotes = parsed.companyNotes;
       state.selectedCategory = {sale:null, purchase:null, cpPurchase:null, cpSale:null, saleCD:null, purchaseCD:null};
       state.whtSelectedType = null;
@@ -8897,6 +8928,154 @@ function computeWHTPaidCompanies(storeName){
   return result;
 }
 
+
+/* ═══════════════════════════════════════════════════════════════════════
+   VAT REVERSE CHARGE — ការបញ្ចូលគ្នា ការគូរ និងការបញ្ចូលដោយដៃ
+   ⚠ ជួរបញ្ចូលដោយដៃមាន manual:true ⇒ ការផ្ទុកឯកសារឡើងវិញមិនលុបវាទេ ។
+   ═══════════════════════════════════════════════════════════════════════ */
+function vrcKey(r){
+  return [r.kind || 'det', r.y || 0, r.m || 0,
+          String(r.ref || '').trim().toLowerCase(),
+          String(r.tin || '').trim()].join('|');
+}
+function mergeVatRvcRows(existing, incoming){
+  var byKey = new Map();
+  (existing || []).forEach(function(r){ byKey.set(vrcKey(r), r); });
+  (incoming || []).forEach(function(r){
+    var k = vrcKey(r), old = byKey.get(k);
+    /* ⚠ ការបញ្ចូលដោយដៃឈ្នះលើឯកសារ ៖ គេវាយវាដោយចេតនា */
+    if(old && old.manual) return;
+    byKey.set(k, r);
+  });
+  var out = Array.from(byKey.values());
+  out.sort(function(a, b){
+    return (b.y - a.y) || (b.m - a.m) || String(a.ref || '').localeCompare(String(b.ref || ''));
+  });
+  return out;
+}
+function vrcYears(){
+  var ys = {};
+  (state.vatRvc || []).forEach(function(r){ if(r.y) ys[r.y] = 1; });
+  return Object.keys(ys).sort(function(a, b){ return b - a; });
+}
+window.__vatRvcMonthly = function(year){ return vatRvcMonthly(state.vatRvc || [], year); };
+
+function vrcAddManual(){
+  var y = (document.getElementById('vrc-year') || {}).value || String(new Date().getFullYear());
+  state.vatRvc = (state.vatRvc || []).concat([{
+    kind:'sum', manual:true, f:'', y:+y || new Date().getFullYear(), m:1,
+    date:'', ref:'', tin:'', name:'', free:0, base:0, vat:0, credit:0,
+    note:'', status:'បានបង់'
+  }]);
+  saveState(); renderVatRvc();
+}
+function vrcClearAll(){
+  if(!(state.vatRvc || []).length) return;
+  var ask = window.appConfirm || function(m){ return Promise.resolve(confirm(m)); };
+  ask('លុបទិន្នន័យ VAT Reverse Charge ទាំងអស់?').then(function(ok){
+    if(!ok) return;
+    state.vatRvc = []; saveState(); renderVatRvc();
+  });
+}
+function vrcEdit(i, field, value){
+  var r = (state.vatRvc || [])[i];
+  if(!r) return;
+  if(field === 'y' || field === 'm') r[field] = parseInt(window.__deKh ? window.__deKh(value) : value, 10) || 0;
+  else if(field === 'vat' || field === 'base' || field === 'credit') r[field] = vrcNum(value);
+  else r[field] = String(value);
+  saveState();
+  renderVatRvcTotals();
+}
+function vrcDel(i){
+  state.vatRvc.splice(i, 1);
+  saveState(); renderVatRvc();
+}
+function renderVatRvcTotals(){
+  var box = document.getElementById('vrc-months');
+  if(!box) return;
+  var y = (document.getElementById('vrc-year') || {}).value || '';
+  var mm = vatRvcMonthly(state.vatRvc || [], y);
+  var esc = function(t){ return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;'); };
+  var h = '<table class="ledger"><thead><tr><th>ខែ</th>'
+        + mm.map(function(_, i){ return '<th style="text-align:right;">' + (i + 1) + '</th>'; }).join('')
+        + '<th style="text-align:right;">សរុប</th></tr></thead><tbody><tr>'
+        + '<td>អាករបញ្ច្រាសបានបង់ (៛)</td>'
+        + mm.map(function(v){ return '<td class="n" style="text-align:right;">'
+            + (v ? Math.round(v).toLocaleString('en-US') : '-') + '</td>'; }).join('')
+        + '<td class="n" style="text-align:right; font-weight:700;">'
+        + Math.round(mm.reduce(function(a, b){ return a + b; }, 0)).toLocaleString('en-US')
+        + '</td></tr></tbody></table>'
+        + '<div class="muted" style="font-size:12px; margin-top:4px;">'
+        + 'ខែណាមានទម្រង់សង្ខេប ⇒ យកតួលេខសង្ខេប ; ខែដែលគ្មាន ⇒ បូកជួរលម្អិត '
+        + '⇒ ផ្ទុកទាំងពីរទម្រង់ក៏មិនរាប់ទ្វេដង។</div>';
+  box.innerHTML = h;
+  var _ = esc;
+}
+function renderVatRvc(){
+  var body = document.getElementById('vrc-body');
+  if(!body) return;
+  var rows = state.vatRvc || [];
+  var selY = document.getElementById('vrc-year'), selK = document.getElementById('vrc-kind');
+  if(selY){
+    var ys = vrcYears(), cur = selY.value;
+    selY.innerHTML = ys.map(function(y){ return '<option value="' + y + '">' + y + '</option>'; }).join('')
+                   || '<option value="">—</option>';
+    if(ys.indexOf(cur) >= 0) selY.value = cur;
+  }
+  var y = selY ? selY.value : '';
+  var kind = selK ? selK.value : '';
+  var esc = function(t){ return String(t == null ? '' : t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); };
+  var money = function(v){ return v ? Math.round(v).toLocaleString('en-US') : '-'; };
+
+  if(!rows.length){
+    body.innerHTML = '<div class="empty-state" style="padding:18px;">'
+      + 'មិនទាន់មានទិន្នន័យ VAT Reverse Charge ទេ។<br>'
+      + 'ផ្ទុកឯកសារ <b>VATRVC</b> (សង្ខេប) ឬ <b>REVERSE_CHARGE</b> (លម្អិត) តាម 📦 UPLOAD '
+      + 'ឬចុច «➕ បញ្ចូលដោយដៃ»។</div>';
+    return;
+  }
+  var view = rows.map(function(r, i){ return {r:r, i:i}; })
+                 .filter(function(o){
+                   return (!y || String(o.r.y) === String(y)) && (!kind || o.r.kind === kind);
+                 });
+  var h = '<div id="vrc-months" style="margin-bottom:12px;"></div>'
+        + '<div class="table-scroll"><table class="ledger"><thead><tr>'
+        + '<th>ទម្រង់</th><th>ឆ្នាំ</th><th>ខែ</th><th>លេខយោង / បារកូដ</th>'
+        + '<th>អតប អ្នកផ្គត់ផ្គង់</th><th>ឈ្មោះ</th>'
+        + '<th style="text-align:right;">តម្លៃមិនរួមអតប</th>'
+        + '<th style="text-align:right;">ឥណទានយោង</th>'
+        + '<th style="text-align:right;">អាករ (៛)</th>'
+        + '<th>ស្ថានភាព</th><th></th></tr></thead><tbody>';
+  view.forEach(function(o){
+    var r = o.r, i = o.i, man = !!r.manual;
+    var inp = function(f, v, w, align){
+      return man
+        ? '<input value="' + esc(v) + '" style="width:' + w + '; font:inherit; font-size:12.5px;'
+          + 'text-align:' + (align || 'left') + '; border:1px solid #d8d2c2; border-radius:5px; padding:2px 5px;"'
+          + ' onchange="vrcEdit(' + i + ',\'' + f + '\',this.value)">'
+        : esc(v);
+    };
+    h += '<tr' + (man ? ' style="background:#FFFDF2;"' : '') + '>'
+      + '<td>' + (r.kind === 'sum' ? 'សង្ខេប' : 'លម្អិត') + (man ? ' ✎' : '') + '</td>'
+      + '<td>' + inp('y', r.y || '', '62px') + '</td>'
+      + '<td>' + inp('m', r.m || '', '46px') + '</td>'
+      + '<td>' + inp('ref', r.ref || '', '190px') + '</td>'
+      + '<td>' + inp('tin', r.tin || '', '110px') + '</td>'
+      + '<td>' + inp('name', r.name || '', '190px') + '</td>'
+      + '<td class="n" style="text-align:right;">' + (man ? inp('base', r.base || 0, '110px', 'right') : money(r.base)) + '</td>'
+      + '<td class="n" style="text-align:right;">' + (man ? inp('credit', r.credit || 0, '110px', 'right') : money(r.credit)) + '</td>'
+      + '<td class="n" style="text-align:right; font-weight:700;">' + (man ? inp('vat', r.vat || 0, '120px', 'right') : money(r.vat)) + '</td>'
+      + '<td>' + inp('status', r.status || '', '150px') + '</td>'
+      + '<td>' + (man ? '<button class="btn ghost" style="padding:2px 8px;" onclick="vrcDel(' + i + ')">✕</button>' : '') + '</td>'
+      + '</tr>';
+  });
+  h += '</tbody></table></div>'
+     + '<div class="muted" style="font-size:12px; margin-top:6px;">បង្ហាញ ' + view.length
+     + ' ក្នុងចំណោម ' + rows.length + ' ជួរ · ជួរពណ៌លឿង = បញ្ចូលដោយដៃ (កែបាន)</div>';
+  body.innerHTML = h;
+  renderVatRvcTotals();
+}
+
 /* =========================================================
    NAV
    ========================================================= */
@@ -8910,6 +9089,8 @@ const NAV_ITEMS = [
     {id:"other-expenses", label:"OTHER EXPENSES", countKey:"otherExpenses"},
     {id:"sale", label:"2. SALE"},
     {id:"sale-cd", label:"SALE_CN/DN", countKey:"saleCD"},
+    /* [stated] ២០២៦-០៩-០១ ៖ «ដាក់វានៅជួរថ្មីពីក្រោយជួរ Sale DN នៅក្រោយគេ» */
+    {id:"vat-rvc", label:"VAT Reverse Charge", countKey:"vatRvc"},
     {id:"wht", label:"3. 💰 WHT", countKey:"wht"},
   ]},
   {group:"", items:[
@@ -9074,6 +9255,8 @@ function showView(id){
                  'sale-cd':'saleCD', 'purchase-cd':'purchaseCD',
                  'cp-purchase':'cpPurchase', 'cp-sale':'cpSale' }[id];
     if(__vs) refreshDataView(__vs);
+    /* VAT Reverse Charge មានការគូរផ្ទាល់ខ្លួន ⇒ គូរពេលបើកផ្ទាំង */
+    if(id === 'vat-rvc' && typeof renderVatRvc === 'function') renderVatRvc();
   }catch(e){ console.error("refresh on open", e); }
   // OTHER EXPENSES is a large flat (ungrouped) list, unlike SALE/PURCHASE
   // which default to a compact category summary — rebuilding its table
@@ -14282,6 +14465,165 @@ function mergeWHTRows(existing, incoming){
 // headers in the regular GDT PURCHASE template, which caused every
 // SALE/PURCHASE file to be misclassified as OTHER_EXPENSES — do not use
 // those two as signals here.
+/* ═══════════════════════════════════════════════════════════════════════
+   VAT REVERSE CHARGE (VATRVC) — [stated] ២០២៦-០៩-០១
+   «ទឹកប្រាក់បានបង់សម្រាប់អាករលើតម្លៃបន្ថែមមិនអាចស្ទួនគ្នាបានទេ … ការបង់
+    VAT Reverse Charge ឬ ការបង់ពីសវនកម្ម ទើបរត់ទៅផ្នែក MTR»
+   ទម្រង់ពីរដែលគេផ្ញើមក ៖
+     ១ សង្ខេប  (សន្លឹក VATRVC)        — ១ ជួរ = ១ ការប្រកាសប្រចាំខែ
+        ល.រ · បារកូដ · កាលបរិច្ឆេទបង្កើត · ប្រកាសប្រចាំខែ · ឥណទានយោង ·
+        ពន្ធត្រូវបង់ · ស្ថានភាព
+     ២ លម្អិត  (សន្លឹក REVERSE_CHARGE) — ១ ជួរ = ១ វិក្កយបត្រ ក្នុងខែតែមួយ
+        ល.រ · កាលបរិច្ឆេទ · លេខវិក្កយបត្រ · អ្នកផ្គត់ផ្គង់ (ប្រភេទ · អតប ·
+        ឈ្មោះ · អាសយដ្ឋាន · អ៊ីមែល) · មិនជាប់អាករ · តម្លៃមិនរួមអតប ·
+        ទឹកប្រាក់អតប · បរិយាយ · ស្ថានភាព · ស្ថានភាពប្រកាសពន្ធ
+   ⚠ ក្បាលតារាងលម្អិតឆ្លង **ពីរជួរ** ហើយមានជួរ «សរុប» នៅ **ខាងលើ** ទិន្នន័យ
+     ⇒ រកជួរឈរតាមអត្ថបទក្បាល មិនមែនតាមទីតាំងថេរ ហើយបោះជួរសរុបចោល ។
+   ═══════════════════════════════════════════════════════════════════════ */
+function vrcNum(v){
+  if(typeof v === 'number') return isFinite(v) ? v : 0;
+  var s = String(v == null ? '' : v).trim();
+  if(!s || s === '-') return 0;
+  if(typeof window !== 'undefined' && window.__deKh) s = window.__deKh(s);
+  var neg = /^\(.*\)$/.test(s) || /^-/.test(s);
+  var n = parseFloat(s.replace(/[^0-9.]/g, ''));
+  if(!isFinite(n)) return 0;
+  return neg ? -n : n;
+}
+/* ត្រឡប់ {y, m} ពី Date · «2026-02-01» · «01-08-2024» · «08/2024» */
+function vrcYM(v){
+  if(v instanceof Date && !isNaN(v)) return { y:v.getFullYear(), m:v.getMonth() + 1 };
+  var s = String(v == null ? '' : v).trim();
+  if(!s) return null;
+  var m = /^(\d{4})[-\/.](\d{1,2})/.exec(s);
+  if(m) return { y:+m[1], m:+m[2] };
+  m = /^(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{4})/.exec(s);
+  if(m) return { y:+m[3], m:+m[2] };          /* dd-mm-yyyy */
+  m = /^(\d{1,2})[-\/.](\d{4})$/.exec(s);
+  if(m) return { y:+m[2], m:+m[1] };
+  return null;
+}
+/* ⚠ ក្បាលតារាងពិតមាន **តួអក្សរទទឹងសូន្យ** ( U+200B ) នៅចុង ⇒ ការប្រៀបធៀប
+   ត្រង់ៗនឹងខុស ។ លុបវាចោលមុនប្រៀបធៀប ។ */
+function vrcTxt(v){
+  return String(v == null ? '' : v)
+    .replace(/[\u200b-\u200d\ufeff]/g, '')
+    .replace(/\s+/g, ' ').trim();
+}
+
+function detectIsVATRVC(fileNameLower, aoa, sheetNames){
+  var sn = (sheetNames || []).map(function(n){ return String(n || '').toUpperCase(); });
+  if(sn.some(function(n){ return n.indexOf('VATRVC') >= 0 || n.indexOf('REVERSE') >= 0; })) return true;
+  if(/vatrvc|reverse[\s_-]?charge/i.test(String(fileNameLower || ''))) return true;
+  var head = (aoa || []).slice(0, 5).map(function(r){ return (r || []).join(' '); }).join(' ');
+  if(head.indexOf('ការផ្គត់ផ្គង់ជាប់អាករ') >= 0) return true;
+  if(head.indexOf('ឥណទានយោង') >= 0 && head.indexOf('ប្រកាសប្រចាំខែ') >= 0) return true;
+  return false;
+}
+
+function rowsFromVATRVCSheet(aoa, fileName){
+  aoa = aoa || [];
+  /* រកជួរក្បាល ៖ ស្កេន ៦ ជួរដំបូង ហើយចងអត្ថបទក្បាលទាំងអស់ជាមួយលេខជួរឈរ */
+  var head = {};                                   /* អត្ថបទ ⇒ លេខជួរឈរ */
+  var hdrLast = -1;
+  /* ⚠⚠ កំហុសដែលចាប់បានពេលសាក ៖ ការឈប់ស្កេនក្បាលដោយប្រៀបធៀបអត្ថបទ
+     ត្រង់ៗ បរាជ័យ ( ក្បាលមានតួអក្សរទទឹងសូន្យ ) ⇒ ជួរទិន្នន័យ ៥ ជួរដំបូង
+     ត្រូវរាប់ជាក្បាល ហើយ **បាត់ស្ងាត់ៗ** ( ៣៤ ⇒ ២៩ ) ។
+     ⇒ ច្បាប់រឹងមាំជាង ៖ ក្បាលបញ្ចប់ភ្លាមនៅជួរដេកដំបូងដែលកោសិកាទី ១ ជា
+       **លេខរៀង** ។ ជួរ «សរុប» នៅពីលើទិន្នន័យ ( ទម្រង់លម្អិត ) មិនមែនលេខ
+       ⇒ វានៅខាងក្នុងផ្នែកក្បាល ហើយត្រូវរំលងដោយស្វ័យប្រវត្តិ ។ */
+  for(var i = 0; i < Math.min(aoa.length, 8); i++){
+    var row = aoa[i] || [];
+    var f0 = row[0];
+    var looksData = (typeof f0 === 'number' && f0 > 0) || /^\d+$/.test(vrcTxt(f0));
+    if(looksData) break;
+    var hit = false;
+    for(var c = 0; c < row.length; c++){
+      var t = vrcTxt(row[c]);
+      if(!t) continue;
+      if(!(t in head)) head[t] = c;
+      hit = true;
+    }
+    if(hit) hdrLast = i;
+  }
+  function col(){
+    for(var a = 0; a < arguments.length; a++){
+      var want = arguments[a];
+      for(var k in head) if(k.indexOf(want) >= 0) return head[k];
+    }
+    return -1;
+  }
+  var cVat = col('ទឹកប្រាក់អតប');
+  var isDetail = cVat >= 0 || col('ការផ្គត់ផ្គង់ជាប់អាករ') >= 0;
+
+  var out = [];
+  if(isDetail){
+    var cDate = col('កាលបរិច្ឆេទ'), cInv = col('លេខវិក្កយបត្រ', 'ប្រតិវេទគយ'),
+        cTin  = col('អតបសាមញ្ញ', 'អត្តសញ្ញាណកម្ម'), cName = col('ឈ្មោះ'),
+        cBase = col('តម្លៃមិនរួមអតប'), cFree = col('មិនជាប់អាករ'),
+        cDesc = col('បរិយាយ'), cSt = col('ស្ថានភាពប្រកាសពន្ធ', 'ស្ថានភាព');
+    for(var r = hdrLast + 1; r < aoa.length; r++){
+      var a = aoa[r] || [];
+      var no = a[0];
+      if(vrcTxt(no).indexOf('សរុប') === 0) continue;            /* ជួរសរុប */
+      if(!(typeof no === 'number' ? no > 0 : /^\d+$/.test(vrcTxt(no)))) continue;
+      var ym = vrcYM(cDate >= 0 ? a[cDate] : '');
+      var vat = vrcNum(cVat >= 0 ? a[cVat] : 0);
+      var base = vrcNum(cBase >= 0 ? a[cBase] : 0);
+      if(!vat && !base) continue;
+      out.push({
+        kind: 'det', f: fileName || '',
+        y: ym ? ym.y : 0, m: ym ? ym.m : 0,
+        date: vrcTxt(cDate >= 0 ? a[cDate] : ''),
+        ref:  vrcTxt(cInv >= 0 ? a[cInv] : ''),
+        tin:  vrcTxt(cTin >= 0 ? a[cTin] : ''),
+        name: vrcTxt(cName >= 0 ? a[cName] : ''),
+        free: vrcNum(cFree >= 0 ? a[cFree] : 0),
+        base: base, vat: vat, credit: 0,
+        note: vrcTxt(cDesc >= 0 ? a[cDesc] : ''),
+        status: vrcTxt(cSt >= 0 ? a[cSt] : '')
+      });
+    }
+  }else{
+    var sBar = col('បារកូដ'), sMade = col('កាលបរិច្ឆេទបង្កើត'),
+        sPer = col('ប្រកាសប្រចាំខែ'), sCr = col('ឥណទានយោង'),
+        sTax = col('ពន្ធត្រូវបង់'), sSt = col('ស្ថានភាព');
+    for(var r2 = hdrLast + 1; r2 < aoa.length; r2++){
+      var b = aoa[r2] || [];
+      if(vrcTxt(b[0]).indexOf('សរុប') === 0) continue;
+      var ym2 = vrcYM(sPer >= 0 ? b[sPer] : '');
+      var tax = vrcNum(sTax >= 0 ? b[sTax] : 0);
+      if(!ym2 && !tax) continue;
+      out.push({
+        kind: 'sum', f: fileName || '',
+        y: ym2 ? ym2.y : 0, m: ym2 ? ym2.m : 0,
+        date: vrcTxt(sMade >= 0 ? b[sMade] : ''),
+        ref:  vrcTxt(sBar >= 0 ? b[sBar] : ''),
+        tin: '', name: '', free: 0, base: 0,
+        vat: tax, credit: vrcNum(sCr >= 0 ? b[sCr] : 0),
+        note: '', status: vrcTxt(sSt >= 0 ? b[sSt] : '')
+      });
+    }
+  }
+  return out;
+}
+
+/* ⚠⚠ ការរាប់ទ្វេដងដ៏សំខាន់ ៖ បើផ្ទុកទាំងទម្រង់សង្ខេប **និង** លម្អិត សម្រាប់
+   ខែតែមួយ ការបូកទាំងអស់នឹងរាប់ពីរដង ។ ច្បាប់ ៖ ខែណាមានជួរសង្ខេប ⇒ ប្រើ
+   សង្ខេប ( វាជាតួលេខដែលបានប្រកាស និងបង់ពិត ) ; ខែដែលគ្មាន ⇒ បូកជួរលម្អិត ។ */
+function vatRvcMonthly(rows, year){
+  var sum = new Array(12).fill(0), det = new Array(12).fill(0), hasSum = new Array(12).fill(false);
+  (rows || []).forEach(function(r){
+    if(String(r.y) !== String(year) || !r.m) return;
+    var i = r.m - 1;
+    if(i < 0 || i > 11) return;
+    if(r.kind === 'sum'){ sum[i] += (+r.vat || 0); hasSum[i] = true; }
+    else det[i] += (+r.vat || 0);
+  });
+  return sum.map(function(v, i){ return hasSum[i] ? v : det[i]; });
+}
+
+
 function detectIsOtherExpenses(fileNameLower, aoa){
   if(hasFilenameToken(fileNameLower, ['expense','expenses','otherexpenses'])) return true;
   const scanRows = Math.min(aoa.length, 5);
@@ -14415,6 +14757,9 @@ function detectFileCategory(fileName, aoa, sheetNames, relPath){
      || detectIsMTRByName(fileName, relPath)) return 'mtr';
   if(detectIsTOI(sheetNames) || detectIsTOIByPath(fileName, relPath)) return 'toi';
   if(detectIsTOS(fileName, relPath, aoa)) return 'tos';
+  /* ⚠ មុន WHT និងមុនការទាយ SALE/PURCHASE ៖ សញ្ញាសម្គាល់របស់វាជាក់លាក់
+     ( សន្លឹក VATRVC/REVERSE_CHARGE ឬ «ការផ្គត់ផ្គង់ជាប់អាករ» ) ។ */
+  if(detectIsVATRVC(fn, aoa, sheetNames || [])) return 'vatRvc';
   if(detectIsWHT(fn, aoa)) return 'wht';
   if(detectIsOtherExpenses(fn, aoa)) return 'otherExpenses';
   const isCD = hasFilenameToken(fn, ['cd','cn','dn']) || detectAdjTypeColumn(aoa) != null;
@@ -14713,7 +15058,7 @@ async function handleAutoFileImport(evt){
   }
   if(statusEl){ statusEl.textContent = `កំពុងវិភាគ និងបែងចែក ${files.length} ឯកសារ...`; statusEl.className = "import-status"; }
 
-  const buckets = {sale:[], purchase:[], saleCD:[], purchaseCD:[], otherExpenses:[], wht:[], mtrFiles:[], toiFiles:[], tosFiles:[]};
+  const buckets = {sale:[], purchase:[], saleCD:[], purchaseCD:[], otherExpenses:[], wht:[], vatRvc:[], mtrFiles:[], toiFiles:[], tosFiles:[]};
   const unresolved = [];
   let companyInfoSheet = null; // {sheet, sourceName} — from whichever file has a "COMPANYINFO" tab, regardless of that file's main category
 
@@ -14799,6 +15144,7 @@ async function handleAutoFileImport(evt){
       }
       await new Promise(r => setTimeout(r, 0));   /* អោយអេក្រង់គូរសារនេះជាមុន */
       const rows = (category === "saleCD" || category === "purchaseCD") ? rowsFromCDSheet(aoa, category)
+                 : (category === "vatRvc") ? rowsFromVATRVCSheet(aoa, file.name)
                  : (category === "otherExpenses") ? rowsFromOtherExpensesSheet(aoa)
                  : (category === "wht") ? rowsFromWHTSheet(sheet)
                  : rowsFromSheet(aoa, category);
@@ -15056,7 +15402,7 @@ async function handleAutoFileImport(evt){
     if(ciSheet) forwardCompanyInfoToTOI(ciSheet, companyInfoSheet.sourceName);
   }
 
-  const labelMap = {sale:"SALE", purchase:"PURCHASE", saleCD:"SALE_CN/DN", purchaseCD:"PURCHASE_CN/DN", otherExpenses:"OTHER EXPENSES", wht:"WHT ពន្ធកាត់ទុក", mtrFiles:"MTR (ពន្ធ/សវនកម្ម)", toiFiles:"TOI (ពន្ធលើប្រាក់ចំណូល)", tosFiles:"TOS (ពន្ធលើប្រាក់បៀវត្សរ៍)"};
+  const labelMap = {sale:"SALE", purchase:"PURCHASE", saleCD:"SALE_CN/DN", purchaseCD:"PURCHASE_CN/DN", otherExpenses:"OTHER EXPENSES", wht:"WHT ពន្ធកាត់ទុក", vatRvc:"VAT Reverse Charge", mtrFiles:"MTR (ពន្ធ/សវនកម្ម)", toiFiles:"TOI (ពន្ធលើប្រាក់ចំណូល)", tosFiles:"TOS (ពន្ធលើប្រាក់បៀវត្សរ៍)"};
   const updatedStores = [];
   Object.keys(buckets).forEach(store=>{
     if(buckets[store].length > 0){
@@ -15072,6 +15418,14 @@ async function handleAutoFileImport(evt){
       }
       if(store === "tosFiles"){
         forwardFilesToTOS(buckets.tosFiles);
+        updatedStores.push(store);
+        return;
+      }
+      if(store === "vatRvc"){
+        /* ⚠⚠ ទម្រង់លម្អិតជា **ឯកសារមួយក្នុងមួយខែ** ⇒ ការជំនួសនឹងលុបខែមុន
+           ចោលទាំងអស់ ។ ដូច្នេះវាបញ្ចូលបន្ថែម **ជានិច្ច** ( ដូច WHT ) ដោយ
+           មិនគិតពីរបៀបបន្ថែម/ជំនួស ។ */
+        state.vatRvc = mergeVatRvcRows(state.vatRvc || [], buckets.vatRvc);
         updatedStores.push(store);
         return;
       }
@@ -16777,6 +17131,7 @@ function renderAll(){
   renderSummaryTable("cpPurchase");
   renderSummaryTable("cpSale");
   renderSummaryTable("saleCD");
+  try{ renderVatRvc(); }catch(e){ console.error("renderVatRvc:", e); }
   renderSummaryTable("purchaseCD");
   renderQuickInvoiceSearch("saleCD");
   renderQuickInvoiceSearch("purchaseCD");
@@ -20308,6 +20663,40 @@ function vatCreditMonths(year){
   __vatCreditMonthsCache[key] = out;
   return out;
 }
+/* ⭐⭐⭐ [stated] ២០២៦-០៩-០១ ៖ «ទឹកប្រាក់បានបង់សម្រាប់អាករលើតម្លៃបន្ថែម
+   មិនអាចស្ទួនគ្នាបានទេ … ការគណនាបង់ VAT ត្រូវដាក់បានបង់ផ្នែក VAT នេះ
+   លុះត្រាតែមានការបង់ VAT Reverse Charge ឬ ការបង់ពីសវនកម្ម ទើបរត់ទៅផ្នែក
+   MTR ដោយផ្នែក VAT ជាការគណនា គឺបានពីធាតុចេញ ដក (ធាតុចូល+ឥណទានយោង)
+   និងការបូកដកនៃ CN DN តែប៉ុណ្ណោះ» ។
+   ⇒ ច្បាប់ចាស់ «ខែណានៅសល់ឥណទាន ⇒ ផ្លាស់ការបង់ទៅ MTR» គឺជា **ការប៉ាន់ស្មាន**
+     ( vatCreditMonths ) ។ វាទាយថាការបង់នោះមិនមែនអតបរបស់ខែនោះ ដោយមិនដឹង
+     ថាវាជាអ្វី ។ ឥឡូវយើងដឹងច្បាស់ ៖ អ្វីដែលចូល MTR គឺ **អាករបញ្ច្រាស**
+     ( ឃ្លាំង vatRvc ) បូក **ការបង់ពីសវនកម្ម** ( ខែ និងឆ្នាំច្បាស់លាស់
+     ក្នុងផ្នែកសវនកម្ម ) — គ្មានអ្វីផ្សេងទៀតទេ ។
+   ⚠ ជួរឈរនេះត្រូវ **ជំនួស** តួលេខប្រកាស មិនមែនត្រងវាទេ ៖ ការត្រងទុកតួលេខ
+     របស់ខែ ដែលអាចលាយអតបធម្មតាចូល ⇒ ស្ទួននឹងទម្រង់ VAT វិញ ។
+   ⚠ សវនកម្មប្រើ force=true ៖ ការធីក «រួមបញ្ចូលកាត់កងសវនកម្ម» គ្រប់គ្រងការ
+     **កាត់ចេញ** ពីតួលេខប្រកាស មិនមែនការពិតថាគេបានបង់ទេ ។ */
+function vatToMtrByMonth(year){
+  const out = new Array(12).fill(0);
+  try{
+    const rvc = (typeof window.__vatRvcMonthly === 'function')
+      ? (window.__vatRvcMonthly(year) || []) : [];
+    for(let i = 0; i < 12; i++) out[i] += (+rvc[i] || 0);
+  }catch(e){ console.error('vatToMtr rvc', e); }
+  try{
+    const map = getAuditDeductionsMap(true);
+    map.forEach((amt, key)=>{
+      const p = String(key).split('|');            /* ឆ្នាំ|ប្រភេទពន្ធ|ខែ(0-11) */
+      if(p.length < 3) return;
+      if(String(p[0]) !== String(year)) return;
+      if(String(p[1]).indexOf(MTR_FORM_EXCLUDE) < 0) return;
+      const mi = Number(p[2]);
+      if(mi >= 0 && mi < 12) out[mi] += (+amt || 0);
+    });
+  }catch(e){ console.error('vatToMtr audit', e); }
+  return out;
+}
 function getMTRFormColumns(yearRows){
   const byFull = new Map();
   yearRows.forEach(r => {
@@ -20315,10 +20704,10 @@ function getMTRFormColumns(yearRows){
     if(!full) return;
     let months = r.slice(2, 14).map(v => (typeof v === 'number' ? v : 0));
     if(full.includes(MTR_FORM_EXCLUDE)){
-      /* ⚠ អតប ៖ ទុកតែខែដែលនៅសល់ឥណទាន (មើលកំណត់សម្គាល់ខាងលើ)។ */
-      const keep = vatCreditMonths(r[0]);
-      months = months.map((v, i)=> (keep[i] ? v : 0));
-      if(!months.some(v => v)) return;          /* គ្មានខែណាត្រូវទុក ⇒ មិនបាច់ជួរឈរ */
+      /* ⚠ អតប ៖ ជួរឈរនេះមិនមែនតួលេខប្រកាសទេ — វាជា អាករបញ្ច្រាស + ការបង់
+         ពីសវនកម្ម ប៉ុណ្ណោះ ( មើលកំណត់សម្គាល់លើ vatToMtrByMonth ) ។ */
+      months = vatToMtrByMonth(r[0]);
+      if(!months.some(v => v)) return;          /* គ្មានអ្វីត្រូវបង្ហាញ ⇒ មិនបាច់ជួរឈរ */
     }
     byFull.set(full, {
       full,
@@ -21756,8 +22145,14 @@ function buildVATFormSheet(year, opts){
        ទម្រង់ MTR វិញ (មើល vatCreditMonths និង getMTRFormColumns)។
        ⚠ រក្សា c12Raw ទុក ៖ ការវិភាគ ឬការត្រួតពិនិត្យក្រោយៗអាចត្រូវការ
          លេខដើម ហើយការលុបដោយគ្មានដាន គឺជាការបាត់បង់ភស្តុតាង។ */
+    /* ⭐ ២០២៦-០៩-០១ ៖ ការសម្អាតជួរនេះ **ត្រូវបានដកចេញ** ។ មុននេះខែណាដែល
+       នៅសល់ឥណទាន ⇒ សម្អាត «អាករបានបង់» ចោល ដោយសន្មតថាការបង់នោះជាអ្វី
+       ផ្សេង ។ ឥឡូវទម្រង់ VAT រក្សាការគណនារបស់ខ្លួន ( ធាតុចេញ − ធាតុចូល −
+       ឥណទានយោង ± CN/DN ) ហើយអ្វីដែលមិនមែនជាខ្សែសង្វាក់នោះ — អាករបញ្ច្រាស
+       និងការបង់ពីសវនកម្ម — ចូលទម្រង់ MTR ដោយផ្ទាល់ ( vatToMtrByMonth ) ។
+       ⇒ គ្មានការស្ទួន ហើយក៏គ្មានតួលេខបាត់ដោយការទាយដែរ ។
+       c12Raw នៅដដែល ⇒ កូដចាស់ណាដែលអានវាមិនខូច ។ */
     r.c12Raw = r.c12 || 0;
-    if(r.cDue === 0 && r.c12) r.c12 = 0;
     r.cDiff = (r.c12 || 0) - r.cDue;      /* បង់ − គួរបង់ */
   });
   const sum = (k) => rows.reduce((a,r)=> a + (r[k]||0), 0);
@@ -52569,8 +52964,17 @@ window.__rscToiManual = rscToiManualOpen;
   if(location.protocol !== 'https:' && location.hostname !== 'localhost') return;
   window.addEventListener('load', function(){
     navigator.serviceWorker.register('sw.js').then(function(reg){
-      /* ⚠ រកកំណែថ្មីរាល់ពេលបើក ⇒ ការ upload ថ្មីទៅ GitHub មកដល់ភ្លាម */
-      try{ reg.update(); }catch(e){}
+      /* ⚠⚠ កំហុសរបស់ខ្ញុំ ( ចាប់បាន ២០២៦-០៩-០១ តាមរូបថតអេក្រង់ ) ៖
+         `reg.update()` ត្រឡប់ **Promise** ⇒ try/catch ចាប់វាមិនបានទេ ។
+         ពេល sw.js ទាញមិនបាន ( មិនទាន់ដាក់ឡើង · បណ្តាញដាច់ · ឃ្លាំង CDN )
+         វាក្លាយជា unhandled rejection ហើយរបារកំហុសក្រហមរបស់កម្មវិធីលេច
+         ចេញ ទោះកម្មវិធីដើរធម្មតាល្អ ។ ⇒ ត្រូវ .catch() លើ Promise ។
+         ច្បាប់ ៖ try/catch មិនចាប់ Promise ឡើយ — មើលថាតម្លៃត្រឡប់ជា
+         Promise ឬអត់ មុននឹងទុកចិត្ត try/catch ។ */
+      try{
+        var up = reg && reg.update && reg.update();
+        if(up && up.catch) up.catch(function(){});
+      }catch(e){}
     }).catch(function(){});
   });
 })();
