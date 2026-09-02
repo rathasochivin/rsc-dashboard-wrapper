@@ -664,6 +664,17 @@ table.raw-tbl tbody td{
   white-space:nowrap !important; line-height:1.4 !important;
 }
 table.raw-tbl tbody td.name-cell{ white-space:nowrap !important; }
+  /* អត្ថបទវែង ( ទំនិញ/សេវា · ឈ្មោះ ) ៖ កាត់ត្រឹម ១៨០px ⇒ តារាងលែងអូសទៅស្តាំ
+     ឆ្ងាយ ។ ចុច ⇒ ពន្លាតពេញ ។ ⚠ ជាប់នឹង .raw-clip តែប៉ុណ្ណោះ ⇒ ជួរឈរលេខ
+     និងកាលបរិច្ឆេទមិនប៉ះពាល់ ។ */
+  table.raw-tbl tbody td.raw-clip{
+    max-width:180px; overflow:hidden; text-overflow:ellipsis;
+    white-space:nowrap !important; cursor:pointer;
+  }
+  table.raw-tbl tbody td.raw-clip.raw-open{
+    max-width:none; overflow:visible; text-overflow:clip;
+    white-space:normal !important; background:#FBF7EA;
+  }
 table.raw-tbl tbody tr.raw-sum td{ font-size:11px !important; }
 tbody tr:nth-child(even){background:#FAFAF7;}
 tbody tr:hover{background:var(--accent-light);}
@@ -6580,11 +6591,13 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
       <div class="table-scroll"><table id="summary-saleCD"></table></div>
     </section>
 
-    <!-- VAT REVERSE CHARGE — ផ្នែកមួយនៃទិន្នានុប្បវត្តិលក់ ដូច CN/DN -->
+    <!-- វិធីគិតអាករជំនួស (VAT Reverse Charge) — ផ្នែកមួយនៃទិន្នានុប្បវត្តិលក់ ដូច CN/DN
+       ⚠ [stated] ២០២៦-០៩-០២ ៖ ពាក្យផ្លូវការតាមភាសាច្បាប់ពន្ធគឺ
+         **«វិធីគិតអាករជំនួស»** មិនមែន «អាករបញ្ច្រាស» ទេ ។ កុំប្តូរត្រឡប់វិញ ។ -->
     <section class="view" id="view-vat-rvc">
       <div class="topbar">
-        <h2>VAT Reverse Charge (អាករបញ្ច្រាស)</h2>
-        <p>អាករលើតម្លៃបន្ថែមលើសេវាពីអនិវាសនជន — ការបង់នេះ <b>មិនមែន</b>ជាផ្នែកនៃខ្សែសង្វាក់ ធាតុចេញ − ធាតុចូល ⇒ វាចូលទៅសន្លឹក MTR មិនមែនជួរ «អាករបានបង់» នៃទម្រង់ VAT</p>
+        <h2>វិធីគិតអាករជំនួស (VAT Reverse Charge)</h2>
+        <p>អាករលើតម្លៃបន្ថែមលើសេវាពីអនិវាសនជន (វិធីគិតអាករជំនួស) — ការបង់នេះ <b>មិនមែន</b>ជាផ្នែកនៃខ្សែសង្វាក់ ធាតុចេញ − ធាតុចូល ⇒ វាចូលទៅសន្លឹក MTR មិនមែនជួរ «អាករបានបង់» នៃទម្រង់ VAT</p>
       </div>
       <div class="toolbar">
         <div class="import-group">
@@ -7269,6 +7282,36 @@ function rscUploadReport(){
     });
   });
 
+  /* ⭐ [stated] ២០២៦-០៩-០២ ៖ «ផ្នែក 📋 ឯកសារដែលបានផ្ទុក បង្ហាញ VATRVC ផង» ។
+     ⚠ វាចូលរង្វិលជុំ STORES មិនបានទេ ៖ ជួរ VATRVC មិនប្រើវាល `date` —
+       វាមាន **y និង m ដោយឡែក** ( ទម្រង់សង្ខេបយកពី «ប្រកាសប្រចាំខែ» ) ។
+       ⇒ សង់ដោយដៃ ដូច TOS ដែរ ។
+     ⚠ ខែដែលខ្វះនៅទីនេះ **ធម្មតាណាស់** ៖ សហគ្រាសខ្លះមានអាករបញ្ច្រាសតែ
+       ពីរបីខែក្នុងមួយឆ្នាំ ⇒ វាមិនចូលការរាប់ gapYears ដែលបញ្ចេញការព្រមាន
+       ពណ៌លឿងទេ ( បើចូល នឹងស្រែកឥតបានការរាល់ឆ្នាំ ) ។ */
+  try{
+    var vr = [];
+    try{ vr = state.vatRvc || []; }catch(e){ vr = []; }
+    if(vr.length){
+      var vByY = {}, vNo = 0;
+      vr.forEach(function(r){
+        if(!r || !r.y){ vNo++; return; }
+        if(!r.m){ vNo++; vByY[r.y] = vByY[r.y] || {}; return; }
+        (vByY[r.y] = vByY[r.y] || {})[r.m] = (vByY[r.y][r.m] || 0) + 1;
+      });
+      var vys = Object.keys(vByY).sort();
+      var nSum = vr.filter(function(r){ return r.kind === 'sum'; }).length;
+      var nMan = vr.filter(function(r){ return r.manual; }).length;
+      rows.push({
+        key:'vatRvc',
+        label:'វិធីគិតអាករជំនួស',
+        n: vr.length, years: vys, byY: vByY, noDate: vNo,
+        note: (nSum + ' សង្ខេប · ' + (vr.length - nSum) + ' លម្អិត'
+               + (nMan ? ' · ' + nMan + ' បញ្ចូលដោយដៃ' : ''))
+      });
+    }
+  }catch(e){ console.error('uploadReport vatRvc', e); }
+
   var toiY = (CI.toiYears || []).slice();
 
   /* ⭐ TOS មានឆ្នាំ/ខែផ្ទាល់ ⇒ ចូលក្នុងតារាងដូចទិន្នានុប្បវត្តិដទៃ */
@@ -7341,9 +7384,20 @@ function rscUploadReport(){
     return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
 
-  var h = '<div style="font-weight:700; font-size:17px;">📋 ឯកសារដែលបានផ្ទុក</div>'
-    + '<div style="color:#4a5250; font-size:12.5px; margin-bottom:12px;">'
-    + 'ពិនិត្យថាមានគ្រប់ឆ្នាំ និងគ្រប់ខែដែលអ្នករំពឹងទុក មុននឹងចាប់ផ្តើមការងារ។</div>';
+  /* [stated] ២០២៦-០៩-០២ ៖ ដាក់ឈ្មោះសហគ្រាសជាប់ចំណងជើង ⇒ ដឹងភ្លាមថា
+     របាយការណ៍នេះនិយាយពីសំណុំរឿងណា ( ជួយពេលបើកច្រើនសំណុំរឿងក្នុងមួយថ្ងៃ ) ។
+     បន្ទាត់ណែនាំខាងក្រោមត្រូវដកចេញតាមការស្នើ ។ */
+  var __coName = '';
+  try{
+    __coName = String((CI && (CI.name || CI.nameKh || CI.companyName)) || '').trim();
+    if(!__coName && window.__rscEnterpriseInfo){
+      var __ei = window.__rscEnterpriseInfo() || {};
+      __coName = String(__ei.name || '').trim();
+    }
+  }catch(e){ __coName = ''; }
+  var h = '<div style="font-weight:700; font-size:17px; margin-bottom:12px;">📋 ឯកសារដែលបានផ្ទុក'
+    + (__coName ? ' <span style="font-weight:400; color:#4a5250;">— ' + esc(__coName) + '</span>' : '')
+    + '</div>';
 
   h += '<div style="padding:8px 10px; background:#F6F3E9; border-radius:8px; margin-bottom:10px;">'
     + '<b>TOI ៖</b> '
@@ -7416,19 +7470,9 @@ function rscUploadReport(){
     h += '</div>';
   }
 
-  if(anyGap){
-    /* ⚠ បញ្ជាក់ចំនួនដែលនៅសល់ ⇒ ការព្រមានឈប់ស្រែកពេលពិនិត្យអស់ហើយ ។ */
-    var left = gapYears - noted;
-    h += '<div style="margin-top:10px; padding:8px 10px; border-radius:8px; font-size:12.5px;'
-      + (left > 0 ? 'background:#FFF3D6; border:1px solid #E8CE84;">'
-                  : 'background:#E9F4EC; border:1px solid #A9D6B4;">')
-      + (left > 0
-          ? '⚠ មានខែខ្វះ ' + left + ' ឆ្នាំដែលមិនទាន់មានសម្គាល់។ វាមិនមែនតែងតែជាកំហុសទេ '
-            + '( សហគ្រាសអាចមិនបានប្រកាស ) ⇒ ចុចលើ «ខ្វះខែ …» ដើម្បីសរសេរមូលហេតុ '
-            + 'ទុកជាភស្តុតាងថាមិនមែនឯកសារខ្វះ។'
-          : '✓ ខែដែលខ្វះទាំងអស់មានសម្គាល់រួចហើយ ( ' + noted + ' ឆ្នាំ )។')
-      + '</div>';
-  }
+  /* [stated] ២០២៦-០៩-០២ ៖ ការព្រមានអំពីខែខ្វះត្រូវដកចេញ ។ ការសម្គាល់
+     ក្នុងតារាង ( ក្រហម / 📝 បៃតង ) នៅដដែល ⇒ ព័ត៌មានមិនបាត់ ។ */
+
 
   /* ⭐⭐ [stated] ២០២៦-០៩-០១ ៖ «ចង់បានកន្លែងចុចពិនិត្យមើលឯកសារដែលបាន upload
      រួចរាល់» និង «កន្លែងដើម្បីអាច upload បន្ថែម ករណីខ្វះឯកសារ ឬត្រូវ upload
@@ -7448,12 +7492,8 @@ function rscUploadReport(){
     + '<button id="urCopy" style="padding:8px 14px; border:1px solid #d8d2c2; border-radius:7px;'
     + 'background:#fff; font:inherit; font-weight:700; font-size:13px; cursor:pointer;">⧉ ចម្លង</button>'
     + '<button id="urOk" style="padding:8px 20px; border:0; border-radius:7px; background:#0F3D3E;'
-    + 'color:#fff; font:inherit; font-weight:700; font-size:13px; cursor:pointer;">យល់ព្រម</button></div>'
-    + '<div style="margin-top:6px; font-size:12px; color:#6b736f;">'
-    + 'ប៊ូតុងទាំងពីរនេះដើរជា <b>របៀបបន្ថែម</b> ៖ ជួរដែលមានស្រាប់នៅដដែល ឯកសារខែថ្មី '
-    + 'បន្ថែមចូល ។ វិក្កយបត្រដដែល ( កាលបរិច្ឆេទ · លេខ · អតប ) <b>សរសេរជាន់</b> '
-    + 'ជួរចាស់ ⇒ មិនស្ទួន សូម្បីទឹកប្រាក់ខុសពីមុន ។<br>'
-    + '📦 នៅរបារខាងលើ នៅតែជា <b>ជំនួសទាំងស្រុង</b> សម្រាប់ការផ្ទុកសំណុំពេញ។</div>';
+    + 'color:#fff; font:inherit; font-weight:700; font-size:13px; cursor:pointer;">យល់ព្រម</button></div>';
+
 
   card.innerHTML = h;
   document.body.appendChild(ov);
@@ -7538,26 +7578,95 @@ function rscUploadReport(){
       if(i){ i.setAttribute('data-add-mode', '1'); i.click(); }
     };
   }
+  /* ⭐⭐ [stated] ២០២៦-០៩-០២ ៖ «ប្តូរពីចម្លងអត្ថបទ ទៅ copy ជារូបភាពវិញ ដើម្បី
+     ខ្ញុំងាយស្រួលប្រាប់ទៅសវនករថា upload ឯកសារខ្វះ» ។
+     ⚠ ការបម្លែង HTML ទៅរូបភាពត្រូវការបណ្ណាល័យខាងក្រៅ ( html2canvas ) ដែល
+       យើងគ្មាន ហើយផ្លូវ SVG foreignObject មិនផ្ទុកពុម្ពអក្សរខាងក្រៅ ⇒
+       អក្សរខ្មែរនឹងខូច ។ ⇒ **គូរលើ canvas ដោយផ្ទាល់** ៖ យើងគ្រប់គ្រង
+       ប្លង់ទាំងស្រុង ហើយ canvas ប្រើពុម្ពអក្សរដែលទំព័រផ្ទុករួច ⇒ អក្សរខ្មែរ
+       ចេញត្រឹមត្រូវ ។
+     ⚠ រង់ចាំ `document.fonts.ready` ជាមុន ៖ បើគូរមុនពុម្ពអក្សររួច canvas
+       ធ្លាក់ទៅពុម្ពអក្សរបម្រុង ហើយរូបភាពចេញខុសទាំងអស់ ។
+     ⚠ ខែដែលខ្វះ គូរជា **ក្រហម** ⇒ សវនករមើលឃើញភ្លាមថាត្រូវផ្ទុកអ្វីបន្ថែម ។ */
   var cp = document.getElementById('urCopy');
-  if(cp) cp.onclick = function(){
-    var t = 'ឯកសារដែលបានផ្ទុក\nTOI ៖ ' + (toiY.join(' · ') || 'គ្មាន') + '\n';
-    extras.forEach(function(x){ t += x.k + ' ៖ ' + (x.v || 'មិនមាន') + '\n'; });
-    rows.forEach(function(r){
-      t += r.label + ' ( ' + r.n + ' ជួរ ) ៖ ';
-      t += r.years.map(function(y){
-        var have = Object.keys(r.byY[y]).map(Number).sort(function(a, b){ return a - b; });
-        var miss = [];
-        for(var i = 1; i <= 12; i++) if(have.indexOf(i) < 0) miss.push(i);
-        var nt = gapNotes[(r.key || r.label) + '|' + y];
-        return y + ' (' + ranges(have) + ')' + (miss.length ? ' ខ្វះ ' + ranges(miss) : '')
-             + (nt ? ' [សម្គាល់ ៖ ' + nt.t + ']' : '');
-      }).join(' · ') + '\n';
-    });
-    try{
-      if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t);
-    }catch(e){}
-    cp.textContent = '✓ ចម្លងរួច';
-  };
+  if(cp){
+    cp.textContent = '🖼 ចម្លងជារូបភាព';
+    cp.onclick = function(){
+      cp.textContent = 'កំពុងធ្វើ…';
+      var FS = 15, LH = 26, PAD = 26, W = 980;
+      var lines = [];   /* {t, c, b, gap} */
+      lines.push({ t:'📋 ឯកសារដែលបានផ្ទុក' + (__coName ? ' — ' + __coName : ''), b:1, size:19 });
+      lines.push({ t:'TOI ៖ ' + (toiY.join(' · ') || 'គ្មាន'), b:1 });
+      /* ⚠ [stated] ២០២៦-០៩-០២ ៖ «វានៅតែអត់ជាប់ផ្នែកនេះ» — MTR · VATCR ·
+         AUDIT HISTORY · AUDIT HISTORY DETAIL · COMPANYINFO ត្រូវ **ជាប់**
+         ក្នុងរូបភាព ។ ខ្ញុំបានយល់ខុសវេនមុន រួចដកវាចេញ — ដាក់ត្រឡប់វិញ ។
+         ⇒ រូបភាពត្រូវឆ្លុះបញ្ចាំងផ្ទាំងអេក្រង់ទាំងមូល លើកលែងតែបន្ទាត់
+           ណែនាំ «ផ្ទុកឯកសារបន្ថែម» ដែលគេសុំកុំដាក់ ។ */
+      extras.forEach(function(x){ lines.push({ t:x.k + ' ៖ ' + (x.v || 'មិនមាន') }); });
+      lines.push({ gap:1 });
+      rows.forEach(function(r){
+        lines.push({ t:r.label + '  ( ' + r.n + ' ជួរ )', b:1 });
+        r.years.forEach(function(y){
+          var have = Object.keys(r.byY[y]).map(Number).sort(function(a, b){ return a - b; });
+          var miss = [];
+          for(var i = 1; i <= 12; i++) if(have.indexOf(i) < 0) miss.push(i);
+          var nt = gapNotes[(r.key || r.label) + '|' + y];
+          lines.push({
+            t: '    ' + y + '  ( ' + ranges(have) + ' )'
+               + (miss.length ? '   ⚠ ខ្វះខែ ' + ranges(miss) : '   ✓ គ្រប់ ១២ ខែ')
+               + (nt ? '   📝 ' + nt.t : ''),
+            c: miss.length ? (nt ? '#125c2e' : '#A83A26') : '#1c6b35'
+          });
+        });
+        lines.push({ gap:1 });
+      });
+
+      var H = PAD * 2 + lines.reduce(function(a, l){ return a + (l.gap ? 12 : LH); }, 0);
+      var R = Math.min(2, window.devicePixelRatio || 1);
+      var cv = document.createElement('canvas');
+      cv.width = W * R; cv.height = H * R;
+      var g = cv.getContext('2d');
+      g.scale(R, R);
+      g.fillStyle = '#fff'; g.fillRect(0, 0, W, H);
+      var draw = function(){
+        var y = PAD + FS;
+        lines.forEach(function(l){
+          if(l.gap){ y += 12; return; }
+          var sz = l.size || FS;
+          g.font = (l.b ? '700 ' : '') + sz + 'px "Khmer OS Siemreap", "Khmer OS", sans-serif';
+          g.fillStyle = l.c || '#171B1A';
+          g.fillText(l.t, PAD, y);
+          y += LH;
+        });
+        cv.toBlob(function(blob){
+          if(!blob){ cp.textContent = '⚠ បរាជ័យ'; return; }
+          var done = function(msg){ cp.textContent = msg; };
+          try{
+            if(window.ClipboardItem && navigator.clipboard && navigator.clipboard.write){
+              navigator.clipboard.write([ new ClipboardItem({ 'image/png': blob }) ])
+                .then(function(){ done('✓ ចម្លងរូបភាពរួច'); })
+                .catch(function(){ dl(blob); done('⬇ ទាញយករូបភាព'); });
+              return;
+            }
+          }catch(e){}
+          dl(blob); done('⬇ ទាញយករូបភាព');
+        }, 'image/png');
+      };
+      /* ⚠ បើកម្មវិធីរុករកមិនអនុញ្ញាតឱ្យចម្លងរូបភាព ⇒ ទាញយកជំនួស ⇒
+         គេនៅតែផ្ញើទៅសវនករបាន ។ */
+      var dl = function(blob){
+        try{
+          var a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = 'ឯកសារដែលបានផ្ទុក' + (__coName ? '-' + __coName : '') + '.png';
+          a.click();
+          setTimeout(function(){ URL.revokeObjectURL(a.href); }, 4000);
+        }catch(e){}
+      };
+      if(document.fonts && document.fonts.ready) document.fonts.ready.then(draw).catch(draw);
+      else draw();
+    };
+  }
 }
 window.__rscUploadReport = rscUploadReport;
 
@@ -8978,6 +9087,27 @@ function vrcYears(){
 }
 window.__vatRvcMonthly = function(year){ return vatRvcMonthly(state.vatRvc || [], year); };
 
+/* លោតពីទិន្នានុប្បវត្តិទិញ ⇒ ជួរអាករជំនួសនោះ ។ ការបន្លិចមិនប៉ះទិន្នន័យ ⇒
+   វាជាការណែនាំភ្នែក មិនមែនការត្រង ⇒ អ្នកប្រើមិនបាត់ទិដ្ឋភាពដទៃ ។ */
+var vrcFocusRef = '';
+function vrcJump(ref){
+  vrcFocusRef = String(ref || '');
+  var row = (state.vatRvc || []).filter(function(r){
+    return String(r.ref || '') === vrcFocusRef;
+  })[0];
+  if(row){
+    var selY = document.getElementById('vrc-year');
+    if(selY && row.y){ selY.value = String(row.y); }
+  }
+  showView('vat-rvc');
+  try{ renderVatRvc(); }catch(e){}
+  setTimeout(function(){
+    var el = document.querySelector('[data-vrcref="' + (window.CSS && CSS.escape ? CSS.escape(vrcFocusRef) : vrcFocusRef) + '"]');
+    if(el && el.scrollIntoView) el.scrollIntoView({block:'center'});
+  }, 60);
+}
+window.vrcJump = vrcJump;
+
 function vrcAddManual(){
   var y = (document.getElementById('vrc-year') || {}).value || String(new Date().getFullYear());
   state.vatRvc = (state.vatRvc || []).concat([{
@@ -8990,7 +9120,7 @@ function vrcAddManual(){
 function vrcClearAll(){
   if(!(state.vatRvc || []).length) return;
   var ask = window.appConfirm || function(m){ return Promise.resolve(confirm(m)); };
-  ask('លុបទិន្នន័យ VAT Reverse Charge ទាំងអស់?').then(function(ok){
+  ask('លុបទិន្នន័យវិធីគិតអាករជំនួសទាំងអស់?').then(function(ok){
     if(!ok) return;
     state.vatRvc = []; saveState(); renderVatRvc();
   });
@@ -9017,7 +9147,7 @@ function renderVatRvcTotals(){
   var h = '<table class="ledger"><thead><tr><th>ខែ</th>'
         + mm.map(function(_, i){ return '<th style="text-align:right;">' + (i + 1) + '</th>'; }).join('')
         + '<th style="text-align:right;">សរុប</th></tr></thead><tbody><tr>'
-        + '<td>អាករបញ្ច្រាសបានបង់ (៛)</td>'
+        + '<td>អាករជំនួសបានបង់ (៛)</td>'
         + mm.map(function(v){ return '<td class="n" style="text-align:right;">'
             + (v ? Math.round(v).toLocaleString('en-US') : '-') + '</td>'; }).join('')
         + '<td class="n" style="text-align:right; font-weight:700;">'
@@ -9047,7 +9177,7 @@ function renderVatRvc(){
 
   if(!rows.length){
     body.innerHTML = '<div class="empty-state" style="padding:18px;">'
-      + 'មិនទាន់មានទិន្នន័យ VAT Reverse Charge ទេ។<br>'
+      + 'មិនទាន់មានទិន្នន័យវិធីគិតអាករជំនួសទេ។<br>'
       + 'ផ្ទុកឯកសារ <b>VATRVC</b> (សង្ខេប) ឬ <b>REVERSE_CHARGE</b> (លម្អិត) តាម 📦 UPLOAD '
       + 'ឬចុច «➕ បញ្ចូលដោយដៃ»។</div>';
     return;
@@ -9056,6 +9186,10 @@ function renderVatRvc(){
                  .filter(function(o){
                    return (!y || String(o.r.y) === String(y)) && (!kind || o.r.kind === kind);
                  });
+  /* ⚠ [stated] ២០២៦-០៩-០២ ៖ «មានជួរតារាងមួយសល់ពីក្រោយស្ថានភាព» ។
+     នោះជាជួរឈរប៊ូតុងលុប ដែលមានន័យតែសម្រាប់ជួរបញ្ចូលដោយដៃ ។ ពេលគ្មាន
+     ជួរបញ្ចូលដោយដៃទេ វាទទេទាំងស្រុង ⇒ គូរវាតែពេលចាំបាច់ ។ */
+  var hasMan = view.some(function(o){ return !!o.r.manual; });
   var h = '<div id="vrc-months" style="margin-bottom:12px;"></div>'
         + '<div class="table-scroll"><table class="ledger"><thead><tr>'
         + '<th>ទម្រង់</th><th>ឆ្នាំ</th><th>ខែ</th><th>លេខយោង / បារកូដ</th>'
@@ -9063,7 +9197,7 @@ function renderVatRvc(){
         + '<th style="text-align:right;">តម្លៃមិនរួមអតប</th>'
         + '<th style="text-align:right;">ឥណទានយោង</th>'
         + '<th style="text-align:right;">អាករ (៛)</th>'
-        + '<th>ស្ថានភាព</th><th></th></tr></thead><tbody>';
+        + '<th>ស្ថានភាព</th>' + (hasMan ? '<th></th>' : '') + '</tr></thead><tbody>';
   view.forEach(function(o){
     var r = o.r, i = o.i, man = !!r.manual;
     var inp = function(f, v, w, align){
@@ -9073,7 +9207,10 @@ function renderVatRvc(){
           + ' onchange="vrcEdit(' + i + ',\'' + f + '\',this.value)">'
         : esc(v);
     };
-    h += '<tr' + (man ? ' style="background:#FFFDF2;"' : '') + '>'
+    var foc = vrcFocusRef && String(r.ref || '') === vrcFocusRef;
+    h += '<tr data-vrcref="' + esc(String(r.ref || '')) + '"'
+      + (foc ? ' style="background:#DCF0DF; outline:2px solid #A9D6B4;"'
+             : (man ? ' style="background:#FFFDF2;"' : '')) + '>'
       + '<td>' + (r.kind === 'sum' ? 'សង្ខេប' : 'លម្អិត') + (man ? ' ✎' : '') + '</td>'
       + '<td>' + inp('y', r.y || '', '62px') + '</td>'
       + '<td>' + inp('m', r.m || '', '46px') + '</td>'
@@ -9084,7 +9221,8 @@ function renderVatRvc(){
       + '<td class="n" style="text-align:right;">' + (man ? inp('credit', r.credit || 0, '110px', 'right') : money(r.credit)) + '</td>'
       + '<td class="n" style="text-align:right; font-weight:700;">' + (man ? inp('vat', r.vat || 0, '120px', 'right') : money(r.vat)) + '</td>'
       + '<td>' + inp('status', r.status || '', '150px') + '</td>'
-      + '<td>' + (man ? '<button class="btn ghost" style="padding:2px 8px;" onclick="vrcDel(' + i + ')">✕</button>' : '') + '</td>'
+      + (hasMan ? ('<td>' + (man ? '<button class="btn ghost" style="padding:2px 8px;" onclick="vrcDel('
+                   + i + ')">✕</button>' : '') + '</td>') : '')
       + '</tr>';
   });
   h += '</tbody></table></div>'
@@ -9104,11 +9242,14 @@ const NAV_ITEMS = [
   {group:"ក្រុមហ៊ុនយើង (ABC)", items:[
     {id:"purchase", label:"1. PURCHASE"},
     {id:"purchase-cd", label:"PURCHASE_CN/DN", countKey:"purchaseCD"},
+    /* ⚠ [stated] ២០២៦-០៩-០២ ៖ «ផ្នែក VATRVC វាស្ថិតនៅផ្នែកចំណាយទេ មិនមែន
+       ស្ថិតនៅផ្នែកនៃចំណូលទេ» ⇒ ផ្លាស់ពីក្រោម SALE មកក្រោម PURCHASE ។
+       ( ការដាក់ដំបូងក្រោម SALE ជាការយល់ខុសរបស់ខ្ញុំ ៖ អាករជំនួសកើតលើ
+         សេវា **ដែលសហគ្រាសទិញ** ពីអនិវាសនជន ⇒ ជាធាតុចូល មិនមែនធាតុចេញ ។ ) */
+    {id:"vat-rvc", label:"វិធីគិតអាករជំនួស", countKey:"vatRvc"},
     {id:"other-expenses", label:"OTHER EXPENSES", countKey:"otherExpenses"},
     {id:"sale", label:"2. SALE"},
     {id:"sale-cd", label:"SALE_CN/DN", countKey:"saleCD"},
-    /* [stated] ២០២៦-០៩-០១ ៖ «ដាក់វានៅជួរថ្មីពីក្រោយជួរ Sale DN នៅក្រោយគេ» */
-    {id:"vat-rvc", label:"VAT Reverse Charge", countKey:"vatRvc"},
     {id:"wht", label:"3. 💰 WHT", countKey:"wht"},
   ]},
   {group:"", items:[
@@ -9669,11 +9810,44 @@ function renderDataTable_(tableId, allIndices, editable, storeName){
     html += `<th${leftAlign? ' style="text-align:left;"':''}>${headerText}</th>`;
   });
   if(isCD) html += `<th style="text-align:left;">លេខវិក្កយបត្រពាក់ព័ន្ធ</th><th>កាលបរិច្ឆេទវិក្កយបត្រពាក់ព័ន្ធ</th>`;
+  /* ⚠ ស្លាកចុចបានត្រូវដាក់ជា **ជួរឈរដាច់ដោយឡែក** មិនមែនក្នុងក្រឡាដែលកែបាន ៖
+     ក្រឡាទាំងនោះជា contenteditable ហើយ `editCell` អានអត្ថបទរបស់វា ⇒ ស្លាក
+     ក្នុងក្រឡានឹងចូលទៅក្នុងតម្លៃ ហើយបំផ្លាញលេខវិក្កយបត្រពេលចេញពីការកែ ។ */
+  if(__mkRvcAny) html += `<th>អាករជំនួស</th>`;
   if(showDelete) html += `<th>លុប</th>`;
   html += "</tr></thead><tbody>";
+  /* ⭐⭐ [stated] ២០២៦-០៩-០២ ៖ «សម្គាល់លើសហគ្រាសដែលបានបង់ VATRVC នៅក្នុង PR
+     ហើយអាចចុចមើលបាន · បើមាន CN DN ហាយឡាយពណ៌លឿង · មាន VATRVC ហាយឡាយ
+     ពណ៌បៃតង» ។
+     ⚠ ការផ្គូផ្គងធ្វើតាម **លេខវិក្កយបត្រ** មិនមែនតាមអតបទេ ៖ អ្នកផ្គត់ផ្គង់
+       ម្នាក់អាចមានវិក្កយបត្រខ្លះជាប់អាករជំនួស ខ្លះអត់ ⇒ ការហាយឡាយតាមអតប
+       នឹងលាបពណ៌ជួរដែលគ្មានពាក់ព័ន្ធ ។ លេខវិក្កយបត្រក្នុងឯកសារ VATRVC
+       ត្រូវគ្នាបេះបិទនឹង PR ( ឧ. 24322000000541896798 ) ។
+     ⚠ ធ្វើតែលើ **ទិន្នានុប្បវត្តិទិញ** ⇒ តារាងដទៃមិនប្រែ ។ */
+  var __mkCD = null, __mkRvc = null, __mkRvcAny = false;
+  if(storeName === 'purchase'){
+    try{
+      __mkCD = new Set();
+      (state.purchaseCD || []).forEach(function(c){
+        var k = String(c.relatedInvoiceNo || c.invoiceNo || '').trim().toLowerCase();
+        if(k) __mkCD.add(k);
+      });
+      __mkRvc = new Map();
+      (state.vatRvc || []).forEach(function(v){
+        var k = String(v.ref || '').trim().toLowerCase();
+        if(k) __mkRvc.set(k, v);
+      });
+      __mkRvcAny = __mkRvc.size > 0;
+    }catch(e){ __mkCD = null; __mkRvc = null; __mkRvcAny = false; }
+  }
   indices.forEach(idx=>{
     const r = data[idx];
-    html += "<tr>";
+    var __inv = String(r.invoiceNo || '').trim().toLowerCase();
+    var __rvc = (__mkRvc && __inv) ? __mkRvc.get(__inv) : null;
+    var __cd  = (__mkCD  && __inv) ? __mkCD.has(__inv)  : false;
+    /* បៃតងឈ្នះលើលឿង ៖ អាករជំនួសជាព័ត៌មានកម្រជាង និងសំខាន់ជាងសម្រាប់សវនកម្ម */
+    html += __rvc ? '<tr style="background:#E9F4EC;" title="មានការបង់វិធីគិតអាករជំនួស">'
+          : (__cd ? '<tr style="background:#FFF7DF;" title="មាន CN/DN ពាក់ព័ន្ធ">' : "<tr>");
     COLUMNS.forEach(col=>{
       if(isCD && col==="product") return; // not used for Credit/Debit Note rows
       const isAmt = col==="amount";
@@ -9686,6 +9860,18 @@ function renderDataTable_(tableId, allIndices, editable, storeName){
         html += `<td class="${cls}">${val}</td>`;
       }
     });
+    if(__mkRvcAny){
+      html += '<td style="text-align:center;">'
+        + (__rvc
+            ? ('<span onclick="vrcJump(this.getAttribute(\'data-ref\'))"'
+               + ' data-ref="' + esc(String(__rvc.ref || '')) + '"'
+               + ' title="មើលវិធីគិតអាករជំនួស" style="cursor:pointer; font-size:11px; font-weight:700;'
+               + 'color:#125c2e; background:#DCF0DF; border:1px solid #A9D6B4; border-radius:5px;'
+               + 'padding:1px 7px; white-space:nowrap;">'
+               + Math.round(+__rvc.vat || 0).toLocaleString('en-US') + ' ↗</span>')
+            : '')
+        + '</td>';
+    }
     if(isCD){
       const relNo = r.relatedInvoiceNo || "";
       const relDate = r.relatedInvoiceDate || "";
@@ -10130,15 +10316,53 @@ function renderRawView(store){
   h += '<tr class="raw-sum">' + keep.map(function(c, i){
         if(i === 0) return '<td colspan="1"><b>សរុប</b></td>';
         if(!c.n) return '<td></td>';
-        return '<td class="amt"><b>' + fmtAmt(tot[c.k]) + '</b></td>';
+        return '<td class="amt"><b>' + fmtAmt(Math.round(Number(tot[c.k]) || 0)) + '</b></td>';
       }).join("") + '</tr>';
+  /* ⭐⭐ [stated] ២០២៦-០៩-០២ ៖ «អត់ឃើញមានហាយឡាយ» — ត្រូវហើយ ៖ ខ្ញុំដាក់វា
+     ក្នុង `renderDataTable_` ( តារាងធម្មតា ) តែរូបថតរបស់គេជា **ទម្រង់ដើម**
+     ដែលជាអ្នកគូរផ្សេងទាំងស្រុង ( `renderRawView` ) ។ ⇒ ដាក់ត្រង់នេះដែរ ។
+     ⚠ មេរៀន ៖ ផ្ទាំងមួយអាចមានអ្នកគូរពីរ — មុននឹងនិយាយថា «បន្ថែមរួច»
+       ត្រូវប្រាកដថាបានបន្ថែមក្នុងអ្នកគូរដែលគេពិតជាមើល ។ */
+  var __rvHi = null;
+  if(store === 'purchase'){
+    try{
+      var cdS = new Set(), rvM = new Map();
+      (state.purchaseCD || []).forEach(function(c){
+        var k = String(c.relatedInvoiceNo || c.invoiceNo || '').trim().toLowerCase();
+        if(k) cdS.add(k);
+      });
+      (state.vatRvc || []).forEach(function(v){
+        var k = String(v.ref || '').trim().toLowerCase();
+        if(k) rvM.set(k, v);
+      });
+      if(cdS.size || rvM.size) __rvHi = { cd:cdS, rvc:rvM };
+    }catch(e){ __rvHi = null; }
+  }
   rows.forEach(function(r, i){
-    h += '<tr>' + keep.map(function(c){
+    var __k = String(r.invoiceNo || '').trim().toLowerCase();
+    var __rv = (__rvHi && __k) ? __rvHi.rvc.get(__k) : null;
+    var __cdHit = (__rvHi && __k) ? __rvHi.cd.has(__k) : false;
+    /* ⚠ style តែមួយក្នុងស្លាក ៖ ការសរសេរ style ពីរដងធ្វើឱ្យអ្នកទីពីរត្រូវបោះចោល */
+    h += (__rv ? '<tr style="background:#E9F4EC; cursor:pointer;"'
+                 + ' title="មានការបង់វិធីគិតអាករជំនួស '
+                 + Math.round(+__rv.vat || 0).toLocaleString('en-US') + ' ៛ — ចុចមើល"'
+                 + ' onclick="vrcJump(\'' + escAttr(String(__rv.ref || '')) + '\')">'
+               : (__cdHit ? '<tr style="background:#FFF7DF;" title="មាន CN/DN ពាក់ព័ន្ធ">' : '<tr>'))
+      + keep.map(function(c){
       const v = valOf(r, c);
       if(c.k === "no") return '<td>' + (i + 1) + '</td>';
-      if(c.n) return '<td class="amt">' + (Math.round(Number(v) || 0) === 0 ? '' : fmtAmt(Number(v) || 0)) + '</td>';
+      /* [stated] ២០២៦-០៩-០២ ៖ «ផ្នែក SR និង PR មិនបាច់ .៣ ខ្ទង់ពីក្រោយទេ»
+         ⇒ បង្គត់ជាចំនួនគត់ក្នុងទម្រង់ដើម ។ ⚠ ទិន្នន័យខ្លួនវាមិនប្តូរទេ —
+           ការបង្គត់ធ្វើតែពេលបង្ហាញ ⇒ ការគណនា និងការនាំចេញនៅដដែល ។ */
+      if(c.n) return '<td class="amt">' + (Math.round(Number(v) || 0) === 0 ? '' : fmtAmt(Math.round(Number(v) || 0))) + '</td>';
       if(c.k === "date") return '<td>' + fmtDate(v) + '</td>';
-      return '<td class="name-cell">' + escAttr(String(v == null ? "" : v)) + '</td>';
+      /* [stated] ២០២៦-០៩-០២ ៖ «ទំនិញ និងសេវា មិនបាច់ឱ្យវាវែងតាមអក្សរទេ …
+         បើចង់មើលពេញចុចពីលើវា» ⇒ ក្រឡាអត្ថបទកាត់ត្រឹមទទឹងកំណត់ ហើយចុច
+         ដើម្បីពន្លាត/បង្រួម ។ ⚠ អត្ថបទពេញនៅក្នុង title ⇒ ដាក់កណ្តុរក៏អានបាន
+           ហើយការស្វែងរក និងការនាំចេញ Excel មិនប្រែ ព្រោះអត្ថបទនៅដដែល ។ */
+      var __txt = escAttr(String(v == null ? "" : v));
+      return '<td class="name-cell raw-clip" title="' + __txt + '"'
+        + ' onclick="this.classList.toggle(\'raw-open\')">' + __txt + '</td>';
     }).join("") + '</tr>';
   });
   h += '</tbody></table></div>';
@@ -15420,7 +15644,7 @@ async function handleAutoFileImport(evt){
     if(ciSheet) forwardCompanyInfoToTOI(ciSheet, companyInfoSheet.sourceName);
   }
 
-  const labelMap = {sale:"SALE", purchase:"PURCHASE", saleCD:"SALE_CN/DN", purchaseCD:"PURCHASE_CN/DN", otherExpenses:"OTHER EXPENSES", wht:"WHT ពន្ធកាត់ទុក", vatRvc:"VAT Reverse Charge", mtrFiles:"MTR (ពន្ធ/សវនកម្ម)", toiFiles:"TOI (ពន្ធលើប្រាក់ចំណូល)", tosFiles:"TOS (ពន្ធលើប្រាក់បៀវត្សរ៍)"};
+  const labelMap = {sale:"SALE", purchase:"PURCHASE", saleCD:"SALE_CN/DN", purchaseCD:"PURCHASE_CN/DN", otherExpenses:"OTHER EXPENSES", wht:"WHT ពន្ធកាត់ទុក", vatRvc:"វិធីគិតអាករជំនួស", mtrFiles:"MTR (ពន្ធ/សវនកម្ម)", toiFiles:"TOI (ពន្ធលើប្រាក់ចំណូល)", tosFiles:"TOS (ពន្ធលើប្រាក់បៀវត្សរ៍)"};
   const updatedStores = [];
   Object.keys(buckets).forEach(store=>{
     if(buckets[store].length > 0){
@@ -17043,14 +17267,14 @@ function renderModuleOverview(){
        title:"ទិន្នានុប្បវត្តលក់", stat: fmtCount(state.sale.length),
        subLinks:[
          {id:"sale-cd", label:"ទិន្នានុប្បវត្តលក់ CN DN"},
-         /* [stated] ២០២៦-០៩-០២ ៖ វាជាផ្នែកមួយនៃទិន្នានុប្បវត្តិលក់ ⇒ តំណរងទីនេះ */
-         {id:"vat-rvc", label:"VAT Reverse Charge"},
        ]},
       {id:"purchase", icon:"🧾", color:"var(--primary)", bg:"var(--accent-light)",
        title:"ទិន្នានុប្បវត្តទិញ", stat: fmtCount(state.purchase.length),
        subLinks:[
          {id:"purchase-cd", label:"ទិន្នានុប្បវត្តទិញ CN DN"},
          {id:"other-expenses", label:"ចំណាយផ្សេងៗ"},
+         /* [stated] ២០២៦-០៩-០២ ៖ អាករជំនួសជាធាតុ **ចូល** ⇒ ក្រោមទិន្នានុប្បវត្តិទិញ */
+         {id:"vat-rvc", label:"វិធីគិតអាករជំនួស"},
        ]},
       {id:"tracking", icon:"📋", color:"var(--primary)", bg:"var(--accent-light)",
        title:"តាមដាន & ប្រជុំ", stat: ''},   /* [stated] លុប «0/10 ឯកសារ» ចេញ */
@@ -22184,6 +22408,17 @@ function buildVATFormSheet(year, opts){
        ⇒ គ្មានការស្ទួន ហើយក៏គ្មានតួលេខបាត់ដោយការទាយដែរ ។
        c12Raw នៅដដែល ⇒ កូដចាស់ណាដែលអានវាមិនខូច ។ */
     r.c12Raw = r.c12 || 0;
+    /* ⭐⭐ [stated] ២០២៦-០៩-០២ ៖ «ករណីមាន VATRVC ចំនួនប៉ុន្មាន យកអាករបានបង់
+       នោះដកនឹង VATRVC នោះ ហើយចំនួនដែលបានបង់នោះរត់ទៅផ្នែក MTR» ។
+       ⇒ ជួរ «អាករបានបង់» ក្នុងទម្រង់ VAT រក្សា **តែផ្នែកនៃខ្សែសង្វាក់** ៖
+         ( ធាតុចេញ − ធាតុចូល − ឥណទានយោង ) ± SR/PR CN/DN ។ អ្វីដែលបង់លើស
+         ពីនោះ — អាករជំនួស · ការបង់កំឡុងសវនកម្ម · ការបង់យឺតយ៉ាវ — ចេញពី
+         ទីនេះ ហើយបង្ហាញនៅសន្លឹក MTR វិញ ( vatToMtrByMonth ) ។
+       ⚠ `c12Raw` រក្សាតួលេខដើមទុក ⇒ ភស្តុតាងមិនបាត់ ។ ជួរធ្វើការ «អាករជំនួស
+         (RVC)» នៅក្បែរ បង្ហាញចំនួនដែលដកចេញ ⇒ ការដកមិនស្ងាត់ ។
+       ⚠ ដាក់ជាន់ត្រឹម ០ ៖ បើអាករជំនួសធំជាងអ្វីដែលកត់ថាបានបង់ លទ្ធផល
+         អវិជ្ជមាននឹងអានថា «បង់តិចជាងគួរ» ដែលខុសទាំងស្រុង ។ */
+    if(r.cRvc) r.c12 = Math.max(0, (r.c12 || 0) - r.cRvc);
     r.cDiff = (r.c12 || 0) - r.cDue;      /* បង់ − គួរបង់ */
   });
   const sum = (k) => rows.reduce((a,r)=> a + (r[k]||0), 0);
@@ -22197,10 +22432,11 @@ function buildVATFormSheet(year, opts){
     { key:'c10Diff',  label:'គំលាតឥណទាន (ប្រកាស − គណនា)' },
     { key:'cDueCalc', label:'អាករត្រូវបង់ (គណនាដោយយើង)' },
 
+    /* [stated] ២០២៦-០៩-០២ ៖ ដាក់ជួរអាករជំនួសនៅ **មុខ** Other Expenses */
+    { key:'cRvc', label:'អាករជំនួស (RVC)' },
     { key:'otherExpenses', label:'Other Expenses' },
     { key:'prCN', label:'PR CN' }, { key:'prDN', label:'PR DN' },
     { key:'srCN', label:'Sale CN' }, { key:'srDN', label:'Sale DN' },
-    { key:'cRvc', label:'អាករបញ្ច្រាស (RVC)' },
   ];
   const extra = forPrint ? [] : calcCols;
   const nCols = 13 + extra.length; // ខែ + 12 numbered columns + working columns
