@@ -22,9 +22,23 @@
     var EXEC = 'https://script.google.com/macros/s/AKfycbzLnWeB05H8oqWAtM1hiw_FdYunlns01NkHR4MjsY5QbiT3Xuh-xdSDzKIuIYbB33k0/exec';
     var go = function(u){ location.replace(u); };
     if(location.protocol.indexOf('http') !== 0) return;   /* file:// ⇒ គ្មានឆ្មាំ */
-    fetch('./login.html', {method:'HEAD'})
-      .then(function(r){ go(r && r.ok ? './login.html' : EXEC); })
-      .catch(function(){ go(EXEC); });
+    /* ⚠⚠ [stated] ២០២៦-០៩-០២ ៖ គេចេញនៅទំព័រចូលរបស់ Apps Script ( /exec )
+       ជំនួសទំព័រចូលរបស់យើង ⇒ មានន័យថាការពិនិត្យ HEAD នេះ **មិនបានឆ្លើយ ok** ។
+       កំហុសនៃការរចនាដើម ៖ ការតភ្ជាប់ដាច់មួយភ្លែត ឬ service worker ដែលឆ្លើយ
+       មិនល្អ ក៏ត្រូវចាត់ថា «login.html គ្មាន» ដែរ ⇒ អ្នកប្រើត្រូវបោះទៅទំព័រ
+       Google ដែលមានពាក្យ «created by a Google Apps Script user» ។
+       ⇒ ត្រឡប់ទៅ EXEC **តែពេល ៤០៤ ពិតប្រាកដ** ( ឯកសារពិតជាគ្មាន ) ។ ករណី
+         ផ្សេងទាំងអស់ — បណ្តាញដាច់ · អស់ពេល · កំហុសមិនស្គាល់ — ទៅ login.html
+         ដដែល ព្រោះវាជាផ្លូវត្រឹមត្រូវ ហើយបើវាពិតជាដាច់ អ្នកប្រើឃើញ ៤០៤
+         ដែលអាចរាយការណ៍បាន ជាជាងវង្វេងស្ងាត់ៗ ។
+       ⚠ ក៏ដាក់ពេលកំណត់ ១.២ វិនាទីដែរ ៖ ការពិនិត្យដែលព្យួរធ្វើឱ្យអេក្រង់ស
+         ខណៈកម្មវិធីរុករកបន្តទាញឯកសារ ៤ MB ដែលមិនចាំបាច់ ។ */
+    var done = false;
+    var jump = function(u){ if(done) return; done = true; go(u); };
+    setTimeout(function(){ jump('./login.html'); }, 1200);
+    fetch('./login.html', {method:'HEAD', cache:'no-store'})
+      .then(function(r){ jump(r && r.status === 404 ? EXEC : './login.html'); })
+      .catch(function(){ jump('./login.html'); });
   }catch(e){}
 })();
 </script>
