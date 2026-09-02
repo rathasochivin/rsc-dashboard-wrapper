@@ -17043,6 +17043,8 @@ function renderModuleOverview(){
        title:"ទិន្នានុប្បវត្តលក់", stat: fmtCount(state.sale.length),
        subLinks:[
          {id:"sale-cd", label:"ទិន្នានុប្បវត្តលក់ CN DN"},
+         /* [stated] ២០២៦-០៩-០២ ៖ វាជាផ្នែកមួយនៃទិន្នានុប្បវត្តិលក់ ⇒ តំណរងទីនេះ */
+         {id:"vat-rvc", label:"VAT Reverse Charge"},
        ]},
       {id:"purchase", icon:"🧾", color:"var(--primary)", bg:"var(--accent-light)",
        title:"ទិន្នានុប្បវត្តទិញ", stat: fmtCount(state.purchase.length),
@@ -22136,10 +22138,21 @@ function buildVATFormSheet(year, opts){
      រួចបង្ហាញអាករត្រូវបង់ទាំងពីរជាមួយគ្នា ⇒ ឃើញភ្លាមថា «គួរចេញប៉ុននេះ
      តែគេប្រកាសប៉ុននេះ» ។ ⚠ ជួរធ្វើការទាំងនេះលាក់ពេលព្រីន។ */
   const creditCalc = computeVATCreditChain(year, rows, null);
+  var rvcMonthly = [];
+  try{
+    if(typeof window.__vatRvcMonthly === 'function') rvcMonthly = window.__vatRvcMonthly(year) || [];
+  }catch(e){ rvcMonthly = []; }
   const cfIn0 = getVATCreditBroughtForward(year) || 0;
   rows.forEach((r, i)=>{
     r.c10 = creditByMonth[i];
     r.c10Calc = creditCalc[i];
+    /* ⭐ [stated] ២០២៦-០៩-០២ ៖ «បង្ហាញវានៅក្នុង VAT ផង ដូច SR PR CN DN ដែរ»
+       ⇒ អាករបញ្ច្រាសមកជា **ជួរធ្វើការ** ( បង្ហាញលើអេក្រង់ · មិនព្រីន )
+         ដូច Other Expenses · PR CN/DN · Sale CN/DN ។
+       ⚠ វានៅតែ **មិនចូល** ជួរ «អាករបានបង់» ឬខ្សែសង្វាក់ឥណទានទេ — ការបង់
+         នោះរត់ទៅសន្លឹក MTR តាមច្បាប់ដែលអ្នកកំណត់ ។ ទីនេះគ្រាន់តែឱ្យឃើញ
+         ក្បែរតួលេខដទៃ ដើម្បីផ្ទៀងផ្ទាត់ ។ */
+    r.cRvc = (rvcMonthly && +rvcMonthly[i]) || 0;
     r.c10Diff = (declaredCredit && declaredCredit[i]) ? (r.c10 - r.c10Calc) : 0;
     const inCalc = (i === 0) ? cfIn0 : (creditCalc[i-1] || 0);
     const netCalc = (r.c4 || 0) - (r.c9 || 0) - inCalc;
@@ -22187,6 +22200,7 @@ function buildVATFormSheet(year, opts){
     { key:'otherExpenses', label:'Other Expenses' },
     { key:'prCN', label:'PR CN' }, { key:'prDN', label:'PR DN' },
     { key:'srCN', label:'Sale CN' }, { key:'srDN', label:'Sale DN' },
+    { key:'cRvc', label:'អាករបញ្ច្រាស (RVC)' },
   ];
   const extra = forPrint ? [] : calcCols;
   const nCols = 13 + extra.length; // ខែ + 12 numbered columns + working columns
