@@ -40914,6 +40914,15 @@ function narrSplitTable(el, room){
   /* ⚠ បង្ហាញចេញសម្រាប់ការសាកល្បង ៖ paginator ស្ថិតក្នុង IIFE ដូច្នេះ
      ការវាស់ពីខាងក្រៅត្រូវការស្ពានមួយ។ */
   if(!el || el.tagName !== 'TABLE') return null;
+  /* ⭐⭐ [stated] ២០២៦-០៩-០១ ៖ «បាត់សរុបរួម» — តារាងសរុបចុងក្រោយចេញលើ
+     ក្រដាសដោយ **បាត់ជួរ ៣ ដំបូង** ( សរុបរួម · ឆ្នាំថ្មីបំផុត សរុប · ជួរ
+     ប្រភេទពន្ធដំបូង ) ខណៈអេក្រង់បង្ហាញគ្រប់ជួរ ។
+     ⚠ តារាងសរុបគឺជា **លទ្ធផលចុងក្រោយនៃឯកសារទាំងមូល** ៖ ការបាត់ជួរណាមួយ
+       ក្នុងវា ជាការបាត់តួលេខផ្លូវការ មិនមែនបញ្ហាសោភ័ណភាពទេ ។ ដូច្នេះវា
+       ត្រូវចាត់ជា **មិនអាចកាត់បាន** ៖ បើមិនល្មម រុញទាំងមូលទៅទំព័របន្ទាប់
+       ជាជាងប្រថុយកាត់ ។ តារាងតាមឆ្នាំដទៃនៅកាត់បានដដែល ( វាវែង ហើយ
+       ការកាត់ទីនោះមានប្រយោជន៍ ) ។ */
+  if(el.classList && el.classList.contains('nr-nosplit')) return null;
   const tb = el.tBodies && el.tBodies[0];
   if(!tb) return null;
   const rows = Array.from(tb.rows);
@@ -41199,7 +41208,8 @@ function narrHtml(forPrint){
     });
     body += '<div class="nr-sec nr-break"><div class="nr-h1 nr-mid">' +
       '<u>សរុបប្រាក់ពន្ធ និងទោសទណ្ឌត្រូវបង់បន្ថែម (ការិយបរិច្ឆេទ ' + esc(cols.join('-')) + ')</u></div>';
-    body += '<table class="nr-tbl nr-tbl2"><thead><tr><th>ការិយបរិច្ឆេទ</th><th>ប្រភេទពន្ធ</th>' +
+    /* nr-nosplit ⇒ តារាងសរុបរួមមិនត្រូវកាត់ឆ្លងទំព័រ ( មើល narrSplitTable ) */
+    body += '<table class="nr-tbl nr-tbl2 nr-nosplit"><thead><tr><th>ការិយបរិច្ឆេទ</th><th>ប្រភេទពន្ធ</th>' +
       '<th>ប្រាក់ពន្ធត្រូវបង់</th><th>ពន្ធបន្ថែម</th><th>ការប្រាក់</th><th>សរុប</th></tr></thead><tbody>';
     body += '<tr class="sum"><td colspan="2">សរុបរួម</td><td>' + narrRiel(gT) + '</td><td>' +
       narrRiel(gA) + '</td><td>' + narrRiel(gI) + '</td><td>' + narrRiel(grand) + '</td></tr>';
