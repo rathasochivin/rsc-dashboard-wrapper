@@ -3850,6 +3850,26 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     #toi-embed .print-landscape{ page:print-landscape-page; page-break-after:always; }
     #toi-embed .print-landscape .table-wrap{border:1px solid #999; page-break-inside:avoid;}
     #toi-embed .print-landscape thead th{white-space:normal; word-break:break-word; line-height:1.2;}
+
+
+
+
+    /* ⭐ [stated] ២០២៦-០៩-០២ ៖ «លុបបន្ទាត់ពីក្រោមអក្សរជំហាននីមួយៗ ព្រោះវា
+       មើលទៅដូចបន្ទាត់ពីរជាន់» ។ ⚠ ច្បាប់អេក្រង់ដាក់ border-bottom 2px លើ
+       .panel-title ហើយប្លុកព្រីនកែតែ padding ⇒ បន្ទាត់នៅជាប់មក ហើយឈរ
+       ជាប់នឹងស៊ុមខាងលើតារាង ⇒ មើលទៅជាពីរជាន់ ។ លុបតែពេលព្រីន ។ */
+    #toi-embed .print-page .panel-title,
+    #toi-embed .panel-title{ border-bottom:0 !important; padding-bottom:2px !important; }
+
+    /* ⚠⚠ ២០២៦-០៩-០២ ៖ ច្បាប់ព្រីនរបស់ខ្ញុំសម្រាប់ជំហានទី១០ ត្រូវ **ដកចេញ** ។
+       មូលហេតុ ៖ `autoFitPrintArea` វាស់ទទឹងពិតរបស់តារាង រួចកំណត់ font-size
+       ជា inline style ( Step10 អប្បបរមា 10px ) ។ ច្បាប់ `font-size:8pt !important`
+       របស់ខ្ញុំ **ឈ្នះលើ inline** ⇒ ការវាស់លែងមានន័យ ; ហើយ `table-layout:fixed`
+       បង្ខំជួរឈរ ១២ ឱ្យស្មើគ្នា ⇒ ក្បាលតារាងខ្មែរចុះបន្ទាត់ ៦-៧ ជួរ ⇒ តារាង
+       ខ្ពស់ជាងទំព័រ ⇒ បែកជាពីរទំព័រ ។ ការ «ជួយ» របស់ខ្ញុំបំបែកឧបករណ៍ដែល
+       ដំណើរការស្រាប់ ។
+       ⭐ ច្បាប់ ៖ មុននឹងបន្ថែម !important ត្រូវរកមើលថាមានកូដណាកំណត់
+         ទ្រព្យសម្បត្តិនោះជា inline រួចហើយឬអត់ ។ */
   }
 
 /* ================= 2026-08-07 ចំណុចដែលអ្នកប្រើស្នើ =================
@@ -32247,7 +32267,6 @@ function renderAssetsPanel(){
   const yrs = visibleYears().filter(y=> state.assets.byYear[y]);
   const wrap = el('div');
   wrap.appendChild(el('h2',{class:'panel-title'}, 'ការវិភាគទ្រព្យសកម្មរយៈពេលវែង & រំលស់ (ជំហានទី១០)'));
-
   if(yrs.length===0){
     wrap.appendChild(el('p',{class:'panel-sub'}, 'គ្មានទិន្នន័យជំហានទី១០ ក្នុងឯកសារដែលបានផ្ទុកទេ។'));
     return wrap;
@@ -33535,6 +33554,9 @@ function renderRawStepPanel(stepKey){
   const wrap = el('div', LANDSCAPE_STEPS.includes(stepKey) ? {class:'print-landscape'} : null);
   wrap.appendChild(el('h2',{class:'panel-title'}, rsRaw.title));
   const stepActionsRaw = el('div',{class:'step-actions no-print'});
+  /* ⭐⭐ [stated] ២០២៦-០៩-០២ ៖ «បង្កើតប៊ូតុង Print ថ្មី ១ សម្រាប់តែជំហានទី១០
+     ជំហានមុនរក្សាធម្មតា» ។ ⇒ ការព្រីនធម្មតា **មិនប៉ះ** ; ប៊ូតុងនេះសង់
+     ផ្ទាំងបណ្ដោះអាសន្នផ្ទាល់ខ្លួន ⇒ ច្បាប់របស់វាឯករាជ្យទាំងស្រុង ។ */
   const exportBtnRaw = el('button',{class:'btn no-print'}, '📊 ទាញយកទិន្នន័យជំហាននេះ');
   exportBtnRaw.onclick = ()=> exportStepToExcel(stepKey);
   stepActionsRaw.appendChild(exportBtnRaw);
@@ -33560,6 +33582,71 @@ function renderRawStepPanel(stepKey){
   const prevAoa = showRawPrev ? rsRaw.byYear[prevYearKey] : null;
 
   const NO_BORDER_STEPS = ['Step1','Step2'];
+  /* ⭐⭐ [stated] ២០២៦-០៩-០២ ៖ «ហេតុអ្វីមានបន្ទាត់គូសនៅជួរ តម្លៃមូលដ្ឋានគិត
+     រំលស់…» ( ជំហានទី១០ ) ។
+     ⚠⚠ ការទាយដំបូងរបស់ខ្ញុំ ( ជួរឈរទទេ · ក្រឡាបញ្ចូលគ្នា ) **ខុសទាំងពីរ** ។
+       ការវាស់សន្លឹកពិត ៖ គ្មានជួរឈរទទេសោះ ។ មូលហេតុពិត ៖
+         ផ្នែក I · II · III មាន **១២ ជួរឈរ**
+         ផ្នែក IV        មាន **១០ ជួរឈរ** ( ក្បាលខុសគ្នាទាំងស្រុង )
+       ⇒ ពួកវាស្ថិតក្នុងតារាង **តែមួយ** ⇒ កម្មវិធីរុករករៀបជា ១២ ជួរឈរ
+         ហើយក្បាលរបស់ផ្នែក IV រអិលទៅមួយជួរ ⇒ ព្រំដែនជួរឈរលេចកាត់
+         ចំកណ្តាលក្បាល «តម្លៃមូលដ្ឋានគិតរំលស់» ។ នោះជា «បន្ទាត់គូស» ។
+     ⇒ ដំណោះស្រាយ ៖ បំបែកជា **តារាងដាច់ដោយឡែក** តាមចំនួនជួរឈរ ។ ផ្នែក
+       ដែលមានចំនួនជួរឈរដូចគ្នា នៅតារាងតែមួយដដែល ⇒ រូបរាងមិនប្រែ ។
+     ⚠ ធ្វើតែលើជំហានទី១០ ⇒ ជំហានផ្សេងហូរតាមផ្លូវចាស់បេះបិទ ។ */
+  /* ⚠⚠ ២០២៦-០៩-០២ ៖ ការកែមុនមិនដើរពេលព្រីន ៖ ខ្ញុំដាក់លក្ខខណ្ឌ `!prevAoa` ។
+     ពេលព្រីន ប្រព័ន្ធកំណត់ត្រឹមមួយឆ្នាំ ⇒ ជួរឈរប្រៀបធៀបឆ្នាំមុនបើក ⇒
+     `prevAoa` មិន null ⇒ ការបំបែកត្រូវរំលង ⇒ ក្រដាសនៅដដែល ។
+     ⇒ ឥឡូវបំបែក **ទាំងសងខាង** ៖ កាត់ `prevAoa` តាមលេខជួរដេកដដែល ។ */
+  if(stepKey === 'Step10' && Array.isArray(aoa)){
+    const lastCol = function(r){
+      let last = -1;
+      (r || []).forEach(function(c, i){ if(c !== null && c !== '') last = i; });
+      return last;
+    };
+    const cellCount = function(r){
+      let n = 0;
+      (r || []).forEach(function(c){ if(c !== null && c !== '') n++; });
+      return n;
+    };
+    /* ចែកជាផ្នែក ៖ ជួរដេកមួយក្រឡា ( ចំណងជើងផ្នែក ) ចាប់ផ្តើមផ្នែកថ្មី */
+    const segs = [];
+    let cur = [], curFrom = 0;
+    aoa.forEach(function(r, ri){
+      if(cellCount(r) === 1 && cur.some(function(x){ return cellCount(x) > 1; })){
+        segs.push({rows:cur, from:curFrom, to:ri}); cur = []; curFrom = ri;
+      }
+      cur.push(r);
+    });
+    if(cur.length) segs.push({rows:cur, from:curFrom, to:aoa.length});
+    /* ចំនួនជួរឈររបស់ផ្នែក = ធំបំផុតក្នុងជួរដេកដែលមានលើសមួយក្រឡា */
+    const widthOf = function(seg){
+      let w = 0;
+      seg.rows.forEach(function(r){ if(cellCount(r) > 1) w = Math.max(w, lastCol(r) + 1); });
+      return w;
+    };
+    /* ភ្ជាប់ផ្នែកជាប់គ្នាដែលទទឹងដូចគ្នា ⇒ តារាងតិចតួចតាមដែលអាចធ្វើបាន */
+    const groups = [];
+    segs.forEach(function(seg){
+      const w = widthOf(seg);
+      const g = groups[groups.length - 1];
+      if(g && (g.w === w || w === 0)){ g.rows = g.rows.concat(seg.rows); g.to = seg.to; }
+      else groups.push({ w:w, rows:seg.rows.slice(), from:seg.from, to:seg.to });
+    });
+    if(groups.length > 1){
+      groups.forEach(function(g){
+        /* ⚠ ជួរឈរប្រៀបធៀបឆ្នាំមុនផ្គូផ្គងតាម **លេខជួរដេក** ⇒ កាត់វា
+           តាមចន្លោះដដែល បើមិនដូច្នេះទេ តួលេខឆ្នាំមុននឹងរអិលខុសជួរ ។ */
+        const pg = prevAoa ? prevAoa.slice(g.from, g.to) : null;
+        wrap.appendChild(renderAoaTable(g.rows, pg,
+          {noBorder: NO_BORDER_STEPS.includes(stepKey), stepKey}));
+      });
+      if(showRawPrev){
+        wrap.appendChild(el('p',{class:'panel-sub'}, 'ជួរឈរចុងក្រោយ ' + prevYearKey + ' (N-1) សម្រាប់ប្រៀបធៀប — ផ្គូផ្គងតាមទីតាំងជួរដើមក្នុងសន្លឹកកិច្ចការ'));
+      }
+      return wrap;
+    }
+  }
   wrap.appendChild(renderAoaTable(aoa, prevAoa, {noBorder: NO_BORDER_STEPS.includes(stepKey), stepKey}));
   if(showRawPrev){
     wrap.appendChild(el('p',{class:'panel-sub'}, 'ជួរឈរចុងក្រោយ ' + prevYearKey + ' (N-1) សម្រាប់ប្រៀបធៀប — ផ្គូផ្គងតាមទីតាំងជួរដើមក្នុងសន្លឹកកិច្ចការ'));
