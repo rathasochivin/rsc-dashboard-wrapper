@@ -7244,6 +7244,18 @@ function rscGapNoteSet(k, txt, missTxt){
 }
 window.__rscGapNotes = rscGapNotes;
 
+/* កាលបរិច្ឆេទខ្លី ថ្ងៃ/ខែ/ឆ្នាំ — សម្រាប់ស្លាក «កត់ …» ។
+   ⚠ ចាប់យកពេលដោយស្វ័យប្រវត្តិ ⇒ អ្នកប្រើមិនបាច់រើសថ្ងៃ ហើយក៏មិនអាច
+     វាយថ្ងៃខុសបានដែរ ⇒ ភស្តុតាងគួរឱ្យទុកចិត្តជាង ។ */
+function dmy(ms){
+  try{
+    var d = new Date(ms);
+    if(isNaN(d)) return '';
+    var p = function(n){ return (n < 10 ? '0' : '') + n; };
+    return p(d.getDate()) + '/' + p(d.getMonth() + 1) + '/' + d.getFullYear();
+  }catch(e){ return ''; }
+}
+
 function rscUploadReport(){
   var CI = {};
   var gapNotes = rscGapNotes();
@@ -7415,8 +7427,18 @@ function rscUploadReport(){
       __coName = String(__ei.name || '').trim();
     }
   }catch(e){ __coName = ''; }
+  /* [stated] ២០២៦-០៩-០២ ៖ បន្ថែមលេខអតបជាប់ឈ្មោះ ⇒ រូបភាពដែលផ្ញើទៅសវនករ
+     កំណត់អត្តសញ្ញាណសំណុំរឿងបានច្បាស់ ( ឈ្មោះស្រដៀងគ្នាមានច្រើន ) ។ */
+  var __coTin = '';
+  try{
+    __coTin = String((CI && CI.tin) || '').replace(/\D/g, '').slice(-9);
+    if(!__coTin && window.__rscEnterpriseInfo){
+      __coTin = String((window.__rscEnterpriseInfo() || {}).tin || '').replace(/\D/g, '').slice(-9);
+    }
+  }catch(e){ __coTin = ''; }
+  var __coLine = (__coName || '') + (__coTin ? (__coName ? '  ·  ' : '') + 'អតប ' + __coTin : '');
   var h = '<div style="font-weight:700; font-size:17px; margin-bottom:12px;">📋 ឯកសារដែលបានផ្ទុក'
-    + (__coName ? ' <span style="font-weight:400; color:#4a5250;">— ' + esc(__coName) + '</span>' : '')
+    + (__coLine ? ' <span style="font-weight:400; color:#4a5250;">— ' + esc(__coLine) + '</span>' : '')
     + '</div>';
 
   h += '<div style="padding:8px 10px; background:#F6F3E9; border-radius:8px; margin-bottom:10px;">'
@@ -7464,8 +7486,14 @@ function rscUploadReport(){
                 : 'color:#A83A26;">⚠ ខ្វះខែ ')
           + ranges(miss) + '</span>'
           + (nt ? '<div style="color:#3d6b4c; font-size:11.5px; padding-left:2px;">'
-                  + esc(nt.t) + (nt.m && nt.m !== ranges(miss)
-                      ? ' <span style="color:#8a8f88;">( សម្គាល់ធ្វើពេលខ្វះខែ ' + esc(nt.m) + ' )</span>'
+                  + esc(nt.t)
+                  /* [stated] ២០២៦-០៩-០២ ៖ «បញ្ចូលពេលណា ដាក់ថ្ងៃខែឆ្នាំពេលនោះ
+                     តែម្តង មិនចាំរើសថ្ងៃទេ» ⇒ ពេលវេលាកត់ទុករួចស្រាប់ក្នុង
+                     `at` ⇒ បង្ហាញវាចេញមក ។ ⚠ ជាថ្ងៃដែល **កត់សម្គាល់**
+                     មិនមែនថ្ងៃដែលឯកសារខ្វះទេ ⇒ ស្លាកនិយាយច្បាស់ ។ */
+                  + (nt.at ? ' <span style="color:#8a8f88;">· កត់ ' + esc(dmy(nt.at)) + '</span>' : '')
+                  + (nt.m && nt.m !== ranges(miss)
+                      ? ' <span style="color:#8a8f88;">( ពេលកត់ខ្វះខែ ' + esc(nt.m) + ' )</span>'
                       : '') + '</div>'
                 : '')
           + '</div>';
@@ -7483,9 +7511,29 @@ function rscUploadReport(){
   if(extras.length){
     h += '<div style="margin-top:10px; padding:8px 10px; background:#F6F3E9; border-radius:8px;'
       + 'font-size:12.5px;">';
+    /* ⭐⭐ [stated] ២០២៦-០៩-០២ ៖ «ផ្នែក MTR ដល់ COMPANYINFO ករណីមិនមានឯកសារ
+       ជួយសម្គាល់អាចចុចធីកបាន នឹងហាយឡាយពេលចុចធីក ដោយបញ្ជាក់ថ្ងៃខែឆ្នាំផង» ។
+       ⇒ ប្រើឃ្លាំងសម្គាល់ដដែល ( rscGapNoteV1 ) ជាមួយកូនសោ «extra|<ស្លាក>» ⇒
+         វាចូលឯកសារ 💾 និងលុបពេលប្តូរសហគ្រាសដូចគ្នា ⇒ គ្មានផ្លូវរក្សាទុកថ្មី ។
+       ⚠ ធីកបានតែធាតុ **ដែលមិនមាន** ⇒ ធាតុដែលមានឯកសាររួច គ្មានអ្វីត្រូវសម្គាល់ ។ */
     extras.forEach(function(x){
-      h += '<div style="margin:2px 0;"><b>' + esc(x.k) + ' ៖</b> '
-        + (x.v ? esc(x.v) : '<span style="color:#A83A26;">មិនមាន</span>') + '</div>';
+      if(x.v){
+        h += '<div style="margin:2px 0;"><b>' + esc(x.k) + ' ៖</b> ' + esc(x.v) + '</div>';
+        return;
+      }
+      var ek = 'extra|' + x.k;
+      var en = gapNotes[ek];
+      h += '<div style="margin:3px 0;' + (en ? 'background:#E9F4EC; border-radius:5px; padding:2px 6px;' : '') + '">'
+        + '<b>' + esc(x.k) + ' ៖</b> '
+        + '<span data-xk="' + esc(ek) + '" data-xl="' + esc(x.k) + '"'
+        + ' title="ចុចដើម្បីសម្គាល់ថាបានពិនិត្យរួច" style="cursor:pointer; font-weight:700;'
+        + 'border-radius:5px; padding:1px 7px;'
+        + (en ? 'color:#125c2e; background:#DCF0DF; border:1px solid #A9D6B4;">☑ បានពិនិត្យ'
+              : 'color:#A83A26;">☐ មិនមាន')
+        + '</span>'
+        + (en ? '<span style="color:#3d6b4c; font-size:11.5px;">  ' + esc(en.t || '')
+                + (en.at ? ' · កត់ ' + esc(dmy(en.at)) : '') + '</span>' : '')
+        + '</div>';
     });
     h += '</div>';
   }
@@ -7573,6 +7621,18 @@ function rscUploadReport(){
       else if(e.key === 'Enter' && (e.ctrlKey || e.metaKey)){ done(String(ta.value).trim()); }
     };
   }
+  /* ធីក / ដកធីក លើធាតុ MTR…COMPANYINFO ដែលមិនមាន */
+  card.querySelectorAll('[data-xk]').forEach(function(sp){
+    sp.onclick = function(ev){
+      ev.stopPropagation();
+      var k = sp.getAttribute('data-xk');
+      var cur = rscGapNotes()[k];
+      if(cur){ rscGapNoteSet(k, ''); }        /* ធីករួច ⇒ ចុចម្តងទៀត ⇒ ដក */
+      else{ rscGapNoteSet(k, 'បានពិនិត្យ — សហគ្រាសមិនមានឯកសារនេះ', ''); }
+      try{ ov.remove(); }catch(e){}
+      rscUploadReport();
+    };
+  });
   card.querySelectorAll('[data-gap]').forEach(function(sp){
     sp.onclick = function(ev){
       ev.stopPropagation();
@@ -14763,6 +14823,18 @@ function vrcYM(v){
   if(m) return { y:+m[3], m:+m[2] };          /* dd-mm-yyyy */
   m = /^(\d{1,2})[-\/.](\d{4})$/.exec(s);
   if(m) return { y:+m[2], m:+m[1] };
+  /* ⭐ ២០២៦-០៩-០២ ៖ Excel បង្ហាញ «ប្រកាសប្រចាំខែ» ជា **Feb-26 · Jan-26** ។
+     ⚠ ២ ខ្ទង់ ៖ 26 ⇒ 2026 ( មិនមែន 1926 ) ។ */
+  m = /^([A-Za-z]{3,})[-\/ ]?(\d{2,4})$/.exec(s);
+  if(m){
+    var MN = {jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
+    var mo = MN[m[1].slice(0,3).toLowerCase()];
+    if(mo){
+      var yy = +m[2];
+      if(yy < 100) yy += (yy > 70 ? 1900 : 2000);
+      return { y:yy, m:mo };
+    }
+  }
   return null;
 }
 /* ⚠ ក្បាលតារាងពិតមាន **តួអក្សរទទឹងសូន្យ** ( U+200B ) នៅចុង ⇒ ការប្រៀបធៀប
@@ -15015,13 +15087,37 @@ function detectIsMTRByName(fileName, relPath){
 }
 function detectFileCategory(fileName, aoa, sheetNames, relPath){
   const fn = fileName.toLowerCase();
-  if(detectIsMTR(sheetNames) || detectIsVATCRSheet(aoa) || detectIsMTRSheet(aoa)
-     || detectIsMTRByName(fileName, relPath)) return 'mtr';
+  /* ⭐⭐ [stated] ២០២៦-០៩-០២ ៖ «នៅ folder មានឯកសារ Excel VATRVC តែពេល upload
+     វាអត់ស្គាល់» ។ មូលហេតុរកឃើញ ៖ `detectIsVATCRSheet` រាប់ពាក្យ ២ ក្នុង
+     ចំណោម ប្រភេទសំណើ · **ឥណទានយោង** · បង្វិលសង · **បារកូដ** ។ សន្លឹក VATRVC
+     មានទាំង «បារកូដ» និង «ឥណទានយោង» ⇒ ២ ពាក្យ ⇒ វាត្រូវចាត់ជា **MTR**
+     ហើយបញ្ជូនទៅម៉ូឌុល MTR មុនដល់ការពិនិត្យ VATRVC ⇒ បាត់ស្ងាត់ៗ ។
+     ⇒ ពិនិត្យ VATRVC **មុនគេ** ព្រោះសញ្ញារបស់វាជាក់លាក់ជាង ។
+     ⚠ ការពារឯកសារ VATCR ពិត ៖ បើសន្លឹកមាន «ប្រភេទសំណើ» ឬ «បង្វិលសង»
+       ( សញ្ញាផ្តាច់មុខរបស់ VATCR ) នោះទុកឱ្យផ្លូវ MTR ដដែល លើកលែងតែ
+       ឈ្មោះសន្លឹក ឬឈ្មោះឯកសារនិយាយច្បាស់ថា VATRVC / REVERSE_CHARGE ។ */
+  /* ⚠⚠ ២០២៦-០៩-០២ ៖ ការកែមុនរបស់ខ្ញុំដាក់ការពិនិត្យ VATRVC នៅ **មុនគេបំផុត**
+     ⇒ សៀវភៅការងាររួម ( WORKBOOK DATA.xlsx ដែលមានសន្លឹក MTR · VATCR ·
+     Audit History **និង** VATRVC ) ត្រូវចាត់ជា vatRvc ទាំងមូល ⇒ សាលកបត្រ
+     បាត់ ។ ការជួសជុលមួយបង្កើតការខូចមួយទៀត ។
+     ⇒ លំដាប់ត្រឹមត្រូវ ៖
+       ១ ឈ្មោះសន្លឹក/ឈ្មោះឯកសារនិយាយថា MTR ⇒ 'mtr' ( សៀវភៅរួមឈ្នះជានិច្ច )
+       ២ បើមិនមែន ⇒ ពិនិត្យ VATRVC ( ឯកសារឯកត្តជន )
+       ៣ បន្ទាប់មកទើបការពិនិត្យតាម **ខ្លឹមសារ** ( VATCR · MTR sheet ) ដែល
+         ជាអ្នកលេបឯកសារ VATRVC ពីដំបូង ។ */
+  if(detectIsMTR(sheetNames) || detectIsMTRByName(fileName, relPath)) return 'mtr';
+
+  var __vrcHead = (aoa || []).slice(0, 6).map(function(r){ return (r || []).join(' '); }).join(' ');
+  var __vrcNamed = (sheetNames || []).some(function(n){
+        var u = String(n || '').toUpperCase();
+        return u.indexOf('VATRVC') >= 0 || u.indexOf('REVERSE') >= 0;
+      }) || /vatrvc|reverse[\s_-]?charge/i.test(String(fileName || '') + ' ' + String(relPath || ''));
+  var __looksVatcr = __vrcHead.indexOf('ប្រភេទសំណើ') >= 0 || __vrcHead.indexOf('បង្វិលសង') >= 0;
+  if(detectIsVATRVC(fn, aoa, sheetNames || []) && (__vrcNamed || !__looksVatcr)) return 'vatRvc';
+
+  if(detectIsVATCRSheet(aoa) || detectIsMTRSheet(aoa)) return 'mtr';
   if(detectIsTOI(sheetNames) || detectIsTOIByPath(fileName, relPath)) return 'toi';
   if(detectIsTOS(fileName, relPath, aoa)) return 'tos';
-  /* ⚠ មុន WHT និងមុនការទាយ SALE/PURCHASE ៖ សញ្ញាសម្គាល់របស់វាជាក់លាក់
-     ( សន្លឹក VATRVC/REVERSE_CHARGE ឬ «ការផ្គត់ផ្គង់ជាប់អាករ» ) ។ */
-  if(detectIsVATRVC(fn, aoa, sheetNames || [])) return 'vatRvc';
   if(detectIsWHT(fn, aoa)) return 'wht';
   if(detectIsOtherExpenses(fn, aoa)) return 'otherExpenses';
   const isCD = hasFilenameToken(fn, ['cd','cn','dn']) || detectAdjTypeColumn(aoa) != null;
@@ -51105,9 +51201,13 @@ function pkTime(f){
 #co-gate .cg-sub{ margin-top:5px; font-size:12.5px; color:rgba(239,231,210,.62); }
 #co-gate .cg-tools{ display:flex; gap:8px; padding:12px 22px; }
 #co-gate .cg-tools input{ flex:1 1 auto; }
-#co-gate input{ padding:10px 12px; border-radius:3px; border:1px solid rgba(200,166,75,.28);
+#co-gate input, #co-gate textarea{ padding:10px 12px; border-radius:3px; border:1px solid rgba(200,166,75,.28);
   background:rgba(6,32,33,.6); color:#EFE7D2; font:inherit; font-size:14px; }
-#co-gate input:focus{ outline:none; border-color:#C8A64B; background:rgba(6,32,33,.85); }
+#co-gate input:focus, #co-gate textarea:focus{ outline:none; border-color:#C8A64B; background:rgba(6,32,33,.85); }
+/* ⭐ ២០២៦-០៩-០២ ៖ ប្រអប់ស្នើសុំក្លាយជា textarea ( ច្រើនសហគ្រាស ) ⇒ ត្រូវ
+   ទទួលស្ទីលដដែលនឹង input ។ រីកតាមខ្លឹមសារ តែមិនលើសកម្ពស់កំណត់ ។ */
+#co-gate .cg-new-row textarea{ resize:vertical; min-height:42px; max-height:150px;
+  line-height:1.5; overflow:auto; }
 #co-gate input:focus-visible{ outline:2px solid #F0C860; outline-offset:2px; }
 #co-gate .cg-btn{ padding:10px 15px; border:0; border-radius:3px; cursor:pointer; font:inherit;
   font-weight:700; font-size:13.5px; background:linear-gradient(180deg,#F0C860,#C8A64B); color:#17170F;
@@ -51166,9 +51266,9 @@ function pkTime(f){
   background:rgba(6,32,33,.35); }
 #co-gate .cg-new-h{ font-size:12.5px; color:rgba(239,231,210,.7); margin-bottom:9px; }
 #co-gate .cg-new-row{ display:flex; gap:8px; }
-#co-gate .cg-new-row input:first-child{ width:150px; flex:none;
+#co-gate .cg-new-row textarea:first-child{ width:170px; flex:none;
   font-family:'Khmer OS Siemreap','Noto Sans Khmer',system-ui,-apple-system,'Segoe UI',sans-serif; font-variant-numeric:tabular-nums; letter-spacing:.06em; }
-#co-gate .cg-new-row input:nth-child(2){ flex:1 1 auto; }
+#co-gate .cg-new-row textarea:nth-child(2){ flex:1 1 auto; }
 #co-gate .cg-msg{ margin-top:9px; font-size:12.5px; min-height:17px; color:#8FE0A5; }
 #co-gate .cg-msg.bad{ color:#FF9A8A; }
 
@@ -51191,7 +51291,7 @@ function pkTime(f){
   #co-gate{ padding:0; }
   #co-gate .cg-box{ max-height:100vh; border-radius:0; border:0; }
   #co-gate .cg-new-row{ flex-wrap:wrap; }
-  #co-gate .cg-new-row input:first-child{ width:100%; }
+  #co-gate .cg-new-row textarea:first-child{ width:100%; }
   /* ⚠ របារឧបករណ៍ហៀរខាងស្តាំលើទូរស័ព្ទ (ការស្វែងរក + ប៊ូតុង ២ លើជួរតែមួយ)
      ⇒ រុំបន្ទាត់ ៖ ការស្វែងរកពេញទទឹង រួចប៊ូតុងពីរចែកគ្នាខាងក្រោម។ */
   #co-gate .cg-tools{ flex-wrap:wrap; padding:10px 16px; }
@@ -51259,8 +51359,8 @@ function pkTime(f){
         '<div class="cg-new">' +
           '<div class="cg-new-h">➕ ស្នើសុំសហគ្រាសថ្មី</div>' +
           '<div class="cg-new-row">' +
-            '<input id="cg-tin" type="text" inputmode="numeric" maxlength="14" placeholder="លេខអតប ៩ ខ្ទង់">' +
-            '<input id="cg-name" type="text" placeholder="ឈ្មោះជាឡាតាំង">' +
+            '<textarea id="cg-tin" rows="1" placeholder="លេខអតប ៩ ខ្ទង់ ( ច្រើនបាន — មួយបន្ទាត់ក្នុងមួយសហគ្រាស )"></textarea>' +
+            '<textarea id="cg-name" rows="1" placeholder="ឈ្មោះជាឡាតាំង ( តាមលំដាប់ដូចលេខអតប )"></textarea>' +
             '<button class="cg-btn" id="cg-req">ផ្ញើសំណើ</button>' +
           '</div>' +
           '<div class="cg-msg" id="cg-msg"></div>' +
@@ -51595,63 +51695,92 @@ function pkTime(f){
     mob.click();
   }
 
+  /* ⭐⭐ [stated] ២០២៦-០៩-០២ ៖ «អាចឱ្យ user បំពេញការស្នើសុំលើសពី ១ ក្រុមហ៊ុន
+     ដើម្បីផ្តល់ភាពងាយស្រួល» ។
+   ⇒ ប្រអប់ទាំងពីរទទួល **បញ្ជី** ដែលបំបែកដោយ បន្ទាត់ថ្មី · ក្បៀស · ចំណុចក្បៀស ។
+     លេខអតបទី n ផ្គូនឹងឈ្មោះទី n ។
+   ⚠ ចំនួនត្រូវស្មើគ្នា ៖ ម៉ាស៊ីនមេត្រូវការឈ្មោះសម្រាប់រាល់សំណើ ។ បើមិន
+     ស្មើ ⇒ បដិសេធ **មុនផ្ញើ** ហើយប្រាប់ចំនួនទាំងពីរ ⇒ គេកែបានភ្លាម
+     ជាជាងផ្ញើពាក់កណ្តាលរួចទុកសំណុំពាក់កណ្តាល ។
+   ⚠ ផ្ញើ **ម្តងមួយតាមលំដាប់** មិនមែនព្រមគ្នា ៖ ការផ្ញើព្រមគ្នាទៅ Apps
+     Script ធ្វើឱ្យវាច្រានចោល ហើយអ៊ីមែលជូនដំណឹងអាចលើសកូតា ។
+   ⚠ សំណើមួយបរាជ័យ **មិនបញ្ឈប់** សំណើឯទៀត ⇒ ចុងក្រោយបង្ហាញសង្ខេប
+     ក្នុងមួយបន្ទាត់ ៖ ផ្ញើប៉ុន្មាន · មានរួចប៉ុន្មាន · បរាជ័យប៉ុន្មាន ។ */
+  function reqSplit(v){
+    return String(v || '').split(/[\n,;]+/).map(function(x){ return x.trim(); })
+             .filter(function(x){ return x.length > 0; });
+  }
+  function requestOne(t, n){
+    return api('requestCompany', [window.__loggedInUserToken, t, n]).then(function(r){
+      if(r && r.ok && r.already)          return { tin:t, k:'already' };
+      if(r && r.ok && r.mailed === false) return { tin:t, k:'nomail' };
+      if(r && r.ok)                       return { tin:t, k:'ok' };
+      return { tin:t, k:'fail', reason:(r && r.reason) || '' };
+    }).catch(function(e){
+      return { tin:t, k:'fail', reason:'net:' + ((e && e.message) || e) };
+    });
+  }
   function requestNew(){
-    var t = tin9(CG.wrap.querySelector('#cg-tin').value);
-    var n = (CG.wrap.querySelector('#cg-name').value || '').trim();
-    if(t.length !== 9) return say('សូមបំពេញលេខអតប ៩ ខ្ទង់', true);
-    if(!n) return say('សូមបំពេញឈ្មោះជាឡាតាំង', true);
-    /* ⚠ ពិនិត្យ token ខាងអតិថិជនជាមុន ⇒ សារច្បាស់ជាង «វេនផុតកំណត់» */
+    var tins  = reqSplit(CG.wrap.querySelector('#cg-tin').value).map(tin9);
+    var names = reqSplit(CG.wrap.querySelector('#cg-name').value);
+    if(!tins.length) return say('សូមបំពេញលេខអតប ៩ ខ្ទង់', true);
+    var bad = tins.filter(function(t){ return t.length !== 9; });
+    if(bad.length) return say('លេខអតបត្រូវមាន ៩ ខ្ទង់ ៖ ' + bad.join(' · '), true);
+    if(!names.length) return say('សូមបំពេញឈ្មោះជាឡាតាំង', true);
+    if(names.length !== tins.length){
+      return say('លេខអតប ' + tins.length + ' តែឈ្មោះ ' + names.length
+               + ' ⇒ សូមបំពេញឱ្យស្មើគ្នា ( មួយបន្ទាត់ក្នុងមួយសហគ្រាស )', true);
+    }
     if(!window.__loggedInUserToken){
       return say('មិនឃើញវេនចូលប្រើប្រាស់ — សូមចាកចេញ រួចចូលម្តងទៀត។', true);
     }
-    say('កំពុងផ្ញើសំណើ…');
-    api('requestCompany', [window.__loggedInUserToken, t, n]).then(function(r){
-      if(r && r.ok && r.already) return say('សហគ្រាសនេះមានក្នុងបញ្ជីរបស់អ្នករួចហើយ');
-      /* ⚠⚠ [stated] ២០២៦-០៨-២៣ ៖ «វាលោតថាកំពុងរង់ចាំ តែមិនឃើញសារតាម email» ។
-         ឥឡូវម៉ាស៊ីនមេ **ផ្ញើឡើងវិញ** ហើយប្រាប់មកថាបានផ្ញើឬអត់ ⇒ សារត្រូវ
-         និយាយពីលទ្ធផលពិត មិនមែនត្រឹម «កំពុងរង់ចាំ» ដែលបញ្ឈប់អ្នកប្រើ។ */
-      if(r && r.ok && r.mailed === false){
-        return say('⚠ សំណើត្រូវបានកត់ត្រា តែផ្ញើអ៊ីមែលមិនបាន — សូមទាក់ទង'
-                 + 'ម្ចាស់ប្រព័ន្ធដោយផ្ទាល់ (អតប ' + t + ')', true);
-      }
-      if(r && r.ok && r.resent){
-        CG.wrap.querySelector('#cg-tin').value = '';
-        CG.wrap.querySelector('#cg-name').value = '';
-        return say('✓ សំណើមានរួចហើយ — បានផ្ញើអ៊ីមែលទៅម្ចាស់ប្រព័ន្ធម្តងទៀត');
-      }
-      if(r && r.ok){
-        CG.wrap.querySelector('#cg-tin').value = '';
-        CG.wrap.querySelector('#cg-name').value = '';
-        return say('✓ បានផ្ញើសំណើ — ពេលអនុញ្ញាតរួច សូមចុច ↻ ដើម្បីធ្វើបច្ចុប្បន្នភាពបញ្ជី');
-      }
-      /* ⚠⚠ [stated] ២០២៦-០៨-២៨ ៖ «ពេលចុចស្នើសុំសិទ្ធិ វាលោតថាផុតពេលកំណត់» ។
-         ⚠ សារចាស់ប្រាប់រោគសញ្ញា តែមិនប្រាប់ផ្លូវដោះស្រាយ ⇒ អ្នកប្រើជាប់គាំង ។
-         មូលហេតុពិតមានពីរ ៖ ( ក ) token ផុតកំណត់ពិត ( ខ ) token មិនបានផ្ញើ ។
-         ⇒ ពិនិត្យខាងអតិថិជនជាមុន រួចផ្តល់ប៊ូតុងចេញ-ចូលថ្មីភ្លាម ។ */
-      var m = { bad_tin:'លេខអតបមិនត្រឹមត្រូវ', need_name:'សូមបំពេញឈ្មោះ' };
-      if(r && r.reason === 'bad_session'){
-        say('វេនចូលប្រើប្រាស់ផុតកំណត់ — សូមចាកចេញ រួចចូលម្តងទៀត '
-          + 'រួចចុច «ស្នើសុំសិទ្ធិ» ម្តងទៀត។', true);
-        try{
-          var sb = CG.wrap.querySelector('#cg-relogin');
-          if(!sb){
-            sb = document.createElement('button');
-            sb.id = 'cg-relogin'; sb.className = 'cg-btn';
-            sb.textContent = '🚪↩ ចាកចេញ រួចចូលម្តងទៀត';
-            sb.style.marginTop = '8px';
-            sb.onclick = function(){
-              var real = document.getElementById('rscSignOutBtn');
-              if(real){ real.click(); return; }
-              try{ localStorage.removeItem('rsc_token'); }catch(e){}
-              location.replace('./login.html');
-            };
-            CG.msg.parentNode.insertBefore(sb, CG.msg.nextSibling);
-          }
-        }catch(e){}
+    var out = [], i = 0;
+    var step = function(){
+      if(i >= tins.length){
+        var ok = out.filter(function(x){ return x.k === 'ok'; }).length;
+        var al = out.filter(function(x){ return x.k === 'already'; }).length;
+        var nm = out.filter(function(x){ return x.k === 'nomail'; }).length;
+        var fl = out.filter(function(x){ return x.k === 'fail'; });
+        /* ⚠ សំណើដែលដើរបានត្រូវលុបចេញពីប្រអប់ ; អ្វីដែលបរាជ័យ **ទុកនៅ**
+           ⇒ គេកែ រួចផ្ញើម្តងទៀត ដោយមិនបាច់វាយឡើងវិញទាំងអស់ ។ */
+        var keepT = [], keepN = [];
+        out.forEach(function(x, ix){
+          if(x.k === 'fail'){ keepT.push(x.tin); keepN.push(names[ix]); }
+        });
+        CG.wrap.querySelector('#cg-tin').value  = keepT.join('\n');
+        CG.wrap.querySelector('#cg-name').value = keepN.join('\n');
+        var msg = [];
+        if(ok) msg.push('✓ ផ្ញើ ' + ok);
+        if(al) msg.push('មានក្នុងបញ្ជីរួច ' + al);
+        if(nm) msg.push('⚠ កត់ត្រា តែអ៊ីមែលមិនចេញ ' + nm);
+        if(fl.length) msg.push('✕ បរាជ័យ ' + fl.length + ' ( ' + fl.map(function(x){ return x.tin; }).join(' · ') + ' )');
+        if(ok) msg.push('ពេលអនុញ្ញាតរួច សូមចុច ↻');
+        var hasBadSession = fl.some(function(x){ return x.reason === 'bad_session'; });
+        say(msg.join(' · ') || 'គ្មានអ្វីត្រូវផ្ញើ', fl.length > 0);
+        if(hasBadSession){
+          try{
+            var sb = CG.wrap.querySelector('#cg-relogin');
+            if(!sb){
+              sb = document.createElement('button');
+              sb.id = 'cg-relogin'; sb.className = 'cg-btn';
+              sb.textContent = '🚪↩ ចាកចេញ រួចចូលម្តងទៀត';
+              sb.style.marginTop = '8px';
+              sb.onclick = function(){
+                var real = document.getElementById('rscSignOutBtn');
+                if(real){ real.click(); return; }
+                try{ localStorage.removeItem('rsc_token'); }catch(e){}
+                location.replace('./login.html');
+              };
+              CG.msg.parentNode.insertBefore(sb, CG.msg.nextSibling);
+            }
+          }catch(e){}
+        }
         return;
       }
-      say(m[(r && r.reason)] || 'ផ្ញើសំណើមិនបានទេ', true);
-    }).catch(function(e){ say('ម៉ាស៊ីនមេមិនឆ្លើយតប ៖ ' + ((e && e.message) || e), true); });
+      say('កំពុងផ្ញើសំណើ ' + (i + 1) + '/' + tins.length + ' …');
+      requestOne(tins[i], names[i]).then(function(r){ out.push(r); i++; step(); });
+    };
+    step();
   }
 
   function hide(){ if(CG) CG.wrap.style.display = 'none'; }
