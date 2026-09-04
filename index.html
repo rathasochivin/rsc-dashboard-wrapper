@@ -30841,6 +30841,10 @@ function rscGLOpen(){
   function d2(v){
     if(v == null || v === '') return '';
     if(v instanceof Date && !isNaN(v)){
+      /* ⚠ ហានិភ័យដដែល ( កាលបរិច្ឆេទពីសន្លឹក ខ្វះ ៤ វិនាទី ) ⇒ ខ្ទាស់ជាមុន ។
+         នេះជាការនាំចេញទៅ Access ⇒ ថ្ងៃខុសនឹងចូលមូលដ្ឋានទិន្នន័យផ្លូវការ ។ */
+      var p2v = (window.__sheetDateParts && window.__sheetDateParts(v)) || null;
+      if(p2v) return String(p2v.d).padStart(2,'0') + '-' + String(p2v.m).padStart(2,'0') + '-' + p2v.y;
       return String(v.getDate()).padStart(2, '0') + '-'
         + String(v.getMonth() + 1).padStart(2, '0') + '-' + v.getFullYear();
     }
