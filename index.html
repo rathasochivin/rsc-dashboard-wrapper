@@ -23638,6 +23638,8 @@ function renderAuditView_() {
         <td></td>
       </tr>`;
 
+    /* សរុបរួមនៃដំណាក់កាល ឆ្លងគ្រប់ប្រភេទពន្ធ */
+    let gTax = 0, gAdd = 0, gInt = 0, gTot = 0;
     breakdown.forEach((r, idx) => {
       const taxType = r[1];
       if (!taxSelections[taxType]) {
@@ -23662,7 +23664,28 @@ function renderAuditView_() {
       });
 
       let stageHtml = '';
+      /* ⭐⭐ [stated] ២០២៦-០៩-០៣ ៖ បន្ថែម ក្បៀស · ក្បាលជួរឈរ · សរុបតាមប្រភេទ
+         ពន្ធ និងសរុបរួម ។ ⚠ ទទឹងក្នុងក្បាល និងជួរសរុប ត្រូវ **ត្រូវគ្នា**
+         នឹងទទឹងប្រអប់វាយ ( 128px ) បើមិនដូច្នេះទេ ស្លាកនឹងរអិលចេញពីជួរឈរ ។ */
+      let stTax = 0, stAdd = 0, stInt = 0, stTot = 0;
       if (sel.stages && sel.stages.length > 0) {
+        stageHtml += `
+          <div style="display:flex; align-items:center; gap:6px; justify-content:flex-end;
+                      font-size:10.5px; font-weight:700; color:var(--muted);
+                      font-family:'Khmer OS Siemreap',sans-serif; margin-bottom:2px;">
+            <span style="width:26px;"></span>
+            <span style="width:128px; text-align:center;">ទឹកប្រាក់ពន្ធ</span>
+            <span style="width:128px; text-align:center;">ពន្ធបន្ថែម</span>
+            <span style="width:128px; text-align:center;">ការប្រាក់</span>
+            <span style="width:128px; text-align:center;">សរុប</span>
+            <span style="width:190px;"></span>
+          </div>`;
+        sel.stages.forEach(st => {
+          stTax += Number(st.tax) || 0;
+          stAdd += Number(st.addTax) || 0;
+          stInt += Number(st.interest) || 0;
+          stTot += Number(st.total) || 0;
+        });
         sel.stages.forEach((st, sIdx) => {
           let sMonthOpts = '';
           MONTH_HEADERS_KM.forEach((mName, mIdx) => {
@@ -23687,6 +23710,7 @@ function renderAuditView_() {
         });
       }
 
+      gTax += stTax; gAdd += stAdd; gInt += stInt; gTot += stTot;
       html += `<tr>
         <td>${r[0]}</td>
         <td style="text-align:left;">${r[1]}</td>
@@ -23706,6 +23730,16 @@ function renderAuditView_() {
               </div>
             ` : `
               ${stageHtml}
+              <div class="st-sumrow" style="display:flex; align-items:center; gap:6px; justify-content:flex-end;
+                          font-weight:700; color:var(--navy); margin-top:2px;
+                          border-top:1px solid var(--line); padding-top:3px;">
+                <span style="width:26px; font-size:10.5px;">សរុប</span>
+                <span style="width:128px; text-align:right; padding-right:8px;">${formatNum(stTax)}</span>
+                <span style="width:128px; text-align:right; padding-right:8px;">${formatNum(stAdd)}</span>
+                <span style="width:128px; text-align:right; padding-right:8px;">${formatNum(stInt)}</span>
+                <span style="width:128px; text-align:right; padding-right:8px;">${formatNum(stTot)}</span>
+                <span style="width:190px;"></span>
+              </div>
               <div style="display:flex; gap:6px; margin-top:2px;">
                 <button class="btn-stage btn-add-stage" data-code="${activeAuditCode}" data-tax="${taxType}">+ បន្ថែមដំណាក់កាលទៀត</button>
                 <button class="back-btn" data-code="${activeAuditCode}" data-tax="${taxType}" id="btnClearStages_${CSS.escape(taxType)}" style="background:var(--muted); padding:4px 8px;">បោះបង់ដំណាក់កាល</button>
@@ -23716,6 +23750,23 @@ function renderAuditView_() {
       </tr>`;
     });
 
+    /* ⭐ សរុបរួម ៖ ចេញតែពេលមានដំណាក់កាលពិត ⇒ តារាងគ្មានដំណាក់កាល
+       មិនប៉ះពាល់រូបរាង ។ */
+    if(gTot){
+      html += `<tr style="background:#f0eee4; font-weight:700;">
+        <td colspan="6" style="text-align:right;">សរុបរួមដំណាក់កាល</td>
+        <td style="text-align:right;">
+          <div style="display:flex; align-items:center; gap:6px; justify-content:flex-end; color:var(--navy);">
+            <span style="width:26px;"></span>
+            <span style="width:128px; text-align:right; padding-right:8px;">${formatNum(gTax)}</span>
+            <span style="width:128px; text-align:right; padding-right:8px;">${formatNum(gAdd)}</span>
+            <span style="width:128px; text-align:right; padding-right:8px;">${formatNum(gInt)}</span>
+            <span style="width:128px; text-align:right; padding-right:8px;">${formatNum(gTot)}</span>
+            <span style="width:190px;"></span>
+          </div>
+        </td>
+      </tr>`;
+    }
     html += `</tbody></table></div>`;
     /* ករណីគ្មានឯកសារ ៖ តារាងលម្អិតខាងលើទទេ ព្រោះលម្អិតទាំងនោះមកពីឯកសារ។
        ប្រាប់អោយច្បាស់ថាការបំពេញធ្វើនៅផ្ទាំងខាងក្រោមនេះ។ */
@@ -23874,9 +23925,46 @@ function renderAuditView_() {
             if (cls === 'st-int') st.interest = val;
             st.total = st.tax + st.addTax + st.interest;
 
+            /* ⭐ [stated] ២០២៦-០៩-០៣ ៖ «ជួយបន្ថែមក្បៀស (,)» ⇒ ដាក់ទម្រង់
+               ភ្លាមពេលវាយ ។ ⚠ ការសរសេរតម្លៃថ្មីចូល input ធ្វើឱ្យទស្សន៍ទ្រនិច
+               លោតទៅចុង ⇒ រាប់ **ចំនួនតួលេខនៅខាងឆ្វេងទស្សន៍ទ្រនិច** ជាមុន
+               រួចដាក់វាត្រឡប់ទីតាំងដដែលក្រោយដាក់ទម្រង់ ⇒ វាយបន្តបានធម្មតា ។ */
+            try{
+              const el = e.target;
+              const before = el.value.slice(0, el.selectionStart || 0).replace(/\D/g, '').length;
+              el.value = val ? val.toLocaleString('en-US') : '';
+              let pos = 0, seen = 0;
+              while(pos < el.value.length && seen < before){
+                if(/\d/.test(el.value[pos])) seen++;
+                pos++;
+              }
+              el.setSelectionRange(pos, pos);
+            }catch(err){}
+
             const container = e.target.closest('div');
             const totInput = container.querySelector('.st-tot');
             if (totInput) totInput.value = st.total.toLocaleString('en-US');
+            /* ធ្វើបច្ចុប្បន្នភាពជួរសរុប ដោយមិនគូរតារាងឡើងវិញ ⇒ ការវាយមិនដាច់ */
+            try{
+              const box = e.target.closest('[id^="stageContainer_"]');
+              if(box){
+                let sT = 0, sA = 0, sI = 0, sX = 0;
+                box.querySelectorAll('.st-tax').forEach(function(x){ sT += Number(String(x.value).replace(/,/g,'')) || 0; });
+                box.querySelectorAll('.st-add').forEach(function(x){ sA += Number(String(x.value).replace(/,/g,'')) || 0; });
+                box.querySelectorAll('.st-int').forEach(function(x){ sI += Number(String(x.value).replace(/,/g,'')) || 0; });
+                box.querySelectorAll('.st-tot').forEach(function(x){ sX += Number(String(x.value).replace(/,/g,'')) || 0; });
+                const sumRow = box.querySelector('.st-sumrow');
+                if(sumRow){
+                  const cells = sumRow.querySelectorAll('span');
+                  if(cells.length >= 5){
+                    cells[1].textContent = sT.toLocaleString('en-US');
+                    cells[2].textContent = sA.toLocaleString('en-US');
+                    cells[3].textContent = sI.toLocaleString('en-US');
+                    cells[4].textContent = sX.toLocaleString('en-US');
+                  }
+                }
+              }
+            }catch(err){}
           }
         });
       });
