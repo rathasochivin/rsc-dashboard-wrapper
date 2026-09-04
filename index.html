@@ -8453,6 +8453,9 @@ function restoreLocalBackup(o){
   }catch(e){ console.error('personalInfo restore:', e); }
   try{ if(typeof window.__trkReload === 'function') window.__trkReload(); }catch(e){}
   try{ if(typeof window.__mtrReloadManual === 'function') window.__mtrReloadManual(); }catch(e){}
+  /* ⚠ CN/DN ដោយដៃ ៖ ដូចខាងលើ — អានឡើងវិញ បើមិនដូច្នេះទេ តម្លៃចាស់
+     ក្នុងអង្គចងចាំនឹងសរសេរត្រឡប់ចូលឃ្លាំងវិញ ។ */
+  try{ if(typeof window.__cdReloadManual === 'function') window.__cdReloadManual(); }catch(e){}
   return n;
 }
 
@@ -8736,7 +8739,7 @@ function importAllDataFromText(text){
          ព្រមបង្ហាញវឌ្ឍនភាព — ហើយ renderAll() ដំណើរការតែម្តងគត់នៅចុងបញ្ចប់។ */
       const restored = ["SALE/PURCHASE/WHT/Crosscheck"];
       const steps = [
-        ["MTR",                    ()=> parsed.mtr     && window.__mtrImport     && window.__mtrImport(parsed.mtr)],
+        ["MTR",                    ()=> window.__mtrImport     && window.__mtrImport(parsed.mtr || [])],
         ["TOI",                    ()=> parsed.toi     && window.__toiImport     && window.__toiImport(parsed.toi)],
         ["TOS",                    ()=> parsed.tos     && window.__tosImport     && window.__tosImport(parsed.tos)],
         ["ការបង់យឺតយ៉ាវ",          ()=> parsed.latePay && window.__mtrLateImport && window.__mtrLateImport(parsed.latePay)],
@@ -10479,6 +10482,24 @@ try{
   cdManual = { purchase: Array.isArray(raw.purchase) ? raw.purchase : [],
                sale:     Array.isArray(raw.sale)     ? raw.sale     : [] };
 }catch(e){ cdManual = { purchase:[], sale:[] }; }
+/* ⚠⚠⚠ [stated] ២០២៦-០៩-០៣ ៖ «កាលបញ្ចូលដោយដៃពីមុន ពេលបើកក្រុមហ៊ុនផ្សេង
+   វិញ លោត CN DN ដែលធ្លាប់បញ្ចូលនោះ … ពេលបើកឯកសារថ្មីត្រូវតែដាច់គ្នា» ។
+   មូលហេតុ ៖ `cdManualV1` **មានក្នុងបញ្ជីលុប** មែន ⇒ ឃ្លាំងស្អាត ។ តែ
+   `cdManual` ត្រូវអានចូល **អង្គចងចាំតែម្តងពេលផ្ទុកទំព័រ** ហើយគ្មានទំពក់
+   អានឡើងវិញដូច `__mtrReloadManual` ទេ ⇒ ក្រោយសម្អាត តម្លៃចាស់នៅក្នុង
+   អង្គចងចាំ ហើយការកែបន្ទាប់សរសេរវាត្រឡប់ចូលឃ្លាំងវិញ ⇒ លេចនៅសហគ្រាសថ្មី ។
+   ⭐ នេះជា **លើកទី ៤** នៃអន្ទាក់ដដែល ( tracking · MTR manual · personal info
+     និងឥឡូវ CN/DN ) ។ ច្បាប់ ៖ គ្រប់ម៉ូឌុលដែលអានកូនសោចូលអង្គចងចាំ ត្រូវមាន
+     មុខងារអានឡើងវិញ ហើយត្រូវហៅវាក្នុង `restoreLocalBackup` ។ */
+window.__cdReloadManual = function(){
+  try{
+    const raw = JSON.parse(localStorage.getItem(CD_MAN_KEY) || '{}') || {};
+    cdManual = { purchase: Array.isArray(raw.purchase) ? raw.purchase : [],
+                 sale:     Array.isArray(raw.sale)     ? raw.sale     : [] };
+  }catch(e){ cdManual = { purchase:[], sale:[] }; }
+  try{ if(window.__bumpDataVersion) window.__bumpDataVersion(); }catch(e){}
+};
+
 function cdManSave(){
   try{ localStorage.setItem(CD_MAN_KEY, JSON.stringify(cdManual)); }catch(e){}
   /* ⚠ ចាំបាច់ ៖ `getVATMonthlyAggregates` ជា memo តាម `__dataVersion` ។
@@ -22587,8 +22608,14 @@ function buildVATFormSheet(year, opts){
         /* ជួរពីរនេះចុចបានជានិច្ច ដើម្បីបង្ហាញការគណនា — មិនចាំបាច់បើក
            របៀប «ពិនិត្យប្រភពតួលេខ» ជាមុនទេ ព្រោះវាជាជួរត្រួតពិនិត្យ។ */
         const drill = (c.key === 'cDue' || c.key === 'cDiff');
-        /* ប្រាំជួរដែលវាយបានដោយដៃ ៖ ក្លាយជាក្រឡាកែពេលការវាយដោយដៃសកម្ម */
-        if(VAT_MAN_COLS.indexOf(c.key) >= 0 && vatManualActive()){
+        /* ⚠⚠ [stated] ២០២៦-០៩-០៣ ៖ «ដកការគណនាដោយដៃ ឬបញ្ចូលដោយដៃនៃផ្នែក
+           VAT នេះចេញ រួមទាំង PR SR CD DN» ⇒ ប្រាំជួរនេះក្លាយជា **អានតែប៉ុណ្ណោះ** ។
+           ⚠ កូដការវាយដោយដៃ ( vatManual · របារចាក់សោ · បន្ថែមឆ្នាំ ) ទុកនៅដដែល
+             ដោយចេតនា ៖ សហគ្រាសដែលធ្លាប់វាយតួលេខរួច នៅមានវាក្នុងឯកសារ 💾
+             ហើយការលុបកូដនោះនឹងធ្វើឱ្យតួលេខចាស់អានមិនចេញ ។ គ្រាន់តែ **លែង
+             បង្ហាញប្រអប់វាយ** ⇒ គ្មានផ្លូវបញ្ចូលថ្មីទៀត ។
+           ⇒ បើថ្ងៃណាចង់បើកវិញ ៖ ដកលក្ខខណ្ឌ `false &&` នេះចេញ ។ */
+        if(false && VAT_MAN_COLS.indexOf(c.key) >= 0 && vatManualActive()){
           const mv = vatManualGet(year, i+1)[c.key];
           return `<td class="mtr-num vat-calc vat-man"><input class="vat-man-in"
             data-vm="${c.key}" data-y="${esc(year)}" data-m="${i+1}"
@@ -23013,7 +23040,7 @@ function renderVATPrintView(){
   }
 
   resultBody.innerHTML = `<div id="vatPrintArea">${toolbar}${sheet}
-    ${vatSrcHasFile() ? `<div class="vat-man-bar no-print"><label class="vm-lock">
+    ${false && vatSrcHasFile() ? `<div class="vat-man-bar no-print"><label class="vm-lock">
         <input type="checkbox" id="vatManUnlock"${vatManUnlocked ? ' checked' : ''}> 🔓 ដោះសោដើម្បីវាយដោយដៃ</label></div>` : ''}
   </div>`;
   bindVATPrintToolbar();
@@ -23277,6 +23304,18 @@ function auditSplitAmt(total, n, i){
 }
 /* ផ្ទេរទិន្នន័យចាស់ ៖ កាលវិភាគយកពីជួរដំបូងដែលមានដំណាក់កាល ; ទឹកប្រាក់
    ដែលគេវាយរួច ក្លាយជាការកែដោយដៃរបស់ជួរនោះ ⇒ គ្មានអ្វីបាត់ ។ */
+/* ធានាថាកាលវិភាគមាន ៖ បើគ្មាន សង់ពីដំណាក់កាលដែលកំពុងបង្ហាញនៃជួរនោះ ។
+   ⚠ ជាសំណាញ់សុវត្ថិភាព ៖ គ្មានផ្លូវណាដែលការជ្រើសខែ/ឆ្នាំធ្លាក់ចោលដោយស្ងាត់ ។ */
+function schedEnsure(code, selKey){
+  if(auditSched(code)) return;
+  const sels = auditTaxSelections[code] || {};
+  const sel = sels[selKey];
+  if(sel && sel.stages && sel.stages.length){
+    auditSchedSet(code, sel.stages.map(function(st){
+      return { month:Number(st.month) || 0, year:String(st.year || '') };
+    }));
+  }
+}
 function auditSchedMigrate(code){
   const sels = auditTaxSelections[code];
   if(!sels || sels.__sched) return;
@@ -23719,6 +23758,14 @@ function renderAuditView_() {
     breakdown.forEach((r, idx) => {
       const taxType = r[1];
       const selKey = auditSelKey(taxType, idx);
+      /* ⚠⚠ ២០២៦-០៩-០៣ ៖ កំហុសរបស់ខ្ញុំ ៖ ខ្ញុំកែ **ការអាន** ទៅកូនសោថ្មី តែ
+         ភ្លេចកែ **ការសរសេរ** — ស្លាក `data-tax` នៅតែជាឈ្មោះប្រភេទពន្ធ ⇒
+         អ្នកស្តាប់ទាំងអស់សរសេរចូល `auditTaxSelections[code][ប្រភេទពន្ធ]`
+         ⇒ ជួរទាំងពីរជាន់គ្នាដដែល ហើយការកែដោយដៃរបស់ជួរមួយលេចនៅជួរមួយទៀត ។
+         ⇒ ស្លាកទាំង ១៣ និង id ទាំង ២ ប្តូរមក `selKey` ។
+         ⭐ ច្បាប់ ៖ ពេលប្តូរកូនសោរក្សាទុក ត្រូវប្តូរ **គ្រប់ផ្លូវសរសេរ** ក្នុង
+           ពេលតែមួយ — ការអានថ្មីជាមួយការសរសេរចាស់ បង្កើតទិន្នន័យពីរច្បាប់
+           ដែលមើលទៅដូចដើរ តែខុសពេលបើកឡើងវិញ ។ */
       if (!auditSelGet(taxSelections, taxType, idx)) {
         taxSelections[selKey] = { month: null, year: null, stages: null };
       }
@@ -23810,13 +23857,13 @@ function renderAuditView_() {
           stageHtml += `
             <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px; justify-content:flex-end;">
               <span style="font-size:11px; font-weight:600; color:var(--navy); font-family:'Khmer OS Siemreap',sans-serif;">ដ.<span class="st-num">${sIdx+1}</span>:</span>
-              <input type="text" class="input-box st-tax" data-code="${activeAuditCode}" data-tax="${taxType}" data-stage="${sIdx}" value="${formatNumInput(st.tax)}" placeholder="ពន្ធ" title="ពន្ធ">
-              <input type="text" class="input-box st-add" data-code="${activeAuditCode}" data-tax="${taxType}" data-stage="${sIdx}" value="${formatNumInput(st.addTax)}" placeholder="ពន្ធបន្ថែម" title="ពន្ធបន្ថែម">
-              <input type="text" class="input-box st-int" data-code="${activeAuditCode}" data-tax="${taxType}" data-stage="${sIdx}" value="${formatNumInput(st.interest)}" placeholder="ការប្រាក់" title="ការប្រាក់">
-              <input type="text" class="input-box st-tot" data-code="${activeAuditCode}" data-tax="${taxType}" data-stage="${sIdx}" value="${formatNumInput(st.total)}" placeholder="សរុប" style="background:#f0eee4; font-weight:700;" readonly title="សរុបស្វ័យប្រវត្ត">
-              <select class="select-box st-month" data-code="${activeAuditCode}" data-tax="${taxType}" data-stage="${sIdx}">${sMonthOpts}</select>
-              <select class="select-box st-year" data-code="${activeAuditCode}" data-tax="${taxType}" data-stage="${sIdx}">${sYearOpts}</select>
-              <button class="back-btn btn-del-stage" data-code="${activeAuditCode}" data-tax="${taxType}" data-stage="${sIdx}" style="padding:4px 8px; background:var(--seal);" title="លុបដំណាក់កាលនេះ">×</button>
+              <input type="text" class="input-box st-tax" data-code="${activeAuditCode}" data-tax="${selKey}" data-stage="${sIdx}" value="${formatNumInput(st.tax)}" placeholder="ពន្ធ" title="ពន្ធ">
+              <input type="text" class="input-box st-add" data-code="${activeAuditCode}" data-tax="${selKey}" data-stage="${sIdx}" value="${formatNumInput(st.addTax)}" placeholder="ពន្ធបន្ថែម" title="ពន្ធបន្ថែម">
+              <input type="text" class="input-box st-int" data-code="${activeAuditCode}" data-tax="${selKey}" data-stage="${sIdx}" value="${formatNumInput(st.interest)}" placeholder="ការប្រាក់" title="ការប្រាក់">
+              <input type="text" class="input-box st-tot" data-code="${activeAuditCode}" data-tax="${selKey}" data-stage="${sIdx}" value="${formatNumInput(st.total)}" placeholder="សរុប" style="background:#f0eee4; font-weight:700;" readonly title="សរុបស្វ័យប្រវត្ត">
+              <select class="select-box st-month" data-code="${activeAuditCode}" data-tax="${selKey}" data-stage="${sIdx}">${sMonthOpts}</select>
+              <select class="select-box st-year" data-code="${activeAuditCode}" data-tax="${selKey}" data-stage="${sIdx}">${sYearOpts}</select>
+              <button class="back-btn btn-del-stage" data-code="${activeAuditCode}" data-tax="${selKey}" data-stage="${sIdx}" style="padding:4px 8px; background:var(--seal);" title="លុបដំណាក់កាលនេះ">×</button>
             </div>`;
         });
       }
@@ -23830,14 +23877,14 @@ function renderAuditView_() {
         <td>${formatNum(r[4])}</td>
         <td>${formatNum(r[5])}</td>
         <td style="text-align:right;">
-          <div style="display:flex; flex-direction:column; gap:4px; align-items:flex-end;" id="stageContainer_${CSS.escape(taxType)}">
+          <div style="display:flex; flex-direction:column; gap:4px; align-items:flex-end;" id="stageContainer_${CSS.escape(selKey)}">
             ${(!sel.stages || sel.stages.length === 0) ? `
               <div style="display:flex; align-items:center; gap:6px; justify-content:flex-end;">
                 ${fromProg ? '<span style="font-size:11px; color:var(--ok); font-weight:700;" title="តាមថ្ងៃបង់របស់កម្មវិធី">✓ តាមកម្មវិធី</span>' : ''}
-                <select class="select-box row-month-sel" data-code="${activeAuditCode}" data-tax="${taxType}">${monthOptions}</select>
-                <select class="select-box row-year-sel" data-code="${activeAuditCode}" data-tax="${taxType}">${yearOptions}</select>
-                <button class="back-btn btn-reset-monthyear" data-code="${activeAuditCode}" data-tax="${taxType}" title="ត្រឡប់ទៅរើសខែ/ឆ្នាំវិញ" style="padding:5px 8px; background:var(--muted);">↺</button>
-                <button class="btn-stage btn-add-stage" data-code="${activeAuditCode}" data-tax="${taxType}">+ បង់ជាដំណាក់កាល</button>
+                <select class="select-box row-month-sel" data-code="${activeAuditCode}" data-tax="${selKey}">${monthOptions}</select>
+                <select class="select-box row-year-sel" data-code="${activeAuditCode}" data-tax="${selKey}">${yearOptions}</select>
+                <button class="back-btn btn-reset-monthyear" data-code="${activeAuditCode}" data-tax="${selKey}" title="ត្រឡប់ទៅរើសខែ/ឆ្នាំវិញ" style="padding:5px 8px; background:var(--muted);">↺</button>
+                <button class="btn-stage btn-add-stage" data-code="${activeAuditCode}" data-tax="${selKey}">+ បង់ជាដំណាក់កាល</button>
               </div>
             ` : `
               ${stageHtml}
@@ -23854,8 +23901,8 @@ function renderAuditView_() {
                 <span style="visibility:hidden; pointer-events:none;"><button class="back-btn" style="padding:4px 8px;">×</button></span>
               </div>
               <div style="display:flex; gap:6px; margin-top:2px;">
-                <button class="btn-stage btn-add-stage" data-code="${activeAuditCode}" data-tax="${taxType}">+ បន្ថែមដំណាក់កាលទៀត</button>
-                <button class="back-btn" data-code="${activeAuditCode}" data-tax="${taxType}" id="btnClearStages_${CSS.escape(taxType)}" style="background:var(--muted); padding:4px 8px;">បោះបង់ដំណាក់កាល</button>
+                <button class="btn-stage btn-add-stage" data-code="${activeAuditCode}" data-tax="${selKey}">+ បន្ថែមដំណាក់កាលទៀត</button>
+                <button class="back-btn" data-code="${activeAuditCode}" data-tax="${selKey}" id="btnClearStages_${CSS.escape(selKey)}" style="background:var(--muted); padding:4px 8px;">បោះបង់ដំណាក់កាល</button>
               </div>
             `}
           </div>
@@ -24082,10 +24129,21 @@ function renderAuditView_() {
         const code = e.target.getAttribute('data-code');
         const tax = e.target.getAttribute('data-tax');
         const sIdx = Number(e.target.getAttribute('data-stage'));
-        if (auditTaxSelections[code] && auditTaxSelections[code][tax] && auditTaxSelections[code][tax].stages[sIdx]) {
-          const schM = (auditSched(code) || []).slice();
-          if(schM[sIdx]){ schM[sIdx] = { month:Number(e.target.value), year:schM[sIdx].year }; auditSchedSet(code, schM); }
-          toast('បានកែប្រែខែសម្រាប់ដំណាក់កាលទី ' + (sIdx+1), 'ok');
+        /* ⚠⚠ ២០២៦-០៩-០៣ ៖ «ខែ/ឆ្នាំបាត់វិញពេលចុចត្រឡប់ក្រោយ» ។
+           ការសរសេរពឹងលើ `auditSched(code)` ដែលអាចជា null ⇒ `sch[sIdx]`
+           undefined ⇒ **មិនសរសេរអ្វីសោះ ហើយក៏មិនប្រាប់ដែរ** ។
+           ⇒ បើគ្មានកាលវិភាគ សង់វាពីដំណាក់កាលដែលកំពុងបង្ហាញជាមុន រួចទើប
+             សរសេរ ⇒ ការសរសេរមិនអាចធ្លាក់ចោលស្ងាត់ ។
+           ⇒ គូរឡើងវិញភ្លាម ⇒ បើមិនជាប់ គេឃើញភ្លាម មិនបាច់ចាំរកឃើញពេលក្រោយ ។ */
+        schedEnsure(code, tax);
+        const schM = (auditSched(code) || []).slice();
+        if(schM[sIdx]){
+          schM[sIdx] = { month:Number(e.target.value), year:schM[sIdx].year };
+          auditSchedSet(code, schM);
+          toast('បានកែប្រែខែសម្រាប់ដំណាក់កាលទី ' + (sIdx+1) + ' ( គ្រប់ប្រភេទពន្ធ )', 'ok');
+          renderAuditView();
+        }else{
+          toast('រក្សាទុកខែមិនបាន — សូមប្រាប់អ្នកអភិវឌ្ឍន៍', 'err');
         }
       });
     });
@@ -24095,10 +24153,15 @@ function renderAuditView_() {
         const code = e.target.getAttribute('data-code');
         const tax = e.target.getAttribute('data-tax');
         const sIdx = Number(e.target.getAttribute('data-stage'));
-        if (auditTaxSelections[code] && auditTaxSelections[code][tax] && auditTaxSelections[code][tax].stages[sIdx]) {
-          const schY = (auditSched(code) || []).slice();
-          if(schY[sIdx]){ schY[sIdx] = { month:schY[sIdx].month, year:e.target.value }; auditSchedSet(code, schY); }
-          toast('បានកែប្រែឆ្នាំសម្រាប់ដំណាក់កាលទី ' + (sIdx+1), 'ok');
+        schedEnsure(code, tax);
+        const schY = (auditSched(code) || []).slice();
+        if(schY[sIdx]){
+          schY[sIdx] = { month:schY[sIdx].month, year:e.target.value };
+          auditSchedSet(code, schY);
+          toast('បានកែប្រែឆ្នាំសម្រាប់ដំណាក់កាលទី ' + (sIdx+1) + ' ( គ្រប់ប្រភេទពន្ធ )', 'ok');
+          renderAuditView();
+        }else{
+          toast('រក្សាទុកឆ្នាំមិនបាន — សូមប្រាប់អ្នកអភិវឌ្ឍន៍', 'err');
         }
       });
     });
@@ -25084,9 +25147,15 @@ window.__mtrSelImport = function(o){
 /* ថ្ងៃបង់ប្រាក់នៃកម្មវិធីមួយ — សម្រាប់ម៉ូឌុលដទៃ */
 window.__auditPayDate = function(code){ return auditPayDates[code] || ''; };
 
+/* ⚠⚠ [stated] ២០២៦-០៩-០៣ ៖ «សហគ្រាសខ្លះមិនមាន WORKBOOK DATA តែពេលបើក
+   ជាប់ឯកសារចាស់នៅក្នុងនោះ» ។ មូលហេតុ ៖ បន្ទាត់ខាងក្រោមធ្លាប់ជា
+   `if(!list.length) return;` ⇒ **ចេញភ្លាមដោយមិនសម្អាត** ⇒ សៀវភៅ MTR
+   របស់សហគ្រាសមុននៅក្នុងអង្គចងចាំ ហើយលេចនៅសំណុំរឿងថ្មី ។
+   ⇒ សម្អាត **ជានិច្ច** រួចទើបពិនិត្យបញ្ជី ⇒ បើកឯកសារគ្មាន MTR ⇒ ផ្ទាំង
+     សាលកបត្រទទេពិតប្រាកដ ។ */
 window.__mtrImport = function(list){
-  if(!Array.isArray(list) || !list.length) return;
   resetEmptyState();
+  if(!Array.isArray(list) || !list.length) return;
   list.forEach(item=>{
     try{
       const wb = XLSX.read(item.dataBase64, {type:'base64', cellDates:true});
