@@ -8777,11 +8777,15 @@ function importAllDataFromText(text){
       const restored = ["SALE/PURCHASE/WHT/Crosscheck"];
       const steps = [
         ["MTR",                    ()=> window.__mtrImport     && window.__mtrImport(parsed.mtr || [])],
-        ["TOI",                    ()=> parsed.toi     && window.__toiImport     && window.__toiImport(parsed.toi)],
-        ["TOS",                    ()=> parsed.tos     && window.__tosImport     && window.__tosImport(parsed.tos)],
-        ["ការបង់យឺតយ៉ាវ",          ()=> parsed.latePay && window.__mtrLateImport && window.__mtrLateImport(parsed.latePay)],
-        ["ការបង់ប្រាក់សវនកម្ម",     ()=> parsed.mtrSel  && window.__mtrSelImport  && window.__mtrSelImport(parsed.mtrSel)],
-        ["ក្បាលទម្រង់ព្រីន",        ()=> parsed.mtrForm && window.__mtrFormImport && window.__mtrFormImport(parsed.mtrForm)],
+        /* ⭐⭐ [stated] ២០២៦-០៩-០៣ ៖ «មិនមែនត្រឹមតែ MTR ទេ VAT ក៏ចឹងដែរ» ។
+           ជំហានទាំងនេះធ្លាប់ដើរ **តែពេលឯកសារមានផ្នែកនោះ** ⇒ ឯកសារដែលគ្មាន
+           ⇒ ម៉ូឌុលមិនត្រូវប៉ះសោះ ⇒ ទិន្នន័យសហគ្រាសមុននៅដដែល ។
+           ⇒ ហៅ **ជានិច្ច** ; មុខងារនីមួយៗសម្អាតខ្លួនឯងមុនពិនិត្យទិន្នន័យ ។ */
+        ["TOI",                    ()=> window.__toiImport     && window.__toiImport(parsed.toi || null)],
+        ["TOS",                    ()=> window.__tosImport     && window.__tosImport(parsed.tos || null)],
+        ["ការបង់យឺតយ៉ាវ",          ()=> window.__mtrLateImport && window.__mtrLateImport(parsed.latePay || [])],
+        ["ការបង់ប្រាក់សវនកម្ម",     ()=> window.__mtrSelImport  && window.__mtrSelImport(parsed.mtrSel || null)],
+        ["ក្បាលទម្រង់ព្រីន",        ()=> window.__mtrFormImport && window.__mtrFormImport(parsed.mtrForm || null)],
         ["តាមដាន/កំណត់ហេតុ + ACCESS", ()=> parsed.local && restoreLocalBackup(parsed.local)],
         /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «CN DN បញ្ចូលដោយដៃ … ពេលលុបចោលវាមិន
            ទៅ ; ពេល upload ឯកសារថ្មី អ្វីៗគួរតែថ្មី» ។ ត្រូវទាំងស្រុង។
@@ -18546,8 +18550,8 @@ window.__mtrLatePayments = function(){
 };
 window.__mtrLateExport = function(){ return latePayRows.slice(); };
 window.__mtrLateImport = function(list){
-  if(!Array.isArray(list)) return;
-  latePayRows = list.slice();
+  /* ⭐ សម្អាតជានិច្ច ⇒ ឯកសារគ្មានផ្នែកនេះ ⇒ ជួរចាស់មិននៅសល់ ។ */
+  latePayRows = Array.isArray(list) ? list.slice() : [];
   saveLatePay();
   if(currentView === 'latepay') renderLatePayView();
   notifyLatePayChanged();
@@ -25194,6 +25198,8 @@ window.__vatcrScanReport = function(){
   return t;
 };
 window.__mtrFormImport = function(o){
+  /* ⭐ សម្អាតជានិច្ច ⇒ ក្បាលរបស់សហគ្រាសមុនមិនចេញលើលិខិតរបស់សហគ្រាសថ្មី ។ */
+  Object.keys(mtrFormOverride).forEach(k=>{ mtrFormOverride[k] = ''; });
   if(!o || typeof o !== 'object') return;
   Object.keys(mtrFormOverride).forEach(k=>{ if(typeof o[k] === 'string') mtrFormOverride[k] = o[k]; });
 };
@@ -25202,9 +25208,11 @@ window.__mtrSelExport = function(){
   return { auditTaxSelections: auditTaxSelections, auditPayDates: auditPayDates };
 };
 window.__mtrSelImport = function(o){
-  if(!o || typeof o !== 'object') return;
-  auditTaxSelections = o.auditTaxSelections || {};
-  auditPayDates = o.auditPayDates || {};
+  /* ⭐⭐ សម្អាតជានិច្ច ៖ នេះជាកន្លែងផ្ទុកដំណាក់កាល និងកាលវិភាគបង់ប្រាក់ ។
+     បើឯកសារថ្មីគ្មានផ្នែកនេះ កាលវិភាគរបស់សហគ្រាសមុននឹងលេចនៅសំណុំរឿងថ្មី
+     ហើយចូលទៅក្នុងការកាត់កងពន្ធ ⇒ តួលេខខុស មិនមែនត្រឹមរូបរាងទេ ។ */
+  auditTaxSelections = (o && typeof o === 'object' && o.auditTaxSelections) || {};
+  auditPayDates      = (o && typeof o === 'object' && o.auditPayDates) || {};
   try{ if(currentView === 'audit') renderAuditView(); }catch(e){}
 };
 /* ថ្ងៃបង់ប្រាក់នៃកម្មវិធីមួយ — សម្រាប់ម៉ូឌុលដទៃ */
@@ -34729,7 +34737,12 @@ window.__toiProgList = function(){
   }catch(e){ return ['កម្មវិធីទី១-ធម្មតា']; }
 };
 window.__toiImport = function(data){
-  if(!data) return;
+  /* ⭐⭐ សម្អាតជានិច្ច ៖ បន្ទាត់ខាងក្រោមធ្លាប់ជា `if(!data) return;` ⇒ ឯកសារ
+     ដែលគ្មានផ្នែក TOI មិនប៉ះម៉ូឌុលនេះសោះ ⇒ ជំហាន ១-១៦ · COVER · ការវិភាគ
+     ហានិភ័យ របស់សហគ្រាសមុននៅដដែល ។
+     ⇒ ប្តូរជា `data = data || {}` ⇒ ការផ្តល់តម្លៃខាងក្រោមកំណត់អ្វីៗទៅជា
+       ទទេដោយខ្លួនឯង ( វានៅតែជាផ្លូវកូដដដែល ⇒ គ្មានផ្លូវថ្មីត្រូវសាក ) ។ */
+  data = data || {};
   /* អាចមានតែ Data Entry / COVER ដោយគ្មានឆ្នាំ TOI — ត្រូវផ្ទុកមកវិញដដែល */
   state.years = Array.isArray(data.years) ? data.years : [];
   state.companyInfo = data.companyInfo || {};
@@ -36807,6 +36820,8 @@ window.__toiImport = function(data){
     return { rows: out, files: fileCount };
   };
   window.__tosImport = function(data){
+    /* ⭐ «អវត្តមាន = គ្មាន មិនមែន កុំប៉ះ» ⇒ សម្អាតជានិច្ចមុនពិនិត្យ ។ */
+    allRows = []; fileCount = 0; nextRowId = 1;
     if(!data || !Array.isArray(data.allRows) || !data.allRows.length) return;
     allRows = data.allRows;
     fileCount = typeof data.fileCount === 'number' ? data.fileCount : 0;
