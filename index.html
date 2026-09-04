@@ -23306,6 +23306,17 @@ function auditSplitAmt(total, n, i){
    ដែលគេវាយរួច ក្លាយជាការកែដោយដៃរបស់ជួរនោះ ⇒ គ្មានអ្វីបាត់ ។ */
 /* ធានាថាកាលវិភាគមាន ៖ បើគ្មាន សង់ពីដំណាក់កាលដែលកំពុងបង្ហាញនៃជួរនោះ ។
    ⚠ ជាសំណាញ់សុវត្ថិភាព ៖ គ្មានផ្លូវណាដែលការជ្រើសខែ/ឆ្នាំធ្លាក់ចោលដោយស្ងាត់ ។ */
+/* រុញដំណាក់កាលខាងក្រោមឱ្យបន្តម្តងមួយខែពីដំណាក់កាល `from` ។
+   ⚠ ខែរក្សាទុកជា 0-11 ⇒ ១២ ⇒ ខែ ០ ឆ្នាំបន្ទាប់ ។ */
+function schedFollow(arr, from){
+  let m = Number(arr[from].month) || 0;
+  let y = Number(arr[from].year) || new Date().getFullYear();
+  for(let i = from + 1; i < arr.length; i++){
+    m += 1;
+    if(m > 11){ m = 0; y += 1; }
+    arr[i] = { month:m, year:String(y) };
+  }
+}
 function schedEnsure(code, selKey){
   if(auditSched(code)) return;
   const sels = auditTaxSelections[code] || {};
@@ -23474,10 +23485,16 @@ function effectivePayMY(code, sel){
 function isAuditFullyDated(code) {
   const breakdown = getAuditBreakdownAcrossWorkbooks(code);
   if (breakdown.length === 0) return false;
-  const sel = auditTaxSelections[code] || {};
-  return breakdown.every(row => {
-    const taxType = row[1];
-    const s = sel[taxType];
+  /* ⚠⚠ [stated] ២០២៦-០៩-០៣ ៖ «បញ្ចូលទឹកប្រាក់ និងខែឆ្នាំហើយ វាអត់ចេញធីក» ។
+     មូលហេតុ ៖ មុខងារនេះនៅអានតាម **កូនសោប្រភេទពន្ធចាស់** ( `sel[taxType]` )
+     ខណៈការរក្សាទុកប្តូរទៅ «ប្រភេទពន្ធ#លេខរៀងជួរ» រួច ⇒ រកមិនឃើញ ⇒ គ្មានធីក ។
+     ⭐ នេះជាកន្លែងទី ៤ ដែលអានតាមកូនសោចាស់ — ខ្ញុំគួររាយបញ្ជីអ្នកអានទាំងអស់
+       ពេលប្តូរកូនសោតាំងពីដំបូង ។
+     ⇒ កាលវិភាគរួម ( `__sched` ) ក៏រាប់ជាការបំពេញរួចដែរ ព្រោះវាអនុវត្តគ្រប់ជួរ ។ */
+  if (auditSched(code)) return true;
+  const sels = auditTaxSelections[code] || {};
+  return breakdown.every((row, idx) => {
+    const s = sels[auditSelKey(row[1], idx)] || sels[row[1]];
     if (s && s.stages && s.stages.length > 0) return true;
     return !!effectivePayMY(code, s);
   });
@@ -24139,6 +24156,14 @@ function renderAuditView_() {
         const schM = (auditSched(code) || []).slice();
         if(schM[sIdx]){
           schM[sIdx] = { month:Number(e.target.value), year:schM[sIdx].year };
+          /* ⭐ [stated] ២០២៦-០៩-០៣ ៖ «ឱ្យវាអូតូ ខែ ឆ្នាំបន្ត ដោយគ្រាន់តែបញ្ចូល
+             ខែ ឆ្នាំចាប់ផ្តើម … និងអាចកែតម្រូវបានករណីបង់រំលងខែ» ។
+             ⇒ ដំណាក់កាល **ខាងក្រោម**ដំណាក់កាលដែលទើបកែ រត់បន្តម្តងមួយខែ
+               ( ឆ្លងឆ្នាំពេលហួសខែធ្នូ ) ។ ដំណាក់កាល**ខាងលើ**មិនប៉ះ ⇒ ការកែ
+               ដំណាក់កាលកណ្តាលមិនលុបអ្វីដែលរៀបរួច ។
+             ⚠ វានៅតែកែម្តងមួយៗបាន ៖ គ្រាន់តែកែដំណាក់កាលចុងក្រោយបំផុត
+               នោះគ្មានអ្វីនៅខាងក្រោមត្រូវរុញទេ ។ */
+          schedFollow(schM, sIdx);
           auditSchedSet(code, schM);
           toast('បានកែប្រែខែសម្រាប់ដំណាក់កាលទី ' + (sIdx+1) + ' ( គ្រប់ប្រភេទពន្ធ )', 'ok');
           renderAuditView();
@@ -24157,6 +24182,7 @@ function renderAuditView_() {
         const schY = (auditSched(code) || []).slice();
         if(schY[sIdx]){
           schY[sIdx] = { month:schY[sIdx].month, year:e.target.value };
+          schedFollow(schY, sIdx);
           auditSchedSet(code, schY);
           toast('បានកែប្រែឆ្នាំសម្រាប់ដំណាក់កាលទី ' + (sIdx+1) + ' ( គ្រប់ប្រភេទពន្ធ )', 'ok');
           renderAuditView();
@@ -51513,6 +51539,14 @@ function pkTime(f){
   background:rgba(6,32,33,.35); }
 #co-gate .cg-new-h{ font-size:12.5px; color:rgba(239,231,210,.7); margin-bottom:9px; }
 #co-gate .cg-new-row{ display:flex; gap:8px; }
+#co-gate .cg-numwrap{ position:relative; width:170px; flex:none; display:flex; }
+#co-gate .cg-numwrap textarea{ width:100%; padding-left:30px; }
+#co-gate .cg-nums{
+  position:absolute; left:0; top:0; bottom:0; width:26px; overflow:hidden;
+  padding:10px 4px 10px 0; box-sizing:border-box; text-align:right;
+  font:inherit; font-size:14px; line-height:1.5; color:rgba(239,231,210,.45);
+  pointer-events:none; white-space:pre; border-right:1px solid rgba(200,166,75,.18);
+}
 #co-gate .cg-new-row textarea:first-child{ width:170px; flex:none;
   font-family:'Khmer OS Siemreap','Noto Sans Khmer',system-ui,-apple-system,'Segoe UI',sans-serif; font-variant-numeric:tabular-nums; letter-spacing:.06em; }
 #co-gate .cg-new-row textarea:nth-child(2){ flex:1 1 auto; }
@@ -51563,6 +51597,7 @@ function pkTime(f){
    ══════════════════════════════════════════════════════════════════════ */
 (function(){
   var CG = null;
+  var CG_paintNums = null;
 
   function tin9(v){ return String(v || '').replace(/\D/g, '').slice(-9); }
   function esc(s){ return String(s == null ? '' : s)
@@ -51606,7 +51641,15 @@ function pkTime(f){
         '<div class="cg-new">' +
           '<div class="cg-new-h">➕ ស្នើសុំសហគ្រាសថ្មី</div>' +
           '<div class="cg-new-row">' +
-            '<textarea id="cg-tin" rows="1" placeholder="លេខអតប ៩ ខ្ទង់"></textarea>' +
+            /* ⭐ [stated] ២០២៦-០៩-០៣ ៖ «អាចដាក់លេខពីមុខ … ពេល Enter វាលោត
+               លេខ ២» ⇒ ជួរលេខនៅឆ្វេងប្រអប់ ។
+               ⚠ លេខ **មិនស្ថិតក្នុងតម្លៃ** របស់ប្រអប់ទេ ៖ បើដាក់ចូល វានឹង
+                 ក្លាយជាផ្នែកនៃលេខអតប ហើយសំណើនឹងខុសទាំងអស់ ។ វាជាស្រទាប់
+                 បង្ហាញដាច់ដោយឡែក ដែលរមូរតាមប្រអប់ ។ */
+            '<div class="cg-numwrap">' +
+              '<div class="cg-nums" id="cg-nums">1</div>' +
+              '<textarea id="cg-tin" rows="1" placeholder="លេខអតប ៩ ខ្ទង់"></textarea>' +
+            '</div>' +
             '<textarea id="cg-name" rows="1" placeholder="ឈ្មោះជាឡាតាំង"></textarea>' +
             '<button class="cg-btn" id="cg-req">ផ្ញើសំណើ</button>' +
           '</div>' +
@@ -51616,6 +51659,33 @@ function pkTime(f){
     document.body.appendChild(wrap);
     CG = { wrap: wrap, list: wrap.querySelector('#cg-list'), sub: wrap.querySelector('#cg-sub'),
            q: wrap.querySelector('#cg-q'), msg: wrap.querySelector('#cg-msg'), rows: [] };
+
+    /* ជួរលេខ ៖ សរសេរឡើងវិញរាល់ការវាយ និងរមូរតាមប្រអប់ ⇒ លេខតែងតែឈរ
+       ត្រង់នឹងបន្ទាត់របស់វា ។ */
+    (function(){
+      var ta = wrap.querySelector('#cg-tin');
+      var nums = wrap.querySelector('#cg-nums');
+      var nm = wrap.querySelector('#cg-name');
+      if(!ta || !nums) return;
+      var paint = function(){
+        var n = Math.max(1, ta.value.split(/\r?\n/).length);
+        var out = '';
+        for(var i = 1; i <= n; i++) out += i + (i < n ? '\n' : '');
+        nums.textContent = out;
+        nums.scrollTop = ta.scrollTop;
+        ta.style.height = 'auto';
+        ta.style.height = Math.min(ta.scrollHeight, 150) + 'px';
+        if(nm){
+          nm.style.height = 'auto';
+          nm.style.height = Math.min(Math.max(nm.scrollHeight, ta.scrollHeight), 150) + 'px';
+        }
+      };
+      ta.addEventListener('input', paint);
+      ta.addEventListener('scroll', function(){ nums.scrollTop = ta.scrollTop; });
+      if(nm) nm.addEventListener('input', paint);
+      paint();
+      CG_paintNums = paint;
+    })();
 
     CG.q.addEventListener('input', render);
     /* ⚠ [stated] «ពេលចុច ↻ … ដើរយឺត» ⇒ យ៉ាងហោចណាស់ត្រូវ **មើលឃើញថាវាដើរ** ៖
@@ -52001,6 +52071,7 @@ function pkTime(f){
         });
         CG.wrap.querySelector('#cg-tin').value  = keepT.join('\n');
         CG.wrap.querySelector('#cg-name').value = keepN.join('\n');
+        try{ if(CG_paintNums) CG_paintNums(); }catch(e){}
         var msg = [];
         if(ok) msg.push('✓ ផ្ញើ ' + ok);
         if(al) msg.push('មានក្នុងបញ្ជីរួច ' + al);
