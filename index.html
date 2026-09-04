@@ -5021,7 +5021,13 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
              លើក្រដាស ⇒ គ្មានឯកសារ TOI ។ តួលេខសរសេរចូលរចនាសម្ព័ន្ធដដែល
              នឹងឯកសារពិត ⇒ កាតគណនាដំណើរការដោយមិនកែអ្វី។ -->
         <button class="atb-btn atb-icon admin-only" onclick="if(window.__rscToiManual){window.__rscToiManual();}else{alert('ម៉ូឌុលមិនបានផ្ទុក — សូមផ្ទុកទំព័រឡើងវិញ');}" title="បំពេញ TOI ដោយដៃ" aria-label="បំពេញ TOI ដោយដៃ">📝</button>
-        <button class="atb-btn atb-icon atb-bin data-gated admin-only" onclick="clearAllData()" title="លុបឯកសារ" aria-label="លុបឯកសារ"><span class="ic">🗑️</span></button>
+        <!-- ⭐ [stated] ២០២៦-០៩-០៣ ៖ «គួរមាន» ⇒ ដក admin-only ចេញ ⇒ អ្នកប្រើ
+     សម្អាតទិន្នន័យសំណុំរឿងដោយខ្លួនឯងបាន ដើម្បីចាប់ផ្តើមសហគ្រាសថ្មី
+     ឬផ្ទុកឯកសារឡើងវិញ ដោយមិនបាច់ចាកចេញ ។
+     ⚠ រក្សា data-gated ៖ វាលេចតែពេលមានទិន្នន័យ ⇒ គ្មានប៊ូតុងលុបលោយពេល
+       អេក្រង់ទទេ ។ ការសួរបញ្ជាក់មានស្រាប់ក្នុង clearAllData ⇒ ចុចភ្លាត
+       មិនបាត់ការងារទេ ។ -->
+<button class="atb-btn atb-icon atb-bin data-gated" onclick="clearAllData()" title="លុបទិន្នន័យទាំងអស់ ដើម្បីចាប់ផ្តើមថ្មី" aria-label="លុបទិន្នន័យទាំងអស់"><span class="ic">🗑️</span></button>
       </div>
     </div>
     <script>
@@ -5184,6 +5190,29 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
                 window.__loggedInUserEmail = res.email || '';
                 if(res.expiresAtMs) window.__sessionExpiresAtMs = res.expiresAtMs;
               }
+              /* ⭐⭐⭐ [stated] ២០២៦-០៩-០៣ ៖ «login ចូល ហើយ Ctrl+Shift+R ក៏នៅតែ
+                 ជាប់ទិន្នន័យចាស់» ។
+                 ⚠ Ctrl+Shift+R សម្អាតតែ **ឯកសារក្នុងឃ្លាំងបណ្តាញ** — វា
+                   **មិនប៉ះ localStorage** ដែលជាកន្លែងដាក់ទិន្នន័យសំណុំរឿងទេ ។
+                   ការសម្អាតកើតឡើងតែពេល ៖ ចាកចេញ · ប្តូរសហគ្រាស · បើកឯកសារ
+                   💾 · ចុច 🗑 ។ បិទផ្ទាំងដោយមិនចាកចេញ ⇒ គ្មានការសម្អាត ។
+                 ⚠⚠ ហានិភ័យពិត ៖ លើម៉ាស៊ីនរួម អ្នកប្រើ ខ ចូល ⇒ ឃើញទិន្នន័យ
+                   សំណុំរឿងរបស់អ្នកប្រើ ក ។ នោះជាការលេចធ្លាយព័ត៌មាន ។
+                 ⇒ ចងទិន្នន័យនឹង **អ៊ីមែលម្ចាស់វេន** ៖ ពេលចូល បើអ្នកប្រើខុសពី
+                   អ្នកដែលទុកទិន្នន័យនោះ ⇒ សម្អាតដោយស្វ័យប្រវត្តិ ។ */
+              try{
+                var __who = String((res && res.email) || window.__loggedInUserEmail || '').toLowerCase().trim();
+                if(__who){
+                  var __prev = '';
+                  try{ __prev = String(localStorage.getItem('rscDataOwnerV1') || '').toLowerCase().trim(); }catch(e){}
+                  if(__prev && __prev !== __who){
+                    try{ if(typeof wipeEnterpriseStorage === 'function') wipeEnterpriseStorage(); }catch(e){}
+                    try{ if(typeof toast === 'function') toast('ទិន្នន័យសំណុំរឿងរបស់អ្នកប្រើមុនត្រូវបានសម្អាត', 'ok'); }catch(e){}
+                    try{ location.reload(); return; }catch(e){}
+                  }
+                  try{ localStorage.setItem('rscDataOwnerV1', __who); }catch(e){}
+                }
+              }catch(e){}
               window.__features = (res && res.features) || [];
               window.__userRole = (res && res.role) || '';
               window.__approvedTINsLoaded = true;
