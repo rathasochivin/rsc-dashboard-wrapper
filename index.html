@@ -23248,6 +23248,57 @@ function getAllAuditSheetData_() {
    ⚠ ការផ្ទេរទិន្នន័យចាស់ ៖ កូនសោធម្មតាដែលមានស្រាប់ ត្រូវផ្លាស់ទៅជួរ **ដំបូង**
      ដែលមានប្រភេទពន្ធនោះ ⇒ គ្មានការបង់ប្រាក់ណាបាត់ ។ */
 function auditSelKey(taxType, idx){ return String(taxType) + '#' + idx; }
+
+/* ⭐⭐⭐ [stated] ២០២៦-០៩-០៣ ៖ «ក្នុងកម្មវិធីតែមួយ ការបង់ដំណាក់កាលរើសតែម្តង
+   គឺអនុវត្តគ្រប់ប្រភេទពន្ធ … ទឹកប្រាក់មិនដូចគ្នាទេ ដោយសារធាតុពិតឆ្នាំផ្សេងគ្នា» ។
+   ⇒ ការរចនាត្រឹមត្រូវ ៖
+     · **កាលវិភាគ** ( ចំនួនដំណាក់កាល + ខែ/ឆ្នាំនីមួយៗ ) = របស់ **កម្មវិធី**
+       ⇒ រក្សាទុកម្តងក្នុង `__sched` ⇒ កែម្តង គ្រប់ជួរប្តូរតាម
+     · **ទឹកប្រាក់** = របស់ **ជួរនីមួយៗ** ⇒ បំបែកស្វ័យប្រវត្តិជាមុន តែកែដៃបាន
+   ⚠ `sel.stages` នៅតែត្រូវសរសេរឡើងវិញរាល់ការគូរ ព្រោះការគណនាកាត់កង និង
+     ការចុចមើលការបង់ អានវាដដែល ⇒ គ្មានកន្លែងណាត្រូវកែបន្ថែម ។
+   ⚠ `__sched` ជាកូនសោពិសេស ⇒ ត្រូវរំលងពេលដើររក «ប្រភេទពន្ធ#លេខ» ។ */
+function auditSched(code){
+  const sels = auditTaxSelections[code] || {};
+  return (sels.__sched && sels.__sched.length) ? sels.__sched : null;
+}
+function auditSchedSet(code, arr){
+  if(!auditTaxSelections[code]) auditTaxSelections[code] = {};
+  if(arr && arr.length) auditTaxSelections[code].__sched = arr;
+  else delete auditTaxSelections[code].__sched;
+}
+/* ចែកស្មើ ៖ សេសសល់ទៅដំណាក់កាលចុងក្រោយ ( ដូចតួលេខដែលគេប្រើពិត ៖
+   124,719,692 ÷ 6 ⇒ 20,786,615 ×5 និង 20,786,617 នៅចុងក្រោយ ) */
+function auditSplitAmt(total, n, i){
+  const t = Math.round(Number(total) || 0);
+  if(!n) return 0;
+  const base = Math.floor(t / n);
+  return (i === n - 1) ? (t - base * (n - 1)) : base;
+}
+/* ផ្ទេរទិន្នន័យចាស់ ៖ កាលវិភាគយកពីជួរដំបូងដែលមានដំណាក់កាល ; ទឹកប្រាក់
+   ដែលគេវាយរួច ក្លាយជាការកែដោយដៃរបស់ជួរនោះ ⇒ គ្មានអ្វីបាត់ ។ */
+function auditSchedMigrate(code){
+  const sels = auditTaxSelections[code];
+  if(!sels || sels.__sched) return;
+  let src = null;
+  Object.keys(sels).forEach(function(k){
+    if(k === '__sched') return;
+    const v = sels[k];
+    if(!src && v && v.stages && v.stages.length) src = v.stages;
+  });
+  if(!src) return;
+  auditSchedSet(code, src.map(function(st){ return { month:Number(st.month) || 0, year:String(st.year || '') }; }));
+  Object.keys(sels).forEach(function(k){
+    if(k === '__sched') return;
+    const v = sels[k];
+    if(v && v.stages && v.stages.length){
+      v.stageAmts = {};
+      v.stages.forEach(function(st, i){
+        v.stageAmts[i] = { tax:Number(st.tax) || 0, addTax:Number(st.addTax) || 0, interest:Number(st.interest) || 0 };
+      });
+    }
+  });
+}
 function auditSelGet(sels, taxType, idx){
   const k = auditSelKey(taxType, idx);
   if(sels[k]) return sels[k];
@@ -23664,6 +23715,7 @@ function renderAuditView_() {
 
     /* សរុបរួមនៃដំណាក់កាល ឆ្លងគ្រប់ប្រភេទពន្ធ */
     let gTax = 0, gAdd = 0, gInt = 0, gTot = 0;
+    auditSchedMigrate(activeAuditCode);
     breakdown.forEach((r, idx) => {
       const taxType = r[1];
       const selKey = auditSelKey(taxType, idx);
@@ -23695,6 +23747,27 @@ function renderAuditView_() {
       let stTax = 0, stAdd = 0, stInt = 0, stTot = 0;
       let sMonthOptsHead = '';
       MONTH_HEADERS_KM.forEach(function(mName){ sMonthOptsHead += `<option>ខែ ${mName}</option>`; });
+      /* ⭐ សង់ `sel.stages` ឡើងវិញពី **កាលវិភាគរួម** + ទឹកប្រាក់របស់ជួរនេះ ។
+         ⚠ ការសរសេរឡើងវិញរាល់ការគូរ ធានាថាការគណនាកាត់កង ( ដែលអាន
+           sel.stages ) តែងតែឃើញកាលវិភាគចុងក្រោយបំផុត ។ */
+      const rowTaxN = Number(deKh(String(r[2])).replace(/,/g,'').replace('៛','').trim()) || 0;
+      const rowAddN = Number(deKh(String(r[3])).replace(/,/g,'').replace('៛','').trim()) || 0;
+      const rowIntN = Number(deKh(String(r[4])).replace(/,/g,'').replace('៛','').trim()) || 0;
+      const schedNow = auditSched(activeAuditCode);
+      if (schedNow) {
+        const n = schedNow.length;
+        sel.stageAmts = sel.stageAmts || {};
+        sel.stages = schedNow.map(function(sc, i){
+          const ov = sel.stageAmts[i] || {};
+          const tx = ov.tax      != null ? Number(ov.tax)      : auditSplitAmt(rowTaxN, n, i);
+          const ad = ov.addTax   != null ? Number(ov.addTax)   : auditSplitAmt(rowAddN, n, i);
+          const it = ov.interest != null ? Number(ov.interest) : auditSplitAmt(rowIntN, n, i);
+          return { tax:tx, addTax:ad, interest:it, total:tx + ad + it,
+                   month:Number(sc.month) || 0, year:String(sc.year || defaultYear) };
+        });
+      } else {
+        sel.stages = null;
+      }
       if (sel.stages && sel.stages.length > 0) {
         /* ⚠⚠ [stated] ២០២៦-០៩-០៣ ៖ «រៀបចំអក្សរឱ្យត្រូវប្រអប់ទឹកប្រាក់» ។
            ការទាយទទឹង ( 26px · 190px ) ខុស ព្រោះស្លាក «ដ.1:» ប្រអប់ជ្រើសខែ/ឆ្នាំ
@@ -23874,64 +23947,47 @@ function renderAuditView_() {
     document.querySelectorAll('.btn-add-stage').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const code = e.target.getAttribute('data-code');
-        const tax = e.target.getAttribute('data-tax');
-        const breakdownRow = breakdown.find(r => r[1] === tax);
-        if (!breakdownRow) return;
-
-        if (!auditTaxSelections[code]) auditTaxSelections[code] = {};
-        if (!auditTaxSelections[code][tax]) {
-          auditTaxSelections[code][tax] = { month: 0, year: defaultYear, stages: null };
+        /* ⭐ កាលវិភាគជារបស់ **កម្មវិធី** ⇒ ការបន្ថែម/កំណត់ចំនួន ធ្វើម្តង
+           ហើយគ្រប់ប្រភេទពន្ធទទួលដូចគ្នា ។ ⚠ ទឹកប្រាក់មិនកំណត់ទីនេះទេ —
+           ជួរនីមួយៗបំបែកតួលេខរបស់ខ្លួនតាមចំនួនដំណាក់កាល ។ */
+        const cur = auditSched(code) || [];
+        if(cur.length){
+          /* មានកាលវិភាគរួច ⇒ បន្ថែមមួយដំណាក់កាល */
+          const last = cur[cur.length - 1] || { month:0, year:defaultYear };
+          const nm = (Number(last.month) + 1) % 12;
+          const ny = nm === 0 ? String(Number(last.year) + 1) : String(last.year);
+          auditSchedSet(code, cur.concat([{ month:nm, year:ny }]));
+          toast('បានបន្ថែមដំណាក់កាល — គ្រប់ប្រភេទពន្ធទទួលដូចគ្នា', 'ok');
+        }else{
+          let countInput = prompt('សូមបញ្ចូលចំនួនដំណាក់កាលដែលចង់បង់ (ឧទាហរណ៍៖ 2 ឬ 3)៖', '2');
+          if (!countInput) return;
+          let nStages = parseKhmerOrLatinNumber(countInput);
+          if (isNaN(nStages) || nStages <= 0) {
+            toast('ចំនួនដំណាក់កាលមិនត្រឹមត្រូវ', 'err');
+            return;
+          }
+          const arr = [];
+          for(let i = 0; i < nStages; i++) arr.push({ month:(i % 12), year:defaultYear });
+          auditSchedSet(code, arr);
+          toast('បានកំណត់ ' + nStages + ' ដំណាក់កាល សម្រាប់គ្រប់ប្រភេទពន្ធ', 'ok');
         }
-        let sel = auditTaxSelections[code][tax];
-
-        let countInput = prompt('សូមបញ្ចូលចំនួនដំណាក់កាលដែលចង់បង់ (ឧទាហរណ៍៖ 2 ឬ 3)៖', '2');
-        if (!countInput) return;
-        let nStages = parseKhmerOrLatinNumber(countInput);
-        if (isNaN(nStages) || nStages <= 0) {
-          toast('ចំនួនដំណាក់កាលមិនត្រឹមត្រូវ', 'err');
-          return;
-        }
-
-        const tTax = Number(String(breakdownRow[2]).replace(/,/g,'')) || 0;
-        const tAdd = Number(String(breakdownRow[3]).replace(/,/g,'')) || 0;
-        const tInt = Number(String(breakdownRow[4]).replace(/,/g,'')) || 0;
-
-        let baseTax = Math.floor(tTax / nStages);
-        let remTax = tTax - (baseTax * nStages);
-        let baseAdd = Math.floor(tAdd / nStages);
-        let remAdd = tAdd - (baseAdd * nStages);
-        let baseInt = Math.floor(tInt / nStages);
-        let remInt = tInt - (baseInt * nStages);
-
-        sel.stages = [];
-        for (let s = 0; s < nStages; s++) {
-          let sTax = baseTax + (s === 0 ? remTax : 0);
-          let sAdd = baseAdd + (s === 0 ? remAdd : 0);
-          let sInt = baseInt + (s === 0 ? remInt : 0);
-          let sTot = sTax + sAdd + sInt;
-
-          sel.stages.push({
-            tax: sTax,
-            addTax: sAdd,
-            interest: sInt,
-            total: sTot,
-            month: (s % 12),
-            year: defaultYear
-          });
-        }
-        toast('បានចែកទឹកប្រាក់ស្វ័យប្រវត្តិចំនួន ' + nStages + ' ដំណាក់កាល', 'ok');
         renderAuditView();
       });
     });
 
+
     document.querySelectorAll('[id^="btnClearStages_"]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const code = e.target.getAttribute('data-code');
-        const tax = e.target.getAttribute('data-tax');
-        if (auditTaxSelections[code] && auditTaxSelections[code][tax]) {
-          auditTaxSelections[code][tax].stages = null;
-        }
-        toast('បានលុបដំណាក់កាល និងត្រឡប់មកបង់ធម្មតាវិញ', 'ok');
+        /* ⚠ កាលវិភាគជារបស់កម្មវិធី ⇒ ការបោះបង់ ដកចេញសម្រាប់គ្រប់ប្រភេទពន្ធ
+           ព្រមទាំងលុបការកែទឹកប្រាក់ដោយដៃ ⇒ ការចាប់ផ្តើមថ្មីស្អាត ។ */
+        auditSchedSet(code, null);
+        const selsC = auditTaxSelections[code] || {};
+        Object.keys(selsC).forEach(function(k){
+          if(k === '__sched') return;
+          if(selsC[k]){ selsC[k].stages = null; delete selsC[k].stageAmts; }
+        });
+        toast('បានលុបដំណាក់កាល និងត្រឡប់មកបង់ធម្មតាវិញ ( គ្រប់ប្រភេទពន្ធ )', 'ok');
         renderAuditView();
       });
     });
@@ -23939,15 +23995,19 @@ function renderAuditView_() {
     document.querySelectorAll('.btn-del-stage').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const code = e.target.getAttribute('data-code');
-        const tax = e.target.getAttribute('data-tax');
         const sIdx = Number(e.target.getAttribute('data-stage'));
-        if (auditTaxSelections[code] && auditTaxSelections[code][tax] && auditTaxSelections[code][tax].stages) {
-          auditTaxSelections[code][tax].stages.splice(sIdx, 1);
-          if (auditTaxSelections[code][tax].stages.length === 0) {
-            auditTaxSelections[code][tax].stages = null;
-          }
-        }
-        toast('បានលុបដំណាក់កាលនេះ', 'ok');
+        const cur = (auditSched(code) || []).slice();
+        cur.splice(sIdx, 1);
+        auditSchedSet(code, cur.length ? cur : null);
+        /* ⚠ ការកែទឹកប្រាក់ដោយដៃចងនឹង **លេខរៀងដំណាក់កាល** ⇒ ពេលលុបមួយ
+           លេខរៀងរអិល ហើយការកែចាស់នឹងទៅខុសដំណាក់កាល ⇒ លុបវាចោល
+           រួចបំបែកស្វ័យប្រវត្តិឡើងវិញ ។ ជៀសវាងតួលេខខុសដោយស្ងាត់ ។ */
+        const selsD = auditTaxSelections[code] || {};
+        Object.keys(selsD).forEach(function(k){
+          if(k === '__sched') return;
+          if(selsD[k]) delete selsD[k].stageAmts;
+        });
+        toast('បានលុបដំណាក់កាលនេះ ( គ្រប់ប្រភេទពន្ធ )', 'ok');
         renderAuditView();
       });
     });
@@ -23966,6 +24026,11 @@ function renderAuditView_() {
             if (cls === 'st-add') st.addTax = val;
             if (cls === 'st-int') st.interest = val;
             st.total = st.tax + st.addTax + st.interest;
+            /* ⭐ ការកែដោយដៃត្រូវរក្សាទុកដាច់ពី `stages` ព្រោះ `stages` ត្រូវ
+               សង់ឡើងវិញពីកាលវិភាគរាល់ការគូរ ⇒ បើមិនរក្សា ការកែនឹងបាត់ ។ */
+            const selA = auditTaxSelections[code][tax];
+            selA.stageAmts = selA.stageAmts || {};
+            selA.stageAmts[sIdx] = { tax:st.tax, addTax:st.addTax, interest:st.interest };
 
             /* ⭐ [stated] ២០២៦-០៩-០៣ ៖ «ជួយបន្ថែមក្បៀស (,)» ⇒ ដាក់ទម្រង់
                ភ្លាមពេលវាយ ។ ⚠ ការសរសេរតម្លៃថ្មីចូល input ធ្វើឱ្យទស្សន៍ទ្រនិច
@@ -24018,7 +24083,8 @@ function renderAuditView_() {
         const tax = e.target.getAttribute('data-tax');
         const sIdx = Number(e.target.getAttribute('data-stage'));
         if (auditTaxSelections[code] && auditTaxSelections[code][tax] && auditTaxSelections[code][tax].stages[sIdx]) {
-          auditTaxSelections[code][tax].stages[sIdx].month = Number(e.target.value);
+          const schM = (auditSched(code) || []).slice();
+          if(schM[sIdx]){ schM[sIdx] = { month:Number(e.target.value), year:schM[sIdx].year }; auditSchedSet(code, schM); }
           toast('បានកែប្រែខែសម្រាប់ដំណាក់កាលទី ' + (sIdx+1), 'ok');
         }
       });
@@ -24030,7 +24096,8 @@ function renderAuditView_() {
         const tax = e.target.getAttribute('data-tax');
         const sIdx = Number(e.target.getAttribute('data-stage'));
         if (auditTaxSelections[code] && auditTaxSelections[code][tax] && auditTaxSelections[code][tax].stages[sIdx]) {
-          auditTaxSelections[code][tax].stages[sIdx].year = e.target.value;
+          const schY = (auditSched(code) || []).slice();
+          if(schY[sIdx]){ schY[sIdx] = { month:schY[sIdx].month, year:e.target.value }; auditSchedSet(code, schY); }
           toast('បានកែប្រែឆ្នាំសម្រាប់ដំណាក់កាលទី ' + (sIdx+1), 'ok');
         }
       });
@@ -24314,7 +24381,7 @@ function auditPaymentsFor(year, taxType, monthIdx){
       /* កូនសោឥឡូវជា «ប្រភេទពន្ធ#លេខរៀងជួរ» ⇒ ប្រមូលគ្រប់ជួរនៃប្រភេទពន្ធនោះ
          ( និងកូនសោធម្មតាចាស់ដែលមិនទាន់ផ្ទេរ ) */
       const selList = Object.keys(sels)
-        .filter(k => k === taxType || k.indexOf(taxType + '#') === 0)
+        .filter(k => k !== '__sched' && (k === taxType || k.indexOf(taxType + '#') === 0))
         .map(k => sels[k])
         .filter(Boolean);
       if(!selList.length) return;
