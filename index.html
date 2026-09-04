@@ -13993,6 +13993,22 @@ function renderDonut(svgId, legendId, rows, hasData){
    those must be read in UTC or they would shift the other way. */
 window.__sheetDateParts = function(v){
   if(!(v instanceof Date) || isNaN(v)) return null;
+  /* ⭐⭐⭐ [stated] ២០២៦-០៩-០៣ ៖ «ការិយបរិច្ឆេទចាប់ពី 01-01-2022 តែប្រព័ន្ធ
+     ចាប់ 2021» ។ តម្លៃឆៅដែលវាស់បាន ៖ `Fri Dec 31 2021 23:59:56 GMT+0700`
+     ⇒ **ខ្វះ ៤ វិនាទី** មុនអធ្រាត្រ ។ នេះជាកំហុសបង្គត់ទសភាគរបស់ SheetJS
+     ពេលបំប្លែងលេខរាប់ថ្ងៃ ( serial ) ទៅជា Date ⇒ ការអានផ្នែក «ថ្ងៃ»
+     បានថ្ងៃមុនទាំងស្រុង ។
+     ⇒ ខ្ទាស់ទៅអធ្រាត្រជិតបំផុត **មុន** អានថ្ងៃ ខែ ឆ្នាំ ។
+     ⚠ ប៉ះតែម៉ោងក្នុងរង្វង់ ២ នាទីជុំវិញអធ្រាត្រ ⇒ ម៉ោងធ្វើការពិត
+       ( ឧ. 09:15 ) មិនរងផលប៉ះពាល់ឡើយ ។
+     ⚠ ដាក់ត្រង់នេះដោយចេតនា ៖ គ្រប់កន្លែងដែលអានកាលបរិច្ឆេទពីសន្លឹក
+       ឆ្លងកាត់មុខងារនេះ ⇒ កំហុសដដែលនៅកន្លែងផ្សេងក៏បាត់ជាមួយ ។ */
+  var __t = v.getTime();
+  var __l = new Date(__t);
+  var __sec = __l.getHours()*3600 + __l.getMinutes()*60 + __l.getSeconds();
+  if(__sec >= 86400 - 120)      __t += (86400 - __sec) * 1000;
+  else if(__sec > 0 && __sec <= 120) __t -= __sec * 1000;
+  v = new Date(__t);
   const utcMidnight = v.getUTCHours()===0 && v.getUTCMinutes()===0 && v.getUTCSeconds()===0;
   const localMidnight = v.getHours()===0 && v.getMinutes()===0 && v.getSeconds()===0;
   if(utcMidnight && !localMidnight)
