@@ -14793,10 +14793,25 @@ function whtRowKey(r){
    កុំដាក់ទឹកប្រាក់ចូលកូនសោវិញ ។
    ⚠ អ្វីដែលរក្សាទុកជាថ្នូរ ៖ ការសរសេរជាន់ដែល **ទឹកប្រាក់ខុសពីមុន** ត្រូវរាប់
      ហើយប្រាប់ ⇒ តម្លៃមិនប្តូរស្ងាត់ៗ ។ */
+/* ⭐⭐ [stated] ២០២៦-០៩-០៣ ៖ «ដាក់ឯកសារឡើងវិញ ថ្ងៃចេញត្រូវហើយ តែវាមិន
+   សរសេរជាន់លើទិន្នន័យទេ ទាល់តែលុបហើយ upload ថ្មី» ។
+   ⚠ មូលហេតុ ៖ កូនសោផ្គូផ្គងជា `ថ្ងៃ|លេខវិក្កយបត្រ|អតប` ។ ការកែថ្ងៃខុសមួយថ្ងៃ
+     ប្តូរ **ថ្ងៃ** ⇒ កូនសោប្តូរ ⇒ ជួរថ្មីមិនអាចផ្គូនឹងជួរចាស់ ⇒ វាបន្ថែមចូល
+     ជាជួរថ្មី ហើយជួរខុសនៅដដែល ។
+   ⇒ ផ្គូផ្គងតាម **លេខវិក្កយបត្រ + អតប** ( ថ្ងៃមិនចូលកូនសោ ) ៖ វិក្កយបត្រ
+     តែមួយពីអ្នកផ្គត់ផ្គង់តែមួយ គឺជាឯកសារតែមួយ ទោះថ្ងៃត្រូវកែក៏ដោយ ។
+   ⚠ ករណីលេខវិក្កយបត្រទទេ ⇒ ត្រឡប់ទៅកូនសោចាស់ ( ថ្ងៃ|អតប|ទឹកប្រាក់ )
+     ព្រោះគ្មានអ្វីផ្សេងបែងចែកជួរបានទេ ។
+   ⚠ តម្លៃដែលត្រូវដឹង ៖ បើអ្នកផ្គត់ផ្គង់ណាមួយចាប់លេខវិក្កយបត្រឡើងវិញរាល់ឆ្នាំ
+     ( លេខដដែលក្នុងឆ្នាំផ្សេង ) ជួរទាំងពីរនឹងរួមជាមួយ ។ លេខវិក្កយបត្រ GDT
+     មានរហូតដល់ ២០ ខ្ទង់ ហើយមិនកើតឡើងម្តងទៀត ⇒ ហានិភ័យតូចជាងបញ្ហាដែល
+     វាដោះស្រាយ ។ */
 function journalRowKey(r){
-  return [String(r.date || '').trim(),
-          String(r.invoiceNo || '').trim().toLowerCase(),
-          String(r.tin || '').trim()].join('|');
+  const inv = String(r.invoiceNo || '').trim().toLowerCase();
+  const tin = String(r.tin || '').trim();
+  if(inv) return inv + '|' + tin;
+  return [String(r.date || '').trim(), tin,
+          String(r.amount == null ? '' : r.amount)].join('|');
 }
 function mergeJournalRows(existing, incoming){
   const byKey = new Map();
@@ -14804,7 +14819,10 @@ function mergeJournalRows(existing, incoming){
   (existing || []).forEach(r=> byKey.set(journalRowKey(r), r));
   (incoming || []).forEach(r=>{
     const k = journalRowKey(r), old = byKey.get(k);
-    if(old && Number(old.amount || 0) !== Number(r.amount || 0)) changed++;
+    /* រាប់ការសរសេរជាន់ ៖ ទឹកប្រាក់ខុស **ឬ** ថ្ងៃខុស ( ការកែថ្ងៃក៏ជាការ
+       សរសេរជាន់ដែរ ⇒ អ្នកប្រើដឹងថាមានអ្វីប្តូរ ) ។ */
+    if(old && (Number(old.amount || 0) !== Number(r.amount || 0)
+               || String(old.date || '') !== String(r.date || ''))) changed++;
     byKey.set(k, r);                                  /* ថ្មីឈ្នះ ⇒ សរសេរជាន់ */
   });
   mergeJournalRows.changed = (mergeJournalRows.changed || 0) + changed;
