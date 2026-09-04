@@ -5206,9 +5206,17 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
                   var __prev = '';
                   try{ __prev = String(localStorage.getItem('rscDataOwnerV1') || '').toLowerCase().trim(); }catch(e){}
                   if(__prev && __prev !== __who){
+                    /* ⚠⚠ កំហុសរបស់ខ្ញុំ ( ចាប់បាន ២០២៦-០៩-០៣ ) ៖ ខ្ញុំផ្ទុកទំព័រ
+                       ឡើងវិញ **មុន** កត់ម្ចាស់ថ្មី ⇒ ក្រោយផ្ទុករួច វានៅឃើញម្ចាស់
+                       ចាស់ដដែល ⇒ សម្អាត ⇒ ផ្ទុកឡើងវិញ ⇒ រង្វង់មិនចេះចប់
+                       ( អេក្រង់ញាក់ៗ ហើយតួនាទីទាញមិនទាន់រួច ) ។
+                       ⇒ កត់ម្ចាស់ថ្មី **មុនគេបំផុត** ⇒ ការផ្ទុកឡើងវិញកើតតែម្តង ។
+                       ⭐ ច្បាប់ ៖ មុនហៅ location.reload() ត្រូវសរសេរស្ថានភាព
+                         ដែលការពារការរត់ម្តងទៀត ជាមុនសិន ។ */
+                    try{ localStorage.setItem('rscDataOwnerV1', __who); }catch(e){}
                     try{ if(typeof wipeEnterpriseStorage === 'function') wipeEnterpriseStorage(); }catch(e){}
-                    try{ if(typeof toast === 'function') toast('ទិន្នន័យសំណុំរឿងរបស់អ្នកប្រើមុនត្រូវបានសម្អាត', 'ok'); }catch(e){}
-                    try{ location.reload(); return; }catch(e){}
+                    try{ location.reload(); }catch(e){}
+                    return;
                   }
                   try{ localStorage.setItem('rscDataOwnerV1', __who); }catch(e){}
                 }
