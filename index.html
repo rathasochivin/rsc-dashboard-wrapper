@@ -23236,6 +23236,30 @@ function getAllAuditSheetData_() {
   return allAudits;
 }
 
+/* ⭐⭐⭐ [stated] ២០២៦-០៩-០៣ ៖ «ពេលបញ្ចូលប្រភេទពន្ធដូចគ្នា វាគិតថាលេខតែមួយ» ។
+   ⚠⚠ ភស្តុតាងពី Console របស់គេ ៖ កូនសោ **តែមួយ** ( «អាករលើតម្លៃបន្ថែម» )
+     កាន់ **១២ ដំណាក់កាល** ខណៈតារាងមាន ២ ជួរនៃប្រភេទពន្ធដដែល ។ ការបង់ប្រាក់
+     រក្សាទុកតាម `សវនកម្ម → ប្រភេទពន្ធ` ⇒ ជួរទាំងពីរសរសេរចូលកន្លែងតែមួយ ។
+   ⚠⚠ វាមិនត្រឹមតែបង្ហាញខុសទេ ៖ `getAuditDeductionsMap` ដើរតាមជួរនីមួយៗ រួច
+     អាន `sel.stages` ⇒ ដំណាក់កាលទាំង ១២ ត្រូវរាប់ **ពីរដង** ចូលការកាត់កង ។
+   ⇒ កូនសោត្រូវរួមបញ្ចូល **លេខរៀងជួរ** ។ គ្មានវាលឆ្នាំ ឬប្រភពក្នុងជួរបំបែក
+     ( វាមានតែ [លេខ, ប្រភេទពន្ធ, ពន្ធ, បន្ថែម, ការប្រាក់, សរុប] ) ⇒ ទីតាំង
+     គឺជាអ្វីតែមួយគត់ដែលបែងចែកបាន ។
+   ⚠ ការផ្ទេរទិន្នន័យចាស់ ៖ កូនសោធម្មតាដែលមានស្រាប់ ត្រូវផ្លាស់ទៅជួរ **ដំបូង**
+     ដែលមានប្រភេទពន្ធនោះ ⇒ គ្មានការបង់ប្រាក់ណាបាត់ ។ */
+function auditSelKey(taxType, idx){ return String(taxType) + '#' + idx; }
+function auditSelGet(sels, taxType, idx){
+  const k = auditSelKey(taxType, idx);
+  if(sels[k]) return sels[k];
+  /* ផ្ទេរម្តងគត់ ៖ តែជួរដំបូងនៃប្រភេទពន្ធនោះ យកកូនសោធម្មតាចាស់ */
+  if(sels[taxType]){
+    sels[k] = sels[taxType];
+    delete sels[taxType];
+    return sels[k];
+  }
+  return null;
+}
+
 function getAuditBreakdownAcrossWorkbooks(auditCode) {
   const breakdownRows = [];
   /* ជួរលម្អិតនៃកូដមួយ = ជួរបង់ប្រាក់ដែលវាយក្នុងផ្នែកទី១ */
@@ -23311,9 +23335,9 @@ function getAuditDeductionsMap(force) {
     const mY = audit.code.match(/-(\d{4})-/);
     if (mY) defaultYear = mY[1];
 
-    breakdown.forEach(row => {
+    breakdown.forEach((row, idx) => {
       const taxType = row[1];
-      const taxSelectionsForTax = taxSelections[taxType];
+      const taxSelectionsForTax = auditSelGet(taxSelections, taxType, idx);
 
       if (taxSelectionsForTax && taxSelectionsForTax.stages && taxSelectionsForTax.stages.length > 0) {
         taxSelectionsForTax.stages.forEach(st => {
@@ -23642,10 +23666,11 @@ function renderAuditView_() {
     let gTax = 0, gAdd = 0, gInt = 0, gTot = 0;
     breakdown.forEach((r, idx) => {
       const taxType = r[1];
-      if (!taxSelections[taxType]) {
-        taxSelections[taxType] = { month: null, year: null, stages: null };
+      const selKey = auditSelKey(taxType, idx);
+      if (!auditSelGet(taxSelections, taxType, idx)) {
+        taxSelections[selKey] = { month: null, year: null, stages: null };
       }
-      const sel = taxSelections[taxType];
+      const sel = taxSelections[selKey];
       /* បើមិនបានជ្រើសផ្ទាល់ខ្លួន បង្ហាញតាមថ្ងៃបង់របស់កម្មវិធី (មិនរក្សាទុក
          ដូច្នេះប្តូរថ្ងៃកម្មវិធី គ្រប់ជួរប្តូរតាមភ្លាម) */
       const eff = effectivePayMY(activeAuditCode, sel);
@@ -23668,17 +23693,30 @@ function renderAuditView_() {
          ពន្ធ និងសរុបរួម ។ ⚠ ទទឹងក្នុងក្បាល និងជួរសរុប ត្រូវ **ត្រូវគ្នា**
          នឹងទទឹងប្រអប់វាយ ( 128px ) បើមិនដូច្នេះទេ ស្លាកនឹងរអិលចេញពីជួរឈរ ។ */
       let stTax = 0, stAdd = 0, stInt = 0, stTot = 0;
+      let sMonthOptsHead = '';
+      MONTH_HEADERS_KM.forEach(function(mName){ sMonthOptsHead += `<option>ខែ ${mName}</option>`; });
       if (sel.stages && sel.stages.length > 0) {
+        /* ⚠⚠ [stated] ២០២៦-០៩-០៣ ៖ «រៀបចំអក្សរឱ្យត្រូវប្រអប់ទឹកប្រាក់» ។
+           ការទាយទទឹង ( 26px · 190px ) ខុស ព្រោះស្លាក «ដ.1:» ប្រអប់ជ្រើសខែ/ឆ្នាំ
+           និងប៊ូតុង × មានទទឹងតាមខ្លឹមសារ ដែលខ្ញុំមើលមិនឃើញ ។
+           ⇒ ជំនួសការទាយ ៖ ក្បាល និងជួរសរុបប្រើ **ធាតុដដែលបេះបិទ** នឹងជួរវាយ
+             ( ស្លាក · ប្រអប់ · ប៊ូតុង ) តែលាក់មើលមិនឃើញ ⇒ ទទឹងត្រូវគ្នា
+             ដោយស្វ័យប្រវត្តិ ទោះខ្លឹមសារ ឬពុម្ពអក្សរប្តូរ ។
+           ⭐ ច្បាប់ ៖ ពេលត្រូវតម្រឹមនឹងធាតុដែលទទឹងមិនថេរ កុំវាស់ដោយភ្នែក —
+             ដាក់ធាតុដដែលមួយច្បាប់ដែលមើលមិនឃើញ ។ */
+        const ghost = (h) => `<span style="visibility:hidden; pointer-events:none;">${h}</span>`;
         stageHtml += `
           <div style="display:flex; align-items:center; gap:6px; justify-content:flex-end;
                       font-size:10.5px; font-weight:700; color:var(--muted);
                       font-family:'Khmer OS Siemreap',sans-serif; margin-bottom:2px;">
-            <span style="width:26px;"></span>
+            ${ghost(`<span style="font-size:11px; font-weight:600;">ដ.1:</span>`)}
             <span style="width:128px; text-align:center;">ទឹកប្រាក់ពន្ធ</span>
             <span style="width:128px; text-align:center;">ពន្ធបន្ថែម</span>
             <span style="width:128px; text-align:center;">ការប្រាក់</span>
             <span style="width:128px; text-align:center;">សរុប</span>
-            <span style="width:190px;"></span>
+            ${ghost(`<select class="select-box">${sMonthOptsHead}</select>`)}
+            ${ghost(`<select class="select-box"><option>2023</option></select>`)}
+            ${ghost(`<button class="back-btn" style="padding:4px 8px;">×</button>`)}
           </div>`;
         sel.stages.forEach(st => {
           stTax += Number(st.tax) || 0;
@@ -23733,12 +23771,14 @@ function renderAuditView_() {
               <div class="st-sumrow" style="display:flex; align-items:center; gap:6px; justify-content:flex-end;
                           font-weight:700; color:var(--navy); margin-top:2px;
                           border-top:1px solid var(--line); padding-top:3px;">
-                <span style="width:26px; font-size:10.5px;">សរុប</span>
-                <span style="width:128px; text-align:right; padding-right:8px;">${formatNum(stTax)}</span>
-                <span style="width:128px; text-align:right; padding-right:8px;">${formatNum(stAdd)}</span>
-                <span style="width:128px; text-align:right; padding-right:8px;">${formatNum(stInt)}</span>
-                <span style="width:128px; text-align:right; padding-right:8px;">${formatNum(stTot)}</span>
-                <span style="width:190px;"></span>
+                <span style="font-size:11px; font-weight:600;">សរុប</span>
+                <span style="width:128px; text-align:right; padding-right:9px;">${formatNum(stTax)}</span>
+                <span style="width:128px; text-align:right; padding-right:9px;">${formatNum(stAdd)}</span>
+                <span style="width:128px; text-align:right; padding-right:9px;">${formatNum(stInt)}</span>
+                <span style="width:128px; text-align:right; padding-right:9px;">${formatNum(stTot)}</span>
+                <span style="visibility:hidden; pointer-events:none;"><select class="select-box"><option>ខែ មករា</option></select></span>
+                <span style="visibility:hidden; pointer-events:none;"><select class="select-box"><option>2023</option></select></span>
+                <span style="visibility:hidden; pointer-events:none;"><button class="back-btn" style="padding:4px 8px;">×</button></span>
               </div>
               <div style="display:flex; gap:6px; margin-top:2px;">
                 <button class="btn-stage btn-add-stage" data-code="${activeAuditCode}" data-tax="${taxType}">+ បន្ថែមដំណាក់កាលទៀត</button>
@@ -23757,12 +23797,14 @@ function renderAuditView_() {
         <td colspan="6" style="text-align:right;">សរុបរួមដំណាក់កាល</td>
         <td style="text-align:right;">
           <div style="display:flex; align-items:center; gap:6px; justify-content:flex-end; color:var(--navy);">
-            <span style="width:26px;"></span>
-            <span style="width:128px; text-align:right; padding-right:8px;">${formatNum(gTax)}</span>
-            <span style="width:128px; text-align:right; padding-right:8px;">${formatNum(gAdd)}</span>
-            <span style="width:128px; text-align:right; padding-right:8px;">${formatNum(gInt)}</span>
-            <span style="width:128px; text-align:right; padding-right:8px;">${formatNum(gTot)}</span>
-            <span style="width:190px;"></span>
+            <span style="visibility:hidden;"><span style="font-size:11px; font-weight:600;">សរុប</span></span>
+            <span style="width:128px; text-align:right; padding-right:9px;">${formatNum(gTax)}</span>
+            <span style="width:128px; text-align:right; padding-right:9px;">${formatNum(gAdd)}</span>
+            <span style="width:128px; text-align:right; padding-right:9px;">${formatNum(gInt)}</span>
+            <span style="width:128px; text-align:right; padding-right:9px;">${formatNum(gTot)}</span>
+            <span style="visibility:hidden; pointer-events:none;"><select class="select-box"><option>ខែ មករា</option></select></span>
+            <span style="visibility:hidden; pointer-events:none;"><select class="select-box"><option>2023</option></select></span>
+            <span style="visibility:hidden; pointer-events:none;"><button class="back-btn" style="padding:4px 8px;">×</button></span>
           </div>
         </td>
       </tr>`;
@@ -24269,8 +24311,14 @@ function auditPaymentsFor(year, taxType, monthIdx){
   try{
     getAllAuditSheetData().forEach(audit=>{
       const sels = auditTaxSelections[audit.code] || {};
-      const sel = sels[taxType];
-      if(!sel) return;
+      /* កូនសោឥឡូវជា «ប្រភេទពន្ធ#លេខរៀងជួរ» ⇒ ប្រមូលគ្រប់ជួរនៃប្រភេទពន្ធនោះ
+         ( និងកូនសោធម្មតាចាស់ដែលមិនទាន់ផ្ទេរ ) */
+      const selList = Object.keys(sels)
+        .filter(k => k === taxType || k.indexOf(taxType + '#') === 0)
+        .map(k => sels[k])
+        .filter(Boolean);
+      if(!selList.length) return;
+      selList.forEach(function(sel){
       const payDate = (auditPayDates && auditPayDates[audit.code]) || '';
       const num = v => Number(deKh(String(v)).replace(/,/g,'').replace('៛','').trim()) || 0;
       if(sel.stages && sel.stages.length){
@@ -24292,6 +24340,7 @@ function auditPaymentsFor(year, taxType, monthIdx){
           tax:num(row[2]), addTax:num(row[3]), interest:num(row[4]), total:num(row[5]),
           month:eff.month, year:eff.year, payDate });
       }
+      });   /* selList.forEach */
     });
   }catch(e){ console.warn('auditPaymentsFor:', e); }
   return out;
