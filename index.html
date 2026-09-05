@@ -2655,6 +2655,17 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
 /* Working columns — on screen only, never printed. */
 #mtr-embed table.mtr-grid .vat-calc{background:#f4f6f8; color:#5b6570;}
 #mtr-embed table.mtr-grid .vat-diff{background:#fdeaea; color:#b3261e; font-weight:700;}
+/* ⭐ [stated] ២០២៦-០៩-០៣ ៖ បន្ទាត់បំបែកក្រុម ធាតុចេញ ⇄ ធាតុចូល ⇒ ភ្នែក
+   ដឹងភ្លាមថាជួរឈរណាជារបស់ក្រុមណា ។ ⚠ ស៊ុមខាង **ស្តាំ** នៃជួរឈរចុងក្រុម
+   ⇒ បន្ទាត់តែមួយ មិនក្រាស់ទ្វេ ។ */
+#mtr-embed table.mtr-grid th.vat-gend,
+#mtr-embed table.mtr-grid td.vat-gend{ border-right:2px solid #8a7a45 !important; }
+/* ជួរអាករសំខាន់ ៣ ៖ អាករលើធាតុចេញ · អាករលើធាតុចូល · ឥណទានអាករ */
+#mtr-embed table.mtr-grid th.vat-hi,
+#mtr-embed table.mtr-grid td.vat-hi{ background:#FBF6E4; }
+#mtr-embed table.mtr-grid td.vat-hi{ font-weight:700; }
+/* គម្លាតលើស ១% ⇒ ក្រហមស្រាល ; ក្រោមនោះទុកធម្មតា ( ជាការបង្គត់ ) */
+#mtr-embed table.mtr-grid td.vat-gap1{ background:#FDEAEA !important; color:#b3261e; font-weight:700; }
 #mtr-embed table.mtr-grid .vat-why{cursor:pointer; text-decoration:underline dotted;}
 #mtr-embed table.mtr-grid .vat-why:hover{background:#e8eef5;}
 #mtr-embed .mtr-form-foot{margin-top:20px; font-size:12.5px;}
@@ -22629,24 +22640,27 @@ function buildVATFormSheet(year, opts){
 
   const credit = getVATCreditBroughtForward(year);
 
-  const th = (label, attrs) => `<th ${attrs||''}><span class="mtr-th-label" title="${esc(label)}">${esc(label)}</span></th>`;
+  /* ⭐ [stated] ២០២៦-០៩-០៣ ៖ «អាករលើ ចុះបន្ទាត់ ធាតុចេញ» ⇒ ស្លាកខ្លះត្រូវ
+     ចុះបន្ទាត់ត្រង់កន្លែងជាក់លាក់ មិនមែនទុកឱ្យវាចុះតាមទទឹងទេ ។
+     ⇒ សញ្ញា `\n` ក្នុងស្លាក ក្លាយជា <br> ; `title` នៅជាអត្ថបទធម្មតា ។ */
+  const th = (label, attrs) => `<th ${attrs||''}><span class="mtr-th-label" title="${esc(String(label).replace(/\n/g,' '))}">${esc(label).replace(/\n/g,'<br>')}</span></th>`;
 
   const head = `
     <tr>
       <th rowspan="3">ខែ</th>
-      <th colspan="4">ធាតុចេញ</th>
-      <th colspan="5">ធាតុចូល</th>
-      ${th('ឥណទាន អាករ','rowspan="3"')}
+      <th colspan="4" class="vat-gend">ធាតុចេញ</th>
+      <th colspan="5" class="vat-gend">ធាតុចូល</th>
+      ${th('ឥណទាន អាករ','rowspan="3" class="vat-hi vat-gend"')}
       ${th('ការទិញមិន ជាប់អាករ','rowspan="3"')}
       ${th('អាករ បានបង់','rowspan="3"')}
       ${extra.map(c=> th(c.label,'rowspan="3" class="vat-calc"')).join('')}
     </tr>
     <tr>
       <th colspan="3">ផលរបរ (តម្លៃមិនរួមបញ្ចូលអាករ)</th>
-      ${th('អាករលើ ធាតុចេញ','rowspan="2"')}
+      ${th('អាករលើ\nធាតុចេញ','rowspan="2" class="vat-hi vat-gend"')}
       <th colspan="3">តម្លៃនៃការទិញជាប់អាករ ១០%</th>
       ${th('ការទិញអាករ ជាបន្ទុករដ្ឋ','rowspan="2"')}
-      ${th('អាករលើ ធាតុចូល','rowspan="2"')}
+      ${th('អាករលើ\nធាតុចូល','rowspan="2" class="vat-hi vat-gend"')}
     </tr>
     <tr>
       ${th('មិនជាប់អាករ')}${th('អតប អត្រា០%')}${th('អាករ ១០%')}
@@ -22655,10 +22669,10 @@ function buildVATFormSheet(year, opts){
     <tr class="mtr-note-row">
       <th class="mtr-note"></th>
       <th class="mtr-note">1</th><th class="mtr-note">2</th><th class="mtr-note">3</th>
-      <th class="mtr-note">4 = 3 × 10%</th>
+      <th class="mtr-note vat-hi vat-gend">4 = 3 × 10%</th>
       <th class="mtr-note">5</th><th class="mtr-note">6</th><th class="mtr-note">7 = 5 + 6</th>
-      <th class="mtr-note">8</th><th class="mtr-note">9 = 7 × 10%</th>
-      <th class="mtr-note">10</th><th class="mtr-note">11</th><th class="mtr-note">12</th>
+      <th class="mtr-note">8</th><th class="mtr-note vat-hi vat-gend">9 = 7 × 10%</th>
+      <th class="mtr-note vat-hi vat-gend">10</th><th class="mtr-note">11</th><th class="mtr-note">12</th>
       ${extra.map(()=>`<th class="mtr-note vat-calc"></th>`).join('')}
     </tr>`;
 
@@ -22666,7 +22680,7 @@ function buildVATFormSheet(year, opts){
      figure under column 10 — exactly as on the paper form. */
   const creditRow = `<tr class="vat-credit-row">
     <td colspan="10">ឥណទានអាករយោងពីការិយបរិច្ឆេទឆ្នាំ ${esc(String(Number(year)-1))}</td>
-    <td class="mtr-num">${dash(credit)}</td>
+    <td class="mtr-num vat-hi vat-gend">${dash(credit)}</td>
     <td></td><td></td>
     ${extra.map(()=>`<td class="vat-calc"></td>`).join('')}
   </tr>`;
@@ -22674,12 +22688,31 @@ function buildVATFormSheet(year, opts){
   const bodyRows = rows.map((r, i)=>`
     <tr>
       <td class="mtr-month">${i+1}</td>
-      ${['c1','c2','c3','c4','c5','c6','c7','c8','c9'].map(k=>`<td class="mtr-num numedit" contenteditable="true" data-col="${k}" data-m="${i+1}">${dash(r[k])}</td>`).join('')}
-      <td class="mtr-num numedit" contenteditable="true" data-col="c10" data-m="${i+1}">${dash(r.c10)}</td>
+      ${['c1','c2','c3','c4','c5','c6','c7','c8','c9'].map(k=>{
+        const hi = (k === 'c4' || k === 'c9') ? ' vat-hi vat-gend' : '';
+        return `<td class="mtr-num numedit${hi}" contenteditable="true" data-col="${k}" data-m="${i+1}">${dash(r[k])}</td>`;
+      }).join('')}
+      <td class="mtr-num numedit vat-hi vat-gend" contenteditable="true" data-col="c10" data-m="${i+1}">${dash(r.c10)}</td>
       <td class="mtr-num numedit" contenteditable="true" data-col="c11" data-m="${i+1}">${dash(r.c11)}</td>
       <td class="mtr-num numedit" contenteditable="true" data-col="c12" data-m="${i+1}">${dash(r.c12)}</td>
       ${extra.map(c=>{
-        const bad = (c.key === 'cDiff') && Math.round(r.cDiff || 0) !== 0;
+        /* ⭐⭐ [stated] ២០២៦-០៩-០៣ ៖ «ហាយឡាយករណីមានគម្លាត ទាំងការបង់ និង
+           ឥណទាន លើសពី ១%» ។
+           ⚠ មុននេះ ៖ គម្លាត **១ រៀល** ក៏ក្រហមដែរ ⇒ ខែស្ទើរតែទាំងអស់ក្រហម
+             ⇒ ការព្រមានលែងមានន័យ ។ ឥឡូវ ៖ ក្រហមតែពេលគម្លាតលើស **១%**
+             នៃតួលេខយោង ⇒ ការបង្គត់មិនស្រែក ហើយគម្លាតពិតលេចធ្លោ ។
+           ⚠ ករណីតួលេខយោង = ០ តែគម្លាតមិន ០ ⇒ ចាត់ជាគម្លាតពិតជានិច្ច
+             ( ១% នៃសូន្យ គឺសូន្យ ⇒ ការចែកនឹងខុស ) ។ */
+        const over1 = (val, base)=>{
+          const v = Math.abs(Number(val) || 0);
+          const b = Math.abs(Number(base) || 0);
+          if(v === 0) return false;
+          if(b === 0) return true;
+          return (v / b) > 0.01;
+        };
+        const bad = (c.key === 'cDiff')   ? over1(r.cDiff,   r.cDue)
+                  : (c.key === 'c10Diff') ? over1(r.c10Diff, r.c10Calc || r.c10)
+                  : false;
         /* ជួរពីរនេះចុចបានជានិច្ច ដើម្បីបង្ហាញការគណនា — មិនចាំបាច់បើក
            របៀប «ពិនិត្យប្រភពតួលេខ» ជាមុនទេ ព្រោះវាជាជួរត្រួតពិនិត្យ។ */
         const drill = (c.key === 'cDue' || c.key === 'cDiff');
