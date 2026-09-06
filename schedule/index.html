@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>កាលវិភាគសវនកម្ម</title>
+<meta name="theme-color" content="#12283C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="កាលវិភាគ">
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Khmer:wght@400;500;700&family=Noto+Serif+Khmer:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#12283C; --ink2:#1D3A55; --slate:#51677C; --mute:#7E8FA0;
+  --paper:#EDF1F4; --card:#FFFFFF; --line:#D8E1E8;
+  --seal:#A83226; --go:#17654C; --amber:#A9761A; --focus:#2C6E9B;
+  --sh:0 1px 0 rgba(18,40,60,.06);
+  --safe-b:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:var(--paper); color:var(--ink);
+  font-family:'Noto Sans Khmer',system-ui,-apple-system,sans-serif;
+  font-size:15px; line-height:1.75; overscroll-behavior-y:none;
+}
+h1,h2,h3{font-family:'Noto Serif Khmer','Noto Sans Khmer',serif;font-weight:600;margin:0;line-height:1.5}
+button,input,select,textarea{font-family:inherit;font-size:15px;color:inherit}
+button{cursor:pointer;border:0;background:none;padding:0}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+
+/* ---------- chrome ---------- */
+header.top{
+  position:sticky;top:0;z-index:40;background:var(--ink);color:#fff;
+  padding:calc(env(safe-area-inset-top,0px) + 10px) 16px 10px;
+  display:flex;align-items:center;gap:10px;
+}
+header.top h1{font-size:17px;letter-spacing:.2px;flex:1}
+.who{font-size:12px;color:#A9BFD3;text-align:right;line-height:1.4}
+.sync{display:inline-block;width:7px;height:7px;border-radius:50%;background:#3F5B75;margin-right:5px;vertical-align:1px}
+.sync.on{background:#4FB286}
+main{padding:14px 14px calc(96px + var(--safe-b));max-width:640px;margin:0 auto}
+nav.tabs{
+  position:fixed;left:0;right:0;bottom:0;z-index:40;background:#fff;
+  border-top:1px solid var(--line);display:flex;
+  padding-bottom:var(--safe-b);
+}
+nav.tabs button{flex:1;padding:9px 4px 10px;color:var(--mute);font-size:11.5px;line-height:1.4}
+nav.tabs button span{display:block;font-size:19px;line-height:1.3}
+nav.tabs button[aria-current="page"]{color:var(--ink);font-weight:700;box-shadow:inset 0 2px 0 var(--ink)}
+
+/* ---------- cards ---------- */
+.rec{background:var(--card);border:1px solid var(--line);border-radius:3px;box-shadow:var(--sh);margin-bottom:12px;overflow:hidden}
+.rec .body{display:grid;grid-template-columns:66px 1fr;align-items:stretch}
+.rail{
+  border-right:3px solid var(--ink);background:#F6F9FB;
+  padding:12px 4px;text-align:center;color:var(--ink)
+}
+.rail.pending{border-right-color:var(--amber)}
+.rail.moved{border-right-color:var(--seal)}
+.rail.done{border-right-color:var(--go)}
+.rail .d{font-family:'Noto Serif Khmer',serif;font-size:26px;font-weight:700;line-height:1.1;display:block}
+.rail .m{font-size:11px;color:var(--slate);display:block;margin-top:2px}
+.rail .t{font-size:12.5px;margin-top:8px;padding-top:7px;border-top:1px solid var(--line);color:var(--ink2)}
+.rec .meat{padding:12px 13px 13px;min-width:0}
+.name{font-family:'Noto Serif Khmer',serif;font-size:16px;font-weight:600;line-height:1.45;word-break:break-word}
+.tin{font-size:12.5px;color:var(--slate);margin-top:1px}
+.row{display:flex;gap:7px;font-size:13px;color:var(--ink2);margin-top:8px;align-items:flex-start}
+.row i{font-style:normal;width:17px;flex:none;text-align:center;opacity:.75}
+.chip{display:inline-block;font-size:11.5px;padding:1px 8px;border-radius:2px;border:1px solid;line-height:1.7;margin-left:6px;white-space:nowrap}
+.c-plan{color:var(--ink2);border-color:#BCCBD8;background:#F2F6F9}
+.c-move{color:var(--seal);border-color:#E3BDB8;background:#FBF2F1}
+.c-done{color:var(--go);border-color:#B3D2C6;background:#F0F7F4}
+.c-cancel{color:var(--mute);border-color:var(--line);background:#F4F6F8;text-decoration:line-through}
+.acts{display:flex;flex-wrap:wrap;gap:6px;padding:9px 11px;background:#F6F9FB;border-top:1px solid var(--line)}
+.acts button{font-size:12.5px;padding:6px 11px;border:1px solid var(--line);background:#fff;border-radius:2px;color:var(--ink2)}
+.acts button.key{border-color:#B6C7D6;color:var(--ink);font-weight:500}
+.acts button.warn{color:var(--seal);border-color:#E3BDB8}
+details.hist{border-top:1px solid var(--line);padding:0 13px}
+details.hist summary{font-size:12.5px;color:var(--slate);padding:8px 0;cursor:pointer}
+details.hist ul{margin:0 0 10px;padding-left:16px;font-size:12.5px;color:var(--slate)}
+details.hist li{margin-bottom:5px}
+
+/* ---------- misc ---------- */
+.sec{display:flex;align-items:baseline;gap:9px;margin:4px 2px 11px}
+.sec h2{font-size:15px}
+.sec .n{font-size:12px;color:var(--mute)}
+.add{width:100%;padding:12px;border:1px dashed #B6C7D6;border-radius:3px;background:#fff;color:var(--ink2);font-size:14px;margin-bottom:16px}
+.empty{background:#fff;border:1px solid var(--line);border-radius:3px;padding:26px 20px;text-align:center;color:var(--slate);font-size:13.5px}
+.empty b{display:block;font-family:'Noto Serif Khmer',serif;color:var(--ink);font-size:15px;margin-bottom:5px;font-weight:600}
+.seg{display:flex;border:1px solid var(--line);border-radius:3px;overflow:hidden;background:#fff;margin-bottom:14px}
+.seg button{flex:1;padding:9px 4px;font-size:13px;color:var(--slate)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:#fff;font-weight:500}
+
+/* ---------- sheet / forms ---------- */
+.scrim{position:fixed;inset:0;background:rgba(12,26,40,.55);z-index:50;display:none}
+.scrim.on{display:block}
+.sheet{
+  position:fixed;left:0;right:0;bottom:0;top:0;z-index:51;background:var(--paper);
+  display:none;flex-direction:column
+}
+.sheet.on{display:flex}
+.sheet header{
+  background:var(--ink);color:#fff;padding:calc(env(safe-area-inset-top,0px) + 11px) 14px 11px;
+  display:flex;align-items:center;gap:12px;flex:none
+}
+.sheet header h2{font-size:16px;flex:1;color:#fff}
+.sheet header button{color:#B9CCDD;font-size:14px}
+.sheet .scroll{flex:1;overflow-y:auto;padding:15px 14px calc(20px + var(--safe-b));-webkit-overflow-scrolling:touch}
+label{display:block;font-size:12.5px;color:var(--slate);margin:0 0 4px}
+.f{margin-bottom:13px}
+input[type=text],input[type=tel],input[type=url],input[type=date],input[type=time],input[type=datetime-local],input[type=password],select,textarea{
+  width:100%;padding:10px 11px;border:1px solid var(--line);border-radius:3px;background:#fff;
+}
+textarea{min-height:74px;resize:vertical;line-height:1.7}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.hint{font-size:12px;color:var(--mute);margin-top:4px;line-height:1.6}
+.extra{background:#fff;border:1px solid var(--line);border-radius:3px;padding:11px;margin-bottom:9px;position:relative}
+.extra .rm{position:absolute;top:6px;right:8px;color:var(--seal);font-size:12.5px}
+.mini{padding:8px 12px;border:1px solid var(--line);background:#fff;border-radius:3px;font-size:13px;color:var(--ink2)}
+.save{width:100%;padding:14px;background:var(--ink);color:#fff;border-radius:3px;font-size:15px;font-weight:500;margin-top:6px}
+.save[disabled]{opacity:.5}
+.danger{width:100%;padding:12px;background:#fff;color:var(--seal);border:1px solid #E3BDB8;border-radius:3px;margin-top:10px;font-size:14px}
+
+/* ---------- login ---------- */
+#login{position:fixed;inset:0;z-index:60;background:var(--ink);color:#fff;display:none;flex-direction:column;justify-content:center;padding:26px}
+#login.on{display:flex}
+#login h1{font-size:24px;color:#fff;margin-bottom:6px}
+#login p{color:#9FB6C9;font-size:13.5px;margin:0 0 26px}
+#login .u{display:block;width:100%;text-align:left;background:#1B354E;border:1px solid #2C4B68;color:#fff;padding:13px 15px;border-radius:3px;margin-bottom:9px;font-size:14.5px}
+#login .u[aria-pressed="true"]{background:#fff;color:var(--ink);border-color:#fff}
+#login .u small{display:block;color:#9FB6C9;font-size:11.5px}
+#login .u[aria-pressed="true"] small{color:var(--slate)}
+#login input{margin-top:14px;background:#1B354E;border-color:#2C4B68;color:#fff}
+#login .save{background:#fff;color:var(--ink);margin-top:14px}
+
+/* ---------- settings ---------- */
+.set{background:#fff;border:1px solid var(--line);border-radius:3px;padding:14px;margin-bottom:12px}
+.set h3{font-size:14.5px;margin-bottom:8px}
+.set p{margin:0 0 10px;font-size:13px;color:var(--slate);line-height:1.7}
+.kv{display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:6px 0;border-bottom:1px solid #EEF2F5}
+.kv:last-child{border:0}
+.kv span{color:var(--slate)}
+
+#toast{
+  position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + var(--safe-b));z-index:70;
+  background:var(--ink);color:#fff;padding:10px 16px;border-radius:3px;font-size:13.5px;
+  max-width:88%;text-align:center;opacity:0;pointer-events:none;transition:opacity .18s
+}
+#toast.on{opacity:1}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <h1>កាលវិភាគសវនកម្ម</h1>
+  <div class="who"><span class="sync" id="syncDot"></span><span id="whoName">—</span></div>
+</header>
+
+<main id="view"></main>
+
+<nav class="tabs">
+  <button data-tab="visit" aria-current="page"><span>📍</span>ចុះទីតាំង</button>
+  <button data-tab="team"><span>👥</span>ផ្ទៃក្នុង</button>
+  <button data-tab="set"><span>⚙️</span>ការកំណត់</button>
+</nav>
+
+<div class="scrim" id="scrim"></div>
+<section class="sheet" id="sheet" role="dialog" aria-modal="true">
+  <header><h2 id="sheetTitle"></h2><button id="sheetClose">បិទ</button></header>
+  <div class="scroll" id="sheetBody"></div>
+</section>
+
+<div id="login">
+  <h1>កាលវិភាគសវនកម្ម</h1>
+  <p>ជ្រើសរើសឈ្មោះរបស់អ្នក ដើម្បីចូលប្រើ</p>
+  <div id="loginUsers"></div>
+  <input type="password" id="loginPin" inputmode="numeric" placeholder="លេខសម្ងាត់ (PIN)" style="display:none">
+  <button class="save" id="loginGo">ចូលប្រើ</button>
+  <p id="loginMsg" style="margin:12px 0 0;color:#E7A9A2;font-size:13px"></p>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ============================================================
+   កាលវិភាគសវនកម្ម · RSC
+   ការតភ្ជាប់ទៅ Apps Script (Code.gs) ដាក់ក្នុង ⚙️ ការកំណត់
+   ============================================================ */
+var ADMIN_EMAIL = 'rathasochivin@gmail.com';
+var TEAM = [
+  {email:'rathasochivin@gmail.com', name:'Ratha Sochivin', role:'admin'},
+  {email:'khoeundenit@gmail.com',   name:'Khoeun Denit',   role:'user'},
+  {email:'pichpanhapang@gmail.com', name:'Pich Panhapang', role:'user'}
+];
+var KHM = ['មករា','កុម្ភៈ','មីនា','មេសា','ឧសភា','មិថុនា','កក្កដា','សីហា','កញ្ញា','តុលា','វិច្ឆិកា','ធ្នូ'];
+var DAYS = ['អាទិត្យ','ច័ន្ទ','អង្គារ','ពុធ','ព្រហស្បតិ៍','សុក្រ','សៅរ៍'];
+var REASONS = ['សវនករមានធុរៈ','សហគ្រាសសុំលើកពេល','ឯកសារមិនទាន់រួចរាល់','បញ្ហាធនធាន/ការធ្វើដំណើរ','ហេតុផលផ្សេងៗ'];
+var LSK = 'rsc_sched_';
+
+var S = {me:null, token:null, tab:'visit', visits:[], internal:[], teamFilter:'all', api:'', busy:false};
+
+/* ---------- helpers ---------- */
+function $(s,r){return (r||document).querySelector(s)}
+function el(t,c,x){var e=document.createElement(t); if(c)e.className=c; if(x!=null)e.textContent=x; return e}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]})}
+function uid(){return 'v'+Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+function ls(k,v){ if(v===undefined){ try{return JSON.parse(localStorage.getItem(LSK+k))}catch(e){return null} } try{localStorage.setItem(LSK+k, JSON.stringify(v))}catch(e){} }
+function toast(m){var t=$('#toast'); t.textContent=m; t.classList.add('on'); clearTimeout(t.__h); t.__h=setTimeout(function(){t.classList.remove('on')},2600)}
+function dt(iso){ if(!iso) return null; var d=new Date(iso); return isNaN(d)?null:d }
+function fmtD(iso){var d=dt(iso); if(!d) return '—'; return d.getDate()+' '+KHM[d.getMonth()]+' '+d.getFullYear()}
+function fmtT(iso){var d=dt(iso); if(!d) return ''; var h=d.getHours(), m=d.getMinutes(); return (h<10?'0':'')+h+':'+(m<10?'0':'')+m}
+function fmtFull(iso){var d=dt(iso); if(!d) return '—'; return 'ថ្ងៃ'+DAYS[d.getDay()]+' '+fmtD(iso)+' ម៉ោង '+fmtT(iso)}
+function toLocalInput(iso){var d=dt(iso); if(!d) return ''; var p=function(n){return (n<10?'0':'')+n};
+  return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'T'+p(d.getHours())+':'+p(d.getMinutes())}
+function fromLocalInput(v){ return v? new Date(v).toISOString() : '' }
+function nameOf(email){for(var i=0;i<TEAM.length;i++) if(TEAM[i].email===email) return TEAM[i].name; return email||''}
+function isAdmin(){return S.me && S.me.email===ADMIN_EMAIL}
+
+/* ---------- transport ---------- */
+function apiUrl(){ return localStorage.getItem(LSK+'apiUrl')||'' }
+function online(){ return !!apiUrl() }
+function api(fn,args){
+  var url=apiUrl();
+  if(!url) return Promise.reject(new Error('មិនទាន់ភ្ជាប់ម៉ាស៊ីនមេ'));
+  return fetch(url,{
+    method:'POST', redirect:'follow',
+    headers:{'Content-Type':'text/plain;charset=utf-8'},   /* simple request — no CORS preflight */
+    body:JSON.stringify({fn:fn,args:args||[]})
+  }).then(function(r){return r.json()}).then(function(j){
+    if(j && j.ok) return j.data;
+    throw new Error((j&&j.error)||'ម៉ាស៊ីនមេមិនឆ្លើយតប');
+  });
+}
+
+/* ---------- data ---------- */
+function loadLocal(){ S.visits = ls('visits')||[]; S.internal = ls('internal')||[];
+  if(window.__native) window.__native.schedule(S.visits) }
+function saveLocal(){ ls('visits',S.visits); ls('internal',S.internal) }
+
+function refresh(silent){
+  if(!online()){ loadLocal(); render(); return Promise.resolve() }
+  return api('apiList',[S.token]).then(function(d){
+    S.visits = d.visits||[]; S.internal = d.internal||[];
+    saveLocal(); render(); checkNew(); markSync(true);
+    if(window.__native) window.__native.schedule(S.visits);
+  }).catch(function(e){
+    markSync(false); loadLocal(); render();
+    if(!silent) toast('⚠️ '+e.message+' — កំពុងបង្ហាញច្បាប់ចម្លងក្នុងទូរសព្ទ');
+  });
+}
+function markSync(on){ $('#syncDot').className = 'sync'+(on?' on':'') }
+
+function pushVisit(rec){
+  if(!online()){ upsert(S.visits,rec); saveLocal(); render(); toast('រក្សាទុកក្នុងទូរសព្ទ (មិនទាន់ផ្ញើសារ)'); return Promise.resolve() }
+  return api('apiSaveVisit',[S.token,rec]).then(function(){ return refresh(true) })
+    .then(function(){ toast('✅ រក្សាទុក និងផ្ញើសារជូនក្រុមរួច') })
+    .catch(function(e){ toast('⚠️ '+e.message) });
+}
+function pushInternal(rec){
+  if(!online()){ upsert(S.internal,rec); saveLocal(); render(); toast('រក្សាទុកក្នុងទូរសព្ទ'); return Promise.resolve() }
+  return api('apiSaveInternal',[S.token,rec]).then(function(){ return refresh(true) })
+    .then(function(){ toast('✅ ផ្ញើសំណើរួច') })
+    .catch(function(e){ toast('⚠️ '+e.message) });
+}
+function upsert(arr,rec){ for(var i=0;i<arr.length;i++) if(arr[i].id===rec.id){arr[i]=rec; return} arr.unshift(rec) }
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+function render(){
+  $('#whoName').textContent = S.me ? nameOf(S.me.email)+(isAdmin()?' · អ្នកគ្រប់គ្រង':'') : '—';
+  var v=$('#view'); v.innerHTML='';
+  if(S.tab==='visit') renderVisits(v);
+  else if(S.tab==='team') renderTeam(v);
+  else renderSet(v);
+  var tabs=document.querySelectorAll('nav.tabs button');
+  for(var i=0;i<tabs.length;i++) tabs[i].setAttribute('aria-current', tabs[i].dataset.tab===S.tab?'page':'false');
+}
+
+/* ---------- 1. site visits ---------- */
+function sortKey(r){ var d=dt(r.visitAt)||dt(r.meetAt); return d?d.getTime():8e15 }
+function renderVisits(root){
+  var add=el('button','add','+ បន្ថែមកាលវិភាគសហគ្រាសថ្មី');
+  add.onclick=function(){ visitForm(null) };
+  root.appendChild(add);
+
+  var list=S.visits.slice().sort(function(a,b){return sortKey(a)-sortKey(b)});
+  var now=Date.now();
+  var up=list.filter(function(r){return r.status!=='cancelled' && sortKey(r)>=now-864e5*1});
+  var past=list.filter(function(r){return up.indexOf(r)<0});
+
+  section(root,'ដែលជិតមកដល់', up.length);
+  if(!up.length) root.appendChild(emptyBox('មិនទាន់មានកាលវិភាគ','ចុច «បន្ថែមកាលវិភាគសហគ្រាសថ្មី» ដើម្បីកត់ត្រាការចុះពិនិត្យទីតាំង និងថ្ងៃណាត់ជួប។'));
+  up.forEach(function(r){ root.appendChild(visitCard(r)) });
+
+  if(past.length){ section(root,'កន្លងផុត / បានបញ្ចប់', past.length); past.reverse().forEach(function(r){ root.appendChild(visitCard(r)) }) }
+}
+function section(root,title,n){
+  var s=el('div','sec'); s.appendChild(el('h2',null,title)); s.appendChild(el('span','n',n+' សហគ្រាស')); root.appendChild(s);
+}
+function emptyBox(t,p){ var e=el('div','empty'); e.appendChild(el('b',null,t)); e.appendChild(document.createTextNode(p)); return e }
+
+function statusMeta(r){
+  if(r.status==='done')      return {cls:'done',   chip:'c-done',  txt:'បានចុះរួច'};
+  if(r.status==='cancelled') return {cls:'',       chip:'c-cancel',txt:'បោះបង់'};
+  if(r.moved)                return {cls:'moved',  chip:'c-move',  txt:'បានប្តូរពេល'};
+  return {cls:'pending', chip:'c-plan', txt:'តាមកាលវិភាគ'};
+}
+function visitCard(r){
+  var m=statusMeta(r), c=el('div','rec'), b=el('div','body');
+  var main=r.visitAt||r.meetAt;
+  var rail=el('div','rail '+m.cls);
+  var d=dt(main);
+  rail.innerHTML = d
+    ? '<span class="d">'+d.getDate()+'</span><span class="m">'+KHM[d.getMonth()]+' '+d.getFullYear()+'</span><span class="t">'+fmtT(main)+'</span>'
+    : '<span class="d">?</span><span class="m">មិនទាន់កំណត់</span>';
+  b.appendChild(rail);
+
+  var meat=el('div','meat');
+  meat.innerHTML =
+    '<div class="name">'+esc(r.nameLatin||'(គ្មានឈ្មោះ)')+'<span class="chip '+m.chip+'">'+m.txt+'</span></div>'+
+    '<div class="tin">អតប៖ '+esc(r.tin||'—')+'</div>'+
+    (r.visitAt?'<div class="row"><i>📍</i><div>ចុះពិនិត្យទីតាំង៖ '+fmtFull(r.visitAt)+'</div></div>':'')+
+    (r.meetAt ?'<div class="row"><i>🤝</i><div>ណាត់ជួបសហគ្រាស៖ '+fmtFull(r.meetAt)+'</div></div>':'')+
+    (r.address?'<div class="row"><i>🏢</i><div>'+esc(r.address)+'</div></div>':'')+
+    ((r.extras&&r.extras.length)?'<div class="row"><i>🏭</i><div>'+r.extras.map(function(x){return esc((x.label||'ទីតាំងបន្ថែម')+'៖ '+(x.address||''))}).join('<br>')+'</div></div>':'')+
+    ((r.auditors&&r.auditors.length)?'<div class="row"><i>👤</i><div>'+r.auditors.map(nameOf).map(esc).join(' · ')+'</div></div>':'')+
+    (r.note?'<div class="row"><i>📝</i><div>'+esc(r.note)+'</div></div>':'');
+  b.appendChild(meat); c.appendChild(b);
+
+  var a=el('div','acts');
+  a.appendChild(btn('🕒 ប្តូរពេល','key warn',function(){ moveForm(r) }));
+  a.appendChild(btn('✏️ កែ','',function(){ visitForm(r) }));
+  a.appendChild(btn('📅 ដាក់ចូលប្រតិទិន','',function(){ downloadICS(r) }));
+  if(r.mapLink) a.appendChild(btn('🗺 ផែនទី','',function(){ window.open(r.mapLink,'_blank','noopener') }));
+  if(r.status!=='done') a.appendChild(btn('✔️ បានចុះរួច','',function(){ r.status='done'; r.updatedAt=new Date().toISOString(); pushVisit(r) }));
+  c.appendChild(a);
+
+  if(r.history && r.history.length){
+    var h=el('details','hist'); h.appendChild(el('summary',null,'ប្រវត្តិការផ្លាស់ប្តូរ ('+r.history.length+')'));
+    var ul=el('ul');
+    r.history.slice().reverse().forEach(function(x){ ul.appendChild(el('li',null,x.text+' — '+nameOf(x.by)+' · '+fmtD(x.at))) });
+    h.appendChild(ul); c.appendChild(h);
+  }
+  return c;
+}
+function btn(t,c,fn){ var b=el('button',c,t); b.onclick=fn; return b }
+
+/* ---------- 2. internal ---------- */
+function renderTeam(root){
+  var seg=el('div','seg');
+  [['leave','🏖 សុំច្បាប់'],['late','⏰ សុំយឺត']].forEach(function(p){
+    var b=el('button',null,p[1]);
+    b.onclick=function(){ internalForm(p[0]) };
+    seg.appendChild(b);
+  });
+  root.appendChild(seg);
+
+  var list=S.internal.slice().sort(function(a,b){return (dt(b.fromAt)||0)-(dt(a.fromAt)||0)});
+  var mine=isAdmin()?list:list;   /* ក្រុមមើលឃើញគ្នាទៅវិញទៅមក */
+  section(root,'សំណើផ្ទៃក្នុង',mine.length);
+  if(!mine.length){ root.appendChild(emptyBox('មិនទាន់មានសំណើ','ចុច «សុំច្បាប់» ឬ «សុំយឺត» ខាងលើ។ សំណើនឹងផ្ញើទៅអ្នកគ្រប់គ្រង និងក្រុមភ្លាមៗ។')); return }
+  mine.forEach(function(r){ root.appendChild(internalCard(r)) });
+}
+function internalCard(r){
+  var c=el('div','rec'), b=el('div','body');
+  var d=dt(r.fromAt);
+  var st = r.status==='approved'?{chip:'c-done',txt:'អនុញ្ញាត',rail:'done'}
+         : r.status==='rejected'?{chip:'c-move',txt:'មិនអនុញ្ញាត',rail:'moved'}
+         : {chip:'c-plan',txt:'រង់ចាំ',rail:'pending'};
+  var rail=el('div','rail '+st.rail);
+  rail.innerHTML = d? '<span class="d">'+d.getDate()+'</span><span class="m">'+KHM[d.getMonth()]+'</span><span class="t">'+(r.type==='late'?fmtT(r.fromAt):'ច្បាប់')+'</span>' : '<span class="d">?</span>';
+  b.appendChild(rail);
+  var meat=el('div','meat');
+  meat.innerHTML =
+    '<div class="name">'+(r.type==='late'?'សុំមកយឺត':'សុំច្បាប់')+'<span class="chip '+st.chip+'">'+st.txt+'</span></div>'+
+    '<div class="tin">'+esc(nameOf(r.email))+'</div>'+
+    (r.type==='late'
+      ? '<div class="row"><i>⏰</i><div>'+fmtFull(r.fromAt)+' (គ្រោងមកដល់)</div></div>'
+      : '<div class="row"><i>📆</i><div>'+fmtD(r.fromAt)+(r.toAt&&r.toAt!==r.fromAt?' ដល់ '+fmtD(r.toAt):'')+' · '+(r.days||1)+' ថ្ងៃ</div></div>')+
+    (r.reason?'<div class="row"><i>📝</i><div>'+esc(r.reason)+'</div></div>':'')+
+    (r.decidedBy?'<div class="row"><i>✅</i><div>សម្រេចដោយ '+esc(nameOf(r.decidedBy))+'</div></div>':'');
+  b.appendChild(meat); c.appendChild(b);
+  if(isAdmin() && r.status==='pending'){
+    var a=el('div','acts');
+    a.appendChild(btn('✔️ អនុញ្ញាត','key',function(){ decide(r,'approved') }));
+    a.appendChild(btn('✕ មិនអនុញ្ញាត','warn',function(){ decide(r,'rejected') }));
+    c.appendChild(a);
+  }
+  return c;
+}
+function decide(r,st){
+  r.status=st; r.decidedBy=S.me.email; r.decidedAt=new Date().toISOString();
+  if(!online()){ upsert(S.internal,r); saveLocal(); render(); return }
+  api('apiDecideInternal',[S.token,r.id,st]).then(function(){ return refresh(true) })
+    .then(function(){ toast('ផ្ញើលទ្ធផលជូនរួច') }).catch(function(e){ toast('⚠️ '+e.message) });
+}
+
+/* ---------- 3. settings ---------- */
+function renderSet(root){
+  var box=el('div','set');
+  box.innerHTML='<h3>ការតភ្ជាប់ម៉ាស៊ីនមេ</h3><p>បិទភ្ជាប់ Web app URL របស់ Apps Script (…/exec)។ បើទទេ កម្មវិធីរក្សាទុកតែក្នុងទូរសព្ទ ហើយមិនផ្ញើ email ទេ។</p>';
+  var i=el('input'); i.type='url'; i.value=apiUrl(); i.placeholder='https://script.google.com/macros/s/…/exec';
+  box.appendChild(i);
+  var s=el('button','save','រក្សាទុក និងសាកល្បងតភ្ជាប់');
+  s.onclick=function(){
+    localStorage.setItem(LSK+'apiUrl', i.value.trim());
+    api('apiPing',[]).then(function(d){ toast('✅ តភ្ជាប់បាន៖ '+d); markSync(true); refresh(true) })
+      .catch(function(e){ markSync(false); toast('⚠️ '+e.message) });
+  };
+  box.appendChild(s); root.appendChild(box);
+
+  var n=el('div','set');
+  n.innerHTML='<h3>ការជូនដំណឹង</h3><p>អនុញ្ញាតការជូនដំណឹង ដើម្បីទទួលការរំលឹកមុនចុះទីតាំង និងពេលមានការផ្លាស់ប្តូរកាលវិភាគ។ នៅ iPhone ត្រូវ «Add to Home Screen» ជាមុនសិន។</p>';
+  var nb=el('button','mini', ('Notification' in window) && Notification.permission==='granted' ? 'បានអនុញ្ញាតរួច · សាកល្បងផ្ញើ' : 'អនុញ្ញាតការជូនដំណឹង');
+  nb.onclick=function(){
+    if(!('Notification' in window)) return toast('ទូរសព្ទនេះមិនគាំទ្រការជូនដំណឹងក្នុងកម្មវិធីទេ');
+    Notification.requestPermission().then(function(p){
+      if(p==='granted'){ notify('កាលវិភាគសវនកម្ម','ការជូនដំណឹងដំណើរការហើយ ✅'); render() } else toast('មិនបានអនុញ្ញាត');
+    });
+  };
+  n.appendChild(nb); root.appendChild(n);
+
+  var t=el('div','set'); t.innerHTML='<h3>ក្រុមការងារ</h3>';
+  TEAM.forEach(function(u){
+    var k=el('div','kv'); k.appendChild(el('div',null,u.name+(u.role==='admin'?' · អ្នកគ្រប់គ្រង':'')));
+    k.appendChild(el('span',null,u.email)); t.appendChild(k);
+  });
+  root.appendChild(t);
+
+  var o=el('div','set'); o.innerHTML='<h3>គណនី</h3><p>'+esc(S.me?S.me.email:'')+'</p>';
+  var lo=el('button','danger','ចាកចេញ');
+  lo.onclick=function(){ localStorage.removeItem(LSK+'me'); localStorage.removeItem(LSK+'token'); location.reload() };
+  o.appendChild(lo); root.appendChild(o);
+}
+
+/* ============================================================
+   SHEETS (forms)
+   ============================================================ */
+function openSheet(title, build){
+  $('#sheetTitle').textContent=title;
+  var b=$('#sheetBody'); b.innerHTML=''; build(b);
+  $('#sheet').classList.add('on'); $('#scrim').classList.add('on'); b.scrollTop=0;
+}
+function closeSheet(){ $('#sheet').classList.remove('on'); $('#scrim').classList.remove('on') }
+$('#sheetClose').onclick=closeSheet; $('#scrim').onclick=closeSheet;
+
+function field(parent,label,node,hint){
+  var f=el('div','f'); f.appendChild(el('label',null,label)); f.appendChild(node);
+  if(hint) f.appendChild(el('div','hint',hint));
+  parent.appendChild(f); return node;
+}
+function input(type,val,ph){ var i=el('input'); i.type=type; i.value=val||''; if(ph)i.placeholder=ph; return i }
+function textarea(val,ph){ var t=el('textarea'); t.value=val||''; if(ph)t.placeholder=ph; return t }
+
+function visitForm(r){
+  var isNew=!r;
+  r = r ? JSON.parse(JSON.stringify(r)) : {id:uid(), status:'planned', extras:[], auditors:[], history:[]};
+  openSheet(isNew?'កាលវិភាគសហគ្រាសថ្មី':'កែកាលវិភាគ', function(b){
+    var name=field(b,'ឈ្មោះសហគ្រាស (ឡាតាំង)', input('text',r.nameLatin,'ABC (CAMBODIA) CO., LTD.'));
+    var tin =field(b,'លេខអតប', input('text',r.tin,'L001-901702836'));
+    var addr=field(b,'អាសយដ្ឋានសហគ្រាស', textarea(r.address,'ផ្ទះ… ផ្លូវ… សង្កាត់… ខណ្ឌ… រាជធានីភ្នំពេញ'));
+    var map =field(b,'តំណភ្ជាប់ផែនទី (Google Maps)', input('url',r.mapLink,'https://maps.app.goo.gl/…'),'បើកកម្មវិធីផែនទី → Share → Copy link → បិទភ្ជាប់ទីនេះ');
+
+    b.appendChild(el('label',null,'ទីតាំងបន្ថែម (ឃ្លាំង · រោងចក្រ · សាខា)'));
+    var wrap=el('div'); b.appendChild(wrap);
+    function drawExtras(){
+      wrap.innerHTML='';
+      (r.extras||[]).forEach(function(x,ix){
+        var d=el('div','extra');
+        var rm=el('button','rm','លុប'); rm.onclick=function(){ r.extras.splice(ix,1); drawExtras() };
+        d.appendChild(rm);
+        var l=input('text',x.label,'ឃ្លាំង'); l.oninput=function(){x.label=l.value};
+        var a=textarea(x.address,'អាសយដ្ឋាន'); a.oninput=function(){x.address=a.value};
+        var m=input('url',x.mapLink,'តំណផែនទី (បើមាន)'); m.oninput=function(){x.mapLink=m.value};
+        d.appendChild(l); d.appendChild(el('div','f')); d.appendChild(a); d.appendChild(el('div','f')); d.appendChild(m);
+        wrap.appendChild(d);
+      });
+      var ad=el('button','mini','+ បន្ថែមទីតាំង');
+      ad.onclick=function(){ r.extras=r.extras||[]; r.extras.push({label:'ឃ្លាំង',address:'',mapLink:''}); drawExtras() };
+      wrap.appendChild(ad); wrap.appendChild(el('div','f'));
+    }
+    drawExtras();
+
+    var visit=field(b,'ថ្ងៃ ខែ ឆ្នាំ និងម៉ោង ចុះពិនិត្យទីតាំង', input('datetime-local',toLocalInput(r.visitAt)));
+    var meet =field(b,'ថ្ងៃ ខែ ឆ្នាំ និងម៉ោង ណាត់ជួបសហគ្រាស', input('datetime-local',toLocalInput(r.meetAt)));
+
+    b.appendChild(el('label',null,'សវនករទទួលបន្ទុក'));
+    var picks={};
+    TEAM.forEach(function(u){
+      var row=el('div','kv');
+      var lb=el('label',null,u.name); lb.style.margin='0';
+      var cb=el('input'); cb.type='checkbox'; cb.checked=(r.auditors||[]).indexOf(u.email)>=0; cb.style.width='20px'; cb.style.height='20px';
+      picks[u.email]=cb; row.appendChild(lb); row.appendChild(cb); b.appendChild(row);
+    });
+    b.appendChild(el('div','f'));
+    var note=field(b,'កំណត់សម្គាល់', textarea(r.note,'ឯកសារត្រូវត្រៀម · អ្នកទំនាក់ទំនង · លេខទូរសព្ទ…'));
+
+    var go=el('button','save',isNew?'រក្សាទុក និងជូនដំណឹងក្រុម':'រក្សាទុកការកែប្រែ');
+    go.onclick=function(){
+      if(!name.value.trim()) return toast('សូមបញ្ចូលឈ្មោះសហគ្រាស');
+      r.nameLatin=name.value.trim(); r.tin=tin.value.trim(); r.address=addr.value.trim(); r.mapLink=map.value.trim();
+      r.visitAt=fromLocalInput(visit.value); r.meetAt=fromLocalInput(meet.value); r.note=note.value.trim();
+      r.auditors=Object.keys(picks).filter(function(e){return picks[e].checked});
+      r.extras=(r.extras||[]).filter(function(x){return (x.address||'').trim()||(x.label||'').trim()});
+      r.updatedAt=new Date().toISOString();
+      if(isNew){ r.createdBy=S.me.email; r.createdAt=r.updatedAt;
+        r.history=[{at:r.updatedAt,by:S.me.email,text:'បង្កើតកាលវិភាគ'}]; }
+      else { r.history=(r.history||[]).concat([{at:r.updatedAt,by:S.me.email,text:'កែព័ត៌មានកាលវិភាគ'}]) }
+      closeSheet(); pushVisit(r);
+    };
+    b.appendChild(go);
+
+    if(!isNew){
+      var del=el('button','danger','លុបកាលវិភាគនេះ');
+      del.onclick=function(){
+        if(!confirm('លុបកាលវិភាគ «'+r.nameLatin+'» មែនទេ?')) return;
+        closeSheet();
+        if(!online()){ S.visits=S.visits.filter(function(x){return x.id!==r.id}); saveLocal(); render(); return }
+        api('apiDeleteVisit',[S.token,r.id]).then(function(){return refresh(true)}).then(function(){toast('លុបរួច')}).catch(function(e){toast('⚠️ '+e.message)});
+      };
+      b.appendChild(del);
+    }
+  });
+}
+
+function moveForm(r){
+  openSheet('ប្តូរថ្ងៃ ខែ ម៉ោង', function(b){
+    b.appendChild(el('div','hint','សហគ្រាស៖ '+r.nameLatin));
+    b.appendChild(el('div','f'));
+    var which=el('select');
+    ['ចុះពិនិត្យទីតាំង','ណាត់ជួបសហគ្រាស','ទាំងពីរ'].forEach(function(t,i){ var o=el('option',null,t); o.value=['visit','meet','both'][i]; which.appendChild(o) });
+    field(b,'ប្តូរអ្វី',which);
+    var nv=field(b,'ពេលថ្មី៖ ចុះពិនិត្យទីតាំង', input('datetime-local',toLocalInput(r.visitAt)));
+    var nm=field(b,'ពេលថ្មី៖ ណាត់ជួបសហគ្រាស', input('datetime-local',toLocalInput(r.meetAt)));
+    var rs=el('select'); REASONS.forEach(function(t){ rs.appendChild(el('option',null,t)) });
+    field(b,'មូលហេតុ',rs);
+    var note=field(b,'ពន្យល់បន្ថែម', textarea('','ឧ. សហគ្រាសសុំពន្យារ ១ សប្តាហ៍ ដោយគណនេយ្យករឈប់សម្រាក'));
+
+    var go=el('button','save','រក្សាទុក និងជូនដំណឹងក្រុម');
+    go.onclick=function(){
+      var w=which.value, old={v:r.visitAt,m:r.meetAt}, txt=[];
+      if(w==='visit'||w==='both'){ r.visitAt=fromLocalInput(nv.value); txt.push('ចុះទីតាំង៖ '+fmtFull(old.v)+' → '+fmtFull(r.visitAt)) }
+      if(w==='meet' ||w==='both'){ r.meetAt =fromLocalInput(nm.value); txt.push('ណាត់ជួប៖ '+fmtFull(old.m)+' → '+fmtFull(r.meetAt)) }
+      r.moved=true; r.status = r.status==='done'?'done':'planned';
+      r.updatedAt=new Date().toISOString();
+      r.history=(r.history||[]).concat([{at:r.updatedAt,by:S.me.email,text:'ប្តូរពេល ('+rs.value+') · '+txt.join(' | ')+(note.value?' · '+note.value:'')}]);
+      r.lastReason=rs.value+(note.value?' · '+note.value:'');
+      closeSheet(); pushVisit(r);
+    };
+    b.appendChild(go);
+  });
+}
+
+function internalForm(type){
+  openSheet(type==='late'?'សុំមកយឺត':'សុំច្បាប់', function(b){
+    var rec={id:uid(), type:type, email:S.me.email, status:'pending', createdAt:new Date().toISOString()};
+    var from, to, days;
+    if(type==='late'){
+      from=field(b,'ថ្ងៃ និងម៉ោងគ្រោងមកដល់', input('datetime-local',toLocalInput(new Date().toISOString())));
+    }else{
+      from=field(b,'ចាប់ពីថ្ងៃ', input('date',''));
+      to  =field(b,'ដល់ថ្ងៃ', input('date',''),'បើសុំតែមួយថ្ងៃ ដាក់ថ្ងៃដដែល');
+    }
+    var rs=el('select');
+    (type==='late'
+      ? ['ជាប់ការងារផ្ទាល់ខ្លួន','បញ្ហាចរាចរណ៍','មិនស្រួលខ្លួន','ការងារខាងក្រៅមុនចូល','ហេតុផលផ្សេងៗ']
+      : ['ឈឺ','បញ្ហាគ្រួសារ','ការងារផ្ទាល់ខ្លួន','ច្បាប់ប្រចាំឆ្នាំ','ហេតុផលផ្សេងៗ']
+    ).forEach(function(t){ rs.appendChild(el('option',null,t)) });
+    field(b,'មូលហេតុ',rs);
+    var note=field(b,'ពន្យល់បន្ថែម', textarea('',''));
+    var go=el('button','save','ផ្ញើសំណើ');
+    go.onclick=function(){
+      if(!from.value) return toast('សូមជ្រើសរើសថ្ងៃ');
+      if(type==='late'){ rec.fromAt=fromLocalInput(from.value); rec.toAt=rec.fromAt; rec.days=0 }
+      else{
+        rec.fromAt=new Date(from.value+'T08:00').toISOString();
+        rec.toAt = new Date((to.value||from.value)+'T17:00').toISOString();
+        rec.days = Math.round((new Date(to.value||from.value)-new Date(from.value))/864e5)+1;
+      }
+      rec.reason=rs.value+(note.value?' · '+note.value:'');
+      closeSheet(); pushInternal(rec);
+    };
+    b.appendChild(go);
+  });
+}
+
+/* ============================================================
+   ការជូនដំណឹង · ប្រតិទិន
+   ============================================================ */
+function notify(title,body){
+  try{
+    if(!('Notification' in window) || Notification.permission!=='granted') return;
+    if(navigator.serviceWorker && navigator.serviceWorker.ready){
+      navigator.serviceWorker.ready.then(function(reg){ reg.showNotification(title,{body:body,icon:'./icon-192.png',badge:'./icon-192.png'}) })
+        .catch(function(){ new Notification(title,{body:body}) });
+    } else new Notification(title,{body:body});
+  }catch(e){}
+}
+/* ១. ការផ្លាស់ប្តូរថ្មីពីសមាជិកផ្សេង */
+function checkNew(){
+  var seen=ls('seen')||{}, fresh=[];
+  S.visits.forEach(function(r){
+    if(seen[r.id]!==r.updatedAt && r.updatedAt){
+      if(seen[r.id]) fresh.push('🕒 '+r.nameLatin+' — កាលវិភាគមានការផ្លាស់ប្តូរ');
+      else if(Object.keys(seen).length) fresh.push('📍 '+r.nameLatin+' — កាលវិភាគថ្មី');
+      seen[r.id]=r.updatedAt;
+    }
+  });
+  S.internal.forEach(function(r){
+    var k=r.id+'|'+r.status;
+    if(!seen[k]){ if(Object.keys(seen).length) fresh.push((r.type==='late'?'⏰ ':'🏖 ')+nameOf(r.email)+' — '+(r.status==='pending'?'សំណើថ្មី':r.status==='approved'?'បានអនុញ្ញាត':'មិនអនុញ្ញាត')); seen[k]=1 }
+  });
+  ls('seen',seen);
+  if(fresh.length===1) notify('កាលវិភាគសវនកម្ម',fresh[0]);
+  else if(fresh.length>1) notify('កាលវិភាគសវនកម្ម','មានបច្ចុប្បន្នភាព '+fresh.length+' ក្នុងកាលវិភាគ');
+}
+/* ២. រំលឹកមុនម៉ោង */
+function checkReminders(){
+  if(window.__native) return;              /* native build: ប្រព័ន្ធទូរសព្ទរំលឹកជំនួស */
+  var done=ls('reminded')||{}, now=Date.now(), changed=false;
+  S.visits.forEach(function(r){
+    if(r.status==='done'||r.status==='cancelled') return;
+    [['visitAt','ចុះពិនិត្យទីតាំង'],['meetAt','ណាត់ជួបសហគ្រាស']].forEach(function(p){
+      var t=dt(r[p[0]]); if(!t) return;
+      [[864e5,'ថ្ងៃស្អែក'],[36e5,'ក្នុងរយៈពេល ១ ម៉ោង']].forEach(function(w){
+        var key=r.id+'|'+p[0]+'|'+w[0];
+        var diff=t.getTime()-now;
+        if(diff>0 && diff<=w[0] && !done[key]){
+          notify(p[1]+' '+w[1], r.nameLatin+' · '+fmtFull(r[p[0]])+(r.address?'\n'+r.address:''));
+          done[key]=1; changed=true;
+        }
+      });
+    });
+  });
+  if(changed) ls('reminded',done);
+}
+/* ៣. ដាក់ចូលប្រតិទិនទូរសព្ទ (.ics) — ជូនដំណឹងដំណើរការទោះកម្មវិធីបិទ */
+function icsTime(iso){ return new Date(iso).toISOString().replace(/[-:]/g,'').split('.')[0]+'Z' }
+function downloadICS(r){
+  var evs=[];
+  function ev(when,label){
+    if(!when) return;
+    var end=new Date(new Date(when).getTime()+2*36e5).toISOString();
+    evs.push(['BEGIN:VEVENT','UID:'+r.id+label+'@rsc','DTSTAMP:'+icsTime(new Date().toISOString()),
+      'DTSTART:'+icsTime(when),'DTEND:'+icsTime(end),
+      'SUMMARY:'+label+' · '+(r.nameLatin||''),
+      'LOCATION:'+((r.address||'').replace(/[\r\n]+/g,' ')),
+      'DESCRIPTION:អតប '+(r.tin||'')+'\\n'+(r.mapLink||'')+'\\n'+(r.note||''),
+      'BEGIN:VALARM','TRIGGER:-PT60M','ACTION:DISPLAY','DESCRIPTION:'+label,'END:VALARM',
+      'BEGIN:VALARM','TRIGGER:-P1D','ACTION:DISPLAY','DESCRIPTION:'+label,'END:VALARM',
+      'END:VEVENT'].join('\r\n'));
+  }
+  ev(r.visitAt,'ចុះពិនិត្យទីតាំង'); ev(r.meetAt,'ណាត់ជួបសហគ្រាស');
+  if(!evs.length) return toast('មិនទាន់មានថ្ងៃ ម៉ោង');
+  var ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//RSC//Schedule//KM','CALSCALE:GREGORIAN'].concat(evs).concat(['END:VCALENDAR']).join('\r\n');
+  var blob=new Blob([ics],{type:'text/calendar;charset=utf-8'});
+  var a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download=(r.nameLatin||'schedule').replace(/[^\w\- ]+/g,'_')+'.ics';
+  document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove() },1500);
+  toast('បើកឯកសារនេះ ដើម្បីដាក់ចូលប្រតិទិនទូរសព្ទ');
+}
+
+/* ============================================================
+   LOGIN + BOOT
+   ============================================================ */
+function drawLogin(){
+  var box=$('#loginUsers'); box.innerHTML=''; var picked=null;
+  TEAM.forEach(function(u){
+    var b=el('button','u'); b.innerHTML=esc(u.name)+'<small>'+esc(u.email)+(u.role==='admin'?' · អ្នកគ្រប់គ្រង':'')+'</small>';
+    b.setAttribute('aria-pressed','false');
+    b.onclick=function(){
+      picked=u.email;
+      var all=box.querySelectorAll('.u'); for(var i=0;i<all.length;i++) all[i].setAttribute('aria-pressed','false');
+      b.setAttribute('aria-pressed','true');
+    };
+    box.appendChild(b);
+  });
+  $('#loginPin').style.display = apiUrl()? 'block':'none';
+  $('#loginGo').onclick=function(){
+    if(!picked) return $('#loginMsg').textContent='សូមជ្រើសរើសឈ្មោះរបស់អ្នក';
+    if(!apiUrl()){ setMe({email:picked}); return }
+    $('#loginMsg').textContent='កំពុងពិនិត្យ…';
+    api('apiLogin',[picked,$('#loginPin').value]).then(function(d){
+      S.token=d.token; localStorage.setItem(LSK+'token',d.token); setMe({email:picked});
+    }).catch(function(e){ $('#loginMsg').textContent='⚠️ '+e.message });
+  };
+  $('#login').classList.add('on');
+}
+function setMe(me){
+  S.me=me; ls('me',me); $('#login').classList.remove('on');
+  if(window.__native) window.__native.push(me.email);
+  render(); refresh(true).then(checkReminders);
+}
+window.__refreshNow=function(){ if(S.me) refresh(true) };
+function boot(){
+  S.token=localStorage.getItem(LSK+'token')||null;
+  var me=ls('me');
+  loadLocal();
+  if(me && me.email){ setMe(me) } else { drawLogin() }
+  var tabs=document.querySelectorAll('nav.tabs button');
+  for(var i=0;i<tabs.length;i++) tabs[i].onclick=(function(t){ return function(){ S.tab=t; render(); window.scrollTo(0,0) } })(tabs[i].dataset.tab);
+  markSync(false);
+  if(online()) api('apiPing',[]).then(function(){markSync(true)}).catch(function(){});
+  setInterval(function(){ if(!document.hidden){ refresh(true); checkReminders() } }, 60000);
+  document.addEventListener('visibilitychange',function(){ if(!document.hidden){ refresh(true); checkReminders() } });
+  var native = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+  if(!native && 'serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(function(){});
+}
+boot();
+</script>
+<script src="./native.js"></script>
+</body>
+</html>
