@@ -489,10 +489,9 @@ function pushEnt(rec){
 }
 /** អ្នករួមការងារនៅសហគ្រាសនេះ ធៀបនឹងអ្នកកំពុងប្រើ */
 function otherOf(e){
-  if(!e) return '';
-  if(e.auditor && e.auditor!==S.me.email) return e.auditor;
-  if(e.partner && e.partner!==S.me.email) return e.partner;
-  return '';
+  /* សហគ្រាសរបស់ខ្លួនឯង = គ្មានស្លាក ទោះមានអ្នករួមការងារក៏ដោយ */
+  if(!e || !e.auditor || e.auditor===S.me.email) return '';
+  return e.auditor;
 }
 /** ប្រធានក្រុមហៅអ្នកដទៃថា កូនក្រុម · កូនក្រុមហៅប្រធានថា ប្រធានក្រុម · ក្រៅពីនោះ ដៃគូ */
 function relOf(other){
