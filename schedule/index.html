@@ -178,6 +178,8 @@ textarea{min-height:74px;resize:vertical;line-height:1.7}
 #login .msg.ok{border-left-color:#5FB894;color:#BFE3D3}
 #login .link{display:block;width:100%;color:#7E9AB4;font-size:12.5px;margin-top:26px;
   text-align:center;text-decoration:underline;padding:8px}
+#login #loginCode{letter-spacing:10px;font-size:22px;text-align:center;font-weight:600}
+#login p.sub{color:#8FA8BE;font-size:13px;margin:0 0 20px;line-height:1.7}
 #login .cfg{margin-top:16px;padding-top:16px;border-top:1px solid #2E4E6C}
 #login .foot{color:#5D7A94;font-size:11.5px;text-align:center;margin-top:30px;letter-spacing:.3px}
 
@@ -282,6 +284,7 @@ table.rp td.n,table.rp th.n{font-family:system-ui,-apple-system,sans-serif}
   </svg>
   <h1>Audit Schedule</h1>
 
+  <div id="step1">
   <label for="loginEmail">Email</label>
   <div class="fld">
     <input type="email" id="loginEmail" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" inputmode="email" placeholder="name@gmail.com">
@@ -294,6 +297,17 @@ table.rp td.n,table.rp th.n{font-family:system-ui,-apple-system,sans-serif}
   </div>
 
   <button class="save" id="loginGo">Sign in</button>
+  </div>
+  <div id="step2" style="display:none">
+    <p class="sub" id="codeTo"></p>
+    <label for="loginCode">Verification code</label>
+    <div class="fld">
+      <input type="text" id="loginCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000">
+    </div>
+    <button class="save" id="codeGo">Verify</button>
+    <button class="link" id="codeResend">Send a new code</button>
+    <button class="link" id="codeBack" style="margin-top:4px">Use a different account</button>
+  </div>
   <p class="msg" id="loginMsg"></p>
 
   <button class="link" id="loginCfg">Server settings</button>
@@ -328,19 +342,34 @@ var KHM = ['មករា','កុម្ភៈ','មីនា','មេសា','�
 var DAYS = ['អាទិត្យ','ច័ន្ទ','អង្គារ','ពុធ','ព្រហស្បតិ៍','សុក្រ','សៅរ៍'];
 var MEET_VENUE = 'GDT TOWER';   /* ទីកន្លែងណាត់ជួបសហគ្រាស */
 var MEET_FLOOR = '3';           /* ជាន់ទីលំនាំដើម — កែបានក្នុងទម្រង់ */
+var CHAIRS = ['អនុប្រធានការិយាល័យ','ប្រធានការិយាល័យ','អនុប្រធាននាយកដ្ឋាន','ប្រធាននាយកដ្ឋាន','អគ្គនាយករង','ប្រតិភូ'];
 var RESP = [['waiting','⏳ រង់ចាំការឆ្លើយតប'],['agree','✅ សហគ្រាសយល់ស្រប'],['noreply','📵 មិនអាចទាក់ទងបាន']];
 var NOTICE = [['','មិនទាន់ផ្ញើលិខិត'],['telegram','Telegram'],['email','Email ផ្លូវការ'],['pickup','សហគ្រាសមកទទួលផ្ទាល់'],['post','ប្រៃសណីយ៍']];
-/* ទាញ ខណ្ឌ / ស្រុក / ខេត្ត ចេញពីអាសយដ្ឋាន */
-function guessArea(addr){
+/* ទាញ ខណ្ឌ/ស្រុក និង ខេត្ត ចេញពីអាសយដ្ឋាន */
+var NOAREA='មិនទាន់កំណត់តំបន់';
+function guessDistrict(addr){
   var t=String(addr||'').replace(/\s+/g,' ');
   var m=t.match(/(ខណ្ឌ|ស្រុក|ក្រុង)\s*([^\s,،]+)/);
-  if(m) return m[1]+' '+m[2];
-  m=t.match(/ខេត្ត\s*([^\s,،]+)/);
-  if(m) return 'ខេត្ត '+m[1];
-  if(/ភ្នំពេញ/.test(t)) return 'រាជធានីភ្នំពេញ';
-  return '';
+  return m ? (m[1]+' '+m[2]) : '';
 }
-function areaOf(r){ return (r.area||'').trim() || guessArea(r.address) || 'មិនទាន់កំណត់តំបន់' }
+function guessProvince(addr){
+  var t=String(addr||'').replace(/\s+/g,' ');
+  if(/ភ្នំពេញ/.test(t)) return 'រាជធានីភ្នំពេញ';
+  var m=t.match(/ខេត្ត\s*([^\s,،]+)/);
+  return m ? ('ខេត្ត '+m[1]) : '';
+}
+function guessArea(addr){ return guessDistrict(addr) || guessProvince(addr) || '' }
+function districtOf(o){
+  var a=String(o.area||'').trim();
+  if(a && !/^(ខេត្ត|រាជធានី)/.test(a)) return a;
+  return guessDistrict(o.address) || NOAREA;
+}
+function provinceOf(o){
+  var a=String(o.area||'').trim();
+  if(/^(ខេត្ត|រាជធានី)/.test(a)) return a;
+  return guessProvince(o.address) || NOAREA;
+}
+function areaOf(r){ return districtOf(r)!==NOAREA ? districtOf(r) : provinceOf(r) }
 function labOf(arr,v){ for(var i=0;i<arr.length;i++) if(arr[i][0]===(v||'')) return arr[i][1]; return v||'' }
 var REASONS = ['សវនករមានធុរៈ','សហគ្រាសសុំលើកពេល','ឯកសារមិនទាន់រួចរាល់','បញ្ហាធនធាន/ការធ្វើដំណើរ','ហេតុផលផ្សេងៗ'];
 var LSK = 'rsc_sched_';
@@ -481,36 +510,58 @@ function renderVisits(root,kind){
     var haveEnt={};
     S.visits.forEach(function(r){ if(!r.archived && r.visitAt && r.entId) haveEnt[r.entId]=1 });
     pending = entSorted().filter(function(e){ return !haveEnt[e.id] });
+    if(S.mineOnly) pending = pending.filter(function(e){ return e.auditor===S.me.email });
   }
 
   if(!meet && (list.length || pending.length)){
-    var counts={}, order=[];
-    function bump(a){ if(!counts[a]){counts[a]=0; order.push(a)} counts[a]++ }
-    list.forEach(function(r){ bump(areaOf(r)) });
-    pending.forEach(function(e){ bump(guessArea(e.address)||'មិនទាន់កំណត់តំបន់') });
-    order.sort(function(a,b){ return counts[b]-counts[a] || a.localeCompare(b) });
-    if(order.length>1 || S.area){
-      var chips=el('div','areas');
-      var allb=el('button',null,'ទាំងអស់ ('+(list.length+pending.length)+')');
-      allb.setAttribute('aria-pressed', S.area?'false':'true');
-      allb.onclick=function(){ S.area=''; render() };
-      chips.appendChild(allb);
-      order.forEach(function(a){
-        var x=el('button',null,a+' ('+counts[a]+')');
+    var everything=list.concat(pending), total=everything.length;
+    function tally(fn){
+      var c={}, o=[];
+      everything.forEach(function(x){ var k=fn(x); if(!c[k]){c[k]=0;o.push(k)} c[k]++ });
+      o.sort(function(a,b){ return (a===NOAREA)-(b===NOAREA) || c[b]-c[a] || a.localeCompare(b) });
+      return {c:c, o:o};
+    }
+    var byP=tally(provinceOf), byD=tally(districtOf);
+
+    var lvl1=el('div','areas');
+    function tab(label,type){
+      var x=el('button',null,label);
+      x.setAttribute('aria-pressed', S.areaType===type?'true':'false');
+      x.onclick=function(){ S.areaType = (S.areaType===type)?'':type; S.area=''; render() };
+      lvl1.appendChild(x);
+    }
+    var ab=el('button',null,'ទាំងអស់ ('+total+')');
+    ab.setAttribute('aria-pressed', S.areaType?'false':'true');
+    ab.onclick=function(){ S.areaType=''; S.area=''; render() };
+    lvl1.appendChild(ab);
+    tab('ខេត្ត / រាជធានី ('+byP.o.length+')','province');
+    tab('ខណ្ឌ / ស្រុក ('+byD.o.length+')','district');
+    root.appendChild(lvl1);
+
+    if(S.areaType){
+      var t2 = S.areaType==='province' ? byP : byD;
+      var lvl2=el('div','areas');
+      t2.o.forEach(function(a){
+        var x=el('button',null,a+' ('+t2.c[a]+')');
         x.setAttribute('aria-pressed', S.area===a?'true':'false');
         x.onclick=function(){ S.area = (S.area===a)?'':a; render() };
-        chips.appendChild(x);
+        lvl2.appendChild(x);
       });
-      root.appendChild(chips);
+      root.appendChild(lvl2);
     }
+
     if(S.area){
-      list=list.filter(function(r){ return areaOf(r)===S.area });
-      pending=pending.filter(function(e){ return (guessArea(e.address)||'មិនទាន់កំណត់តំបន់')===S.area });
+      var f = S.areaType==='province' ? provinceOf : districtOf;
+      list=list.filter(function(r){ return f(r)===S.area });
+      pending=pending.filter(function(e){ return f(e)===S.area });
     }
   }
   var now=Date.now();
   var up=list.filter(function(r){return r.status!=='cancelled' && sortKey(r,kind)>=now-864e5});
-  if(!meet && !S.area) up.sort(function(a,b){ return areaOf(a).localeCompare(areaOf(b)) || sortKey(a,kind)-sortKey(b,kind) });
+  if(!meet && !S.area) up.sort(function(a,b){
+    var fa=(S.areaType==='province'?provinceOf:areaOf);
+    return fa(a).localeCompare(fa(b)) || sortKey(a,kind)-sortKey(b,kind);
+  });
   var past=list.filter(function(r){return up.indexOf(r)<0});
 
   section(root, S.showArc?'ប័ណ្ណសារ — សវនកម្មបានបញ្ចប់':'ដែលជិតមកដល់', up.length);
@@ -521,7 +572,7 @@ function renderVisits(root,kind){
   var lastA=null;
   up.forEach(function(r){
     if(!meet && !S.area){
-      var a=areaOf(r);
+      var a=(S.areaType==='province'?provinceOf(r):areaOf(r));
       if(a!==lastA){ root.appendChild(el('div','grouphd','📍 '+a)); lastA=a }
     }
     root.appendChild(visitCard(r));
@@ -529,17 +580,26 @@ function renderVisits(root,kind){
 
   if(past.length){ section(root,'កន្លងផុត / បានបញ្ចប់', past.length); past.reverse().forEach(function(r){ root.appendChild(visitCard(r)) }) }
 
-  if(pending.length){
+  if(pending.length || S.mineOnly){
     section(root,'សហគ្រាសមិនទាន់មានកាលវិភាគ', pending.length);
+    var mine=el('button','arclink', S.mineOnly?'👤 កំពុងបង្ហាញតែរបស់ខ្ញុំ — ចុចដើម្បីមើលទាំងអស់':'👤 បង្ហាញតែសហគ្រាសរបស់ខ្ញុំ');
+    mine.style.marginBottom='10px';
+    mine.onclick=function(){ S.mineOnly=!S.mineOnly; render() };
+    root.appendChild(mine);
     var lastP=null;
+    pending.sort(function(x,y){
+      var fa=(S.areaType==='province'?provinceOf:areaOf);
+      return fa(x).localeCompare(fa(y)) || String(x.nameLatin||'').localeCompare(String(y.nameLatin||''));
+    });
     pending.forEach(function(e){
-      var a=guessArea(e.address)||'មិនទាន់កំណត់តំបន់';
+      var a=(S.areaType==='province'?provinceOf(e):areaOf(e));
       if(!S.area && a!==lastP){ root.appendChild(el('div','grouphd','📍 '+a)); lastP=a }
       var c=el('div','rec'), bd=el('div','meat');
       bd.innerHTML='<div class="name">'+esc(e.nameLatin||'')+'</div>'+
         '<div class="tin">អតប៖ '+esc(e.tin||'—')+'</div>'+
         (e.address?'<div class="row"><i>🏢</i><div>'+esc(e.address)+'</div></div>':'')+
-        (e.contactPhone?'<div class="row"><i>📞</i><div>'+esc(e.contactName||'អ្នកតំណាង')+' · '+esc(e.contactPhone)+'</div></div>':'');
+        (e.contactPhone?'<div class="row"><i>📞</i><div>'+esc(e.contactName||'អ្នកតំណាង')+' · '+esc(e.contactPhone)+'</div></div>':'')+
+        (e.auditor?'<div class="row"><i>👤</i><div>សវនករទទួលបន្ទុក៖ '+esc(nameOf(e.auditor))+'</div></div>':'');
       c.appendChild(bd);
       var ac=el('div','acts');
       ac.appendChild(btn('+ កំណត់កាលវិភាគចុះទីតាំង','key',function(){ visitForm(null,null,'visit',e) }));
@@ -639,6 +699,11 @@ function calEvents(){
   S.internal.forEach(function(r){
     var st=dt(r.fromAt); if(!st) return;
     var tail='';
+    if(r.type==='meeting'){
+      put(dkey(st),{ord:st.getHours()*60+st.getMinutes(),cls:'meet',ico:'👥',tm:fmtT(r.fromAt),
+        title:r.subject||'ប្រជុំផ្ទៃក្នុង', sub:'ដឹកនាំដោយ '+(r.chair||'—')+(meetPlaceIn(r)?' · '+meetPlaceIn(r):'')});
+      return;
+    }
     if(r.type==='late'){
       put(dkey(st),{ord:st.getHours()*60+st.getMinutes(),cls:'late',ico:'⏰',tm:fmtT(r.fromAt),
         title:nameOf(r.email), sub:'សុំមកយឺត · '+(r.reason||'')+tail});
@@ -746,7 +811,7 @@ function drawEvents(root, list){
 /* ---------- 2. internal ---------- */
 function renderTeam(root){
   var seg=el('div','seg');
-  [['leave','🏖 សុំច្បាប់'],['late','⏰ សុំយឺត']].forEach(function(p){
+  [['leave','🏖 សុំច្បាប់'],['late','⏰ សុំយឺត'],['meeting','👥 ប្រជុំផ្ទៃក្នុង']].forEach(function(p){
     var b=el('button',null,p[1]);
     b.onclick=function(){ internalForm(p[0]) };
     seg.appendChild(b);
@@ -759,7 +824,14 @@ function renderTeam(root){
   if(!mine.length){ root.appendChild(emptyBox('មិនទាន់មានការជូនដំណឹង','ចុច «សុំច្បាប់» ឬ «សុំយឺត» ខាងលើ។ ក្រុមទាំងអស់ទទួលដំណឹងភ្លាមៗ ដោយមិនចាំបាច់រង់ចាំការអនុញ្ញាតទេ។')); return }
   mine.forEach(function(r){ root.appendChild(internalCard(r)) });
 }
+function meetPlaceIn(r){
+  var x=[];
+  if(r.room) x.push('បន្ទប់ '+r.room);
+  if(r.floor) x.push('ជាន់ទី '+r.floor);
+  return x.join(' · ');
+}
 function internalCard(r){
+  if(r.type==='meeting') return meetingCard(r);
   var c=el('div','rec'), b=el('div','body');
   var d=dt(r.fromAt), late=(r.type==='late');
   var rail=el('div','rail '+(late?'moved':'done'));
@@ -780,6 +852,28 @@ function internalCard(r){
     a.appendChild(btn('🗑 ដកសំណើវិញ','warn',function(){ delInternal(r) }));
     c.appendChild(a);
   }
+  return c;
+}
+function meetingCard(r){
+  var c=el('div','rec'), b=el('div','body'), d=dt(r.fromAt);
+  var rail=el('div','rail');
+  rail.innerHTML = d? '<span class="d">'+d.getDate()+'</span><span class="m">'+KHM[d.getMonth()]+'</span><span class="t">'+fmtT(r.fromAt)+'</span>' : '<span class="d">?</span>';
+  b.appendChild(rail);
+  var meat=el('div','meat');
+  meat.innerHTML =
+    '<div class="name">'+esc(r.subject||'ប្រជុំផ្ទៃក្នុង')+'</div>'+
+    '<div class="tin">ដឹកនាំដោយ៖ '+esc(r.chair||'—')+'</div>'+
+    '<div class="row"><i>🕒</i><div>'+fmtFull(r.fromAt)+'</div></div>'+
+    (meetPlaceIn(r)?'<div class="row"><i>🏢</i><div>'+esc(meetPlaceIn(r))+'</div></div>':'')+
+    ((r.attendees||[]).length?'<div class="row"><i>👥</i><div>'+esc(r.attendees.map(nameOf).join(' · '))+'</div></div>':'')+
+    ((r.agenda||[]).length?'<div class="row"><i>📋</i><div>'+r.agenda.map(function(a,i){return (i+1)+'. '+esc(a)}).join('<br>')+'</div></div>':'')+
+    (r.minutes?'<div class="row"><i>📝</i><div>'+esc(r.minutes).replace(/\n/g,'<br>')+'</div></div>':'');
+  b.appendChild(meat); c.appendChild(b);
+  var a=el('div','acts');
+  a.appendChild(btn('📝 កត់ត្រាក្រោយប្រជុំ','key',function(){ internalForm('meeting', r) }));
+  a.appendChild(btn('✏️ កែ','',function(){ internalForm('meeting', r) }));
+  if(r.email===S.me.email || isAdmin()) a.appendChild(btn('🗑 លុប','warn',function(){ delInternal(r) }));
+  c.appendChild(a);
   return c;
 }
 function delInternal(r){
@@ -891,10 +985,11 @@ function renderReport(root){
     t4.innerHTML='<tr><th>សមាជិក</th><th>ប្រភេទ</th><th>ថ្ងៃ</th><th class="n">ថ្ងៃ/ម៉ោង</th><th>មូលហេតុ</th></tr>';
     intern.slice().sort(function(a,b){return (dt(a.fromAt)||0)-(dt(b.fromAt)||0)}).forEach(function(r){
       var tr=el('tr');
-      tr.innerHTML='<td>'+esc(nameOf(r.email))+'</td><td>'+(r.type==='late'?'សុំយឺត':'សុំច្បាប់')+'</td>'+
+      var tlab = r.type==='meeting'?'ប្រជុំផ្ទៃក្នុង':(r.type==='late'?'សុំយឺត':'សុំច្បាប់');
+      tr.innerHTML='<td>'+esc(r.type==='meeting'?(r.chair||''):nameOf(r.email))+'</td><td>'+tlab+'</td>'+
         '<td>'+fmtD(r.fromAt)+(r.type==='leave'&&r.toAt&&fmtD(r.toAt)!==fmtD(r.fromAt)?' – '+fmtD(r.toAt):'')+'</td>'+
-        '<td class="n">'+(r.type==='late'?fmtT(r.fromAt):(r.days||1)+' ថ្ងៃ')+'</td>'+
-        '<td>'+esc(r.reason||'')+'</td>';
+        '<td class="n">'+(r.type==='leave'?((r.days||1)+' ថ្ងៃ'):fmtT(r.fromAt))+'</td>'+
+        '<td>'+esc(r.type==='meeting'?(r.subject||''):(r.reason||''))+'</td>';
       t4.appendChild(tr);
     });
     root.appendChild(t4);
@@ -1072,11 +1167,18 @@ function reportSheets(visits, intern){
       labOf(RESP,r.resp||'waiting'), labOf(NOTICE,r.noticeVia), r.noticeDate?fmtD(r.noticeDate+'T00:00'):'',
       r.lastReason||'', r.note||'', r.mapLink||'']);
   });
-  var i=[['សមាជិក','ប្រភេទ','ចាប់ពី','ដល់','ចំនួនថ្ងៃ','ម៉ោងមកដល់','មូលហេតុ','ជូនដំណឹងថ្ងៃ']];
+  var i=[['សមាជិក / ប្រធានអង្គប្រជុំ','ប្រភេទ','ចាប់ពី','ដល់','ចំនួនថ្ងៃ','ម៉ោង','កម្មវត្ថុ / មូលហេតុ','ទីកន្លែង','អ្នកចូលរួម','រៀបវារៈ','ខ្លឹមសារ','ជូនដំណឹងថ្ងៃ']];
   intern.forEach(function(r){
-    i.push([nameOf(r.email), r.type==='late'?'សុំយឺត':'សុំច្បាប់', fmtD(r.fromAt),
-      r.type==='leave'?fmtD(r.toAt):'', r.type==='leave'?(r.days||1):'', r.type==='late'?fmtT(r.fromAt):'',
-      r.reason||'', r.createdAt?fmtD(r.createdAt):'']);
+    var mt=r.type==='meeting';
+    i.push([mt?(r.chair||''):nameOf(r.email),
+      mt?'ប្រជុំផ្ទៃក្នុង':(r.type==='late'?'សុំយឺត':'សុំច្បាប់'), fmtD(r.fromAt),
+      r.type==='leave'?fmtD(r.toAt):'', r.type==='leave'?(r.days||1):'',
+      r.type==='leave'?'':fmtT(r.fromAt),
+      mt?(r.subject||''):(r.reason||''), mt?meetPlaceIn(r):'',
+      mt?(r.attendees||[]).map(nameOf).join(', '):'',
+      mt?(r.agenda||[]).map(function(a,n){return (n+1)+'. '+a}).join('\n'):'',
+      mt?(r.minutes||''):'',
+      r.createdAt?fmtD(r.createdAt):'']);
   });
   var per=[['សវនករ','ចុះទីតាំង','ណាត់ជួប','ថ្ងៃច្បាប់','សុំយឺត']];
   TEAM.forEach(function(u){
@@ -1122,7 +1224,7 @@ function renderSet(root){
   ee.innerHTML='<h3>បញ្ជីសហគ្រាស ('+S.ents.length+')</h3>';
   S.ents.slice().sort(function(a,b){return String(a.nameLatin||'').localeCompare(String(b.nameLatin||''))}).forEach(function(e){
     var k=el('div','kv');
-    var L=el('div'); L.innerHTML='<div>'+(e.archived?'📦 ':'')+esc(e.nameLatin||'—')+'</div><div style="color:var(--mute);font-size:12px">'+esc(e.tin||'')+(e.contactPhone?' · '+esc(e.contactPhone):'')+'</div>';
+    var L=el('div'); L.innerHTML='<div>'+(e.archived?'📦 ':'')+esc(e.nameLatin||'—')+'</div><div style="color:var(--mute);font-size:12px">'+esc(e.tin||'')+(e.auditor?' · '+esc(nameOf(e.auditor)):'')+'</div>';
     var box=el('div'); box.style.whiteSpace='nowrap';
     var ar=el('button',null,e.archived?'ដាក់វិញ':'ប័ណ្ណសារ'); ar.style.color='var(--slate)'; ar.style.fontSize='12.5px'; ar.style.marginRight='12px';
     ar.onclick=function(){ e.archived=!e.archived; saveLocal(); render(); pushEnt(e) };
@@ -1257,6 +1359,7 @@ function visitForm(r, seedDay, forceKind, seedEnt){
 
     function fillFrom(e){
       r.entId=e.id;
+      if(e.auditor && chosen.indexOf(e.auditor)<0 && !chosen.length){ chosen.push(e.auditor); drawAud() }
       name.value=e.nameLatin||''; tin.value=e.tin||'';
       addr.value=e.address||''; map.value=e.mapLink||'';
       if(e.contactName)  cname.value=e.contactName;
@@ -1287,7 +1390,6 @@ function visitForm(r, seedDay, forceKind, seedEnt){
     }
     find.oninput=drawSug;
     find.onfocus=drawSug;
-    if(seedEnt) fillFrom(seedEnt);
     /* ជ្រើសពី datalist ក៏បំពេញព័ត៌មានដែរ */
     function syncFromTyped(){
       var n=name.value.trim().toLowerCase(), tv=tin.value.trim().toLowerCase(), hit=null;
@@ -1340,6 +1442,7 @@ function visitForm(r, seedDay, forceKind, seedEnt){
     var ndate=field(b,'ថ្ងៃ ខែ ឆ្នាំ ផ្ញើ / ទទួលលិខិត', input('date',r.noticeDate||''));
 
     var note=field(b,'កំណត់សម្គាល់', textarea(r.note,'ឯកសារត្រូវត្រៀម · អ្នកទំនាក់ទំនង · លេខទូរសព្ទ…'));
+    if(seedEnt) fillFrom(seedEnt);
 
     var go=el('button','save',isNew?'រក្សាទុក និងជូនដំណឹងក្រុម':'រក្សាទុកការកែប្រែ');
     go.onclick=function(){
@@ -1375,6 +1478,7 @@ function visitForm(r, seedDay, forceKind, seedEnt){
       if((r.extras||[]).length) ent.extras=JSON.parse(JSON.stringify(r.extras));
       if(r.contactName)  ent.contactName=r.contactName;
       if(r.contactPhone) ent.contactPhone=r.contactPhone;
+      if(!ent.auditor && r.auditors.length) ent.auditor=r.auditors[0];
       ent.updatedAt=r.updatedAt; ent.updatedBy=S.me.email;
       r.entId=ent.id;
       pushEnt(ent);
@@ -1464,7 +1568,8 @@ function moveForm(r){
   });
 }
 
-function internalForm(type){
+function internalForm(type, edit){
+  if(type==='meeting') return meetingForm(edit);
   openSheet(type==='late'?'សុំមកយឺត':'សុំច្បាប់', function(b){
     var rec={id:uid(), type:type, email:S.me.email, status:'noted', createdAt:new Date().toISOString()};
     var from, to, days;
@@ -1492,6 +1597,87 @@ function internalForm(type){
       }
       rec.reason=rs.value+(note.value?' · '+note.value:'');
       closeSheet(); pushInternal(rec);
+    };
+    b.appendChild(go);
+  });
+}
+
+function meetingForm(edit){
+  var isNew=!edit;
+  var r = edit ? JSON.parse(JSON.stringify(edit))
+              : {id:uid(), type:'meeting', email:S.me.email, status:'noted',
+                 createdAt:new Date().toISOString(), attendees:[], agenda:['']};
+  openSheet(isNew?'ប្រជុំផ្ទៃក្នុងថ្មី':'ប្រជុំផ្ទៃក្នុង', function(b){
+    var chair=el('select');
+    chair.appendChild(el('option',null,'— ជ្រើសរើស —')).value='';
+    CHAIRS.forEach(function(t){ var o=el('option',null,t); o.value=t; chair.appendChild(o) });
+    chair.value=r.chair||'';
+    field(b,'ដឹកនាំការប្រជុំ',chair);
+
+    var when=field(b,'ថ្ងៃ ខែ ឆ្នាំ និងម៉ោងប្រជុំ', input('datetime-local',toLocalInput(r.fromAt)));
+    var subj=field(b,'កម្មវត្ថុ', textarea(r.subject,'ខ្លឹមសារសង្ខេបនៃការប្រជុំ'));
+
+    var two=el('div','two'), fW=el('div'), rW=el('div');
+    two.appendChild(fW); two.appendChild(rW); b.appendChild(two);
+    var floor=field(fW,'ជាន់ទី', input('text',r.floor,'3'));
+    var room =field(rW,'បន្ទប់ប្រជុំ', input('text',r.room,'ឧ. 305'));
+
+    var chosen=(r.attendees||[]).slice();
+    var aSel=el('select'), aChips=el('div','picked');
+    function drawAtt(){
+      aSel.innerHTML='';
+      aSel.appendChild(el('option',null,'— បន្ថែមអ្នកចូលរួម —')).value='';
+      TEAM.forEach(function(u){ if(chosen.indexOf(u.email)<0){ var o=el('option',null,u.name); o.value=u.email; aSel.appendChild(o) } });
+      aSel.value='';
+      aChips.innerHTML='';
+      if(!chosen.length) aChips.appendChild(el('span','none','មិនទាន់ជ្រើសរើស'));
+      chosen.forEach(function(em,ix){
+        var t=el('span',null,nameOf(em));
+        var x=el('button',null,'✕'); x.onclick=function(){ chosen.splice(ix,1); drawAtt() };
+        t.appendChild(x); aChips.appendChild(t);
+      });
+    }
+    aSel.onchange=function(){ if(aSel.value){ chosen.push(aSel.value); drawAtt() } };
+    field(b,'សវនករចូលរួមប្រជុំ',aSel);
+    b.appendChild(aChips); b.appendChild(el('div','f'));
+    drawAtt();
+
+    b.appendChild(el('h3',null,'កត់ត្រាក្រោយប្រជុំ'));
+    b.appendChild(el('div','hint','ផ្នែកនេះមិនរួមក្នុងសារជូនដំណឹងទេ — បំពេញក្រោយពេលប្រជុំរួច។'));
+    b.appendChild(el('div','f'));
+
+    b.appendChild(el('label',null,'រៀបវារៈការប្រជុំ'));
+    var agWrap=el('div'); b.appendChild(agWrap);
+    var agenda=(r.agenda||[]).slice(); if(!agenda.length) agenda=[''];
+    function drawAg(){
+      agWrap.innerHTML='';
+      agenda.forEach(function(v,ix){
+        var row=el('div','extra');
+        var rm=el('button','rm','លុប'); rm.onclick=function(){ agenda.splice(ix,1); if(!agenda.length) agenda=['']; drawAg() };
+        row.appendChild(rm);
+        var i=input('text',v,'រៀបវារៈទី '+(ix+1));
+        i.oninput=function(){ agenda[ix]=i.value };
+        row.appendChild(i); agWrap.appendChild(row);
+      });
+      var ad=el('button','mini','+ បន្ថែមរៀបវារៈ');
+      ad.onclick=function(){ agenda.push(''); drawAg() };
+      agWrap.appendChild(ad); agWrap.appendChild(el('div','f'));
+    }
+    drawAg();
+    var mins=field(b,'ខ្លឹមសារ / កំណត់ហេតុ', textarea(r.minutes,'សេចក្តីសម្រេច និងចំណុចសំខាន់ៗ'));
+    mins.style.minHeight='140px';
+
+    var go=el('button','save', isNew?'រក្សាទុក និងជូនដំណឹងក្រុម':'រក្សាទុក');
+    go.onclick=function(){
+      if(!when.value) return toast('សូមកំណត់ថ្ងៃ និងម៉ោងប្រជុំ');
+      if(!chair.value) return toast('សូមជ្រើសរើសអ្នកដឹកនាំការប្រជុំ');
+      r.chair=chair.value; r.fromAt=fromLocalInput(when.value); r.toAt=r.fromAt;
+      r.subject=subj.value.trim(); r.floor=floor.value.trim(); r.room=room.value.trim();
+      r.attendees=chosen.slice();
+      r.agenda=agenda.map(function(x){return String(x||'').trim()}).filter(Boolean);
+      r.minutes=mins.value.trim();
+      r.reason=r.subject;
+      closeSheet(); pushInternal(r);
     };
     b.appendChild(go);
   });
@@ -1580,8 +1766,19 @@ function lmsg(txt,ok){
   var m=$('#loginMsg'); m.textContent=txt||'';
   m.className='msg'+(txt?' on':'')+(ok?' ok':'');
 }
+function deviceId(){
+  var k=LSK+'device', v=localStorage.getItem(k);
+  if(!v){ v='d'+Date.now().toString(36)+Math.random().toString(36).slice(2,10); try{localStorage.setItem(k,v)}catch(e){} }
+  return v;
+}
+function loginStep(n){
+  $('#step1').style.display = n===1?'block':'none';
+  $('#step2').style.display = n===2?'block':'none';
+  $('#loginCfg').style.display = (n===1 && !API_URL)?'block':'none';
+}
 function drawLogin(){
   var box=$('#loginCfgBox'), go=$('#loginGo');
+  loginStep(1);
   $('#loginUrl').value=apiUrl();
   $('#loginCfg').onclick=function(){ box.style.display = box.style.display==='none'?'block':'none' };
   $('#loginUrlSave').onclick=function(){
@@ -1603,14 +1800,43 @@ function drawLogin(){
     var email=($('#loginEmail').value||'').trim().toLowerCase(), pw=$('#loginPin').value||'';
     if(!email || !pw) return lmsg('Enter your email and password.');
     if(!apiUrl()){ box.style.display='block'; return lmsg('Add the server URL below first.') }
+    sendLogin(email, pw);
+  };
+  function sendLogin(email, pw){
+    S.pending={email:email, pw:pw};
     lmsg('Signing in…', true); go.disabled=true; go.textContent='Signing in…';
-    api('apiLogin',[email,pw]).then(function(d){
-      S.token=d.token; localStorage.setItem(LSK+'token',d.token);
-      $('#loginPin').value=''; lmsg('');
+    api('apiLogin',[email,pw,deviceId()]).then(function(d){
+      $('#loginPin').value='';
+      if(d && d.needCode){
+        lmsg('');
+        $('#codeTo').textContent = 'We sent a 6-digit code to ' + d.email + '. It expires in ' + (d.minutes||10) + ' minutes.';
+        $('#loginCode').value='';
+        loginStep(2);
+        setTimeout(function(){ try{ $('#loginCode').focus() }catch(e){} },100);
+        return;
+      }
+      S.token=d.token; localStorage.setItem(LSK+'token',d.token); lmsg('');
       setMe({email:email, name:d.name, role:d.role});
     }).catch(function(e){ lmsg(e.message) })
       .then(function(){ go.disabled=false; go.textContent='Sign in' });
+  }
+
+  var cgo=$('#codeGo');
+  cgo.onclick=function(){
+    var code=($('#loginCode').value||'').trim();
+    if(code.length<6) return lmsg('Enter the 6-digit code from your email.');
+    if(!S.pending) return loginStep(1);
+    lmsg('Checking the code…', true); cgo.disabled=true; cgo.textContent='Checking…';
+    api('apiVerifyCode',[S.pending.email, code, deviceId(), true]).then(function(d){
+      S.token=d.token; localStorage.setItem(LSK+'token',d.token); lmsg('');
+      var em=S.pending.email; S.pending=null;
+      setMe({email:em, name:d.name, role:d.role});
+    }).catch(function(e){ lmsg(e.message) })
+      .then(function(){ cgo.disabled=false; cgo.textContent='Verify' });
   };
+  $('#loginCode').onkeydown=function(e){ if(e.key==='Enter') cgo.click() };
+  $('#codeResend').onclick=function(){ if(S.pending) sendLogin(S.pending.email, S.pending.pw) };
+  $('#codeBack').onclick=function(){ S.pending=null; lmsg(''); loginStep(1) };
   $('#loginEmail').onkeydown=$('#loginPin').onkeydown=function(e){ if(e.key==='Enter') $('#loginGo').click() };
   $('#login').classList.add('on');
 }
