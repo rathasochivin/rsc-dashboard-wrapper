@@ -128,7 +128,7 @@ input[type=text],input[type=email],input[type=tel],input[type=url],input[type=da
 textarea{min-height:74px;resize:vertical;line-height:1.7}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .hint{font-size:12px;color:var(--mute);margin-top:4px;line-height:1.6}
-.sug{border:1px solid var(--line);border-top:0;background:#fff;max-height:230px;overflow-y:auto;display:none;margin:-13px 0 13px}
+.sug{border:1px solid var(--line);border-top:0;background:#fff;max-height:300px;overflow-y:auto;display:none;margin:-13px 0 13px}
 .sug.on{display:block}
 .sug button{display:block;width:100%;text-align:left;padding:9px 11px;border-bottom:1px solid #EEF2F5}
 .sug button:last-child{border-bottom:0}
@@ -487,6 +487,21 @@ function pushEnt(rec){
   if(!online()) return Promise.resolve();
   return api('apiSaveEnterprise',[S.token,rec]).catch(function(e){ toast('⚠️ បញ្ជីសហគ្រាស៖ '+e.message) });
 }
+/** អ្នករួមការងារនៅសហគ្រាសនេះ ធៀបនឹងអ្នកកំពុងប្រើ */
+function otherOf(e){
+  if(!e) return '';
+  if(e.auditor && e.auditor!==S.me.email) return e.auditor;
+  if(e.partner && e.partner!==S.me.email) return e.partner;
+  return '';
+}
+/** ប្រធានក្រុមហៅអ្នកដទៃថា កូនក្រុម · កូនក្រុមហៅប្រធានថា ប្រធានក្រុម · ក្រៅពីនោះ ដៃគូ */
+function relOf(other){
+  if(!other) return '';
+  if(isAdmin()) return 'កូនក្រុម';
+  if(other===ADMIN_EMAIL) return 'ប្រធានក្រុម';
+  return 'ដៃគូ';
+}
+function relOfEnt(e){ return relOf(otherOf(e)) }
 function ownsEnt(e,who){
   if(!who) return true;
   return e.auditor===who || e.partner===who;
@@ -537,61 +552,68 @@ function renderVisits(root,kind){
 
   if(!meet && (list.length || pending.length)){
     var everything=list.concat(pending), total=everything.length;
+    var PP='រាជធានីភ្នំពេញ';
+    var isPP=function(x){ return provinceOf(x)===PP };
+    var nPP=everything.filter(isPP).length, nProv=total-nPP;
 
-    /* ជាន់ទី ១ ៖ ខេត្ត / រាជធានី */
-    var pc={}, po=[];
-    everything.forEach(function(x){ var k=provinceOf(x); if(!pc[k]){pc[k]=0;po.push(k)} pc[k]++ });
-    po.sort(function(a,b){ return (a===NOAREA)-(b===NOAREA) || pc[b]-pc[a] || a.localeCompare(b) });
-
+    /* ជាន់ទី ១ ៖ ទាំងអស់ · រាជធានីភ្នំពេញ · ខេត្ត */
     var lvl1=el('div','areas');
-    var ab=el('button',null,'ទាំងអស់ ('+total+')');
-    ab.setAttribute('aria-pressed', S.prov?'false':'true');
-    ab.onclick=function(){ S.prov=''; S.dist=''; render() };
-    lvl1.appendChild(ab);
-    po.forEach(function(pv){
-      var x=el('button',null,pv+' ('+pc[pv]+')');
-      x.setAttribute('aria-pressed', S.prov===pv?'true':'false');
-      x.onclick=function(){ S.prov=(S.prov===pv)?'':pv; S.dist=''; render() };
+    [['', 'ទាំងអស់ ('+total+')'], ['pp', PP+' ('+nPP+')'], ['prov', 'ខេត្ត ('+nProv+')']].forEach(function(p){
+      var x=el('button',null,p[1]);
+      x.setAttribute('aria-pressed', (S.scope||'')===p[0]?'true':'false');
+      x.onclick=function(){ S.scope=p[0]; S.prov=''; S.dist=''; render() };
       lvl1.appendChild(x);
     });
     root.appendChild(lvl1);
 
-    /* ជាន់ទី ២ ៖ ខណ្ឌ / ស្រុក ក្នុងខេត្តដែលបានជ្រើស */
-    if(S.prov){
-      var inProv=everything.filter(function(x){ return provinceOf(x)===S.prov });
-      var dc={}, dorder=[];
-      inProv.forEach(function(x){ var k=districtOf(x); if(!dc[k]){dc[k]=0;dorder.push(k)} dc[k]++ });
-      dorder.sort(function(a,b){ return (a===NOAREA)-(b===NOAREA) || dc[b]-dc[a] || a.localeCompare(b) });
-      if(dorder.length){
-        var lvl2=el('div','areas');
-        var db2=el('button',null,'គ្រប់ខណ្ឌ/ស្រុក ('+inProv.length+')');
-        db2.setAttribute('aria-pressed', S.dist?'false':'true');
-        db2.onclick=function(){ S.dist=''; render() };
-        lvl2.appendChild(db2);
-        dorder.forEach(function(dv){
-          var x=el('button',null,dv+' ('+dc[dv]+')');
-          x.setAttribute('aria-pressed', S.dist===dv?'true':'false');
-          x.onclick=function(){ S.dist=(S.dist===dv)?'':dv; render() };
-          lvl2.appendChild(x);
-        });
-        root.appendChild(lvl2);
+    function chipRow(items, counts, cur, onPick, allLabel, allCount){
+      var w=el('div','areas');
+      var a=el('button',null,allLabel+' ('+allCount+')');
+      a.setAttribute('aria-pressed', cur?'false':'true');
+      a.onclick=function(){ onPick('') };
+      w.appendChild(a);
+      items.forEach(function(k){
+        var x=el('button',null,k+' ('+counts[k]+')');
+        x.setAttribute('aria-pressed', cur===k?'true':'false');
+        x.onclick=function(){ onPick(cur===k?'':k) };
+        w.appendChild(x);
+      });
+      return w;
+    }
+    function tally(arr, fn){
+      var c={}, o=[];
+      arr.forEach(function(x){ var k=fn(x); if(!c[k]){c[k]=0;o.push(k)} c[k]++ });
+      o.sort(function(a,b){ return (a===NOAREA)-(b===NOAREA) || c[b]-c[a] || a.localeCompare(b) });
+      return {c:c, o:o};
+    }
+
+    if(S.scope==='pp'){
+      var inPP=everything.filter(isPP), td=tally(inPP, districtOf);
+      root.appendChild(chipRow(td.o, td.c, S.dist, function(v){ S.dist=v; render() }, 'គ្រប់ខណ្ឌ', inPP.length));
+    }
+    if(S.scope==='prov'){
+      var inProv=everything.filter(function(x){ return !isPP(x) }), tp=tally(inProv, provinceOf);
+      root.appendChild(chipRow(tp.o, tp.c, S.prov, function(v){ S.prov=v; S.dist=''; render() }, 'គ្រប់ខេត្ត', inProv.length));
+      if(S.prov){
+        var inOne=inProv.filter(function(x){ return provinceOf(x)===S.prov }), td2=tally(inOne, districtOf);
+        root.appendChild(chipRow(td2.o, td2.c, S.dist, function(v){ S.dist=v; render() }, 'គ្រប់ស្រុក', inOne.length));
       }
     }
 
-    if(S.prov){
-      list=list.filter(function(r){ return provinceOf(r)===S.prov });
-      pending=pending.filter(function(e){ return provinceOf(e)===S.prov });
+    function keep(x){
+      if(S.scope==='pp'  && !isPP(x)) return false;
+      if(S.scope==='prov' && isPP(x)) return false;
+      if(S.prov && provinceOf(x)!==S.prov) return false;
+      if(S.dist && districtOf(x)!==S.dist) return false;
+      return true;
     }
-    if(S.dist){
-      list=list.filter(function(r){ return districtOf(r)===S.dist });
-      pending=pending.filter(function(e){ return districtOf(e)===S.dist });
-    }
+    list=list.filter(keep); pending=pending.filter(keep);
   }
 
   var now=Date.now();
   var up=list.filter(function(r){return r.status!=='cancelled' && sortKey(r,kind)>=now-864e5});
   if(!meet && !S.dist) up.sort(function(a,b){
-    var fa=(S.prov?districtOf:provinceOf);
+    var fa=((S.scope==='pp'||S.prov)?districtOf:provinceOf);
     return fa(a).localeCompare(fa(b)) || sortKey(a,kind)-sortKey(b,kind);
   });
   var past=list.filter(function(r){return up.indexOf(r)<0});
@@ -615,7 +637,7 @@ function renderVisits(root,kind){
       }
     }
     if(!meet && !S.dist){
-      var a=(S.prov?districtOf(r):provinceOf(r));
+      var a=((S.scope==='pp'||S.prov)?districtOf(r):provinceOf(r));
       if(a!==lastA){ root.appendChild(el('div','grouphd','📍 '+a)); lastA=a }
     }
     root.appendChild(visitCard(r));
@@ -628,11 +650,11 @@ function renderVisits(root,kind){
     root.appendChild(ownerChips());
     var lastP=null;
     pending.sort(function(x,y){
-      var fa=(S.prov?districtOf:provinceOf);
+      var fa=((S.scope==='pp'||S.prov)?districtOf:provinceOf);
       return fa(x).localeCompare(fa(y)) || String(x.nameLatin||'').localeCompare(String(y.nameLatin||''));
     });
     pending.forEach(function(e){
-      var a=(S.prov?districtOf(e):provinceOf(e));
+      var a=((S.scope==='pp'||S.prov)?districtOf(e):provinceOf(e));
       if(!S.dist && a!==lastP){ root.appendChild(el('div','grouphd','📍 '+a)); lastP=a }
       var c=el('div','rec'), bd=el('div','meat');
       bd.innerHTML='<div class="name">'+esc(e.nameLatin||'')+'</div>'+
@@ -640,7 +662,7 @@ function renderVisits(root,kind){
         (e.address?'<div class="row"><i>🏢</i><div>'+esc(e.address)+'</div></div>':'')+
         (e.contactPhone?'<div class="row"><i>📞</i><div>'+esc(e.contactName||'អ្នកតំណាង')+' · '+esc(e.contactPhone)+'</div></div>':'')+
         (e.auditor?'<div class="row"><i>👤</i><div>សវនករទទួលបន្ទុក៖ '+esc(nameOf(e.auditor))+
-          (e.partner?' · ដៃគូ៖ '+esc(nameOf(e.partner)):'')+'</div></div>':'');
+          (e.partner?' · '+esc(relOf(e.partner)||'អ្នករួមការងារ')+'៖ '+esc(nameOf(e.partner)):'')+'</div></div>':'');
       c.appendChild(bd);
       var ac=el('div','acts');
       ac.appendChild(btn('+ កំណត់កាលវិភាគចុះទីតាំង','key',function(){ visitForm(null,null,'visit',e) }));
@@ -1516,6 +1538,19 @@ function visitForm(r, seedDay, forceKind, seedEnt, asNew){
     }
     pasteBox.onclick=function(){ fileIn.click() };
     fileIn.onchange=function(){ if(fileIn.files[0]) shrinkImage(fileIn.files[0], setShot) };
+    function grabPaste(ev){
+      var it=(ev.clipboardData||{}).items||[];
+      for(var i=0;i<it.length;i++) if(it[i].type.indexOf('image')===0){
+        ev.preventDefault(); shrinkImage(it[i].getAsFile(), setShot);
+        toast('បានបិទភ្ជាប់រូបភាព'); return;
+      }
+    }
+    document.addEventListener('paste', grabPaste);
+    $('#sheetClose').addEventListener('click', function once(){
+      document.removeEventListener('paste', grabPaste);
+      $('#sheetClose').removeEventListener('click', once);
+    });
+    pasteBox.textContent='ចុច Ctrl+V ដើម្បីបិទភ្ជាប់រូប (ឬចុចត្រង់នេះដើម្បីជ្រើសរូប)';
     pasteBox.addEventListener('paste',function(ev){
       var it=(ev.clipboardData||{}).items||[];
       for(var i=0;i<it.length;i++) if(it[i].type.indexOf('image')===0){
@@ -1546,11 +1581,11 @@ function visitForm(r, seedDay, forceKind, seedEnt, asNew){
     function matchEnts(q){
       q=String(q||'').trim().toLowerCase();
       var all=entSorted().filter(function(e){ return ownsEnt(e,fowner) });
-      if(!q) return all.slice(0,8);
+      if(!q) return all;
       return all.filter(function(e){
         return String(e.nameLatin||'').toLowerCase().indexOf(q)>=0 ||
                String(e.tin||'').toLowerCase().indexOf(q)>=0;
-      }).slice(0,8);
+      });
     }
     function drawSug(){
       var hits=matchEnts(find.value); sug.innerHTML='';
@@ -1610,7 +1645,7 @@ function visitForm(r, seedDay, forceKind, seedEnt, asNew){
     pSel.appendChild(el('option',null,'— គ្មាន —')).value='';
     TEAM.forEach(function(u){ var o=el('option',null,u.name); o.value=u.email; pSel.appendChild(o) });
     pSel.value=r.partner||'';
-    field(b,'ដៃគូរួមការងារ (សហគ្រាសនេះ)',pSel);
+    field(b,'អ្នករួមការងារ (សហគ្រាសនេះ)',pSel);
 
     var resp=el('select');
     RESP.forEach(function(p){ var o=el('option',null,p[1]); o.value=p[0]; resp.appendChild(o) });
@@ -1798,28 +1833,36 @@ function dailyForm(edit, seedDay){
   var r = edit ? JSON.parse(JSON.stringify(edit))
               : {id:uid(), type:'daily', email:S.me.email, status:'noted', createdAt:new Date().toISOString()};
   openSheet(isNew?'របាយការណ៍ប្រចាំថ្ងៃ':'កែរបាយការណ៍ប្រចាំថ្ងៃ', function(b){
+    var fowner = (S.owner===undefined?S.me.email:S.owner);
+    var oSel=el('select');
+    [['','ទាំងអស់']].concat(TEAM.map(function(u){ return [u.email, u.email===S.me.email?'របស់ខ្ញុំ':u.name] }))
+      .forEach(function(pp){ var o=el('option',null,pp[1]); o.value=pp[0]; oSel.appendChild(o) });
+    oSel.value=fowner;
+    field(b,'បង្ហាញសហគ្រាសរបស់',oSel);
+
     var eSel=el('select');
     function fillEnts(){
       eSel.innerHTML='';
       eSel.appendChild(el('option',null,'— ជ្រើសរើសសហគ្រាស —')).value='';
-      entSorted().forEach(function(e){
-        var mine=(e.auditor===S.me.email);
-        var o=el('option',null,(mine?'':'[ដៃគូ] ')+(e.nameLatin||'')+(e.tin?' · '+e.tin:''));
+      entSorted().filter(function(e){ return ownsEnt(e,fowner) }).forEach(function(e){
+        var rel=relOfEnt(e);
+        var o=el('option',null,(rel?'['+rel+'] ':'')+(e.nameLatin||'')+(e.tin?' · '+e.tin:''));
         o.value=e.id; eSel.appendChild(o);
       });
       eSel.value=r.entId||'';
     }
     fillEnts();
+    oSel.onchange=function(){ fowner=oSel.value; fillEnts(); drawActs() };
     field(b,'សហគ្រាស',eSel);
 
     var aSel=el('select');
     function drawActs(){
       var e=null;
       for(var i=0;i<S.ents.length;i++) if(S.ents[i].id===eSel.value) e=S.ents[i];
-      var partner = !!(e && e.auditor && e.auditor!==S.me.email);
+      var rel = relOfEnt(e);
       aSel.innerHTML='';
       ACTS.forEach(function(t){
-        var lab = partner ? (t+'ជាមួយដៃគូ') : t;
+        var lab = rel ? (t+'ជាមួយ'+rel) : t;
         var o=el('option',null,lab); o.value=lab; aSel.appendChild(o);
       });
       if(r.activity){
