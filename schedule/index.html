@@ -91,6 +91,11 @@ details.hist li{margin-bottom:5px}
 .sec{display:flex;align-items:baseline;gap:9px;margin:4px 2px 11px}
 .sec h2{font-size:13.5px}
 .sec .n{font-size:12px;color:var(--mute)}
+.areas{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px;-webkit-overflow-scrolling:touch}
+.areas button{flex:none;padding:6px 12px;border:1px solid var(--line);background:#fff;border-radius:14px;
+  font-size:12.5px;color:var(--slate);white-space:nowrap}
+.areas button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.grouphd{font-size:12.5px;color:var(--slate);margin:14px 2px 8px;padding-bottom:5px;border-bottom:1px solid var(--line)}
 .arclink{display:block;width:100%;padding:12px;color:var(--slate);font-size:13px;text-align:center;
   border:1px solid var(--line);background:#fff;border-radius:3px;margin-top:4px}
 .add{width:100%;padding:12px;border:1px dashed #B6C7D6;border-radius:3px;background:#fff;color:var(--ink2);font-size:14px;margin-bottom:16px}
@@ -130,6 +135,11 @@ textarea{min-height:74px;resize:vertical;line-height:1.7}
 .sug b{display:block;font-family:system-ui,-apple-system,sans-serif;font-size:13.5px;font-weight:600;line-height:1.5}
 .sug span{display:block;color:var(--mute);font-size:12px}
 .sug .none{padding:10px 11px;color:var(--mute);font-size:12.5px}
+.picked{display:flex;flex-wrap:wrap;gap:6px;margin:-6px 0 4px}
+.picked span{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--line);
+  border-radius:14px;padding:4px 6px 4px 12px;font-size:12.5px}
+.picked span.none{border:0;background:transparent;color:var(--mute);padding-left:2px}
+.picked span button{color:var(--seal);font-size:13px;padding:0 4px}
 .chip.c-wait{color:var(--amber);border-color:#E2CFA6;background:#FBF6EC}
 .chip.c-agree{color:var(--go);border-color:#B3D2C6;background:#F0F7F4}
 .chip.c-nore{color:var(--seal);border-color:#E3BDB8;background:#FBF2F1}
@@ -207,7 +217,7 @@ table.rp{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
 table.rp th,table.rp td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
 #view h2{margin:18px 0 9px}
 #view h2:first-child{margin-top:0}
-table.rp th{background:#F2F6F9;font-weight:500;color:var(--ink2)}
+table.rp th{background:#F2F6F9;font-weight:500;color:var(--ink2);text-align:center;vertical-align:middle}
 table.rp td.n,table.rp th.n{text-align:right;font-family:system-ui,-apple-system,sans-serif}
 .sum{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-bottom:16px}
 .sum div{background:#fff;border:1px solid var(--line);padding:11px 12px}
@@ -310,7 +320,7 @@ var ADMIN_EMAIL = 'rathasochivin@gmail.com';
 var TEAM = [
   {email:'rathasochivin@gmail.com', name:'Ratha Sochivin', role:'admin'},
   {email:'khoeundenit@gmail.com',   name:'Khoeun Denit',   role:'user'},
-  {email:'pichpanhapang@gmail.com', name:'Pich Panhapang', role:'user'}
+  {email:'pichpanhapang@gmail.com', name:'Pang PichPanha', role:'user'}
 ];
 var KHM = ['មករា','កុម្ភៈ','មីនា','មេសា','ឧសភា','មិថុនា','កក្កដា','សីហា','កញ្ញា','តុលា','វិច្ឆិកា','ធ្នូ'];
 var DAYS = ['អាទិត្យ','ច័ន្ទ','អង្គារ','ពុធ','ព្រហស្បតិ៍','សុក្រ','សៅរ៍'];
@@ -318,6 +328,17 @@ var MEET_VENUE = 'GDT TOWER';   /* ទីកន្លែងណាត់ជួប
 var MEET_FLOOR = '3';           /* ជាន់ទីលំនាំដើម — កែបានក្នុងទម្រង់ */
 var RESP = [['waiting','⏳ រង់ចាំការឆ្លើយតប'],['agree','✅ សហគ្រាសយល់ស្រប'],['noreply','📵 មិនអាចទាក់ទងបាន']];
 var NOTICE = [['','មិនទាន់ផ្ញើលិខិត'],['telegram','Telegram'],['email','Email ផ្លូវការ'],['pickup','សហគ្រាសមកទទួលផ្ទាល់'],['post','ប្រៃសណីយ៍']];
+/* ទាញ ខណ្ឌ / ស្រុក / ខេត្ត ចេញពីអាសយដ្ឋាន */
+function guessArea(addr){
+  var t=String(addr||'').replace(/\s+/g,' ');
+  var m=t.match(/(ខណ្ឌ|ស្រុក|ក្រុង)\s*([^\s,،]+)/);
+  if(m) return m[1]+' '+m[2];
+  m=t.match(/ខេត្ត\s*([^\s,،]+)/);
+  if(m) return 'ខេត្ត '+m[1];
+  if(/ភ្នំពេញ/.test(t)) return 'រាជធានីភ្នំពេញ';
+  return '';
+}
+function areaOf(r){ return (r.area||'').trim() || guessArea(r.address) || 'មិនទាន់កំណត់តំបន់' }
 function labOf(arr,v){ for(var i=0;i<arr.length;i++) if(arr[i][0]===(v||'')) return arr[i][1]; return v||'' }
 var REASONS = ['សវនករមានធុរៈ','សហគ្រាសសុំលើកពេល','ឯកសារមិនទាន់រួចរាល់','បញ្ហាធនធាន/ការធ្វើដំណើរ','ហេតុផលផ្សេងៗ'];
 var LSK = 'rsc_sched_';
@@ -436,8 +457,30 @@ function renderVisits(root,kind){
   var arc=all.filter(function(r){ return r.archived });
   var list=all.filter(function(r){ return S.showArc ? r.archived : !r.archived })
               .sort(function(a,b){return sortKey(a,kind)-sortKey(b,kind)});
+
+  if(!meet && list.length){
+    var counts={}, order=[];
+    list.forEach(function(r){ var a=areaOf(r); if(!counts[a]){counts[a]=0; order.push(a)} counts[a]++ });
+    order.sort(function(a,b){ return counts[b]-counts[a] || a.localeCompare(b) });
+    if(order.length>1 || S.area){
+      var chips=el('div','areas');
+      var allb=el('button',null,'ទាំងអស់ ('+list.length+')');
+      allb.setAttribute('aria-pressed', S.area?'false':'true');
+      allb.onclick=function(){ S.area=''; render() };
+      chips.appendChild(allb);
+      order.forEach(function(a){
+        var x=el('button',null,a+' ('+counts[a]+')');
+        x.setAttribute('aria-pressed', S.area===a?'true':'false');
+        x.onclick=function(){ S.area = (S.area===a)?'':a; render() };
+        chips.appendChild(x);
+      });
+      root.appendChild(chips);
+    }
+    if(S.area) list=list.filter(function(r){ return areaOf(r)===S.area });
+  }
   var now=Date.now();
   var up=list.filter(function(r){return r.status!=='cancelled' && sortKey(r,kind)>=now-864e5});
+  if(!meet && !S.area) up.sort(function(a,b){ return areaOf(a).localeCompare(areaOf(b)) || sortKey(a,kind)-sortKey(b,kind) });
   var past=list.filter(function(r){return up.indexOf(r)<0});
 
   section(root, S.showArc?'ប័ណ្ណសារ — សវនកម្មបានបញ្ចប់':'ដែលជិតមកដល់', up.length);
@@ -445,7 +488,14 @@ function renderVisits(root,kind){
     meet?'មិនទាន់មានការប្រជុំ':'មិនទាន់មានការចុះទីតាំង',
     meet?('ចុច «បន្ថែមការប្រជុំសហគ្រាសថ្មី» ដើម្បីកត់ត្រាថ្ងៃ ម៉ោង និងបន្ទប់នៅ '+MEET_VENUE+'។')
         :'ចុច «បន្ថែមការចុះទីតាំងថ្មី» ដើម្បីកត់ត្រាថ្ងៃ ម៉ោង និងអាសយដ្ឋានសហគ្រាស។'));
-  up.forEach(function(r){ root.appendChild(visitCard(r)) });
+  var lastA=null;
+  up.forEach(function(r){
+    if(!meet && !S.area){
+      var a=areaOf(r);
+      if(a!==lastA){ root.appendChild(el('div','grouphd','📍 '+a)); lastA=a }
+    }
+    root.appendChild(visitCard(r));
+  });
 
   if(past.length){ section(root,'កន្លងផុត / បានបញ្ចប់', past.length); past.reverse().forEach(function(r){ root.appendChild(visitCard(r)) }) }
 
@@ -803,23 +853,169 @@ function renderReport(root){
 
   var bar=el('div','acts noprint'); bar.style.border='0'; bar.style.background='transparent'; bar.style.padding='6px 0 0';
   bar.appendChild(btn('🖨 ព្រីន / រក្សាជា PDF','key',function(){ window.print() }));
-  bar.appendChild(btn('⬇️ កាលវិភាគ (CSV)','',function(){ csvVisits(visits) }));
-  bar.appendChild(btn('⬇️ សំណើផ្ទៃក្នុង (CSV)','',function(){ csvInternal(intern) }));
+  bar.appendChild(btn('⬇️ ទាញជា Excel','',function(){
+    xlsxDownload('kalvibheak_'+S.rp.from+'_'+S.rp.to+'.xlsx', reportSheets(visits, intern));
+  }));
   root.appendChild(bar);
 }
-function csvCell(v){ return '"'+String(v==null?'':v).replace(/"/g,'""')+'"' }
-function csvDown(name,rows){
-  var txt='\uFEFF'+rows.map(function(r){ return r.map(csvCell).join(',') }).join('\r\n');
+/* ============ .xlsx writer ជាមួយពុម្ពអក្សរខ្មែរ ============ */
+var __crcT=null;
+function crc32_(u8){
+  if(!__crcT){ __crcT=new Int32Array(256);
+    for(var n=0;n<256;n++){ var c=n; for(var k=0;k<8;k++) c = (c&1)? (0xEDB88320^(c>>>1)) : (c>>>1); __crcT[n]=c }
+  }
+  var c=-1; for(var i=0;i<u8.length;i++) c=(c>>>8)^__crcT[(c^u8[i])&255];
+  return (c^-1)>>>0;
+}
+function utf8_(str){
+  if(typeof TextEncoder==='function') return new TextEncoder().encode(str);
+  var s=unescape(encodeURIComponent(str)), a=new Uint8Array(s.length);
+  for(var i=0;i<s.length;i++) a[i]=s.charCodeAt(i);
+  return a;
+}
+function zipStore_(files){
+  var u16=function(n){return [n&255,(n>>8)&255]}, u32=function(n){return [n&255,(n>>8)&255,(n>>16)&255,(n>>>24)&255]};
+  var parts=[], cent=[], off=0;
+  files.forEach(function(f){
+    var nb=utf8_(f.name), crc=crc32_(f.data), len=f.data.length;
+    var lh=[0x50,0x4b,0x03,0x04].concat(u16(20),u16(0),u16(0),u16(0),u16(0),u32(crc),u32(len),u32(len),u16(nb.length),u16(0));
+    parts.push(new Uint8Array(lh), nb, f.data);
+    cent.push({nb:nb,crc:crc,len:len,off:off});
+    off += lh.length + nb.length + len;
+  });
+  var cstart=off;
+  cent.forEach(function(c){
+    var ch=[0x50,0x4b,0x01,0x02].concat(u16(20),u16(20),u16(0),u16(0),u16(0),u16(0),u32(c.crc),u32(c.len),u32(c.len),
+      u16(c.nb.length),u16(0),u16(0),u16(0),u16(0),u32(32),u32(c.off));
+    parts.push(new Uint8Array(ch), c.nb);
+    off += ch.length + c.nb.length;
+  });
+  parts.push(new Uint8Array([0x50,0x4b,0x05,0x06].concat(u16(0),u16(0),u16(cent.length),u16(cent.length),u32(off-cstart),u32(cstart),u16(0))));
+  var total=0; parts.forEach(function(p){ total+=p.length });
+  var out=new Uint8Array(total), at=0;
+  parts.forEach(function(p){ out.set(p,at); at+=p.length });
+  return out;
+}
+function xe_(v){ return String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') }
+function colName_(n){ var s=''; n++; while(n>0){ var m=(n-1)%26; s=String.fromCharCode(65+m)+s; n=(n-1-m)/26 } return s }
+/** ទទឹងជួរឈរ ៖ អក្សរខ្មែរធំជាងឡាតាំង */
+function textW_(v){
+  var s=String(v==null?'':v), w=0;
+  for(var i=0;i<s.length;i++) w += (s.charCodeAt(i)>0x1780 && s.charCodeAt(i)<0x17FF) ? 1.45 : 1;
+  return w;
+}
+/** sheets = [{name, rows:[[...]]}] — ជួរទី ១ ជាក្បាលតារាង */
+function xlsxBytes(sheets){
+  var files=[];
+  function add(name,str){ files.push({name:name, data: utf8_(str)}) }
+
+  add('[Content_Types].xml',
+    '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
+    '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'+
+    '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'+
+    '<Default Extension="xml" ContentType="application/xml"/>'+
+    '<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>'+
+    '<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>'+
+    sheets.map(function(s,i){ return '<Override PartName="/xl/worksheets/sheet'+(i+1)+'.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>' }).join('')+
+    '</Types>');
+
+  add('_rels/.rels',
+    '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
+    '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'+
+    '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>'+
+    '</Relationships>');
+
+  add('xl/workbook.xml',
+    '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
+    '<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>'+
+    sheets.map(function(s,i){ return '<sheet name="'+xe_(s.name)+'" sheetId="'+(i+1)+'" r:id="rId'+(i+1)+'"/>' }).join('')+
+    '</sheets></workbook>');
+
+  add('xl/_rels/workbook.xml.rels',
+    '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
+    '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'+
+    sheets.map(function(s,i){ return '<Relationship Id="rId'+(i+1)+'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet'+(i+1)+'.xml"/>' }).join('')+
+    '<Relationship Id="rId'+(sheets.length+1)+'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>'+
+    '</Relationships>');
+
+  /* fonts: 0 = Siemreap · 1 = Muol Light (ក្បាលតារាង) */
+  add('xl/styles.xml',
+    '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
+    '<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'+
+    '<fonts count="3">'+
+      '<font><sz val="10"/><name val="Khmer OS Siemreap"/></font>'+
+      '<font><b/><sz val="10"/><color rgb="FF12283C"/><name val="Khmer OS Muol Light"/></font>'+
+      '<font><sz val="14"/><color rgb="FF12283C"/><name val="Khmer OS Muol Light"/></font>'+
+    '</fonts>'+
+    '<fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill>'+
+      '<fill><patternFill patternType="solid"><fgColor rgb="FFEDF1F4"/><bgColor indexed="64"/></patternFill></fill></fills>'+
+    '<borders count="2"><border><left/><right/><top/><bottom/><diagonal/></border>'+
+      '<border><left style="thin"><color rgb="FFB9C6D2"/></left><right style="thin"><color rgb="FFB9C6D2"/></right>'+
+      '<top style="thin"><color rgb="FFB9C6D2"/></top><bottom style="thin"><color rgb="FFB9C6D2"/></bottom><diagonal/></border></borders>'+
+    '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>'+
+    '<cellXfs count="5">'+
+      '<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>'+                                                                   /* 0 ធម្មតា */
+      '<xf numFmtId="0" fontId="1" fillId="2" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1">'+
+        '<alignment horizontal="center" vertical="center" wrapText="1"/></xf>'+                                                          /* 1 ក្បាល */
+      '<xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyFont="1" applyBorder="1" applyAlignment="1">'+
+        '<alignment vertical="top" wrapText="1"/></xf>'+                                                                                 /* 2 អត្ថបទ */
+      '<xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyFont="1" applyBorder="1" applyAlignment="1">'+
+        '<alignment horizontal="right" vertical="top"/></xf>'+                                                                           /* 3 លេខ */
+      '<xf numFmtId="0" fontId="2" fillId="0" borderId="0" xfId="0" applyFont="1"/>'+                                                    /* 4 ចំណងជើង */
+    '</cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>');
+
+  sheets.forEach(function(sh,si){
+    var rows=sh.rows||[], nCol=0;
+    rows.forEach(function(r){ if(r.length>nCol) nCol=r.length });
+    var w=[];
+    for(var c=0;c<nCol;c++){
+      var mx=8;
+      for(var i=0;i<rows.length;i++){
+        var v=textW_(rows[i][c]);
+        if(i===0) v+=2;
+        if(v>mx) mx=v;
+      }
+      w.push(Math.min(46, Math.max(9, mx+2)));
+    }
+    var xml='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
+      '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'+
+      '<sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>'+
+      '<sheetFormatPr defaultRowHeight="16"/>'+
+      '<cols>'+w.map(function(x,i){ return '<col min="'+(i+1)+'" max="'+(i+1)+'" width="'+x.toFixed(1)+'" customWidth="1"/>' }).join('')+'</cols>'+
+      '<sheetData>';
+    rows.forEach(function(row,ri){
+      xml += '<row r="'+(ri+1)+'"'+(ri===0?' ht="30" customHeight="1"':'')+'>';
+      for(var c=0;c<row.length;c++){
+        var v=row[c]; if(v===undefined||v===null||v==='') continue;
+        var ref=colName_(c)+(ri+1);
+        var isNum = ri>0 && typeof v!=='boolean' && String(v).trim()!=='' && !isNaN(Number(String(v).replace(/,/g,''))) && /^[-0-9.,]+$/.test(String(v).trim());
+        if(ri===0) xml += '<c r="'+ref+'" s="1" t="inlineStr"><is><t xml:space="preserve">'+xe_(v)+'</t></is></c>';
+        else if(isNum) xml += '<c r="'+ref+'" s="3"><v>'+Number(String(v).replace(/,/g,''))+'</v></c>';
+        else xml += '<c r="'+ref+'" s="2" t="inlineStr"><is><t xml:space="preserve">'+xe_(v)+'</t></is></c>';
+      }
+      xml += '</row>';
+    });
+    xml += '</sheetData><autoFilter ref="A1:'+colName_(Math.max(nCol-1,0))+Math.max(rows.length,1)+'"/></worksheet>';
+    add('xl/worksheets/sheet'+(si+1)+'.xml', xml);
+  });
+
+  return zipStore_(files);
+}
+
+function xlsxDownload(name, sheets){
+  var bytes=xlsxBytes(sheets);
   var a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob([txt],{type:'text/csv;charset=utf-8'}));
+  a.href=URL.createObjectURL(new Blob([bytes],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}));
   a.download=name; document.body.appendChild(a); a.click();
   setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove() },1500);
   toast('ទាញយករួច — បើកដោយ Excel');
 }
-function csvVisits(list){
-  var rows=[['ឈ្មោះសហគ្រាស','លេខអតប','អាសយដ្ឋាន','ទីតាំងបន្ថែម','ចុះទីតាំង','ណាត់ជួប','ទីកន្លែងណាត់ជួប','អ្នកតំណាង','លេខទូរសព្ទ','សវនករ','ស្ថានភាព','ការឆ្លើយតប','លិខិតជូនដំណឹង','ថ្ងៃផ្ញើលិខិត','មូលហេតុប្តូរពេល','កំណត់សម្គាល់','តំណផែនទី']];
-  list.forEach(function(r){
-    rows.push([r.nameLatin||'', r.tin||'', r.address||'',
+function reportSheets(visits, intern){
+  var v=[['ឈ្មោះសហគ្រាស','លេខអតប','តំបន់','អាសយដ្ឋាន','ទីតាំងបន្ថែម','ចុះទីតាំង','ណាត់ជួប','ទីកន្លែងណាត់ជួប',
+          'អ្នកតំណាង','លេខទូរសព្ទ','សវនករ','ស្ថានភាព','ការឆ្លើយតប','លិខិតជូនដំណឹង','ថ្ងៃផ្ញើលិខិត',
+          'មូលហេតុប្តូរពេល','កំណត់សម្គាល់','តំណផែនទី']];
+  visits.forEach(function(r){
+    v.push([r.nameLatin||'', r.tin||'', areaOf(r), r.address||'',
       (r.extras||[]).map(function(x){return (x.label||'')+': '+(x.address||'')}).join(' | '),
       r.visitAt?fmtD(r.visitAt)+' '+fmtT(r.visitAt):'', r.meetAt?fmtD(r.meetAt)+' '+fmtT(r.meetAt):'',
       r.meetAt?meetPlace(r):'', r.contactName||'', r.contactPhone||'',
@@ -827,16 +1023,21 @@ function csvVisits(list){
       labOf(RESP,r.resp||'waiting'), labOf(NOTICE,r.noticeVia), r.noticeDate?fmtD(r.noticeDate+'T00:00'):'',
       r.lastReason||'', r.note||'', r.mapLink||'']);
   });
-  csvDown('kalvibheak_'+S.rp.from+'_'+S.rp.to+'.csv', rows);
-}
-function csvInternal(list){
-  var rows=[['សមាជិក','ប្រភេទ','ចាប់ពី','ដល់','ចំនួនថ្ងៃ','ម៉ោងមកដល់','មូលហេតុ','ជូនដំណឹងថ្ងៃ']];
-  list.forEach(function(r){
-    rows.push([nameOf(r.email), r.type==='late'?'សុំយឺត':'សុំច្បាប់', fmtD(r.fromAt),
+  var i=[['សមាជិក','ប្រភេទ','ចាប់ពី','ដល់','ចំនួនថ្ងៃ','ម៉ោងមកដល់','មូលហេតុ','ជូនដំណឹងថ្ងៃ']];
+  intern.forEach(function(r){
+    i.push([nameOf(r.email), r.type==='late'?'សុំយឺត':'សុំច្បាប់', fmtD(r.fromAt),
       r.type==='leave'?fmtD(r.toAt):'', r.type==='leave'?(r.days||1):'', r.type==='late'?fmtT(r.fromAt):'',
       r.reason||'', r.createdAt?fmtD(r.createdAt):'']);
   });
-  csvDown('phteykhnong_'+S.rp.from+'_'+S.rp.to+'.csv', rows);
+  var per=[['សវនករ','ចុះទីតាំង','ណាត់ជួប','ថ្ងៃច្បាប់','សុំយឺត']];
+  TEAM.forEach(function(u){
+    per.push([u.name,
+      visits.filter(function(r){return (r.auditors||[]).indexOf(u.email)>=0 && r.visitAt}).length,
+      visits.filter(function(r){return (r.auditors||[]).indexOf(u.email)>=0 && r.meetAt}).length,
+      intern.filter(function(r){return r.email===u.email && r.type==='leave'}).reduce(function(a,r){return a+(Number(r.days)||1)},0),
+      intern.filter(function(r){return r.email===u.email && r.type==='late'}).length]);
+  });
+  return [{name:'កាលវិភាគ',rows:v},{name:'ផ្ទៃក្នុង',rows:i},{name:'តាមសវនករ',rows:per}];
 }
 
 /* ---------- 4. settings ---------- */
@@ -955,7 +1156,19 @@ function visitForm(r, seedDay, forceKind){
     /* ---- ផ្នែកចុះទីតាំង ---- */
     var siteBox=el('div'); b.appendChild(siteBox);
     var addr=field(siteBox,'អាសយដ្ឋានសហគ្រាស', textarea(r.address,'ផ្ទះ… ផ្លូវ… សង្កាត់… ខណ្ឌ… រាជធានីភ្នំពេញ'));
-    var map =field(siteBox,'តំណភ្ជាប់ផែនទី (Google Maps)', input('url',r.mapLink,'https://maps.app.goo.gl/…'),'បើកកម្មវិធីផែនទី → Share → Copy link → បិទភ្ជាប់ទីនេះ');
+    var map =field(siteBox,'តំណភ្ជាប់ផែនទី (Google Maps)', input('url',r.mapLink,'https://maps.app.goo.gl/…'));
+    var mopen=el('button','mini','🗺 រកក្នុង Google Maps');
+    mopen.onclick=function(){
+      var q=(name.value||'')+' '+(addr.value||'');
+      if(!q.trim()) return toast('សូមបញ្ចូលឈ្មោះ ឬអាសយដ្ឋានជាមុនសិន');
+      window.open('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q.trim()),'_blank','noopener');
+    };
+    siteBox.appendChild(mopen);
+    siteBox.appendChild(el('div','hint','ចុចប៊ូតុងខាងលើ វានឹងបើក Google Maps ដោយបំពេញឈ្មោះសហគ្រាសជូនស្រាប់។ ពេលរកឃើញ → Share → Copy link → បិទភ្ជាប់ក្នុងប្រអប់ខាងលើ។'));
+    siteBox.appendChild(el('div','f'));
+
+    var area=field(siteBox,'តំបន់ (ខណ្ឌ / ស្រុក / ខេត្ត)', input('text',r.area||'','ខណ្ឌចំការមន'),'ទុកទទេ ក៏បាន — កម្មវិធីទាញចេញពីអាសយដ្ឋានឯង');
+    addr.addEventListener('blur',function(){ if(!area.value.trim()) area.value=guessArea(addr.value) });
     siteBox.appendChild(el('label',null,'ទីតាំងបន្ថែម (ឃ្លាំង · រោងចក្រ · សាខា)'));
     var wrap=el('div'); siteBox.appendChild(wrap);
     function drawExtras(){
@@ -1037,15 +1250,29 @@ function visitForm(r, seedDay, forceKind){
     }
     name.onchange=syncFromTyped; tin.onchange=syncFromTyped;
 
-    b.appendChild(el('label',null,'សវនករទទួលបន្ទុក'));
-    var picks={};
-    TEAM.forEach(function(u){
-      var row=el('div','kv');
-      var lb=el('label',null,u.name); lb.style.margin='0';
-      var cb=el('input'); cb.type='checkbox'; cb.checked=(r.auditors||[]).indexOf(u.email)>=0; cb.style.width='20px'; cb.style.height='20px';
-      picks[u.email]=cb; row.appendChild(lb); row.appendChild(cb); b.appendChild(row);
-    });
-    b.appendChild(el('div','f'));
+    var chosen=(r.auditors||[]).slice();
+    var aSel=el('select');
+    var aChips=el('div','picked');
+    function drawAud(){
+      aSel.innerHTML='';
+      var o0=el('option',null,'— ជ្រើសរើសសវនករ —'); o0.value=''; aSel.appendChild(o0);
+      TEAM.forEach(function(u){
+        if(chosen.indexOf(u.email)>=0) return;
+        var o=el('option',null,u.name); o.value=u.email; aSel.appendChild(o);
+      });
+      aSel.value='';
+      aChips.innerHTML='';
+      if(!chosen.length) aChips.appendChild(el('span','none','មិនទាន់ជ្រើសរើស'));
+      chosen.forEach(function(em,ix){
+        var t=el('span',null,nameOf(em));
+        var x=el('button',null,'✕'); x.onclick=function(){ chosen.splice(ix,1); drawAud() };
+        t.appendChild(x); aChips.appendChild(t);
+      });
+    }
+    aSel.onchange=function(){ if(aSel.value){ chosen.push(aSel.value); drawAud() } };
+    field(b,'សវនករទទួលបន្ទុក',aSel);
+    b.appendChild(aChips); b.appendChild(el('div','f'));
+    drawAud();
     var two2=el('div','two'), cnW=el('div'), cpW=el('div');
     two2.appendChild(cnW); two2.appendChild(cpW); b.appendChild(two2);
     var cname=field(cnW,'អ្នកតំណាងសហគ្រាស', input('text',r.contactName,'ឈ្មោះ'));
@@ -1075,8 +1302,9 @@ function visitForm(r, seedDay, forceKind){
       r.meetRoom  = showMeet ? room.value.trim() : '';
       r.meetFloor = showMeet ? (floor.value.trim()||MEET_FLOOR) : '';
       r.contactName=cname.value.trim(); r.contactPhone=cphone.value.trim();
+      r.area = (area.value.trim() || guessArea(addr.value));
       r.resp=resp.value; r.noticeVia=via.value; r.noticeDate=ndate.value;
-      r.auditors=Object.keys(picks).filter(function(e){return picks[e].checked});
+      r.auditors=chosen.slice();
       r.extras=(r.extras||[]).filter(function(x){return (x.address||'').trim()||(x.label||'').trim()});
       if(!r.visitAt && !r.meetAt) return toast('សូមកំណត់ថ្ងៃ និងម៉ោង');
       r.updatedAt=new Date().toISOString();
