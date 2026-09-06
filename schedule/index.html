@@ -159,14 +159,16 @@ textarea{min-height:74px;resize:vertical;line-height:1.7}
 #login .mark{width:46px;height:46px;margin-bottom:20px;display:block}
 #login h1{font-family:system-ui,-apple-system,sans-serif;font-size:26px;font-weight:600;color:#fff;
   letter-spacing:-.4px;line-height:1.25;margin-bottom:5px}
-#login p.sub{color:#8FA8BE;font-size:13.5px;margin:0 0 26px;line-height:1.6}
+#login h1{margin-bottom:26px}
 #login label{color:#8FA8BE;font-size:12px;letter-spacing:.2px;margin-bottom:6px}
 #login .fld{position:relative;margin-bottom:14px}
 #login input{width:100%;height:50px;padding:0 14px;background:#1A3450;border:1px solid #2E4E6C;
   border-radius:4px;color:#fff;font-size:16px;line-height:50px;-webkit-appearance:none}
 #login input::placeholder{color:#6C89A5}
 #login input:focus{outline:none;border-color:#6FA8D0;background:#1E3B59}
-#login .peek{position:absolute;right:0;top:26px;height:50px;width:52px;color:#8FA8BE;font-size:12.5px}
+#login .peek{position:absolute;right:2px;top:0;height:50px;padding:0 12px;color:#8FA8BE;font-size:12.5px;
+  font-family:system-ui,-apple-system,sans-serif}
+#login input#loginPin{padding-right:64px}
 #login .save{height:50px;width:100%;background:#fff;color:var(--ink);border-radius:4px;
   font-size:15.5px;font-weight:600;margin-top:6px;padding:0}
 #login .save[disabled]{opacity:.55}
@@ -218,7 +220,8 @@ table.rp th,table.rp td{border:1px solid var(--line);padding:6px 8px;text-align:
 #view h2{margin:18px 0 9px}
 #view h2:first-child{margin-top:0}
 table.rp th{background:#F2F6F9;font-weight:500;color:var(--ink2);text-align:center;vertical-align:middle}
-table.rp td.n,table.rp th.n{text-align:right;font-family:system-ui,-apple-system,sans-serif}
+table.rp td.n{text-align:right}
+table.rp td.n,table.rp th.n{font-family:system-ui,-apple-system,sans-serif}
 .sum{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-bottom:16px}
 .sum div{background:#fff;border:1px solid var(--line);padding:11px 12px}
 .sum b{display:block;font-family:system-ui,-apple-system,sans-serif;font-size:23px;font-weight:700;line-height:1.2}
@@ -278,7 +281,6 @@ table.rp td.n,table.rp th.n{text-align:right;font-family:system-ui,-apple-system
     <rect x="23" y="35" width="7" height="5" rx="1" fill="#C8D5DF"/>
   </svg>
   <h1>Audit Schedule</h1>
-  <p class="sub">កាលវិភាគចុះទីតាំង ណាត់ជួបសហគ្រាស និងការជូនដំណឹងផ្ទៃក្នុង</p>
 
   <label for="loginEmail">Email</label>
   <div class="fld">
@@ -288,7 +290,7 @@ table.rp td.n,table.rp th.n{text-align:right;font-family:system-ui,-apple-system
   <label for="loginPin">Password</label>
   <div class="fld">
     <input type="password" id="loginPin" autocomplete="current-password" placeholder="••••">
-    <button class="peek" id="loginPeek" type="button">បង្ហាញ</button>
+    <button class="peek" id="loginPeek" type="button">Show</button>
   </div>
 
   <button class="save" id="loginGo">Sign in</button>
@@ -370,13 +372,29 @@ function api(fn,args){
   var url=apiUrl();
   if(!url) return Promise.reject(new Error('មិនទាន់ភ្ជាប់ម៉ាស៊ីនមេ'));
   if(typeof fetch!=='function') return Promise.reject(new Error('កម្មវិធីរុករកចាស់ពេក សូមប្រើ Chrome ឬ Safari ជំនាន់ថ្មី'));
+  var ctl = (typeof AbortController==='function') ? new AbortController() : null;
+  var timer = setTimeout(function(){ if(ctl) ctl.abort() }, 25000);
   return fetch(url,{
     method:'POST', redirect:'follow',
     headers:{'Content-Type':'text/plain;charset=utf-8'},   /* simple request — no CORS preflight */
-    body:JSON.stringify({fn:fn,args:args||[]})
-  }).then(function(r){return r.json()}).then(function(j){
-    if(j && j.ok) return j.data;
-    throw new Error((j&&j.error)||'ម៉ាស៊ីនមេមិនឆ្លើយតប');
+    body:JSON.stringify({fn:fn,args:args||[]}),
+    signal: ctl ? ctl.signal : undefined
+  }).then(function(r){
+    return r.text().then(function(txt){ return {status:r.status, txt:txt} });
+  }).then(function(o){
+    clearTimeout(timer);
+    var j=null; try{ j=JSON.parse(o.txt) }catch(e){}
+    if(!j){
+      if(o.status>=400) throw new Error('ម៉ាស៊ីនមេឆ្លើយតបកូដ '+o.status);
+      throw new Error('ម៉ាស៊ីនមេមិនបានឆ្លើយជាទិន្នន័យ — ពិនិត្យ Deploy ៖ Execute as = Me និង Who has access = Anyone');
+    }
+    if(j.ok) return j.data;
+    throw new Error(j.error||'ម៉ាស៊ីនមេមិនឆ្លើយតប');
+  }).catch(function(e){
+    clearTimeout(timer);
+    if(e && (e.name==='AbortError'||/aborted/i.test(e.message||''))) throw new Error('អស់ពេលរង់ចាំម៉ាស៊ីនមេ ២៥ វិនាទី — ពិនិត្យអ៊ីនធឺណិត និង URL');
+    if(/Failed to fetch|NetworkError|Load failed/i.test(e.message||'')) throw new Error('ភ្ជាប់ម៉ាស៊ីនមេមិនបាន — ពិនិត្យអ៊ីនធឺណិត ឬ URL របស់ Apps Script');
+    throw e;
   });
 }
 
@@ -458,13 +476,22 @@ function renderVisits(root,kind){
   var list=all.filter(function(r){ return S.showArc ? r.archived : !r.archived })
               .sort(function(a,b){return sortKey(a,kind)-sortKey(b,kind)});
 
-  if(!meet && list.length){
+  var pending=[];
+  if(!meet && !S.showArc){
+    var haveEnt={};
+    S.visits.forEach(function(r){ if(!r.archived && r.visitAt && r.entId) haveEnt[r.entId]=1 });
+    pending = entSorted().filter(function(e){ return !haveEnt[e.id] });
+  }
+
+  if(!meet && (list.length || pending.length)){
     var counts={}, order=[];
-    list.forEach(function(r){ var a=areaOf(r); if(!counts[a]){counts[a]=0; order.push(a)} counts[a]++ });
+    function bump(a){ if(!counts[a]){counts[a]=0; order.push(a)} counts[a]++ }
+    list.forEach(function(r){ bump(areaOf(r)) });
+    pending.forEach(function(e){ bump(guessArea(e.address)||'មិនទាន់កំណត់តំបន់') });
     order.sort(function(a,b){ return counts[b]-counts[a] || a.localeCompare(b) });
     if(order.length>1 || S.area){
       var chips=el('div','areas');
-      var allb=el('button',null,'ទាំងអស់ ('+list.length+')');
+      var allb=el('button',null,'ទាំងអស់ ('+(list.length+pending.length)+')');
       allb.setAttribute('aria-pressed', S.area?'false':'true');
       allb.onclick=function(){ S.area=''; render() };
       chips.appendChild(allb);
@@ -476,7 +503,10 @@ function renderVisits(root,kind){
       });
       root.appendChild(chips);
     }
-    if(S.area) list=list.filter(function(r){ return areaOf(r)===S.area });
+    if(S.area){
+      list=list.filter(function(r){ return areaOf(r)===S.area });
+      pending=pending.filter(function(e){ return (guessArea(e.address)||'មិនទាន់កំណត់តំបន់')===S.area });
+    }
   }
   var now=Date.now();
   var up=list.filter(function(r){return r.status!=='cancelled' && sortKey(r,kind)>=now-864e5});
@@ -498,6 +528,25 @@ function renderVisits(root,kind){
   });
 
   if(past.length){ section(root,'កន្លងផុត / បានបញ្ចប់', past.length); past.reverse().forEach(function(r){ root.appendChild(visitCard(r)) }) }
+
+  if(pending.length){
+    section(root,'សហគ្រាសមិនទាន់មានកាលវិភាគ', pending.length);
+    var lastP=null;
+    pending.forEach(function(e){
+      var a=guessArea(e.address)||'មិនទាន់កំណត់តំបន់';
+      if(!S.area && a!==lastP){ root.appendChild(el('div','grouphd','📍 '+a)); lastP=a }
+      var c=el('div','rec'), bd=el('div','meat');
+      bd.innerHTML='<div class="name">'+esc(e.nameLatin||'')+'</div>'+
+        '<div class="tin">អតប៖ '+esc(e.tin||'—')+'</div>'+
+        (e.address?'<div class="row"><i>🏢</i><div>'+esc(e.address)+'</div></div>':'')+
+        (e.contactPhone?'<div class="row"><i>📞</i><div>'+esc(e.contactName||'អ្នកតំណាង')+' · '+esc(e.contactPhone)+'</div></div>':'');
+      c.appendChild(bd);
+      var ac=el('div','acts');
+      ac.appendChild(btn('+ កំណត់កាលវិភាគចុះទីតាំង','key',function(){ visitForm(null,null,'visit',e) }));
+      c.appendChild(ac);
+      root.appendChild(c);
+    });
+  }
 
   var tg=el('button','arclink', S.showArc ? '← ត្រឡប់ទៅបញ្ជីសកម្ម' : '📦 ប័ណ្ណសារ ('+arc.length+')');
   tg.onclick=function(){ S.showArc=!S.showArc; render(); window.scrollTo(0,0) };
@@ -1127,7 +1176,7 @@ function meetPlace(r){
   return MEET_VENUE + (r.meetRoom?' · បន្ទប់ '+r.meetRoom:'') + ' · ជាន់ទី '+(r.meetFloor||MEET_FLOOR);
 }
 
-function visitForm(r, seedDay, forceKind){
+function visitForm(r, seedDay, forceKind, seedEnt){
   var isNew=!r;
   var k0 = forceKind || (r?kindOf(r):'visit');
   r = r ? JSON.parse(JSON.stringify(r)) : {id:uid(), status:'planned', extras:[], auditors:[], history:[], kind:k0, meetFloor:MEET_FLOOR};
@@ -1238,6 +1287,7 @@ function visitForm(r, seedDay, forceKind){
     }
     find.oninput=drawSug;
     find.onfocus=drawSug;
+    if(seedEnt) fillFrom(seedEnt);
     /* ជ្រើសពី datalist ក៏បំពេញព័ត៌មានដែរ */
     function syncFromTyped(){
       var n=name.value.trim().toLowerCase(), tv=tin.value.trim().toLowerCase(), hit=null;
@@ -1547,7 +1597,7 @@ function drawLogin(){
   var peek=$('#loginPeek');
   peek.onclick=function(){
     var i=$('#loginPin'), hid=i.type==='password';
-    i.type = hid?'text':'password'; peek.textContent = hid?'លាក់':'បង្ហាញ'; i.focus();
+    i.type = hid?'text':'password'; peek.textContent = hid?'Hide':'Show'; i.focus();
   };
   go.onclick=function(){
     var email=($('#loginEmail').value||'').trim().toLowerCase(), pw=$('#loginPin').value||'';
