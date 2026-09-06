@@ -115,7 +115,7 @@ details.hist li{margin-bottom:5px}
 .sheet .scroll{flex:1;overflow-y:auto;padding:15px 14px calc(20px + var(--safe-b));-webkit-overflow-scrolling:touch}
 label{display:block;font-size:12.5px;color:var(--slate);margin:0 0 4px}
 .f{margin-bottom:13px}
-input[type=text],input[type=tel],input[type=url],input[type=date],input[type=time],input[type=datetime-local],input[type=password],select,textarea{
+input[type=text],input[type=email],input[type=tel],input[type=url],input[type=date],input[type=time],input[type=datetime-local],input[type=password],select,textarea{
   width:100%;padding:10px 11px;border:1px solid var(--line);border-radius:3px;background:#fff;
 }
 textarea{min-height:74px;resize:vertical;line-height:1.7}
@@ -129,31 +129,33 @@ textarea{min-height:74px;resize:vertical;line-height:1.7}
 .danger{width:100%;padding:12px;background:#fff;color:var(--seal);border:1px solid #E3BDB8;border-radius:3px;margin-top:10px;font-size:14px}
 
 /* ---------- login ---------- */
-#login{position:fixed;inset:0;z-index:60;background:var(--ink);color:#fff;display:none;flex-direction:column;
-  padding:calc(env(safe-area-inset-top,0px) + 28px) 24px calc(env(safe-area-inset-bottom,0px) + 22px);overflow-y:auto}
+#login{position:fixed;inset:0;z-index:60;background:var(--ink);color:#fff;display:none;
+  flex-direction:column;justify-content:center;align-items:center;padding:28px 22px;overflow-y:auto}
 #login.on{display:flex}
+#login .wrap{width:100%;max-width:360px}
 #login,#login input,#login button{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
-#login .wrap{margin:auto 0;width:100%;max-width:400px;align-self:center}
-#login .mark{width:54px;height:54px;border-radius:12px;display:block;margin-bottom:20px;box-shadow:0 6px 18px rgba(0,0,0,.28)}
-#login h1{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;font-size:30px;font-weight:650;color:#fff;margin:0 0 6px;letter-spacing:-.5px;line-height:1.2}
-#login .sub{color:#93ADC4;font-size:14px;margin:0 0 4px;line-height:1.55}
-#login .rule{width:34px;height:3px;background:var(--seal);margin:20px 0 26px}
-#login label{display:block;font-size:11.5px;color:#8FA9C0;margin:0 0 6px;letter-spacing:.3px}
-#login .fld{margin-bottom:15px}
-#login input{
-  display:block;width:100%;height:52px;padding:0 15px;margin:0;
-  background:#1B354E;border:1px solid #2E4E6C;border-radius:4px;color:#fff;
-  font-size:16px;line-height:52px;-webkit-appearance:none;appearance:none
-}
-#login input::placeholder{color:#7691AB}
-#login input:focus{outline:none;border-color:#6E9CC4;background:#1F3D59}
-#login .save{height:52px;padding:0;background:#fff;color:var(--ink);font-size:16px;font-weight:650;margin:22px 0 0;border-radius:4px}
-#login .save:active{background:#E8EEF3}
-#login .err{margin:16px 0 0;color:#F0B4AC;font-size:13px;line-height:1.6;border-left:3px solid var(--seal);padding:2px 0 2px 11px}
-#login .err:empty{display:none}
-#login .link{display:block;width:100%;color:#7C99B3;font-size:12.5px;margin-top:26px;text-align:center;text-decoration:underline}
-#login .cfg{margin-top:18px;padding-top:18px;border-top:1px solid #2C4B68}
-#login .foot{color:#5F7C97;font-size:11.5px;text-align:center;margin:34px 0 0;letter-spacing:.3px}
+#login .mark{width:46px;height:46px;margin-bottom:20px;display:block}
+#login h1{font-family:system-ui,-apple-system,sans-serif;font-size:26px;font-weight:600;color:#fff;
+  letter-spacing:-.4px;line-height:1.25;margin-bottom:5px}
+#login p.sub{color:#8FA8BE;font-size:13.5px;margin:0 0 26px;line-height:1.6}
+#login label{color:#8FA8BE;font-size:12px;letter-spacing:.2px;margin-bottom:6px}
+#login .fld{position:relative;margin-bottom:14px}
+#login input{width:100%;height:50px;padding:0 14px;background:#1A3450;border:1px solid #2E4E6C;
+  border-radius:4px;color:#fff;font-size:16px;line-height:50px;-webkit-appearance:none}
+#login input::placeholder{color:#6C89A5}
+#login input:focus{outline:none;border-color:#6FA8D0;background:#1E3B59}
+#login .peek{position:absolute;right:0;top:26px;height:50px;width:52px;color:#8FA8BE;font-size:12.5px}
+#login .save{height:50px;width:100%;background:#fff;color:var(--ink);border-radius:4px;
+  font-size:15.5px;font-weight:600;margin-top:6px;padding:0}
+#login .save[disabled]{opacity:.55}
+#login .msg{display:none;margin:16px 0 0;font-size:13px;line-height:1.6;padding:10px 12px;
+  border-left:2px solid #E08C82;background:#22405C;color:#F0C4BE}
+#login .msg.on{display:block}
+#login .msg.ok{border-left-color:#5FB894;color:#BFE3D3}
+#login .link{display:block;width:100%;color:#7E9AB4;font-size:12.5px;margin-top:26px;
+  text-align:center;text-decoration:underline;padding:8px}
+#login .cfg{margin-top:16px;padding-top:16px;border-top:1px solid #2E4E6C}
+#login .foot{color:#5D7A94;font-size:11.5px;text-align:center;margin-top:30px;letter-spacing:.3px}
 
 /* ---------- settings ---------- */
 .set{background:#fff;border:1px solid var(--line);border-radius:3px;padding:14px;margin-bottom:12px}
@@ -221,16 +223,17 @@ table.rp td.n,table.rp th.n{text-align:right;font-family:system-ui,-apple-system
 <header class="top">
   <h1>កាលវិភាគសវនកម្ម</h1>
   <div class="who"><span class="sync" id="syncDot"></span><span id="whoName">—</span></div>
+  <button class="gear" id="goSet" aria-label="ការកំណត់">⚙️</button>
 </header>
 
 <main id="view"></main>
 
 <nav class="tabs">
   <button data-tab="visit" aria-current="page"><span>📍</span>ចុះទីតាំង</button>
+  <button data-tab="meet"><span>🤝</span>ប្រជុំ</button>
   <button data-tab="cal"><span>📅</span>ប្រតិទិន</button>
   <button data-tab="team"><span>👥</span>ផ្ទៃក្នុង</button>
   <button data-tab="rep"><span>📊</span>របាយការណ៍</button>
-  <button data-tab="set"><span>⚙️</span>ការកំណត់</button>
 </nav>
 
 <div class="scrim" id="scrim"></div>
@@ -240,35 +243,44 @@ table.rp td.n,table.rp th.n{text-align:right;font-family:system-ui,-apple-system
 </section>
 
 <div id="login">
-  <div class="wrap">
-    <img class="mark" src="./icon-192.png" alt="">
-    <h1>Audit Schedule</h1>
-    <p class="sub">Site visits, enterprise meetings and team notices — for the RSC audit team.</p>
-    <div class="rule"></div>
+ <div class="wrap">
+  <svg class="mark" viewBox="0 0 48 48" aria-hidden="true">
+    <rect x="4" y="9" width="40" height="35" rx="3" fill="#ffffff"/>
+    <path d="M4 12a3 3 0 0 1 3-3h34a3 3 0 0 1 3 3v6H4z" fill="#A83226"/>
+    <rect x="12" y="4" width="4" height="10" rx="2" fill="#EDF1F4"/>
+    <rect x="32" y="4" width="4" height="10" rx="2" fill="#EDF1F4"/>
+    <rect x="10" y="24" width="9" height="8" rx="1" fill="#12283C"/>
+    <rect x="23" y="24" width="7" height="8" rx="1" fill="#C8D5DF"/>
+    <rect x="34" y="24" width="7" height="8" rx="1" fill="#C8D5DF"/>
+    <rect x="10" y="35" width="9" height="5" rx="1" fill="#C8D5DF"/>
+    <rect x="23" y="35" width="7" height="5" rx="1" fill="#C8D5DF"/>
+  </svg>
+  <h1>Audit Schedule</h1>
+  <p class="sub">កាលវិភាគចុះទីតាំង ណាត់ជួបសហគ្រាស និងការជូនដំណឹងផ្ទៃក្នុង</p>
 
-    <div class="fld">
-      <label for="loginEmail">Email</label>
-      <input type="email" id="loginEmail" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" inputmode="email" placeholder="name@gmail.com">
-    </div>
-    <div class="fld">
-      <label for="loginPin">Password</label>
-      <input type="password" id="loginPin" autocomplete="current-password" placeholder="••••••">
-    </div>
-
-    <button class="save" id="loginGo">Sign in</button>
-    <p class="err" id="loginMsg"></p>
-
-    <button class="link" id="loginCfg">Server settings</button>
-    <div class="cfg" id="loginCfgBox" style="display:none">
-      <div class="fld">
-        <label for="loginUrl">Apps Script web app URL</label>
-        <input type="url" id="loginUrl" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="https://script.google.com/macros/s/.../exec">
-      </div>
-      <button class="save" id="loginUrlSave">Save server URL</button>
-    </div>
-
-    <p class="foot">RSC · ក្រុមសវនកម្ម</p>
+  <label for="loginEmail">Email</label>
+  <div class="fld">
+    <input type="email" id="loginEmail" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" inputmode="email" placeholder="name@gmail.com">
   </div>
+
+  <label for="loginPin">Password</label>
+  <div class="fld">
+    <input type="password" id="loginPin" autocomplete="current-password" placeholder="••••">
+    <button class="peek" id="loginPeek" type="button">បង្ហាញ</button>
+  </div>
+
+  <button class="save" id="loginGo">Sign in</button>
+  <p class="msg" id="loginMsg"></p>
+
+  <button class="link" id="loginCfg">Server settings</button>
+  <div class="cfg" id="loginCfgBox" style="display:none">
+    <label for="loginUrl">Apps Script web app URL</label>
+    <div class="fld"><input type="url" id="loginUrl" autocapitalize="none" autocorrect="off" placeholder="https://script.google.com/macros/s/.../exec"></div>
+    <button class="save" id="loginUrlSave">Save server URL</button>
+  </div>
+
+  <div class="foot">RSC · teamsmos.com</div>
+ </div>
 </div>
 
 <div id="toast"></div>
@@ -347,7 +359,7 @@ function refresh(silent){
     markSync(false);
     if(/សម័យផុតកំណត់|មិនមានសិទ្ធិ|ត្រូវបានផ្អាក/.test(e.message)){
       localStorage.removeItem(LSK+'token'); localStorage.removeItem(LSK+'me');
-      S.me=null; S.token=null; drawLogin(); $('#loginMsg').textContent='Session expired. Please sign in again.';
+      S.me=null; S.token=null; drawLogin(); lmsg('Session expired. Please sign in again.');
       return;
     }
     loadLocal(); render();
@@ -382,7 +394,8 @@ function upsert(arr,rec){ for(var i=0;i<arr.length;i++) if(arr[i].id===rec.id){a
 function render(){
   $('#whoName').textContent = S.me ? nameOf(S.me.email)+(isAdmin()?' · អ្នកគ្រប់គ្រង':'') : '—';
   var v=$('#view'); v.innerHTML='';
-  if(S.tab==='visit') renderVisits(v);
+  if(S.tab==='visit') renderVisits(v,'visit');
+  else if(S.tab==='meet') renderVisits(v,'meet');
   else if(S.tab==='cal') renderCal(v);
   else if(S.tab==='team') renderTeam(v);
   else if(S.tab==='rep') renderReport(v);
@@ -392,19 +405,27 @@ function render(){
 }
 
 /* ---------- 1. site visits ---------- */
-function sortKey(r){ var d=dt(r.visitAt)||dt(r.meetAt); return d?d.getTime():8e15 }
-function renderVisits(root){
-  var add=el('button','add','+ បន្ថែមកាលវិភាគសហគ្រាសថ្មី');
-  add.onclick=function(){ visitForm(null) };
+function sortKey(r,kind){
+  var d = kind==='meet' ? dt(r.meetAt) : (kind==='visit' ? dt(r.visitAt) : (dt(r.visitAt)||dt(r.meetAt)));
+  return d?d.getTime():8e15;
+}
+function renderVisits(root,kind){
+  var meet = kind==='meet';
+  var add=el('button','add', meet?'+ បន្ថែមការប្រជុំសហគ្រាសថ្មី':'+ បន្ថែមការចុះទីតាំងថ្មី');
+  add.onclick=function(){ visitForm(null,null,kind) };
   root.appendChild(add);
 
-  var list=S.visits.slice().sort(function(a,b){return sortKey(a)-sortKey(b)});
+  var list=S.visits.filter(function(r){ return meet ? !!r.meetAt : !!r.visitAt })
+                   .sort(function(a,b){return sortKey(a,kind)-sortKey(b,kind)});
   var now=Date.now();
-  var up=list.filter(function(r){return r.status!=='cancelled' && sortKey(r)>=now-864e5*1});
+  var up=list.filter(function(r){return r.status!=='cancelled' && sortKey(r,kind)>=now-864e5});
   var past=list.filter(function(r){return up.indexOf(r)<0});
 
   section(root,'ដែលជិតមកដល់', up.length);
-  if(!up.length) root.appendChild(emptyBox('មិនទាន់មានកាលវិភាគ','ចុច «បន្ថែមកាលវិភាគសហគ្រាសថ្មី» ដើម្បីកត់ត្រាការចុះពិនិត្យទីតាំង និងថ្ងៃណាត់ជួប។'));
+  if(!up.length) root.appendChild(emptyBox(
+    meet?'មិនទាន់មានការប្រជុំ':'មិនទាន់មានការចុះទីតាំង',
+    meet?('ចុច «បន្ថែមការប្រជុំសហគ្រាសថ្មី» ដើម្បីកត់ត្រាថ្ងៃ ម៉ោង និងបន្ទប់នៅ '+MEET_VENUE+'។')
+        :'ចុច «បន្ថែមការចុះទីតាំងថ្មី» ដើម្បីកត់ត្រាថ្ងៃ ម៉ោង និងអាសយដ្ឋានសហគ្រាស។'));
   up.forEach(function(r){ root.appendChild(visitCard(r)) });
 
   if(past.length){ section(root,'កន្លងផុត / បានបញ្ចប់', past.length); past.reverse().forEach(function(r){ root.appendChild(visitCard(r)) }) }
@@ -579,7 +600,7 @@ function drawEvents(root, list){
   list.forEach(function(e){
     var b=el('button','ev '+e.cls);
     b.innerHTML='<span class="tm">'+esc(e.tm)+'</span><span class="tx"><b>'+e.ico+' '+esc(e.title)+'</b><span>'+esc(e.sub)+'</span></span>';
-    if(e.rec) b.onclick=function(){ visitForm(e.rec) }; else b.style.cursor='default';
+    if(e.rec) b.onclick=function(){ visitForm(e.rec, null, e.cls==='meet'?'meet':'visit') }; else b.style.cursor='default';
     root.appendChild(b);
   });
 }
@@ -801,7 +822,7 @@ function renderSet(root){
   n.appendChild(nb); root.appendChild(n);
 
   var ee=el('div','set');
-  ee.innerHTML='<h3>បញ្ជីសហគ្រាស ('+S.ents.length+')</h3><p>បញ្ជីនេះកើនឡើងដោយស្វ័យប្រវត្តិ រាល់ពេលបង្កើតកាលវិភាគសហគ្រាសថ្មី។ បើមានបញ្ជីវែង អាចបញ្ចូលម្តងទាំងអស់ក្នុង Google Sheet ជ្រុង <b>Enterprises</b>។</p>';
+  ee.innerHTML='<h3>បញ្ជីសហគ្រាស ('+S.ents.length+')</h3>';
   entSorted().forEach(function(e){
     var k=el('div','kv');
     var L=el('div'); L.innerHTML='<div>'+esc(e.nameLatin||'—')+'</div><div style="color:var(--mute);font-size:12px">'+esc(e.tin||'')+'</div>';
@@ -854,11 +875,15 @@ function meetPlace(r){
   return MEET_VENUE + (r.meetRoom?' · បន្ទប់ '+r.meetRoom:'') + ' · ជាន់ទី '+(r.meetFloor||MEET_FLOOR);
 }
 
-function visitForm(r, seedDay){
+function visitForm(r, seedDay, forceKind){
   var isNew=!r;
-  r = r ? JSON.parse(JSON.stringify(r)) : {id:uid(), status:'planned', extras:[], auditors:[], history:[], kind:'visit', meetFloor:MEET_FLOOR};
-  var kind = kindOf(r);
-  openSheet(isNew?'កាលវិភាគសហគ្រាសថ្មី':'កែកាលវិភាគ', function(b){
+  var k0 = forceKind || (r?kindOf(r):'visit');
+  r = r ? JSON.parse(JSON.stringify(r)) : {id:uid(), status:'planned', extras:[], auditors:[], history:[], kind:k0, meetFloor:MEET_FLOOR};
+  var showSite = isNew ? (k0!=='meet') : (!!r.visitAt || kindOf(r)!=='meet');
+  var showMeet = isNew ? (k0==='meet') : (!!r.meetAt  || kindOf(r)==='meet');
+  var title = isNew ? (k0==='meet'?'ការប្រជុំសហគ្រាសថ្មី':'ការចុះទីតាំងថ្មី')
+                    : (showSite&&showMeet ? 'កែកាលវិភាគ' : (showMeet?'កែការប្រជុំ':'កែការចុះទីតាំង'));
+  openSheet(title, function(b){
     var pick=el('select');
     pick.appendChild(el('option',null,'— វាយបញ្ចូលថ្មី —')).value='';
     entSorted().forEach(function(e){
@@ -869,18 +894,6 @@ function visitForm(r, seedDay){
 
     var name=field(b,'ឈ្មោះសហគ្រាស (ឡាតាំង)', input('text',r.nameLatin,'ABC (CAMBODIA) CO., LTD.'));
     var tin =field(b,'លេខអតប', input('text',r.tin,'L001-901702836'));
-
-    /* ---- ប្រភេទការណាត់ ---- */
-    b.appendChild(el('label',null,'ប្រភេទ'));
-    var seg=el('div','seg');
-    var kbtn={};
-    [['visit','📍 ចុះទីតាំង'],['meet','🤝 ណាត់ជួប'],['both','ទាំងពីរ']].forEach(function(p){
-      var x=el('button',null,p[1]); x.type='button';
-      x.setAttribute('aria-pressed', kind===p[0]?'true':'false');
-      x.onclick=function(){ kind=p[0]; Object.keys(kbtn).forEach(function(k){ kbtn[k].setAttribute('aria-pressed', k===kind?'true':'false') }); applyKind() };
-      kbtn[p[0]]=x; seg.appendChild(x);
-    });
-    b.appendChild(seg);
 
     /* ---- ផ្នែកចុះទីតាំង ---- */
     var siteBox=el('div'); b.appendChild(siteBox);
@@ -906,6 +919,7 @@ function visitForm(r, seedDay){
     }
     drawExtras();
     var seed = (isNew && seedDay) ? seedDay+'T08:00' : '';
+    var seedM = (isNew && seedDay) ? seedDay+'T14:00' : '';
     var visit=field(siteBox,'ថ្ងៃ ខែ ឆ្នាំ និងម៉ោង ចុះពិនិត្យទីតាំង', input('datetime-local',toLocalInput(r.visitAt)||seed));
 
     /* ---- ផ្នែកណាត់ជួប (GDT TOWER) ---- */
@@ -917,13 +931,10 @@ function visitForm(r, seedDay){
     two.appendChild(roomW); two.appendChild(floorW); meetBox.appendChild(two);
     var room =field(roomW ,'បន្ទប់លេខ', input('text',r.meetRoom,'ឧ. 305'));
     var floor=field(floorW,'ជាន់ទី',   input('text',r.meetFloor||MEET_FLOOR,'3'));
-    var meet =field(meetBox,'ថ្ងៃ ខែ ឆ្នាំ និងម៉ោង ណាត់ជួបសហគ្រាស', input('datetime-local',toLocalInput(r.meetAt)|| (isNew&&seedDay?seedDay+'T14:00':'')));
+    var meet =field(meetBox,'ថ្ងៃ ខែ ឆ្នាំ និងម៉ោង ណាត់ជួបសហគ្រាស', input('datetime-local',toLocalInput(r.meetAt)||seedM));
 
-    function applyKind(){
-      siteBox.style.display = (kind==='meet') ? 'none' : 'block';
-      meetBox.style.display = (kind==='visit') ? 'none' : 'block';
-    }
-    applyKind();
+    siteBox.style.display = showSite ? 'block' : 'none';
+    meetBox.style.display = showMeet ? 'block' : 'none';
 
     pick.onchange=function(){
       var e=null, i;
@@ -948,13 +959,13 @@ function visitForm(r, seedDay){
     var go=el('button','save',isNew?'រក្សាទុក និងជូនដំណឹងក្រុម':'រក្សាទុកការកែប្រែ');
     go.onclick=function(){
       if(!name.value.trim()) return toast('សូមបញ្ចូលឈ្មោះសហគ្រាស');
-      r.kind=kind;
+      r.kind = (showSite&&showMeet) ? 'both' : (showMeet?'meet':'visit');
       r.nameLatin=name.value.trim(); r.tin=tin.value.trim(); r.note=note.value.trim();
       r.address=addr.value.trim(); r.mapLink=map.value.trim();
-      r.visitAt = (kind==='meet') ? '' : fromLocalInput(visit.value);
-      r.meetAt  = (kind==='visit')? '' : fromLocalInput(meet.value);
-      r.meetRoom  = (kind==='visit')? '' : room.value.trim();
-      r.meetFloor = (kind==='visit')? '' : (floor.value.trim()||MEET_FLOOR);
+      r.visitAt = showSite ? fromLocalInput(visit.value) : '';
+      r.meetAt  = showMeet ? fromLocalInput(meet.value)  : '';
+      r.meetRoom  = showMeet ? room.value.trim() : '';
+      r.meetFloor = showMeet ? (floor.value.trim()||MEET_FLOOR) : '';
       r.auditors=Object.keys(picks).filter(function(e){return picks[e].checked});
       r.extras=(r.extras||[]).filter(function(x){return (x.address||'').trim()||(x.label||'').trim()});
       if(!r.visitAt && !r.meetAt) return toast('សូមកំណត់ថ្ងៃ និងម៉ោង');
@@ -1139,30 +1150,40 @@ function downloadICS(r){
 /* ============================================================
    LOGIN + BOOT
    ============================================================ */
+function lmsg(txt,ok){
+  var m=$('#loginMsg'); m.textContent=txt||'';
+  m.className='msg'+(txt?' on':'')+(ok?' ok':'');
+}
 function drawLogin(){
-  var msg=$('#loginMsg'), box=$('#loginCfgBox');
+  var box=$('#loginCfgBox'), go=$('#loginGo');
   $('#loginUrl').value=apiUrl();
   $('#loginCfg').onclick=function(){ box.style.display = box.style.display==='none'?'block':'none' };
   $('#loginUrlSave').onclick=function(){
     var u=$('#loginUrl').value.trim();
     localStorage.setItem(LSK+'apiUrl',u);
-    if(!u){ msg.textContent='Server URL cleared.'; return }
-    msg.textContent='Checking server…';
-    api('apiPing',[]).then(function(){ msg.textContent='Server connected. You can sign in now.'; box.style.display='none' })
-      .catch(function(e){ msg.textContent='⚠️ '+e.message });
+    if(!u){ lmsg('Server URL cleared.'); return }
+    lmsg('Checking server…', true);
+    api('apiPing',[]).then(function(){ lmsg('Server connected. You can sign in now.', true); box.style.display='none' })
+      .catch(function(e){ lmsg(e.message) });
   };
   if(API_URL){ $('#loginCfg').style.display='none'; box.style.display='none' }
   else if(!apiUrl()) box.style.display='block';
-  $('#loginGo').onclick=function(){
+  var peek=$('#loginPeek');
+  peek.onclick=function(){
+    var i=$('#loginPin'), hid=i.type==='password';
+    i.type = hid?'text':'password'; peek.textContent = hid?'លាក់':'បង្ហាញ'; i.focus();
+  };
+  go.onclick=function(){
     var email=($('#loginEmail').value||'').trim().toLowerCase(), pw=$('#loginPin').value||'';
-    if(!email || !pw) return msg.textContent='Enter your email and password.';
-    if(!apiUrl()){ box.style.display='block'; return msg.textContent='Add the server URL below first.' }
-    msg.textContent='Signing in…';
+    if(!email || !pw) return lmsg('Enter your email and password.');
+    if(!apiUrl()){ box.style.display='block'; return lmsg('Add the server URL below first.') }
+    lmsg('Signing in…', true); go.disabled=true; go.textContent='Signing in…';
     api('apiLogin',[email,pw]).then(function(d){
       S.token=d.token; localStorage.setItem(LSK+'token',d.token);
-      $('#loginPin').value='';
+      $('#loginPin').value=''; lmsg('');
       setMe({email:email, name:d.name, role:d.role});
-    }).catch(function(e){ msg.textContent='⚠️ '+e.message });
+    }).catch(function(e){ lmsg(e.message) })
+      .then(function(){ go.disabled=false; go.textContent='Sign in' });
   };
   $('#loginEmail').onkeydown=$('#loginPin').onkeydown=function(e){ if(e.key==='Enter') $('#loginGo').click() };
   $('#login').classList.add('on');
@@ -1180,6 +1201,7 @@ function boot(){
   if(me && me.email){ setMe(me) } else { drawLogin() }
   var tabs=document.querySelectorAll('nav.tabs button');
   for(var i=0;i<tabs.length;i++) tabs[i].onclick=(function(t){ return function(){ S.tab=t; render(); window.scrollTo(0,0) } })(tabs[i].dataset.tab);
+  $('#goSet').onclick=function(){ S.tab='set'; render(); window.scrollTo(0,0) };
   markSync(false);
   if(online()) api('apiPing',[]).then(function(){markSync(true)}).catch(function(){});
   setInterval(function(){ if(!document.hidden){ refresh(true); checkReminders() } }, 60000);
