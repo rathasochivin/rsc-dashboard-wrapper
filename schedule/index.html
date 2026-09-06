@@ -515,51 +515,61 @@ function renderVisits(root,kind){
 
   if(!meet && (list.length || pending.length)){
     var everything=list.concat(pending), total=everything.length;
-    function tally(fn){
-      var c={}, o=[];
-      everything.forEach(function(x){ var k=fn(x); if(!c[k]){c[k]=0;o.push(k)} c[k]++ });
-      o.sort(function(a,b){ return (a===NOAREA)-(b===NOAREA) || c[b]-c[a] || a.localeCompare(b) });
-      return {c:c, o:o};
-    }
-    var byP=tally(provinceOf), byD=tally(districtOf);
+
+    /* ជាន់ទី ១ ៖ ខេត្ត / រាជធានី */
+    var pc={}, po=[];
+    everything.forEach(function(x){ var k=provinceOf(x); if(!pc[k]){pc[k]=0;po.push(k)} pc[k]++ });
+    po.sort(function(a,b){ return (a===NOAREA)-(b===NOAREA) || pc[b]-pc[a] || a.localeCompare(b) });
 
     var lvl1=el('div','areas');
-    function tab(label,type){
-      var x=el('button',null,label);
-      x.setAttribute('aria-pressed', S.areaType===type?'true':'false');
-      x.onclick=function(){ S.areaType = (S.areaType===type)?'':type; S.area=''; render() };
-      lvl1.appendChild(x);
-    }
     var ab=el('button',null,'ទាំងអស់ ('+total+')');
-    ab.setAttribute('aria-pressed', S.areaType?'false':'true');
-    ab.onclick=function(){ S.areaType=''; S.area=''; render() };
+    ab.setAttribute('aria-pressed', S.prov?'false':'true');
+    ab.onclick=function(){ S.prov=''; S.dist=''; render() };
     lvl1.appendChild(ab);
-    tab('ខេត្ត / រាជធានី ('+byP.o.length+')','province');
-    tab('ខណ្ឌ / ស្រុក ('+byD.o.length+')','district');
+    po.forEach(function(pv){
+      var x=el('button',null,pv+' ('+pc[pv]+')');
+      x.setAttribute('aria-pressed', S.prov===pv?'true':'false');
+      x.onclick=function(){ S.prov=(S.prov===pv)?'':pv; S.dist=''; render() };
+      lvl1.appendChild(x);
+    });
     root.appendChild(lvl1);
 
-    if(S.areaType){
-      var t2 = S.areaType==='province' ? byP : byD;
-      var lvl2=el('div','areas');
-      t2.o.forEach(function(a){
-        var x=el('button',null,a+' ('+t2.c[a]+')');
-        x.setAttribute('aria-pressed', S.area===a?'true':'false');
-        x.onclick=function(){ S.area = (S.area===a)?'':a; render() };
-        lvl2.appendChild(x);
-      });
-      root.appendChild(lvl2);
+    /* ជាន់ទី ២ ៖ ខណ្ឌ / ស្រុក ក្នុងខេត្តដែលបានជ្រើស */
+    if(S.prov){
+      var inProv=everything.filter(function(x){ return provinceOf(x)===S.prov });
+      var dc={}, dorder=[];
+      inProv.forEach(function(x){ var k=districtOf(x); if(!dc[k]){dc[k]=0;dorder.push(k)} dc[k]++ });
+      dorder.sort(function(a,b){ return (a===NOAREA)-(b===NOAREA) || dc[b]-dc[a] || a.localeCompare(b) });
+      if(dorder.length){
+        var lvl2=el('div','areas');
+        var db2=el('button',null,'ទាំងខេត្ត ('+inProv.length+')');
+        db2.setAttribute('aria-pressed', S.dist?'false':'true');
+        db2.onclick=function(){ S.dist=''; render() };
+        lvl2.appendChild(db2);
+        dorder.forEach(function(dv){
+          var x=el('button',null,dv+' ('+dc[dv]+')');
+          x.setAttribute('aria-pressed', S.dist===dv?'true':'false');
+          x.onclick=function(){ S.dist=(S.dist===dv)?'':dv; render() };
+          lvl2.appendChild(x);
+        });
+        root.appendChild(lvl2);
+      }
     }
 
-    if(S.area){
-      var f = S.areaType==='province' ? provinceOf : districtOf;
-      list=list.filter(function(r){ return f(r)===S.area });
-      pending=pending.filter(function(e){ return f(e)===S.area });
+    if(S.prov){
+      list=list.filter(function(r){ return provinceOf(r)===S.prov });
+      pending=pending.filter(function(e){ return provinceOf(e)===S.prov });
+    }
+    if(S.dist){
+      list=list.filter(function(r){ return districtOf(r)===S.dist });
+      pending=pending.filter(function(e){ return districtOf(e)===S.dist });
     }
   }
+
   var now=Date.now();
   var up=list.filter(function(r){return r.status!=='cancelled' && sortKey(r,kind)>=now-864e5});
-  if(!meet && !S.area) up.sort(function(a,b){
-    var fa=(S.areaType==='province'?provinceOf:areaOf);
+  if(!meet && !S.dist) up.sort(function(a,b){
+    var fa=(S.prov?districtOf:provinceOf);
     return fa(a).localeCompare(fa(b)) || sortKey(a,kind)-sortKey(b,kind);
   });
   var past=list.filter(function(r){return up.indexOf(r)<0});
@@ -571,8 +581,8 @@ function renderVisits(root,kind){
         :'ចុច «បន្ថែមការចុះទីតាំងថ្មី» ដើម្បីកត់ត្រាថ្ងៃ ម៉ោង និងអាសយដ្ឋានសហគ្រាស។'));
   var lastA=null;
   up.forEach(function(r){
-    if(!meet && !S.area){
-      var a=(S.areaType==='province'?provinceOf(r):areaOf(r));
+    if(!meet && !S.dist){
+      var a=(S.prov?districtOf(r):provinceOf(r));
       if(a!==lastA){ root.appendChild(el('div','grouphd','📍 '+a)); lastA=a }
     }
     root.appendChild(visitCard(r));
@@ -588,12 +598,12 @@ function renderVisits(root,kind){
     root.appendChild(mine);
     var lastP=null;
     pending.sort(function(x,y){
-      var fa=(S.areaType==='province'?provinceOf:areaOf);
+      var fa=(S.prov?districtOf:provinceOf);
       return fa(x).localeCompare(fa(y)) || String(x.nameLatin||'').localeCompare(String(y.nameLatin||''));
     });
     pending.forEach(function(e){
-      var a=(S.areaType==='province'?provinceOf(e):areaOf(e));
-      if(!S.area && a!==lastP){ root.appendChild(el('div','grouphd','📍 '+a)); lastP=a }
+      var a=(S.prov?districtOf(e):provinceOf(e));
+      if(!S.dist && a!==lastP){ root.appendChild(el('div','grouphd','📍 '+a)); lastP=a }
       var c=el('div','rec'), bd=el('div','meat');
       bd.innerHTML='<div class="name">'+esc(e.nameLatin||'')+'</div>'+
         '<div class="tin">អតប៖ '+esc(e.tin||'—')+'</div>'+
