@@ -1568,12 +1568,16 @@ function visitForm(r, seedDay, forceKind, seedEnt, asNew){
 
     function fillFrom(e){
       r.entId=e.id;
-      if(e.auditor && chosen.indexOf(e.auditor)<0 && !chosen.length){ chosen.push(e.auditor); drawAud() }
+      /* សវនករ និងអ្នករួមការងារដែលកំណត់ក្នុងបញ្ជីសហគ្រាស — បំពេញចូលស្វ័យប្រវត្តិ */
+      var team=[];
+      if(e.auditor) team.push(e.auditor);
+      if(e.partner && team.indexOf(e.partner)<0) team.push(e.partner);
+      if(team.length){ chosen.length=0; team.forEach(function(x){ chosen.push(x) }); drawAud() }
       name.value=e.nameLatin||''; tin.value=e.tin||'';
       addr.value=e.address||''; map.value=e.mapLink||'';
       if(e.contactName)  cname.value=e.contactName;
       if(e.contactPhone) cphone.value=e.contactPhone;
-      if(e.partner) pSel.value=e.partner;
+      pSel.value=e.partner||'';
       r.extras=JSON.parse(JSON.stringify(e.extras||[])); drawExtras();
       sug.className='sug'; find.value='';
     }
