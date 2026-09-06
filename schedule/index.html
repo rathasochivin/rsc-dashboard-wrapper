@@ -347,10 +347,24 @@ var RESP = [['waiting','⏳ រង់ចាំការឆ្លើយតប'],[
 var NOTICE = [['','មិនទាន់ផ្ញើលិខិត'],['telegram','Telegram'],['email','Email ផ្លូវការ'],['pickup','សហគ្រាសមកទទួលផ្ទាល់'],['post','ប្រៃសណីយ៍']];
 /* ទាញ ខណ្ឌ/ស្រុក និង ខេត្ត ចេញពីអាសយដ្ឋាន */
 var NOAREA='មិនទាន់កំណត់តំបន់';
+var STOPW=/^(ភូមិ|ឃុំ|សង្កាត់|ខេត្ត|ផ្លូវ|ក្រុម|អគារ|ជាន់)$/;
 function guessDistrict(addr){
-  var t=String(addr||'').replace(/\s+/g,' ');
-  var m=t.match(/(ខណ្ឌ|ស្រុក|ក្រុង)\s*([^\s,،]+)/);
-  return m ? (m[1]+' '+m[2]) : '';
+  var t=' '+String(addr||'').replace(/\s+/g,' ')+' ';
+  function pick(word){
+    var re=new RegExp('(^|\\s)'+word+'\\s*([^\\s,،]+)','g'), x;
+    while((x=re.exec(t))){
+      var name=x[2];
+      if(STOPW.test(name)) continue;                       /* «ក្រុង ភូមិ …» = ចាប់ខុស */
+      var before=t.slice(Math.max(0,x.index-10), x.index+x[1].length);
+      if(/(ភូមិ|សង្កាត់)\s*$/.test(before)) continue;        /* ភូមិ ស្រុកចេក ≠ ស្រុក */
+      return word+' '+name;
+    }
+    return '';
+  }
+  var d=pick('ខណ្ឌ');                 /* ខណ្ឌ ឈ្នះជានិច្ច */
+  if(d) return d;
+  if(/ភ្នំពេញ/.test(t)) return '';    /* ភ្នំពេញមានតែខណ្ឌ */
+  return pick('ស្រុក') || pick('ក្រុង') || '';
 }
 function guessProvince(addr){
   var t=String(addr||'').replace(/\s+/g,' ');
@@ -542,7 +556,7 @@ function renderVisits(root,kind){
       dorder.sort(function(a,b){ return (a===NOAREA)-(b===NOAREA) || dc[b]-dc[a] || a.localeCompare(b) });
       if(dorder.length){
         var lvl2=el('div','areas');
-        var db2=el('button',null,'ទាំងខេត្ត ('+inProv.length+')');
+        var db2=el('button',null,'គ្រប់ខណ្ឌ/ស្រុក ('+inProv.length+')');
         db2.setAttribute('aria-pressed', S.dist?'false':'true');
         db2.onclick=function(){ S.dist=''; render() };
         lvl2.appendChild(db2);
