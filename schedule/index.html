@@ -155,6 +155,11 @@ textarea{min-height:84px;resize:vertical;line-height:1.8;padding:10px 11px;heigh
 .chip.c-wait{color:var(--amber);border-color:#E2CFA6;background:#FBF6EC}
 .chip.c-agree{color:var(--go);border-color:#B3D2C6;background:#F0F7F4}
 .chip.c-nore{color:var(--seal);border-color:#E3BDB8;background:#FBF2F1}
+.qrbox{position:fixed;inset:0;z-index:80;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.qrbox video{width:100%;max-width:560px;max-height:70vh;object-fit:cover;background:#000}
+.qrmsg{color:#fff;font-size:14px;margin:14px 0 10px;text-align:center;padding:0 20px}
+.qrpick,.qrcancel{background:#fff;color:var(--ink);border-radius:3px;padding:11px 20px;margin:4px;font-size:14px}
+.qrcancel{background:transparent;color:#fff;border:1px solid #55708A}
 .pastebox{border:1px dashed #B6C7D6;border-radius:3px;padding:16px 12px;text-align:center;color:var(--slate);
   font-size:13px;background:#fff;min-height:56px}
 .shot img{max-width:100%;border:1px solid var(--line);border-radius:3px;display:block}
@@ -1521,6 +1526,116 @@ function imagePicker(parent, current, onSet, label){
   show(current||'');
 }
 
+/* ---------- ស្កេន QR ទីតាំង ---------- */
+function loadJsQR(cb){
+  if(window.jsQR) return cb(window.jsQR);
+  var sc=document.createElement('script');
+  sc.src='./jsqr.min.js';
+  sc.onload=function(){ cb(window.jsQR||null) };
+  sc.onerror=function(){ cb(null) };
+  document.head.appendChild(sc);
+}
+/** អត្ថបទក្នុង QR → តំណ Google Maps */
+function qrToMapLink(txt){
+  var t=String(txt||'').trim();
+  if(!t) return '';
+  if(/^https?:\/\//i.test(t)) return t;
+  if(/^geo:/i.test(t)){
+    var g=t.slice(4).split('?')[0];
+    return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(g);
+  }
+  var m=t.match(/(-?\d{1,3}\.\d+)\s*,\s*(-?\d{1,3}\.\d+)/);
+  if(m) return 'https://www.google.com/maps/search/?api=1&query='+m[1]+','+m[2];
+  return '';
+}
+function scanQR(onFound){
+  var ov=el('div','qrbox');
+  var video=document.createElement('video');
+  video.setAttribute('playsinline','true'); video.muted=true;
+  var msg=el('div','qrmsg','កំពុងបើកកាមេរ៉ា…');
+  var cancel=el('button','qrcancel','បោះបង់');
+  var pick=el('button','qrpick','📁 ជ្រើសរូប QR ជំនួស');
+  var fin=el('input'); fin.type='file'; fin.accept='image/*'; fin.setAttribute('capture','environment'); fin.style.display='none';
+  ov.appendChild(video); ov.appendChild(msg); ov.appendChild(pick); ov.appendChild(cancel); ov.appendChild(fin);
+  document.body.appendChild(ov);
+
+  var stream=null, stop=false;
+  function close(){
+    stop=true;
+    if(stream) stream.getTracks().forEach(function(t){ t.stop() });
+    ov.remove();
+  }
+  cancel.onclick=close;
+  function done(txt){
+    var link=qrToMapLink(txt);
+    close();
+    if(!link) return toast('QR នេះមិនមែនជាទីតាំង ឬតំណផែនទីទេ');
+    onFound(link);
+  }
+
+  /* ជ្រើសរូបជំនួស (ឬពេលកាមេរ៉ាបើកមិនបាន) */
+  pick.onclick=function(){ fin.click() };
+  fin.onchange=function(){
+    var f=fin.files[0]; if(!f) return;
+    msg.textContent='កំពុងអានរូប…';
+    loadJsQR(function(jsQR){
+      if(!jsQR){ close(); return toast('អានរូបមិនបាន — សូមបញ្ចូលតំណដោយដៃ') }
+      var fr=new FileReader();
+      fr.onload=function(){
+        var im=new Image();
+        im.onload=function(){
+          var c=document.createElement('canvas');
+          c.width=im.width; c.height=im.height;
+          var cx=c.getContext('2d'); cx.drawImage(im,0,0);
+          var dta=cx.getImageData(0,0,c.width,c.height);
+          var res=jsQR(dta.data, c.width, c.height);
+          if(res && res.data) done(res.data);
+          else { msg.textContent='រកមិនឃើញ QR ក្នុងរូបនេះ'; }
+        };
+        im.src=fr.result;
+      };
+      fr.readAsDataURL(f);
+    });
+  };
+
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+    msg.textContent='ឧបករណ៍នេះមិនបើកកាមេរ៉ាបានទេ — សូមជ្រើសរូប QR';
+    return;
+  }
+  navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}}}).then(function(st){
+    stream=st; video.srcObject=st; video.play();
+    msg.textContent='តម្រង់កាមេរ៉ាទៅ QR';
+    var det=null;
+    if(window.BarcodeDetector){ try{ det=new BarcodeDetector({formats:['qr_code']}) }catch(e){} }
+    var cv=document.createElement('canvas'), cx=cv.getContext('2d');
+    loadJsQR(function(jsQR){
+      (function tick(){
+        if(stop) return;
+        if(video.readyState===video.HAVE_ENOUGH_DATA){
+          if(det){
+            det.detect(video).then(function(codes){
+              if(codes && codes.length) done(codes[0].rawValue); else setTimeout(tick,180);
+            }).catch(function(){ setTimeout(tick,300) });
+            return;
+          }
+          if(jsQR){
+            cv.width=video.videoWidth; cv.height=video.videoHeight;
+            cx.drawImage(video,0,0,cv.width,cv.height);
+            var dta=cx.getImageData(0,0,cv.width,cv.height);
+            var res=jsQR(dta.data, cv.width, cv.height);
+            if(res && res.data) return done(res.data);
+          } else {
+            msg.textContent='មិនអាចស្កេនផ្ទាល់បានទេ — សូមជ្រើសរូប QR';
+          }
+        }
+        setTimeout(tick,180);
+      })();
+    });
+  }).catch(function(){
+    msg.textContent='បើកកាមេរ៉ាមិនបាន — សូមជ្រើសរូប QR';
+  });
+}
+
 /** បង្រួមរូបមុនផ្ទុកឡើង */
 function shrinkImage(file, cb){
   if(!file) return;
@@ -1982,6 +2097,13 @@ function visitForm(r, seedDay, forceKind, seedEnt, asNew){
     var siteBox=el('div'); b.appendChild(siteBox);
     var addr=field(siteBox,'អាសយដ្ឋានសហគ្រាស', textarea(r.address,'ផ្ទះ… ផ្លូវ… សង្កាត់… ខណ្ឌ… រាជធានីភ្នំពេញ'));
     var map =field(siteBox,'តំណភ្ជាប់ផែនទី (Google Maps)', input('url',r.mapLink,'https://maps.app.goo.gl/…'));
+    var mqr=el('button','mini','📷 ស្កេន QR ទីតាំង');
+    mqr.style.marginRight='6px';
+    mqr.onclick=function(){
+      scanQR(function(link){ map.value=link; toast('✅ បានបំពេញតំណផែនទី') });
+    };
+    siteBox.appendChild(mqr);
+
     var mgo=el('button','mini','📍 បើកតំណដែលបានបិទភ្ជាប់');
     mgo.style.marginRight='6px';
     mgo.onclick=function(){
