@@ -23733,7 +23733,7 @@ function auditManualPanel(codeFilter){
           <td>${cell(x.i, 'addTax',   x.r.addTax)}</td>
           <td>${cell(x.i, 'interest', x.r.interest)}</td>
           <td class="am-auto" style="text-align:right;">${fmt(auditManualAmt(x.r))}</td>
-          <td><input type="date" class="am" data-i="${x.i}" data-k="date" value="${esc(x.r.date||'')}" style="width:100%;"${dis}></td>
+          <td><input type="date" class="am" min="2000-01-01" max="2099-12-31" data-i="${x.i}" data-k="date" value="${esc(x.r.date||'')}" style="width:100%;"${dis}></td>
           <td style="text-align:center;"><button class="vm-del am-del" data-i="${x.i}" title="លុប"${dis}>✕</button></td>
         </tr>`).join('')}
         <tr class="am-total">
@@ -24101,8 +24101,25 @@ function renderAuditView_() {
 
     const payDateEl = document.getElementById('auditPayDateInput');
     if(payDateEl){
+      /* ⭐⭐ [stated] ២០២៦-០៩-០៣ ៖ «បញ្ចូលបានតែ ២ ខ្ទង់» ⇒ ថ្ងៃចេញជា
+         `25/04/0025` ។ នេះជាឥរិយាបថដើមរបស់ប្រអប់ថ្ងៃ ៖ វាយ «25» ក្នុងវាល
+         ឆ្នាំ ⇒ វាទុកជាឆ្នាំ ២៥ ពិតប្រាកដ ។
+         ⇒ ពង្រីកឆ្នាំ ២ ខ្ទង់ទៅជា 20xx ដោយស្វ័យប្រវត្តិ ។
+         ⚠ កំណត់ព្រំដែន ៖ ឆ្នាំក្រោម ១០០ ⇒ 20xx ។ ឆ្នាំ ៤ ខ្ទង់ដែលវាយត្រូវ
+           រួច មិនប៉ះទេ ⇒ ការវាយ ១៩៩៩ នៅតែជា ១៩៩៩ ។
+         ⚠ ត្រូវសរសេរតម្លៃថ្មីចូលប្រអប់ផង បើមិនដូច្នេះទេ ប្រអប់នៅបង្ហាញ
+           0025 ខណៈទិន្នន័យត្រូវ ⇒ អ្នកប្រើឆ្ងល់ថាតើវារក្សាទុកឬអត់ ។ */
+      const fixYear = (v)=>{
+        const m = /^(\d{1,4})-(\d{2})-(\d{2})$/.exec(String(v || ''));
+        if(!m) return v;
+        let y = Number(m[1]);
+        if(y > 0 && y < 100) y += 2000;
+        return String(y).padStart(4, '0') + '-' + m[2] + '-' + m[3];
+      };
       payDateEl.addEventListener('change', ()=>{
-        if(payDateEl.value) auditPayDates[activeAuditCode] = payDateEl.value;
+        const fixed = fixYear(payDateEl.value);
+        if(fixed !== payDateEl.value) payDateEl.value = fixed;
+        if(fixed) auditPayDates[activeAuditCode] = fixed;
         else delete auditPayDates[activeAuditCode];
         renderAuditView();     /* គ្រប់ជួរប្តូរតាមថ្ងៃថ្មីភ្លាម */
       });
