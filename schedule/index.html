@@ -713,18 +713,31 @@ function renderVisits(root,kind){
 
   var now=Date.now();
   var up=list.filter(function(r){return r.status!=='cancelled' && sortKey(r,kind)>=now-864e5});
-  if(!meet && !S.dist) up.sort(function(a,b){
-    var fa=((S.scope==='pp'||S.prov)?districtOf:provinceOf);
-    return fa(a).localeCompare(fa(b)) || sortKey(a,kind)-sortKey(b,kind);
-  });
   var past=list.filter(function(r){return up.indexOf(r)<0});
+
+  if(!meet && !S.showArc){
+    var swap=el('div','seg');
+    [['','ទាំងអស់'],['sched','មានកាលវិភាគ ('+(up.length+past.length)+')'],['pending','មិនទាន់មាន ('+pending.length+')']]
+      .forEach(function(p){
+        var x=el('button',null,p[1]);
+        x.setAttribute('aria-pressed', (S.secFilter||'')===p[0]?'true':'false');
+        x.onclick=function(){ S.secFilter=p[0]; render(); window.scrollTo(0,0) };
+        swap.appendChild(x);
+      });
+    root.appendChild(swap);
+  }
+  if(S.secFilter==='pending' && !meet && !S.showArc){
+    drawPending(root, pending);
+    root.appendChild(arcLink(arc));
+    return;
+  }
 
   section(root, S.showArc?'ប័ណ្ណសារ — សវនកម្មបានបញ្ចប់':'ដែលជិតមកដល់', up.length);
   if(!up.length) root.appendChild(emptyBox(meet?'មិនទាន់មានការប្រជុំ':'មិនទាន់មានការចុះទីតាំង'));
   if(meet) up.sort(function(a,b){
     return String(a.nameLatin||'').localeCompare(String(b.nameLatin||'')) || sortKey(a,kind)-sortKey(b,kind);
   });
-  var lastA=null, lastEnt=null;
+  var lastEnt=null;
   up.forEach(function(r){
     if(meet){
       var key=r.entId||r.nameLatin;
@@ -736,15 +749,21 @@ function renderVisits(root,kind){
         lastEnt=key;
       }
     }
-    if(!meet && !S.dist){
-      var a=((S.scope==='pp'||S.prov)?districtOf(r):provinceOf(r));
-      if(a!==lastA){ root.appendChild(el('div','grouphd','📍 '+a)); lastA=a }
-    }
     root.appendChild(visitCard(r));
   });
 
   if(past.length){ section(root,'កន្លងផុត / បានបញ្ចប់', past.length); past.reverse().forEach(function(r){ root.appendChild(visitCard(r)) }) }
 
+  if(S.secFilter!=='sched') drawPending(root, pending);
+
+  root.appendChild(arcLink(arc));
+}
+function arcLink(arc){
+  var tg=el('button','arclink', S.showArc ? '← ត្រឡប់ទៅបញ្ជីសកម្ម' : '📦 ប័ណ្ណសារ ('+arc.length+')');
+  tg.onclick=function(){ S.showArc=!S.showArc; render(); window.scrollTo(0,0) };
+  return tg;
+}
+function drawPending(root, pending){
   if(pending.length || S.owner){
     section(root,'សហគ្រាសមិនទាន់មានកាលវិភាគ', pending.length);
     root.appendChild(ownerChips());
@@ -770,10 +789,6 @@ function renderVisits(root,kind){
       root.appendChild(c);
     });
   }
-
-  var tg=el('button','arclink', S.showArc ? '← ត្រឡប់ទៅបញ្ជីសកម្ម' : '📦 ប័ណ្ណសារ ('+arc.length+')');
-  tg.onclick=function(){ S.showArc=!S.showArc; render(); window.scrollTo(0,0) };
-  root.appendChild(tg);
 }
 function section(root,title,n){
   var s=el('div','sec'); s.appendChild(el('h2',null,title)); s.appendChild(el('span','n',String(n))); root.appendChild(s);
