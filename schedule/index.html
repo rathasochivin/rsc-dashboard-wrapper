@@ -619,8 +619,10 @@ function render(){
 /* ---------- 1. site visits ---------- */
 /** លិខិតជូនដំណឹងអាចមានច្រើនច្បាប់ — ទម្រង់ចាស់មានតែមួយ */
 function noticesOf(r){
-  if(r.notices && r.notices.length!==undefined) return r.notices;
-  if(r.noticeVia) return [{via:r.noticeVia, date:r.noticeDate, name:r.noticeName, phone:r.noticePhone, img:r.noticeImg}];
+  /* ⚠ បញ្ជីទទេ មិនត្រូវលុបលិខិតចាស់ដែលរក្សាទុកក្នុងជួរឈរដើមឡើយ */
+  if(r.notices && r.notices.length) return r.notices;
+  if(r.noticeVia) return [{via:r.noticeVia, date:r.noticeDate, name:r.noticeName, phone:r.noticePhone,
+                           imgs:r.noticeImg?[r.noticeImg]:[]}];
   return [];
 }
 function ownerOfVisit(r){ return (r.auditors && r.auditors[0]) || '' }
