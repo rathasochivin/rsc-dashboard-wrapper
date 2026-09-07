@@ -567,16 +567,21 @@ function pushVisit(rec){
   var old=null;
   for(var i=0;i<S.visits.length;i++) if(S.visits[i].id===rec.id) old=S.visits[i];
   rec.__notified = !old || old.visitAt!==rec.visitAt || old.meetAt!==rec.meetAt;
-  if(!online()){ upsert(S.visits,rec); saveLocal(); render(); toast('រក្សាទុកក្នុងទូរសព្ទ (មិនទាន់ផ្ញើសារ)'); return Promise.resolve() }
-  return api('apiSaveVisit',[S.token,rec]).then(function(){ return refresh(true) })
-    .then(function(){ toast(rec.__notified ? '✅ រក្សាទុក និងផ្ញើសារជូនក្រុមរួច' : '✅ រក្សាទុករួច') })
-    .catch(function(e){ toast('⚠️ '+e.message) });
+  /* បង្ហាញលទ្ធផលភ្លាម រួចផ្ញើទៅម៉ាស៊ីនមេនៅខាងក្រោយ */
+  upsert(S.visits,rec); saveLocal(); render();
+  if(!online()){ toast('រក្សាទុកក្នុងទូរសព្ទ (មិនទាន់ផ្ញើសារ)'); return Promise.resolve() }
+  toast(rec.__notified ? 'កំពុងផ្ញើសារជូនក្រុម…' : 'កំពុងរក្សាទុក…');
+  return api('apiSaveVisit',[S.token,rec])
+    .then(function(){ toast(rec.__notified ? '✅ រក្សាទុក និងផ្ញើសារជូនក្រុមរួច' : '✅ រក្សាទុករួច'); return refresh(true) })
+    .catch(function(e){ toast('⚠️ '+e.message); return refresh(true) });
 }
 function pushInternal(rec){
-  if(!online()){ upsert(S.internal,rec); saveLocal(); render(); toast('រក្សាទុកក្នុងទូរសព្ទ'); return Promise.resolve() }
-  return api('apiSaveInternal',[S.token,rec]).then(function(){ return refresh(true) })
-    .then(function(){ toast('✅ រក្សាទុករួច') })
-    .catch(function(e){ toast('⚠️ '+e.message) });
+  upsert(S.internal,rec); saveLocal(); render();          /* បង្ហាញភ្លាម */
+  if(!online()){ toast('រក្សាទុកក្នុងទូរសព្ទ'); return Promise.resolve() }
+  toast('កំពុងរក្សាទុក…');
+  return api('apiSaveInternal',[S.token,rec])
+    .then(function(){ toast(rec.silent ? '✅ រក្សាទុករួច (មិនបានជូនដំណឹង)' : '✅ ជូនដំណឹងក្រុមរួច'); return refresh(true) })
+    .catch(function(e){ toast('⚠️ '+e.message); return refresh(true) });
 }
 function pushEnt(rec){
   upsert(S.ents,rec); saveLocal();
@@ -1321,8 +1326,9 @@ function delInternal(r){
   if(!confirm('ដកការជូនដំណឹងនេះវិញមែនទេ?')) return;
   S.internal=S.internal.filter(function(x){return x.id!==r.id}); saveLocal(); render();
   if(!online()) return;
-  api('apiDeleteInternal',[S.token,r.id]).then(function(){ return refresh(true) })
-    .then(function(){ toast('ដករួច និងជូនដំណឹងក្រុម') }).catch(function(e){ toast('⚠️ '+e.message) });
+  api('apiDeleteInternal',[S.token,r.id])
+    .then(function(){ toast('ដករួច និងជូនដំណឹងក្រុម'); return refresh(true) })
+    .catch(function(e){ toast('⚠️ '+e.message); return refresh(true) });
 }
 
 /* ---------- 3. report ---------- */
