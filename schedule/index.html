@@ -242,7 +242,8 @@ table.rp td.nw{white-space:nowrap;font-size:10.5px}
 table.rp .lat{font-family:system-ui,-apple-system,sans-serif}
 table.rp td.n{font-family:system-ui,-apple-system,sans-serif}
 .sum{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-bottom:16px}
-.sum div{background:#fff;border:1px solid var(--line);padding:11px 12px}
+.sum div,.sum button.tile{background:#fff;border:1px solid var(--line);padding:11px 12px;text-align:left;width:100%}
+.sum button.tile[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
 .sum b{display:block;font-family:system-ui,-apple-system,sans-serif;font-size:23px;font-weight:700;line-height:1.2}
 .sum span{font-size:12px;color:var(--slate)}
 .rphead{font-size:12.5px;color:var(--slate);margin:-4px 0 14px}
@@ -363,7 +364,9 @@ var MEET_FLOOR = '3';           /* ជាន់ទីលំនាំដើម �
 var ACTS = ['ចុះទីតាំង','ប្រជុំជាមួយអ្នកតំណាងសហគ្រាស','ឆ្លងយោបល់ថ្នាក់ដឹកនាំ','ពិនិត្យឯកសារសវនកម្ម'];
 var CHAIRS = ['អនុប្រធានការិយាល័យ','ប្រធានការិយាល័យ','អនុប្រធាននាយកដ្ឋាន','ប្រធាននាយកដ្ឋាន','អគ្គនាយករង','ប្រតិភូ'];
 var RESP = [['waiting','⏳ រង់ចាំការឆ្លើយតប'],['agree','✅ សហគ្រាសយល់ស្រប'],['noreply','📵 មិនអាចទាក់ទងបាន']];
-var NOTICE = [['','មិនទាន់ផ្ញើលិខិត'],['telegram','Telegram'],['email','Email ផ្លូវការ'],['pickup','សហគ្រាសមកទទួលផ្ទាល់'],['post','ប្រៃសណីយ៍']];
+var NOTICE = [['','មិនទាន់ផ្ញើលិខិត'],['telegram','Telegram'],['email','Email ផ្លូវការ'],['phone','តាមទូរសព្ទ'],
+              ['pickup','សហគ្រាសមកទទួលផ្ទាល់'],['onsite','ប្រគល់ជូនទៅដល់ទីតាំង'],['post','ប្រៃសណីយ៍']];
+var NOTICE_WHO = ['telegram','phone','pickup','onsite'];   /* ផ្លូវដែលត្រូវកត់ឈ្មោះអ្នកទទួល */
 /* ទាញ ខណ្ឌ/ស្រុក និង ខេត្ត ចេញពីអាសយដ្ឋាន */
 var NOAREA='មិនទាន់កំណត់តំបន់';
 var STOPW=/^(ភូមិ|ឃុំ|សង្កាត់|ខេត្ត|ផ្លូវ|ក្រុម|អគារ|ជាន់)$/;
@@ -614,6 +617,12 @@ function render(){
 }
 
 /* ---------- 1. site visits ---------- */
+/** លិខិតជូនដំណឹងអាចមានច្រើនច្បាប់ — ទម្រង់ចាស់មានតែមួយ */
+function noticesOf(r){
+  if(r.notices && r.notices.length!==undefined) return r.notices;
+  if(r.noticeVia) return [{via:r.noticeVia, date:r.noticeDate, name:r.noticeName, phone:r.noticePhone, img:r.noticeImg}];
+  return [];
+}
 function ownerOfVisit(r){ return (r.auditors && r.auditors[0]) || '' }
 function sortKey(r,kind){
   var d = kind==='meet' ? dt(r.meetAt) : (kind==='visit' ? dt(r.visitAt) : (dt(r.visitAt)||dt(r.meetAt)));
@@ -822,16 +831,20 @@ function visitCard(r){
     (r.visitAt?'<div class="row"><i>📍</i><div>ចុះពិនិត្យទីតាំង៖ '+fmtFull(r.visitAt)+'</div></div>':'')+
     (r.meetAt ?'<div class="row"><i>🤝</i><div>ណាត់ជួបសហគ្រាស៖ '+fmtFull(r.meetAt)+'<br>'+esc(meetPlace(r))+'</div></div>':'')+
     (r.zoomLink?'<div class="row"><i>💻</i><div><a href="'+esc(r.zoomLink)+'" target="_blank" rel="noopener">ចូលរួមតាម Zoom</a></div></div>':'')+
-    (r.bookingImg?'<div class="row"><i>🧾</i><div><img src="'+esc(r.bookingImg)+'" alt="booking" style="max-width:100%;border:1px solid var(--line);border-radius:3px"></div></div>':'')+
+    (r.bookingImg?'<div class="row"><i>🧾</i><div><a href="'+esc(r.bookingImg)+'" target="_blank" rel="noopener">🖼 មើលរូបកក់បន្ទប់</a></div></div>':'')+
     (r.address && r.visitAt?'<div class="row"><i>🏢</i><div>'+esc(r.address)+'</div></div>':'')+
     ((r.extras&&r.extras.length)?'<div class="row"><i>🏭</i><div>'+r.extras.map(function(x){return esc((x.label||'ទីតាំងបន្ថែម')+'៖ '+(x.address||''))}).join('<br>')+'</div></div>':'')+
     ((r.auditors&&r.auditors.length)?'<div class="row"><i>👤</i><div>'+r.auditors.map(nameOf).map(esc).join(' · ')+'</div></div>':'')+
+    ((r.siteImgs&&r.siteImgs.length)?'<div class="row"><i>🖼</i><div>'+r.siteImgs.map(function(u,i){
+        return '<a href="'+esc(u)+'" target="_blank" rel="noopener">រូបទីតាំង '+(i+1)+'</a>' }).join(' · ')+'</div></div>':'')+
     (r.contactPhone||r.contactName?'<div class="row"><i>📞</i><div>'+esc(r.contactName||'អ្នកតំណាង')+
        (r.contactPhone?' · <a href="tel:'+esc(String(r.contactPhone).replace(/[^0-9+]/g,''))+'">'+esc(r.contactPhone)+'</a>':'')+'</div></div>':'')+
-    (r.noticeVia?'<div class="row"><i>📨</i><div>បានផ្ញើលិខិតជូនដំណឹង៖ '+esc(labOf(NOTICE,r.noticeVia))+(r.noticeDate?' · '+fmtD(r.noticeDate+'T00:00'):'')+
-      (r.noticeName?'<br>អ្នកទទួល៖ '+esc(r.noticeName)+(r.noticePhone?' · '+esc(r.noticePhone):''):'')+
-      (r.noticeImg?'<br><img src="'+esc(r.noticeImg)+'" alt="notice" style="max-width:100%;margin-top:6px;border:1px solid var(--line);border-radius:3px">':'')+
-      '</div></div>':'')+
+    (noticesOf(r).length?'<div class="row"><i>📨</i><div>'+noticesOf(r).map(function(n){
+        var imgs=(n.imgs&&n.imgs.length)?n.imgs:(n.img?[n.img]:[]);
+        return esc(labOf(NOTICE,n.via))+(n.date?' · '+fmtD(n.date+'T00:00'):'')+
+          (n.name?' · '+esc(n.name)+(n.phone?' '+esc(n.phone):''):'')+
+          imgs.map(function(u,i){ return ' <a href="'+esc(u)+'" target="_blank" rel="noopener">🖼 មើលឯកសារ'+(imgs.length>1?' '+(i+1):'')+'</a>' }).join('');
+      }).join('<br>')+'</div></div>':'')+
     (r.note?'<div class="row"><i>📝</i><div>'+esc(r.note)+'</div></div>':'');
   b.appendChild(meat); c.appendChild(b);
 
@@ -1189,12 +1202,37 @@ function renderReport(root){
   var sm=el('div','sum');
   var nAgree=visits.filter(function(r){return r.resp==='agree'}).length;
   var nNo   =visits.filter(function(r){return r.resp==='noreply'}).length;
-  [[nVisit,'ចុះពិនិត្យទីតាំង'],[nMeet,'ណាត់ជួបសហគ្រាស'],[nDone,'បានចុះរួច'],[nMoved,'ប្តូរពេល'],
-   [nAgree,'សហគ្រាសយល់ស្រប'],[nNo,'មិនអាចទាក់ទងបាន'],
-   [leaveD,'ថ្ងៃច្បាប់សរុប'],[lateN,'ចំនួនដងសុំយឺត']].forEach(function(p){
-    var d=el('div'); d.appendChild(el('b',null,String(p[0]))); d.appendChild(el('span',null,p[1])); sm.appendChild(d);
+  [[nVisit,'ចុះពិនិត្យទីតាំង','visit'],[nMeet,'ណាត់ជួបសហគ្រាស','meet'],
+   [nDone,'បានចុះរួច','done'],[nMoved,'ប្តូរពេល','moved'],
+   [nAgree,'សហគ្រាសយល់ស្រប','agree'],[nNo,'មិនអាចទាក់ទងបាន','noreply'],
+   [leaveD,'ថ្ងៃច្បាប់សរុប','leave'],[lateN,'ចំនួនដងសុំយឺត','late']].forEach(function(p){
+    var d=el('button','tile');
+    d.setAttribute('aria-pressed', S.rpFocus===p[2]?'true':'false');
+    d.appendChild(el('b',null,String(p[0]))); d.appendChild(el('span',null,p[1]));
+    d.onclick=function(){ S.rpFocus=(S.rpFocus===p[2])?'':p[2]; render(); window.scrollTo(0,0) };
+    sm.appendChild(d);
   });
   root.appendChild(sm);
+
+  /* ចុចប្រអប់សរុប → បង្ហាញតែបញ្ជីនោះ ដើម្បីតាមដាន */
+  var FOCUS={visit:'ចុះពិនិត្យទីតាំង',meet:'ណាត់ជួបសហគ្រាស',done:'បានចុះរួច',moved:'ប្តូរពេល',
+             agree:'សហគ្រាសយល់ស្រប',noreply:'មិនអាចទាក់ទងបាន',leave:'សុំច្បាប់',late:'សុំមកយឺត'};
+  if(S.rpFocus && FOCUS[S.rpFocus]){
+    var fb=el('button','arclink noprint','កំពុងបង្ហាញ៖ '+FOCUS[S.rpFocus]+'   ✕');
+    fb.onclick=function(){ S.rpFocus=''; render() };
+    root.appendChild(fb);
+    if(S.rpFocus==='leave' || S.rpFocus==='late'){
+      visits=[]; intern=intern.filter(function(r){ return r.type===S.rpFocus });
+    } else {
+      intern=[];
+      if(S.rpFocus==='visit')   visits=visits.filter(function(r){ return inRange(r.visitAt,S.rp.from,S.rp.to) });
+      if(S.rpFocus==='meet')    visits=visits.filter(function(r){ return inRange(r.meetAt ,S.rp.from,S.rp.to) });
+      if(S.rpFocus==='done')    visits=visits.filter(function(r){ return r.status==='done' });
+      if(S.rpFocus==='moved')   visits=visits.filter(function(r){ return r.moved });
+      if(S.rpFocus==='agree')   visits=visits.filter(function(r){ return r.resp==='agree' });
+      if(S.rpFocus==='noreply') visits=visits.filter(function(r){ return r.resp==='noreply' });
+    }
+  }
 
   /* per auditor */
   var tb=el('table','rp');
@@ -1224,7 +1262,8 @@ function renderReport(root){
         '<td class="nw">'+(r.meetAt ?'<span class="lat">'+fmtL(r.meetAt )+'</span><br>'+fmtT(r.meetAt ):'—')+'</td>'+
         '<td class="nw"><span class="lat">'+esc(shortOf(ownerOfVisit(r)))+'</span></td>'+
         '<td>'+esc(labOf(RESP,r.resp||'waiting'))+'</td>'+
-        '<td>'+esc(labOf(NOTICE,r.noticeVia))+(r.noticeDate?'<br><span class="lat">'+fmtL(r.noticeDate+'T00:00')+'</span>':'')+'</td>';
+        '<td>'+noticesOf(r).map(function(n){
+            return esc(labOf(NOTICE,n.via))+(n.date?'<br><span class="lat">'+fmtL(n.date+'T00:00')+'</span>':'') }).join('<br>')+'</td>';
       t3.appendChild(tr);
     });
     root.appendChild(t3);
@@ -1255,12 +1294,33 @@ function renderReport(root){
   }));
   root.appendChild(bar);
 }
+/** បញ្ជីរូបភាព ៖ ចុចមើលទើបបើក មិនបង្ហាញរូបពេញក្នុងទម្រង់ */
+function imageList(parent, arr, onChange, label){
+  parent.appendChild(el('label',null,label));
+  var box=el('div'); parent.appendChild(box);
+  function draw(){
+    box.innerHTML='';
+    arr.forEach(function(u,ix){
+      var row=el('div','extra');
+      var rm=el('button','rm','លុប');
+      rm.onclick=function(){ arr.splice(ix,1); onChange(arr); draw() };
+      var a=el('a',null,'🖼 រូបទី '+(ix+1)+' — ចុចមើល');
+      a.href=u; a.target='_blank'; a.rel='noopener'; a.style.fontSize='13px';
+      row.appendChild(rm); row.appendChild(a); box.appendChild(row);
+    });
+    var slot=el('div');
+    imagePicker(slot, '', function(url){ if(url){ arr.push(url); onChange(arr); draw() } }, '');
+    box.appendChild(slot);
+  }
+  draw();
+}
+
 /**
  * ប្រអប់បិទភ្ជាប់រូប ៖ បង្រួម → ផ្ទុកឡើង Google Drive → រក្សាទុកតែតំណ
  * onSet(url) ត្រូវបានហៅរាល់ពេលរូបប្តូរ
  */
 function imagePicker(parent, current, onSet, label){
-  parent.appendChild(el('label',null,label||'រូបភាពភ្ជាប់'));
+  if(label) parent.appendChild(el('label',null,label));
   var wrap=el('div','shot');
   var img=el('img'); img.style.display='none';
   var box=el('div','pastebox');
@@ -1479,8 +1539,12 @@ function reportSheets(visits, intern){
       r.visitAt?fmtD(r.visitAt)+' '+fmtT(r.visitAt):'', r.meetAt?fmtD(r.meetAt)+' '+fmtT(r.meetAt):'',
       r.meetAt?meetPlace(r):'', r.contactName||'', r.contactPhone||'',
       nameOf(ownerOfVisit(r)), r.partner?nameOf(r.partner):'', statusMeta(r).txt,
-      labOf(RESP,r.resp||'waiting'), labOf(NOTICE,r.noticeVia), r.noticeDate?fmtD(r.noticeDate+'T00:00'):'',
-      r.noticeName||'', r.noticePhone||'', r.noticeImg||'',
+      labOf(RESP,r.resp||'waiting'),
+      noticesOf(r).map(function(n){ return labOf(NOTICE,n.via) }).join(' + '),
+      noticesOf(r).map(function(n){ return n.date?fmtD(n.date+'T00:00'):'' }).filter(String).join(' + '),
+      noticesOf(r).map(function(n){ return n.name||'' }).filter(String).join(' + '),
+      noticesOf(r).map(function(n){ return n.phone||'' }).filter(String).join(' + '),
+      noticesOf(r).map(function(n){ return ((n.imgs&&n.imgs.join(' '))||n.img||'') }).filter(String).join(' '),
       r.lastReason||'', r.note||'', r.mapLink||'']);
   });
   var i=[['សមាជិក / ប្រធានអង្គប្រជុំ','ប្រភេទ','ចាប់ពី','ដល់','ចំនួនថ្ងៃ','ម៉ោង','កម្មវត្ថុ / មូលហេតុ','ទីកន្លែង','អ្នកចូលរួម','រៀបវារៈ','ខ្លឹមសារ','ជូនដំណឹងថ្ងៃ']];
@@ -1704,6 +1768,9 @@ function visitForm(r, seedDay, forceKind, seedEnt, asNew){
     siteBox.appendChild(el('div','hint','ចុចប៊ូតុងខាងលើ វានឹងបើក Google Maps ដោយបំពេញឈ្មោះសហគ្រាសជូនស្រាប់។ ពេលរកឃើញ → Share → Copy link → បិទភ្ជាប់ក្នុងប្រអប់ខាងលើ។'));
     siteBox.appendChild(el('div','f'));
 
+    r.siteImgs = (r.siteImgs && r.siteImgs.length!==undefined) ? r.siteImgs : [];
+    imageList(siteBox, r.siteImgs, function(a){ r.siteImgs=a }, 'រូបភាពទីតាំង');
+
     var area=field(siteBox,'តំបន់ (ខណ្ឌ / ស្រុក / ខេត្ត)', input('text',r.area||'','ខណ្ឌចំការមន'),'ទុកទទេ ក៏បាន — កម្មវិធីទាញចេញពីអាសយដ្ឋានឯង');
     addr.addEventListener('blur',function(){ if(!area.value.trim()) area.value=guessArea(addr.value) });
     siteBox.appendChild(el('label',null,'ទីតាំងបន្ថែម (ឃ្លាំង · រោងចក្រ · សាខា)'));
@@ -1822,23 +1889,46 @@ function visitForm(r, seedDay, forceKind, seedEnt, asNew){
     resp.value=r.resp||'waiting';
     field(b,'ការឆ្លើយតបរបស់សហគ្រាស',resp);
 
-    var via=el('select');
-    NOTICE.forEach(function(p){ var o=el('option',null,p[1]); o.value=p[0]; via.appendChild(o) });
-    via.value=r.noticeVia||'';
-    field(b,'លិខិតជូនដំណឹង ផ្ញើតាមរយៈ',via);
-    var ndate=field(b,'ថ្ងៃ ខែ ឆ្នាំ ផ្ញើ / ទទួលលិខិត', input('date',r.noticeDate||''));
+    var notices = noticesOf(r).map(function(n){ return JSON.parse(JSON.stringify(n)) });
+    b.appendChild(el('label',null,'លិខិតជូនដំណឹង (ផ្ញើបានច្រើនផ្លូវ)'));
+    var nBox=el('div'); b.appendChild(nBox);
+    function drawNotices(){
+      nBox.innerHTML='';
+      notices.forEach(function(n,ix){
+        var card=el('div','extra');
+        var rm=el('button','rm','លុប');
+        rm.onclick=function(){ notices.splice(ix,1); drawNotices() };
+        card.appendChild(rm);
 
-    var nWho=el('div'); b.appendChild(nWho);
-    var nName=field(nWho,'ឈ្មោះអ្នកទទួលលិខិត', input('text',r.noticeName,'ឈ្មោះ'));
-    var nPhone=field(nWho,'លេខទូរសព្ទអ្នកទទួលលិខិត', input('tel',r.noticePhone,'012 345 678'));
-    var nImg=el('div'); b.appendChild(nImg);
-    function toggleNotice(){
-      var on=!!via.value;
-      nWho.style.display = on ? 'block' : 'none';
-      nImg.style.display = on ? 'block' : 'none';
+        var via=el('select');
+        NOTICE.forEach(function(p){ if(p[0]==='') return; var o=el('option',null,p[1]); o.value=p[0]; via.appendChild(o) });
+        via.value=n.via||'telegram'; n.via=via.value;
+        via.onchange=function(){ n.via=via.value; toggleWho() };
+        field(card,'ផ្ញើតាមរយៈ',via);
+
+        var dt2=input('date', n.date||'');
+        dt2.onchange=function(){ n.date=dt2.value };
+        field(card,'ថ្ងៃ ខែ ឆ្នាំ ផ្ញើ / ទទួល',dt2);
+
+        var who=el('div'); card.appendChild(who);
+        var nm=input('text', n.name||'', 'ឈ្មោះអ្នកទទួល');
+        nm.oninput=function(){ n.name=nm.value };
+        var ph=input('tel', n.phone||'', '012 345 678');
+        ph.oninput=function(){ n.phone=ph.value };
+        field(who,'ឈ្មោះអ្នកទទួល',nm);
+        field(who,'លេខទូរសព្ទអ្នកទទួល',ph);
+        function toggleWho(){ who.style.display=(NOTICE_WHO.indexOf(n.via)>=0)?'block':'none' }
+        toggleWho();
+
+        n.imgs = (n.imgs && n.imgs.length!==undefined) ? n.imgs : (n.img?[n.img]:[]);
+        imageList(card, n.imgs, function(a){ n.imgs=a }, 'ឯកសារភ្ជាប់');
+        nBox.appendChild(card);
+      });
+      var add=el('button','mini','+ បន្ថែមការផ្ញើលិខិត');
+      add.onclick=function(){ notices.push({via:'telegram',date:'',name:'',phone:'',imgs:[]}); drawNotices() };
+      nBox.appendChild(add); nBox.appendChild(el('div','f'));
     }
-    imagePicker(nImg, r.noticeImg, function(u){ r.noticeImg=u }, 'ឯកសារភ្ជាប់លិខិត (screenshot ឬរូបលិខិត)');
-    via.onchange=toggleNotice; toggleNotice();
+    drawNotices();
 
     var note=field(b,'កំណត់សម្គាល់', textarea(r.note,'ឯកសារត្រូវត្រៀម · អ្នកទំនាក់ទំនង · លេខទូរសព្ទ…'));
     if(seedEnt) fillFrom(seedEnt);
@@ -1861,9 +1951,12 @@ function visitForm(r, seedDay, forceKind, seedEnt, asNew){
       r.meetFloor = showMeet ? (floor.value.trim()||MEET_FLOOR) : '';
       r.contactName=cname.value.trim(); r.contactPhone=cphone.value.trim();
       r.area = (area.value.trim() || guessArea(addr.value));
-      r.resp=resp.value; r.noticeVia=via.value; r.noticeDate=ndate.value;
-      r.noticeName=via.value?nName.value.trim():''; r.noticePhone=via.value?nPhone.value.trim():'';
-      if(!via.value) r.noticeImg='';
+      r.resp=resp.value;
+      r.notices=notices.filter(function(n){ return n.via });
+      var n0=r.notices[0]||{};
+      r.noticeVia=n0.via||''; r.noticeDate=n0.date||'';
+      r.noticeName=n0.name||''; r.noticePhone=n0.phone||'';
+      r.noticeImg=(n0.imgs&&n0.imgs[0])||'';
       r.partner = (pSel.value && pSel.value!==aSel.value) ? pSel.value : '';
       r.auditors=[aSel.value, r.partner].filter(function(x,i,a){ return x && a.indexOf(x)===i });
       r.extras=(r.extras||[]).filter(function(x){return (x.address||'').trim()||(x.label||'').trim()});
@@ -1939,17 +2032,23 @@ function respForm(r){
     var nName=field(who,'ឈ្មោះអ្នកទទួល', input('text',r.noticeName,'ឈ្មោះ'));
     var nPhone=field(who,'លេខទូរសព្ទអ្នកទទួល', input('tel',r.noticePhone,'012 345 678'));
     function toggleWho(){
-      who.style.display = (via.value==='telegram' || via.value==='pickup') ? 'block' : 'none';
+      who.style.display = (NOTICE_WHO.indexOf(via.value)>=0) ? 'block' : 'none';
     }
     via.onchange=toggleWho; toggleWho();
 
-    imagePicker(b, r.noticeImg, function(u){ r.noticeImg=u }, 'ឯកសារភ្ជាប់ (screenshot ឬរូបលិខិត)');
+    r.notices = noticesOf(r);
+    var n0 = r.notices[0] || {};
+    n0.imgs = (n0.imgs && n0.imgs.length!==undefined) ? n0.imgs : (n0.img?[n0.img]:[]);
+    imageList(b, n0.imgs, function(a){ n0.imgs=a }, 'ឯកសារភ្ជាប់ (screenshot ឬរូបលិខិត)');
 
     var sv=el('button','save','រក្សាទុកលិខិតជូនដំណឹង');
     sv.onclick=function(){
       r.noticeVia=via.value; r.noticeDate=nd.value;
       r.noticeName=nName.value.trim(); r.noticePhone=nPhone.value.trim();
-      if((r.noticeVia==='telegram'||r.noticeVia==='pickup') && !r.noticeName)
+      n0.via=r.noticeVia; n0.date=r.noticeDate; n0.name=r.noticeName; n0.phone=r.noticePhone;
+      r.noticeImg=(n0.imgs&&n0.imgs[0])||'';
+      r.notices = r.noticeVia ? [n0].concat(r.notices.slice(1)) : r.notices.slice(1);
+      if(NOTICE_WHO.indexOf(r.noticeVia)>=0 && !r.noticeName)
         return toast('សូមបំពេញឈ្មោះអ្នកទទួល');
       r.updatedAt=new Date().toISOString();
       r.history=(r.history||[]).concat([{at:r.updatedAt,by:S.me.email,
