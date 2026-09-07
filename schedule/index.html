@@ -959,6 +959,7 @@ function calEvents(){
       return;
     }
     if(r.type==='meeting'){
+      if(r.done) return;
       put(dkey(st),{ord:st.getHours()*60+st.getMinutes(),cls:'meet',ico:'👥',tm:fmtT(r.fromAt),
         title:r.subject||'ប្រជុំផ្ទៃក្នុង', sub:'ដឹកនាំដោយ '+(r.chair||'—')+(meetPlaceIn(r)?' · '+meetPlaceIn(r):'')});
       return;
@@ -1206,11 +1207,16 @@ function renderTeam(root){
   sm.onclick=function(){ summaryForm() };
   root.appendChild(sm);
 
-  var list=S.internal.slice().sort(function(a,b){return (dt(b.fromAt)||0)-(dt(a.fromAt)||0)});
+  var all=S.internal.slice().sort(function(a,b){return (dt(b.fromAt)||0)-(dt(a.fromAt)||0)});
+  var doneN=all.filter(function(r){ return r.type==='meeting' && r.done }).length;
+  var list=all.filter(function(r){ return S.showDone ? (r.type==='meeting' && r.done) : !(r.type==='meeting' && r.done) });
   var mine=list;   /* ក្រុមមើលឃើញគ្នាទៅវិញទៅមក */
-  section(root,'ការជូនដំណឹងផ្ទៃក្នុង',mine.length);
-  if(!mine.length){ root.appendChild(emptyBox('មិនទាន់មានការជូនដំណឹង')); return }
+  section(root, S.showDone?'ប្រជុំដែលបានបញ្ចប់':'ការជូនដំណឹងផ្ទៃក្នុង', mine.length);
+  if(!mine.length) root.appendChild(emptyBox(S.showDone?'គ្មានប្រជុំដែលបានបញ្ចប់':'មិនទាន់មានការជូនដំណឹង'));
   mine.forEach(function(r){ root.appendChild(internalCard(r)) });
+  var tg=el('button','arclink', S.showDone?'← ត្រឡប់ទៅបញ្ជីសកម្ម':'✔️ ប្រជុំដែលបានបញ្ចប់ ('+doneN+')');
+  tg.onclick=function(){ S.showDone=!S.showDone; render(); window.scrollTo(0,0) };
+  root.appendChild(tg);
 }
 function meetPlaceIn(r){
   var x=[];
@@ -1271,7 +1277,8 @@ function meetingCard(r){
   b.appendChild(rail);
   var meat=el('div','meat');
   meat.innerHTML =
-    '<div class="name">'+esc(r.subject||'ប្រជុំផ្ទៃក្នុង')+'</div>'+
+    '<div class="name">'+esc(r.subject||'ប្រជុំផ្ទៃក្នុង')+
+      (r.done?'<span class="chip c-done">បានបញ្ចប់</span>':'')+'</div>'+
     '<div class="tin">ដឹកនាំដោយ៖ '+esc(r.chair||'—')+'</div>'+
     '<div class="row"><i>🕒</i><div>'+fmtFull(r.fromAt)+'</div></div>'+
     (meetPlaceIn(r)?'<div class="row"><i>🏢</i><div>'+esc(meetPlaceIn(r))+'</div></div>':'')+
@@ -1280,11 +1287,19 @@ function meetingCard(r){
     (r.minutes?'<div class="row"><i>📝</i><div>'+esc(r.minutes).replace(/\n/g,'<br>')+'</div></div>':'');
   b.appendChild(meat); c.appendChild(b);
   var a=el('div','acts');
+  if(!r.done) a.appendChild(btn('✔️ បញ្ចប់ការប្រជុំ','key',function(){ finishMeeting(r) }));
+  else a.appendChild(btn('↩️ បើកឡើងវិញ','',function(){ finishMeeting(r) }));
   a.appendChild(btn('📝 កត់ត្រាក្រោយប្រជុំ','key',function(){ internalForm('meeting', r) }));
   a.appendChild(btn('✏️ កែ','',function(){ internalForm('meeting', r) }));
   if(r.email===S.me.email || isAdmin()) a.appendChild(btn('🗑 លុប','warn',function(){ delInternal(r) }));
   c.appendChild(a);
   return c;
+}
+function finishMeeting(r){
+  r.done = !r.done;
+  r.doneAt = r.done ? new Date().toISOString() : '';
+  r.silent = true;                       /* បញ្ចប់ហើយ មិនផ្ញើសារទៀតទេ */
+  pushInternal(r);
 }
 function delInternal(r){
   if(!confirm('ដកការជូនដំណឹងនេះវិញមែនទេ?')) return;
