@@ -951,6 +951,104 @@ function calEvents(){
   return map;
 }
 
+/* ---------- ចម្លងកាលវិភាគជារូបភាព (សម្រាប់ Telegram) ---------- */
+function wrapText(ctx, text, maxW){
+  var words=String(text||'').split(' '), lines=[], cur='';
+  words.forEach(function(w){
+    var tryLine = cur ? cur+' '+w : w;
+    if(ctx.measureText(tryLine).width<=maxW){ cur=tryLine; return }
+    if(cur) lines.push(cur);
+    if(ctx.measureText(w).width<=maxW){ cur=w; return }
+    /* ពាក្យវែងពេក (ខ្មែរគ្មានចន្លោះ) — កាត់តាមតួអក្សរ */
+    var piece='';
+    for(var i=0;i<w.length;i++){
+      if(ctx.measureText(piece+w[i]).width>maxW){ lines.push(piece); piece='' }
+      piece+=w[i];
+    }
+    cur=piece;
+  });
+  if(cur) lines.push(cur);
+  return lines;
+}
+function calCanvas(title, groups){
+  var W=1000, PAD=36;
+  var meas=document.createElement('canvas'); meas.width=W; meas.height=100;
+  var ctx=meas.getContext('2d');
+  var KH="'KhmerOS Siemreap', system-ui, sans-serif";
+  var LAT="system-ui, -apple-system, sans-serif";
+  /* វាស់កម្ពស់ជាមុន */
+  var body=[], y=0;
+  ctx.font='16px '+KH;
+  var oneDay = groups.length===1;
+  groups.forEach(function(g){
+    if(!oneDay){ body.push({t:'group', text:g.label}); y+=46 }
+    if(!g.items.length){ body.push({t:'empty'}); y+=40; return }
+    g.items.forEach(function(it){
+      ctx.font='600 20px '+LAT;
+      var t1=wrapText(ctx, it.title, W-2*PAD-120);
+      ctx.font='16px '+KH;
+      var t2=wrapText(ctx, it.sub, W-2*PAD-120);
+      body.push({t:'item', tm:it.tm, l1:t1, l2:t2, cls:it.cls});
+      y += 22 + t1.length*27 + t2.length*24 + 16;
+    });
+  });
+  var H = PAD + 54 + y + PAD;
+  var cv=document.createElement('canvas');
+  cv.width=W; cv.height=Math.max(H,220);
+  ctx=cv.getContext('2d');
+  ctx.fillStyle='#FFFFFF'; ctx.fillRect(0,0,W,cv.height);
+
+  var cy=PAD+8;
+  ctx.fillStyle='#12283C'; ctx.font='600 26px '+KH;
+  ctx.fillText(title, PAD, cy+18); cy+=50;
+  ctx.strokeStyle='#D8E1E8'; ctx.beginPath(); ctx.moveTo(PAD,cy); ctx.lineTo(W-PAD,cy); ctx.stroke(); cy+=18;
+
+  var COL={visit:'#12283C', meet:'#2C6E9B', leave:'#17654C', late:'#A83226'};
+  body.forEach(function(b){
+    if(b.t==='group'){
+      ctx.fillStyle='#51677C'; ctx.font='17px '+KH;
+      ctx.fillText(b.text, PAD, cy+18); cy+=38;
+      return;
+    }
+    if(b.t==='empty'){
+      ctx.fillStyle='#7E8FA0'; ctx.font='16px '+KH;
+      ctx.fillText('— គ្មានកាលវិភាគ —', PAD+16, cy+18); cy+=36;
+      return;
+    }
+    var top=cy;
+    ctx.fillStyle=COL[b.cls]||'#12283C';
+    ctx.fillRect(PAD, top, 4, 20 + b.l1.length*27 + b.l2.length*24);
+    ctx.font='600 18px '+LAT; ctx.fillStyle='#51677C';
+    ctx.fillText(b.tm, PAD+18, top+20);
+    var tx=PAD+120;
+    ctx.font='600 20px '+LAT; ctx.fillStyle='#12283C';
+    b.l1.forEach(function(l){ cy+=27; ctx.fillText(l, tx, cy) });
+    ctx.font='16px '+KH; ctx.fillStyle='#4A5F73';
+    b.l2.forEach(function(l){ cy+=24; ctx.fillText(l, tx, cy) });
+    cy+=16;
+    ctx.strokeStyle='#EEF2F5'; ctx.beginPath(); ctx.moveTo(PAD,cy-6); ctx.lineTo(W-PAD,cy-6); ctx.stroke();
+  });
+  return cv;
+}
+function copyCalImage(title, groups){
+  var mk = new Promise(function(res){
+    var go=function(){ calCanvas(title,groups).toBlob(function(b){ res(b) },'image/png') };
+    if(document.fonts && document.fonts.ready) document.fonts.ready.then(go, go); else go();
+  });
+  function dl(b){
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(b); a.download='kalvibheak.png';
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove() },1500);
+    toast('ទាញយករូបរួច — ផ្ញើតាម Telegram បាន');
+  }
+  if(window.ClipboardItem && navigator.clipboard && navigator.clipboard.write){
+    navigator.clipboard.write([new ClipboardItem({'image/png': mk})])
+      .then(function(){ toast('✅ ចម្លងជារូបរួច — បិទភ្ជាប់ក្នុង Telegram') })
+      .catch(function(){ mk.then(dl) });
+  } else mk.then(dl);
+}
+
 function renderCal(root){
   if(!S.cal) S.cal={mode:'month', k:dkey(new Date())};
   var ev=calEvents(), cur=keyDate(S.cal.k), today=dkey(new Date());
@@ -983,6 +1081,22 @@ function renderCal(root){
     x.appendChild(i); x.appendChild(el('span',null,p[1])); lg.appendChild(x);
   });
   root.appendChild(lg);
+
+  if(S.cal.mode!=='month'){
+    var cp=el('button','arclink noprint','📋 ចម្លងកាលវិភាគជារូបភាព');
+    cp.style.marginBottom='12px';
+    cp.onclick=function(){
+      var days = S.cal.mode==='week' ? (function(){ var w=addDays(cur,-cur.getDay()), a=[]; for(var i=0;i<7;i++) a.push(addDays(w,i)); return a })() : [cur];
+      var groups = days.map(function(d){
+        var list=(ev[dkey(d)]||[]);
+        return {label:'ថ្ងៃ'+DAYS[d.getDay()]+' '+d.getDate()+' '+KHM[d.getMonth()]+' '+d.getFullYear(),
+                items:list.map(function(e){ return {tm:e.tm, title:e.title, sub:e.sub, cls:e.cls} })};
+      }).filter(function(g){ return S.cal.mode!=='week' || g.items.length });
+      if(!groups.length || !groups.some(function(g){return g.items.length})) return toast('គ្មានកាលវិភាគសម្រាប់ចម្លង');
+      copyCalImage(label, groups);
+    };
+    root.appendChild(cp);
+  }
 
   if(S.cal.mode==='month') calMonth(root, cur, ev, today);
   else if(S.cal.mode==='week'){
