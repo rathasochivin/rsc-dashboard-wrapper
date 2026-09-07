@@ -37505,7 +37505,11 @@ function renderTrackingView(){
           <button class="trk-ic" id="trkPrint" title="ព្រីន"        aria-label="ព្រីន">🖨️</button>
           <button class="trk-ic trk-ic-p" id="trkSaveMinutes" title="រក្សាទុកកំណត់ហេតុ" aria-label="រក្សាទុកកំណត់ហេតុ">💾</button>
           <button class="trk-ic" id="trkGen"   title="បង្កើតឡើងវិញ" aria-label="បង្កើតឡើងវិញ">🔄</button>
-          <button class="trk-ic" id="trkCopy"  title="ចម្លង"        aria-label="ចម្លង">📋</button>
+          <button class="trk-ic" id="trkCopy"  title="ចម្លងអត្ថបទ"  aria-label="ចម្លងអត្ថបទ">📋</button>
+          <!-- ⭐ [stated] ២០២៦-០៩-០៣ ៖ ចម្លង/បិទភ្ជាប់ **ទិន្នន័យ** កំណត់ហេតុ
+               រវាងសហគ្រាស ( មិនមែនអត្ថបទបោះពុម្ព ) ។ -->
+          <button class="trk-ic" id="trkMtCopy" title="ចម្លងទិន្នន័យកំណត់ហេតុនេះ" aria-label="ចម្លងទិន្នន័យ">⧉</button>
+          <button class="trk-ic" id="trkMtPaste" title="បិទភ្ជាប់ទិន្នន័យកំណត់ហេតុ" aria-label="បិទភ្ជាប់ទិន្នន័យ">📥</button>
         </span>
       </h3>
       <div class="trk-grid">
@@ -37874,9 +37878,74 @@ function renderTrackingView(){
   if(printBtn) printBtn.onclick = printMinutes;
   const copyBtn = document.getElementById('trkCopy');
   if(copyBtn) copyBtn.onclick = copyMinutes;
+  const mtPick = document.getElementById('trkMeetingPick');
+  const mtIdx = ()=> Number(mtPick ? mtPick.value : 0) || 0;
+  const mtCopyBtn = document.getElementById('trkMtCopy');
+  if(mtCopyBtn) mtCopyBtn.onclick = ()=> meetingDataCopy(mtIdx());
+  const mtPasteBtn = document.getElementById('trkMtPaste');
+  if(mtPasteBtn) mtPasteBtn.onclick = ()=> meetingDataPaste(mtIdx());
 
 
   regen();
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   ចម្លង / បិទភ្ជាប់ **ទិន្នន័យ** កំណត់ហេតុប្រជុំ រវាងសហគ្រាស
+   ⚠⚠ ចម្លងទិន្នន័យ មិនមែនអត្ថបទបោះពុម្ព ៖ អត្ថបទជាលទ្ធផល ⇒ បិទភ្ជាប់វា
+     ទៅសហគ្រាសផ្សេង គេនៅតែត្រូវវាយវាលនីមួយៗម្តងទៀត ។ ការចម្លង **វាល**
+     ( ប្រភេទ · អ្នកតំណាង · ខ្លឹមសារ · ភាពមិនប្រក្រតី … ) ទើបជួយពិត ។
+   ⚠ ដាក់ **អតបប្រភព និងលេខលើក** ក្នុងកូដ ⇒ ពេលបិទភ្ជាប់ គេឃើញច្បាស់ថា
+     មកពីសហគ្រាសណា ហើយប្រព័ន្ធសួរបញ្ជាក់មុនសរសេរជាន់ ។
+   ⚠⚠ វាល **កាលបរិច្ឆេទ និងម៉ោង** មិនចម្លងទេ ៖ ការប្រជុំរបស់សហគ្រាសផ្សេង
+     កើតឡើងថ្ងៃផ្សេង ⇒ ការចម្លងវានឹងបង្កើតកំណត់ហេតុខុសកាលបរិច្ឆេទស្ងាត់ៗ
+     ហើយកំណត់ហេតុជាឯកសារផ្លូវការ ។
+   ═══════════════════════════════════════════════════════════════════════ */
+var MT_COPY_SKIP = ['date','time','savedMinutes','minutesHtml'];
+function meetingCurTin(){
+  try{
+    return String((window.__rscEnterpriseInfo && window.__rscEnterpriseInfo().tin) || '')
+      .replace(/\D/g, '').slice(-9);
+  }catch(e){ return ''; }
+}
+function meetingDataCopy(idx){
+  var mt = (trkState.meetings || [])[idx];
+  if(!mt){ toast('រកកំណត់ហេតុនេះមិនឃើញ', 'err'); return; }
+  var data = {};
+  Object.keys(mt).forEach(function(k){ if(MT_COPY_SKIP.indexOf(k) < 0) data[k] = mt[k]; });
+  var tin = meetingCurTin();
+  var code = JSON.stringify({ rsc:'meeting', v:1, fromTin:tin, no:idx + 1, data:data });
+  try{ if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(code); }catch(e){}
+  /* ⚠ បង្ហាញកូដក្នុងប្រអប់ដែរ ៖ ការចម្លងទៅក្តារតម្បៀតខ្ទាស់អាចត្រូវបដិសេធ
+     ដោយកម្មវិធីរុករក ⇒ គេនៅតែយកកូដបានដោយដៃ ។ */
+  window.prompt('កូដកំណត់ហេតុលើកទី ' + (idx + 1) + (tin ? ' ( អតប ' + tin + ' )' : '')
+    + ' — ចម្លងកូដនេះ រួចបិទភ្ជាប់នៅសហគ្រាសទទួល ៖', code);
+  toast('ចម្លងទិន្នន័យកំណត់ហេតុលើកទី ' + (idx + 1) + ' រួច', 'ok');
+}
+function meetingDataPaste(idx){
+  var raw = window.prompt('បិទភ្ជាប់កូដកំណត់ហេតុនៅទីនេះ ៖', '');
+  if(!raw) return;
+  var payload = null;
+  try{ payload = JSON.parse(String(raw).trim()); }catch(e){}
+  if(!payload || payload.rsc !== 'meeting' || !payload.data){
+    toast('កូដមិនត្រឹមត្រូវ — សូមចម្លងទាំងអស់រួមទាំងវង់ក្រចក', 'err');
+    return;
+  }
+  var tin = meetingCurTin(), src = String(payload.fromTin || '');
+  var warn = 'បិទភ្ជាប់ទិន្នន័យកំណត់ហេតុលើកទី ' + (payload.no || '?')
+    + (src ? ' ពីអតប ' + src : '') + ' មកលើកំណត់ហេតុលើកទី ' + (idx + 1)
+    + (tin ? ' ( អតប ' + tin + ' )' : '') + ' ?  ⚠ ទិន្នន័យដែលមានស្រាប់នឹងត្រូវ'
+    + 'សរសេរជាន់ ( លើកលែងកាលបរិច្ឆេទ និងម៉ោង )។';
+  var ask = window.appConfirm || function(m){ return Promise.resolve(window.confirm(m)); };
+  ask(warn).then(function(ok){
+    if(!ok) return;
+    var mt = trkState.meetings[idx] = trkState.meetings[idx] || {};
+    Object.keys(payload.data).forEach(function(k){
+      if(MT_COPY_SKIP.indexOf(k) < 0) mt[k] = payload.data[k];
+    });
+    trkSave();
+    try{ renderTrackingView(); }catch(e){}
+    toast('បិទភ្ជាប់រួច — សូមពិនិត្យកាលបរិច្ឆេទ និងម៉ោងឡើងវិញ', 'ok');
+  });
 }
 
 /* ---------------- the smart part ---------------- */
