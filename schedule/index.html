@@ -420,6 +420,25 @@ function fmtFull(iso){var d=dt(iso); if(!d) return '—'; return 'ថ្ងៃ'+
 function toLocalInput(iso){var d=dt(iso); if(!d) return ''; var p=function(n){return (n<10?'0':'')+n};
   return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'T'+p(d.getHours())+':'+p(d.getMinutes())}
 function fromLocalInput(v){ return v? new Date(v).toISOString() : '' }
+/** ទទួលបានទាំង email ទាំងឈ្មោះ រួចប្តូរជា email របស់ក្រុម */
+function personOf(v){
+  var x=String(v||'').trim(); if(!x) return '';
+  var lx=x.toLowerCase(), flat=lx.replace(/[\s._-]/g,'');
+  for(var i=0;i<TEAM.length;i++){
+    var u=TEAM[i];
+    if(u.email.toLowerCase()===lx) return u.email;
+    if(u.name.toLowerCase()===lx) return u.email;
+    if(u.name.toLowerCase().replace(/[\s._-]/g,'')===flat) return u.email;
+    if(u.email.split('@')[0].toLowerCase()===flat) return u.email;
+  }
+  return x;
+}
+function normEnts(){
+  (S.ents||[]).forEach(function(e){
+    if(e.auditor) e.auditor=personOf(e.auditor);
+    if(e.partner) e.partner=personOf(e.partner);
+  });
+}
 function nameOf(email){for(var i=0;i<TEAM.length;i++) if(TEAM[i].email===email) return TEAM[i].name;
   if(S.me && S.me.email===email && S.me.name) return S.me.name; return email||''}
 function isAdmin(){return !!(S.me && (S.me.role==='admin' || S.me.email===ADMIN_EMAIL))}
@@ -458,14 +477,14 @@ function api(fn,args){
 }
 
 /* ---------- data ---------- */
-function loadLocal(){ S.visits = ls('visits')||[]; S.internal = ls('internal')||[]; S.ents = ls('ents')||[];
+function loadLocal(){ S.visits = ls('visits')||[]; S.internal = ls('internal')||[]; S.ents = ls('ents')||[]; normEnts();
   if(window.__native) window.__native.schedule(S.visits) }
 function saveLocal(){ ls('visits',S.visits); ls('internal',S.internal); ls('ents',S.ents) }
 
 function refresh(silent){
   if(!online()){ loadLocal(); render(); return Promise.resolve() }
   return api('apiList',[S.token]).then(function(d){
-    S.visits = d.visits||[]; S.internal = d.internal||[]; S.ents = d.enterprises||[];
+    S.visits = d.visits||[]; S.internal = d.internal||[]; S.ents = d.enterprises||[]; normEnts();
     saveLocal(); render(); checkNew(); markSync(true);
     if(window.__native) window.__native.schedule(S.visits);
   }).catch(function(e){
@@ -490,7 +509,7 @@ function pushVisit(rec){
 function pushInternal(rec){
   if(!online()){ upsert(S.internal,rec); saveLocal(); render(); toast('រក្សាទុកក្នុងទូរសព្ទ'); return Promise.resolve() }
   return api('apiSaveInternal',[S.token,rec]).then(function(){ return refresh(true) })
-    .then(function(){ toast('✅ ជូនដំណឹងក្រុមរួច') })
+    .then(function(){ toast('✅ រក្សាទុករួច') })
     .catch(function(e){ toast('⚠️ '+e.message) });
 }
 function pushEnt(rec){
@@ -629,10 +648,7 @@ function renderVisits(root,kind){
   var past=list.filter(function(r){return up.indexOf(r)<0});
 
   section(root, S.showArc?'ប័ណ្ណសារ — សវនកម្មបានបញ្ចប់':'ដែលជិតមកដល់', up.length);
-  if(!up.length) root.appendChild(emptyBox(
-    meet?'មិនទាន់មានការប្រជុំ':'មិនទាន់មានការចុះទីតាំង',
-    meet?('ចុច «បន្ថែមការប្រជុំសហគ្រាសថ្មី» ដើម្បីកត់ត្រាថ្ងៃ ម៉ោង និងបន្ទប់នៅ '+MEET_VENUE+'។')
-        :'ចុច «បន្ថែមការចុះទីតាំងថ្មី» ដើម្បីកត់ត្រាថ្ងៃ ម៉ោង និងអាសយដ្ឋានសហគ្រាស។'));
+  if(!up.length) root.appendChild(emptyBox(meet?'មិនទាន់មានការប្រជុំ':'មិនទាន់មានការចុះទីតាំង'));
   if(meet) up.sort(function(a,b){
     return String(a.nameLatin||'').localeCompare(String(b.nameLatin||'')) || sortKey(a,kind)-sortKey(b,kind);
   });
@@ -688,7 +704,7 @@ function renderVisits(root,kind){
 function section(root,title,n){
   var s=el('div','sec'); s.appendChild(el('h2',null,title)); s.appendChild(el('span','n',String(n))); root.appendChild(s);
 }
-function emptyBox(t,p){ var e=el('div','empty'); e.appendChild(el('b',null,t)); e.appendChild(document.createTextNode(p)); return e }
+function emptyBox(t,p){ var e=el('div','empty'); e.appendChild(el('b',null,t)); if(p) e.appendChild(document.createTextNode(p)); return e }
 
 function statusMeta(r){
   if(r.status==='done')      return {cls:'done',   chip:'c-done',  txt:'បានចុះរួច'};
@@ -942,7 +958,7 @@ function renderTeam(root){
   var list=S.internal.slice().sort(function(a,b){return (dt(b.fromAt)||0)-(dt(a.fromAt)||0)});
   var mine=list;   /* ក្រុមមើលឃើញគ្នាទៅវិញទៅមក */
   section(root,'ការជូនដំណឹងផ្ទៃក្នុង',mine.length);
-  if(!mine.length){ root.appendChild(emptyBox('មិនទាន់មានការជូនដំណឹង','ចុច «សុំច្បាប់» ឬ «សុំយឺត» ខាងលើ។ ក្រុមទាំងអស់ទទួលដំណឹងភ្លាមៗ ដោយមិនចាំបាច់រង់ចាំការអនុញ្ញាតទេ។')); return }
+  if(!mine.length){ root.appendChild(emptyBox('មិនទាន់មានការជូនដំណឹង')); return }
   mine.forEach(function(r){ root.appendChild(internalCard(r)) });
 }
 function meetPlaceIn(r){
@@ -1455,15 +1471,20 @@ function visitForm(r, seedDay, forceKind, seedEnt, asNew){
   var title = isNew ? (k0==='meet'?'ការប្រជុំសហគ្រាសថ្មី':'ការចុះទីតាំងថ្មី')
                     : (showSite&&showMeet ? 'កែកាលវិភាគ' : (showMeet?'កែការប្រជុំ':'កែការចុះទីតាំង'));
   openSheet(title, function(b){
+    /* បង្ហាញប្រអប់ស្វែងរក តែពេលបង្កើតថ្មីទទេៗប៉ុណ្ណោះ */
+    var showPicker = isNew && !seedEnt && !r.entId;
+    var pickBox=el('div'); b.appendChild(pickBox);
+    if(!showPicker) pickBox.style.display='none';
+
     var fowner = (S.owner===undefined?S.me.email:S.owner);
     var oSel=el('select');
     [['','ទាំងអស់']].concat(TEAM.map(function(u){ return [u.email, u.email===S.me.email?'របស់ខ្ញុំ':u.name] }))
       .forEach(function(pp){ var o=el('option',null,pp[1]); o.value=pp[0]; oSel.appendChild(o) });
     oSel.value=fowner;
-    field(b,'បង្ហាញសហគ្រាសរបស់',oSel);
+    field(pickBox,'បង្ហាញសហគ្រាសរបស់',oSel);
 
-    var find=field(b,'ស្វែងរកសហគ្រាស', input('text','','វាយឈ្មោះឡាតាំង ឬ លេខអតប'));
-    var sug=el('div','sug'); b.appendChild(sug);
+    var find=field(pickBox,'ស្វែងរកសហគ្រាស', input('text','','វាយឈ្មោះឡាតាំង ឬ លេខអតប'));
+    var sug=el('div','sug'); pickBox.appendChild(sug);
     oSel.onchange=function(){ fowner=oSel.value; drawSug() };
 
     var name=field(b,'ឈ្មោះសហគ្រាស (ឡាតាំង)', input('text',r.nameLatin,'ABC (CAMBODIA) CO., LTD.'));
@@ -1859,8 +1880,7 @@ function dailyForm(edit, seedDay){
       eSel.innerHTML='';
       eSel.appendChild(el('option',null,'— ជ្រើសរើសសហគ្រាស —')).value='';
       entSorted().filter(function(e){ return ownsEnt(e,fowner) }).forEach(function(e){
-        var rel=relOfEnt(e);
-        var o=el('option',null,(rel?'['+rel+'] ':'')+(e.nameLatin||'')+(e.tin?' · '+e.tin:''));
+        var o=el('option',null,(e.nameLatin||'')+(e.tin?' · '+e.tin:''));
         o.value=e.id; eSel.appendChild(o);
       });
       eSel.value=r.entId||'';
@@ -1890,20 +1910,19 @@ function dailyForm(edit, seedDay){
     eSel.onchange=drawActs;
     field(b,'សកម្មភាព',aSel);
 
-    var who=field(b,'ធ្វើការជាមួយអ្នកណា (កំណត់សម្គាល់)', input('text',r.withWho,'ឧ. ជាមួយ Khoeun Denit និងអ្នកតំណាងសហគ្រាស'));
     var when=field(b,'ថ្ងៃ ខែ ឆ្នាំ និងម៉ោង',
       input('datetime-local', toLocalInput(r.fromAt) || (seedDay?seedDay+'T08:00':toLocalInput(new Date().toISOString()))));
     var cont=field(b,'ខ្លឹមសារ', textarea(r.subject,'អ្វីដែលបានធ្វើ'));
     var res =field(b,'លទ្ធផលកិច្ចប្រជុំ', textarea(r.minutes,'លទ្ធផល និងជំហានបន្ទាប់'));
 
-    var go=el('button','save', isNew?'រក្សាទុក និងជូនដំណឹងក្រុម':'រក្សាទុក');
+    var go=el('button','save','រក្សាទុក');
     go.onclick=function(){
       if(!eSel.value) return toast('សូមជ្រើសរើសសហគ្រាស');
       if(!when.value) return toast('សូមកំណត់ថ្ងៃ និងម៉ោង');
       var e=null;
       for(var i=0;i<S.ents.length;i++) if(S.ents[i].id===eSel.value) e=S.ents[i];
       r.entId=eSel.value; r.entName=e?e.nameLatin:'';
-      r.activity=aSel.value; r.withWho=who.value.trim();
+      r.activity=aSel.value;
       r.fromAt=fromLocalInput(when.value); r.toAt=r.fromAt;
       r.subject=cont.value.trim(); r.minutes=res.value.trim();
       r.reason=r.activity;
