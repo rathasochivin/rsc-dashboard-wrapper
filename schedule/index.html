@@ -755,6 +755,10 @@ function renderVisits(root,kind){
     root.appendChild(swap);
   }
   if(S.secFilter==='pending' && !meet && !S.showArc){
+    var oc2={};
+    TEAM.forEach(function(u){ oc2[u.email]=pending.filter(function(e){ return ownsEnt(e,u.email) }).length });
+    oc2['']=pending.length;
+    root.appendChild(ownerChips(oc2));
     drawPending(root, pending);
     root.appendChild(arcLink(arc));
     return;
@@ -781,6 +785,21 @@ function renderVisits(root,kind){
     }
   }
 
+  /* ស្លាកសវនករ ៖ ច្រោះទាំងកាលវិភាគ ទាំងបញ្ជីរង់ចាំ */
+  if(!S.showArc && (up.length+past.length+pending.length)){
+    var oc={}, both=up.concat(past);
+    TEAM.forEach(function(u){
+      oc[u.email]= both.filter(function(r){ return ownerOfVisit(r)===u.email }).length
+                 + pending.filter(function(e){ return ownsEnt(e,u.email) }).length;
+    });
+    oc['']= both.length + pending.length;
+    root.appendChild(ownerChips(oc));
+    if(S.owner){
+      up   = up.filter(function(r){ return ownerOfVisit(r)===S.owner });
+      past = past.filter(function(r){ return ownerOfVisit(r)===S.owner });
+    }
+  }
+
   section(root, S.showArc?'ប័ណ្ណសារ — សវនកម្មបានបញ្ចប់':'ដែលជិតមកដល់', up.length);
   if(!up.length) root.appendChild(emptyBox(meet?'មិនទាន់មានការប្រជុំ':'មិនទាន់មានការចុះទីតាំង'));
   if(meet) up.sort(function(a,b){
@@ -803,8 +822,6 @@ function renderVisits(root,kind){
 
   if(past.length){ section(root,'កន្លងផុត / បានបញ្ចប់', past.length); past.reverse().forEach(function(r){ root.appendChild(visitCard(r)) }) }
 
-  if(S.secFilter!=='sched') drawPending(root, pending);
-
   root.appendChild(arcLink(arc));
 }
 function arcLink(arc){
@@ -819,7 +836,6 @@ function drawPending(root, all){
   var pending=all.filter(function(e){ return ownsEnt(e,S.owner) });
   if(all.length || S.owner){
     section(root,'សហគ្រាសមិនទាន់មានកាលវិភាគ', pending.length);
-    root.appendChild(ownerChips(counts));
     var lastP=null;
     pending.sort(function(x,y){
       var fa=((S.scope==='pp'||S.prov)?districtOf:provinceOf);
