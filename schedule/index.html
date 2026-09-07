@@ -1982,6 +1982,16 @@ function visitForm(r, seedDay, forceKind, seedEnt, asNew){
     var siteBox=el('div'); b.appendChild(siteBox);
     var addr=field(siteBox,'អាសយដ្ឋានសហគ្រាស', textarea(r.address,'ផ្ទះ… ផ្លូវ… សង្កាត់… ខណ្ឌ… រាជធានីភ្នំពេញ'));
     var map =field(siteBox,'តំណភ្ជាប់ផែនទី (Google Maps)', input('url',r.mapLink,'https://maps.app.goo.gl/…'));
+    var mgo=el('button','mini','📍 បើកតំណដែលបានបិទភ្ជាប់');
+    mgo.style.marginRight='6px';
+    mgo.onclick=function(){
+      var u=(map.value||'').trim();
+      if(!u) return toast('មិនទាន់មានតំណផែនទី');
+      if(!/^https?:\/\//i.test(u)) u='https://'+u;
+      window.open(u,'_blank','noopener');
+    };
+    siteBox.appendChild(mgo);
+
     var mopen=el('button','mini','🗺 រកក្នុង Google Maps');
     mopen.onclick=function(){
       var q=(name.value||'')+' '+(addr.value||'');
