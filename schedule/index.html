@@ -237,7 +237,7 @@ table.rp th,table.rp td{border:1px solid var(--line);padding:6px 8px;text-align:
 #view h2:first-child{margin-top:0}
 table.rp th{background:#F2F6F9;font-weight:500;color:var(--ink2);text-align:center;vertical-align:middle}
 table.rp td.n{text-align:right}
-table.rp td.n,table.rp th.n{font-family:system-ui,-apple-system,sans-serif}
+table.rp td.n{font-family:system-ui,-apple-system,sans-serif}
 .sum{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-bottom:16px}
 .sum div{background:#fff;border:1px solid var(--line);padding:11px 12px}
 .sum b{display:block;font-family:system-ui,-apple-system,sans-serif;font-size:23px;font-weight:700;line-height:1.2}
@@ -357,7 +357,7 @@ var DAYS = ['អាទិត្យ','ច័ន្ទ','អង្គារ','ព�
 var BOOKING_URL = 'https://roombooking.ezefacility.com/login';
 var MEET_VENUE = 'GDT TOWER';   /* ទីកន្លែងណាត់ជួបសហគ្រាស */
 var MEET_FLOOR = '3';           /* ជាន់ទីលំនាំដើម — កែបានក្នុងទម្រង់ */
-var ACTS = ['ចុះទីតាំង','ចូលរួមកិច្ចពិភាក្សាការងារជាមួយអ្នកតំណាងសហគ្រាស','ឆ្លងយោបល់ថ្នាក់ដឹកនាំ'];
+var ACTS = ['ចុះទីតាំង','ប្រជុំជាមួយអ្នកតំណាងសហគ្រាស','ឆ្លងយោបល់ថ្នាក់ដឹកនាំ','ពិនិត្យឯកសារសវនកម្ម'];
 var CHAIRS = ['អនុប្រធានការិយាល័យ','ប្រធានការិយាល័យ','អនុប្រធាននាយកដ្ឋាន','ប្រធាននាយកដ្ឋាន','អគ្គនាយករង','ប្រតិភូ'];
 var RESP = [['waiting','⏳ រង់ចាំការឆ្លើយតប'],['agree','✅ សហគ្រាសយល់ស្រប'],['noreply','📵 មិនអាចទាក់ទងបាន']];
 var NOTICE = [['','មិនទាន់ផ្ញើលិខិត'],['telegram','Telegram'],['email','Email ផ្លូវការ'],['pickup','សហគ្រាសមកទទួលផ្ទាល់'],['post','ប្រៃសណីយ៍']];
@@ -400,6 +400,24 @@ function provinceOf(o){
   return guessProvince(o.address) || NOAREA;
 }
 function areaOf(r){ return districtOf(r)!==NOAREA ? districtOf(r) : provinceOf(r) }
+function baseAct(a){ return String(a||'').replace(/ជាមួយ(ដៃគូ|កូនក្រុម|ប្រធានក្រុម)$/,'').trim() }
+function allActs(){
+  var out=ACTS.slice(), seen={};
+  out.forEach(function(a){ seen[a]=1 });
+  (ls('acts')||[]).forEach(function(a){ if(a && !seen[a]){ seen[a]=1; out.push(a) } });
+  (S.internal||[]).forEach(function(r){
+    if(r.type!=='daily') return;
+    var a=baseAct(r.activity);
+    if(a && !seen[a]){ seen[a]=1; out.push(a) }
+  });
+  return out;
+}
+function addAct(a){
+  a=String(a||'').trim(); if(!a) return '';
+  var mine=ls('acts')||[];
+  if(mine.indexOf(a)<0 && ACTS.indexOf(a)<0){ mine.push(a); ls('acts',mine) }
+  return a;
+}
 function labOf(arr,v){ for(var i=0;i<arr.length;i++) if(arr[i][0]===(v||'')) return arr[i][1]; return v||'' }
 var REASONS = ['សវនករមានធុរៈ','សហគ្រាសសុំលើកពេល','ឯកសារមិនទាន់រួចរាល់','បញ្ហាធនធាន/ការធ្វើដំណើរ','ហេតុផលផ្សេងៗ'];
 var LSK = 'rsc_sched_';
@@ -1916,19 +1934,30 @@ function dailyForm(edit, seedDay){
       for(var i=0;i<S.ents.length;i++) if(S.ents[i].id===eSel.value) e=S.ents[i];
       var rel = relOfEnt(e);
       aSel.innerHTML='';
-      ACTS.forEach(function(t){
+      allActs().forEach(function(t){
         var lab = rel ? (t+'ជាមួយ'+rel) : t;
         var o=el('option',null,lab); o.value=lab; aSel.appendChild(o);
       });
+      var plus=el('option',null,'➕ បន្ថែមសកម្មភាពថ្មី…'); plus.value='__new'; aSel.appendChild(plus);
       if(r.activity){
-        var found=false;
-        for(var j=0;j<aSel.options.length;j++) if(aSel.options[j].value===r.activity) found=true;
-        if(!found){ var o2=el('option',null,r.activity); o2.value=r.activity; aSel.appendChild(o2) }
-        aSel.value=r.activity;
+        var hit='';
+        for(var j=0;j<aSel.options.length;j++){
+          var ov=aSel.options[j].value;
+          if(ov===r.activity){ hit=ov; break }
+          if(ov!=='__new' && baseAct(ov)===baseAct(r.activity)) hit=ov;   /* ដដែល តែពាក្យទំនាក់ទំនងផ្សេង */
+        }
+        if(!hit){ var o2=el('option',null,r.activity); o2.value=r.activity; aSel.appendChild(o2); hit=r.activity }
+        aSel.value=hit; r.activity=hit;
       }
     }
     drawActs();
     eSel.onchange=drawActs;
+    aSel.onchange=function(){
+      if(aSel.value!=='__new') return;
+      var txt=prompt('សកម្មភាពថ្មី៖');
+      if(txt && txt.trim()){ r.activity=addAct(txt.trim()); drawActs(); aSel.value=r.activity }
+      else { r.activity=''; drawActs() }
+    };
     field(b,'សកម្មភាព',aSel);
 
     var when=field(b,'ថ្ងៃ ខែ ឆ្នាំ និងម៉ោង',
@@ -1940,6 +1969,7 @@ function dailyForm(edit, seedDay){
     go.onclick=function(){
       if(!eSel.value) return toast('សូមជ្រើសរើសសហគ្រាស');
       if(!when.value) return toast('សូមកំណត់ថ្ងៃ និងម៉ោង');
+      if(aSel.value==='__new') return toast('សូមជ្រើសរើសសកម្មភាព');
       var e=null;
       for(var i=0;i<S.ents.length;i++) if(S.ents[i].id===eSel.value) e=S.ents[i];
       r.entId=eSel.value; r.entName=e?e.nameLatin:'';
@@ -1976,14 +2006,33 @@ function summaryForm(){
     var fk=dkey(from), tk=dkey(to);
     b.appendChild(el('div','rphead', fmtD(fk+'T00:00')+' ដល់ '+fmtD(tk+'T00:00')));
 
-    var rows=S.internal.filter(function(r){ return r.type==='daily' && inRange(r.fromAt,fk,tk) })
+    var base=S.internal.filter(function(r){ return r.type==='daily' && inRange(r.fromAt,fk,tk) })
                        .sort(function(a,b){ return (dt(a.fromAt)||0)-(dt(b.fromAt)||0) });
+
+    var who=el('select');
+    [['','សវនករទាំងអស់']].concat(TEAM.map(function(u){ return [u.email,u.name] }))
+      .forEach(function(pp){ var o=el('option',null,pp[1]); o.value=pp[0]; who.appendChild(o) });
+    who.value=S.sumWho||'';
+    var ent=el('select');
+    var names={}; base.forEach(function(r){ if(r.entName) names[r.entName]=1 });
+    ent.appendChild(el('option',null,'សហគ្រាសទាំងអស់')).value='';
+    Object.keys(names).sort().forEach(function(n){ var o=el('option',null,n); o.value=n; ent.appendChild(o) });
+    ent.value=S.sumEnt||'';
+    var fw=el('div','two'), w1=el('div'), w2=el('div');
+    fw.appendChild(w1); fw.appendChild(w2); b.appendChild(fw);
+    field(w1,'សវនករ',who); field(w2,'សហគ្រាស',ent);
+    who.onchange=function(){ S.sumWho=who.value; closeSheet(); summaryForm() };
+    ent.onchange=function(){ S.sumEnt=ent.value; closeSheet(); summaryForm() };
+
+    var rows=base.filter(function(r){
+      return (!S.sumWho || r.email===S.sumWho) && (!S.sumEnt || r.entName===S.sumEnt);
+    });
+    var byAct={}, actOrder=[];
+    rows.forEach(function(r){ var a=baseAct(r.activity)||'—'; if(!byAct[a]){byAct[a]=0; actOrder.push(a)} byAct[a]++ });
+    actOrder.sort(function(a,b){ return byAct[b]-byAct[a] || a.localeCompare(b) });
     var sm=el('div','sum');
-    [[rows.length,'របាយការណ៍'],
-     [rows.filter(function(r){return /ចុះទីតាំង/.test(r.activity||'')}).length,'ចុះទីតាំង'],
-     [rows.filter(function(r){return /ពិភាក្សា/.test(r.activity||'')}).length,'ពិភាក្សាការងារ'],
-     [rows.filter(function(r){return /ឆ្លងយោបល់/.test(r.activity||'')}).length,'ឆ្លងយោបល់']
-    ].forEach(function(p){ var d=el('div'); d.appendChild(el('b',null,String(p[0]))); d.appendChild(el('span',null,p[1])); sm.appendChild(d) });
+    var cells=[[rows.length,'របាយការណ៍សរុប']].concat(actOrder.map(function(a){ return [byAct[a],a] }));
+    cells.forEach(function(p){ var d=el('div'); d.appendChild(el('b',null,String(p[0]))); d.appendChild(el('span',null,p[1])); sm.appendChild(d) });
     b.appendChild(sm);
 
     var t=el('table','rp');
