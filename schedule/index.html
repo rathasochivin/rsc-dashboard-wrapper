@@ -654,7 +654,6 @@ function renderVisits(root,kind){
       if(r.nameLatin) haveName[String(r.nameLatin).trim().toLowerCase()]=1;
     });
     pending = entSorted().filter(function(e){
-      if(!ownsEnt(e,S.owner)) return false;
       if(haveEnt[e.id]) return false;
       if(e.tin && haveTin[String(e.tin).trim().toLowerCase()]) return false;
       if(e.nameLatin && haveName[String(e.nameLatin).trim().toLowerCase()]) return false;
@@ -726,9 +725,10 @@ function renderVisits(root,kind){
   var up=list.filter(function(r){return r.status!=='cancelled' && sortKey(r,kind)>=now-864e5});
   var past=list.filter(function(r){return up.indexOf(r)<0});
 
+  var pendingOwned = pending.filter(function(e){ return ownsEnt(e,S.owner) });
   if(!meet && !S.showArc){
     var swap=el('div','seg');
-    [['','ទាំងអស់'],['sched','មានកាលវិភាគ ('+(up.length+past.length)+')'],['pending','មិនទាន់មាន ('+pending.length+')']]
+    [['','ទាំងអស់'],['sched','មានកាលវិភាគ ('+(up.length+past.length)+')'],['pending','មិនទាន់មាន ('+pendingOwned.length+')']]
       .forEach(function(p){
         var x=el('button',null,p[1]);
         x.setAttribute('aria-pressed', (S.secFilter||'')===p[0]?'true':'false');
@@ -774,10 +774,14 @@ function arcLink(arc){
   tg.onclick=function(){ S.showArc=!S.showArc; render(); window.scrollTo(0,0) };
   return tg;
 }
-function drawPending(root, pending){
-  if(pending.length || S.owner){
+function drawPending(root, all){
+  var counts={};
+  TEAM.forEach(function(u){ counts[u.email]=all.filter(function(e){ return ownsEnt(e,u.email) }).length });
+  counts['']=all.length;
+  var pending=all.filter(function(e){ return ownsEnt(e,S.owner) });
+  if(all.length || S.owner){
     section(root,'សហគ្រាសមិនទាន់មានកាលវិភាគ', pending.length);
-    root.appendChild(ownerChips());
+    root.appendChild(ownerChips(counts));
     var lastP=null;
     pending.sort(function(x,y){
       var fa=((S.scope==='pp'||S.prov)?districtOf:provinceOf);
@@ -830,8 +834,11 @@ function visitCard(r){
       '<span class="chip '+rc+'">'+esc(labOf(RESP,r.resp||'waiting'))+'</span>'+
       (roundTxt?'<span class="chip c-plan">'+esc(roundTxt.replace(' · ',''))+'</span>':'')+'</div>'+
     '<div class="tin">អតប៖ '+esc(r.tin||'—')+'</div>'+
-    (r.visitAt?'<div class="row"><i>📍</i><div>ចុះពិនិត្យទីតាំង៖ '+fmtFull(r.visitAt)+'</div></div>':'')+
-    (r.meetAt ?'<div class="row"><i>🤝</i><div>ណាត់ជួបសហគ្រាស៖ '+fmtFull(r.meetAt)+'<br>'+esc(meetPlace(r))+'</div></div>':'')+
+    (r.visitAt?'<div class="row"><i>📍</i><div>ចុះពិនិត្យទីតាំង៖ '+fmtFull(r.visitAt)+
+      (r.prevVisitAt?'<br><span style="color:var(--seal)">ពេលដើម៖ '+fmtFull(r.prevVisitAt)+'</span>':'')+'</div></div>':'')+
+    (r.meetAt ?'<div class="row"><i>🤝</i><div>ណាត់ជួបសហគ្រាស៖ '+fmtFull(r.meetAt)+
+      (r.prevMeetAt?'<br><span style="color:var(--seal)">ពេលដើម៖ '+fmtFull(r.prevMeetAt)+'</span>':'')+
+      '<br>'+esc(meetPlace(r))+'</div></div>':'')+
     (r.zoomLink?'<div class="row"><i>💻</i><div><a href="'+esc(r.zoomLink)+'" target="_blank" rel="noopener">ចូលរួមតាម Zoom</a></div></div>':'')+
     (r.bookingImg?'<div class="row"><i>🧾</i><div><a href="'+esc(r.bookingImg)+'" target="_blank" rel="noopener">🖼 មើលរូបកក់បន្ទប់</a></div></div>':'')+
     (r.address && r.visitAt?'<div class="row"><i>🏢</i><div>'+esc(r.address)+'</div></div>':'')+
@@ -888,13 +895,14 @@ function archiveVisit(r){
   r.history=(r.history||[]).concat([{at:r.updatedAt,by:S.me.email,text:r.archived?'បញ្ចប់សវនកម្ម និងដាក់ចូលប័ណ្ណសារ':'យកចេញពីប័ណ្ណសារ'}]);
   pushVisit(r);
 }
-function ownerChips(){
+function ownerChips(counts){
   var w=el('div','areas owners');
   var opts=[['','ទាំងអស់']].concat(TEAM.map(function(u){
     return [u.email, u.email===S.me.email ? 'របស់ខ្ញុំ' : u.name];
   }));
   opts.forEach(function(p){
-    var x=el('button',null,p[1]);
+    var n=counts?counts[p[0]]:undefined;
+    var x=el('button',null,p[1]+(n===undefined?'':' ('+n+')'));
     x.setAttribute('aria-pressed', (S.owner||'')===p[0]?'true':'false');
     x.onclick=function(){ S.owner=p[0]; render() };
     w.appendChild(x);
@@ -1373,11 +1381,15 @@ function renderReport(root){
   if(!visits.length) root.appendChild(el('div','hint','គ្មានកាលវិភាគក្នុងចន្លោះពេលនេះ'));
   else{
     var t3=el('table','rp');
-    t3.innerHTML='<tr><th>សហគ្រាស</th><th>អតប</th><th>ចុះទីតាំង</th><th>ណាត់ជួប</th><th>សវនករ</th><th>ឆ្លើយតប</th><th>លិខិត</th></tr>';
+    var showPrev = (S.rpFocus==='moved');
+    t3.innerHTML='<tr><th>សហគ្រាស</th><th>អតប</th>'+(showPrev?'<th>ពេលដើម</th>':'')+
+      '<th>'+(showPrev?'ពេលថ្មី':'ចុះទីតាំង')+'</th><th>ណាត់ជួប</th><th>សវនករ</th><th>ឆ្លើយតប</th><th>លិខិត</th></tr>';
     visits.slice().sort(function(a,b){return sortKey(a)-sortKey(b)}).forEach(function(r){
       var m=statusMeta(r), tr=el('tr');
+      var prev = r.prevVisitAt || r.prevMeetAt || '';
       tr.innerHTML='<td><span class="lat" title="'+esc(r.nameLatin||'')+'">'+esc(shortEnt(r.nameLatin))+'</span></td>'+
         '<td class="nw"><span class="lat">'+esc(r.tin||'')+'</span></td>'+
+        (showPrev?('<td class="nw" style="color:var(--seal)">'+(prev?'<span class="lat">'+fmtL(prev)+'</span><br>'+fmtT(prev):'—')+'</td>'):'')+
         '<td class="nw">'+(r.visitAt?'<span class="lat">'+fmtL(r.visitAt)+'</span><br>'+fmtT(r.visitAt):'—')+'</td>'+
         '<td class="nw">'+(r.meetAt ?'<span class="lat">'+fmtL(r.meetAt )+'</span><br>'+fmtT(r.meetAt ):'—')+'</td>'+
         '<td class="nw"><span class="lat">'+esc(shortOf(ownerOfVisit(r)))+'</span></td>'+
@@ -1650,13 +1662,14 @@ function xlsxDownload(name, sheets){
   toast('ទាញយករួច — បើកដោយ Excel');
 }
 function reportSheets(visits, intern){
-  var v=[['ឈ្មោះសហគ្រាស','លេខអតប','តំបន់','អាសយដ្ឋាន','ទីតាំងបន្ថែម','ចុះទីតាំង','ណាត់ជួប','ទីកន្លែងណាត់ជួប',
+  var v=[['ឈ្មោះសហគ្រាស','លេខអតប','តំបន់','អាសយដ្ឋាន','ទីតាំងបន្ថែម','ចុះទីតាំង','ណាត់ជួប','ពេលដើម (មុនប្តូរ)','ទីកន្លែងណាត់ជួប',
           'អ្នកតំណាង','លេខទូរសព្ទ','សវនករទទួលបន្ទុក','ដៃគូ','ស្ថានភាព','ការឆ្លើយតប','លិខិតជូនដំណឹង','ថ្ងៃផ្ញើលិខិត','អ្នកទទួលលិខិត','ទូរសព្ទអ្នកទទួល','ឯកសារភ្ជាប់',
           'មូលហេតុប្តូរពេល','កំណត់សម្គាល់','តំណផែនទី']];
   visits.forEach(function(r){
     v.push([r.nameLatin||'', r.tin||'', areaOf(r), r.address||'',
       (r.extras||[]).map(function(x){return (x.label||'')+': '+(x.address||'')}).join(' | '),
       r.visitAt?fmtD(r.visitAt)+' '+fmtT(r.visitAt):'', r.meetAt?fmtD(r.meetAt)+' '+fmtT(r.meetAt):'',
+      (function(){ var p0=r.prevVisitAt||r.prevMeetAt; return p0?fmtD(p0)+' '+fmtT(p0):'' })(),
       r.meetAt?meetPlace(r):'', r.contactName||'', r.contactPhone||'',
       nameOf(ownerOfVisit(r)), r.partner?nameOf(r.partner):'', statusMeta(r).txt,
       labOf(RESP,r.resp||'waiting'),
@@ -2295,8 +2308,8 @@ function moveForm(r){
     var go=el('button','save','រក្សាទុក និងជូនដំណឹងក្រុម');
     go.onclick=function(){
       var w=which.value, old={v:r.visitAt,m:r.meetAt}, txt=[];
-      if((w==='visit'||w==='both') && nv){ r.visitAt=nv.val(); txt.push('ចុះទីតាំង៖ '+fmtFull(old.v)+' → '+fmtFull(r.visitAt)) }
-      if((w==='meet' ||w==='both') && nm){ r.meetAt =nm.val(); txt.push('ណាត់ជួប៖ '+fmtFull(old.m)+' → '+fmtFull(r.meetAt)) }
+      if((w==='visit'||w==='both') && nv){ r.prevVisitAt=old.v; r.visitAt=nv.val(); txt.push('ចុះទីតាំង៖ '+fmtFull(old.v)+' → '+fmtFull(r.visitAt)) }
+      if((w==='meet' ||w==='both') && nm){ r.prevMeetAt =old.m; r.meetAt =nm.val(); txt.push('ណាត់ជួប៖ '+fmtFull(old.m)+' → '+fmtFull(r.meetAt)) }
       r.moved=true; r.status = r.status==='done'?'done':'planned';
       r.updatedAt=new Date().toISOString();
       r.history=(r.history||[]).concat([{at:r.updatedAt,by:S.me.email,text:'ប្តូរពេល ('+rs.value+') · '+txt.join(' | ')+(note.value?' · '+note.value:'')}]);
@@ -2525,6 +2538,7 @@ function meetingForm(edit){
     function drawAtt(){
       aSel.innerHTML='';
       aSel.appendChild(el('option',null,'— បន្ថែមអ្នកចូលរួម —')).value='';
+      if(chosen.length<TEAM.length) aSel.appendChild(el('option',null,'➕ សវនករទាំងអស់')).value='__all';
       TEAM.forEach(function(u){ if(chosen.indexOf(u.email)<0){ var o=el('option',null,u.name); o.value=u.email; aSel.appendChild(o) } });
       aSel.value='';
       aChips.innerHTML='';
@@ -2535,7 +2549,12 @@ function meetingForm(edit){
         t.appendChild(x); aChips.appendChild(t);
       });
     }
-    aSel.onchange=function(){ if(aSel.value){ chosen.push(aSel.value); drawAtt() } };
+    aSel.onchange=function(){
+      if(!aSel.value) return;
+      if(aSel.value==='__all'){ TEAM.forEach(function(u){ if(chosen.indexOf(u.email)<0) chosen.push(u.email) }) }
+      else chosen.push(aSel.value);
+      drawAtt();
+    };
     field(b,'សវនករចូលរួមប្រជុំ',aSel);
     b.appendChild(aChips); b.appendChild(el('div','f'));
     drawAtt();
@@ -2565,7 +2584,12 @@ function meetingForm(edit){
     var mins=field(b,'ខ្លឹមសារ / កំណត់ហេតុ', textarea(r.minutes,'សេចក្តីសម្រេច និងចំណុចសំខាន់ៗ'));
     mins.style.minHeight='140px';
 
-    var go=el('button','save', isNew?'រក្សាទុក និងជូនដំណឹងក្រុម':'រក្សាទុក');
+    function collect(){
+      if(!when.d.value){ toast('សូមកំណត់ថ្ងៃ និងម៉ោងប្រជុំ'); return false }
+      if(!chair.value){ toast('សូមជ្រើសរើសអ្នកដឹកនាំការប្រជុំ'); return false }
+      return true;
+    }
+    var go=el('button','save','📣 រក្សាទុក និងជូនដំណឹងក្រុម');
     go.onclick=function(){
       if(!when.d.value) return toast('សូមកំណត់ថ្ងៃ និងម៉ោងប្រជុំ');
       if(!chair.value) return toast('សូមជ្រើសរើសអ្នកដឹកនាំការប្រជុំ');
@@ -2575,9 +2599,23 @@ function meetingForm(edit){
       r.agenda=agenda.map(function(x){return String(x||'').trim()}).filter(Boolean);
       r.minutes=mins.value.trim();
       r.reason=r.subject;
+      r.silent=false;
       closeSheet(); pushInternal(r);
     };
     b.appendChild(go);
+
+    var quiet=el('button','mini','🔕 រក្សាទុកដោយមិនជូនដំណឹង');
+    quiet.style.display='block'; quiet.style.width='100%'; quiet.style.marginTop='8px';
+    quiet.onclick=function(){
+      if(!collect()) return;
+      r.chair=chair.value; r.fromAt=when.val(); r.toAt=r.fromAt;
+      r.subject=subj.value.trim(); r.floor=floor.value.trim(); r.room=room.value.trim();
+      r.attendees=chosen.slice();
+      r.agenda=agenda.map(function(x){return String(x||'').trim()}).filter(Boolean);
+      r.minutes=mins.value.trim(); r.reason=r.subject; r.silent=true;
+      closeSheet(); pushInternal(r);
+    };
+    b.appendChild(quiet);
   });
 }
 
