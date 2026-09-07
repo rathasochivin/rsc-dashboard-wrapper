@@ -1229,7 +1229,8 @@ function dailyCard(r){
   b.appendChild(rail);
   var meat=el('div','meat');
   meat.innerHTML =
-    '<div class="name"><span class="lat">'+esc(r.entName||'—')+'</span></div>'+
+    (r.entName?'<div class="name"><span class="lat">'+esc(r.entName)+'</span></div>'
+             :'<div class="name">ការងារផ្ទៃក្នុង</div>')+
     '<div class="tin">'+esc(nameOf(r.email))+' · របាយការណ៍ប្រចាំថ្ងៃ</div>'+
     '<div class="row"><i>✅</i><div>'+esc(r.activity||'')+'</div></div>'+
     (r.withWho?'<div class="row"><i>👥</i><div>ជាមួយ៖ '+esc(r.withWho)+'</div></div>':'')+
@@ -2370,7 +2371,7 @@ function dailyForm(edit, seedDay){
     var eSel=el('select');
     function fillEnts(){
       eSel.innerHTML='';
-      eSel.appendChild(el('option',null,'— ជ្រើសរើសសហគ្រាស —')).value='';
+      eSel.appendChild(el('option',null,'— គ្មានសហគ្រាស (ការងារផ្ទៃក្នុង) —')).value='';
       entSorted().filter(function(e){ return ownsEnt(e,fowner) }).forEach(function(e){
         var o=el('option',null,(e.nameLatin||'')+(e.tin?' · '+e.tin:''));
         o.value=e.id; eSel.appendChild(o);
@@ -2420,7 +2421,6 @@ function dailyForm(edit, seedDay){
 
     var go=el('button','save','រក្សាទុក');
     go.onclick=function(){
-      if(!eSel.value) return toast('សូមជ្រើសរើសសហគ្រាស');
       if(!when.value) return toast('សូមកំណត់ថ្ងៃ និងម៉ោង');
       if(aSel.value==='__new') return toast('សូមជ្រើសរើសសកម្មភាព');
       var e=null;
@@ -2469,6 +2469,7 @@ function summaryForm(){
     var ent=el('select');
     var names={}; base.forEach(function(r){ if(r.entName) names[r.entName]=1 });
     ent.appendChild(el('option',null,'សហគ្រាសទាំងអស់')).value='';
+    if(base.some(function(r){ return !r.entName })) ent.appendChild(el('option',null,'(ការងារផ្ទៃក្នុង)')).value='__none';
     Object.keys(names).sort().forEach(function(n){ var o=el('option',null,n); o.value=n; ent.appendChild(o) });
     ent.value=S.sumEnt||'';
     var fw=el('div','two'), w1=el('div'), w2=el('div');
@@ -2478,7 +2479,8 @@ function summaryForm(){
     ent.onchange=function(){ S.sumEnt=ent.value; closeSheet(); summaryForm() };
 
     var rows=base.filter(function(r){
-      return (!S.sumWho || r.email===S.sumWho) && (!S.sumEnt || r.entName===S.sumEnt);
+      var okEnt = !S.sumEnt || (S.sumEnt==='__none' ? !r.entName : r.entName===S.sumEnt);
+      return (!S.sumWho || r.email===S.sumWho) && okEnt;
     });
     var byAct={}, actOrder=[];
     rows.forEach(function(r){ var a=baseAct(r.activity)||'—'; if(!byAct[a]){byAct[a]=0; actOrder.push(a)} byAct[a]++ });
