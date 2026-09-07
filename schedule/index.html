@@ -69,11 +69,12 @@ nav.tabs button[aria-current="page"]{color:var(--ink);font-weight:700;box-shadow
 .rail .m{font-size:11px;color:var(--slate);display:block;margin-top:2px}
 .rail .t{font-size:12.5px;margin-top:8px;padding-top:7px;border-top:1px solid var(--line);color:var(--ink2)}
 .rec .meat{padding:12px 13px 13px;min-width:0}
-.name{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;font-size:15.5px;font-weight:600;line-height:1.5;word-break:break-word}
+.name{font-family:'KhmerOS Siemreap',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;font-size:15.5px;font-weight:600;line-height:1.6;word-break:break-word}
+.name .lat,.ev .tx b .lat{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
 .tin{font-size:12.5px;color:var(--slate);margin-top:1px}
 .row{display:flex;gap:7px;font-size:13px;color:var(--ink2);margin-top:8px;align-items:flex-start}
 .row i{font-style:normal;width:17px;flex:none;text-align:center;opacity:.75}
-.chip{display:inline-block;font-size:11.5px;padding:1px 8px;border-radius:2px;border:1px solid;line-height:1.7;margin-left:6px;white-space:nowrap}
+.chip{font-family:'KhmerOS Siemreap',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;display:inline-block;font-size:11.5px;padding:1px 8px;border-radius:2px;border:1px solid;line-height:1.7;margin-left:6px;white-space:nowrap}
 .c-plan{color:var(--ink2);border-color:#BCCBD8;background:#F2F6F9}
 .c-move{color:var(--seal);border-color:#E3BDB8;background:#FBF2F1}
 .c-done{color:var(--go);border-color:#B3D2C6;background:#F0F7F4}
@@ -224,9 +225,9 @@ textarea{min-height:84px;resize:vertical;line-height:1.8;padding:10px 11px;heigh
 .dayhd.wknd{color:var(--seal)}
 .ev{display:flex;gap:10px;background:#fff;border:1px solid var(--line);border-left:3px solid var(--ink);padding:9px 11px;margin-bottom:7px;width:100%;text-align:left;align-items:flex-start}
 .ev.meet{border-left-color:var(--focus)} .ev.leave{border-left-color:var(--go)} .ev.late{border-left-color:var(--seal)}
-.ev .tm{font-family:system-ui,-apple-system,sans-serif;font-size:12.5px;color:var(--slate);width:44px;flex:none;padding-top:1px}
+.ev .tm{font-family:'KhmerOS Siemreap',system-ui,-apple-system,sans-serif;font-size:12.5px;color:var(--slate);width:44px;flex:none;padding-top:1px}
 .ev .tx{min-width:0;flex:1}
-.ev .tx b{display:block;font-family:system-ui,-apple-system,sans-serif;font-size:14px;font-weight:600;line-height:1.5;word-break:break-word}
+.ev .tx b{display:block;font-family:'KhmerOS Siemreap',system-ui,-apple-system,sans-serif;font-size:14px;font-weight:600;line-height:1.6;word-break:break-word}
 .ev .tx span{font-size:12.5px;color:var(--slate);display:block;line-height:1.7}
 .legend{display:flex;flex-wrap:wrap;gap:12px;font-size:11.5px;color:var(--slate);margin-bottom:14px}
 .legend div{display:flex;align-items:center;gap:5px}
@@ -550,8 +551,9 @@ function relOf(other){
 }
 function relOfEnt(e){ return relOf(otherOf(e)) }
 function ownsEnt(e,who){
+  /* ច្រោះតាមសវនករទទួលបន្ទុកប៉ុណ្ណោះ — ដៃគូមិនរាប់ */
   if(!who) return true;
-  return e.auditor===who || e.partner===who;
+  return e.auditor===who;
 }
 function entSorted(){ return S.ents.filter(function(e){return !e.archived}).sort(function(a,b){ return String(a.nameLatin||'').localeCompare(String(b.nameLatin||'')) }) }
 function upsert(arr,rec){ for(var i=0;i<arr.length;i++) if(arr[i].id===rec.id){arr[i]=rec; return} arr.unshift(rec) }
@@ -676,7 +678,9 @@ function renderVisits(root,kind){
       var key=r.entId||r.nameLatin;
       if(key!==lastEnt){
         var n=up.filter(function(x){ return (x.entId||x.nameLatin)===key }).length;
-        root.appendChild(el('div','grouphd','🏢 '+(r.nameLatin||'')+' — ប្រជុំ '+n+' លើក'));
+        var gh=el('div','grouphd');
+        gh.innerHTML='🏢 <span class="lat">'+esc(r.nameLatin||'')+'</span> — ប្រជុំ '+n+' លើក';
+        root.appendChild(gh);
         lastEnt=key;
       }
     }
@@ -701,7 +705,7 @@ function renderVisits(root,kind){
       var a=((S.scope==='pp'||S.prov)?districtOf(e):provinceOf(e));
       if(!S.dist && a!==lastP){ root.appendChild(el('div','grouphd','📍 '+a)); lastP=a }
       var c=el('div','rec'), bd=el('div','meat');
-      bd.innerHTML='<div class="name">'+esc(e.nameLatin||'')+'</div>'+
+      bd.innerHTML='<div class="name"><span class="lat">'+esc(e.nameLatin||'')+'</span></div>'+
         '<div class="tin">អតប៖ '+esc(e.tin||'—')+'</div>'+
         (e.address?'<div class="row"><i>🏢</i><div>'+esc(e.address)+'</div></div>':'')+
         (e.contactPhone?'<div class="row"><i>📞</i><div>'+esc(e.contactName||'អ្នកតំណាង')+' · '+esc(e.contactPhone)+'</div></div>':'')+
@@ -744,7 +748,7 @@ function visitCard(r){
   var meat=el('div','meat');
   var rc = r.resp==='agree'?'c-agree':(r.resp==='noreply'?'c-nore':'c-wait');
   meat.innerHTML =
-    '<div class="name">'+esc(r.nameLatin||'(គ្មានឈ្មោះ)')+'<span class="chip '+m.chip+'">'+m.txt+'</span>'+
+    '<div class="name"><span class="lat">'+esc(r.nameLatin||'(គ្មានឈ្មោះ)')+'</span> <span class="chip '+m.chip+'">'+m.txt+'</span>'+
       '<span class="chip '+rc+'">'+esc(labOf(RESP,r.resp||'waiting'))+'</span>'+
       (roundTxt?'<span class="chip c-plan">'+esc(roundTxt.replace(' · ',''))+'</span>':'')+'</div>'+
     '<div class="tin">អតប៖ '+esc(r.tin||'—')+'</div>'+
@@ -955,7 +959,8 @@ function drawEvents(root, list){
   if(!list.length){ root.appendChild(el('div','empty','គ្មានកាលវិភាគនៅថ្ងៃនេះ')); return }
   list.forEach(function(e){
     var b=el('button','ev '+e.cls);
-    b.innerHTML='<span class="tm">'+esc(e.tm)+'</span><span class="tx"><b>'+e.ico+' '+esc(e.title)+'</b><span>'+esc(e.sub)+'</span></span>';
+    var ttl = e.rec ? '<span class="lat">'+esc(e.title)+'</span>' : esc(e.title);
+    b.innerHTML='<span class="tm">'+esc(e.tm)+'</span><span class="tx"><b>'+e.ico+' '+ttl+'</b><span>'+esc(e.sub)+'</span></span>';
     if(e.rec) b.onclick=function(){ visitForm(e.rec, null, e.cls==='meet'?'meet':'visit') }; else b.style.cursor='default';
     root.appendChild(b);
   });
@@ -1020,7 +1025,7 @@ function dailyCard(r){
   b.appendChild(rail);
   var meat=el('div','meat');
   meat.innerHTML =
-    '<div class="name">'+esc(r.entName||'—')+'</div>'+
+    '<div class="name"><span class="lat">'+esc(r.entName||'—')+'</span></div>'+
     '<div class="tin">'+esc(nameOf(r.email))+' · របាយការណ៍ប្រចាំថ្ងៃ</div>'+
     '<div class="row"><i>✅</i><div>'+esc(r.activity||'')+'</div></div>'+
     (r.withWho?'<div class="row"><i>👥</i><div>ជាមួយ៖ '+esc(r.withWho)+'</div></div>':'')+
@@ -1623,11 +1628,9 @@ function visitForm(r, seedDay, forceKind, seedEnt, asNew){
 
     function fillFrom(e){
       r.entId=e.id;
-      /* សវនករ និងអ្នករួមការងារដែលកំណត់ក្នុងបញ្ជីសហគ្រាស — បំពេញចូលស្វ័យប្រវត្តិ */
-      var team=[];
-      if(e.auditor) team.push(e.auditor);
-      if(e.partner && team.indexOf(e.partner)<0) team.push(e.partner);
-      if(team.length){ chosen.length=0; team.forEach(function(x){ chosen.push(x) }); drawAud() }
+      /* សវនករ និងដៃគូដែលកំណត់ក្នុងបញ្ជីសហគ្រាស — បំពេញចូលស្វ័យប្រវត្តិ */
+      if(e.auditor) aSel.value=e.auditor;
+      pSel.value=e.partner||'';
       name.value=e.nameLatin||''; tin.value=e.tin||'';
       addr.value=e.address||''; map.value=e.mapLink||'';
       if(e.contactName)  cname.value=e.contactName;
@@ -1671,39 +1674,24 @@ function visitForm(r, seedDay, forceKind, seedEnt, asNew){
     }
     name.onchange=syncFromTyped; tin.onchange=syncFromTyped;
 
-    var chosen=(r.auditors||[]).slice();
-    var aSel=el('select');
-    var aChips=el('div','picked');
-    function drawAud(){
-      aSel.innerHTML='';
-      var o0=el('option',null,'— ជ្រើសរើសសវនករ —'); o0.value=''; aSel.appendChild(o0);
-      TEAM.forEach(function(u){
-        if(chosen.indexOf(u.email)>=0) return;
-        var o=el('option',null,u.name); o.value=u.email; aSel.appendChild(o);
-      });
-      aSel.value='';
-      aChips.innerHTML='';
-      if(!chosen.length) aChips.appendChild(el('span','none','មិនទាន់ជ្រើសរើស'));
-      chosen.forEach(function(em,ix){
-        var t=el('span',null,nameOf(em));
-        var x=el('button',null,'✕'); x.onclick=function(){ chosen.splice(ix,1); drawAud() };
-        t.appendChild(x); aChips.appendChild(t);
-      });
-    }
-    aSel.onchange=function(){ if(aSel.value){ chosen.push(aSel.value); drawAud() } };
-    field(b,'សវនករទទួលបន្ទុក',aSel);
-    b.appendChild(aChips); b.appendChild(el('div','f'));
-    drawAud();
+    var two3=el('div','two'), aW=el('div'), pW=el('div');
+    two3.appendChild(aW); two3.appendChild(pW); b.appendChild(two3);
+    var aSel=el('select'), pSel=el('select');
+    aSel.appendChild(el('option',null,'— ជ្រើសរើស —')).value='';
+    pSel.appendChild(el('option',null,'— គ្មាន —')).value='';
+    TEAM.forEach(function(u){
+      var o1=el('option',null,u.name); o1.value=u.email; aSel.appendChild(o1);
+      var o2=el('option',null,u.name); o2.value=u.email; pSel.appendChild(o2);
+    });
+    aSel.value=(r.auditors&&r.auditors[0])||'';
+    pSel.value=r.partner||(r.auditors&&r.auditors[1])||'';
+    field(aW,'សវនករទទួលបន្ទុក',aSel);
+    field(pW,'ដៃគូ',pSel);
+
     var two2=el('div','two'), cnW=el('div'), cpW=el('div');
     two2.appendChild(cnW); two2.appendChild(cpW); b.appendChild(two2);
     var cname=field(cnW,'អ្នកតំណាងសហគ្រាស', input('text',r.contactName,'ឈ្មោះ'));
     var cphone=field(cpW,'លេខទូរសព្ទ', input('tel',r.contactPhone,'012 345 678'));
-
-    var pSel=el('select');
-    pSel.appendChild(el('option',null,'— គ្មាន —')).value='';
-    TEAM.forEach(function(u){ var o=el('option',null,u.name); o.value=u.email; pSel.appendChild(o) });
-    pSel.value=r.partner||'';
-    field(b,'អ្នករួមការងារ (សហគ្រាសនេះ)',pSel);
 
     var resp=el('select');
     RESP.forEach(function(p){ var o=el('option',null,p[1]); o.value=p[0]; resp.appendChild(o) });
@@ -1715,6 +1703,18 @@ function visitForm(r, seedDay, forceKind, seedEnt, asNew){
     via.value=r.noticeVia||'';
     field(b,'លិខិតជូនដំណឹង ផ្ញើតាមរយៈ',via);
     var ndate=field(b,'ថ្ងៃ ខែ ឆ្នាំ ផ្ញើ / ទទួលលិខិត', input('date',r.noticeDate||''));
+
+    var nWho=el('div'); b.appendChild(nWho);
+    var nName=field(nWho,'ឈ្មោះអ្នកទទួលលិខិត', input('text',r.noticeName,'ឈ្មោះ'));
+    var nPhone=field(nWho,'លេខទូរសព្ទអ្នកទទួលលិខិត', input('tel',r.noticePhone,'012 345 678'));
+    var nImg=el('div'); b.appendChild(nImg);
+    function toggleNotice(){
+      var on=!!via.value;
+      nWho.style.display = on ? 'block' : 'none';
+      nImg.style.display = on ? 'block' : 'none';
+    }
+    imagePicker(nImg, r.noticeImg, function(u){ r.noticeImg=u }, 'ឯកសារភ្ជាប់លិខិត (screenshot ឬរូបលិខិត)');
+    via.onchange=toggleNotice; toggleNotice();
 
     var note=field(b,'កំណត់សម្គាល់', textarea(r.note,'ឯកសារត្រូវត្រៀម · អ្នកទំនាក់ទំនង · លេខទូរសព្ទ…'));
     if(seedEnt) fillFrom(seedEnt);
@@ -1735,10 +1735,13 @@ function visitForm(r, seedDay, forceKind, seedEnt, asNew){
         r.round = S.visits.filter(function(x){ return x.meetAt && x.id!==r.id && (x.entId||x.nameLatin)===kk }).length + 1;
       }
       r.meetFloor = showMeet ? (floor.value.trim()||MEET_FLOOR) : '';
-      r.contactName=cname.value.trim(); r.contactPhone=cphone.value.trim(); r.partner=pSel.value;
+      r.contactName=cname.value.trim(); r.contactPhone=cphone.value.trim();
       r.area = (area.value.trim() || guessArea(addr.value));
       r.resp=resp.value; r.noticeVia=via.value; r.noticeDate=ndate.value;
-      r.auditors=chosen.slice();
+      r.noticeName=via.value?nName.value.trim():''; r.noticePhone=via.value?nPhone.value.trim():'';
+      if(!via.value) r.noticeImg='';
+      r.partner = (pSel.value && pSel.value!==aSel.value) ? pSel.value : '';
+      r.auditors=[aSel.value, r.partner].filter(function(x,i,a){ return x && a.indexOf(x)===i });
       r.extras=(r.extras||[]).filter(function(x){return (x.address||'').trim()||(x.label||'').trim()});
       if(!r.visitAt && !r.meetAt) return toast('សូមកំណត់ថ្ងៃ និងម៉ោង');
       r.updatedAt=new Date().toISOString();
@@ -1759,9 +1762,8 @@ function visitForm(r, seedDay, forceKind, seedEnt, asNew){
       if((r.extras||[]).length) ent.extras=JSON.parse(JSON.stringify(r.extras));
       if(r.contactName)  ent.contactName=r.contactName;
       if(r.contactPhone) ent.contactPhone=r.contactPhone;
-      if(!ent.auditor && r.auditors.length) ent.auditor=r.auditors[0];
-      if(r.partner) ent.partner=r.partner;
-      else if(r.auditors.length>1 && !ent.partner) ent.partner=r.auditors[1];
+      if(aSel.value) ent.auditor=aSel.value;
+      ent.partner=r.partner||'';
       ent.updatedAt=r.updatedAt; ent.updatedBy=S.me.email;
       r.entId=ent.id;
       pushEnt(ent);
