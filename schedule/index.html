@@ -739,7 +739,10 @@ function visitCard(r){
     ((r.auditors&&r.auditors.length)?'<div class="row"><i>👤</i><div>'+r.auditors.map(nameOf).map(esc).join(' · ')+'</div></div>':'')+
     (r.contactPhone||r.contactName?'<div class="row"><i>📞</i><div>'+esc(r.contactName||'អ្នកតំណាង')+
        (r.contactPhone?' · <a href="tel:'+esc(String(r.contactPhone).replace(/[^0-9+]/g,''))+'">'+esc(r.contactPhone)+'</a>':'')+'</div></div>':'')+
-    (r.noticeVia?'<div class="row"><i>📨</i><div>បានផ្ញើលិខិតជូនដំណឹង៖ '+esc(labOf(NOTICE,r.noticeVia))+(r.noticeDate?' · '+fmtD(r.noticeDate+'T00:00'):'')+'</div></div>':'')+
+    (r.noticeVia?'<div class="row"><i>📨</i><div>បានផ្ញើលិខិតជូនដំណឹង៖ '+esc(labOf(NOTICE,r.noticeVia))+(r.noticeDate?' · '+fmtD(r.noticeDate+'T00:00'):'')+
+      (r.noticeName?'<br>អ្នកទទួល៖ '+esc(r.noticeName)+(r.noticePhone?' · '+esc(r.noticePhone):''):'')+
+      (r.noticeImg?'<br><img src="'+esc(r.noticeImg)+'" alt="notice" style="max-width:100%;margin-top:6px;border:1px solid var(--line);border-radius:3px">':'')+
+      '</div></div>':'')+
     (r.note?'<div class="row"><i>📝</i><div>'+esc(r.note)+'</div></div>':'');
   b.appendChild(meat); c.appendChild(b);
 
@@ -1160,7 +1163,44 @@ function renderReport(root){
   }));
   root.appendChild(bar);
 }
-/** បង្រួមរូបឱ្យតូចល្មមរក្សាទុកក្នុង Sheet (កោសិកា ១ មាន ៥០,០០០ តួអក្សរ) */
+/**
+ * ប្រអប់បិទភ្ជាប់រូប ៖ បង្រួម → ផ្ទុកឡើង Google Drive → រក្សាទុកតែតំណ
+ * onSet(url) ត្រូវបានហៅរាល់ពេលរូបប្តូរ
+ */
+function imagePicker(parent, current, onSet, label){
+  parent.appendChild(el('label',null,label||'រូបភាពភ្ជាប់'));
+  var wrap=el('div','shot');
+  var img=el('img'); img.style.display='none';
+  var box=el('div','pastebox');
+  box.setAttribute('contenteditable','true');
+  box.textContent='បិទភ្ជាប់រូប (Ctrl+V) ឬចុចដើម្បីជ្រើសរូប';
+  var fin=el('input'); fin.type='file'; fin.accept='image/*'; fin.style.display='none';
+  function show(url){
+    img.src=url||''; img.style.display=url?'block':'none';
+    box.style.display=url?'none':'block';
+  }
+  function take(dataUrl){
+    if(!online()){ onSet(dataUrl); show(dataUrl); toast('រក្សាទុកក្នុងទូរសព្ទ (មិនទាន់ផ្ទុកឡើង)'); return }
+    show(dataUrl); toast('កំពុងផ្ទុករូបឡើង…');
+    api('apiUploadImage',[S.token,'rsc',dataUrl]).then(function(d){
+      onSet(d.url); show(d.url); toast('✅ ផ្ទុករូបឡើងរួច');
+    }).catch(function(e){ onSet(dataUrl); toast('⚠️ '+e.message) });
+  }
+  box.onclick=function(){ fin.click() };
+  fin.onchange=function(){ if(fin.files[0]) shrinkImage(fin.files[0], take) };
+  box.addEventListener('paste',function(ev){
+    var it=(ev.clipboardData||{}).items||[];
+    for(var i=0;i<it.length;i++) if(it[i].type.indexOf('image')===0){
+      ev.preventDefault(); shrinkImage(it[i].getAsFile(), take); return;
+    }
+  });
+  img.onclick=function(){ if(confirm('ដករូបនេះចេញ?')){ onSet(''); show('') } };
+  wrap.appendChild(box); wrap.appendChild(img); wrap.appendChild(fin);
+  parent.appendChild(wrap); parent.appendChild(el('div','f'));
+  show(current||'');
+}
+
+/** បង្រួមរូបមុនផ្ទុកឡើង */
 function shrinkImage(file, cb){
   if(!file) return;
   var fr=new FileReader();
@@ -1339,7 +1379,7 @@ function xlsxDownload(name, sheets){
 }
 function reportSheets(visits, intern){
   var v=[['ឈ្មោះសហគ្រាស','លេខអតប','តំបន់','អាសយដ្ឋាន','ទីតាំងបន្ថែម','ចុះទីតាំង','ណាត់ជួប','ទីកន្លែងណាត់ជួប',
-          'អ្នកតំណាង','លេខទូរសព្ទ','សវនករ','ស្ថានភាព','ការឆ្លើយតប','លិខិតជូនដំណឹង','ថ្ងៃផ្ញើលិខិត',
+          'អ្នកតំណាង','លេខទូរសព្ទ','សវនករ','ស្ថានភាព','ការឆ្លើយតប','លិខិតជូនដំណឹង','ថ្ងៃផ្ញើលិខិត','អ្នកទទួលលិខិត','ទូរសព្ទអ្នកទទួល','ឯកសារភ្ជាប់',
           'មូលហេតុប្តូរពេល','កំណត់សម្គាល់','តំណផែនទី']];
   visits.forEach(function(r){
     v.push([r.nameLatin||'', r.tin||'', areaOf(r), r.address||'',
@@ -1348,6 +1388,7 @@ function reportSheets(visits, intern){
       r.meetAt?meetPlace(r):'', r.contactName||'', r.contactPhone||'',
       (r.auditors||[]).map(nameOf).join(', '), statusMeta(r).txt,
       labOf(RESP,r.resp||'waiting'), labOf(NOTICE,r.noticeVia), r.noticeDate?fmtD(r.noticeDate+'T00:00'):'',
+      r.noticeName||'', r.noticePhone||'', r.noticeImg||'',
       r.lastReason||'', r.note||'', r.mapLink||'']);
   });
   var i=[['សមាជិក / ប្រធានអង្គប្រជុំ','ប្រភេទ','ចាប់ពី','ដល់','ចំនួនថ្ងៃ','ម៉ោង','កម្មវត្ថុ / មូលហេតុ','ទីកន្លែង','អ្នកចូលរួម','រៀបវារៈ','ខ្លឹមសារ','ជូនដំណឹងថ្ងៃ']];
@@ -1555,43 +1596,7 @@ function visitForm(r, seedDay, forceKind, seedEnt, asNew){
     bk.onclick=function(){ window.open(BOOKING_URL,'_blank','noopener') };
     meetBox.appendChild(bk); meetBox.appendChild(el('div','f'));
 
-    meetBox.appendChild(el('label',null,'រូបភាពបញ្ជាក់ការកក់បន្ទប់'));
-    var shot=el('div','shot');
-    var shotImg=el('img'); shotImg.style.display='none';
-    var pasteBox=el('div','pastebox');
-    pasteBox.setAttribute('contenteditable','true');
-    pasteBox.textContent='បិទភ្ជាប់រូប (Ctrl+V) ឬចុចដើម្បីជ្រើសរូប';
-    var fileIn=el('input'); fileIn.type='file'; fileIn.accept='image/*'; fileIn.style.display='none';
-    function setShot(dataUrl){
-      r.bookingImg=dataUrl;
-      shotImg.src=dataUrl; shotImg.style.display=dataUrl?'block':'none';
-      pasteBox.style.display=dataUrl?'none':'block';
-    }
-    pasteBox.onclick=function(){ fileIn.click() };
-    fileIn.onchange=function(){ if(fileIn.files[0]) shrinkImage(fileIn.files[0], setShot) };
-    function grabPaste(ev){
-      var it=(ev.clipboardData||{}).items||[];
-      for(var i=0;i<it.length;i++) if(it[i].type.indexOf('image')===0){
-        ev.preventDefault(); shrinkImage(it[i].getAsFile(), setShot);
-        toast('បានបិទភ្ជាប់រូបភាព'); return;
-      }
-    }
-    document.addEventListener('paste', grabPaste);
-    $('#sheetClose').addEventListener('click', function once(){
-      document.removeEventListener('paste', grabPaste);
-      $('#sheetClose').removeEventListener('click', once);
-    });
-    pasteBox.textContent='ចុច Ctrl+V ដើម្បីបិទភ្ជាប់រូប (ឬចុចត្រង់នេះដើម្បីជ្រើសរូប)';
-    pasteBox.addEventListener('paste',function(ev){
-      var it=(ev.clipboardData||{}).items||[];
-      for(var i=0;i<it.length;i++) if(it[i].type.indexOf('image')===0){
-        ev.preventDefault(); shrinkImage(it[i].getAsFile(), setShot); return;
-      }
-    });
-    shotImg.onclick=function(){ if(confirm('ដករូបនេះចេញ?')) setShot('') };
-    shot.appendChild(pasteBox); shot.appendChild(shotImg); shot.appendChild(fileIn);
-    meetBox.appendChild(shot); meetBox.appendChild(el('div','f'));
-    setShot(r.bookingImg||'');
+    imagePicker(meetBox, r.bookingImg, function(u){ r.bookingImg=u }, 'រូបភាពបញ្ជាក់ការកក់បន្ទប់');
 
     var zoom=field(meetBox,'តំណ Zoom (បើប្រជុំតាមអនឡាញ)', input('url',r.zoomLink,'https://zoom.us/j/…'));
 
@@ -1784,12 +1789,28 @@ function respForm(r){
     via.value=r.noticeVia||'';
     field(b,'ផ្ញើតាមរយៈ',via);
     var nd=field(b,'ថ្ងៃ ខែ ឆ្នាំ ផ្ញើ / ទទួល', input('date',r.noticeDate||''));
+
+    var who=el('div');
+    b.appendChild(who);
+    var nName=field(who,'ឈ្មោះអ្នកទទួល', input('text',r.noticeName,'ឈ្មោះ'));
+    var nPhone=field(who,'លេខទូរសព្ទអ្នកទទួល', input('tel',r.noticePhone,'012 345 678'));
+    function toggleWho(){
+      who.style.display = (via.value==='telegram' || via.value==='pickup') ? 'block' : 'none';
+    }
+    via.onchange=toggleWho; toggleWho();
+
+    imagePicker(b, r.noticeImg, function(u){ r.noticeImg=u }, 'ឯកសារភ្ជាប់ (screenshot ឬរូបលិខិត)');
+
     var sv=el('button','save','រក្សាទុកលិខិតជូនដំណឹង');
     sv.onclick=function(){
       r.noticeVia=via.value; r.noticeDate=nd.value;
+      r.noticeName=nName.value.trim(); r.noticePhone=nPhone.value.trim();
+      if((r.noticeVia==='telegram'||r.noticeVia==='pickup') && !r.noticeName)
+        return toast('សូមបំពេញឈ្មោះអ្នកទទួល');
       r.updatedAt=new Date().toISOString();
       r.history=(r.history||[]).concat([{at:r.updatedAt,by:S.me.email,
-        text:'លិខិតជូនដំណឹង៖ '+labOf(NOTICE,r.noticeVia)+(r.noticeDate?' · '+fmtD(r.noticeDate+'T00:00'):'')}]);
+        text:'លិខិតជូនដំណឹង៖ '+labOf(NOTICE,r.noticeVia)+(r.noticeDate?' · '+fmtD(r.noticeDate+'T00:00'):'')+
+             (r.noticeName?' · '+r.noticeName:'')}]);
       closeSheet(); pushVisit(r);
     };
     b.appendChild(sv);
