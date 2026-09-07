@@ -580,7 +580,7 @@ function pushInternal(rec){
   if(!online()){ toast('រក្សាទុកក្នុងទូរសព្ទ'); return Promise.resolve() }
   toast('កំពុងរក្សាទុក…');
   return api('apiSaveInternal',[S.token,rec])
-    .then(function(){ toast(rec.silent ? '✅ រក្សាទុករួច (មិនបានជូនដំណឹង)' : '✅ ជូនដំណឹងក្រុមរួច'); return refresh(true) })
+    .then(function(){ toast((rec.silent||rec.type==='daily') ? '✅ រក្សាទុករួច (មិនបានជូនដំណឹង)' : '✅ ជូនដំណឹងក្រុមរួច'); return refresh(true) })
     .catch(function(e){ toast('⚠️ '+e.message); return refresh(true) });
 }
 function pushEnt(rec){
@@ -849,7 +849,8 @@ function drawPending(root, all){
       bd.innerHTML='<div class="name"><span class="lat">'+esc(e.nameLatin||'')+'</span></div>'+
         '<div class="tin">អតប៖ '+esc(e.tin||'—')+'</div>'+
         (e.address?'<div class="row"><i>🏢</i><div>'+esc(e.address)+'</div></div>':'')+
-        (e.contactPhone?'<div class="row"><i>📞</i><div>'+esc(e.contactName||'អ្នកតំណាង')+' · '+esc(e.contactPhone)+'</div></div>':'')+
+        (e.contactPhone?'<div class="row"><i>📞</i><div>'+esc(e.contactName||'អ្នកតំណាង')+
+          ' · <a href="tel:'+esc(String(e.contactPhone).replace(/[^0-9+]/g,''))+'">'+esc(e.contactPhone)+'</a></div></div>':'')+
         (e.auditor?'<div class="row"><i>👤</i><div>សវនករទទួលបន្ទុក៖ '+esc(nameOf(e.auditor))+
           (e.partner?' · '+esc(relPair(e.auditor,e.partner))+'៖ '+esc(nameOf(e.partner)):'')+'</div></div>':'');
       c.appendChild(bd);
@@ -910,7 +911,8 @@ function visitCard(r){
     (noticesOf(r).length?'<div class="row"><i>📨</i><div>'+noticesOf(r).map(function(n){
         var imgs=(n.imgs&&n.imgs.length)?n.imgs:(n.img?[n.img]:[]);
         return esc(labOf(NOTICE,n.via))+(n.date?' · '+fmtD(n.date+'T00:00'):'')+
-          (n.name?' · '+esc(n.name)+(n.phone?' '+esc(n.phone):''):'')+
+          (n.name?' · '+esc(n.name):'')+
+          (n.phone?' · <a href="tel:'+esc(String(n.phone).replace(/[^0-9+]/g,''))+'">'+esc(n.phone)+'</a>':'')+
           imgs.map(function(u,i){ return ' <a href="'+esc(u)+'" target="_blank" rel="noopener">🖼 មើលឯកសារ'+(imgs.length>1?' '+(i+1):'')+'</a>' }).join('');
       }).join('<br>')+'</div></div>':'')+
     (r.note?'<div class="row"><i>📝</i><div>'+esc(r.note)+'</div></div>':'');
@@ -918,7 +920,6 @@ function visitCard(r){
 
   var a=el('div','acts');
   a.appendChild(btn('🕒 ប្តូរពេល','key warn',function(){ moveForm(r) }));
-  a.appendChild(btn('🔄 ការឆ្លើយតប','key',function(){ respForm(r) }));
   if(r.meetAt) a.appendChild(btn('➕ ប្រជុំលើកបន្ទាប់','key',function(){ nextRound(r) }));
   a.appendChild(btn('✏️ កែ','',function(){ visitForm(r) }));
   a.appendChild(btn('📅 ដាក់ចូលប្រតិទិន','',function(){ downloadICS(r) }));
@@ -926,12 +927,6 @@ function visitCard(r){
   if(r.archived) a.appendChild(btn('↩️ យកចេញពីប័ណ្ណសារ','key',function(){ archiveVisit(r) }));
   c.appendChild(a);
 
-  if(r.history && r.history.length){
-    var h=el('details','hist'); h.appendChild(el('summary',null,'ប្រវត្តិការផ្លាស់ប្តូរ ('+r.history.length+')'));
-    var ul=el('ul');
-    r.history.slice().reverse().forEach(function(x){ ul.appendChild(el('li',null,x.text+' — '+nameOf(x.by)+' · '+fmtD(x.at))) });
-    h.appendChild(ul); c.appendChild(h);
-  }
   return c;
 }
 function nextRound(r){
@@ -1247,11 +1242,19 @@ function renderTeam(root){
 
   var all=S.internal.slice().sort(function(a,b){return (dt(b.fromAt)||0)-(dt(a.fromAt)||0)});
   var doneN=all.filter(function(r){ return r.type==='meeting' && r.done }).length;
-  var list=all.filter(function(r){ return S.showDone ? (r.type==='meeting' && r.done) : !(r.type==='meeting' && r.done) });
-  var mine=list;   /* ក្រុមមើលឃើញគ្នាទៅវិញទៅមក */
-  section(root, S.showDone?'ប្រជុំដែលបានបញ្ចប់':'ការជូនដំណឹងផ្ទៃក្នុង', mine.length);
+  var live=all.filter(function(r){ return S.showDone ? (r.type==='meeting' && r.done) : !(r.type==='meeting' && r.done) });
+  var mine=live.filter(function(r){ return r.type!=='daily' });   /* សារជូនដំណឹង ៖ ច្បាប់ · យឺត · ប្រជុំ */
+  var daily=live.filter(function(r){ return r.type==='daily' });
+  section(root, S.showDone?'ប្រជុំដែលបានបញ្ចប់':'ការជូនដំណឹង ៖ ច្បាប់ · យឺត · ប្រជុំ', mine.length);
   if(!mine.length) root.appendChild(emptyBox(S.showDone?'គ្មានប្រជុំដែលបានបញ្ចប់':'មិនទាន់មានការជូនដំណឹង'));
   mine.forEach(function(r){ root.appendChild(internalCard(r)) });
+
+  if(!S.showDone){
+    section(root,'របាយការណ៍ប្រចាំថ្ងៃ (មិនផ្ញើសារ)', daily.length);
+    if(!daily.length) root.appendChild(emptyBox('មិនទាន់មានរបាយការណ៍'));
+    daily.forEach(function(r){ root.appendChild(internalCard(r)) });
+  }
+
   var tg=el('button','arclink', S.showDone?'← ត្រឡប់ទៅបញ្ជីសកម្ម':'✔️ ប្រជុំដែលបានបញ្ចប់ ('+doneN+')');
   tg.onclick=function(){ S.showDone=!S.showDone; render(); window.scrollTo(0,0) };
   root.appendChild(tg);
@@ -2049,9 +2052,17 @@ function field(parent,label,node,hint){
   parent.appendChild(f); return node;
 }
 function input(type,val,ph){ var i=el('input'); i.type=type; i.value=val||''; if(ph)i.placeholder=ph; return i }
-var WORK_FROM=8, WORK_TO=18, WORK_STEP=15;   /* ម៉ោងធ្វើការ ៨ ព្រឹក – ៦ ល្ងាច */
+var WORK_STEP=15;
+var HOURS={ visit:[8,17], meet:[8,17], daily:[7,20] };   /* ចុះទីតាំង/ប្រជុំ ៨–៥ · របាយការណ៍ ៧–៨ យប់ */
+function isWeekend(dstr){
+  if(!dstr) return false;
+  var d=keyDate(dstr), w=d.getDay();
+  return w===0 || w===6;
+}
 /** ថ្ងៃ + ម៉ោង ដាច់ពីគ្នា ៖ ម៉ោងជ្រើសបានតែក្នុងម៉ោងធ្វើការ */
-function dtField(parent, label, iso, seedDay, hint){
+function dtField(parent, label, iso, seedDay, hint, kind){
+  var rng=HOURS[kind||'visit']||HOURS.visit;
+  var WORK_FROM=rng[0], WORK_TO=rng[1];
   var wrap=el('div','two'), dW=el('div'), tW=el('div');
   wrap.appendChild(dW); wrap.appendChild(tW); parent.appendChild(wrap);
   var di=input('date',''), ti=el('select');
@@ -2077,7 +2088,10 @@ function dtField(parent, label, iso, seedDay, hint){
   }
   field(dW, label, di, hint);
   field(tW, 'ម៉ោង', ti);
-  return { d:di, t:ti, val:function(){ return di.value ? fromLocalInput(di.value+'T'+ti.value) : '' } };
+  di.onchange=function(){ if(isWeekend(di.value)) toast('សូមជ្រើសរើសថ្ងៃធ្វើការ (ច័ន្ទ–សុក្រ)') };
+  return { d:di, t:ti,
+    weekend:function(){ return isWeekend(di.value) },
+    val:function(){ return di.value ? fromLocalInput(di.value+'T'+ti.value) : '' } };
 }
 function textarea(val,ph){ var t=el('textarea'); t.value=val||''; if(ph)t.placeholder=ph; return t }
 
@@ -2183,7 +2197,7 @@ function visitForm(r, seedDay, forceKind, seedEnt, asNew){
     }
     drawExtras();
     var seedD = (isNew && seedDay) ? seedDay : '';
-    var visit=dtField(siteBox,'ថ្ងៃចុះពិនិត្យទីតាំង', r.visitAt, seedD);
+    var visit=dtField(siteBox,'ថ្ងៃចុះពិនិត្យទីតាំង', r.visitAt, seedD, '', 'visit');
 
     /* ---- ផ្នែកណាត់ជួប (GDT TOWER) ---- */
     var meetBox=el('div'); b.appendChild(meetBox);
@@ -2194,7 +2208,7 @@ function visitForm(r, seedDay, forceKind, seedEnt, asNew){
     two.appendChild(roomW); two.appendChild(floorW); meetBox.appendChild(two);
     var room =field(roomW ,'បន្ទប់លេខ', input('text',r.meetRoom,'ឧ. 305'));
     var floor=field(floorW,'ជាន់ទី',   input('text',r.meetFloor||MEET_FLOOR,'3'));
-    var meet =dtField(meetBox,'ថ្ងៃណាត់ជួបសហគ្រាស', r.meetAt, seedD);
+    var meet =dtField(meetBox,'ថ្ងៃណាត់ជួបសហគ្រាស', r.meetAt, seedD, '', 'meet');
 
     var bk=el('button','mini','🔗 កក់បន្ទប់ប្រជុំ (roombooking)');
     bk.onclick=function(){ window.open(BOOKING_URL,'_blank','noopener') };
@@ -2358,6 +2372,8 @@ function visitForm(r, seedDay, forceKind, seedEnt, asNew){
       r.auditors=[aSel.value, r.partner].filter(function(x,i,a){ return x && a.indexOf(x)===i });
       r.extras=(r.extras||[]).filter(function(x){return (x.address||'').trim()||(x.label||'').trim()});
       if(!r.visitAt && !r.meetAt) return toast('សូមកំណត់ថ្ងៃ និងម៉ោង');
+      if((showSite && visit.weekend()) || (showMeet && meet.weekend()))
+        return toast('សូមជ្រើសរើសថ្ងៃធ្វើការ (ច័ន្ទ–សុក្រ)');
       r.updatedAt=new Date().toISOString();
       if(isNew){ r.createdBy=S.me.email; r.createdAt=r.updatedAt;
         r.history=[{at:r.updatedAt,by:S.me.email,text:'បង្កើតកាលវិភាគ'}]; }
@@ -2406,6 +2422,12 @@ function visitForm(r, seedDay, forceKind, seedEnt, asNew){
     b.appendChild(go);
 
     if(!isNew){
+      if(r.history && r.history.length){
+        var h=el('details','hist'); h.appendChild(el('summary',null,'ប្រវត្តិការផ្លាស់ប្តូរ ('+r.history.length+')'));
+        var ul=el('ul');
+        r.history.slice().reverse().forEach(function(x){ ul.appendChild(el('li',null,x.text+' — '+nameOf(x.by)+' · '+fmtD(x.at))) });
+        h.appendChild(ul); b.appendChild(h);
+      }
       b.appendChild(el('div','f'));
       if(r.status!=='done'){
         var dn=el('button','mini','✔️ សម្គាល់ថាបានចុះរួច');
@@ -2502,14 +2524,15 @@ function moveForm(r){
     opts.forEach(function(p){ var o=el('option',null,p[1]); o.value=p[0]; which.appendChild(o) });
     field(b,'ប្តូរអ្វី',which);
     var nv=null, nm=null;
-    if(r.visitAt) nv=dtField(b,'ពេលថ្មី៖ ចុះពិនិត្យទីតាំង', r.visitAt);
-    if(r.meetAt)  nm=dtField(b,'ពេលថ្មី៖ ណាត់ជួប ('+MEET_VENUE+')', r.meetAt);
+    if(r.visitAt) nv=dtField(b,'ពេលថ្មី៖ ចុះពិនិត្យទីតាំង', r.visitAt, '', '', 'visit');
+    if(r.meetAt)  nm=dtField(b,'ពេលថ្មី៖ ណាត់ជួប ('+MEET_VENUE+')', r.meetAt, '', '', 'meet');
     var rs=el('select'); REASONS.forEach(function(t){ rs.appendChild(el('option',null,t)) });
     field(b,'មូលហេតុ',rs);
     var note=field(b,'ពន្យល់បន្ថែម', textarea('','ឧ. សហគ្រាសសុំពន្យារ ១ សប្តាហ៍ ដោយគណនេយ្យករឈប់សម្រាក'));
 
     var go=el('button','save','រក្សាទុក និងជូនដំណឹងក្រុម');
     go.onclick=function(){
+      if((nv && nv.weekend()) || (nm && nm.weekend())) return toast('សូមជ្រើសរើសថ្ងៃធ្វើការ (ច័ន្ទ–សុក្រ)');
       var w=which.value, old={v:r.visitAt,m:r.meetAt}, txt=[];
       if((w==='visit'||w==='both') && nv){ r.prevVisitAt=old.v; r.visitAt=nv.val(); txt.push('ចុះទីតាំង៖ '+fmtFull(old.v)+' → '+fmtFull(r.visitAt)) }
       if((w==='meet' ||w==='both') && nm){ r.prevMeetAt =old.m; r.meetAt =nm.val(); txt.push('ណាត់ជួប៖ '+fmtFull(old.m)+' → '+fmtFull(r.meetAt)) }
@@ -2616,20 +2639,20 @@ function dailyForm(edit, seedDay){
     };
     field(b,'សកម្មភាព',aSel);
 
-    var when=field(b,'ថ្ងៃ ខែ ឆ្នាំ និងម៉ោង',
-      input('datetime-local', toLocalInput(r.fromAt) || (seedDay?seedDay+'T08:00':toLocalInput(new Date().toISOString()))));
+    var when=dtField(b,'ថ្ងៃ', r.fromAt, seedDay||dkey(new Date()), '', 'daily');
     var cont=field(b,'ខ្លឹមសារ', textarea(r.subject,'អ្វីដែលបានធ្វើ'));
     var res =field(b,'លទ្ធផលកិច្ចប្រជុំ', textarea(r.minutes,'លទ្ធផល និងជំហានបន្ទាប់'));
 
-    var go=el('button','save','រក្សាទុក');
+    var go=el('button','save','រក្សាទុក (មិនផ្ញើសារ)');
     go.onclick=function(){
-      if(!when.value) return toast('សូមកំណត់ថ្ងៃ និងម៉ោង');
+      if(!when.d.value) return toast('សូមកំណត់ថ្ងៃ និងម៉ោង');
+      if(when.weekend()) return toast('សូមជ្រើសរើសថ្ងៃធ្វើការ (ច័ន្ទ–សុក្រ)');
       if(aSel.value==='__new') return toast('សូមជ្រើសរើសសកម្មភាព');
       var e=null;
       for(var i=0;i<S.ents.length;i++) if(S.ents[i].id===eSel.value) e=S.ents[i];
       r.entId=eSel.value; r.entName=e?e.nameLatin:'';
       r.activity=aSel.value;
-      r.fromAt=fromLocalInput(when.value); r.toAt=r.fromAt;
+      r.fromAt=when.val(); r.toAt=r.fromAt;
       r.subject=cont.value.trim(); r.minutes=res.value.trim();
       r.reason=r.activity;
       closeSheet(); pushInternal(r);
@@ -2729,7 +2752,7 @@ function meetingForm(edit){
     chair.value=r.chair||'';
     field(b,'ដឹកនាំការប្រជុំ',chair);
 
-    var when=dtField(b,'ថ្ងៃប្រជុំ', r.fromAt);
+    var when=dtField(b,'ថ្ងៃប្រជុំ', r.fromAt, '', '', 'meet');
     var subj=field(b,'កម្មវត្ថុ', textarea(r.subject,'ខ្លឹមសារសង្ខេបនៃការប្រជុំ'));
 
     var two=el('div','two'), fW=el('div'), rW=el('div');
@@ -2796,6 +2819,7 @@ function meetingForm(edit){
     var go=el('button','save','📣 រក្សាទុក និងជូនដំណឹងក្រុម');
     go.onclick=function(){
       if(!when.d.value) return toast('សូមកំណត់ថ្ងៃ និងម៉ោងប្រជុំ');
+      if(when.weekend()) return toast('សូមជ្រើសរើសថ្ងៃធ្វើការ (ច័ន្ទ–សុក្រ)');
       if(!chair.value) return toast('សូមជ្រើសរើសអ្នកដឹកនាំការប្រជុំ');
       r.chair=chair.value; r.fromAt=when.val(); r.toAt=r.fromAt;
       r.subject=subj.value.trim(); r.floor=floor.value.trim(); r.room=room.value.trim();
@@ -2812,6 +2836,7 @@ function meetingForm(edit){
     quiet.style.display='block'; quiet.style.width='100%'; quiet.style.marginTop='8px';
     quiet.onclick=function(){
       if(!collect()) return;
+      if(when.weekend()) return toast('សូមជ្រើសរើសថ្ងៃធ្វើការ (ច័ន្ទ–សុក្រ)');
       r.chair=chair.value; r.fromAt=when.val(); r.toAt=r.fromAt;
       r.subject=subj.value.trim(); r.floor=floor.value.trim(); r.room=room.value.trim();
       r.attendees=chosen.slice();
