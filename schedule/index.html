@@ -728,7 +728,7 @@ function renderVisits(root,kind){
   var pendingOwned = pending.filter(function(e){ return ownsEnt(e,S.owner) });
   if(!meet && !S.showArc){
     var swap=el('div','seg');
-    [['','ទាំងអស់'],['sched','មានកាលវិភាគ ('+(up.length+past.length)+')'],['pending','មិនទាន់មាន ('+pendingOwned.length+')']]
+    [['','ទាំងអស់'],['sched','មានកាលវិភាគ ('+(up.length+past.length)+')'],['pending','មិនទាន់មាន ('+pending.length+')']]
       .forEach(function(p){
         var x=el('button',null,p[1]);
         x.setAttribute('aria-pressed', (S.secFilter||'')===p[0]?'true':'false');
@@ -741,6 +741,27 @@ function renderVisits(root,kind){
     drawPending(root, pending);
     root.appendChild(arcLink(arc));
     return;
+  }
+
+  if(!S.showArc && (up.length+past.length)){
+    var pool=up.concat(past), rc={};
+    RESP.forEach(function(p){ rc[p[0]]=pool.filter(function(r){ return (r.resp||'waiting')===p[0] }).length });
+    var rrow=el('div','areas resp');
+    var ab2=el('button',null,'ការឆ្លើយតបទាំងអស់ ('+pool.length+')');
+    ab2.setAttribute('aria-pressed', S.respF?'false':'true');
+    ab2.onclick=function(){ S.respF=''; render() };
+    rrow.appendChild(ab2);
+    RESP.forEach(function(p){
+      var x=el('button',null,p[1]+' ('+rc[p[0]]+')');
+      x.setAttribute('aria-pressed', S.respF===p[0]?'true':'false');
+      x.onclick=function(){ S.respF=(S.respF===p[0])?'':p[0]; render() };
+      rrow.appendChild(x);
+    });
+    root.appendChild(rrow);
+    if(S.respF){
+      up  = up.filter(function(r){ return (r.resp||'waiting')===S.respF });
+      past= past.filter(function(r){ return (r.resp||'waiting')===S.respF });
+    }
   }
 
   section(root, S.showArc?'ប័ណ្ណសារ — សវនកម្មបានបញ្ចប់':'ដែលជិតមកដល់', up.length);
@@ -1917,7 +1938,7 @@ function visitForm(r, seedDay, forceKind, seedEnt, asNew){
     var pickBox=el('div'); b.appendChild(pickBox);
     if(!showPicker) pickBox.style.display='none';
 
-    var fowner = (S.owner===undefined?S.me.email:S.owner);
+    var fowner = (S.formOwner===undefined?S.me.email:S.formOwner);
     var oSel=el('select');
     [['','ទាំងអស់']].concat(TEAM.map(function(u){ return [u.email, u.email===S.me.email?'របស់ខ្ញុំ':u.name] }))
       .forEach(function(pp){ var o=el('option',null,pp[1]); o.value=pp[0]; oSel.appendChild(o) });
@@ -1926,7 +1947,7 @@ function visitForm(r, seedDay, forceKind, seedEnt, asNew){
 
     var find=field(pickBox,'ស្វែងរកសហគ្រាស', input('text','','វាយឈ្មោះឡាតាំង ឬ លេខអតប'));
     var sug=el('div','sug'); pickBox.appendChild(sug);
-    oSel.onchange=function(){ fowner=oSel.value; drawSug() };
+    oSel.onchange=function(){ fowner=oSel.value; S.formOwner=fowner; drawSug() };
 
     var name=field(b,'ឈ្មោះសហគ្រាស (ឡាតាំង)', input('text',r.nameLatin,'ABC (CAMBODIA) CO., LTD.'));
     var tin =field(b,'លេខអតប', input('text',r.tin,'L001-901702836'));
@@ -2361,7 +2382,7 @@ function dailyForm(edit, seedDay){
   var r = edit ? JSON.parse(JSON.stringify(edit))
               : {id:uid(), type:'daily', email:S.me.email, status:'noted', createdAt:new Date().toISOString()};
   openSheet(isNew?'របាយការណ៍ប្រចាំថ្ងៃ':'កែរបាយការណ៍ប្រចាំថ្ងៃ', function(b){
-    var fowner = (S.owner===undefined?S.me.email:S.owner);
+    var fowner = (S.formOwner===undefined?S.me.email:S.formOwner);
     var oSel=el('select');
     [['','ទាំងអស់']].concat(TEAM.map(function(u){ return [u.email, u.email===S.me.email?'របស់ខ្ញុំ':u.name] }))
       .forEach(function(pp){ var o=el('option',null,pp[1]); o.value=pp[0]; oSel.appendChild(o) });
@@ -2379,7 +2400,7 @@ function dailyForm(edit, seedDay){
       eSel.value=r.entId||'';
     }
     fillEnts();
-    oSel.onchange=function(){ fowner=oSel.value; fillEnts(); drawActs() };
+    oSel.onchange=function(){ fowner=oSel.value; S.formOwner=fowner; fillEnts(); drawActs() };
     field(b,'សហគ្រាស',eSel);
 
     var aSel=el('select');
@@ -2792,7 +2813,7 @@ function drawLogin(){
 }
 function setMe(me){
   S.me=me; ls('me',me); $('#login').classList.remove('on');
-  if(S.owner===undefined) S.owner=me.email;
+  if(S.owner===undefined) S.owner='';
   if(window.__native) window.__native.push(me.email);
   render(); refresh(true).then(checkReminders);
 }
