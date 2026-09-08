@@ -14895,9 +14895,30 @@ function vrcNum(v){
 }
 /* ត្រឡប់ {y, m} ពី Date · «2026-02-01» · «01-08-2024» · «08/2024» */
 function vrcYM(v){
-  if(v instanceof Date && !isNaN(v)) return { y:v.getFullYear(), m:v.getMonth() + 1 };
+  /* ⚠⚠⚠ [stated] ២០២៦-០៩-០៧ ៖ «ទិន្នន័យមានពីខែ ៤ មក ដល់ខែ ១២ តែវាចាប់ពី
+     ខែ ៣» ⇒ គ្រប់ខែរអិលថយក្រោយមួយ ( Apr-23 ⇒ ៣ · Nov-23 ⇒ ១០ ) ។
+     កំហុសដដែលនឹងកាលបរិច្ឆេទសវនកម្ម ៖ Excel ត្រឡប់ `01/04/2023` ជា
+     `31/03/2023 23:59:56` ⇒ ការអានផ្នែក «ខែ» ដោយផ្ទាល់បានខែមុន ។
+     ⚠ ខ្ញុំធ្លាប់កែមុខងារនេះកាលពីមុន តែការកែក្រោយៗសរសេរជាន់វាបាត់ ។
+     ⇒ ដាក់វិញ ហើយគ្របផ្លូវ **អក្សរ ISO ដែលមានម៉ោង** ផងដែរ ( ឧ.
+       `2023-03-31T16:59:56Z` ⇒ ត្រូវអានជា មេសា ២០២៣ ) ។
+     ⭐ ច្បាប់ ៖ គ្រប់ការអានកាលបរិច្ឆេទពីសន្លឹក ត្រូវឆ្លងឧបករណ៍ខ្ទាស់
+       អធ្រាត្រ **គ្មានករណីលើកលែង** — រួមទាំងអក្សរដែលមានម៉ោងជាប់ ។ */
+  if(v instanceof Date && !isNaN(v)){
+    var pD = (window.__sheetDateParts && window.__sheetDateParts(v)) || null;
+    if(pD) return { y:pD.y, m:pD.m };
+    return { y:v.getFullYear(), m:v.getMonth() + 1 };
+  }
   var s = String(v == null ? '' : v).trim();
   if(!s) return null;
+  /* អក្សរ ISO ដែលមានម៉ោង ⇒ បម្លែងជា Date រួចខ្ទាស់ */
+  if(/^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}/.test(s)){
+    var dISO = new Date(s);
+    if(!isNaN(dISO)){
+      var pI = (window.__sheetDateParts && window.__sheetDateParts(dISO)) || null;
+      if(pI) return { y:pI.y, m:pI.m };
+    }
+  }
   var m = /^(\d{4})[-\/.](\d{1,2})/.exec(s);
   if(m) return { y:+m[1], m:+m[2] };
   m = /^(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{4})/.exec(s);
@@ -48472,6 +48493,29 @@ var TABS=[["sum","📊 សង្ខេប"],["toi","💰 ពន្ធលើប�
 var MODES=[["tax","ពន្ធត្រូវបង់ប៉ុណ្ណោះ"],["add","+ ពន្ធបន្ថែម (Additional Tax)"],["int","+ ការប្រាក់ (Interest)"],["total","សរុប (Total)"]];
 CC.render=function(){
   var el=document.getElementById("calcCard"); if(!el) return;
+  /* ⭐⭐⭐ [stated] ២០២៦-០៩-០៧ ៖ ការវាស់ចុងក្រោយបញ្ជាក់ថា ឃ្លាំងកាន់
+     `{2018: 10000000}` ត្រឹមត្រូវ ខណៈអេក្រង់ទទេ ⇒ **ទិន្នន័យមិនបាត់ទេ** ;
+     `CC.state` ក្នុងអង្គចងចាំត្រូវជំនួសដោយកាតុចាស់ ( ការការពារការសរសេរ
+     រារាំងវាមិនឱ្យទៅដល់ឃ្លាំង ) ។
+   ⇒ ការជួសជុលដោយខ្លួនឯង ៖ មុនគូររាល់ដង បើអង្គចងចាំមានក្រឡាតិចជាងឃ្លាំង
+     ⇒ ទាញពីឃ្លាំងមកវិញ ។ ⚠ គូរតែម្តងទេ ( `_healing` ) ⇒ គ្មានរង្វិលជុំ ។
+   ⭐ ច្បាប់ ៖ ពេលមិនអាចរកឃើញអ្នកបំផ្លាញ ការធានាភាពត្រឹមត្រូវនៅ **ចំណុច
+     ប្រើប្រាស់** ជាដំណោះស្រាយដែលទុកចិត្តបានជាងការតាមបិទផ្លូវម្តងមួយៗ ។ */
+  try{
+    if(!CC._healing && window.localStorage){
+      var rawS = localStorage.getItem("calcCardV1");
+      if(rawS){
+        var stored = JSON.parse(rawS);
+        if(CC._cellCount(stored) > CC._cellCount(CC.state)){
+          CC._healing = true;
+          console.warn("CalcCard ៖ អង្គចងចាំតិចជាងឃ្លាំង ⇒ ទាញមកវិញ");
+          CC.state = CC.syncTaxDefs(CC.repair(stored));
+          try{ if(window.state) state.calcCard = CC.state; }catch(e){}
+          CC._healing = false;
+        }
+      }
+    }
+  }catch(e){ CC._healing = false; }
   var s=CC.state,res;
   try{ res=CC.compute(); }
   catch(err){
