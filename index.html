@@ -45541,11 +45541,36 @@ CC.autoFill=function(force){
      ⇒ ជំនួសដោយ **ការប្តូរតាមអតប** ៖ រក្សាកាតុចាស់ទុកតាមលេខអតបរបស់វា
        រួចទាញកាតុរបស់អតបថ្មីមកជំនួស ( បើគ្មាន ⇒ ទទេ ) ។
        ⇒ គ្មានការលាយ ហើយក៏គ្មានការបាត់ ។ */
+  /* ⭐⭐⭐ [stated] ២០២៦-០៩-០៧ ៖ «ចុចព្រីននៅតែបាត់ទិន្នន័យ» ។
+     ⚠⚠ មុខងារបំពេញស្វ័យប្រវត្តិនេះរត់ **រាល់ការគូរ** ( រួមទាំងពេលព្រីន និង
+       ពេលប្តូរផ្ទាំង ) ។ បើការអានលេខអតបភ្លាតទៅសហគ្រាសដៃគូ ( ឯកសារ
+       CROSSCHECK ) ឬត្រឡប់ជាទទេមួយភ្លែត កាតុត្រូវប្តូរភ្លាម ⇒ តួលេខបាត់
+       ទាំងដែលគេមិនបានប្តូរសហគ្រាសសោះ ។
+     ⇒ ការប្តូរត្រូវការ **ភស្តុតាងស្ថិតស្ថេរ** ៖ អតបថ្មីត្រូវឃើញដដែល
+       យ៉ាងតិច ២ ដង និងយ៉ាងតិច ២ វិនាទីក្រោយពេលឃើញលើកដំបូង ។
+     ⚠ ហើយ **មិនប្តូរឡើយពេលកំពុងព្រីន** ៖ ការព្រីនគូរឡើងវិញច្រើនដង ។
+     ⭐ ច្បាប់ ៖ សកម្មភាពដែលបំផ្លាញទិន្នន័យ មិនត្រូវបាញ់ដោយសញ្ញាភ្លាមៗ —
+       វាត្រូវការភស្តុតាងម្តងហើយម្តងទៀត ។ */
   try{
     var tin=CC.currentTin();
     if(tin){
-      if(CC.state.tin && CC.state.tin!==tin){ CC.switchTin(CC.state.tin, tin); }
-      CC.state.tin=tin;
+      if(!CC.state.tin){
+        CC.state.tin=tin;                      /* លើកដំបូង ⇒ គ្រាន់តែកត់ */
+      }else if(CC.state.tin!==tin){
+        var now=Date.now();
+        if(CC._printing){
+          /* កំពុងព្រីន ⇒ មិនប៉ះអ្វីទាំងអស់ */
+        }else if(CC._tinCand!==tin){
+          CC._tinCand=tin; CC._tinCandAt=now;   /* ឃើញលើកទី ១ ⇒ រង់ចាំបញ្ជាក់ */
+          console.warn("CalcCard ៖ ឃើញអតបខុស ("+CC.state.tin+" ⇒ "+tin+") — រង់ចាំបញ្ជាក់");
+        }else if(now - (CC._tinCandAt||0) >= 2000){
+          CC._tinCand=null; CC._tinCandAt=0;
+          CC.switchTin(CC.state.tin, tin);
+          CC.state.tin=tin;
+        }
+      }else{
+        CC._tinCand=null; CC._tinCandAt=0;      /* ត្រឡប់មកដដែល ⇒ បោះបង់ */
+      }
     }
   }catch(e){ console.warn("CalcCard tin:", e); }
   var sig;
@@ -50020,7 +50045,11 @@ function bind(el){
       re();
     }
     else if(act==="save"){ CC.persistNow(); a.textContent="✅ រក្សាទុករួច"; setTimeout(function(){a.textContent="💾 រក្សាទុក";},1400); }
-    else if(act==="print"){ CC.persistNow(); window.print(); }
+    else if(act==="print"){
+      /* ⚠ ទប់ការប្តូរអតបពេញមួយអំឡុងព្រីន ⇒ ការគូរឡើងវិញមិនអាចប្តូរកាតុ */
+      CC.persistNow(); CC._printing=true;
+      try{ window.print(); }finally{ setTimeout(function(){ CC._printing=false; }, 4000); }
+    }
     else if(act==="xls"){
       try{ xlsDownloadFrom(document.getElementById("view-calc"), "CALCULATION"); }
       catch(err){ console.error("xls", err); }
