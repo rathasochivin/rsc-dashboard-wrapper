@@ -45602,6 +45602,24 @@ CC.pullTos=function(){
    កើតឡើងតែពេល Data Entry កំណត់ «ការកាន់កាប់បញ្ជីគណនេយ្យ…» = មិនត្រឹមត្រូវ
    ហើយឆ្នាំណាដែលពួកគេជ្រើស (DE `obstructYear`) ។ គ្មានប្រាក់ពន្ធ គ្មានការ
    ប្រាក់ — ចំនួននេះខ្លួនវាជាពន្ធបន្ថែម (asAdd:true មានស្រាប់)។ */
+/* ចំនួនកំណត់ជាក់លាក់តាមច្បាប់ (ឧ. ១០,០០០,០០០ រៀល ចំពោះអំពើរាំងស្ទះ) ៖
+   ចេញលុះត្រាតែប្រភេទពន្ធនោះត្រូវបានបើក ហើយបាត់វិញពេលបិទ ។
+   ⚠ ត្រូវហៅពី **គ្រប់ផ្លូវដែលបើកប្រភេទពន្ធ** — ប្រអប់ធីក និង dropdown ។
+     ការទុកឱ្យផ្លូវមួយធ្វើ ហើយមួយទៀតមិនធ្វើ គឺជាមូលហេតុដែលការរើសពី
+     dropdown មិនចេញតួលេខ ។
+   ⚠ ក្រឡាដែលអ្នកប្រើវាយខ្លួនឯង (`userSet`) មិនត្រូវប៉ះឡើយ ។ */
+CC.applyFixedAmount=function(tx, on){
+  try{
+    var s=CC.state;
+    if(!tx || !tx.amt || !tx.def || !s) return;
+    if(!tx.base) tx.base={};
+    (s.years||[]).forEach(function(y){
+      if(tx.userSet && tx.userSet[y]) return;
+      if(on){ if(!(+tx.base[y]||0)) tx.base[y]=tx.def; }
+      else if((+tx.base[y]||0)===tx.def) tx.base[y]=0;
+    });
+  }catch(e){}
+};
 CC.pullObstruct=function(){
   var s=CC.state; if(!s||!s.taxes) return {ok:false,msg:""};
   var de={}; try{ de=(window.__toiDataEntry && window.__toiDataEntry())||{}; }catch(e){}
@@ -45610,7 +45628,23 @@ CC.pullObstruct=function(){
   var t=s.taxes.filter(function(x){ return x.id==='obstruct'; })[0];
   if(!t) return {ok:false,msg:""};
   if(!t.base) t.base={};
-  var n=0;
+  /* ⭐⭐⭐ [stated] ២០២៦-០៩-០៨ ៖ «ចុចដកធីកអត់បាន» ។
+     ⚠⚠ មូលហេតុ ៖ បន្ទាត់ខាងក្រោមកំណត់ `t.on` **រាល់ការបំពេញស្វ័យប្រវត្តិ**
+       ( ហើយវារត់រាល់ការគូរ ) ⇒ ការដកធីករបស់អ្នកប្រើរស់បានតែមួយហ្វ្រេម
+       រួចត្រូវដាក់ត្រឡប់ភ្លាម ។ ដូចគ្នាដែរ ការធីកដោយដៃពេល Data Entry ទទេ
+       ត្រូវលុបចោលភ្លាម ។
+     ⇒ ច្បាប់ថ្មី ៖ ចម្លើយពី Data Entry ជា **តម្លៃលំនាំដើម** មិនមែនបញ្ជាទេ ។
+       ការបំពេញស្វ័យប្រវត្តិកើតឡើង **តែពេលចម្លើយនោះប្តូរ** ( ស្នាមម្រាមដៃ
+       ខាងក្រោម ) ។ រវាងនោះ ការធីក/ដកធីក ជារបស់អ្នកប្រើ ។
+     ⚠ ស្នាមម្រាមដៃរាប់បញ្ចូល «ឆ្នាំដែលរើស មានក្នុងបញ្ជីឆ្នាំឬអត់» ដែរ ៖
+       ពេលឆ្នាំនោះទើបចូលមកដល់ក្រោយ តួលេខនៅតែរត់ចូលបាន ។
+     ⭐ ច្បាប់ ៖ ការបំពេញស្វ័យប្រវត្តិត្រូវបាញ់លើ **ការប្តូរ** មិនមែនលើ
+       **ស្ថានភាព** — បើមិនដូច្នេះទេ អ្នកប្រើមិនអាចប្រកែកនឹងវាបានឡើយ ។ */
+  var __sig = (bad?'1':'0') + '|' + pick + '|'
+            + (s.years.map(String).indexOf(pick) >= 0 ? '1' : '0');
+  if(t.onSig === __sig) return {ok:false,msg:""};
+  t.onSig = __sig;
+  var n=1;                       /* ស្នាមម្រាមដៃប្តូរ ⇒ ត្រូវរក្សាទុក */
   s.years.forEach(function(y){
     var want=(bad && pick===String(y) && /^\d{4}$/.test(pick)) ? 10000000 : 0;
     var cur=+t.base[y]||0;
@@ -45632,7 +45666,7 @@ CC.pullObstruct=function(){
      ហើយប្រអប់ធីកនៅតែបើក។ */
   var wantOn = bad && !!pick && pick.indexOf('គ្មាន') < 0;
   if(t.on !== wantOn){ t.on = wantOn; n++; }
-  if(n) CC.persist();
+  CC.persist();
   return {ok:n>0, msg:""};
 };
 
@@ -50590,7 +50624,11 @@ function bind(el){
        ⚠ វាជា <select> ដូច្នេះត្រូវចាប់នៅ change មិនមែន click ទេ។ */
     if(t.dataset.act==="pickTax"){
       var pi=+t.value;
-      if(s.taxes[pi]){ s.taxes[pi].on=true; }
+      /* [stated] ២០២៦-០៩-០៨ ៖ «ពេលរើសយកពន្ធបន្ថែមចំពោះអំពើរាំងស្ទះ …
+         auto 10,000,000 ដោយមិនចាំបាច់វាយបញ្ចូល» ។
+         ⚠ ប្រអប់ធីកធ្វើរឿងនេះរួចហើយ តែ dropdown មិនធ្វើ ⇒ ផ្លូវពីរដែល
+           «បើកប្រភេទពន្ធ» ដដែល ឥរិយាបថខុសគ្នា ។ ⇒ ប្រើមុខងាររួមតែមួយ ។ */
+      if(s.taxes[pi]){ s.taxes[pi].on=true; CC.applyFixedAmount(s.taxes[pi], true); }
       t.value="";
       return re();
     }
@@ -50606,13 +50644,7 @@ function bind(el){
       if(k3==="pen"){ tx.pen=t.checked; }
       else if(k3==="on"){
         tx.on=t.checked;
-        /* ចំនួនកំណត់ជាក់លាក់ (ឧ. ពិន័យរាំងស្ទះ) ចេញលុះត្រាតែធីក */
-        if(tx.amt && tx.def){
-          s.years.forEach(function(y){
-            if(tx.on){ if(!(+tx.base[y]||0)) tx.base[y]=tx.def; }
-            else if((+tx.base[y]||0)===tx.def) tx.base[y]=0;
-          });
-        }
+        CC.applyFixedAmount(tx, tx.on);
       }
       else if(k3==="rate") tx.rate=num(t.value)/100;
       else if(k3==="name") tx.name=t.value;
