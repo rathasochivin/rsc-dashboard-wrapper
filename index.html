@@ -45547,6 +45547,15 @@ CC.pullObstruct=function(){
   s.years.forEach(function(y){
     var want=(bad && pick===String(y) && /^\d{4}$/.test(pick)) ? 10000000 : 0;
     var cur=+t.base[y]||0;
+    /* ⭐⭐⭐ [stated] ២០២៦-០៩-០៧ ៖ ការតាមដានការសរសេរបង្ហាញថាតម្លៃ
+       `{"2018":10000000}` **ចូលឃ្លាំងត្រឹមត្រូវ** រួចត្រូវសរសេរជាន់ដោយ ០ ។
+       ⚠⚠ មូលហេតុ ៖ ច្បាប់ខាងក្រោមចាត់ទុក **១០,០០០,០០០ ជាតួលេខរបស់ខ្លួន**
+         ⇒ ពេលអ្នកប្រើវាយចំនួននោះដោយដៃ ( ចំនួនពិន័យរាំងស្ទះតាមច្បាប់ —
+         ជាចំនួនដែលគេវាយញឹកញាប់បំផុត! ) វាត្រូវលុបទៅ ០ រាល់ការគូរឡើងវិញ ។
+       ⇒ ក្រឡាណាដែល **អ្នកប្រើប៉ះ** ត្រូវចងចាំ ហើយកូដស្វ័យប្រវត្តិមិនប៉ះវាទៀត ។
+       ⭐ ច្បាប់ ៖ ការសម្គាល់ «តម្លៃរបស់ខ្ញុំ» តាម **តម្លៃ** មិនអាចទុកចិត្តបាន —
+         អ្នកប្រើអាចវាយតម្លៃដដែល ។ ត្រូវសម្គាល់តាម **ប្រភព** វិញ ។ */
+    if(t.userSet && t.userSet[y]) return;      /* អ្នកប្រើវាយ ⇒ មិនប៉ះ */
     /* កែតែក្រឡាដែលយើងធ្លាប់សរសេរ (០ ឬ ១០លាន) — លេខផ្សេងជារបស់អ្នកប្រើ */
     if(cur!==0 && cur!==10000000) return;
     if(cur!==want){ t.base[y]=want; n++; }
@@ -50277,7 +50286,12 @@ function bind(el){
     if(!tx) return;
     if(!tx[k3]) tx[k3] = {};
     tx[k3][y] = num(t.value);
-    if(k3 === 'base' && num(t.value)) tx.on = true;   /* វាយតួលេខ = ប្រើប្រភេទនេះ */
+    if(k3 === 'base'){
+      /* កត់ថាក្រឡានេះ **អ្នកប្រើវាយ** ⇒ ការបំពេញស្វ័យប្រវត្តិមិនប៉ះវាទៀត */
+      if(!tx.userSet) tx.userSet = {};
+      tx.userSet[y] = 1;
+      if(num(t.value)) tx.on = true;
+    }
     CC.persist();
   });
 
@@ -50441,7 +50455,11 @@ function bind(el){
         if(String(t.value).trim()==="") delete tx.irate[t.dataset.y];      /* ទទេ = ត្រឡប់ទៅតារាង */
         else tx.irate[t.dataset.y]=num(t.value)/100;
       }
-      else { if(!tx[k3]) tx[k3]={}; tx[k3][t.dataset.y]=num(t.value); }
+      else {
+      if(!tx[k3]) tx[k3]={};
+      tx[k3][t.dataset.y]=num(t.value);
+      if(k3==='base'){ if(!tx.userSet) tx.userSet={}; tx.userSet[t.dataset.y]=1; }
+    }
       return re();
     }
   });
