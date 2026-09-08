@@ -45599,13 +45599,34 @@ CC.syncTaxDefs=function(s){
   return s;
 };
 
+/* ⭐⭐⭐ [stated] ២០២៦-០៩-០៧ ៖ «វានៅតែបាត់» ខណៈឃ្លាំងមានទិន្នន័យពិត
+   ( `calcCardV1.years = [2018]` ) ⇒ ការសរសេរដើរ ហើយបញ្ហានៅ **ការអាន** ។
+   ⚠⚠ មូលហេតុ ៖ បន្ទាត់ចាស់យក `state.calcCard` **មុនគេ** ហើយបើវាមាន
+     ( ទោះជាកាតុទទេ ដែលសរសេរចូល state ដោយផ្លូវផ្សេង ឬដោយឯកសារដែលបើក )
+     វាឈ្នះលើឃ្លាំងដែលមានទិន្នន័យថ្មីជាង ⇒ កាតុចេញទទេ ។
+   ⇒ អាន **ទាំងពីរ** រួចជ្រើសយកអ្នកដែលមានទិន្នន័យច្រើនជាង ។
+   ⚠ «ច្រើនជាង» វាស់ដោយចំនួនអ្វីដែលគេវាយពិត ៖ ជំនាន់ · ផលរកឃើញ ·
+     ការកំណត់ · ឆ្នាំ · ប្រភេទពន្ធដែលបើក ⇒ កាតុទទេមិនអាចឈ្នះកាតុមានតួលេខ ។ */
 CC.load=function(){
-  var raw=null;
-  try{ if(window.state&&state.calcCard) raw=state.calcCard;
-       else if(window.localStorage) raw=JSON.parse(localStorage.getItem("calcCardV1")||"null"); }catch(e){}
-  /* កាតុនេះចាប់ផ្តើមទទេជានិច្ច — គ្មានតួលេខសាកល្បងទេ ដើម្បីកុំឱ្យច្រឡំថាបានទាញរួច។
-     ឯកសាររក្សាទុកជំនាន់មុន (គ្មាន v) មានតួលេខសាកល្បង ដូច្នេះបោះចោល។ */
-  var s=(raw && Number(raw.v)>=2) ? raw : CC.blank();
+  var fromState=null, fromLS=null;
+  try{ if(window.state && state.calcCard) fromState=state.calcCard; }catch(e){}
+  try{ if(window.localStorage) fromLS=JSON.parse(localStorage.getItem("calcCardV1")||"null"); }catch(e){}
+  var ok=function(o){ return o && Number(o.v)>=2 ? o : null; };
+  var score=function(o){
+    if(!o) return -1;
+    var n=0;
+    try{
+      n += ((o.versions||[]).length) * 100;
+      n += (((o.toi||{}).findings||[]).length) * 50;
+      n += ((o.assessments||[]).length) * 50;
+      n += ((o.years||[]).length) * 5;
+      n += ((o.taxes||[]).filter(function(t){ return t && t.on; }).length) * 5;
+    }catch(e){}
+    return n;
+  };
+  var a=ok(fromState), b=ok(fromLS);
+  var raw = (score(a) >= score(b)) ? a : b;
+  var s = raw || CC.blank();
   return CC.syncTaxDefs(CC.repair(s));
 };
 
