@@ -45718,6 +45718,28 @@ CC.resetAll=function(){
       try{ if(typeof toast==="function") toast(msg,"warn"); }catch(e){}
     }
   }catch(e){}
+  /* ⭐⭐⭐ [stated] ២០២៦-០៩-០៧ ៖ «ចុចព្រីននៅតែបាត់តួលេខ … បញ្ចូលឡើងវិញ
+     ចុចព្រីននៅតែបាត់» ⇒ មានអ្វីមួយហៅមុខងារលុបនេះម្តងហើយម្តងទៀត ។
+     ⇒ ឧបករណ៍ចាប់ ៖ រាល់ការលុប កត់ **អ្នកហៅ** ទុក ⇒ រត់ `__ccWhy()` ក្នុង
+       Console បន្ទាប់ពីព្រីន ⇒ ដឹងភ្លាមថាកូដណាលុប ។
+     ⇒ សំណាញ់សង្គ្រោះ ៖ ចម្លងទុកជាមុនក្នុង `calcCardV1__backup` ⇒ ទិន្នន័យ
+       មិនអាចបាត់ស្ថាពរទៀតទេ ; `__ccRestore()` យកមកវិញ ។
+     ⚠ ខ្ញុំ **មិនទាន់ដក** ការលុបស្វ័យប្រវត្តិទេ ព្រោះវាការពារការលាយទិន្នន័យ
+       រវាងសហគ្រាស ដែលធ្ងន់ជាង ។ ត្រូវដឹងមូលហេតុជាមុនសិន ។ */
+  try{
+    var __prevRaw = (window.localStorage && localStorage.getItem("calcCardV1")) || "";
+    if(__prevRaw && __prevRaw !== "null"){
+      localStorage.setItem("calcCardV1__backup", __prevRaw);
+    }
+    window.__ccLastReset = {
+      at: new Date().toISOString(),
+      fromTin: (CC.state||{}).tin || "",
+      toTin: (function(){ try{ return CC.currentTin(); }catch(e){ return ""; } })(),
+      hadYears: (((CC.state||{}).years)||[]).length,
+      stack: (new Error("CC.resetAll")).stack || ""
+    };
+    console.warn("CC.resetAll ត្រូវបានហៅ", window.__ccLastReset);
+  }catch(e){}
   CC.state=CC.blank();
   CC._lastSig=null; CC._toiMsg=CC._vatMsg=CC._mtrMsg="";
   try{ if(window.state) state.calcCard=null; }catch(e){}
@@ -45727,6 +45749,19 @@ CC.resetAll=function(){
   try{ CC.render(); }catch(e){}
 };
 window.__calcCardReset=function(){ try{ CC.resetAll(); }catch(e){} };
+/* 🔍 រត់ក្នុង Console ក្រោយពេលព្រីន ⇒ ប្រាប់ថាការលុបកើតឡើងឬអត់ និងមកពីណា */
+window.__ccWhy=function(){ return window.__ccLastReset || "គ្មានការលុបទេ"; };
+/* ♻️ យកទិន្នន័យដែលទើបលុបមកវិញ */
+window.__ccRestore=function(){
+  try{
+    var raw = localStorage.getItem("calcCardV1__backup");
+    if(!raw) return "គ្មានច្បាប់ចម្លងបម្រុង";
+    localStorage.setItem("calcCardV1", raw);
+    try{ if(window.state) state.calcCard = JSON.parse(raw); }catch(e){}
+    CC.load(); CC.render();
+    return "ស្តារត្រឡប់រួច — សូមពិនិត្យតួលេខ";
+  }catch(e){ return "ស្តារមិនបាន ៖ " + (e && e.message || e); }
+};
 
 /* state ភ្ជាប់ភ្លាម (ថោក) តែការសរសេរទៅ localStorage ពន្យារពេលបន្តិច ៖
    រាល់ការវាយអក្សរបង្កើត JSON.stringify លើស្ថានភាពទាំងមូល ដែលធ្វើឱ្យយឺត */
