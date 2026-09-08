@@ -45731,6 +45731,34 @@ CC.repair=function(s){
     }
   }catch(e){}
   CC.state=s;
+  /* ⭐⭐⭐ [stated] ២០២៦-០៩-០៧ ៖ ការវាស់បង្ហាញ `years=[2018]` ខណៈ
+     `base={"2024":0}` ⇒ តួលេខជារបស់ឆ្នាំ ២០២៤ តែបញ្ជីឆ្នាំគ្មាន ២០២៤ ។
+     បន្ទាត់ខាងក្រោមតម្រឹមតារាងតាមបញ្ជីឆ្នាំ ⇒ ជួរ ២០២៤ ត្រូវដកចេញ ⇒
+     តួលេខក្លាយជា ០ រាល់ការគូរឡើងវិញ ( ព្រីន · ប្តូរផ្ទាំង · ផ្ទុកទំព័រ ) ។
+     ⇒ **ឆ្នាំណាដែលមានតួលេខ ត្រូវចូលបញ្ជីឆ្នាំជាមុនសិន** ។
+     ⚠ បន្ថែមតែប៉ុណ្ណោះ គ្មានការដកចេញ — ដូចច្បាប់ដែលកូដនេះប្រកាសរួច
+       សម្រាប់ឆ្នាំសវនកម្ម ។ ខ្ញុំគ្រាន់តែពង្រីកវាទៅ **ឆ្នាំដែលគេវាយ** ។
+     ⭐ ច្បាប់ ៖ ការតម្រឹមទិន្នន័យតាមបញ្ជី មិនត្រូវលុបទិន្នន័យដែលនៅក្រៅបញ្ជី
+       ដោយស្ងាត់ — ត្រូវពង្រីកបញ្ជីវិញ ។ */
+  try{
+    var yearSet = {};
+    (s.years||[]).forEach(function(y){ var n=Number(y); if(n>1900) yearSet[n]=1; });
+    var scanMap = function(m){
+      if(!m || typeof m!=='object') return;
+      Object.keys(m).forEach(function(k){
+        var n=Number(k);
+        if(n>1900 && m[k]!=null && m[k]!=='' && Number(m[k])!==0) yearSet[n]=1;
+      });
+    };
+    (s.taxes||[]).forEach(function(t){
+      if(!t) return;
+      scanMap(t.base); scanMap(t.amt2); scanMap(t.paid); scanMap(t.msel);
+    });
+    (((s.toi||{}).findings)||[]).forEach(function(f){ if(f && Number(f.year)>1900) yearSet[Number(f.year)]=1; });
+    ((s.assessments)||[]).forEach(function(a){ if(a && Number(a.year)>1900) yearSet[Number(a.year)]=1; });
+    var merged = Object.keys(yearSet).map(Number).sort(function(x,y){ return y-x; });
+    if(merged.length) s.years = merged;
+  }catch(e){ console.warn('CalcCard year merge:', e); }
   /* តម្រឹមគ្រប់តារាងតាមបញ្ជីឆ្នាំបច្ចុប្បន្ន */
   try{ var ys=s.years.slice(); s.years=[]; CC.setYears(ys); }catch(e){}
   return s;
@@ -50139,6 +50167,33 @@ function bind(el){
         });
       }
     }
+  });
+
+  /* ⭐⭐⭐ [stated] ២០២៦-០៩-០៧ ៖ ការវាស់បង្ហាញថា ក្បាលតារាង · data-y ·
+     state.years ត្រូវគ្នាទាំងអស់ ( ២០១៨ ) ខណៈឃ្លាំងគ្មានកូនសោ ២០១៨ សោះ
+     ⇒ តម្លៃដែលវាយ **មិនដែលចូលស្ថានភាព** ។
+     ⚠⚠ មូលហេតុ ៖ ការសរសេរកើតលើព្រឹត្តិការណ៍ `change` ដែលបាញ់តែពេលក្រឡា
+       **បាត់ការផ្តោត** ។ បើតារាងគូរឡើងវិញ ( ការបំពេញស្វ័យប្រវត្តិ · ការព្រីន ·
+       ការប្តូរផ្ទាំង ) ខណៈទស្សន៍ទ្រនិចនៅក្នុងក្រឡា ធាតុ DOM ត្រូវជំនួស
+       ⇒ `change` មិនដែលបាញ់ ⇒ តួលេខបាត់ស្ងាត់ៗ ។
+     ⇒ សរសេរលើ `input` ដែរ ( រាល់តួអក្សរ ) សម្រាប់ក្រឡាលេខតាមឆ្នាំ ។
+     ⚠ **មិនគូរឡើងវិញ** ត្រង់នេះ ៖ ការគូរពេលវាយធ្វើឱ្យទស្សន៍ទ្រនិចលោត ។
+       ការរក្សាទុកពន្យារពេលមានស្រាប់ ⇒ មិនធ្វើឱ្យយឺត ។
+     ⭐ ច្បាប់ ៖ តម្លៃដែលអ្នកប្រើវាយ ត្រូវចូលស្ថានភាព **ពេលវាយ** មិនមែន
+       រង់ចាំការបាត់ការផ្តោតទេ — ការគូរឡើងវិញអាចកើតឡើងមុននោះ ។ */
+  var CC_YEAR_NUM_KEYS = ['base','loan','paid','paidAudit','paidLate','amt2','sales','cost'];
+  el.addEventListener("input", function(e){
+    var t = e.target;
+    if(t.dataset.tax == null) return;
+    var k3 = t.dataset.k, y = t.dataset.y;
+    if(!k3 || y == null) return;
+    if(CC_YEAR_NUM_KEYS.indexOf(k3) < 0) return;
+    var s = CC.state, tx = s.taxes[+t.dataset.tax];
+    if(!tx) return;
+    if(!tx[k3]) tx[k3] = {};
+    tx[k3][y] = num(t.value);
+    if(k3 === 'base' && num(t.value)) tx.on = true;   /* វាយតួលេខ = ប្រើប្រភេទនេះ */
+    CC.persist();
   });
 
   el.addEventListener("change",function(e){
