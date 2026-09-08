@@ -22279,7 +22279,48 @@ function vatManualSet(year, month, col, val){
   if(window.__bumpDataVersion) window.__bumpDataVersion();
 }
 
-function getVATMonthlyAggregates(){ return memoByVersion('vatAgg', getVATMonthlyAggregates_); }
+/* ⭐⭐⭐ [stated] ២០២៦-០៩-០៨ ៖ «រាល់ឆ្នាំទាំងអស់គឺផ្អែកទៅតាមការិយសវនកម្ម
+   នៅផ្នែក Data Entry មិនមែន TOI ឬឯកសារ workbook ទេ ។ MTR VAT ត្រូវចេញឆ្នាំ
+   ដែលមាននៅក្នុងការិយបរិច្ឆេទសវនកម្ម» ។
+   ⚠⚠ ជុំមុនខ្ញុំកែតែ **កាតគណនា** ⇒ ផ្ទាំង MTR និង VAT ខ្លួនឯងនៅចេញឆ្នាំ
+     ទាំងអស់ដដែល ។ ច្បាប់នេះជាច្បាប់ **ទូទាំងប្រព័ន្ធ** មិនមែនច្បាប់របស់
+     កាតគណនាទេ ⇒ ត្រូវដាក់នៅ **ចំណុចអានតែមួយ** របស់ម៉ូឌុលនីមួយៗ ៖
+       · `getAllExtractedMonthlyRows()` — តារាងប្រចាំខែ · ប្រចាំឆ្នាំ ·
+         ទម្រង់ព្រីន MTR · ការទាញទៅកាតគណនា · Access ( ឯកសារនេះប្រកាសខ្លួន
+         ឯងរួចថានេះជាចំណុចចូលតែមួយ )
+       · `getVATMonthlyAggregates()` — ផ្ទាំង VAT និងទម្រង់ព្រីនរបស់វា
+   ⚠ ការិយសវនកម្មទទេ ⇒ គ្មានតម្រង ( ឥរិយាបថចាស់ ) ។
+   ⚠⚠ នេះជាការ **លាក់** មិនមែនការលុបទេ ៖ សាលកបត្រនៅកាន់ការបង់ប៉ាតង់គ្រប់
+     ឆ្នាំដដែលក្នុងឃ្លាំង ( `mtrManualV1` និងឯកសារ ) ។ ដើម្បីមើលគ្រប់ឆ្នាំ
+     មួយភ្លែត ៖ រត់ `__rscShowAllYears(true)` ក្នុង Console ; ត្រឡប់វិញ
+     `__rscShowAllYears(false)` ។ */
+window.__rscAuditYearSet = function(){
+  try{
+    if(window.__rscAllYears) return null;
+    var a = (window.__auditYears ? (window.__auditYears() || []) : [])
+              .map(String).filter(function(s){ return /^\d{4}$/.test(s); });
+    if(!a.length) return null;
+    var set = {}; a.forEach(function(y){ set[y] = 1; });
+    return set;
+  }catch(e){ return null; }
+};
+window.__rscShowAllYears = function(on){
+  window.__rscAllYears = (on !== false);
+  try{ if(window.__bumpDataVersion) window.__bumpDataVersion(); }catch(e){}
+  try{ if(window.CalcCard && CalcCard.autoFill) CalcCard.autoFill(true); }catch(e){}
+  try{ if(typeof renderAll === 'function') renderAll(); }catch(e){}
+  return window.__rscAllYears
+    ? 'បង្ហាញគ្រប់ឆ្នាំ — សូមផ្ទុកទំព័រឡើងវិញ ដើម្បីឃើញផ្ទាំងទាំងអស់'
+    : 'បង្ហាញតែឆ្នាំក្នុងការិយបរិច្ឆេទសវនកម្ម';
+};
+function getVATMonthlyAggregates(){
+  var agg = memoByVersion('vatAgg', getVATMonthlyAggregates_) || {};
+  var keep = window.__rscAuditYearSet && window.__rscAuditYearSet();
+  if(!keep) return agg;
+  var out = {};
+  Object.keys(agg).forEach(function(y){ if(keep[String(y)]) out[y] = agg[y]; });
+  return out;
+}
 function getVATMonthlyAggregates_(){
   const src = (typeof window.__getMainVatSourceData === 'function') ? window.__getMainVatSourceData() : null;
   const agg = {}; // agg[year][month] = {...}
@@ -24536,7 +24577,12 @@ function memoByVersion(key, fn){
   return value;
 }
 
-function getAllExtractedMonthlyRows(){ return memoByVersion('monthly', getAllExtractedMonthlyRows_); }
+function getAllExtractedMonthlyRows(){
+  var rows = memoByVersion('monthly', getAllExtractedMonthlyRows_) || [];
+  /* ច្បាប់ការិយសវនកម្ម — មើលកំណត់សម្គាល់នៅ `__rscAuditYearSet` */
+  var keep = window.__rscAuditYearSet && window.__rscAuditYearSet();
+  return keep ? rows.filter(function(r){ return r && keep[String(r[0])]; }) : rows;
+}
 /* =========================================================================
    ⚠⚠ [stated] ២០២៦-០៨-២២ ៖ «ផ្នែកសាលកបត្រអនុរក្សប្រចាំ អាចបញ្ចូលដោយដៃបាន
    ក្នុងនោះមាន Dropdown ប្រភេទពន្ធ ឬបន្ថែមប្រភេទពន្ធថ្មី ខែ ឆ្នាំ ទឹកប្រាក់
@@ -54753,6 +54799,50 @@ window.__rscToiManual = rscToiManualOpen;
   if(!('serviceWorker' in navigator)) return;
   if(location.protocol !== 'https:' && location.hostname !== 'localhost') return;
   window.addEventListener('load', function(){
+    /* ⭐⭐⭐ [stated] ២០២៦-០៩-០៨ ៖ «ផ្នែក offline កែហើយ តែនៅ website នៅមាន
+       ដដែល» ។ ខ្ញុំដំណើរការ `index.html` ដដែលនោះលើ server មូលដ្ឋាន ⇒ ការកែ
+       ដើរត្រឹមត្រូវ ⇒ កូដមិនខុសទេ ; **អ្វីមួយបម្រើច្បាប់ចម្លងចាស់** ។
+       ⚠⚠ ករណីដែលធ្លាប់ចាប់បាននៅ ២០២៦-០៩-០២ ៖ ពេល `sw.js` ទាញមិនបាន
+         ( ផ្នែកបន្ថែម · កម្មវិធីកំចាត់មេរោគ · ច្រកបណ្តាញ ) នោះ SW ចាស់
+         ដែលដំឡើងរួច **នៅតែកាន់កាប់ដែន ហើយមិនអាចត្រូវជំនួសបានឡើយ** ។
+         ការចុះឈ្មោះខាងក្រោមមិនអាចជួយបានទេ ព្រោះវាមិនដែលបរាជ័យផង —
+         SW ចាស់គ្រាន់តែឆ្លើយតាមកូដចាស់របស់វា ។
+       ⇒ សួរវាដោយផ្ទាល់ ៖ «អ្នកជាកំណែណា?» ។ SW មុន v5 គ្មានអ្នកឆ្លើយ ⇒
+         ស្ងាត់ ⇒ យើងលុបវា និងឃ្លាំងចោល រួចផ្ទុកឡើងវិញ **តែម្តងក្នុងមួយ
+         វេន** ( សញ្ញាក្នុង sessionStorage ⇒ គ្មានរង្វិលជុំផ្ទុកឡើងវិញ ) ។
+       ⚠ ដំណើរការតែពេលមាន SW **កំពុងគ្រប់គ្រង** ប៉ុណ្ណោះ ; ការចូលលើកដំបូង
+         ( គ្មាន controller ) មិនប៉ះអ្វីទាំងអស់ ។
+       ⚠ តម្លៃ ៖ បាត់មុខងារ «ដំឡើងជា app» មួយភ្លែត រហូតដល់ sw.js ថ្មីចុះ
+         ឈ្មោះវិញ — តូចជាងការធ្វើការលើកូដចាស់ដោយមិនដឹងខ្លួន ។ */
+    (function(){
+      var EXPECT = 'rsc-audit-v5';
+      var c = navigator.serviceWorker.controller;
+      if(!c) return;
+      var answered = false, healed = false;
+      var heal = function(why){
+        if(healed || answered) return;
+        healed = true;
+        try{ if(sessionStorage.getItem('rscSwHealV1') === '1') return; }catch(e){ return; }
+        try{ sessionStorage.setItem('rscSwHealV1', '1'); }catch(e){}
+        console.warn('Service worker ចាស់ (' + why + ') ⇒ លុប រួចផ្ទុកទំព័រឡើងវិញ');
+        navigator.serviceWorker.getRegistrations()
+          .then(function(rs){ return Promise.all(rs.map(function(r){ return r.unregister(); })); })
+          .then(function(){ return (window.caches && caches.keys) ? caches.keys() : []; })
+          .then(function(ks){ return Promise.all((ks||[]).map(function(k){ return caches.delete(k); })); })
+          .then(function(){ location.reload(); })
+          .catch(function(){});
+      };
+      try{
+        var ch = new MessageChannel();
+        ch.port1.onmessage = function(ev){
+          var v = (ev.data && ev.data.cache) || '';
+          if(v === EXPECT){ answered = true; }
+          else { heal('កំណែ ' + (v || '?')); }
+        };
+        c.postMessage({ q: 'version' }, [ch.port2]);
+      }catch(e){ heal('សួរមិនបាន'); }
+      setTimeout(function(){ heal('មិនឆ្លើយតប'); }, 2500);
+    })();
     navigator.serviceWorker.register('sw.js').then(function(reg){
       /* ⚠⚠ កំហុសរបស់ខ្ញុំ ( ចាប់បាន ២០២៦-០៩-០១ តាមរូបថតអេក្រង់ ) ៖
          `reg.update()` ត្រឡប់ **Promise** ⇒ try/catch ចាប់វាមិនបានទេ ។

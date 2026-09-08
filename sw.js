@@ -27,8 +27,28 @@
      មុនការត្រួតពិនិត្យដែន ⇒ URL ដែនក្រៅដែលមានពាក្យនោះនឹងត្រូវចាប់ដែរ ។
      ឥឡូវប្រៀបធៀបលើ **pathname របស់ដែនយើងតែប៉ុណ្ណោះ** ។
    ⚠ ប្តូរលេខ CACHE រាល់ពេលចេញកំណែថ្មី ⇒ cache ចាស់ត្រូវលុបចោល ។
+
+   ═══ កំណែ v5 ( ២០២៦-០៩-០៨ ) — «offline កែហើយ តែ website នៅដដែល» ═══════
+   ⭐ រោគសញ្ញា ៖ ឯកសារ offline បង្ហាញការកែថ្មី ខណៈ teamsmos.com នៅបង្ហាញ
+     កូដចាស់ ។ ខ្ញុំដំណើរការ `index.html` ដដែលនោះលើ server មូលដ្ឋាន ⇒ ការកែ
+     ដើរត្រឹមត្រូវ ⇒ **កូដមិនខុសទេ ; អ្វីមួយបម្រើច្បាប់ចម្លងចាស់** ។
+   ⚠⚠ ច្បាប់ «បណ្ដាញមុនគេ» ខាងលើ **មិនគ្រប់គ្រាន់** ៖ `fetch(req)` ធម្មតា
+     នៅតែឆ្លងកាត់ **ឃ្លាំង HTTP របស់កម្មវិធីរុករក** ។ GitHub Pages ផ្ញើ
+     `Cache-Control: max-age=600` មកជាមួយ HTML ⇒ ក្នុងរយៈពេល ១០ នាទី
+     កម្មវិធីរុករកអាចឆ្លើយពីឃ្លាំងរបស់ខ្លួន ដោយ SW មិនដឹងសោះ ។
+     ⇒ ទំព័រឥឡូវទាញដោយ `cache: 'reload'` ⇒ **រំលងឃ្លាំង HTTP ជានិច្ច** ។
+   ⚠⚠ ករណីទី ២ ដែលធ្ងន់ជាង ( ធ្លាប់ជួបនៅ ២០២៦-០៩-០២ ) ៖ ពេល `sw.js`
+     ទាញមិនបាន ( ផ្នែកបន្ថែមកម្មវិធីរុករក · កម្មវិធីកំចាត់មេរោគ · ច្រក
+     បណ្តាញការិយាល័យ ) នោះ **SW ចាស់ដែលដំឡើងរួច នៅតែកាន់កាប់ដែននេះ**
+     ហើយវាមិនអាចត្រូវជំនួសបានឡើយ ⇒ វាបន្តឆ្លើយតាមកូដចាស់ជារៀងរហូត ។
+     ⇒ ដាក់ **ការចាប់ដៃគ្នាតាមកំណែ** ៖ ទំព័រសួរ SW ថា «អ្នកជាកំណែណា?» ។
+       SW ចាស់គ្មានអ្នកឆ្លើយនេះទេ ⇒ ស្ងាត់ ⇒ ទំព័រលុប SW និងឃ្លាំងចោល
+       រួចផ្ទុកឡើងវិញម្តង ⇒ គ្រប់សំណើទៅបណ្តាញផ្ទាល់ ។
+   ⭐ ច្បាប់ ៖ ការដាក់ពង្រាយត្រូវអាចផ្ទៀងផ្ទាត់បានពីខាងអតិថិជន — បើទំព័រ
+     មិនអាចសួរបានថាអ្វីកំពុងបម្រើវា នោះ «ខ្ញុំ upload រួចហើយ» មិនអាច
+     បញ្ជាក់បានឡើយ ។
    ═══════════════════════════════════════════════════════════════════════ */
-var CACHE = 'rsc-audit-v4';
+var CACHE = 'rsc-audit-v5';
 var SHELL = ['./manifest.json', './icon-192.png', './icon-512.png',
              './icon-maskable-512.png', './apple-touch-icon.png'];
 
@@ -58,6 +78,18 @@ self.addEventListener('activate', function(e){
       }));
     }).then(function(){ return self.clients.claim(); })
   );
+});
+
+/* ⭐ ការចាប់ដៃគ្នាតាមកំណែ ៖ ទំព័រសួរ ⇒ យើងឆ្លើយ ។ SW មុន v5 គ្មានផ្នែកនេះ
+   ⇒ ស្ងាត់ ⇒ ទំព័រដឹងភ្លាមថាវាកំពុងត្រូវបម្រើដោយកំណែចាស់ ។ */
+self.addEventListener('message', function(e){
+  var d = e.data || {};
+  if(d.q !== 'version') return;
+  var reply = { cache: CACHE };
+  try{
+    if(e.ports && e.ports[0]){ e.ports[0].postMessage(reply); return; }
+  }catch(err){}
+  try{ if(e.source && e.source.postMessage) e.source.postMessage(reply); }catch(err){}
 });
 
 /* ដាក់ចូល cache តែចម្លើយល្អ ⇒ 404/500 មិនអាចជាប់ក្នុង cache */
@@ -106,16 +138,20 @@ self.addEventListener('fetch', function(e){
     || /\.html?$/i.test(path);
 
   if(isPage){
-    /* បណ្ដាញមុនគេ ⇒ កំណែថ្មីមិនអាចត្រូវលាក់ដោយ cache */
+    /* បណ្ដាញមុនគេ **ព្រមទាំងរំលងឃ្លាំង HTTP** ⇒ កំណែថ្មីមិនអាចត្រូវលាក់
+       ដោយ cache ណាមួយឡើយ ( មើលកំណត់សម្គាល់ v5 ខាងលើ ) ។
+       ⚠ បើកម្មវិធីរុករកមិនទទួល `cache:'reload'` ⇒ ថយទៅ fetch ធម្មតា ។ */
     e.respondWith(
-      fetch(req).then(function(res){ return putIfOk(req, res); })
-      .catch(function(){
-        return caches.match(req).then(function(hit){
-          return hit || caches.match('./index.html').then(function(h2){
-            return h2 || Response.error();
+      fetch(url.href, { cache: 'reload', credentials: 'same-origin' })
+        .catch(function(){ return fetch(req); })
+        .then(function(res){ return putIfOk(req, res); })
+        .catch(function(){
+          return caches.match(req).then(function(hit){
+            return hit || caches.match('./index.html').then(function(h2){
+              return h2 || Response.error();
+            });
           });
-        });
-      })
+        })
     );
     return;
   }
