@@ -27260,8 +27260,12 @@ function renderDataEntryPanel(){
       .forEach(function(n){ out.push(String(n)); });
     return out;
   })();
+  const deObstructChanged = function(){
+    try{ if(window.__ccObstructRefresh) window.__ccObstructRefresh(); }catch(e){}
+    renderAll();
+  };
   const obstructSel = deSelect('obstructYear',
-    ['— គ្មាន —'].concat(deYearList), '150px', renderAll);
+    ['— គ្មាន —'].concat(deYearList), '150px', deObstructChanged);
   /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «លុះត្រាតែខ្ញុំប្តូរពាក្យទៅត្រឹមត្រូវសិន
      បន្ទាប់មកប្តូរទៅមិនត្រឹមត្រូវវិញ ទើបវាបង្ហាញឆ្នាំឱ្យរើស» ។
      ⚠⚠ នេះជាការបែកគ្នារវាង **អ្វីដែលឃើញ** និង **អ្វីដែលរក្សាទុក** ម្តង
@@ -27272,7 +27276,7 @@ function renderDataEntryPanel(){
      ទទេ ឬខុសក៏ដោយ។ ដូច្នេះជួរឆ្នាំលេចឡើងត្រូវតាមអ្វីដែលឃើញជានិច្ច។
      ⚠ ការសរសេរតម្លៃលំនាំដើមចូល state នៅរក្សាទុក ៖ `CC.pullObstruct`
      អានពី state ដូច្នេះទាំងពីរត្រូវស្របគ្នា។ */
-  const bookSel = deSelect('bookkeeping', ['មិនត្រឹមត្រូវ','ត្រឹមត្រូវ'], '160px', renderAll);
+  const bookSel = deSelect('bookkeeping', ['មិនត្រឹមត្រូវ','ត្រឹមត្រូវ'], '160px', deObstructChanged);
   const bookBad = String(bookSel.value || '').indexOf('មិនត្រឹមត្រូវ') >= 0;
   if(bookBad && String(getDE('bookkeeping')||'') !== bookSel.value) setDE('bookkeeping', bookSel.value);
   const bookRow = inlineRow(
@@ -45632,6 +45636,19 @@ CC.applyFixedAmount=function(tx, on){
     });
   }catch(e){}
 };
+/* 🔄 [stated] ២០២៦-០៩-០៨ ៖ «ពេល selected ការកាន់កាប់បញ្ជីគណនេយ្យ
+   មិនត្រឹមត្រូវ រើសឆ្នាំហើយក៏មិនចេញលទ្ធផលដែរ» ។
+   ⚠ ស្នាមម្រាមដៃ (`onSig`) ធ្វើឱ្យការរើស **តម្លៃដដែល** មិនបាញ់អ្វីទេ ។
+     តែការចុចក្នុង Data Entry ជា **សកម្មភាពច្បាស់លាស់របស់អ្នកប្រើ** ⇒ វា
+     ត្រូវតែដើរជានិច្ច ។ ⇒ លុបស្នាមម្រាមដៃចោល រួចទាញឡើងវិញភ្លាម ។ */
+window.__ccObstructRefresh=function(){
+  try{
+    var t=((CC.state||{}).taxes||[]).filter(function(x){ return x && x.id==='obstruct'; })[0];
+    if(t) t.onSig=null;
+    CC.autoFill(true);
+    CC.render();
+  }catch(e){}
+};
 CC.pullObstruct=function(){
   var s=CC.state; if(!s||!s.taxes) return {ok:false,msg:""};
   var de={}; try{ de=(window.__toiDataEntry && window.__toiDataEntry())||{}; }catch(e){}
@@ -45652,9 +45669,17 @@ CC.pullObstruct=function(){
        ពេលឆ្នាំនោះទើបចូលមកដល់ក្រោយ តួលេខនៅតែរត់ចូលបាន ។
      ⭐ ច្បាប់ ៖ ការបំពេញស្វ័យប្រវត្តិត្រូវបាញ់លើ **ការប្តូរ** មិនមែនលើ
        **ស្ថានភាព** — បើមិនដូច្នេះទេ អ្នកប្រើមិនអាចប្រកែកនឹងវាបានឡើយ ។ */
-  var __sig = (bad?'1':'0') + '|' + pick + '|'
+  /* ⚠⚠ ស្នាមម្រាមដៃមានលេខជំនាន់ (`v2`) ៖ កាតុគ្រប់អាន់ដែលរក្សាទុកមុននេះ
+     ត្រូវចាត់ទុកជា «វេនដំបូង» ⇒ ការធ្វើឱ្យប្រសើរមិនអាចលុបតួលេខដែលមាន
+     ស្រាប់បានឡើយ ។ ការវាស់ចាប់បានរឿងនេះ ៖ បើគ្មានលេខជំនាន់ទេ ការផ្ទុក
+     លើកដំបូងបន្ទាប់ពីធ្វើឱ្យប្រសើរ លុប ១០,០០០,០០០ ចោលទៅ ០ ។ */
+  var __sig = 'v2|' + (bad?'1':'0') + '|' + pick + '|'
             + (s.years.map(String).indexOf(pick) >= 0 ? '1' : '0');
   if(t.onSig === __sig) return {ok:false,msg:""};
+  /* ⚠ វេនដំបូង ( កាតុថ្មី ឬកាតុពីជំនាន់មុន ) ៖ **បន្ថែមតែប៉ុណ្ណោះ** ។
+     ការធ្វើឱ្យ ០ ឬការដកធីក នៅវេននោះ នឹងលុបការងារដែលមានស្រាប់ ដោយសារ
+     ការធ្វើឱ្យប្រសើរ មិនមែនដោយសារការសម្រេចរបស់អ្នកប្រើ ។ */
+  var __first = (t.onSig == null || String(t.onSig).indexOf('v2|') !== 0);
   t.onSig = __sig;
   var n=1;                       /* ស្នាមម្រាមដៃប្តូរ ⇒ ត្រូវរក្សាទុក */
   s.years.forEach(function(y){
@@ -45671,13 +45696,16 @@ CC.pullObstruct=function(){
     if(t.userSet && t.userSet[y]) return;      /* អ្នកប្រើវាយ ⇒ មិនប៉ះ */
     /* កែតែក្រឡាដែលយើងធ្លាប់សរសេរ (០ ឬ ១០លាន) — លេខផ្សេងជារបស់អ្នកប្រើ */
     if(cur!==0 && cur!==10000000) return;
-    if(cur!==want){ t.base[y]=want; n++; }
+    if(cur!==want){
+      if(__first && want===0) return;        /* វេនដំបូង ៖ មិនលុបអ្វីទេ */
+      t.base[y]=want; n++;
+    }
   });
   /* ⚠ ត្រូវកំណត់ `on` **ជានិច្ច** មិនមែនតែពេលមានការផ្លាស់ប្តូរតួលេខទេ ៖
      ពេលរើស «គ្មាន» តួលេខក្លាយជា ០ រួច n>0 ; តែពេលវាជា ០ រួចហើយ n===0
      ហើយប្រអប់ធីកនៅតែបើក។ */
   var wantOn = bad && !!pick && pick.indexOf('គ្មាន') < 0;
-  if(t.on !== wantOn){ t.on = wantOn; n++; }
+  if(t.on !== wantOn && !(__first && wantOn === false)){ t.on = wantOn; n++; }
   CC.persist();
   return {ok:n>0, msg:""};
 };
@@ -45887,21 +45915,25 @@ CC.repair=function(s){
   }
   s.taxes.forEach(function(t){ if(!t.paidAudit) t.paidAudit={}; if(!t.paidLate) t.paidLate={}; if(!t.ib) t.ib="m"; if(!t.msel) t.msel={}; if(!t.irate) t.irate={};
     if(t.amt && t.def==null){ var d0=TAX_DEFS.filter(function(x){return x.id===t.id;})[0]; if(d0) t.def=d0.def||0; } });
-  /* ⭐⭐ ការផ្ទេរ ( ២០២៦-០៩-០៨ ) ៖ `pullObstruct` លុបក្រឡាដែលកាន់តម្លៃ
-     ១០,០០០,០០០ ព្រោះវាចាត់ទុកចំនួននោះជា «តម្លៃរបស់ខ្លួន» ។ ការការពារពិត
-     គឺ `t.userSet` — តែកាតុដែលរក្សាទុក **មុនពេល `userSet` មាន** គ្មានវាទេ
-     ⇒ តួលេខរបស់អ្នកប្រើត្រូវលុបស្ងាត់រាល់ការផ្ទុកទំព័រ ។ ការជួសជុលពេលគូរ
-     ធ្លាប់លាក់រឿងនេះទុក ; ឥឡូវវាត្រូវកែត្រង់ឫសគល់វិញ ។
-     ⚠ ធ្វើតែម្តងគត់ ( ពេល `userSet` **អវត្តមានទាំងស្រុង** ) ⇒ កាតុថ្មី
-       និងការប្តូរការិយបរិច្ឆេទ នៅដំណើរការដូចដើម ។ */
+  /* ⭐⭐⭐ ការដកការផ្ទេរខុសរបស់ខ្ញុំចេញ ( ២០២៦-០៩-០៨, ជុំទី ២ ) ៖
+     ជុំមុនខ្ញុំសម្គាល់ក្រឡាដែលកាន់ ១០,០០០,០០០ ថា «អ្នកប្រើវាយ» ( `userSet` )
+     ដើម្បីការពារវាពី `pullObstruct` ។
+     ⚠⚠ នោះជាការសម្រេចខុស ៖ ១០,០០០,០០០ គឺជា **តម្លៃស្វ័យប្រវត្តិខ្លួនឯង** ។
+       ការសម្គាល់វាថាជារបស់អ្នកប្រើ បិទផ្លូវស្វ័យប្រវត្តិទាំងអស់ ⇒ ការរើស
+       ពី dropdown លែងចេញ ១០,០០០,០០០ ហើយការរើសក្នុង Data Entry ក៏លែងចេញ
+       លទ្ធផលដែរ — ត្រូវនឹងអ្វីដែលបានរាយការណ៍បេះបិទ ។
+     ⇒ ដកសញ្ញានោះចេញវិញ ។ ការការពារពិតឥឡូវនេះ គឺស្នាមម្មាមដៃ `onSig`
+       ក្នុង `pullObstruct` — វាសរសេរតែពេលចម្លើយក្នុង Data Entry **ប្តូរ** ។
+     ⚠ ក្រឡាដែលកាន់លេខ **ផ្សេងពី** ១០,០០០,០០០ ជារបស់អ្នកប្រើពិត ⇒ សញ្ញា
+       របស់វានៅដដែល ។
+     ⭐ ច្បាប់ ៖ កុំសម្គាល់តម្លៃលំនាំដើមថាជាការវាយបញ្ចូលរបស់អ្នកប្រើ —
+       វាធ្វើឱ្យប្រព័ន្ធលែងអាចជួយអ្នកប្រើបានទៀត ។ */
   try{
     (s.taxes||[]).forEach(function(t){
-      if(!t || t.id!=='obstruct' || t.userSet) return;
-      var us={}, any=false;
-      Object.keys(t.base||{}).forEach(function(y){
-        if(Number(t.base[y])){ us[y]=1; any=true; }
+      if(!t || t.id!=='obstruct' || !t.userSet) return;
+      Object.keys(t.userSet).forEach(function(y){
+        if(Number((t.base||{})[y]) === 10000000) delete t.userSet[y];
       });
-      if(any) t.userSet=us;
     });
   }catch(e){}
   if(!s.vat.msel) s.vat.msel={};
@@ -46305,6 +46337,62 @@ window.__ccYears=function(){
     yearsManual: ((CC.state||{}).yearsManual||[]).slice(),
     yearsWithData: Object.keys(CC.yearsWithData(CC.state||{})).map(Number),
     changes: CC._yearLog.slice(-20)
+  };
+};
+/* 🔍 «ឆ្នាំនេះមកពីណា?» — រត់ `__ccWhereYear(2024)` ក្នុង Console ។
+   ⚠ ខ្ញុំធ្លាប់ **ទាយ** ថា ២០២៤ មកពីឯកសារ TOI ។ នោះខុស ។ ឧបករណ៍នេះឆ្លើយ
+     ដោយការវាស់វិញ ៖ វាដើររុករក `CC.state` ទាំងមូល រួចរាយ **គ្រប់កន្លែង**
+     ដែលកូនសោឆ្នាំនោះមាន ព្រមទាំងតម្លៃរបស់វា ។
+   ⚠ វាពិនិត្យច្បាប់ចម្លងក្នុងឃ្លាំងផងដែរ ។ */
+CC._scanYear=function(root, year, out, path, depth){
+  if(!root || typeof root!=='object' || depth>6) return;
+  var isArr=Array.isArray(root);
+  var keys=Object.keys(root);
+  if(keys.length>400) return;
+  for(var i=0;i<keys.length;i++){
+    var k=keys[i], v=root[k];
+    var p=path + (isArr ? ('['+k+']') : ('.'+k));
+    if(!isArr && String(k)===String(year) && (v===null || typeof v!=='object')){
+      out.push({ where:path, key:String(k), value:v, nonZero:!!(Number(v)) });
+      continue;
+    }
+    if(!isArr && k==='year' && String(v)===String(year)){
+      out.push({ where:path, key:k, value:v, nonZero:true });
+      continue;
+    }
+    if(v && typeof v==='object') CC._scanYear(v, year, out, p, depth+1);
+  }
+};
+window.__ccWhereYear=function(year){
+  year = Number(year);
+  var s = CC.state || {};
+  var ay=[]; try{ ay=(window.__auditYears?window.__auditYears():[]).map(String); }catch(e){}
+  var live=[]; try{ CC._scanYear(s, year, live, 'state', 0); }catch(e){}
+  var stored=[];
+  try{
+    var raw=localStorage.getItem('calcCardV1');
+    if(raw) CC._scanYear(JSON.parse(raw), year, stored, 'localStorage', 0);
+  }catch(e){}
+  var pick=function(list){
+    return list.filter(function(x){ return x.nonZero; })
+               .map(function(x){ return x.where + ' = ' + x.value; });
+  };
+  var manual = ((s.yearsManual||[]).map(Number).indexOf(year)>=0);
+  var nz = pick(live);
+  return {
+    year: year,
+    inYears: (s.years||[]).map(Number).indexOf(year)>=0,
+    auditYears: ay,
+    fromAuditPeriod: ay.indexOf(String(year))>=0,
+    inYearsManual: manual,
+    inYearsRemoved: ((s.yearsRemoved||[]).map(Number).indexOf(year)>=0),
+    nonZeroInMemory: nz,
+    nonZeroInStorage: pick(stored),
+    emptyPlacesInMemory: live.length - nz.length,
+    verdict: (ay.indexOf(String(year))>=0) ? 'ការិយបរិច្ឆេទសវនកម្ម (Data Entry)'
+           : manual ? 'បន្ថែមដោយដៃ (yearsManual)'
+           : (nz.length ? 'វាកាន់តួលេខ — មើល nonZeroInMemory'
+           : 'គ្មានប្រភពច្បាស់ — សូមផ្ញើលទ្ធផលនេះមក')
   };
 };
 CC.syncAuditYears=function(){
