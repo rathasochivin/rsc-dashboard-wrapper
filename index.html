@@ -15590,6 +15590,28 @@ async function handleAutoFileImport(evt){
       const category = detectFileCategory(file.name, aoa, sheetNames || [], file.webkitRelativePath);
       if(!category){ unresolved.push(file.name); continue; }
       if(category === "mtr"){
+        /* ⭐⭐ [stated] ២០២៦-០៩-០៧ ៖ «បាត់មិនឃើញមាន VATRVC វាស្ថិតនៅ
+           WORKBOOK DATA» ⇒ សន្លឹក VATRVC ដែលនៅ **ក្នុងសៀវភៅរួម** ត្រូវអានផង ។
+           ⚠ ឯកសារទាំងមូលនៅតែបញ្ជូនទៅម៉ូឌុល MTR ដដែល ( សាលកបត្រ · VATCR ·
+             ប្រវត្តិសវនកម្ម ) — យើងគ្រាន់តែ **អានសន្លឹក VATRVC បន្ថែម** ។
+           ⚠ ត្រូវអានសៀវភៅដោយខ្លួនឯងបើ Worker បានអានជំនួស ( `wb` អាច null ) ។ */
+        try{
+          var vrcSheetName = (sheetNames || []).filter(function(n){
+            var u = String(n || '').toUpperCase();
+            return u.indexOf('VATRVC') >= 0 || u.indexOf('REVERSE') >= 0;
+          })[0];
+          if(vrcSheetName){
+            var wbV = wb;
+            if(!wbV) wbV = XLSX.read(new Uint8Array(buf), {type:"array", cellDates:true, cellHTML:false});
+            var aoaV = XLSX.utils.sheet_to_json(wbV.Sheets[vrcSheetName],
+                        {header:1, raw:true, defval:"", blankrows:false});
+            var rowsV = rowsFromVATRVCSheet(aoaV, file.name + ' › ' + vrcSheetName);
+            if(rowsV && rowsV.length){
+              buckets.vatRvc = buckets.vatRvc.concat(rowsV);
+              console.info('អាន VATRVC ពីសៀវភៅរួម ៖ ' + rowsV.length + ' ជួរ');
+            }
+          }
+        }catch(e){ console.warn('VATRVC ក្នុងសៀវភៅរួម ៖', e); }
         // MTR files aren't parsed here at all — the whole ORIGINAL File is
         // handed off as-is to the embedded MTR tool (see forwardFilesToMTR),
         // which reads it with its own logic exactly like a direct upload.
