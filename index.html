@@ -45277,14 +45277,31 @@ CC.costOfSales=function(y){ return Math.abs(+(CC.state.toi.costOfSales||{})[y]||
 CC.opexDecl   =function(y){ return Math.abs(+(CC.state.toi.opexDecl   ||{})[y]||0); };
 CC.intExpDecl =function(y){ return Math.abs(+(CC.state.toi.intExpDecl ||{})[y]||0); };
 
+/* ⭐⭐⭐ [stated] ២០២៦-០៩-០៨ ៖ «ផ្នែក VAT មិនត្រូវមានឆ្នាំ ២០២៤ឡើយ ព្រោះ
+   ការិយសវនកម្មខ្ញុំមិនបានរើសឆ្នាំ ២០២៤ទេ ។ នៅផ្នែក MTR VAT គឺត្រូវយកតាម
+   ឆ្នាំនៅ ការិយសវនកម្ម ផ្នែក Data Entry» ។
+   ⭐ នេះជា **ច្បាប់** ដែលកូដពីមុនមិនបានគោរព ៖ ទិន្នានុប្បវត្តិទិញ-លក់ និង
+     សាលកបត្រ គ្របដណ្តប់ឆ្នាំច្រើន ( ពន្ធប៉ាតង់បង់រាល់ឆ្នាំ ) — តែ **កាត
+     គណនាត្រូវកាន់តែឆ្នាំដែលកំពុងធ្វើសវនកម្ម** ។
+   ⇒ ឆ្នាំដែលអនុញ្ញាត = ការិយសវនកម្ម ។ ទទេ ⇒ គ្មានការកំណត់ ( ឥរិយាបថចាស់ ) ។
+   ⚠ នេះមិនប៉ះទិន្នន័យប្រភពទេ ៖ សាលកបត្រនៅកាន់ការបង់ប៉ាតង់គ្រប់ឆ្នាំដដែល —
+     កាតគណនាគ្រាន់តែឈប់ចម្លងឆ្នាំក្រៅការិយសវនកម្មចូលមក ។ */
+CC.allowedYears=function(){
+  try{
+    return (window.__auditYears?window.__auditYears():[])
+             .map(Number).filter(function(n){ return n>1900; });
+  }catch(e){ return []; }
+};
 CC.pullFromToi=function(quiet){
   var f=window.__toiDeclaredByYear;
   if(typeof f!=="function") return {ok:false,msg:"មិនទាន់មានទិន្នន័យពន្ធលើប្រាក់ចំណូល"};
   var d=f()||{}, keys=Object.keys(d);
   if(!keys.length) return {ok:false,msg:"តារាងពន្ធលើប្រាក់ចំណូលមិនទាន់មានតួលេខ"};
   var s=CC.state;
-  /* ឆ្នាំក្នុងតារាងគណនាតាមឆ្នាំដែលមានក្នុង TOI — បន្ថែមទៅមុន/ថយក្រោយបាននៅ ⚙️ */
-  CC.setYears(keys);
+  /* ឆ្នាំក្នុងតារាងគណនា ៖ **ការិយសវនកម្មឈ្នះ** ។ ឯកសារ TOI កំណត់បញ្ជីឆ្នាំ
+     តែពេលការិយសវនកម្មនៅទទេប៉ុណ្ណោះ — បន្ថែមទៅមុន/ថយក្រោយបាននៅ ⚙️ */
+  if(!CC.allowedYears().length) CC.setYears(keys);
+  else { try{ CC.syncAuditYears(); }catch(e){} }
   var n=0;
   s.years.forEach(function(y){
     var r=d[String(y)]; if(!r) return;
@@ -45338,7 +45355,12 @@ CC.pullFromVat=function(quiet){
   var d=f()||{}, keys=Object.keys(d);
   if(!keys.length) return {ok:false,msg:"ទិន្នានុប្បវត្តិទិញ-លក់មិនទាន់មានទិន្នន័យ"};
   var s=CC.state;
-  if(!keys.some(function(y){return s.years.indexOf(Number(y))>=0;})) CC.setYears(keys);
+  /* ⚠⚠ នេះជាបន្ទាត់ដែលនាំឆ្នាំ ២០២៤ ចូល ៖ ពេលឆ្នាំក្នុងទិន្នានុប្បវត្តិ
+     មិនត្រូវនឹងបញ្ជីឆ្នាំ វាជំនួសបញ្ជីនោះដោយ **ឆ្នាំរបស់ទិន្នានុប្បវត្តិ** ។
+     ទិន្នានុប្បវត្តិមានឆ្នាំច្រើនជាងការិយសវនកម្មជានិច្ច ⇒ កាតគណនាទទួល
+     ឆ្នាំដែលគេមិនបានរើស ។ ⇒ ធ្វើវាតែពេលគ្មានការិយសវនកម្មប៉ុណ្ណោះ ។ */
+  if(!CC.allowedYears().length &&
+     !keys.some(function(y){return s.years.indexOf(Number(y))>=0;})) CC.setYears(keys);
   var n=0;
   s.years.forEach(function(y){
     var r=d[String(y)]; if(!r) return;
@@ -46379,6 +46401,13 @@ window.__ccWhereYear=function(year){
   };
   var manual = ((s.yearsManual||[]).map(Number).indexOf(year)>=0);
   var nz = pick(live);
+  /* ⚠⚠ ការស្កេនទូទៅខាងលើ **ថ្លង់** ៖ វារាយ `fxYears` · `months` · `mo`
+     ដែលជា **តារាងប៉ារ៉ាម៉ែត្រលំនាំដើម** ( អត្រាប្តូរប្រាក់ · ចំនួនខែ ) —
+     ទាំងនោះមានឆ្នាំគ្រប់ឆ្នាំតាំងពីដើម ហើយ **មិនមែនជាមូលហេតុ** ដែលឆ្នាំ
+     មួយត្រូវរក្សាទុកទេ ។ ⇒ រាយវាលដែល **សម្រេច** ដាច់ដោយឡែក ខាងក្រោមនេះ ។
+   ⭐ ច្បាប់ ៖ ឧបករណ៍វិនិច្ឆ័យដែលរាយអ្វីៗគ្រប់យ៉ាង ធ្វើឱ្យវង្វេងដូចគ្នានឹង
+     ការទាយដែរ — វាត្រូវចង្អុលទៅវាលដែលច្បាប់ពិតអាន ។ */
+  var why = CC.dataYearPaths(s, year);
   return {
     year: year,
     inYears: (s.years||[]).map(Number).indexOf(year)>=0,
@@ -46386,14 +46415,40 @@ window.__ccWhereYear=function(year){
     fromAuditPeriod: ay.indexOf(String(year))>=0,
     inYearsManual: manual,
     inYearsRemoved: ((s.yearsRemoved||[]).map(Number).indexOf(year)>=0),
-    nonZeroInMemory: nz,
-    nonZeroInStorage: pick(stored),
-    emptyPlacesInMemory: live.length - nz.length,
+    keptBecause: why,
     verdict: (ay.indexOf(String(year))>=0) ? 'ការិយបរិច្ឆេទសវនកម្ម (Data Entry)'
            : manual ? 'បន្ថែមដោយដៃ (yearsManual)'
-           : (nz.length ? 'វាកាន់តួលេខ — មើល nonZeroInMemory'
-           : 'គ្មានប្រភពច្បាស់ — សូមផ្ញើលទ្ធផលនេះមក')
+           : (why.length ? 'វាកាន់តួលេខពិត — មើល keptBecause'
+           : 'គ្មានប្រភពច្បាស់ — សូមផ្ញើលទ្ធផលនេះមក'),
+    otherPlaces: nz,
+    otherPlacesNote: 'តារាងលំនាំដើម (fxYears · months · mo) — មិនមែនមូលហេតុ',
+    inStorage: pick(stored)
   };
+};
+/* វាលដែល `CC.yearsWithData` អានពិត — ដូចគ្នាបេះបិទ តែចងចាំផ្លូវទុក */
+CC.dataYearPaths=function(s, year){
+  var out=[], y=String(year);
+  try{
+    var chk=function(map, label){
+      if(!map || typeof map!=='object') return;
+      var v=map[y];
+      if(v!=null && v!=='' && Number(v)!==0) out.push(label + ' = ' + v);
+    };
+    (s.taxes||[]).forEach(function(t, i){
+      if(!t) return;
+      var nm = 'taxes[' + i + '] ' + (t.name || t.id || '');
+      ['base','amt2','paid','paidAudit','paidLate','loan'].forEach(function(k){
+        chk(t[k], nm + '.' + k);
+      });
+    });
+    (((s.toi||{}).findings)||[]).forEach(function(f, i){
+      if(f && String(f.year)===y) out.push('toi.findings[' + i + '].year');
+    });
+    ((s.assessments)||[]).forEach(function(a, i){
+      if(a && String(a.year)===y) out.push('assessments[' + i + '].year (ការកំណត់ពន្ធ)');
+    });
+  }catch(e){}
+  return out;
 };
 CC.syncAuditYears=function(){
   try{
