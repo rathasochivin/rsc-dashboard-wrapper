@@ -45664,7 +45664,6 @@ CC.autoFill=function(force){
        ទាំងដែលគេមិនបានប្តូរសហគ្រាសសោះ ។
      ⇒ ការប្តូរត្រូវការ **ភស្តុតាងស្ថិតស្ថេរ** ៖ អតបថ្មីត្រូវឃើញដដែល
        យ៉ាងតិច ២ ដង និងយ៉ាងតិច ២ វិនាទីក្រោយពេលឃើញលើកដំបូង ។
-     ⚠ ហើយ **មិនប្តូរឡើយពេលកំពុងព្រីន** ៖ ការព្រីនគូរឡើងវិញច្រើនដង ។
      ⭐ ច្បាប់ ៖ សកម្មភាពដែលបំផ្លាញទិន្នន័យ មិនត្រូវបាញ់ដោយសញ្ញាភ្លាមៗ —
        វាត្រូវការភស្តុតាងម្តងហើយម្តងទៀត ។ */
   try{
@@ -45674,9 +45673,7 @@ CC.autoFill=function(force){
         CC.state.tin=tin;                      /* លើកដំបូង ⇒ គ្រាន់តែកត់ */
       }else if(CC.state.tin!==tin){
         var now=Date.now();
-        if(CC._printing){
-          /* កំពុងព្រីន ⇒ មិនប៉ះអ្វីទាំងអស់ */
-        }else if(CC._tinCand!==tin){
+        if(CC._tinCand!==tin){
           CC._tinCand=tin; CC._tinCandAt=now;   /* ឃើញលើកទី ១ ⇒ រង់ចាំបញ្ជាក់ */
           console.warn("CalcCard ៖ ឃើញអតបខុស ("+CC.state.tin+" ⇒ "+tin+") — រង់ចាំបញ្ជាក់");
         }else if(now - (CC._tinCandAt||0) >= 2000){
@@ -45844,6 +45841,23 @@ CC.repair=function(s){
   }
   s.taxes.forEach(function(t){ if(!t.paidAudit) t.paidAudit={}; if(!t.paidLate) t.paidLate={}; if(!t.ib) t.ib="m"; if(!t.msel) t.msel={}; if(!t.irate) t.irate={};
     if(t.amt && t.def==null){ var d0=TAX_DEFS.filter(function(x){return x.id===t.id;})[0]; if(d0) t.def=d0.def||0; } });
+  /* ⭐⭐ ការផ្ទេរ ( ២០២៦-០៩-០៨ ) ៖ `pullObstruct` លុបក្រឡាដែលកាន់តម្លៃ
+     ១០,០០០,០០០ ព្រោះវាចាត់ទុកចំនួននោះជា «តម្លៃរបស់ខ្លួន» ។ ការការពារពិត
+     គឺ `t.userSet` — តែកាតុដែលរក្សាទុក **មុនពេល `userSet` មាន** គ្មានវាទេ
+     ⇒ តួលេខរបស់អ្នកប្រើត្រូវលុបស្ងាត់រាល់ការផ្ទុកទំព័រ ។ ការជួសជុលពេលគូរ
+     ធ្លាប់លាក់រឿងនេះទុក ; ឥឡូវវាត្រូវកែត្រង់ឫសគល់វិញ ។
+     ⚠ ធ្វើតែម្តងគត់ ( ពេល `userSet` **អវត្តមានទាំងស្រុង** ) ⇒ កាតុថ្មី
+       និងការប្តូរការិយបរិច្ឆេទ នៅដំណើរការដូចដើម ។ */
+  try{
+    (s.taxes||[]).forEach(function(t){
+      if(!t || t.id!=='obstruct' || t.userSet) return;
+      var us={}, any=false;
+      Object.keys(t.base||{}).forEach(function(y){
+        if(Number(t.base[y])){ us[y]=1; any=true; }
+      });
+      if(any) t.userSet=us;
+    });
+  }catch(e){}
   if(!s.vat.msel) s.vat.msel={};
   if(!Array.isArray(s.loanRates) || !s.loanRates.length) s.loanRates=b.loanRates;
   if(!s.fxYears || !Object.keys(s.fxYears).length)       s.fxYears=b.fxYears;
@@ -45901,8 +45915,6 @@ CC.repair=function(s){
 };
 /* លុបទិន្នន័យកាតុគណនាទាំងស្រុង — ប្រើពេលលុបទិន្នន័យ ឬផ្ទុកឯកសារថ្មី */
 CC.resetAll=function(){
-  CC._allowShrink = true;                 /* ការសម្អាតដោយចេតនា */
-  setTimeout(function(){ CC._allowShrink = false; }, 1500);
   /* ⚠⚠ នេះជាកន្លែងតែមួយគត់ដែលអាចលុបជំនាន់ទាំងអស់បាន។ វារត់ពេល
      **លេខអតបប្តូរ** (សហគ្រាសថ្មី) ។ បើវារត់ដោយចៃដន្យ អ្វីៗបាត់ស្ងាត់ៗ
      ហើយគេគិតថា «រក្សាទុកមិនជាប់» ។ ដូច្នេះ ៖ រាយចេញឱ្យឃើញជានិច្ច។ */
@@ -45953,8 +45965,6 @@ CC.resetAll=function(){
      វានៅតែលុបដោយ 🗑 ព្រមទាំងពេលអ្នកប្រើផ្សេងចូល ។ */
 CC.tinKey=function(t){ return "calcCardTinV1:" + String(t||""); };
 CC.switchTin=function(oldTin, newTin){
-  CC._allowShrink = true;                 /* ការប្តូរសហគ្រាសដោយចេតនា */
-  setTimeout(function(){ CC._allowShrink = false; }, 1500);
   try{
     if(oldTin && window.localStorage){
       localStorage.setItem(CC.tinKey(oldTin), JSON.stringify(CC.state));
@@ -46011,16 +46021,7 @@ window.__ccRestore=function(){
      របាយការណ៍ធនាគារ · xlsx ស៊ីទំហំច្រើន ។
    ⭐ ច្បាប់ ៖ ការសរសេរដែលអាចបរាជ័យ មិនត្រូវលេបកំហុសស្ងាត់ឡើយ — អ្នកប្រើ
      ត្រូវដឹងភ្លាម បើមិនដូច្នេះទេ គេបន្តធ្វើការលើទិន្នន័យដែលមិនត្រូវរក្សាទុក ។ */
-/* ⭐⭐⭐ [stated] ២០២៦-០៩-០៧ ៖ ការតាមដានបង្ហាញការសរសេរពីរជាប់គ្នា ៖
-     ១ `{"2018":10000000,"2024":0}`  ← ត្រឹមត្រូវ
-     ២ `{"2024":0}`                  ← កូនសោ ២០១៨ **បាត់ទាំងស្រុង**
-   ⇒ `CC.state` ត្រូវជំនួសដោយកាតុចាស់ រួចសរសេរជាន់ ។ ខ្ញុំមិនទាន់រកឃើញថា
-     កូដណាជំនួស ( វេននេះវែងពេក ) ⇒ ដាក់ការការពារនៅ **ច្រកចេញ** វិញ ៖
-     ការសរសេរណាដែលធ្វើឱ្យទិន្នន័យ **តិចជាងមុន** ត្រូវបដិសេធ ។
-   ⚠ នេះជាការការពារ មិនមែនការជួសជុលឫសគល់ទេ — តែវាបញ្ឈប់ការបាត់ទិន្នន័យ
-     ភ្លាម ហើយបោះសារឱ្យឃើញថាអ្នកណាព្យាយាមសរសេរតូចជាង ។
-   ⚠ ការសម្អាតដោយចេតនា ( 🗑 · «សម្អាតតួលេខ» · ប្តូរសហគ្រាស ) កំណត់
-     `CC._allowShrink = true` មុន ⇒ វានៅតែធ្វើការបានធម្មតា ។ */
+/* [ដកចេញ ២០២៦-០៩-០៨] អត្ថបទពីការបដិសេធការសរសេរ«តូចជាងមុន» ។ */
 CC._cellCount=function(o){
   var n=0;
   try{
@@ -46037,23 +46038,13 @@ CC._cellCount=function(o){
   }catch(e){}
   return n;
 };
-CC._safeWrite=function(json){
-  try{
-    if(CC._allowShrink) return true;
-    var oldRaw = localStorage.getItem("calcCardV1");
-    if(!oldRaw) return true;
-    var oldN = CC._cellCount(JSON.parse(oldRaw));
-    var newN = CC._cellCount(JSON.parse(json));
-    if(newN < oldN){
-      console.error('⛔ ការសរសេរត្រូវបដិសេធ ៖ ' + oldN + ' ⇒ ' + newN + ' ក្រឡា',
-                    new Error('CalcCard shrink').stack);
-      try{ if(typeof toast==='function' && !CC._shrinkWarned){ CC._shrinkWarned=true;
-        toast('⛔ ទប់ការសរសេរដែលធ្វើឱ្យតួលេខបាត់ ( ' + oldN + ' ⇒ ' + newN + ' ) — ទិន្នន័យរបស់អ្នកនៅដដែល','err'); } }catch(e){}
-      return false;
-    }
-  }catch(e){}
-  return true;
-};
+/* [ដកចេញ ២០២៦-០៩-០៨] `CC._safeWrite` — ការបដិសេធការសរសេរដែល «តូចជាងមុន» ។
+   ⚠⚠ វាមិនត្រឹមតែឥតប្រយោជន៍សម្រាប់បញ្ហានេះទេ ( ចំនួនក្រឡាមិនប្រែពេលកាត់
+     បញ្ជីឆ្នាំ ) — វា **បង្កគ្រោះថ្នាក់ដោយខ្លួនឯង** ៖ ការវាស់បង្ហាញថា ពេល
+     អ្នកប្រើលុបតួលេខមួយចេញ ( ដាក់ ០ ) ការសរសេរត្រូវបានបដិសេធ ⇒ ក្នុង
+     អង្គចងចាំជា ០ តែក្នុងឃ្លាំងនៅ ៥,០០០,០០០ ⇒ តួលេខដែលលុបរួច
+     **ត្រឡប់មកវិញពេលផ្ទុកទំព័រ** ។ ការការពារដែលបំបាត់ការកែរបស់អ្នកប្រើ
+     អាក្រក់ជាងបញ្ហាដែលវាចង់ការពារ ។ */
 CC._saveFail=function(e){
   try{
     window.__ccSaveError = String((e && e.name) || '') + ' ' + String((e && e.message) || e);
@@ -46073,7 +46064,7 @@ CC.persistNow=function(){
   try{ if(window.state) state.calcCard=CC.state; }catch(e){}
   try{
     var __j = JSON.stringify(CC.state);
-    if(window.localStorage && CC._safeWrite(__j)) localStorage.setItem("calcCardV1", __j);
+    if(window.localStorage) localStorage.setItem("calcCardV1", __j);
   }
   catch(e){ CC._saveFail(e); }
   /* ចម្លងតាមអតបផង ⇒ ការប្តូរសហគ្រាសទៅមកមិនបាត់ការងារ */
@@ -46091,7 +46082,7 @@ CC.persist=function(){
     CC._persistTimer=null;
     try{
       var __j2 = JSON.stringify(CC.state);
-      if(window.localStorage && CC._safeWrite(__j2)) localStorage.setItem("calcCardV1", __j2);
+      if(window.localStorage) localStorage.setItem("calcCardV1", __j2);
     }
     catch(e){ CC._saveFail(e); }
   }, 400);
@@ -46184,6 +46175,57 @@ CC.unmarkYearManual=function(y){
     s.yearsManual=s.yearsManual.map(Number).filter(function(v){ return v!==n; });
   }catch(e){}
 };
+/* ⭐⭐⭐ ឫសគល់នៃ «ចុចព្រីនរួច តួលេខបាត់ពីអេក្រង់» ( រកឃើញ ២០២៦-០៩-០៨ ) ៖
+   មុខងារនេះ **ជំនួស** បញ្ជីឆ្នាំដោយ ( ការិយបរិច្ឆេទ ∪ បន្ថែមដោយដៃ ) ។ វា
+   រត់នៅដើម `CC.compute()` ⇒ **រាល់ការគូរ** ។ ដូច្នេះបើ `__auditYears()`
+   ឆ្លើយខុសមួយភ្លែត ( ការិយបរិច្ឆេទទទេ ⇒ ធ្លាក់ទៅ `state.years` របស់ TOI )
+   ឆ្នាំ ២០១៨ ត្រូវធ្លាក់ចេញពីបញ្ជី ហើយតារាងលែងមានជួរនោះ ⇒ **តួលេខបាត់ពី
+   អេក្រង់ ខណៈវានៅគង់វង្សទាំងស្រុងក្នុងឃ្លាំង** ។
+   ⚠ នេះជាមូលហេតុដែលរាល់ការវាស់មុនៗសុទ្ធតែ «ស្អាត» ៖ គ្មានការលុប
+     ( `__ccWhy()` ⇒ គ្មាន ) · ចំនួនក្រឡាមិនប្រែ ( ការការពារការសរសេរ និង
+     ការជួសជុលពេលគូរ ពុំបាញ់ ) · F5 ត្រឡប់មកវិញ ( `CC.repair` សាងបញ្ជីឆ្នាំ
+     ឡើងវិញពីតារាងតួលេខ ) ។
+   ⇒ ការកែ ៖ **ការតម្រឹមតាមការិយបរិច្ឆេទ មិនត្រូវដកឆ្នាំដែលកាន់តួលេខ** —
+     ដូចច្បាប់ដែលឯកសារនេះប្រកាសរួចពីរកន្លែង ( «បន្ថែមតែប៉ុណ្ណោះ» ) ។
+     ឆ្នាំទទេដែលលែងស្ថិតក្នុងការិយបរិច្ឆេទ នៅតែត្រូវដកចេញដដែល ។ */
+/* ឆ្នាំណាខ្លះកាន់ការងារពិត — ដូចការស្កេនក្នុង `CC.repair` */
+CC.yearsWithData=function(s){
+  var set={};
+  try{
+    var scan=function(m){
+      if(!m || typeof m!=='object') return;
+      Object.keys(m).forEach(function(k){
+        var n=Number(k);
+        if(n>1900 && m[k]!=null && m[k]!=='' && Number(m[k])!==0) set[n]=1;
+      });
+    };
+    (s.taxes||[]).forEach(function(t){
+      if(!t) return;
+      scan(t.base); scan(t.amt2); scan(t.paid); scan(t.paidAudit); scan(t.paidLate); scan(t.loan);
+    });
+    (((s.toi||{}).findings)||[]).forEach(function(f){
+      if(f && Number(f.year)>1900) set[Number(f.year)]=1;
+    });
+    ((s.assessments)||[]).forEach(function(a){
+      if(a && Number(a.year)>1900) set[Number(a.year)]=1;
+    });
+  }catch(e){}
+  return set;
+};
+/* 🔍 ឧបករណ៍វាស់ ៖ រត់ `__ccYears()` ក្នុង Console ⇒ ឃើញភ្លាមថា
+   `__auditYears()` ឆ្លើយអ្វី បញ្ជីឆ្នាំបច្ចុប្បន្នជាអ្វី ហើយការតម្រឹម
+   ធ្លាប់ព្យាយាមដកឆ្នាំណាខ្លះចេញ ( ព្រមទាំងអ្នកហៅ ) ។ */
+CC._yearLog=[];
+window.__ccYears=function(){
+  var ay=[]; try{ ay=(window.__auditYears?window.__auditYears():[]); }catch(e){}
+  return {
+    auditYears: ay,
+    years: ((CC.state||{}).years||[]).slice(),
+    yearsManual: ((CC.state||{}).yearsManual||[]).slice(),
+    yearsWithData: Object.keys(CC.yearsWithData(CC.state||{})).map(Number),
+    changes: CC._yearLog.slice(-20)
+  };
+};
 CC.syncAuditYears=function(){
   try{
     var ay=(window.__auditYears?window.__auditYears():[]).map(Number)
@@ -46196,9 +46238,29 @@ CC.syncAuditYears=function(){
     (Array.isArray(s.yearsManual)?s.yearsManual:[]).forEach(function(y){
       var n=Number(y); if(n>1900) keep[n]=1;
     });
+    /* ⚠⚠ ការការពារឫសគល់ ៖ ឆ្នាំដែលកាន់តួលេខ មិនត្រូវធ្លាក់ចេញឡើយ */
+    var dropped=[];
+    var withData=CC.yearsWithData(s);
+    s.years.forEach(function(y){
+      var n=Number(y);
+      if(!(n>1900) || keep[n]) return;
+      if(withData[n]){ keep[n]=1; dropped.push(n); }
+    });
     var want=Object.keys(keep).map(Number).sort(function(a,b){ return b-a; });
     var cur=s.years.map(Number).sort(function(a,b){ return b-a; });
     if(want.join(",")===cur.join(",")) return false;
+    if(dropped.length){
+      /* កត់ទុក ៖ បើវាកើតឡើង មានន័យថា `__auditYears()` ឆ្លើយខុសពីឆ្នាំដែល
+         គេកំពុងធ្វើការលើ — ទីនោះជាកន្លែងបន្ទាប់ត្រូវមើល */
+      var rec={ at:new Date().toISOString(), auditYears:ay.slice(),
+                kept:dropped.slice(), was:cur.slice(),
+                stack:(new Error("syncAuditYears")).stack||"" };
+      CC._yearLog.push(rec);
+      if(CC._yearLog.length>40) CC._yearLog.shift();
+      console.warn("CalcCard ៖ ការិយបរិច្ឆេទ ("+ay.join(",")+") មិនរាប់បញ្ចូលឆ្នាំ "
+                   +dropped.join(",")+" ដែលមានតួលេខ — ឆ្នាំនោះត្រូវរក្សាទុក។ "
+                   +"រត់ __ccYears() ដើម្បីមើលលម្អិត។");
+    }
     s.years=want;
     return true;
   }catch(e){ return false; }
@@ -48539,29 +48601,9 @@ var TABS=[["sum","📊 សង្ខេប"],["toi","💰 ពន្ធលើប�
 var MODES=[["tax","ពន្ធត្រូវបង់ប៉ុណ្ណោះ"],["add","+ ពន្ធបន្ថែម (Additional Tax)"],["int","+ ការប្រាក់ (Interest)"],["total","សរុប (Total)"]];
 CC.render=function(){
   var el=document.getElementById("calcCard"); if(!el) return;
-  /* ⭐⭐⭐ [stated] ២០២៦-០៩-០៧ ៖ ការវាស់ចុងក្រោយបញ្ជាក់ថា ឃ្លាំងកាន់
-     `{2018: 10000000}` ត្រឹមត្រូវ ខណៈអេក្រង់ទទេ ⇒ **ទិន្នន័យមិនបាត់ទេ** ;
-     `CC.state` ក្នុងអង្គចងចាំត្រូវជំនួសដោយកាតុចាស់ ( ការការពារការសរសេរ
-     រារាំងវាមិនឱ្យទៅដល់ឃ្លាំង ) ។
-   ⇒ ការជួសជុលដោយខ្លួនឯង ៖ មុនគូររាល់ដង បើអង្គចងចាំមានក្រឡាតិចជាងឃ្លាំង
-     ⇒ ទាញពីឃ្លាំងមកវិញ ។ ⚠ គូរតែម្តងទេ ( `_healing` ) ⇒ គ្មានរង្វិលជុំ ។
-   ⭐ ច្បាប់ ៖ ពេលមិនអាចរកឃើញអ្នកបំផ្លាញ ការធានាភាពត្រឹមត្រូវនៅ **ចំណុច
-     ប្រើប្រាស់** ជាដំណោះស្រាយដែលទុកចិត្តបានជាងការតាមបិទផ្លូវម្តងមួយៗ ។ */
-  try{
-    if(!CC._healing && window.localStorage){
-      var rawS = localStorage.getItem("calcCardV1");
-      if(rawS){
-        var stored = JSON.parse(rawS);
-        if(CC._cellCount(stored) > CC._cellCount(CC.state)){
-          CC._healing = true;
-          console.warn("CalcCard ៖ អង្គចងចាំតិចជាងឃ្លាំង ⇒ ទាញមកវិញ");
-          CC.state = CC.syncTaxDefs(CC.repair(stored));
-          try{ if(window.state) state.calcCard = CC.state; }catch(e){}
-          CC._healing = false;
-        }
-      }
-    }
-  }catch(e){ CC._healing = false; }
+  /* [ដកចេញ ២០២៦-០៩-០៨] ការជួសជុលពេលគូរ (`CC._healing`) ៖ វាប្រៀបធៀប
+     **ចំនួនក្រឡា** ដែលមិនប្រែសោះពេលមានតែ **បញ្ជីឆ្នាំ** ត្រូវកាត់ ⇒ វា
+     មិនដែលបាញ់សម្រាប់បញ្ហានេះទេ ។ ឫសគល់ត្រូវបានកែនៅ `syncAuditYears` ។ */
   var s=CC.state,res;
   try{ res=CC.compute(); }
   catch(err){
@@ -50311,9 +50353,10 @@ function bind(el){
     }
     else if(act==="save"){ CC.persistNow(); a.textContent="✅ រក្សាទុករួច"; setTimeout(function(){a.textContent="💾 រក្សាទុក";},1400); }
     else if(act==="print"){
-      /* ⚠ ទប់ការប្តូរអតបពេញមួយអំឡុងព្រីន ⇒ ការគូរឡើងវិញមិនអាចប្តូរកាតុ */
-      CC.persistNow(); CC._printing=true;
-      try{ window.print(); }finally{ setTimeout(function(){ CC._printing=false; }, 4000); }
+      /* [២០២៦-០៩-០៨] សោពេលព្រីន (`CC._printing`) ត្រូវដកចេញ ៖ ការព្រីន
+         មិនដែលប្តូរអតបទេ — ឫសគល់នៅ `syncAuditYears` ។ */
+      CC.persistNow();
+      window.print();
     }
     else if(act==="xls"){
       try{ xlsDownloadFrom(document.getElementById("view-calc"), "CALCULATION"); }
