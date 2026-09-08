@@ -14968,11 +14968,25 @@ function rowsFromVATRVCSheet(aoa, fileName){
      ⇒ ច្បាប់រឹងមាំជាង ៖ ក្បាលបញ្ចប់ភ្លាមនៅជួរដេកដំបូងដែលកោសិកាទី ១ ជា
        **លេខរៀង** ។ ជួរ «សរុប» នៅពីលើទិន្នន័យ ( ទម្រង់លម្អិត ) មិនមែនលេខ
        ⇒ វានៅខាងក្នុងផ្នែកក្បាល ហើយត្រូវរំលងដោយស្វ័យប្រវត្តិ ។ */
-  for(var i = 0; i < Math.min(aoa.length, 8); i++){
+  /* ⭐⭐⭐ [stated] ២០២៦-០៩-០៧ ៖ «VATRVC មានតែ upload មិនចូល» ⇒ ០ ជួរ ។
+     រូបថតបង្ហាញមូលហេតុ ៖ ក្នុង **សៀវភៅរួម** សន្លឹក VATRVC មានព័ត៌មានសហគ្រាស
+     ២២ ជួរនៅខាងលើ ⇒ ក្បាលតារាងនៅ **ជួរទី ២៣** ខណៈការស្កេនមើលត្រឹម ៨ ជួរ
+     ដំបូង ⇒ រកក្បាលមិនឃើញ ⇒ គ្មានជួរណាស្រង់បាន ។
+     ⇒ ស្កេនរហូតដល់ ៦០ ជួរ ហើយ **ចាប់ផ្តើមប្រមូលក្បាលឡើងវិញ** នៅជួរដែល
+       មានពាក្យសម្គាល់ពិត ( បារកូដ · ប្រកាសប្រចាំខែ · កាលបរិច្ឆេទ ) ⇒
+       អត្ថបទក្បាលក្រុមហ៊ុនខាងលើមិនលាយចូល ។
+     ⚠ ការឈប់នៅជួរទិន្នន័យដំបូង ( លេខរៀង ) នៅដដែល ។ */
+  var HDR_MARKS = ['បារកូដ','ប្រកាសប្រចាំខែ','កាលបរិច្ឆេទ','ការផ្គត់ផ្គង់ជាប់អាករ','ទឹកប្រាក់'];
+  for(var i = 0; i < Math.min(aoa.length, 60); i++){
     var row = aoa[i] || [];
     var f0 = row[0];
     var looksData = (typeof f0 === 'number' && f0 > 0) || /^\d+$/.test(vrcTxt(f0));
-    if(looksData) break;
+    if(looksData && hdrLast >= 0) break;      /* ក្បាលរកឃើញរួច ⇒ ចាប់ផ្តើមទិន្នន័យ */
+    if(looksData) continue;                   /* លេខមុនក្បាល ( ឧ. 1E+11 ) ⇒ រំលង */
+    var rowTxt = row.map(function(x){ return vrcTxt(x); }).join(' ');
+    var isHdrRow = HDR_MARKS.some(function(w){ return rowTxt.indexOf(w) >= 0; });
+    if(isHdrRow && hdrLast < 0) head = {};     /* ជួរក្បាលពិត ⇒ បោះបង់អ្វីមុននេះ */
+    if(!isHdrRow && hdrLast < 0) continue;     /* នៅមិនទាន់ដល់ក្បាល ⇒ រំលង */
     var hit = false;
     for(var c = 0; c < row.length; c++){
       var t = vrcTxt(row[c]);
