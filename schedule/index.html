@@ -912,6 +912,10 @@ function visitCard(r){
         (x.mapLink?' <a class="maplink" href="'+esc(x.mapLink)+'" target="_blank" rel="noopener">🗺 Map</a>':'');
     }).join('<br>')+'</div></div>':'')+
     ((r.auditors&&r.auditors.length)?'<div class="row"><i>👤</i><div>'+r.auditors.map(nameOf).map(esc).join(' · ')+'</div></div>':'')+
+    ((r.siteGeo&&r.siteGeo.lat)?'<div class="row"><i>📍</i><div>ទីតាំងពេលថត៖ <a href="https://www.google.com/maps/search/?api=1&query='+
+      r.siteGeo.lat+','+r.siteGeo.lng+'" target="_blank" rel="noopener">'+
+      Number(r.siteGeo.lat).toFixed(5)+', '+Number(r.siteGeo.lng).toFixed(5)+'</a>'+
+      (r.siteGeo.at?' · '+fmtD(r.siteGeo.at)+' '+fmtT(r.siteGeo.at):'')+'</div></div>':'')+
     ((r.siteImgs&&r.siteImgs.length)?'<div class="row"><i>🖼</i><div>'+r.siteImgs.map(function(u,i){
         return '<a href="'+esc(u)+'" target="_blank" rel="noopener">រូបទីតាំង '+(i+1)+'</a>' }).join(' · ')+'</div></div>':'')+
     (r.contactPhone||r.contactName?'<div class="row"><i>📞</i><div>'+esc(r.contactName||'អ្នកតំណាង')+
@@ -1514,7 +1518,7 @@ function renderReport(root){
   root.appendChild(bar);
 }
 /** បញ្ជីរូបភាព ៖ ចុចមើលទើបបើក មិនបង្ហាញរូបពេញក្នុងទម្រង់ */
-function imageList(parent, arr, onChange, label){
+function imageList(parent, arr, onChange, label, opts){
   parent.appendChild(el('label',null,label));
   var box=el('div'); parent.appendChild(box);
   function draw(){
@@ -1528,7 +1532,7 @@ function imageList(parent, arr, onChange, label){
       row.appendChild(rm); row.appendChild(a); box.appendChild(row);
     });
     var slot=el('div');
-    imagePicker(slot, '', function(url){ if(url){ arr.push(url); onChange(arr); draw() } }, '');
+    imagePicker(slot, '', function(url){ if(url){ arr.push(url); onChange(arr); draw() } }, '', opts);
     box.appendChild(slot);
   }
   draw();
@@ -1538,7 +1542,8 @@ function imageList(parent, arr, onChange, label){
  * ប្រអប់បិទភ្ជាប់រូប ៖ បង្រួម → ផ្ទុកឡើង Google Drive → រក្សាទុកតែតំណ
  * onSet(url) ត្រូវបានហៅរាល់ពេលរូបប្តូរ
  */
-function imagePicker(parent, current, onSet, label){
+function imagePicker(parent, current, onSet, label, opts){
+  opts = opts || {};
   if(label) parent.appendChild(el('label',null,label));
   var wrap=el('div','shot');
   var img=el('img'); img.style.display='none';
@@ -1559,6 +1564,24 @@ function imagePicker(parent, current, onSet, label){
   }
   box.onclick=function(){ fin.click() };
   fin.onchange=function(){ if(fin.files[0]) shrinkImage(fin.files[0], take) };
+
+  var cam=null, cin=null;
+  if(opts.camera){
+    cin=el('input'); cin.type='file'; cin.accept='image/*';
+    cin.setAttribute('capture','environment'); cin.style.display='none';
+    cam=el('button','mini','📷 ថតរូបឥឡូវ');
+    cam.style.marginTop='6px';
+    cam.onclick=function(){
+      /* យកទីតាំងបច្ចុប្បន្នស្របពេលថត ដើម្បីផ្ទៀងផ្ទាត់ */
+      if(opts.onGeo && navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(function(pos){
+          opts.onGeo({lat:pos.coords.latitude, lng:pos.coords.longitude, at:new Date().toISOString()});
+        }, function(){}, {enableHighAccuracy:true, timeout:8000, maximumAge:60000});
+      }
+      cin.click();
+    };
+    cin.onchange=function(){ if(cin.files[0]) shrinkImage(cin.files[0], take) };
+  }
   box.addEventListener('paste',function(ev){
     var it=(ev.clipboardData||{}).items||[];
     for(var i=0;i<it.length;i++) if(it[i].type.indexOf('image')===0){
@@ -1567,6 +1590,7 @@ function imagePicker(parent, current, onSet, label){
   });
   img.onclick=function(){ if(confirm('ដករូបនេះចេញ?')){ onSet(''); show('') } };
   wrap.appendChild(box); wrap.appendChild(img); wrap.appendChild(fin);
+  if(cam){ wrap.appendChild(cam); wrap.appendChild(cin) }
   parent.appendChild(wrap); parent.appendChild(el('div','f'));
   show(current||'');
 }
@@ -2181,7 +2205,15 @@ function visitForm(r, seedDay, forceKind, seedEnt, asNew){
     siteBox.appendChild(el('div','f'));
 
     r.siteImgs = (r.siteImgs && r.siteImgs.length!==undefined) ? r.siteImgs : [];
-    imageList(siteBox, r.siteImgs, function(a){ r.siteImgs=a }, 'រូបភាពទីតាំង');
+    imageList(siteBox, r.siteImgs, function(a){ r.siteImgs=a }, 'រូបភាពទីតាំង',
+      {camera:true, onGeo:function(g){ r.siteGeo=g; toast('📍 កត់ទីតាំងពេលថតរួច') }});
+    if(r.siteGeo && r.siteGeo.lat){
+      var gl=el('div','hint');
+      gl.innerHTML='📍 ទីតាំងពេលថត៖ <a href="https://www.google.com/maps/search/?api=1&query='+
+        r.siteGeo.lat+','+r.siteGeo.lng+'" target="_blank" rel="noopener">'+
+        Number(r.siteGeo.lat).toFixed(5)+', '+Number(r.siteGeo.lng).toFixed(5)+'</a>';
+      siteBox.appendChild(gl);
+    }
 
     var area=field(siteBox,'តំបន់ (ខណ្ឌ / ស្រុក / ខេត្ត)', input('text',r.area||'','ខណ្ឌចំការមន'),'ទុកទទេ ក៏បាន — កម្មវិធីទាញចេញពីអាសយដ្ឋានឯង');
     addr.addEventListener('blur',function(){ if(!area.value.trim()) area.value=guessArea(addr.value) });
