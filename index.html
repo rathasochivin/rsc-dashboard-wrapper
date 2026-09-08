@@ -15596,12 +15596,22 @@ async function handleAutoFileImport(evt){
              ប្រវត្តិសវនកម្ម ) — យើងគ្រាន់តែ **អានសន្លឹក VATRVC បន្ថែម** ។
            ⚠ ត្រូវអានសៀវភៅដោយខ្លួនឯងបើ Worker បានអានជំនួស ( `wb` អាច null ) ។ */
         try{
-          var vrcSheetName = (sheetNames || []).filter(function(n){
+          /* ⚠⚠ [stated] ២០២៦-០៩-០៧ ៖ «VATRVC មានតែ upload មិនចូល» ។
+             មូលហេតុទំនង ៖ ពេល Worker អានឯកសារជំនួស `sheetNames` អាចជា null
+             ⇒ ការស្កេនរកសន្លឹករកមិនឃើញអ្វី ⇒ រំលងស្ងាត់ ។
+             ⇒ បើគ្មានឈ្មោះសន្លឹក អានសៀវភៅដោយខ្លួនឯង រួចស្កេនពីវាវិញ ។ */
+          var wbV = wb;
+          var namesV = sheetNames;
+          if(!namesV || !namesV.length){
+            wbV = wbV || XLSX.read(new Uint8Array(buf), {type:"array", cellDates:true, cellHTML:false});
+            namesV = wbV.SheetNames || [];
+          }
+          var vrcSheetName = (namesV || []).filter(function(n){
             var u = String(n || '').toUpperCase();
             return u.indexOf('VATRVC') >= 0 || u.indexOf('REVERSE') >= 0;
           })[0];
+          console.info('សន្លឹកក្នុងឯកសារ ' + file.name + ' ៖', namesV, '⇒ VATRVC ៖', vrcSheetName || '(គ្មាន)');
           if(vrcSheetName){
-            var wbV = wb;
             if(!wbV) wbV = XLSX.read(new Uint8Array(buf), {type:"array", cellDates:true, cellHTML:false});
             var aoaV = XLSX.utils.sheet_to_json(wbV.Sheets[vrcSheetName],
                         {header:1, raw:true, defval:"", blankrows:false});
