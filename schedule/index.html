@@ -241,7 +241,13 @@ textarea{min-height:84px;resize:vertical;line-height:1.8;padding:10px 11px;heigh
 .legend div{display:flex;align-items:center;gap:5px}
 
 table.rp{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);font-size:11px;line-height:1.6;margin-bottom:14px}
-table.rp.wide{min-width:660px;font-size:10.5px}
+/* តារាងវែង ៖ អក្សរតែមួយទំហំ និងតែមួយពុម្ព ដើម្បីមើលទៅស្មើគ្នាទាំងអស់ */
+table.rp.wide{min-width:660px}
+table.rp.wide,table.rp.wide th,table.rp.wide td,
+table.rp.wide td.n,table.rp.wide td.nw,table.rp.wide .lat{
+  font-size:10px;line-height:1.75;
+  font-family:'KhmerOS Siemreap',system-ui,-apple-system,sans-serif;
+}
 .tscroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:14px;border-radius:3px}
 .tscroll table.rp{margin-bottom:0}
 table.rp th,table.rp td{border:1px solid var(--line);padding:4px 5px;text-align:left;vertical-align:top;word-break:break-word;overflow-wrap:anywhere}
