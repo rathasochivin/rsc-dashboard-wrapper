@@ -17665,6 +17665,46 @@ const ENTERPRISE_PREFIXES = ["trackingData_", "accessProAudit_", "accessProMap_"
        ត្រូវលុបវាពិតប្រាកដ ) ។ */
   "rscInvChk:", "rscBank:", "rscGL:"];
 
+/* ⭐⭐⭐ [stated] ២០២៦-០៩-០៧ ៖ «សហគ្រាសមួយពេលរក្សាទុក វាគួរជាប់ទិន្នន័យ
+   នោះតែម្តង … ដោយឡែកពេលប្តូរទៅសហគ្រាសថ្មី មិនគួរជាប់ទិន្នន័យសហគ្រាស
+   ចាស់ទៀតឡើយ» ។
+   ⚠ កូនសោខ្លះភ្ជាប់នឹងអតបផ្ទាល់ ( `rscGL:` · `rscInvChk:` · `rscBank:` ·
+     `calcCardTinV1:` ) ⇒ ពួកវារស់រានពីការសម្អាត ហើយបង្គររហូតឃ្លាំងពេញ
+     ( រួចការរក្សាទុកចាប់ផ្តើមបរាជ័យស្ងាត់ — ដូចករណីកាតគណនាថ្ងៃនេះ ) ។
+   ⇒ លុបកូនសោរបស់អតប **ដទៃ** ចោល ទុកតែអតបបច្ចុប្បន្ន ។
+   ⚠ សុវត្ថិភាព ៖ រត់តែពេលអតបបច្ចុប្បន្នដឹងច្បាស់ ( ៩ ខ្ទង់ ) ; បើមិនដឹង
+     មិនលុបអ្វីសោះ — ការលុបពេលមិនច្បាស់ ជាការបំផ្លាញទិន្នន័យ ។
+   ⚠ ទិន្នន័យដែលលុប នៅមានក្នុងឯកសារ 💾 ⇒ បើកសហគ្រាសនោះវិញ វាត្រឡប់មក ។ */
+var RSC_TIN_PREFIXES = ['rscGL:', 'rscInvChk:', 'rscBank:', 'calcCardTinV1:'];
+window.__rscPruneOtherEnterprises = function(){
+  try{
+    var cur = '';
+    try{
+      cur = String((window.__rscEnterpriseInfo && window.__rscEnterpriseInfo().tin) || '')
+        .replace(/\D/g, '').slice(-9);
+    }catch(e){}
+    if(!/^\d{9}$/.test(cur)) return { ok:false, why:'អតបមិនច្បាស់' };
+    var del = [];
+    Object.keys(localStorage).forEach(function(k){
+      if(!RSC_TIN_PREFIXES.some(function(p){ return k.indexOf(p) === 0; })) return;
+      if(k.indexOf(cur) >= 0) return;      /* របស់សហគ្រាសបច្ចុប្បន្ន ⇒ ទុក */
+      del.push(k);
+    });
+    del.forEach(function(k){ try{ localStorage.removeItem(k); }catch(e){} });
+    if(del.length){
+      console.warn('លុបសំណល់សហគ្រាសដទៃ ៖', del);
+      try{ if(typeof toast === 'function') toast('សម្អាតសំណល់សហគ្រាសដទៃ ' + del.length + ' ធាតុ', 'ok'); }catch(e){}
+    }
+    return { ok:true, removed:del.length, keys:del };
+  }catch(e){ return { ok:false, why:String(e && e.message || e) }; }
+};
+/* រត់ក្រោយកម្មវិធីឡើងរួច ( អតបទើបដឹង ) និងក្រោយការផ្ទុកឯកសារនីមួយៗ */
+try{
+  window.addEventListener('load', function(){
+    setTimeout(function(){ try{ window.__rscPruneOtherEnterprises(); }catch(e){} }, 4000);
+  });
+}catch(e){}
+
 function wipeEnterpriseStorage(){
   try{
     const del = [];
@@ -45564,9 +45604,29 @@ CC.autoFill=function(force){
           CC._tinCand=tin; CC._tinCandAt=now;   /* ឃើញលើកទី ១ ⇒ រង់ចាំបញ្ជាក់ */
           console.warn("CalcCard ៖ ឃើញអតបខុស ("+CC.state.tin+" ⇒ "+tin+") — រង់ចាំបញ្ជាក់");
         }else if(now - (CC._tinCandAt||0) >= 2000){
+          /* ⚠⚠⚠ [stated] ២០២៦-០៩-០៧ ៖ ការវាស់បង្ហាញថាឃ្លាំងមិនពេញ ការសរសេរ
+             មិនបរាជ័យ តែ `calcCardTinV1:…` មានក្នុងឃ្លាំង ⇒ **ការប្តូរកាតុ
+             តាមអតបកំពុងរត់** ហើយវាសរសេរជាន់ `calcCardV1` ដោយកាតុរបស់អតប
+             មួយទៀត ⇒ តួលេខដែលទើបវាយ បាត់ស្ងាត់ ។
+             ⇒ ការប្តូរ **លែងធ្វើដោយស្វ័យប្រវត្តិ** ៖ សួរអ្នកប្រើជាមុនជានិច្ច ។
+             ⚠ បដិសេធ ⇒ កាតុបច្ចុប្បន្ននៅដដែល ហើយអតបនោះត្រូវចងចាំថាបាន
+               បដិសេធ ⇒ វាមិនសួរម្តងហើយម្តងទៀតទេ ។
+             ⭐ ច្បាប់ ៖ ការជំនួសទិន្នន័យរបស់អ្នកប្រើ មិនត្រូវកើតឡើងដោយ
+               ស្វ័យប្រវត្តិឡើយ — សូម្បីមានហេតុផលល្អក៏ដោយ ។ */
           CC._tinCand=null; CC._tinCandAt=0;
-          CC.switchTin(CC.state.tin, tin);
-          CC.state.tin=tin;
+          if(CC._tinDenied === tin){ /* បដិសេធរួច ⇒ មិនសួរទៀត */ }
+          else{
+            var fromTin = CC.state.tin, toTin = tin;
+            var ask = window.appConfirm || function(m){ return Promise.resolve(window.confirm(m)); };
+            ask('លេខអតបផ្លាស់ពី ' + fromTin + ' ទៅ ' + toTin
+              + ' ។ តើប្តូរកាតគណនាទៅសហគ្រាសថ្មីមែនទេ?  '
+              + '⚠ បើអ្នកកំពុងធ្វើការលើ ' + fromTin + ' សូមចុច «ទេ» — តួលេខរបស់អ្នកនឹងនៅដដែល។')
+              .then(function(ok){
+                if(!ok){ CC._tinDenied = toTin; return; }
+                CC.switchTin(fromTin, toTin);
+                CC.state.tin = toTin;
+              });
+          }
         }
       }else{
         CC._tinCand=null; CC._tinCandAt=0;      /* ត្រឡប់មកដដែល ⇒ បោះបង់ */
