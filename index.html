@@ -45709,6 +45709,17 @@ window.__calcCardReset=function(){ try{ CC.resetAll(); }catch(e){} };
 
 /* state ភ្ជាប់ភ្លាម (ថោក) តែការសរសេរទៅ localStorage ពន្យារពេលបន្តិច ៖
    រាល់ការវាយអក្សរបង្កើត JSON.stringify លើស្ថានភាពទាំងមូល ដែលធ្វើឱ្យយឺត */
+/* ⭐⭐ [stated] ២០២៦-០៩-០៧ ៖ «រក្សាទុករួចចុចព្រីន បន្ទាប់មកចូលវិញ វាអត់ជាប់» ។
+   មូលហេតុ ៖ `persist` សរសេរ **ពន្យារពេល ៤០០ms** ( ដើម្បីកុំឱ្យការវាយអក្សរ
+   យឺត ) ។ ការចុចព្រីនភ្លាមក្រោយនោះ បើកប្រអប់ព្រីនដែលទប់ខ្សែស្រឡាយ ហើយបើ
+   គេចាកចេញ ឬបិទផ្ទាំងក្នុងអំឡុងនោះ ការសរសេរមិនដែលកើតឡើង ។
+   ⇒ `persistNow()` សរសេរ **ភ្លាម** ⇒ ប្រើត្រង់ប៊ូតុងរក្សាទុក និងមុនព្រីន ។
+   ⚠ ការពន្យារពេលនៅរក្សាទុកសម្រាប់ការវាយអក្សរដដែល — មិនធ្វើឱ្យវាយឺតទេ ។ */
+CC.persistNow=function(){
+  if(CC._persistTimer){ clearTimeout(CC._persistTimer); CC._persistTimer=null; }
+  try{ if(window.state) state.calcCard=CC.state; }catch(e){}
+  try{ if(window.localStorage) localStorage.setItem("calcCardV1",JSON.stringify(CC.state)); }catch(e){}
+};
 CC._persistTimer=null;
 CC.persist=function(){
   try{ if(window.state) state.calcCard=CC.state; }catch(e){}
@@ -49908,8 +49919,8 @@ function bind(el){
       s.toi.tmarginAll=""; s.toi.markupAll=""; s.toi.cutMode=""; s.toi.cutPct="";
       re();
     }
-    else if(act==="save"){ CC.persist(); a.textContent="✅ រក្សាទុករួច"; setTimeout(function(){a.textContent="💾 រក្សាទុក";},1400); }
-    else if(act==="print"){ window.print(); }
+    else if(act==="save"){ CC.persistNow(); a.textContent="✅ រក្សាទុករួច"; setTimeout(function(){a.textContent="💾 រក្សាទុក";},1400); }
+    else if(act==="print"){ CC.persistNow(); window.print(); }
     else if(act==="xls"){
       try{ xlsDownloadFrom(document.getElementById("view-calc"), "CALCULATION"); }
       catch(err){ console.error("xls", err); }
