@@ -45862,10 +45862,34 @@ window.__ccRestore=function(){
    គេចាកចេញ ឬបិទផ្ទាំងក្នុងអំឡុងនោះ ការសរសេរមិនដែលកើតឡើង ។
    ⇒ `persistNow()` សរសេរ **ភ្លាម** ⇒ ប្រើត្រង់ប៊ូតុងរក្សាទុក និងមុនព្រីន ។
    ⚠ ការពន្យារពេលនៅរក្សាទុកសម្រាប់ការវាយអក្សរដដែល — មិនធ្វើឱ្យវាយឺតទេ ។ */
+/* ⭐⭐⭐ [stated] ២០២៦-០៩-០៧ ៖ ការវាស់ចុងក្រោយបង្ហាញ ៖
+     `state.calcCard…base = {2018: 100000000}` ✓ ចូលស្ថានភាពត្រឹមត្រូវ
+     `localStorage…base   = {2024: 0}`        ✗ មិនចូលឃ្លាំង
+   ⇒ **ការសរសេរចូល localStorage បរាជ័យ** ហើយ `try{}catch(e){}` លេបកំហុស
+     នោះស្ងាត់ ⇒ អ្វីៗមើលទៅដូចដើរ រហូតដល់ផ្ទុកទំព័រឡើងវិញ ។
+   ⚠⚠ មូលហេតុទូទៅបំផុត ៖ **ឃ្លាំងពេញ** ( QuotaExceededError ) — GL ·
+     របាយការណ៍ធនាគារ · xlsx ស៊ីទំហំច្រើន ។
+   ⭐ ច្បាប់ ៖ ការសរសេរដែលអាចបរាជ័យ មិនត្រូវលេបកំហុសស្ងាត់ឡើយ — អ្នកប្រើ
+     ត្រូវដឹងភ្លាម បើមិនដូច្នេះទេ គេបន្តធ្វើការលើទិន្នន័យដែលមិនត្រូវរក្សាទុក ។ */
+CC._saveFail=function(e){
+  try{
+    window.__ccSaveError = String((e && e.name) || '') + ' ' + String((e && e.message) || e);
+    console.error('CalcCard រក្សាទុកមិនបាន:', e);
+    if(!CC._saveWarned){
+      CC._saveWarned = true;
+      var q = (e && (e.name === 'QuotaExceededError' || e.code === 22));
+      if(typeof toast === 'function'){
+        toast(q ? '⚠ ឃ្លាំងពេញ — កាតគណនារក្សាទុកមិនបាន។ សូម 💾 រក្សាទុកជាឯកសារ រួចលុបទិន្នន័យចាស់ (🗑)'
+                : '⚠ កាតគណនារក្សាទុកមិនបាន — សូមថតអេក្រង់ Console ផ្ញើទៅអ្នកអភិវឌ្ឍន៍', 'err');
+      }
+    }
+  }catch(err){}
+};
 CC.persistNow=function(){
   if(CC._persistTimer){ clearTimeout(CC._persistTimer); CC._persistTimer=null; }
   try{ if(window.state) state.calcCard=CC.state; }catch(e){}
-  try{ if(window.localStorage) localStorage.setItem("calcCardV1",JSON.stringify(CC.state)); }catch(e){}
+  try{ if(window.localStorage) localStorage.setItem("calcCardV1",JSON.stringify(CC.state)); }
+  catch(e){ CC._saveFail(e); }
   /* ចម្លងតាមអតបផង ⇒ ការប្តូរសហគ្រាសទៅមកមិនបាត់ការងារ */
   try{
     if(CC.state && CC.state.tin && window.localStorage){
@@ -45879,7 +45903,8 @@ CC.persist=function(){
   if(CC._persistTimer) clearTimeout(CC._persistTimer);
   CC._persistTimer=setTimeout(function(){
     CC._persistTimer=null;
-    try{ if(window.localStorage) localStorage.setItem("calcCardV1",JSON.stringify(CC.state)); }catch(e){}
+    try{ if(window.localStorage) localStorage.setItem("calcCardV1",JSON.stringify(CC.state)); }
+    catch(e){ CC._saveFail(e); }
   }, 400);
 };
 /* មុនចេញពីទំព័រ ៖ សរសេរភ្លាមកុំឱ្យបាត់ */
