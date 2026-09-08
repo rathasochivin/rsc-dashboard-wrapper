@@ -45834,6 +45834,8 @@ CC.repair=function(s){
 };
 /* លុបទិន្នន័យកាតុគណនាទាំងស្រុង — ប្រើពេលលុបទិន្នន័យ ឬផ្ទុកឯកសារថ្មី */
 CC.resetAll=function(){
+  CC._allowShrink = true;                 /* ការសម្អាតដោយចេតនា */
+  setTimeout(function(){ CC._allowShrink = false; }, 1500);
   /* ⚠⚠ នេះជាកន្លែងតែមួយគត់ដែលអាចលុបជំនាន់ទាំងអស់បាន។ វារត់ពេល
      **លេខអតបប្តូរ** (សហគ្រាសថ្មី) ។ បើវារត់ដោយចៃដន្យ អ្វីៗបាត់ស្ងាត់ៗ
      ហើយគេគិតថា «រក្សាទុកមិនជាប់» ។ ដូច្នេះ ៖ រាយចេញឱ្យឃើញជានិច្ច។ */
@@ -45884,6 +45886,8 @@ CC.resetAll=function(){
      វានៅតែលុបដោយ 🗑 ព្រមទាំងពេលអ្នកប្រើផ្សេងចូល ។ */
 CC.tinKey=function(t){ return "calcCardTinV1:" + String(t||""); };
 CC.switchTin=function(oldTin, newTin){
+  CC._allowShrink = true;                 /* ការប្តូរសហគ្រាសដោយចេតនា */
+  setTimeout(function(){ CC._allowShrink = false; }, 1500);
   try{
     if(oldTin && window.localStorage){
       localStorage.setItem(CC.tinKey(oldTin), JSON.stringify(CC.state));
@@ -45940,6 +45944,49 @@ window.__ccRestore=function(){
      របាយការណ៍ធនាគារ · xlsx ស៊ីទំហំច្រើន ។
    ⭐ ច្បាប់ ៖ ការសរសេរដែលអាចបរាជ័យ មិនត្រូវលេបកំហុសស្ងាត់ឡើយ — អ្នកប្រើ
      ត្រូវដឹងភ្លាម បើមិនដូច្នេះទេ គេបន្តធ្វើការលើទិន្នន័យដែលមិនត្រូវរក្សាទុក ។ */
+/* ⭐⭐⭐ [stated] ២០២៦-០៩-០៧ ៖ ការតាមដានបង្ហាញការសរសេរពីរជាប់គ្នា ៖
+     ១ `{"2018":10000000,"2024":0}`  ← ត្រឹមត្រូវ
+     ២ `{"2024":0}`                  ← កូនសោ ២០១៨ **បាត់ទាំងស្រុង**
+   ⇒ `CC.state` ត្រូវជំនួសដោយកាតុចាស់ រួចសរសេរជាន់ ។ ខ្ញុំមិនទាន់រកឃើញថា
+     កូដណាជំនួស ( វេននេះវែងពេក ) ⇒ ដាក់ការការពារនៅ **ច្រកចេញ** វិញ ៖
+     ការសរសេរណាដែលធ្វើឱ្យទិន្នន័យ **តិចជាងមុន** ត្រូវបដិសេធ ។
+   ⚠ នេះជាការការពារ មិនមែនការជួសជុលឫសគល់ទេ — តែវាបញ្ឈប់ការបាត់ទិន្នន័យ
+     ភ្លាម ហើយបោះសារឱ្យឃើញថាអ្នកណាព្យាយាមសរសេរតូចជាង ។
+   ⚠ ការសម្អាតដោយចេតនា ( 🗑 · «សម្អាតតួលេខ» · ប្តូរសហគ្រាស ) កំណត់
+     `CC._allowShrink = true` មុន ⇒ វានៅតែធ្វើការបានធម្មតា ។ */
+CC._cellCount=function(o){
+  var n=0;
+  try{
+    (o && o.taxes || []).forEach(function(t){
+      ['base','loan','paid','paidAudit','paidLate'].forEach(function(k){
+        var m = t && t[k];
+        if(m && typeof m === 'object'){
+          Object.keys(m).forEach(function(y){ if(Number(m[y])) n++; });
+        }
+      });
+    });
+    n += (((o && o.toi || {}).findings) || []).length;
+    n += ((o && o.assessments) || []).length;
+  }catch(e){}
+  return n;
+};
+CC._safeWrite=function(json){
+  try{
+    if(CC._allowShrink) return true;
+    var oldRaw = localStorage.getItem("calcCardV1");
+    if(!oldRaw) return true;
+    var oldN = CC._cellCount(JSON.parse(oldRaw));
+    var newN = CC._cellCount(JSON.parse(json));
+    if(newN < oldN){
+      console.error('⛔ ការសរសេរត្រូវបដិសេធ ៖ ' + oldN + ' ⇒ ' + newN + ' ក្រឡា',
+                    new Error('CalcCard shrink').stack);
+      try{ if(typeof toast==='function' && !CC._shrinkWarned){ CC._shrinkWarned=true;
+        toast('⛔ ទប់ការសរសេរដែលធ្វើឱ្យតួលេខបាត់ ( ' + oldN + ' ⇒ ' + newN + ' ) — ទិន្នន័យរបស់អ្នកនៅដដែល','err'); } }catch(e){}
+      return false;
+    }
+  }catch(e){}
+  return true;
+};
 CC._saveFail=function(e){
   try{
     window.__ccSaveError = String((e && e.name) || '') + ' ' + String((e && e.message) || e);
@@ -45957,7 +46004,10 @@ CC._saveFail=function(e){
 CC.persistNow=function(){
   if(CC._persistTimer){ clearTimeout(CC._persistTimer); CC._persistTimer=null; }
   try{ if(window.state) state.calcCard=CC.state; }catch(e){}
-  try{ if(window.localStorage) localStorage.setItem("calcCardV1",JSON.stringify(CC.state)); }
+  try{
+    var __j = JSON.stringify(CC.state);
+    if(window.localStorage && CC._safeWrite(__j)) localStorage.setItem("calcCardV1", __j);
+  }
   catch(e){ CC._saveFail(e); }
   /* ចម្លងតាមអតបផង ⇒ ការប្តូរសហគ្រាសទៅមកមិនបាត់ការងារ */
   try{
@@ -45972,7 +46022,10 @@ CC.persist=function(){
   if(CC._persistTimer) clearTimeout(CC._persistTimer);
   CC._persistTimer=setTimeout(function(){
     CC._persistTimer=null;
-    try{ if(window.localStorage) localStorage.setItem("calcCardV1",JSON.stringify(CC.state)); }
+    try{
+      var __j2 = JSON.stringify(CC.state);
+      if(window.localStorage && CC._safeWrite(__j2)) localStorage.setItem("calcCardV1", __j2);
+    }
     catch(e){ CC._saveFail(e); }
   }, 400);
 };
