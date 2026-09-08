@@ -27235,17 +27235,29 @@ function renderDataEntryPanel(){
      ទាំងអស់ទទេ។ ការិយបរិច្ឆេទសវនកម្ម (ឧ. «2022-2026») មានស្រាប់ក្នុង
      Data Entry ដូច្នេះពន្លាតវាជាឆ្នាំ។
      ⚠ ប្រើតែពេល `state.years` ទទេ — ឯកសារ TOI តែងតែឈ្នះ។ */
+  /* ⭐⭐⭐ [stated] ២០២៦-០៩-០៨ ៖ «រើសនៅ data entry ក៏អត់ដើរ» ។
+     ⚠⚠ មូលហេតុ ៖ បញ្ជីនេះយក **ឆ្នាំរបស់ឯកសារ TOI មុនគេ** ហើយប្រើ
+       ការិយបរិច្ឆេទ **តែពេល TOI ទទេ** ។ សហគ្រាសដែលឯកសារ TOI ជាឆ្នាំ ២០២៤
+       តែការិយសវនកម្មជា ២០១៨ ⇒ ប្រអប់ជ្រើសផ្តល់តែ ២០២៤ ⇒ **គេរើស ២០១៨
+       មិនបានសោះ** ⇒ ពន្ធរាំងស្ទះមិនអាចចុះលើឆ្នាំដែលត្រូវធ្វើសវនកម្មបាន ។
+     ⇒ ផ្តល់ **ទាំងពីរ** ៖ ការិយបរិច្ឆេទសវនកម្ម ∪ ឆ្នាំឯកសារ TOI ។
+     ⚠ បន្ថែមតែប៉ុណ្ណោះ — គ្មានឆ្នាំណាដែលធ្លាប់រើសបាន ត្រូវបាត់ទេ ។ */
   var deYearList = (function(){
-    var ys = (state.years || []).slice();
-    if(ys.length) return ys;
+    var set = {}, out = [];
     var m = String(getDE('auditPeriod') || '').match(/\d{4}/g);
-    if(!m || !m.length) return [];
-    var a = parseInt(m[0], 10), b = parseInt(m[m.length - 1], 10);
-    if(!(a > 1900 && b > 1900)) return [];
-    if(b < a){ var t = a; a = b; b = t; }
-    if(b - a > 30) b = a + 30;
-    var out = [];
-    for(var y = a; y <= b; y++) out.push(String(y));
+    if(m && m.length){
+      var a = parseInt(m[0], 10), b = parseInt(m[m.length - 1], 10);
+      if(a > 1900 && b > 1900){
+        if(b < a){ var t = a; a = b; b = t; }
+        if(b - a > 30) b = a + 30;
+        for(var y = a; y <= b; y++) set[y] = 1;
+      }
+    }
+    (state.years || []).forEach(function(y){
+      var n = parseInt(y, 10); if(n > 1900) set[n] = 1;
+    });
+    Object.keys(set).map(Number).sort(function(x, y){ return y - x; })
+      .forEach(function(n){ out.push(String(n)); });
     return out;
   })();
   const obstructSel = deSelect('obstructYear',
@@ -45940,6 +45952,9 @@ CC.repair=function(s){
     });
     (((s.toi||{}).findings)||[]).forEach(function(f){ if(f && Number(f.year)>1900) yearSet[Number(f.year)]=1; });
     ((s.assessments)||[]).forEach(function(a){ if(a && Number(a.year)>1900) yearSet[Number(a.year)]=1; });
+    (Array.isArray(s.yearsRemoved)?s.yearsRemoved:[]).forEach(function(y){
+      delete yearSet[Number(y)];      /* ការលុបដោយ × ឈ្នះលើការសាងឡើងវិញ */
+    });
     var merged = Object.keys(yearSet).map(Number).sort(function(x,y){ return y-x; });
     if(merged.length) s.years = merged;
   }catch(e){ console.warn('CalcCard year merge:', e); }
@@ -46202,6 +46217,38 @@ CC.markYearManual=function(y){
     if(s.yearsManual.map(Number).indexOf(n)<0) s.yearsManual.push(n);
   }catch(e){}
 };
+/* ⭐⭐⭐ [stated] ២០២៦-០៩-០៨ ៖ «ហេតុអ្វីចេញឆ្នាំ ២០២៤ មកទៀតហើយ» ។
+   ⭐ អ្វីដែលកូដប្រាប់ ៖ ២០២៤ ជាឆ្នាំរបស់ **ឯកសារ TOI** ហើយវាកាន់តួលេខពិត
+     ( អាករ · ពន្ធបន្ថែម · ការប្រាក់ ) ។ ការកែជុំមុនបញ្ឈប់ការលុបឆ្នាំដែល
+     កាន់តួលេខ ⇒ ២០២៤ លែងបាត់ដោយស្ងាត់ទៀត ហើយវាលេចឡើងវិញ ។
+   ⚠⚠ តែពីមុនមក ការចុច × លើឆ្នាំណាមួយ **មិនដែលជាប់ទេ** ៖ ការតម្រឹមតាម
+     ការិយបរិច្ឆេទ ឬការសាងបញ្ជីឡើងវិញពីតារាងតួលេខ ដាក់វាត្រឡប់មកភ្លាម ។
+   ⇒ ឥឡូវការលុបរបស់អ្នកប្រើត្រូវបានចងចាំ ( `yearsRemoved` ) រហូតដល់អ្នក
+     បន្ថែមឆ្នាំនោះមកវិញដោយខ្លួនឯង ។
+   ⚠ ការលុបឆ្នាំ **លុបតួលេខរបស់ឆ្នាំនោះផងដែរ** ( `CC.setYears` រៀបតារាង
+     ឡើងវិញ ) — នោះជាចេតនានៃប៊ូតុង × ។ */
+CC.markYearRemoved=function(y){
+  try{
+    var s=CC.state; if(!s) return;
+    if(!Array.isArray(s.yearsRemoved)) s.yearsRemoved=[];
+    var n=Number(y); if(!(n>1900)) return;
+    if(s.yearsRemoved.map(Number).indexOf(n)<0) s.yearsRemoved.push(n);
+  }catch(e){}
+};
+CC.unmarkYearRemoved=function(y){
+  try{
+    var s=CC.state; if(!s||!Array.isArray(s.yearsRemoved)) return;
+    var n=Number(y);
+    s.yearsRemoved=s.yearsRemoved.map(Number).filter(function(v){ return v!==n; });
+  }catch(e){}
+};
+CC.isYearRemoved=function(y){
+  try{
+    var s=CC.state;
+    return !!(s && Array.isArray(s.yearsRemoved)
+              && s.yearsRemoved.map(Number).indexOf(Number(y))>=0);
+  }catch(e){ return false; }
+};
 CC.unmarkYearManual=function(y){
   try{
     var s=CC.state; if(!s||!Array.isArray(s.yearsManual)) return;
@@ -46279,6 +46326,10 @@ CC.syncAuditYears=function(){
       var n=Number(y);
       if(!(n>1900) || keep[n]) return;
       if(withData[n]){ keep[n]=1; dropped.push(n); }
+    });
+    /* ឆ្នាំដែលអ្នកប្រើលុបចេញដោយ × ⇒ មិនត្រូវដាក់ត្រឡប់មកវិញឡើយ */
+    (Array.isArray(s.yearsRemoved)?s.yearsRemoved:[]).forEach(function(y){
+      delete keep[Number(y)];
     });
     var want=Object.keys(keep).map(Number).sort(function(a,b){ return b-a; });
     var cur=s.years.map(Number).sort(function(a,b){ return b-a; });
@@ -50422,6 +50473,7 @@ function bind(el){
       var yy=Number(String(inp).replace(/[០-៩]/g,function(d){return String(d.charCodeAt(0)-0x17E0);}).replace(/[^0-9]/g,""));
       if(!yy || yy<1990 || yy>2100){ alert("ឆ្នាំមិនត្រឹមត្រូវ។"); return; }
       if(s.years.indexOf(yy)>=0){ alert("ឆ្នាំ "+yy+" មានរួចហើយ។"); return; }
+      CC.unmarkYearRemoved(yy); CC.markYearManual(yy);   /* បន្ថែមមកវិញ = ដកការលុប */
       if(!CC.setYears(s.years.concat([yy]))){ alert("បន្ថែមមិនបាន (អតិបរមា ១០ ឆ្នាំ)។"); return; }
       re();
     }
@@ -50433,7 +50485,7 @@ function bind(el){
       var ny = ys.length
         ? (act==="yrPrev" ? Math.min.apply(null,ys)-1 : Math.max.apply(null,ys)+1)
         : new Date().getFullYear();
-      CC.markYearManual(ny);
+      CC.markYearManual(ny); CC.unmarkYearRemoved(ny);
       CC.setYears(ys.concat([ny])); re();
     }
     else if(act==="delYr"){
@@ -50441,6 +50493,7 @@ function bind(el){
         /* ⚠ លុបដោយដៃ ៖ ត្រូវដកចេញពីបញ្ជី «បន្ថែមដោយដៃ» ផង បើមិនដូច្នេះ
            សមកាលកម្មនឹងដាក់វាត្រឡប់មកវិញភ្លាម។ */
         CC.unmarkYearManual(a.dataset.y);
+        CC.markYearRemoved(a.dataset.y);        /* ⇒ វាមិនត្រឡប់មកវិញទេ */
         CC.setYears(s.years.filter(function(y){return String(y)!==a.dataset.y;})); re();
       }
     }
