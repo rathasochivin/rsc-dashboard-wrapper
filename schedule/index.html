@@ -382,6 +382,7 @@ var MEET_VENUE = 'GDT TOWER';   /* ទីកន្លែងណាត់ជួប
 var MEET_FLOOR = '3';           /* ជាន់ទីលំនាំដើម — កែបានក្នុងទម្រង់ */
 var ACTS = ['ចុះទីតាំង','ប្រជុំជាមួយអ្នកតំណាងសហគ្រាស','ឆ្លងយោបល់ថ្នាក់ដឹកនាំ','ពិនិត្យឯកសារសវនកម្ម'];
 var CHAIRS = ['អនុប្រធានការិយាល័យ','ប្រធានការិយាល័យ','អនុប្រធាននាយកដ្ឋាន','ប្រធាននាយកដ្ឋាន','អគ្គនាយករង','ប្រតិភូ'];
+var RESP_SHORT = {waiting:'⏳ រង់ចាំ', agree:'✅ យល់ស្រប', noreply:'📵 ទាក់ទងមិនបាន'};
 var RESP = [['waiting','⏳ រង់ចាំការឆ្លើយតប'],['agree','✅ សហគ្រាសយល់ស្រប'],['noreply','📵 មិនអាចទាក់ទងបាន']];
 var NOTICE = [['','មិនទាន់ផ្ញើលិខិត'],['telegram','Telegram'],['email','Email ផ្លូវការ'],['phone','តាមទូរសព្ទ'],
               ['pickup','សហគ្រាសមកទទួលផ្ទាល់'],['onsite','ប្រគល់ជូនទៅដល់ទីតាំង'],['post','ប្រៃសណីយ៍']];
@@ -990,10 +991,11 @@ function calEvents(){
   S.visits.forEach(function(r){
     if(r.status==='cancelled' || r.archived) return;
     var who=(r.auditors||[]).map(shortOf).join(' · ');
+    var rs=RESP_SHORT[r.resp||'waiting']||'';
     if(r.visitAt){ var a=dt(r.visitAt); if(a) put(dkey(a),{ord:a.getHours()*60+a.getMinutes(),cls:'visit',ico:'📍',tm:fmtT(r.visitAt),
-      title:r.nameLatin||'', sub:'ចុះពិនិត្យទីតាំង'+(who?' · '+who:'')+(r.address?' · '+r.address:''), rec:r}) }
+      title:r.nameLatin||'', sub:'ចុះពិនិត្យទីតាំង'+(rs?' · '+rs:'')+(who?' · '+who:'')+(r.address?' · '+r.address:''), rec:r}) }
     if(r.meetAt){ var b=dt(r.meetAt); if(b) put(dkey(b),{ord:b.getHours()*60+b.getMinutes(),cls:'meet',ico:'🤝',tm:fmtT(r.meetAt),
-      title:r.nameLatin||'', sub:meetPlace(r)+(who?' · '+who:''), rec:r}) }
+      title:r.nameLatin||'', sub:meetPlace(r)+(rs?' · '+rs:'')+(who?' · '+who:''), rec:r}) }
   });
   S.internal.forEach(function(r){
     var st=dt(r.fromAt); if(!st) return;
