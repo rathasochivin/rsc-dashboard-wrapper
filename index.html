@@ -45533,10 +45533,18 @@ CC.autoFill=function(force){
   try{ CC.syncAuditYears(); }catch(e){}
   /* សហគ្រាសផ្លាស់ប្តូរ = ការកំណត់ពន្ធថ្មី ៖ លុបចោលទាំងស្រុងជាមុនសិន។
      ឯកសារបន្ថែមរបស់សហគ្រាសដដែល (ដៃគូ CROSSCHECK, ឆ្នាំបន្ថែម) មិនប៉ះទេ។ */
+  /* ⭐⭐⭐ [stated] ២០២៦-០៩-០៧ ៖ Console បង្ហាញ «លុបទាំងស្រុង … ព្រោះលេខអតប
+     ផ្លាស់ប្តូរពី 100107656 ទៅ 100111327» ⇒ ការលុបពិតជាកើតឡើង ។
+     ⚠⚠ ការការពារត្រឹមត្រូវ ( កុំឱ្យតួលេខសហគ្រាសមួយចូលរបាយការណ៍មួយទៀត )
+       តែ **វិធីខុស** ៖ វាលុបចោលទាំងស្រុង ⇒ ការងារបាត់ ហើយត្រឡប់មកសហគ្រាស
+       ដើមវិញ ក៏គ្មានអ្វីនៅសល់ ។
+     ⇒ ជំនួសដោយ **ការប្តូរតាមអតប** ៖ រក្សាកាតុចាស់ទុកតាមលេខអតបរបស់វា
+       រួចទាញកាតុរបស់អតបថ្មីមកជំនួស ( បើគ្មាន ⇒ ទទេ ) ។
+       ⇒ គ្មានការលាយ ហើយក៏គ្មានការបាត់ ។ */
   try{
     var tin=CC.currentTin();
     if(tin){
-      if(CC.state.tin && CC.state.tin!==tin){ CC.resetAll(); }
+      if(CC.state.tin && CC.state.tin!==tin){ CC.switchTin(CC.state.tin, tin); }
       CC.state.tin=tin;
     }
   }catch(e){ console.warn("CalcCard tin:", e); }
@@ -45748,6 +45756,36 @@ CC.resetAll=function(){
   try{ if(window.localStorage) localStorage.removeItem("mtrLatePayV1"); }catch(e){}
   try{ CC.render(); }catch(e){}
 };
+/* ប្តូរសហគ្រាស ៖ ទុកកាតុចាស់តាមអតប រួចទាញកាតុថ្មីមក ។
+   ⚠ កូនសោតាមអតប `calcCardTinV1:<អតប>` **មិនស្ថិតក្នុងបញ្ជីលុបពេលប្តូរ
+     សហគ្រាសទេ** — នោះជាចេតនា ៖ វាជាកន្លែងដែលការងារនៅរង់ចាំអ្នកត្រឡប់មក ។
+     វានៅតែលុបដោយ 🗑 ព្រមទាំងពេលអ្នកប្រើផ្សេងចូល ។ */
+CC.tinKey=function(t){ return "calcCardTinV1:" + String(t||""); };
+CC.switchTin=function(oldTin, newTin){
+  try{
+    if(oldTin && window.localStorage){
+      localStorage.setItem(CC.tinKey(oldTin), JSON.stringify(CC.state));
+    }
+  }catch(e){}
+  var next=null;
+  try{
+    if(newTin && window.localStorage){
+      next=JSON.parse(localStorage.getItem(CC.tinKey(newTin))||"null");
+    }
+  }catch(e){}
+  CC.state = (next && Number(next.v)>=2) ? CC.repair(next) : CC.blank();
+  CC.state.tin = newTin || "";
+  CC._lastSig=null; CC._toiMsg=CC._vatMsg=CC._mtrMsg="";
+  try{ if(window.state) state.calcCard=CC.state; }catch(e){}
+  try{ if(window.localStorage) localStorage.setItem("calcCardV1", JSON.stringify(CC.state)); }catch(e){}
+  try{
+    if(typeof toast==="function"){
+      toast(next ? ("បានទាញកាតុគណនារបស់អតប " + newTin + " មកវិញ")
+                 : ("កាតុគណនាថ្មីសម្រាប់អតប " + newTin + " — កាតុចាស់រក្សាទុករួច"), "ok");
+    }
+  }catch(e){}
+  try{ CC.render(); }catch(e){}
+};
 window.__calcCardReset=function(){ try{ CC.resetAll(); }catch(e){} };
 /* 🔍 រត់ក្នុង Console ក្រោយពេលព្រីន ⇒ ប្រាប់ថាការលុបកើតឡើងឬអត់ និងមកពីណា */
 window.__ccWhy=function(){ return window.__ccLastReset || "គ្មានការលុបទេ"; };
@@ -45775,6 +45813,12 @@ CC.persistNow=function(){
   if(CC._persistTimer){ clearTimeout(CC._persistTimer); CC._persistTimer=null; }
   try{ if(window.state) state.calcCard=CC.state; }catch(e){}
   try{ if(window.localStorage) localStorage.setItem("calcCardV1",JSON.stringify(CC.state)); }catch(e){}
+  /* ចម្លងតាមអតបផង ⇒ ការប្តូរសហគ្រាសទៅមកមិនបាត់ការងារ */
+  try{
+    if(CC.state && CC.state.tin && window.localStorage){
+      localStorage.setItem(CC.tinKey(CC.state.tin), JSON.stringify(CC.state));
+    }
+  }catch(e){}
 };
 CC._persistTimer=null;
 CC.persist=function(){
