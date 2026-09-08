@@ -1563,7 +1563,7 @@ function imagePicker(parent, current, onSet, label, opts){
     }).catch(function(e){ onSet(dataUrl); toast('⚠️ '+e.message) });
   }
   box.onclick=function(){ fin.click() };
-  fin.onchange=function(){ if(fin.files[0]) shrinkImage(fin.files[0], take) };
+  fin.onchange=function(){ if(fin.files[0]) shrinkImage(fin.files[0], take, !online()) };
 
   var cam=null, cin=null;
   if(opts.camera){
@@ -1580,12 +1580,12 @@ function imagePicker(parent, current, onSet, label, opts){
       }
       cin.click();
     };
-    cin.onchange=function(){ if(cin.files[0]) shrinkImage(cin.files[0], take) };
+    cin.onchange=function(){ if(cin.files[0]) shrinkImage(cin.files[0], take, !online()) };
   }
   box.addEventListener('paste',function(ev){
     var it=(ev.clipboardData||{}).items||[];
     for(var i=0;i<it.length;i++) if(it[i].type.indexOf('image')===0){
-      ev.preventDefault(); shrinkImage(it[i].getAsFile(), take); return;
+      ev.preventDefault(); shrinkImage(it[i].getAsFile(), take, !online()); return;
     }
   });
   img.onclick=function(){ if(confirm('ដករូបនេះចេញ?')){ onSet(''); show('') } };
@@ -1706,22 +1706,27 @@ function scanQR(onFound){
 }
 
 /** បង្រួមរូបមុនផ្ទុកឡើង */
-function shrinkImage(file, cb){
+function shrinkImage(file, cb, smallOnly){
   if(!file) return;
   var fr=new FileReader();
   fr.onload=function(){
     var img=new Image();
     img.onload=function(){
-      var sizes=[900,700,560,440], qs=[0.6,0.45,0.3];
-      for(var i=0;i<sizes.length;i++){
-        for(var j=0;j<qs.length;j++){
-          var sc=Math.min(1, sizes[i]/Math.max(img.width,img.height));
-          var cv=document.createElement('canvas');
-          cv.width=Math.round(img.width*sc); cv.height=Math.round(img.height*sc);
-          cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);
-          var url=cv.toDataURL('image/jpeg',qs[j]);
-          if(url.length<44000){ cb(url); return }
-        }
+      /* អនឡាញ ៖ រូបទៅ Google Drive — ទុកគុណភាពខ្ពស់
+         អហ្វឡាញ ៖ រូបទុកក្នុងទូរសព្ទ — ត្រូវតូច */
+      var plan = smallOnly ? [[900,0.6],[700,0.45],[560,0.35],[440,0.3]]
+                           : [[1600,0.85],[1400,0.8],[1200,0.75],[1000,0.7],[800,0.6]];
+      var cap  = smallOnly ? 44000 : 1500000;
+      for(var i=0;i<plan.length;i++){
+        var sc=Math.min(1, plan[i][0]/Math.max(img.width,img.height));
+        var cv=document.createElement('canvas');
+        cv.width=Math.round(img.width*sc); cv.height=Math.round(img.height*sc);
+        var cx=cv.getContext('2d');
+        cx.imageSmoothingEnabled=true;
+        if(cx.imageSmoothingQuality!==undefined) cx.imageSmoothingQuality='high';
+        cx.drawImage(img,0,0,cv.width,cv.height);
+        var url=cv.toDataURL('image/jpeg',plan[i][1]);
+        if(url.length<cap){ cb(url); return }
       }
       toast('រូបធំពេក — សូមកាត់រូបឱ្យតូចជាងនេះ');
     };
