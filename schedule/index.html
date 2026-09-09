@@ -243,8 +243,8 @@ textarea{min-height:84px;resize:vertical;line-height:1.8;padding:10px 11px;heigh
 table.rp{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);font-size:11px;line-height:1.6;margin-bottom:14px}
 /* តារាងវែង ៖ អក្សរខ្មែរ ៩px និងឡាតាំង ១០px — ពុម្ពពីរនេះមានកម្ពស់ខុសគ្នា
    ដូច្នេះទំហំខុសគ្នាបន្តិចទើបមើលទៅស្មើគ្នា */
-table.rp.wide{min-width:660px;font-size:9px;line-height:1.8}
-table.rp.wide th,table.rp.wide td{font-size:9px;line-height:1.8}
+table.rp.wide{min-width:660px;font-size:8.5px;line-height:1.85}
+table.rp.wide th,table.rp.wide td{font-size:8.5px;line-height:1.85}
 table.rp.wide th.nw,table.rp.wide td.nw,table.rp.wide td.n,table.rp.wide .lat{
   font-size:10px;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
 }
@@ -910,7 +910,8 @@ function visitCard(r){
       (r.mapLink?' <a class="maplink" href="'+esc(r.mapLink)+'" target="_blank" rel="noopener">🗺 Map</a>':'')+'</div></div>':'')+
     ((r.extras&&r.extras.length)?'<div class="row"><i>🏭</i><div>'+r.extras.map(function(x){
       return esc((x.label||'ទីតាំងបន្ថែម')+'៖ '+(x.address||''))+
-        (x.mapLink?' <a class="maplink" href="'+esc(x.mapLink)+'" target="_blank" rel="noopener">🗺 Map</a>':'');
+        (x.mapLink?' <a class="maplink" href="'+esc(x.mapLink)+'" target="_blank" rel="noopener">🗺 Map</a>':'')+
+        (x.at?'<br><span style="color:var(--ink2)">📍 '+esc(fmtFull(x.at))+'</span>':'');
     }).join('<br>')+'</div></div>':'')+
     ((r.auditors&&r.auditors.length)?'<div class="row"><i>👤</i><div>'+r.auditors.map(nameOf).map(esc).join(' · ')+'</div></div>':'')+
     ((r.siteGeo&&r.siteGeo.lat)?'<div class="row"><i>📍</i><div>ទីតាំងពេលថត៖ <a href="https://www.google.com/maps/search/?api=1&query='+
@@ -992,6 +993,12 @@ function calEvents(){
     if(r.status==='cancelled' || r.archived) return;
     var who=(r.auditors||[]).map(shortOf).join(' · ');
     var rs=RESP_SHORT[r.resp||'waiting']||'';
+    (r.extras||[]).forEach(function(x){
+      if(!x.at) return;
+      var xd=dt(x.at); if(!xd) return;
+      put(dkey(xd),{ord:xd.getHours()*60+xd.getMinutes(),cls:'visit',ico:'📍',tm:fmtT(x.at),
+        title:r.nameLatin||'', sub:(x.label||'ទីតាំងបន្ថែម')+(rs?' · '+rs:'')+(who?' · '+who:'')+(x.address?' · '+x.address:''), rec:r});
+    });
     if(r.visitAt){ var a=dt(r.visitAt); if(a) put(dkey(a),{ord:a.getHours()*60+a.getMinutes(),cls:'visit',ico:'📍',tm:fmtT(r.visitAt),
       title:r.nameLatin||'', sub:'ចុះពិនិត្យទីតាំង'+(rs?' · '+rs:'')+(who?' · '+who:'')+(r.address?' · '+r.address:''), rec:r}) }
     if(r.meetAt){ var b=dt(r.meetAt); if(b) put(dkey(b),{ord:b.getHours()*60+b.getMinutes(),cls:'meet',ico:'🤝',tm:fmtT(r.meetAt),
@@ -1475,31 +1482,6 @@ function renderReport(root){
   });
   root.appendChild(el('h2',null,'តាមសវនករ')); root.appendChild(tb);
 
-  /* schedule detail */
-  root.appendChild(el('h2',null,'លម្អិតកាលវិភាគ ('+visits.length+')'));
-  if(!visits.length) root.appendChild(el('div','hint','គ្មានកាលវិភាគក្នុងចន្លោះពេលនេះ'));
-  else{
-    var t3=el('table','rp wide');
-    var showPrev = (S.rpFocus==='moved');
-    t3.innerHTML='<tr><th>សហគ្រាស</th><th>អតប</th>'+(showPrev?'<th>ពេលដើម</th>':'')+
-      '<th>'+(showPrev?'ពេលថ្មី':'ចុះទីតាំង')+'</th><th>ណាត់ជួប</th><th>សវនករ</th><th>ឆ្លើយតប</th><th>លិខិត</th></tr>';
-    visits.slice().sort(function(a,b){return sortKey(a)-sortKey(b)}).forEach(function(r){
-      var m=statusMeta(r), tr=el('tr');
-      var prev = r.prevVisitAt || r.prevMeetAt || '';
-      tr.innerHTML='<td><span class="lat" title="'+esc(r.nameLatin||'')+'">'+esc(shortEnt(r.nameLatin))+'</span></td>'+
-        '<td class="nw"><span class="lat">'+esc(r.tin||'')+'</span></td>'+
-        (showPrev?('<td class="nw" style="color:var(--seal)">'+(prev?'<span class="lat">'+fmtL(prev)+'</span><br>'+fmtT(prev):'—')+'</td>'):'')+
-        '<td class="nw">'+(r.visitAt?'<span class="lat">'+fmtL(r.visitAt)+'</span><br>'+fmtT(r.visitAt):'—')+'</td>'+
-        '<td class="nw">'+(r.meetAt ?'<span class="lat">'+fmtL(r.meetAt )+'</span><br>'+fmtT(r.meetAt ):'—')+'</td>'+
-        '<td class="nw"><span class="lat">'+esc(shortOf(ownerOfVisit(r)))+'</span></td>'+
-        '<td>'+esc(labOf(RESP,r.resp||'waiting'))+'</td>'+
-        '<td>'+noticesOf(r).map(function(n){
-            return esc(labOf(NOTICE,n.via))+(n.date?'<br><span class="lat">'+fmtL(n.date+'T00:00')+'</span>':'') }).join('<br>')+'</td>';
-      t3.appendChild(tr);
-    });
-    var sc3=el('div','tscroll'); sc3.appendChild(t3); root.appendChild(sc3);
-  }
-
   /* internal detail */
   root.appendChild(el('h2',null,'ការជូនដំណឹងផ្ទៃក្នុង ('+intern.length+')'));
   if(!intern.length) root.appendChild(el('div','hint','គ្មានការជូនដំណឹងក្នុងចន្លោះពេលនេះ'));
@@ -1953,6 +1935,15 @@ function autoReports(from, to){
     if(r.archived) return;
     var skip=r.absent||[];
     var team=(r.auditors||[]).filter(function(e){ return e && skip.indexOf(e)<0 });
+    (r.extras||[]).forEach(function(x){
+      if(!x.at || !happened(x.at, r.status)) return;
+      if(from && !inRange(x.at, from, to)) return;
+      team.forEach(function(e){
+        out.push({auto:true, id:r.id+'|x|'+(x.label||'')+'|'+e, email:e, fromAt:x.at,
+                  entName:r.nameLatin||'', entId:r.entId||'',
+                  activity:'ចុះទីតាំង ('+(x.label||'ទីតាំងបន្ថែម')+')', subject:x.address||'', minutes:''});
+      });
+    });
     [['visitAt','ចុះទីតាំង'],['meetAt','ប្រជុំជាមួយអ្នកតំណាងសហគ្រាស']].forEach(function(p){
       if(!r[p[0]] || !happened(r[p[0]], r.status)) return;
       if(from && !inRange(r[p[0]], from, to)) return;
@@ -2294,10 +2285,17 @@ function visitForm(r, seedDay, forceKind, seedEnt, asNew){
         var a=textarea(x.address,'អាសយដ្ឋាន'); a.oninput=function(){x.address=a.value};
         var m=input('url',x.mapLink,'តំណផែនទី (បើមាន)'); m.oninput=function(){x.mapLink=m.value};
         d.appendChild(l); d.appendChild(el('div','f')); d.appendChild(a); d.appendChild(el('div','f')); d.appendChild(m);
+        var xf=dtField(d,'ថ្ងៃចុះទីតាំងនេះ', x.at, '', '', 'visit');
+        var sync=function(){
+          x.at = xf.d.value ? xf.val() : '';
+          if(xf.weekend()) toast('សូមជ្រើសរើសថ្ងៃធ្វើការ (ច័ន្ទ–សុក្រ)');
+        };
+        xf.d.addEventListener('change', sync);
+        xf.t.addEventListener('change', sync);
         wrap.appendChild(d);
       });
       var ad=el('button','mini','+ បន្ថែមទីតាំង');
-      ad.onclick=function(){ r.extras=r.extras||[]; r.extras.push({label:'ឃ្លាំង',address:'',mapLink:''}); drawExtras() };
+      ad.onclick=function(){ r.extras=r.extras||[]; r.extras.push({label:'ឃ្លាំង',address:'',mapLink:'',at:''}); drawExtras() };
       wrap.appendChild(ad); wrap.appendChild(el('div','f'));
     }
     drawExtras();
