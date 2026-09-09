@@ -15654,6 +15654,21 @@ async function handleAutoFileImport(evt){
        ថាផ្លូវណាដែលអ្នកប្រើពិតជាដើរ មុននឹងដាក់ឧបករណ៍វាស់ ។
      ⇒ កត់ត្រាត្រង់នេះវិញ ៖ ឯកសារនីមួយៗ · ប្រភេទដែលសម្គាល់បាន · ចំនួនជួរ ។ */
   window.__rscImpLog = [];
+  /* ⭐⭐⭐ [stated] ២០២៦-០៩-០៨ ៖ «sale មានតែ ១០ ទេ លើសទី ១ · purchase
+     មានតែ ៥០០ ទេ លើស ១» ។ ការវាស់បង្ហាញ ៖ ឯកសារ ១៦១ គ្មានឈ្មោះដដែល
+     ( មិនមែនអានឯកសារពីរដង ) តែមានជួរ **ដូចគ្នាបេះបិទ ១** ក្នុងឃ្លាំងនីមួយៗ
+     ⇒ ឯកសារពីរផ្សេងគ្នាកាន់ជួរដដែល ។
+     ⚠ ការផ្ទុកជំនួសទាំងស្រុងមិនលុបជួរស្ទួនចោលទេ **ដោយចេតនា** ៖ វិក្កយបត្រ
+       មួយអាចមានច្រើនជួរ ( ទំនិញច្រើនប្រភេទ ) ⇒ ការលុបតាមលេខវិក្កយបត្រ
+       នឹងលុបជួរពិត ។ ដូច្នេះមិនលុប — តែ **ត្រូវប្រាប់ថាមកពីឯកសារណា** ។
+     ⇒ រត់ `__dupSources()` ក្រោយផ្ទុករួច ⇒ បញ្ជីជួរស្ទួន ព្រមទាំង **ឈ្មោះ
+       ឯកសារទាំងពីរ** ។ សោប្រៀបធៀបយក **គ្រប់វាលសំខាន់** ( ថ្ងៃ · លេខ
+       វិក្កយបត្រ · អតប · ទឹកប្រាក់ · ទំនិញ ) ⇒ ជួរវិក្កយបត្រច្រើនបន្ទាត់
+       ដែលខុសគ្នាត្រង់ទំនិញ ឬទឹកប្រាក់ មិនត្រូវរាប់ជាស្ទួនឡើយ ។
+     ⚠ សន្ទស្សន៍នេះរស់តែក្នុងអំឡុងការផ្ទុក រួចត្រូវលុបចោល ⇒ គ្មានអ្វី
+       បន្ថែមចូលជួរនីមួយៗ និងគ្មានអ្វីត្រូវរក្សាទុកឡើយ ។ */
+  window.__rscDupRows = [];
+  const __rowSrc = {};
   const buckets = {sale:[], purchase:[], saleCD:[], purchaseCD:[], otherExpenses:[], wht:[], vatRvc:[], mtrFiles:[], toiFiles:[], tosFiles:[]};
   const unresolved = [];
   let companyInfoSheet = null; // {sheet, sourceName} — from whichever file has a "COMPANYINFO" tab, regardless of that file's main category
@@ -15795,6 +15810,16 @@ async function handleAutoFileImport(evt){
         var __d = __rscImpDiag(file.name, aoa, rows);
         __d.category = category;
         window.__rscImpLog.push(__d);
+      }catch(e){}
+      try{
+        var __m = (__rowSrc[category] = __rowSrc[category] || {});
+        rows.forEach(function(r){
+          var k = [r.date, r.invoiceNo, r.tin, r.amount, r.product].join('|');
+          if(__m[k]) window.__rscDupRows.push({ category: category,
+              row: (r.date || '') + '  ' + (r.invoiceNo || '') + '  ' + (r.amount || ''),
+              fromFile: __m[k], alsoInFile: file.name });
+          else __m[k] = file.name;
+        });
       }catch(e){}
       if(rows.length === 0){ unresolved.push(file.name + " (គ្មានជួរទិន្នន័យ)"); continue; }
       buckets[category] = buckets[category].concat(rows);
@@ -16157,6 +16182,14 @@ async function handleAutoFileImport(evt){
     ? "✓ បានបែងចែកដោយស្វ័យប្រវត្តិ៖ " + updatedStores.map(s=> `${labelMap[s]} (${buckets[s].length} ${s==="mtrFiles"?"ឯកសារ":"ជួរ"})`).join(", ")
     : "⚠ មិនអាចបែងចែកឯកសារណាមួយបានទេ";
   try{
+    Object.keys(__rowSrc).forEach(function(k){ delete __rowSrc[k]; });  /* រំដោះអង្គចងចាំ */
+    var __dups = window.__rscDupRows || [];
+    if(__dups.length){
+      console.warn('⚠ ជួរដូចគ្នាបេះបិទ ' + __dups.length + ' ⇒ រត់ __dupSources()');
+      console.table(__dups.slice(0, 20));
+    }
+  }catch(e){}
+  try{
     var __bad = (window.__rscImpLog || []).filter(function(d){ return d.rowsImported === 0; });
     if(__bad.length){
       console.warn('⚠ ឯកសារ ' + __bad.length + ' មិនបានចូល ៖');
@@ -16256,6 +16289,15 @@ function cpFolderOf(file){
      ពិតប្រាកដ · ជួរទី ៣ ( លេខវិក្កយបត្រ ) មិនទទេ ។ ឯកសារដែលនាំចេញពី
      ប្រព័ន្ធផ្សេង តែងរក្សា ល.រ ជា **អក្សរ** ⇒ គ្រប់ជួរត្រូវច្រាន ។ */
 window.__rscImpLog = [];
+window.__dupSources = function(){
+  var d = window.__rscDupRows || [];
+  var by = {};
+  d.forEach(function(x){
+    var k = x.fromFile + '  ↔  ' + x.alsoInFile;
+    by[k] = (by[k] || 0) + 1;
+  });
+  return { identicalRows: d.length, filePairs: by, rows: d.slice(0, 30) };
+};
 window.__lastImportReport = function(){
   var log = window.__rscImpLog || [];
   var bad = log.filter(function(d){ return !d.rowsImported; });
