@@ -43853,7 +43853,7 @@ function smBody(){
   try{ lun = (window.__lunarToday && __lunarToday()) || (ci.lunarDate || ''); }catch(e){ lun = ci.lunarDate || ''; }
   var n1 = arAuditor(0), n2 = arAuditor(1);
   H.push('<div class="sm-signwrap"><div class="sm-sign">' +
-    (lun ? escML(lun) + '<br>' : '') +
+    (lun ? '<span class="sm-lun">' + escML(lun) + '</span><br>' : '') +
     /* [stated] ថ្ងៃធម្មតាក៏ត្រូវបំពេញដែរ មិនមែនតែថ្ងៃចន្ទ្រគតិទេ។
        khSignDate() អាន ថ្ងៃបញ្ចប់ធ្វើសវនកម្ម ពី Data Entry ហើយបើទទេ
        វាត្រឡប់ទម្រង់ចុចៗអោយសរសេរដោយដៃ — ដូចឯកសារឯទៀតទាំងអស់។ */
@@ -44173,7 +44173,20 @@ var SM_CSS = `
      អត្ថបទខាងក្នុងឈរចំកណ្តាល — កុំតម្រឹមម្តងមួយបន្ទាត់។ */
   .sm-signwrap{display:flex; justify-content:flex-end; margin-top:22px;
     break-inside:avoid; page-break-inside:avoid;}
-  .sm-sign{width:300px; text-align:center; line-height:2;}
+  /* ⭐ [stated] ២០២៦-០៩-០៨ ៖ បន្ទាត់ចន្ទ្រគតិ «ថ្ងៃពុធ ១២រោច ខែស្រាពណ៍
+     ឆ្នាំមមី អដ្ឋស័ក ព.ស ២៥៧០» ចុះបន្ទាត់ជា ២ ជួរ ។ វាស់រួច ៖ អត្ថបទត្រូវ
+     ការ ~៣៨៩px តែប្រអប់ជាប់ត្រឹម ៣០០px ⇒ ការចុះបន្ទាត់ជាការគណិតវិទ្យា
+     មិនមែនរឿងចន្លោះទេ ។
+     ⇒ ប្រអប់ឈប់ជាទទឹងថេរ ៖ វាធំតាមបន្ទាត់វែងបំផុត ដោយនៅតែមិនតូចជាង
+       ៣០០px ( ដូច្នេះការរៀបរបស់ឯកសារឯទៀតមិនប្តូរ ) ។ សន្លឹកមាន ៦៧៣px
+       ⇒ នៅសល់ចន្លោះច្រើន ។
+     ⚠ ច្បាប់ដដែលនឹង .sm-nm ( ឈ្មោះសវនករទាំងពីរនៅជួរតែមួយ ) ។
+     ⚠⚠ គ្មានសញ្ញា backtick ក្នុងកំណត់សម្គាល់នេះឡើយ ៖ ប្លុក CSS នេះរស់នៅ
+       ក្នុង template literal របស់ JS ⇒ backtick មួយបញ្ចប់អក្សរនោះ ហើយ
+       សម្លាប់ប្លុកកូដទាំងមូល ( រោគសញ្ញា ៖ «ផ្នែកឯកសារមិនទាន់ផ្ទុករួចទេ» ) ។ */
+  .sm-sign{min-width:300px; width:max-content; max-width:100%;
+    text-align:center; line-height:2;}
+  .sm-lun{white-space:nowrap;}
   .sm-gap{height:74px;}
   .sm-nm{font-weight:600; line-height:1.9; white-space:nowrap;}
   .sm-nm2{margin-left:26px;}
@@ -50951,12 +50964,40 @@ window.__getCCAssessedTaxes = function(){
   try{
     var st = CC.state; if(!st) return out;
     var A = CC.assessMaps ? CC.assessMaps() : {taxBase:{}, findVat:{}, findNoVat:{}};
+    /* ⭐⭐⭐ [stated] ២០២៦-០៩-០៨ ៖ «ចុចទាញពីតារាងគណនាពន្ធ តែវាចេញតែពន្ធ
+       បន្ថែមអំពើរាំងស្ទះ ពន្ធផ្សេងទៀតអត់លោតចូល» ។
+       ⚠⚠ មូលហេតុ ៖ `CC.assessMaps()` អាន **តែ `CC.state.assessments`**
+         ( ធាតុដែលចុចកំណត់ពីជំហានទី៤–៧ ) ។ ផលរកឃើញដែលវាយក្នុង **តារាង
+         កំណត់ចំណូលឡើងវិញ** រស់នៅ `CC.state.toi.findings` ជាឃ្លាំងផ្សេង ។
+         សហគ្រាសនេះមានតែផលរកឃើញ ( លក់អចលនទ្រព្យ ) ⇒ `findVat` និង
+         `findNoVat` ជាសូន្យ ⇒ ពន្ធលើប្រាក់ចំណូល និងអតប មិនចេញសោះ ។
+         មានតែ `t.base` ដែលវាយដោយដៃ ( ១០,០០០,០០០ រាំងស្ទះ ) ទេដែលឆ្លងកាត់ ។
+       ⚠⚠ នេះជាកំហុសដដែលដែលធ្លាប់កត់ត្រាទុកនៅ `narrFindRows` ៖ «ផលរកឃើញ
+         មកពី **ពីរប្រភព** … មុននេះខ្ញុំអានតែប្រភពទី ២ ដូច្នេះជួររងចេញទទេ» ។
+       ⭐ ច្បាប់ ៖ រាល់កន្លែងដែលអានផលរកឃើញ ត្រូវអាន **ទាំងពីរប្រភព** ។
+       ⚠ ផលរកឃើញ `direct` ( ឧ. លក់អចលនទ្រព្យ ) ក៏ត្រូវរាប់ដែរ — វាមិនចូល
+         ផលរបរ តែវា **ជាមូលដ្ឋានកំណត់ពន្ធពិត** ហើយជាអ្វីដែលឯកសារនេះរៀបរាប់ ។
+       ⚠ `CC.assessMaps` ខ្លួនឯង **មិនត្រូវប៉ះ** ៖ `CC.compute` អានវា ហើយវា
+         រាប់ផលរកឃើញតាមផ្លូវផ្សេងរួចហើយ ⇒ ការបន្ថែមទីនោះនឹងរាប់ស្ទួន ។ */
+    var F = {};
+    (((st.toi || {}).findings) || []).forEach(function(f){
+      if(!f || !f.amt) return;
+      Object.keys(f.amt).forEach(function(y){
+        var v = +f.amt[y] || 0; if(!v) return;
+        if(!F[y]) F[y] = { inc:0, vat:0 };
+        if(f.vatOnly){ F[y].vat += v; return; }   /* អតបតែប៉ុណ្ណោះ */
+        F[y].inc += v;
+        if(f.vat) F[y].vat += v;
+      });
+    });
     (st.years || []).forEach(function(y){
+      var Fy = F[y] || { inc:0, vat:0 };
       /* ពន្ធលើប្រាក់ចំណូល ៖ មានពេលមានផលរកឃើញលើផលរបរ */
-      var inc = (A.findVat[y] || 0) + (A.findNoVat[y] || 0);
+      var inc = (A.findVat[y] || 0) + (A.findNoVat[y] || 0) + Fy.inc;
       if(inc > 0) out.push({ year:y, name:'ពន្ធលើប្រាក់ចំណូលប្រចាំឆ្នាំ', base:inc });
       /* អាករលើតម្លៃបន្ថែម ៖ ផលរកឃើញដែលជាប់អតប */
-      if((A.findVat[y] || 0) > 0) out.push({ year:y, name:'អាករលើតម្លៃបន្ថែម', base:A.findVat[y] });
+      var vat = (A.findVat[y] || 0) + Fy.vat;
+      if(vat > 0) out.push({ year:y, name:'អាករលើតម្លៃបន្ថែម', base:vat });
       /* ពន្ធផ្សេងៗ ៖ មូលដ្ឋានវាយដោយដៃ ឬមកពីជំហានទី៤–៧ */
       /* ⚠⚠ [stated] ២០២៦-០៨-១៣ ៖ «ចុចទាញពីតារាងពន្ធលើស វាអត់ចេញប្រភេទ
          ពន្ធនោះមកទេ» — មូលហេតុ ៖ `assessMaps().taxBase` មានសោជា **id**
