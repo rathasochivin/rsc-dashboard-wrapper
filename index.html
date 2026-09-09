@@ -7304,6 +7304,71 @@ function dmy(ms){
   }catch(e){ return ''; }
 }
 
+/* 🔍 «នៅក្នុងឯកសារមានហេតុអ្វីវាថាខ្វះ?» ( ២០២៦-០៩-០៨ )
+   ⭐ ចំណុចសំខាន់ដែលត្រូវដឹងជាមុន ៖ របាយការណ៍ «ឯកសារដែលបានផ្ទុក» កំណត់ខែ
+     ពី **កាលបរិច្ឆេទក្នុងជួរនីមួយៗ** ( `r.date` ) — **មិនមែនពីឈ្មោះឯកសារ**
+     ទេ ។ ដូច្នេះ `PURCHASE_11_2022.xlsx` អាចនៅក្នុងថតរបស់អ្នក ហើយខែ ១១
+     នៅតែរាយថាខ្វះ ក្នុងករណីណាមួយក្នុងបីនេះ ៖
+       ១. ឯកសារនោះ **មិនបានផ្ទុក** ក្នុងវេននេះ ( រើសក្នុង Explorer ≠ ផ្ទុក )
+       ២. ឯកសារផ្ទុករួច តែ **គ្មានជួរទិន្នន័យ** ខាងក្នុង
+       ៣. មានជួរ តែ **កាលបរិច្ឆេទអានមិនបាន** ( លេខស៊េរី Excel · ទម្រង់ថ្ងៃ
+          ដែលមិនស្គាល់ ) ⇒ ជួរនោះធ្លាក់ចូល «ខែមិនកំណត់» មិនចូលខែណាទេ
+   ⇒ រត់ `__rscWhyMissing('purchase', 2022)` ⇒ វាបែងចែកបីករណីនោះឱ្យច្បាស់ ។
+   ⚠ ឈ្មោះឃ្លាំង ៖ purchase · sale · cpPurchase · cpSale · purchaseCD ·
+     saleCD · wht · otherExpenses ។ */
+window.__rscWhyMissing = function(store, year){
+  var S = {}; try{ S = (window.__dashState && window.__dashState()) || {}; }catch(e){}
+  if(!store){
+    var all = {};
+    ['purchase','sale','cpPurchase','cpSale','purchaseCD','saleCD','wht','otherExpenses']
+      .forEach(function(k){ all[k] = ((S[k] || []).length); });
+    return { hint: 'រត់ __rscWhyMissing("purchase", 2022)', rowsPerStore: all };
+  }
+  var arr = S[store] || [], y = String(year);
+  var parse = function(v){
+    var s = String(v == null ? '' : v).replace(/[០-៩]/g, function(c){
+      return String(c.charCodeAt(0) - 0x17E0);
+    }).trim();
+    var m = s.match(/^(\d{4})[-\/.](\d{1,2})/);
+    if(m) return { y:m[1], m:parseInt(m[2], 10) };
+    m = s.match(/^(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{4})/);
+    if(m) return { y:m[3], m:parseInt(m[2], 10) };
+    return null;
+  };
+  var byMonth = {}, otherYears = {}, badN = 0, samples = [], inYear = 0;
+  arr.forEach(function(r){
+    var raw = r && r.date;
+    var d = parse(raw);
+    if(!d){
+      badN++;
+      if(samples.length < 8) samples.push({ value: raw, type: (raw instanceof Date) ? 'Date' : typeof raw });
+      return;
+    }
+    if(d.y === y){ inYear++; byMonth[d.m] = (byMonth[d.m] || 0) + 1; }
+    else otherYears[d.y] = (otherYears[d.y] || 0) + 1;
+  });
+  var have = Object.keys(byMonth).map(Number).sort(function(a,b){ return a - b; });
+  var miss = []; for(var i = 1; i <= 12; i++) if(have.indexOf(i) < 0) miss.push(i);
+  var verdict;
+  if(badN > 0)
+    verdict = 'មានជួរ ' + badN + ' ដែលអានកាលបរិច្ឆេទមិនបាន — មើល unreadableSamples ។ '
+            + 'ជួរទាំងនោះមិនចូលខែណាទេ ⇒ អាចជាមូលហេតុនៃ «ខ្វះខែ» ។';
+  else if(!miss.length) verdict = 'គ្រប់ ១២ ខែ';
+  else if(!inYear) verdict = 'គ្មានជួរណាមួយសម្រាប់ឆ្នាំនេះសោះ ⇒ ឯកសារឆ្នាំនេះមិនបានផ្ទុក';
+  else verdict = 'ជួរអានបានទាំងអស់ ហើយគ្មានជួរណាចុះថ្ងៃក្នុងខែ ' + miss.join(', ')
+               + ' ⇒ ឯកសារខែនោះមិនបានផ្ទុក ឬវាគ្មានជួរខាងក្នុង';
+  return {
+    store: store, year: y,
+    totalRowsInStore: arr.length,
+    rowsInThisYear: inYear,
+    rowsPerMonth: byMonth,
+    missingMonths: miss,
+    rowsWithUnreadableDate: badN,
+    unreadableSamples: samples,
+    rowsInOtherYears: otherYears,
+    verdict: verdict
+  };
+};
 function rscUploadReport(){
   var CI = {};
   var gapNotes = rscGapNotes();
@@ -14817,13 +14882,43 @@ function whtRowKey(r){
      ( លេខដដែលក្នុងឆ្នាំផ្សេង ) ជួរទាំងពីរនឹងរួមជាមួយ ។ លេខវិក្កយបត្រ GDT
      មានរហូតដល់ ២០ ខ្ទង់ ហើយមិនកើតឡើងម្តងទៀត ⇒ ហានិភ័យតូចជាងបញ្ហាដែល
      វាដោះស្រាយ ។ */
+/* ⭐⭐⭐ [stated] ២០២៦-០៩-០៨ ៖ «ផ្ទុកបន្ថែមចូល តែវាចេញលទ្ធផលតែមួយ» —
+   `__lastImportReport()` បង្ហាញថាឯកសារខែ ១១ និង ១២ ឆ្នាំ ២០២២ ចូល
+   **ជួរម្នាក់ៗ** តែខែនៅតែបាត់ ។
+   ⚠⚠ មូលហេតុ ៖ កូនសោប្រៀបធៀបជួរគឺ **លេខវិក្កយបត្រ + អតប** ដោយ **គ្មានឆ្នាំ** ។
+     វិក្កយបត្រថ្លៃជួលរបស់សហគ្រាសនេះមានលេខ `JG<ខែ>-<លំដាប់>` ⇒ `JG11-01`
+     កើតឡើងម្តងក្នុងមួយឆ្នាំ ជាមួយអតបអ្នកផ្គត់ផ្គង់ដដែល ⇒ កូនសោដដែល
+     រាល់ឆ្នាំ ⇒ ការបញ្ចូលបន្ថែមរក្សាទុកតែ **មួយ** ហើយឆ្នាំចុងក្រោយឈ្នះ ។
+   ⭐ ការវាស់ដែលបញ្ជាក់ ( ឯកសារពិតរបស់អ្នក + ច្បាប់ចម្លងឆ្នាំ ២០២៣ ) ៖
+       ផ្លូវជំនួសទាំងស្រុង ( 📦 ) ⇒ ជួរទាំង ៤ នៅគ្រប់
+       ផ្លូវបញ្ចូលបន្ថែម ( 📥 ) ⇒ នៅសល់ ២ ; វិច្ឆិកា ២០២២ ត្រូវជំនួសដោយ
+         វិច្ឆិកា ២០២៣
+     ⇒ នេះជាមូលហេតុដែលខែ ១១-១២ ឆ្នាំ ២០២២ បាត់ ខណៈខែ ១-១០ នៅ ៖ ខែទាំងនោះ
+       មានជួរផ្សេងច្រើន ដូច្នេះការបាត់ជួរថ្លៃជួលមួយមិនធ្វើឱ្យខែបាត់ទេ ។
+   ⇒ ការកែ ៖ ដាក់ **ឆ្នាំ** ចូលកូនសោ ។ លេខវិក្កយបត្រមានតែមួយក្នុងមួយឆ្នាំ
+     ⇒ ការផ្ទុកឯកសារដដែលឡើងវិញនៅតែសរសេរជាន់ដូចដើម ។
+   ⚠ ដាក់ត្រឹម **ឆ្នាំ** មិនមែនថ្ងៃពេញទេ ៖ បើដាក់ថ្ងៃពេញ ការកែថ្ងៃក្នុង
+     ឯកសារនឹងបង្កើតជួរស្ទួន ជំនួសការសរសេរជាន់ ។ */
 function journalRowKey(r){
   const inv = String(r.invoiceNo || '').trim().toLowerCase();
   const tin = String(r.tin || '').trim();
-  if(inv) return inv + '|' + tin;
+  let yr = '';
+  try{
+    const d = parseDMY(r.date);
+    if(d) yr = String(d.getFullYear());
+    else {
+      const m = String(r.date || '').match(/(\d{4})/);
+      if(m) yr = m[1];
+    }
+  }catch(e){}
+  if(inv) return inv + '|' + tin + '|' + yr;
   return [String(r.date || '').trim(), tin,
           String(r.amount == null ? '' : r.amount)].join('|');
 }
+/* 🔍 ចំណុចពិនិត្យជំនាន់ និងឧបករណ៍វិនិច្ឆ័យ ៖ រត់
+     __journalKey({invoiceNo:'JG11-01', tin:'011265554', date:'01-11-2022'})
+   ⇒ បើចម្លើយបញ្ចប់ដោយ |2022 នោះជាឯកសារថ្មី ; បើគ្មានឆ្នាំ នោះជាឯកសារចាស់ ។ */
+window.__journalKey = journalRowKey;
 function mergeJournalRows(existing, incoming){
   const byKey = new Map();
   let changed = 0;
@@ -15532,6 +15627,14 @@ async function handleAutoFileImport(evt){
   }
   if(statusEl){ statusEl.textContent = `កំពុងវិភាគ និងបែងចែក ${files.length} ឯកសារ...`; statusEl.className = "import-status"; }
 
+  /* ⭐⭐⭐ [stated] ២០២៦-០៩-០៨ ៖ `__lastImportReport()` ចេញ ០ ឯកសារ ។
+     ⚠⚠ មូលហេតុ ៖ ខ្ញុំដាក់ការកត់ត្រាលើ `handleFileImport` ដែលប្រើតែសម្រាប់
+       ឯកសារ **ដៃគូ** ( CP_PURCHASE / CP_SALE ) ។ ការផ្ទុកថតធម្មតាដើរតាម
+       `handleAutoFileImport` ⇒ គ្មានអ្វីត្រូវកត់ត្រាទេ ។
+     ⭐ មេរៀន ៖ ការនាំចូលក្នុងឯកសារនេះមាន **ផ្លូវច្រើន** — ត្រូវផ្ទៀងផ្ទាត់
+       ថាផ្លូវណាដែលអ្នកប្រើពិតជាដើរ មុននឹងដាក់ឧបករណ៍វាស់ ។
+     ⇒ កត់ត្រាត្រង់នេះវិញ ៖ ឯកសារនីមួយៗ · ប្រភេទដែលសម្គាល់បាន · ចំនួនជួរ ។ */
+  window.__rscImpLog = [];
   const buckets = {sale:[], purchase:[], saleCD:[], purchaseCD:[], otherExpenses:[], wht:[], vatRvc:[], mtrFiles:[], toiFiles:[], tosFiles:[]};
   const unresolved = [];
   let companyInfoSheet = null; // {sheet, sourceName} — from whichever file has a "COMPANYINFO" tab, regardless of that file's main category
@@ -15602,7 +15705,15 @@ async function handleAutoFileImport(evt){
       /* ⚠ ប្រើលទ្ធផលរបស់ Worker បើមាន ⇒ មិនស្កេនសន្លឹកពីរដងទេ */
       const aoa = preAoa || XLSX.utils.sheet_to_json(sheet, {header:1, raw:true, defval:"", blankrows:false});
       const category = detectFileCategory(file.name, aoa, sheetNames || [], file.webkitRelativePath);
-      if(!category){ unresolved.push(file.name); continue; }
+      if(!category){
+        try{
+          var __d0 = __rscImpDiag(file.name, aoa, []);
+          __d0.category = null;
+          __d0.likelyCause = 'ប្រភេទឯកសារសម្គាល់មិនបាន ( ឈ្មោះ · ក្បាលតារាង · ឈ្មោះសន្លឹក )';
+          window.__rscImpLog.push(__d0);
+        }catch(e){}
+        unresolved.push(file.name); continue;
+      }
       if(category === "mtr"){
         /* ⭐⭐ [stated] ២០២៦-០៩-០៧ ៖ «បាត់មិនឃើញមាន VATRVC វាស្ថិតនៅ
            WORKBOOK DATA» ⇒ សន្លឹក VATRVC ដែលនៅ **ក្នុងសៀវភៅរួម** ត្រូវអានផង ។
@@ -15639,11 +15750,18 @@ async function handleAutoFileImport(evt){
         // MTR files aren't parsed here at all — the whole ORIGINAL File is
         // handed off as-is to the embedded MTR tool (see forwardFilesToMTR),
         // which reads it with its own logic exactly like a direct upload.
+        try{ window.__rscImpLog.push({ file:file.name, category:'mtr', forwarded:true, rowsImported:null }); }catch(e){}
         buckets.mtrFiles.push(file);
         continue;
       }
-      if(category === "toi"){ buckets.toiFiles.push(file); continue; }
-      if(category === "tos"){ buckets.tosFiles.push(file); continue; }
+      if(category === "toi"){
+        try{ window.__rscImpLog.push({ file:file.name, category:'toi', forwarded:true, rowsImported:null }); }catch(e){}
+        buckets.toiFiles.push(file); continue;
+      }
+      if(category === "tos"){
+        try{ window.__rscImpLog.push({ file:file.name, category:'tos', forwarded:true, rowsImported:null }); }catch(e){}
+        buckets.tosFiles.push(file); continue;
+      }
       if(statusEl){
         statusEl.textContent = "⏳ កំពុងរៀបចំទិន្នន័យ " + file.name + " …";
         statusEl.className = "import-status";
@@ -15654,10 +15772,19 @@ async function handleAutoFileImport(evt){
                  : (category === "otherExpenses") ? rowsFromOtherExpensesSheet(aoa)
                  : (category === "wht") ? rowsFromWHTSheet(sheet)
                  : rowsFromSheet(aoa, category);
+      try{
+        var __d = __rscImpDiag(file.name, aoa, rows);
+        __d.category = category;
+        window.__rscImpLog.push(__d);
+      }catch(e){}
       if(rows.length === 0){ unresolved.push(file.name + " (គ្មានជួរទិន្នន័យ)"); continue; }
       buckets[category] = buckets[category].concat(rows);
     }catch(err){
       console.error("Auto import error:", file.name, err);
+      try{
+        window.__rscImpLog.push({ file:file.name, category:null, rowsImported:0,
+          likelyCause:'កំហុសអាន ៖ ' + ((err && err.message) || err) });
+      }catch(e){}
       unresolved.push(file.name + " (កំហុសអាន)");
     }
   }
@@ -16010,6 +16137,17 @@ async function handleAutoFileImport(evt){
   let msg = updatedStores.length
     ? "✓ បានបែងចែកដោយស្វ័យប្រវត្តិ៖ " + updatedStores.map(s=> `${labelMap[s]} (${buckets[s].length} ${s==="mtrFiles"?"ឯកសារ":"ជួរ"})`).join(", ")
     : "⚠ មិនអាចបែងចែកឯកសារណាមួយបានទេ";
+  try{
+    var __bad = (window.__rscImpLog || []).filter(function(d){ return d.rowsImported === 0; });
+    if(__bad.length){
+      console.warn('⚠ ឯកសារ ' + __bad.length + ' មិនបានចូល ៖');
+      console.table(__bad.map(function(d){
+        return { file:d.file, category:d.category, lines:d.totalLines,
+                 numCol1:d.linesWithNumberInCol1, textCol1:d.linesWithNumericTextInCol1,
+                 invCol3:d.linesWithInvoiceInCol3, cause:d.likelyCause };
+      }));
+    }
+  }catch(e){}
   if(unresolved.length){
     msg += ` — មិនអាចសម្គាល់ប្រភេទបានទេសម្រាប់៖ ${unresolved.join(", ")} (សូមផ្ទុកឯកសារទាំងនេះដាច់ដោយឡែកខាងក្រោម)`;
   }
@@ -16085,7 +16223,57 @@ function cpFolderOf(file){
   return parts[parts.length - 2];
 }
 
+/* ⭐⭐⭐ [stated] ២០២៦-០៩-០៨ ៖ «នៅតែចេញមកថាខ្វះ និងឯកសារខាងក្នុងក៏មិន
+   ចូលដែរ» ។
+   ⚠⚠ នេះជាចន្លោះពិតក្នុងការនាំចូល ៖ `finishImport` ព្រមានតែពេល **ឯកសារ
+     ទាំងអស់រួមគ្នា** ចេញសូន្យជួរ ។ ឯកសារមួយក្នុងចំណោមម្ភៃដែលចេញសូន្យជួរ
+     ត្រូវលេបចោល **ដោយស្ងាត់** — គ្មានសារ គ្មានកំណត់ត្រា ⇒ អ្នកឃើញតែ
+     «ខ្វះខែ ១១-១២» យូរក្រោយមក ដោយមិនដឹងថាការនាំចូលបានច្រានវាចោល ។
+   ⭐ ច្បាប់ ៖ ការនាំចូលដែលច្រានទិន្នន័យចោល ត្រូវនិយាយថាវាច្រានអ្វី ។
+     ការស្ងាត់ធ្វើឱ្យរកឃើញយឺតបំផុត — ដូចខែដែលបាត់ដែរ ។
+   ⇒ ឥឡូវឯកសារនីមួយៗត្រូវកត់ត្រា ។ រត់ `__lastImportReport()` ក្នុង Console
+     ⇒ ឃើញឯកសារណាចេញសូន្យជួរ ព្រមទាំង **មូលហេតុ** ។
+   ⚠ វិធានទទួលជួរ ( `rowsFromSheet` ) ទាមទារ ៖ ជួរទី ១ ( ល.រ ) ជា **លេខ**
+     ពិតប្រាកដ · ជួរទី ៣ ( លេខវិក្កយបត្រ ) មិនទទេ ។ ឯកសារដែលនាំចេញពី
+     ប្រព័ន្ធផ្សេង តែងរក្សា ល.រ ជា **អក្សរ** ⇒ គ្រប់ជួរត្រូវច្រាន ។ */
+window.__rscImpLog = [];
+window.__lastImportReport = function(){
+  var log = window.__rscImpLog || [];
+  var bad = log.filter(function(d){ return !d.rowsImported; });
+  return { files: log.length, filesWithNoRows: bad.length, details: log };
+};
+function __rscImpDiag(name, aoa, rows){
+  var d = { file: name, rowsImported: (rows && rows.length) || 0 };
+  if(d.rowsImported > 0) return d;
+  var lines = Array.isArray(aoa) ? aoa : [];
+  var numCol1 = 0, textCol1 = 0, hasInv = 0, sample = null;
+  for(var i = 0; i < lines.length; i++){
+    var a = lines[i] || [];
+    var c0 = a[0];
+    if(typeof c0 === 'number' && c0 > 0) numCol1++;
+    else if(String(c0 == null ? '' : c0).trim() !== ''
+            && !isNaN(Number(String(c0).trim()))) textCol1++;
+    if(a[2] !== undefined && String(a[2]).trim() !== '') hasInv++;
+    if(!sample && String(c0 == null ? '' : c0).trim() !== '') sample = a.slice(0, 6);
+  }
+  d.totalLines = lines.length;
+  d.linesWithNumberInCol1 = numCol1;
+  d.linesWithNumericTextInCol1 = textCol1;
+  d.linesWithInvoiceInCol3 = hasInv;
+  d.firstLineSample = sample;
+  d.likelyCause = !lines.length
+      ? 'ឯកសារទទេ ឬអានមិនបាន'
+    : (numCol1 === 0 && textCol1 > 0)
+      ? 'ជួរ ល.រ រក្សាទុកជា **អក្សរ** មិនមែនលេខ ⇒ គ្រប់ជួរត្រូវច្រានចោល'
+    : (numCol1 === 0)
+      ? 'គ្មានជួរណាមួយមានលេខរៀងក្នុងជួរទី ១'
+    : (hasInv === 0)
+      ? 'ជួរទី ៣ ( លេខវិក្កយបត្រ ) ទទេទាំងអស់'
+      : 'ជួរមានលេខរៀង តែត្រូវច្រានដោយវិធានផ្សេង ( ឈ្មោះ · អតប )';
+  return d;
+}
 function handleFileImport(evt, storeName, kind){
+  window.__rscImpLog = [];
   const files = Array.from(evt.target.files || []);
   const statusEl = document.getElementById("status-"+storeName);
 
@@ -16158,6 +16346,7 @@ function handleFileImport(evt, storeName, kind){
             cpOwnerReport.push("✓ " + fold + " → " + own.name + " (តាមឈ្មោះថត)");
           }
         }
+        try{ window.__rscImpLog.push(__rscImpDiag(file.name, sheet, rows)); }catch(e){}
         combined = combined.concat(rows);
         }).catch(function(err){
           anyError = true;
@@ -16184,10 +16373,34 @@ function handleFileImport(evt, storeName, kind){
   });
 
   function finishImport(){
+    /* ⭐ ឯកសារដែលចេញសូន្យជួរ ត្រូវប្រាប់ឈ្មោះ — មិនលេបចោលស្ងាត់ទៀតទេ */
+    var __empty = (window.__rscImpLog || []).filter(function(d){ return !d.rowsImported; });
+    if(__empty.length){
+      try{
+        console.warn('⚠ ឯកសារ ' + __empty.length + ' មិនបានចូល ៖');
+        console.table(__empty.map(function(d){
+          return { file:d.file, lines:d.totalLines, numCol1:d.linesWithNumberInCol1,
+                   textCol1:d.linesWithNumericTextInCol1, invCol3:d.linesWithInvoiceInCol3,
+                   cause:d.likelyCause };
+        }));
+      }catch(e){}
+    }
     if(combined.length === 0){
-      if(statusEl){ statusEl.textContent = "⚠ រកមិនឃើញជួរទិន្នន័យត្រឹមត្រូវ"; statusEl.className="import-status err"; }
+      if(statusEl){
+        statusEl.textContent = "⚠ រកមិនឃើញជួរទិន្នន័យត្រឹមត្រូវ"
+          + (__empty.length ? "  ( " + __empty.length + " ឯកសារ — រត់ __lastImportReport() )" : "");
+        statusEl.className="import-status err";
+      }
       evt.target.value = "";
       return;
+    }
+    if(__empty.length && statusEl){
+      var __names = __empty.slice(0, 4).map(function(d){ return d.file; }).join(' · ');
+      setTimeout(function(){
+        statusEl.textContent = "⚠ ឯកសារ " + __empty.length + " មិនបានចូល ៖ " + __names
+          + (__empty.length > 4 ? " …" : "") + "   ( រត់ __lastImportReport() ក្នុង Console )";
+        statusEl.className = "import-status err";
+      }, 60);
     }
     combined.forEach((r,i)=> r.no = i+1);
     /* ⚠⚠ [stated] ២០២៦-០៨-២២ ៖ «វាមិនចេញពណ៌បៃតងទេ ពេល upload ទាំងអស់ ;
@@ -22294,8 +22507,22 @@ function vatManualSet(year, month, col, val){
      ឆ្នាំដដែលក្នុងឃ្លាំង ( `mtrManualV1` និងឯកសារ ) ។ ដើម្បីមើលគ្រប់ឆ្នាំ
      មួយភ្លែត ៖ រត់ `__rscShowAllYears(true)` ក្នុង Console ; ត្រឡប់វិញ
      `__rscShowAllYears(false)` ។ */
+/* ⭐⭐⭐ [stated] ២០២៦-០៩-០៨ ៖ «ជួយកែសម្រួលផ្នែកឥណទានយោងនេះផង ក្នុង
+   ទិន្នន័យមានតែនៅក្នុង VAT បែបជាចាប់អត់បាន» ។
+   ⚠⚠ នេះជា **ការខូចដែលខ្ញុំបង្កើតឡើងខ្លួនឯង** នៅជុំមុន ៖ តម្រងឆ្នាំដែល
+     ខ្ញុំដាក់លើ `getVATMonthlyAggregates()` និង `getAllExtractedMonthlyRows()`
+     កាត់ **គ្រប់ឆ្នាំក្រៅការិយសវនកម្មចោល** — រួមទាំង **ឆ្នាំមុន** ដែល
+     `getVATCreditBroughtForward()` ត្រូវការដើម្បីសង់ខ្សែសង្វាក់ឥណទាន ។
+     ការិយសវនកម្ម ២០២៣ ⇒ ទិន្នន័យ ២០២២ បាត់ ⇒ ខ្សែសង្វាក់សង់មិនកើត ⇒
+     ជួរ «ឥណទានអាករយោងពីការិយបរិច្ឆេទឆ្នាំ ២០២២» ចេញ «-» ។
+   ⭐⭐ ច្បាប់ដែលខ្ញុំខកខាន ៖ ការិយសវនកម្មជាច្បាប់ **សម្រាប់ការបង្ហាញ**
+     មិនមែនច្បាប់សម្រាប់ **ការគណនា** ទេ ។ ការគណនាដែលពឹងលើឆ្នាំមុនតាម
+     ធម្មជាតិ ( ឥណទានយោង · សមតុល្យដើមគ្រា ) ត្រូវឃើញប្រវត្តិទាំងមូល ។
+   ⇒ ដាក់ផ្លូវរំលងមួយ ៖ ខណៈ `__rscNoYearFilter > 0` តម្រងបិទ ។ */
+window.__rscNoYearFilter = 0;
 window.__rscAuditYearSet = function(){
   try{
+    if(window.__rscNoYearFilter > 0) return null;   /* ការគណនាខាងក្នុង */
     if(window.__rscAllYears) return null;
     var a = (window.__auditYears ? (window.__auditYears() || []) : [])
               .map(String).filter(function(s){ return /^\d{4}$/.test(s); });
@@ -22535,8 +22762,49 @@ function vatCreditDeclaredFallback(prev){
   if(!dec.length) return 0;   /* គ្មានខែ ១២ = គ្មានឥណទាននៅសល់ចុងឆ្នាំ */
   return dec.reduce((s,x)=> s + (x.r.total || 0), 0);
 }
+/* ⚠ សែលរំលងតម្រង ៖ មុខងារនេះអានឆ្នាំមុនតាមធម្មជាតិ ( មើលកំណត់សម្គាល់
+   នៅ `__rscAuditYearSet` ) ។ ការហៅខ្លួនឯងដដែលខាងក្នុងក៏ឆ្លងកាត់ទីនេះដែរ
+   ⇒ ការរាប់ជាថ្នាក់ៗ ; `finally` ធានាថាតម្រងត្រឡប់មកវិញជានិច្ច ។ */
+/* ⭐⭐⭐ [stated] ២០២៦-០៩-០៨ ៖ «ខែ ១២ ពិតជា ០ មែន ទើបវាមិនចេញ» ។
+   ⇒ ដូច្នេះការធ្លាក់ត្រឡប់ទៅជួរខែ ១២ ឆ្នាំមុន ពុំមែនជាចម្លើយទេ ។
+   ⭐ តែទិន្នន័យ **មានស្រាប់** ៖ ជួរប្រកាស **ខែ ១ របស់ឆ្នាំនេះ** មានវាល
+     «ឥណទានយោងពីខែមុន» ហើយតាមនិយមន័យ វា **គឺជា** ឥណទានយោងចេញពីខែ ១២
+     ឆ្នាំមុន ។ សហគ្រាសខ្លួនឯងបានប្រកាសវា ។
+   ⚠⚠ កូដអាន់វាចូលរួចហើយ ( `creditFromPrevMonth` ) តែ **ប្រើវាសម្រាប់តែ
+     ការបង្ហាញ** ៖ តារាង VATCR និងការនាំចេញ Excel ។ គ្មានកន្លែងណាបញ្ចូល
+     វាទៅការគណនាទេ ⇒ «ក្នុងទិន្នន័យមានតែនៅក្នុង VAT បែបជាចាប់អត់បាន» ។
+   ⇒ ឥឡូវសមតុល្យដើមឆ្នាំយកពីការប្រកាសនោះមុនគេ ។ នេះស៊ីគ្នានឹងច្បាប់ដែល
+     ឯកសារនេះប្រកាសរួច ៖ «ជួរ VATCR ជាតួលេខដែលបានប្រកាសពិត ⇒ វាឈ្នះលើ
+     ការគណនា» ។
+   ⚠ យក **អតិបរមា** មិនមែនផលបូក ៖ ការប្រកាសកែតម្រូវច្រើនជួរសម្រាប់ខែ ១
+     រាយសមតុល្យដើមដដែល ⇒ ការបូកនឹងរាប់ស្ទួន ។
+   ⚠ ប្រើតែពេល > ០ ៖ ក្រឡាទទេក៏អានចេញ ០ ដែរ ⇒ ០ មិនត្រូវជាន់លើខ្សែសង្វាក់
+     ដែលគណនាបានឡើយ ។ */
+function vatCreditDeclaredOpening(year){
+  let best = 0;
+  try{
+    getAllVATCRRows().forEach(function(r){
+      const p = parseVATCRPeriod(r.month);
+      if(!p || p.year !== String(year) || p.month !== 1) return;
+      const v = +r.creditFromPrevMonth || 0;
+      if(v > best) best = v;
+    });
+  }catch(e){}
+  return best;
+}
+window.__vatOpeningDeclared = vatCreditDeclaredOpening;
 function getVATCreditBroughtForward(year, _depth){
+  const declaredOpening = vatCreditDeclaredOpening(year);
+  if(declaredOpening > 0) return declaredOpening;
+  window.__rscNoYearFilter = (window.__rscNoYearFilter || 0) + 1;
+  try{ return getVATCreditBroughtForward_(year, _depth); }
+  finally{ window.__rscNoYearFilter--; }
+}
+function getVATCreditBroughtForward_(year, _depth){
   const prev = String(Number(year) - 1);
+  /* ការហៅខ្លួនឯងចូលមកទីនេះផ្ទាល់ ⇒ ត្រូវពិនិត្យការប្រកាសខែ ១ ត្រង់នេះដែរ */
+  const declOpen = vatCreditDeclaredOpening(year);
+  if(declOpen > 0) return declOpen;
   const depth = Number(_depth) || 0;
   /* ការពារការវិលជុំគ្មានទីបញ្ចប់ ៖ ដល់ ១០ ឆ្នាំថយក្រោយឈប់ */
   if(depth >= 10) return vatCreditDeclaredFallback(prev);
@@ -22552,7 +22820,7 @@ function getVATCreditBroughtForward(year, _depth){
   let declPrev = null;
   try{ declPrev = getVATCreditByMonth(prev); }catch(e){ declPrev = null; }
 
-  let bal = getVATCreditBroughtForward(prev, depth + 1) || 0;
+  let bal = getVATCreditBroughtForward_(prev, depth + 1) || 0;
   let refunds = [];
   try{ refunds = getVATRefundByMonth(prev) || []; }catch(e){ refunds = []; }
   for(let i = 0; i < 12; i++){
