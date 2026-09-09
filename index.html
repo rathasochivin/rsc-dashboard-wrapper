@@ -6429,6 +6429,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     <!-- SALE -->
     <section class="view" id="view-sale">
       <div id="issues-sale"></div>
+      <div id="identical-sale"></div>
       <div class="toolbar">
         <div class="import-group">
           <span title="ឈ្មោះសហគ្រាស">🏢</span>
@@ -6489,6 +6490,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     <!-- PURCHASE -->
     <section class="view" id="view-purchase">
       <div id="issues-purchase"></div>
+      <div id="identical-purchase"></div>
       <div class="toolbar">
         <div class="import-group">
           <span title="ឈ្មោះសហគ្រាស">🏢</span>
@@ -11717,6 +11719,81 @@ let invoiceIssuesOpen = {sale:false, purchase:false};
 function toggleInvoiceIssues(storeName, containerId){
   invoiceIssuesOpen[storeName] = !invoiceIssuesOpen[storeName];
   renderInvoiceIssuesCard(storeName, containerId);
+}
+/* ⭐⭐⭐ [stated] ២០២៦-០៩-០៨ ៖ អ្នកប្រើជ្រើសយក «ក · ព្រមានលើអេក្រង់» ។
+   រោគសញ្ញាដើម ៖ «sale មានតែ ១០ ទេ លើសទី ១» ។ ការវាស់រកឃើញ ៖ វិក្កយបត្រ
+   `2022-0001` ថ្ងៃ ១៦-០៣-២០២២ មាននៅ **ទាំង `SALE_03_2022` និង
+   `SALE_04_2022`** ⇒ ជួរស្ទួនស្ថិតក្នុងឯកសារពន្ធដារខ្លួនឯង ។
+   ⚠⚠ ហេតុអ្វីមិនលុបស្វ័យប្រវត្តិ ៖ វិក្កយបត្រមួយអាចមាន **ច្រើនជួរ**
+     ( ទំនិញច្រើនប្រភេទ ) ⇒ ការលុបតាមលេខវិក្កយបត្រនឹងលុបជួរពិត ហើយធ្វើឱ្យ
+     សរុបលែងត្រូវនឹងឯកសារពន្ធដារ ។ សម្រាប់ឧបករណ៍សវនកម្ម ការស្ងាត់អាក្រក់
+     ជាងការលើស ⇒ **បង្ហាញ មិនលុប** ។
+   ⭐ សោប្រៀបធៀបយក **គ្រប់វាលសំខាន់** ( ថ្ងៃ · លេខវិក្កយបត្រ · អតប ·
+     ទឹកប្រាក់ · ទំនិញ · ឈ្មោះ ) ⇒ ជួរវិក្កយបត្រច្រើនបន្ទាត់ដែលខុសគ្នាត្រង់
+     ទំនិញ ឬទឹកប្រាក់ មិនត្រូវរាប់ជាស្ទួនឡើយ ។
+   ⚠ ការគណនាធ្វើពី `state[store]` ផ្ទាល់ ⇒ វានៅត្រឹមត្រូវក្រោយផ្ទុកទំព័រ
+     ឡើងវិញដែរ ។ ឈ្មោះឯកសារមកពី `__rscDupRows` ដែលរស់តែក្នុងវេនផ្ទុក
+     ⇒ បង្ហាញពេលមាន ; អត់ក៏នៅដឹងជួរណាដែរ ។ */
+function detectIdenticalRows(data){
+  var seen = {}, out = [];
+  (data || []).forEach(function(r, i){
+    if(!r) return;
+    var k = [r.date, r.invoiceNo, r.tin, r.name, r.amount, r.product].join('|');
+    if(seen[k] === undefined){ seen[k] = { first:i, count:1, row:r }; }
+    else { seen[k].count++; }
+  });
+  Object.keys(seen).forEach(function(k){
+    if(seen[k].count > 1) out.push({ key:k, count:seen[k].count, row:seen[k].row });
+  });
+  return out;
+}
+function __dupFilePair(key){
+  try{
+    var d = window.__rscDupRows || [];
+    for(var i = 0; i < d.length; i++){
+      var r = d[i].row || '';
+      if(key.indexOf(String(r).split('  ')[1] || '\u0000') >= 0)
+        return d[i].fromFile + ' ↔ ' + d[i].alsoInFile;
+    }
+  }catch(e){}
+  return '';
+}
+var identicalRowsOpen = {sale:false, purchase:false};
+function toggleIdenticalRows(storeName, containerId){
+  identicalRowsOpen[storeName] = !identicalRowsOpen[storeName];
+  renderIdenticalRowsCard(storeName, containerId);
+}
+function renderIdenticalRowsCard(storeName, containerId){
+  var el = document.getElementById(containerId);
+  if(!el) return;
+  var data = state[storeName];
+  if(!data || !data.length){ el.innerHTML = ''; return; }
+  var dups = detectIdenticalRows(data);
+  if(!dups.length){ el.innerHTML = ''; return; }
+  var extra = dups.reduce(function(s, d){ return s + (d.count - 1); }, 0);
+  var isOpen = identicalRowsOpen[storeName];
+  var h = '<button class="btn ghost" style="margin-bottom:10px;" ' +
+          'onclick="toggleIdenticalRows(\'' + storeName + '\',\'' + containerId + '\')">' +
+          '⚠ ជួរដូចគ្នាបេះបិទ (' + dups.length + ' ប្រភេទ · លើស ' + extra + ' ជួរ) — ' +
+          (isOpen ? 'ចុចដើម្បីលាក់' : 'ចុចដើម្បីមើលលម្អិត') + '</button>';
+  if(isOpen){
+    h += '<div class="card" style="margin-bottom:14px;">' +
+         '<div class="hint" style="margin-bottom:8px;">ជួរទាំងនេះដូចគ្នាគ្រប់ជួរឈរ ' +
+         '( ថ្ងៃ · លេខវិក្កយបត្រ · អតប · ឈ្មោះ · ទឹកប្រាក់ · ទំនិញ ) ។ ' +
+         'ទិន្នន័យមិនត្រូវបានលុបទេ — សូមពិនិត្យឯកសារប្រភពថាតើវាស្ទួនពិត ' +
+         'ឬជាវិក្កយបត្រដែលប្រកាសពីរខែ។</div><ul style="margin:0; padding-left:20px;">';
+    dups.slice(0, 50).forEach(function(d){
+      var r = d.row, pair = __dupFilePair(d.key);
+      h += '<li style="margin-bottom:4px;">' +
+           '<b>' + escAttr(String(r.invoiceNo || '(គ្មានលេខ)')) + '</b> · ' +
+           escAttr(String(r.date || '')) + ' · ' +
+           (Number(r.amount) || 0).toLocaleString('en-US') + ' ៛ · <b>' + d.count + ' ដង</b>' +
+           (pair ? '<br><span class="hint">' + escAttr(pair) + '</span>' : '') +
+           '</li>';
+    });
+    h += '</ul></div>';
+  }
+  el.innerHTML = h;
 }
 function renderInvoiceIssuesCard(storeName, containerId){
   const el = document.getElementById(containerId);
@@ -17933,8 +18010,10 @@ function renderAll(){
      id នៃធាតុ ដូច្នេះប្រើវាដដែល។ ការហៅ runCrosscheck គឺថ្លៃបំផុត
      (សង់លិបិក្រមពីឃ្លាំងទាំង ៤) ⇒ រត់តែពេលផ្ទាំងផ្គូផ្គងបើក ឬពេលមាន
      អ្នកសុំផ្ទាល់។ */
-  __deferHeavy("issues-sale",   ()=>{ renderInvoiceIssuesCard("sale", "issues-sale"); });
-  __deferHeavy("issues-purchase",()=>{ renderInvoiceIssuesCard("purchase", "issues-purchase"); });
+  __deferHeavy("issues-sale",   ()=>{ renderInvoiceIssuesCard("sale", "issues-sale");
+                                      try{ renderIdenticalRowsCard("sale", "identical-sale"); }catch(e){} });
+  __deferHeavy("issues-purchase",()=>{ renderInvoiceIssuesCard("purchase", "issues-purchase");
+                                      try{ renderIdenticalRowsCard("purchase", "identical-purchase"); }catch(e){} });
   __deferHeavy("yoy-sale",      ()=>{ renderYoY("yoy-sale", "sale"); });
   __deferHeavy("yoy-purchase",  ()=>{ renderYoY("yoy-purchase", "purchase"); });
   __deferHeavy("cd-overview-sale",     ()=>{ renderCDOverview("sale"); });
