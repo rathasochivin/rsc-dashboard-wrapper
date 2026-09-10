@@ -19580,6 +19580,36 @@ function buildTblTPDataRows(tin){
       acc.set(key, (acc.get(key) || 0) + v);
     }
   });
+  /* ⭐⭐⭐ [stated] ២០២៦-០៩-០៨ ៖ «រូបមន្ត Access ផ្នែកផលរបរគ្មាន VAT គឺ
+     ផ្អែកទៅលើប្រាក់រំដោះ ; បើគ្មានប្រាក់រំដោះ វាទៅយកប្រាក់ពន្ធផ្សេងមកគិត
+     ⇒ ជួយបញ្ចូលប្រាក់រំដោះនៅក្នុងនោះ ទោះបីទទេក៏ដោយ» ។
+     ⚠⚠ ប្រភពបញ្ហា ៖ រង្វិលជុំខាងលើមាន `if(v === 0) continue;` ⇒ ចំនួនសូន្យ
+       មិនបង្កើតជួរ ⇒ សហគ្រាសដែលមិនបានបង់ប្រាក់រំដោះ **គ្មានជួរឈរនោះសោះ**
+       ក្នុង Access ⇒ រូបមន្ត `=IF($C$4="ប្រាក់រំដោះ", C6/1%, "")` ចាប់ជួរឈរ
+       បន្ទាប់មកគិតជំនួស ⇒ ផលរបរខុស ( ឧ. ៨៨,១៨៦,០០០ = ៨៨១,៨៦០ ÷ ១% ដែល
+       ជាពន្ធកាត់ទុក មិនមែនប្រាក់រំដោះ ) ។
+     ⭐ ការសង្កេតទូទៅ ៖ «គ្មានជួរ» និង «ជួរតម្លៃសូន្យ» មិនដូចគ្នាទេ ពេល
+       អ្នកទទួលរាប់ **ទីតាំងជួរឈរ** ។ Access ត្រូវការកន្លែងទំនេរ ដើម្បីដាក់
+       របស់ត្រឹមត្រូវ ។
+     ⚠ បន្ថែម **តែឆ្នាំដែលគ្មានប្រាក់រំដោះសោះ** ៖ ឆ្នាំដែលមានការបង់ខ្លះ
+       នៅដដែលបេះបិទ ⇒ របាយការណ៍ចាស់មិនប្រែ ។
+     ⚠ គ្មានពន្ធណាសោះ ( `acc` ទទេ ) ⇒ មិនបន្ថែមអ្វីទេ ⇒ សហគ្រាសទទេមិន
+       ទទួលជួរសូន្យ ១២ ជួរឡើយ ។ */
+  try{
+    const prepayId = taxAccessId(MTR_FORM_PREPAY_FULL);
+    if(prepayId !== undefined && acc.size){
+      const yearsSeen = new Set(), yearsWithPrepay = new Set();
+      acc.forEach((v, k)=>{
+        const p = k.split('|');
+        yearsSeen.add(p[0]);
+        if(Number(p[2]) === Number(prepayId)) yearsWithPrepay.add(p[0]);
+      });
+      yearsSeen.forEach(y=>{
+        if(yearsWithPrepay.has(y)) return;
+        for(let m = 1; m <= 12; m++) acc.set(y + '|' + m + '|' + prepayId, 0);
+      });
+    }
+  }catch(e){ console.error('prepay placeholder', e); }
   const rows = Array.from(acc.entries())
     .map(([k,amt])=>{ const [y,m,id] = k.split('|'); return [tin, Number(y), Number(m), Number(id), Math.round(amt), 0, 0]; })
     .sort((a,b)=> a[1]-b[1] || a[2]-b[2] || a[3]-b[3]);
@@ -21111,7 +21141,18 @@ function buildTblNFProfitTaxRows(years, cover2){
     const rate = normalizeNumberForAccess((cover2 || {}).taxRate);
     if(rate !== '') put('pfTaxRate', rate);
     put('pfProfitTaxPaid', Math.round(annualTaxTotal(String(y), 'ពន្ធលើប្រាក់ចំណូលប្រចាំឆ្នាំ')));
-    put('pfPPTPaid',       Math.round(annualTaxTotal(String(y), 'ប្រាក់រំដោះពន្ធលើប្រាក់ចំណូល')));
+    /* ⭐⭐⭐ [stated] ២០២៦-០៩-០៨ ៖ «ករណីដែលសហគ្រាសមិនមានបង់ប្រាក់រំដោះ
+       ពន្ធលើប្រាក់ចំណូល ក៏ឱ្យបង្ហាញទទេដែរ ដូចរូប» ។
+       ⚠ `put` នៅក្នុងមុខងារនេះ **មិនរំលងតម្លៃសូន្យទេ** ( ខុសពី `put`
+         សកលដែលរំលង ) ⇒ សហគ្រាសដែលមិនបានបង់ ទទួល **0** ក្នុង Access
+         ជំនួសក្រឡាទទេ ។
+       ⚠⚠ ០ និងទទេ មិនមានន័យដូចគ្នាទេ ៖ ០ = «បានប្រកាស ហើយជាសូន្យ» ;
+         ទទេ = «គ្មានកាតព្វកិច្ចនេះសោះ» ។ ទម្រង់ MTR បង្ហាញទទេរួចហើយ
+         ( ជួរ «ប្រាក់រំដោះ» ចេញទទេពេលគ្មានការបង់ ) ⇒ Access ត្រូវដូចគ្នា ។
+       ⚠ ប៉ះតែ `pfPPTPaid` ; `pfProfitTaxPaid` ខាងលើមិនប្តូរទេ ព្រោះមិនបាន
+         ស្នើ — បើចង់បានដូចគ្នា សូមប្រាប់ ។ */
+    const ppt = Math.round(annualTaxTotal(String(y), 'ប្រាក់រំដោះពន្ធលើប្រាក់ចំណូល'));
+    if(ppt) put('pfPPTPaid', ppt);
     return row;
   });
   return { header, rows };
@@ -21642,6 +21683,27 @@ function getMTRFormColumns(yearRows){
 
   const ordered = [];
   const push = (full) => { if(byFull.has(full)){ ordered.push(byFull.get(full)); byFull.delete(full); } };
+  /* ⭐⭐⭐ [stated] ២០២៦-០៩-០៨ ៖ «វាអត់ចេញដូចក្នុងរូបទេ គួរមានឈ្មោះ
+     ប្រាក់រំដោះ និង ផលរបរគ្មាន VAT» ។
+     ⚠ មូលហេតុ ៖ `push()` ដាក់ជួរឈរតែពេល `byFull.has(full)` — មានន័យថា
+       **តែពេលសហគ្រាសមានការបង់ប្រាក់រំដោះ** ។ គ្មានការបង់ ⇒ គ្មានជួរឈរ
+       ⇒ ហើយ «ផលរបរគ្មាន VAT» ក៏បាត់ដែរ ព្រោះវាកើតចេញពីជួរឈរនោះ
+       ( `showRevenue = !!prepay` ) ។
+     ⚠⚠ តែទម្រង់ផ្លូវការ **តែងមានជួរឈរទាំងពីរជានិច្ច** ( រូបគំរូរបស់អ្នក
+       បង្ហាញវាទទេ មិនមែនបាត់ ) ៖ ជួរឈរទទេ = «គ្មានកាតព្វកិច្ច» ; ជួរឈរ
+       បាត់ = ទម្រង់មិនត្រូវនឹងគំរូ ។
+     ⇒ បង្កើតជួរឈរប្រាក់រំដោះទទេ ពេលគ្មានទិន្នន័យ ។
+     ⚠ ធ្វើតែពេលមានជួរឈរផ្សេងយ៉ាងតិចមួយ ៖ សហគ្រាសដែលគ្មានការបង់ពន្ធសោះ
+       មិនត្រូវទទួលទម្រង់ដែលមានតែជួរឈរទទេពីរឡើយ ( `buildMTRFormSheets`
+       ត្រឡប់ទទេពេល `columns.length === 0` ) ។ */
+  if(byFull.size && !byFull.has(MTR_FORM_PREPAY_FULL)){
+    byFull.set(MTR_FORM_PREPAY_FULL, {
+      full:  MTR_FORM_PREPAY_FULL,
+      short: MTR_TAX_SHORT_NAMES[MTR_FORM_PREPAY_FULL] || MTR_FORM_PREPAY_FULL,
+      months: new Array(12).fill(0),
+      total: 0,
+    });
+  }
   push(MTR_FORM_PREPAY_FULL);
   Object.keys(MTR_TAX_SHORT_NAMES).forEach(push);
   Array.from(byFull.values())
@@ -25697,6 +25759,11 @@ window.__exportToAccessXlsx = exportAccessWorkbook;
    មិនដែលត្រូវបានកំណត់ ហើយប៊ូតុង 🗂️ គ្មានប្រតិកម្មសោះ (ព្រោះ onclick មាន
    `&&` ការពារ វាបរាជ័យស្ងាត់ៗ)។ */
 window.__accessTablePicker = openAccessTablePicker;
+/* 🔍 ស្ពានមើលមុនផ្ទេរ ៖ រត់ `__accessPreview()` ⇒ សន្លឹកទាំងអស់ដែលនឹងទៅ
+   Access ។ ឧ. ពិនិត្យក្រឡាប្រាក់រំដោះ ៖
+     __accessPreview().find(s => s.name === 'TblNFProfitTax')
+   វាមិនផ្ញើអ្វីទេ — អានតែប៉ុណ្ណោះ ។ */
+window.__accessPreview = function(){ try{ return collectAccessSheets(); }catch(e){ return String(e); } };
 
 /* ⚠⚠ [stated] ២០២៦-០៨-១៣ ៖ «ចុច 💾 រក្សាទុក/Drive → គាំង រហូតចុច F12
    ក៏មិនបាន» ។ រកឃើញ ៖ `XLSX.write(...,'base64')` រត់លើ **គ្រប់សៀវភៅ
