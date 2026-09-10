@@ -11354,7 +11354,7 @@ function renderCompanyLevelTable(storeName){
   const cdStoreName = CD_STORE_FOR[storeName];
   const cdCountByTin = {};
   if(cdStoreName){
-    (state[cdStoreName]||[]).forEach(r=>{
+    cdRowsAll(cdStoreName).forEach(r=>{
       const t = String(r.tin||"").trim();
       if(!t) return;
       cdCountByTin[t] = (cdCountByTin[t]||0) + 1;
@@ -11906,9 +11906,31 @@ function openCompanyDetail(storeName, key, scrollToCD){
    the product-by-year breakdown table above. yearFilter/productFilter are
    only used here to render the "showing filtered results" banner and the
    clear button — the actual filtering happens in filterModalInvoiceByYear(). */
+/* ⭐⭐⭐ [stated] ២០២៦-០៩-០៨ ៖ «ទិន្នន័យនៅក្នុងតារាងមានតែមិនឃើញមានការ
+   កាត់កងផ្នែក SR» — SR CN ដែលវាយដោយដៃ ២៨,០៥៦,០០០ ៛ មិនកាត់វិក្កយបត្រ
+   `THE-2025005` ក្នុងកាតដៃគូឡើយ ។
+   ⚠⚠ មូលហេតុ ៖ កាតដៃគូអាន **`state[cdStoreName]` ផ្ទាល់** ។ ជួរដែលវាយ
+     ដោយដៃរស់នៅ `cdManual` ជាឃ្លាំងផ្សេង ហើយចូលការគណនាតាម
+     `__getMainVatSourceData()` តែប៉ុណ្ណោះ ⇒ កាតដៃគូមិនដែលឃើញវាទេ ។
+   ⚠⚠ នេះជាកំហុសដដែលនឹង «ផលរកឃើញមកពីពីរប្រភព» ៖ ឯកសារនេះមានឃ្លាំង
+     ពីរសម្រាប់រឿងតែមួយ ហើយអ្នកអានខ្លះយកតែមួយ ។ កំណត់សម្គាល់នៅ
+     `cdManualAsRows` សរសេររួចថា «គ្រប់ការគណនាឆ្លងកាត់ទីនេះ» — តែកន្លែង
+     ទាំងបីខាងក្រោមមិនបាន ។
+   ⇒ ដាក់អ្នកអានរួមតែមួយ ។ ច្បាប់ «ឯកសារឈ្នះ» នៅដដែល ព្រោះ
+     `cdManualAsRows` ខ្លួនឯងត្រឡប់ [] ពេលមានឯកសារ ⇒ គ្មានការបូកស្ទួន ។ */
+function cdRowsAll(cdView){
+  var base = state[cdView] || [];
+  try{
+    if(typeof cdManualAsRows === 'function'){
+      var store = (cdView === 'saleCD') ? 'sale' : 'purchase';
+      return base.concat(cdManualAsRows(store));
+    }
+  }catch(e){}
+  return base;
+}
 function renderModalInvoiceRows(sortedWrapped, ctx, yearFilter, productFilter){
   const {valueOf, useCategory, catFilter, cdStoreName, isCD, dupKeySet, invSearchVal, storeName} = ctx;
-  const cdRowsForTin = cdStoreName ? (state[cdStoreName]||[]).filter(r=> String(r.tin||"").trim()===String(ctx.tin||"").trim()) : [];
+  const cdRowsForTin = cdStoreName ? cdRowsAll(cdStoreName).filter(r=> String(r.tin||"").trim()===String(ctx.tin||"").trim()) : [];
   const linkedCDFor = invNo=>{
     const key = String(invNo||"").trim().toLowerCase();
     if(!key) return [];
