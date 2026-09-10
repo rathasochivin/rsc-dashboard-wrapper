@@ -1271,10 +1271,11 @@ function renderTeam(root){
   mine.forEach(function(r){ root.appendChild(internalCard(r)) });
 
   if(!S.showDone){
-    var auto=autoReports();
-    section(root,'របាយការណ៍ប្រចាំថ្ងៃ (កត់ត្រាស្វ័យប្រវត្តិ)', daily.length+auto.length);
-    if(!daily.length && !auto.length) root.appendChild(emptyBox('មិនទាន់មានរបាយការណ៍'));
-    daily.forEach(function(r){ root.appendChild(internalCard(r)) });
+    var auto=autoReports().filter(function(x){ return x.email===S.me.email });
+    var myDaily=daily.filter(function(r){ return r.email===S.me.email });
+    section(root,'របាយការណ៍ប្រចាំថ្ងៃរបស់ខ្ញុំ (កត់ត្រាស្វ័យប្រវត្តិ)', myDaily.length+auto.length);
+    if(!myDaily.length && !auto.length) root.appendChild(emptyBox('មិនទាន់មានរបាយការណ៍'));
+    myDaily.forEach(function(r){ root.appendChild(internalCard(r)) });
     auto.slice(0,40).forEach(function(r){ root.appendChild(autoCard(r)) });
   }
 
@@ -1928,6 +1929,28 @@ function reportSheets(visits, intern){
  * របាយការណ៍ស្វ័យប្រវត្តិ ៖ កើតចេញពីកាលវិភាគ និងការប្រជុំ
  * (សុំច្បាប់ និងសុំយឺត មិនរាប់)  អ្នកដែលសម្គាល់ថាមិនបានចូលរួម ក៏មិនរាប់ដែរ
  */
+/**
+ * អ្នកដែលត្រូវកត់ត្រា ៖ អ្នកមានឈ្មោះ បូកប្រធានក្រុមជានិច្ច
+ * (ប្រធានក្រុមចូលរួមជាមួយគ្រប់គ្នា លើកលែងតែសម្គាល់ថាមិនបានចូលរួម)
+ */
+function reportPeople(team, absent){
+  var out=(team||[]).map(function(e){ return {email:e, implicit:false} });
+  if(out.length && team.indexOf(ADMIN_EMAIL)<0 && (absent||[]).indexOf(ADMIN_EMAIL)<0)
+    out.push({email:ADMIN_EMAIL, implicit:true});
+  return out;
+}
+/**
+ * ពាក្យទំនាក់ទំនង ៖ សវនករទទួលបន្ទុក (ឈ្មោះទី ១) សរសេរធម្មតា
+ * អ្នករួមការងារសរសេរតាមទំនាក់ទំនងជាមួយអ្នកទទួលបន្ទុក
+ */
+function actWith(base, p, team){
+  if(p.implicit) return base+'ជាមួយកូនក្រុម';       /* ប្រធានក្រុមមិនមានឈ្មោះ */
+  var owner=(team||[])[0];
+  if(p.email===owner) return base;                   /* អ្នកទទួលបន្ទុក */
+  if(owner===ADMIN_EMAIL)     return base+'ជាមួយប្រធានក្រុម';
+  if(p.email===ADMIN_EMAIL)   return base+'ជាមួយកូនក្រុម';
+  return base+'ជាមួយដៃគូ';
+}
 function autoReports(from, to){
   var out=[], now=Date.now();
   var happened=function(iso, st){ var d=dt(iso); return !!d && (d.getTime()<=now || st==='done') };
@@ -1935,21 +1958,38 @@ function autoReports(from, to){
     if(r.archived) return;
     var skip=r.absent||[];
     var team=(r.auditors||[]).filter(function(e){ return e && skip.indexOf(e)<0 });
+    var people=reportPeople(team, skip);
+
+    /* លិខិតជូនដំណឹង — មួយផ្លូវមួយបន្ទាត់ */
+    noticesOf(r).forEach(function(n){
+      if(!n.via || !n.date) return;
+      var iso=n.date+'T08:00';
+      if(from && !inRange(iso, from, to)) return;
+      if(!happened(iso,'')) return;
+      people.forEach(function(p2){ var e=p2.email;
+        out.push({auto:true, id:r.id+'|n|'+n.via+'|'+n.date+'|'+e, email:e, fromAt:iso,
+                  entName:r.nameLatin||'', entId:r.entId||'',
+                  activity:'បានប្រគល់ជូនដំណឹងទៅសហគ្រាសតាមរយៈ '+labOf(NOTICE,n.via),
+                  subject:(n.name?'អ្នកទទួល៖ '+n.name+(n.phone?' · '+n.phone:''):''), minutes:''});
+      });
+    });
+
     (r.extras||[]).forEach(function(x){
       if(!x.at || !happened(x.at, r.status)) return;
       if(from && !inRange(x.at, from, to)) return;
-      team.forEach(function(e){
+      people.forEach(function(p2){ var e=p2.email;
         out.push({auto:true, id:r.id+'|x|'+(x.label||'')+'|'+e, email:e, fromAt:x.at,
                   entName:r.nameLatin||'', entId:r.entId||'',
-                  activity:'ចុះទីតាំង ('+(x.label||'ទីតាំងបន្ថែម')+')', subject:x.address||'', minutes:''});
+                  activity:actWith('ចុះពិនិត្យទីតាំង ('+(x.label||'ទីតាំងបន្ថែម')+')', p2, team),
+                  subject:x.address||'', minutes:''});
       });
     });
-    [['visitAt','ចុះទីតាំង'],['meetAt','ប្រជុំជាមួយអ្នកតំណាងសហគ្រាស']].forEach(function(p){
+    [['visitAt','ចុះពិនិត្យទីតាំង'],['meetAt','ប្រជុំជាមួយអ្នកតំណាងសហគ្រាស']].forEach(function(p){
       if(!r[p[0]] || !happened(r[p[0]], r.status)) return;
       if(from && !inRange(r[p[0]], from, to)) return;
-      team.forEach(function(e){
+      people.forEach(function(p2){ var e=p2.email;
         out.push({auto:true, id:r.id+'|'+p[0]+'|'+e, email:e, fromAt:r[p[0]],
-                  entName:r.nameLatin||'', entId:r.entId||'', activity:p[1],
+                  entName:r.nameLatin||'', entId:r.entId||'', activity:actWith(p[1], p2, team),
                   subject:(p[0]==='visitAt'?(r.address||''):meetPlace(r)), minutes:''});
       });
     });
@@ -1959,7 +1999,8 @@ function autoReports(from, to){
     if(!happened(r.fromAt, r.done?'done':'')) return;
     if(from && !inRange(r.fromAt, from, to)) return;
     var skip=r.absent||[];
-    (r.attendees||[]).filter(function(e){ return e && skip.indexOf(e)<0 }).forEach(function(e){
+    var joined=(r.attendees||[]).filter(function(e){ return e && skip.indexOf(e)<0 });
+    joined.forEach(function(e){
       out.push({auto:true, id:r.id+'|meet|'+e, email:e, fromAt:r.fromAt, entName:'',
                 activity:'ប្រជុំផ្ទៃក្នុង', subject:r.subject||'', minutes:r.minutes||''});
     });
