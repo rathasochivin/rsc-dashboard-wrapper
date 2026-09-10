@@ -22680,6 +22680,17 @@ window.__rscShowAllYears = function(on){
     ? 'បង្ហាញគ្រប់ឆ្នាំ — សូមផ្ទុកទំព័រឡើងវិញ ដើម្បីឃើញផ្ទាំងទាំងអស់'
     : 'បង្ហាញតែឆ្នាំក្នុងការិយបរិច្ឆេទសវនកម្ម';
 };
+/* 🔍 ស្ពានវិនិច្ឆ័យ ( ២០២៦-០៩-០៨ ) ៖ ធុងអតបប្រចាំខែមិនអាចមើលបានពី Console
+   ព្រោះវារស់ក្នុង IIFE ។ រត់ ៖
+     __vatAgg()["2023"] && __vatAgg()["2023"][3]      ⇒ អ្វីដែលទម្រង់ឃើញ
+     __vatAggRaw()["2023"] && __vatAggRaw()["2023"][3] ⇒ មុនតម្រងការិយសវនកម្ម
+   បើ raw មាន តែ agg គ្មាន ⇒ ឆ្នាំនោះនៅក្រៅការិយបរិច្ឆេទសវនកម្ម ។ */
+window.__vatAgg = function(){ return getVATMonthlyAggregates(); };
+window.__vatAggRaw = function(){
+  window.__rscNoYearFilter = (window.__rscNoYearFilter || 0) + 1;
+  try{ return getVATMonthlyAggregates(); }
+  finally{ window.__rscNoYearFilter--; }
+};
 function getVATMonthlyAggregates(){
   var agg = memoByVersion('vatAgg', getVATMonthlyAggregates_) || {};
   var keep = window.__rscAuditYearSet && window.__rscAuditYearSet();
