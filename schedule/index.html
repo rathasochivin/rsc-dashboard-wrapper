@@ -168,6 +168,7 @@ textarea{min-height:84px;resize:vertical;line-height:1.8;padding:10px 11px;heigh
 .clhead .cbx{flex:0 0 20px;height:20px;border:1px solid var(--line);border-radius:3px;
   display:inline-flex;align-items:center;justify-content:center;font-size:12px;color:#fff;background:#fff}
 .clhead[aria-pressed="true"] .cbx{background:var(--go);border-color:var(--go)}
+.sub{border:1px solid var(--line);border-radius:3px;padding:10px 12px;margin:8px 0;background:#FBFCFD;position:relative}
 .pastebox{border:1px dashed #B6C7D6;border-radius:3px;padding:16px 12px;text-align:center;color:var(--slate);
   font-size:13px;background:#fff;min-height:56px}
 .shot img{max-width:100%;border:1px solid var(--line);border-radius:3px;display:block}
@@ -2083,21 +2084,21 @@ function updatesForm(){
 
 /* ---------- បញ្ជីត្រួតពិនិត្យសហគ្រាស ---------- */
 var CHECKLIST = [
-  {k:'stamp',   t:'យកឯកសារបោះត្រាលិខិតជូនដំណឹង',            f:'dnp'},
-  {k:'deliver', t:'ប្រគល់លិខិតជូនដំណឹងទៅអ្នកតំណាង',          f:'dnp', via:true},
-  {k:'site',    t:'ចុះពិនិត្យទីតាំង',                          f:'dnp', note:'ឧ. ចុះពិនិត្យឃ្លាំង'},
-  {k:'print',   t:'ព្រីនឯកសារ',                                f:'',
+  {k:'stamp',    t:'យកឯកសារបោះត្រាលិខិតជូនដំណឹង',            f:'d'},
+  {k:'deliver',  t:'ប្រគល់លិខិតជូនដំណឹងទៅអ្នកតំណាង',          multi:'via',  add:'+ បន្ថែមការប្រគល់'},
+  {k:'site',     t:'ចុះពិនិត្យទីតាំង',                          multi:'place',add:'+ បន្ថែមទីតាំង'},
+  {k:'print',    t:'ព្រីនឯកសារ',                                f:'',
    kids:[['toi','TOI'],['vatmtr','សម្រង់ VAT & MTR & សាកលបត្រអនុរក្ស'],
          ['perm','ឯកសារអចិន្ត្រៃយ៍'],['plan','យុទ្ធសាស្ត្រផែនការ']]},
-  {k:'req1',    t:'ធ្វើលិខិតស្នើសុំឯកសារ (៧ថ្ងៃ) លើកទី១',     f:'dnp'},
-  {k:'req2',    t:'ធ្វើលិខិតស្នើសុំឯកសារ (៧ថ្ងៃ) លើកទី២',     f:'dnp'},
-  {k:'invite',  t:'ធ្វើលិខិតអញ្ជើញ',                           f:'dnp'},
-  {k:'draft',   t:'បានពង្រាងមូលដ្ឋានកំណត់ពន្ធ',                f:'d'},
+  {k:'req1',     t:'ធ្វើលិខិតស្នើសុំឯកសារ (៧ថ្ងៃ) លើកទី១',     f:'dnp'},
+  {k:'req2',     t:'ធ្វើលិខិតស្នើសុំឯកសារ (៧ថ្ងៃ) លើកទី២',     f:'dnp'},
+  {k:'invite',   t:'ធ្វើលិខិតអញ្ជើញ',                           f:'dnp'},
+  {k:'draft',    t:'បានពង្រាងមូលដ្ឋានកំណត់ពន្ធ',                f:'d'},
   {k:'showdraft',t:'បង្ហាញពង្រាងជូនអ្នកតំណាងសហគ្រាស (លើកទី១ · លើកទី២ …)', f:'dnp', note:'លើកទី…'},
-  {k:'endaudit',t:'បញ្ចប់ការងារសវនកម្ម',                       f:'d'},
+  {k:'endaudit', t:'បញ្ចប់ការងារសវនកម្ម',                       f:'d'},
   {k:'taxletter',t:'ប្រគល់លិខិតកំណត់ពន្ធទៅអ្នកតំណាង',        f:'dnp'},
-  {k:'paid',    t:'សហគ្រាសបានបង់ប្រាក់',                       f:'d'},
-  {k:'bonus',   t:'បំពេញលិខិតស្នើសុំង្វាន់',                   f:'d'}
+  {k:'paid',     t:'សហគ្រាសបានបង់ប្រាក់',                       f:'d'},
+  {k:'bonus',    t:'បំពេញលិខិតស្នើសុំង្វាន់',                   f:'d'}
 ];
 function clDone(e){
   var c=(e&&e.checklist)||{}, n=0;
@@ -2108,69 +2109,122 @@ function checklistForm(e){
   e.checklist = e.checklist || {};
   openSheet('បញ្ជីត្រួតពិនិត្យ · '+(e.nameLatin||''), function(b){
     b.appendChild(el('div','hint','សម្គាល់ដំណាក់កាលនីមួយៗ។ ផ្នែកនេះមិនផ្ញើសារជូនដំណឹងទេ។'));
+    var save=function(){ pushEnt(e); render() };          /* ផ្ទាំងមិនបិទ — មិនលោតទៅលើ */
+
     CHECKLIST.forEach(function(x,i){
       var v = e.checklist[x.k] = e.checklist[x.k] || {};
       var card=el('div','extra');
 
       var head=el('button','clhead');
-      head.setAttribute('aria-pressed', v.done?'true':'false');
-      head.innerHTML='<span class="cbx">'+(v.done?'✔':'')+'</span><span>'+(i+1)+'. '+esc(x.t)+'</span>';
+      var mark=el('span','cbx');
+      var paint=function(){
+        head.setAttribute('aria-pressed', v.done?'true':'false');
+        mark.textContent = v.done ? '✔' : '';
+      };
+      head.appendChild(mark);
+      head.appendChild(el('span',null,(i+1)+'. '+x.t));
       head.onclick=function(){
         v.done=!v.done;
         v.at=v.done?new Date().toISOString():'';
-        if(v.done && !v.date) v.date=dkey(new Date());
-        closeSheet(); checklistForm(e); pushEnt(e); render();
+        if(v.done && !v.date && x.f && x.f.indexOf('d')>=0) v.date=dkey(new Date());
+        paint(); save();
       };
+      paint();
       card.appendChild(head);
 
+      /* ធីករង */
       if(x.kids){
+        v.kids = v.kids || {};
         var kk=el('div','areas');
         x.kids.forEach(function(kid){
-          v.kids = v.kids || {};
-          var on=!!v.kids[kid[0]];
-          var kb=el('button',null,(on?'✔ ':'')+kid[1]);
-          kb.setAttribute('aria-pressed', on?'true':'false');
+          var kb=el('button',null,kid[1]);
+          var pk=function(){
+            kb.setAttribute('aria-pressed', v.kids[kid[0]]?'true':'false');
+            kb.textContent=(v.kids[kid[0]]?'✔ ':'')+kid[1];
+          };
           kb.onclick=function(){
             v.kids[kid[0]] = !v.kids[kid[0]];
             v.done = x.kids.every(function(z){ return v.kids[z[0]] });
-            closeSheet(); checklistForm(e); pushEnt(e); render();
+            pk(); paint(); save();
           };
-          kk.appendChild(kb);
+          pk(); kk.appendChild(kb);
         });
         card.appendChild(kk);
       }
 
-      if(x.via){
-        var vs=el('select');
-        vs.appendChild(el('option',null,'— ជ្រើសផ្លូវ —')).value='';
-        NOTICE.forEach(function(p){ if(!p[0]) return; var o=el('option',null,p[1]); o.value=p[0]; vs.appendChild(o) });
-        vs.value=v.via||'';
-        vs.onchange=function(){ v.via=vs.value; pushEnt(e) };
-        field(card,'ផ្ញើតាមរយៈ',vs);
+      /* ធាតុច្រើន ៖ ការប្រគល់លិខិត និងទីតាំង */
+      if(x.multi){
+        v.items = (v.items && v.items.length!==undefined) ? v.items : [];
+        var host=el('div');
+        card.appendChild(host);
+        var drawItems=function(){
+          host.innerHTML='';
+          v.items.forEach(function(it,ix){
+            var row=el('div','sub');
+            var rm=el('button','rm','លុប');
+            rm.onclick=function(){ v.items.splice(ix,1); drawItems(); save() };
+            row.appendChild(rm);
+
+            if(x.multi==='via'){
+              var vs=el('select');
+              NOTICE.forEach(function(p){ if(!p[0]) return; var o=el('option',null,p[1]); o.value=p[0]; vs.appendChild(o) });
+              vs.value=it.via||'telegram'; it.via=vs.value;
+              vs.onchange=function(){ it.via=vs.value; save() };
+              field(row,'ផ្ញើតាមរយៈ',vs);
+            } else {
+              var lb=input('text', it.label||'', 'ទីស្នាក់ការសហគ្រាស · ឃ្លាំង · រោងចក្រ');
+              lb.oninput=function(){ it.label=lb.value }; lb.onchange=save;
+              field(row,'ទីតាំង',lb);
+            }
+            var dd=input('date', it.date||'');
+            dd.onchange=function(){ it.date=dd.value; save() };
+            field(row,'ថ្ងៃ ខែ ឆ្នាំ',dd);
+
+            var two=el('div','two'), c1=el('div'), c2=el('div');
+            two.appendChild(c1); two.appendChild(c2); row.appendChild(two);
+            var nm=input('text', it.name||'', 'ឈ្មោះអ្នកតំណាង');
+            nm.oninput=function(){ it.name=nm.value }; nm.onchange=save;
+            var ph=input('tel', it.phone||'', '012 345 678');
+            ph.oninput=function(){ it.phone=ph.value }; ph.onchange=save;
+            field(c1,'ឈ្មោះអ្នកតំណាង',nm);
+            field(c2,'លេខទូរសព្ទ',ph);
+
+            host.appendChild(row);
+          });
+          var ad=el('button','mini', x.add);
+          ad.onclick=function(){
+            v.items.push(x.multi==='via' ? {via:'telegram',date:'',name:'',phone:''}
+                                         : {label:(v.items.length?'ឃ្លាំង':'ទីស្នាក់ការសហគ្រាស'),date:'',name:'',phone:''});
+            drawItems(); save();
+          };
+          host.appendChild(ad);
+        };
+        drawItems();
       }
+
       if(x.note){
         var nt=input('text', v.note, x.note);
-        nt.oninput=function(){ v.note=nt.value };
-        nt.onchange=function(){ pushEnt(e) };
+        nt.oninput=function(){ v.note=nt.value }; nt.onchange=save;
         field(card,'បរិយាយ',nt);
       }
-      if(x.f.indexOf('d')>=0){
-        var dd=input('date', v.date||'');
-        dd.onchange=function(){ v.date=dd.value; pushEnt(e) };
-        field(card,'ថ្ងៃ ខែ ឆ្នាំ',dd);
+      if(x.f && x.f.indexOf('d')>=0){
+        var dd2=input('date', v.date||'');
+        dd2.onchange=function(){ v.date=dd2.value; save() };
+        field(card,'ថ្ងៃ ខែ ឆ្នាំ',dd2);
       }
-      if(x.f.indexOf('n')>=0){
-        var two=el('div','two'), c1=el('div'), c2=el('div');
-        two.appendChild(c1); two.appendChild(c2); card.appendChild(two);
-        var nm=input('text', v.name, 'ឈ្មោះអ្នកតំណាង');
-        nm.oninput=function(){ v.name=nm.value }; nm.onchange=function(){ pushEnt(e) };
-        var ph=input('tel', v.phone, '012 345 678');
-        ph.oninput=function(){ v.phone=ph.value }; ph.onchange=function(){ pushEnt(e) };
-        field(c1,'ឈ្មោះអ្នកតំណាង',nm);
-        field(c2,'លេខទូរសព្ទ',ph);
+      if(x.f && x.f.indexOf('n')>=0){
+        var t2=el('div','two'), a1=el('div'), a2=el('div');
+        t2.appendChild(a1); t2.appendChild(a2); card.appendChild(t2);
+        var nm2=input('text', v.name, 'ឈ្មោះអ្នកតំណាង');
+        nm2.oninput=function(){ v.name=nm2.value }; nm2.onchange=save;
+        var ph2=input('tel', v.phone, '012 345 678');
+        ph2.oninput=function(){ v.phone=ph2.value }; ph2.onchange=save;
+        field(a1,'ឈ្មោះអ្នកតំណាង',nm2);
+        field(a2,'លេខទូរសព្ទ',ph2);
       }
       b.appendChild(card);
     });
+
     var close=el('button','save','រួចរាល់');
     close.onclick=function(){ closeSheet(); pushEnt(e); render() };
     b.appendChild(close);
