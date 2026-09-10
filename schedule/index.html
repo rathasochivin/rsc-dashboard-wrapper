@@ -448,7 +448,7 @@ function labOf(arr,v){ for(var i=0;i<arr.length;i++) if(arr[i][0]===(v||'')) ret
 var REASONS = ['សវនករមានធុរៈ','សហគ្រាសសុំលើកពេល','ឯកសារមិនទាន់រួចរាល់','បញ្ហាធនធាន/ការធ្វើដំណើរ','ហេតុផលផ្សេងៗ'];
 var LSK = 'rsc_sched_';
 var LEAD_CHOICES = [[2880,'២ ថ្ងៃមុន'],[1440,'១ ថ្ងៃមុន'],[180,'៣ ម៉ោងមុន'],[60,'១ ម៉ោងមុន'],[30,'៣០ នាទីមុន'],[15,'១៥ នាទីមុន'],[5,'៥ នាទីមុន']];
-var LEAD_DEFAULT = [1440,60,15];
+var LEAD_DEFAULT = [60];   /* រំលឹកតែ ១ ម៉ោងមុន */
 function leadsFor(kind){
   var v=ls('lead_'+kind);
   return (v && v.length!==undefined) ? v : LEAD_DEFAULT.slice();
