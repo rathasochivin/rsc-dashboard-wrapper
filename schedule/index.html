@@ -1070,18 +1070,19 @@ function calCanvas(title, groups){
   ctx.font='16px '+KH;
   var oneDay = groups.length===1;
   groups.forEach(function(g){
-    if(!oneDay){ body.push({t:'group', text:g.label}); y+=46 }
-    if(!g.items.length){ body.push({t:'empty'}); y+=40; return }
+    if(!oneDay){ body.push({t:'group', text:g.label}); y+=38 }
+    if(!g.items.length){ body.push({t:'empty'}); y+=36; return }
     g.items.forEach(function(it){
       ctx.font='600 20px '+LAT;
       var t1=wrapText(ctx, it.title, W-2*PAD-120);
       ctx.font='16px '+KH;
       var t2=wrapText(ctx, it.sub, W-2*PAD-120);
       body.push({t:'item', tm:it.tm, l1:t1, l2:t2, cls:it.cls});
-      y += 22 + t1.length*27 + t2.length*24 + 16;
+      y += t1.length*27 + t2.length*24 + 16;      /* ត្រូវនឹងការគូរពិត */
     });
   });
-  var H = PAD + 54 + y + PAD;
+  /* PAD+8 ដើម + ចំណងជើង ៥០ + បន្ទាត់ ១៨ + ខ្លឹមសារ + គែមក្រោម */
+  var H = (PAD+8) + 50 + 18 + y + 12;
   var cv=document.createElement('canvas');
   cv.width=W; cv.height=Math.max(H,220);
   ctx=cv.getContext('2d');
