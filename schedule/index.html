@@ -1008,7 +1008,7 @@ function calEvents(){
     if(r.visitAt){ var a=dt(r.visitAt); if(a) put(dkey(a),{ord:a.getHours()*60+a.getMinutes(),cls:'visit',ico:'📍',tm:fmtT(r.visitAt),
       title:r.nameLatin||'', sub:'ចុះពិនិត្យទីតាំង'+(rs?' · '+rs:'')+(who?' · '+who:'')+(r.address?' · '+r.address:''), rec:r}) }
     if(r.meetAt){ var b=dt(r.meetAt); if(b) put(dkey(b),{ord:b.getHours()*60+b.getMinutes(),cls:'meet',ico:'🤝',tm:fmtT(r.meetAt),
-      title:r.nameLatin||'', sub:meetPlace(r)+(rs?' · '+rs:'')+(who?' · '+who:''), rec:r}) }
+      title:r.nameLatin||'', sub:'ប្រជុំជាមួយសហគ្រាស'+(rs?' · '+rs:'')+(who?' · '+who:'')+' · '+meetPlace(r), rec:r}) }
   });
   S.internal.forEach(function(r){
     var st=dt(r.fromAt); if(!st) return;
