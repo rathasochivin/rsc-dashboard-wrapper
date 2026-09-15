@@ -27352,7 +27352,29 @@ function renderCoverPanel(){
      មូលហេតុ ៖ `coverEditableInput` ត្រឡប់ `.cf-wrap` ដែលជា `display:block`
      ⇒ វាចុះបន្ទាត់ថ្មីជានិច្ច។ រុំវាក្នុងធាតុ inline ដើម្បីអោយស្លាក និង
      តម្លៃឈរជួរតែមួយ។ */
+  /* ⭐⭐⭐ [stated] ២០២៦-០៩-០៨ ៖ «ផ្នែកទី ៥ ត្រូវមានកន្លែងដើម្បីចុចថា
+     មិនមានការកំណត់ពន្ធ ដូចនេះមិនមានឃ្លា ការិយបរិច្ឆេទ៖ ដល់ មតិអ្នកជាប់ពន្ធ» ។
+     ⚠ សន្លឹក COVER ព្រីនចេញពី DOM ដដែលនេះ ⇒ ការលាក់ត្រង់នេះ លាក់ក្នុង
+       ការព្រីនផងដែរ ដោយមិនបាច់កែកូដព្រីនដាច់ដោយឡែក ។
+     ⚠ ទិន្នន័យដែលវាយរួច **មិនត្រូវលុបទេ** ៖ ដោះធីកវិញ អត្ថបទចាស់ត្រឡប់មក
+       គ្រប់ ( រក្សាទុកនៅ `basis_*` ដដែល ) ។ */
   (function(){
+    const noneOn = String(getCV('basis_none') || '') === '1';
+    const cb = el('input', { type:'checkbox', id:'basis-none-cb',
+      style:'width:16px; height:16px; vertical-align:middle; margin-right:6px;' });
+    cb.checked = noneOn;
+    cb.onchange = ()=>{ setCV('basis_none', cb.checked ? '1' : ''); renderAll(); };
+    const lb = el('label', { for:'basis-none-cb',
+      style:'font-size:13.5px; cursor:pointer; vertical-align:middle;' },
+      'មិនមានការកំណត់ពន្ធឡើងវិញ');
+    wrap.appendChild(el('div', { class:'no-print', style:'margin-bottom:10px;' }, cb, lb));
+    if(noneOn){
+      wrap.appendChild(el('div', { style:'margin-bottom:10px; font-size:13.5px;' },
+        'មិនមានការកំណត់ពន្ធឡើងវិញ។'));
+    }
+    window.__basisNone = noneOn;
+  })();
+  if(!window.__basisNone) (function(){
     const perWrap = coverEditableInput('basis_period','','200px');
     try{ perWrap.style.display = 'inline-block'; perWrap.style.width = '200px';
          perWrap.style.verticalAlign = 'middle'; }catch(e){}
@@ -27362,7 +27384,7 @@ function renderCoverPanel(){
       'ការិយបរិច្ឆេទ៖ ', perWrap));
   })();
   const ROMAN = ['i','ii','iii','iv','v','vi','vii','viii'];
-  const basisCount = parseInt(getCV('basis_count')) || 1;
+  const basisCount = window.__basisNone ? 0 : (parseInt(getCV('basis_count')) || 1);
   for(let i=0;i<basisCount;i++){
     const taxTypeInput = coverEditableInput(`basis_taxtype_${i}`, 'ឧ. ពន្ធលើប្រាក់ចំណូល', '260px');
     wrap.appendChild(el('div',{style:'margin-bottom:6px; font-size:13.5px; font-weight:600; display:flex; align-items:center; gap:6px;'},
@@ -27413,8 +27435,8 @@ function renderCoverPanel(){
   }
   const addBasisBtn = el('button',{class:'btn no-print', style:'margin-bottom:14px; margin-right:8px;'}, '➕ បន្ថែមប្រភេទពន្ធ');
   addBasisBtn.onclick = ()=>{ setCV('basis_count', String(basisCount+1)); renderAll(); };
-  wrap.appendChild(addBasisBtn);
-  if(basisCount > 1){
+  if(!window.__basisNone) wrap.appendChild(addBasisBtn);
+  if(!window.__basisNone && basisCount > 1){
     const removeBasisBtn = el('button',{class:'btn no-print', style:'margin-bottom:14px;'}, '➖ ដករបស់ចុងក្រោយ');
     removeBasisBtn.onclick = ()=>{ setCV(`basis_taxtype_${basisCount-1}`,''); setCV(`basis_auditorOpinion_${basisCount-1}`,''); setCV(`basis_taxpayerOpinion_${basisCount-1}`,''); setCV('basis_count', String(basisCount-1)); renderAll(); };
     wrap.appendChild(removeBasisBtn);
@@ -27489,10 +27511,18 @@ function renderCoverPanel(){
   /* [stated] ២០២៦-០៨-១៧ ៖ ថ្ងៃចុះហត្ថលេខាខាងក្រោមក៏ត្រូវ DD/MM/YYYY ដែរ។
      ⚠ `auditStartDate` មកពី <input type="date"> ដូច្នេះវាតែងតែជា ISO
      (YYYY-MM-DD) — ត្រូវប្តូរទម្រង់ ទើបបង្ហាញត្រូវ។ */
-  const defaultSignDate = (function(v){
-    const m = String(v || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
-    return m ? (m[3] + '/' + m[2] + '/' + m[1]) : (v || '');
-  })(de.auditStartDate);
+  /* ⭐⭐⭐ [stated] ២០២៦-០៩-០៨ ៖ «ផ្នែកចុចព្រីននោះ ឱ្យចេញថ្ងៃខែឆ្នាំ auto
+     នៅថ្ងៃខែឆ្នាំដែលចុចនោះ នឹងនៅតែអាចរើសថ្ងៃខែឆ្នាំបានដដែរ» ។
+     ⚠ មុននេះលំនាំដើមជា `de.auditStartDate` ( ថ្ងៃចាប់ផ្តើមសវនកម្ម ) ⇒
+       ឯកសារដែលព្រីនថ្ងៃនេះ ចេញថ្ងៃចាស់ ។ ឥឡូវលំនាំដើមជា **ថ្ងៃនេះ** ។
+     ⚠⚠ វានៅជា **លំនាំដើម** ដដែល ៖ `coverEditableInputDefault` បង្ហាញតម្លៃ
+       នេះតែពេលក្រឡាទទេ ⇒ អ្វីដែលអ្នកវាយ ឬរើសរួច នៅដដែលមិនប្តូរឡើយ ។
+       សម្អាតក្រឡាវិញ ⇒ ថ្ងៃនេះត្រឡប់មក ។ */
+  const defaultSignDate = (function(){
+    const d = new Date();
+    const p = n => (n < 10 ? '0' : '') + n;
+    return p(d.getDate()) + '/' + p(d.getMonth() + 1) + '/' + d.getFullYear();
+  })();
   const pi = (typeof window.__getPersonalInfo === 'function') ? window.__getPersonalInfo() : {};
   function signBlock(roleLabel, nameKey, dateKey, defaultName){
     const nameInput = coverEditableInputDefault(nameKey, defaultName, '160px');
@@ -38584,9 +38614,24 @@ function meetingCurTin(){
       .replace(/\D/g, '').slice(-9);
   }catch(e){ return ''; }
 }
+/* ⭐⭐⭐ [stated] ២០២៦-០៩-០៨ ៖ «ពេលចុចចម្លងនៅកំណត់ហេតុ វាលោត error» —
+   `Uncaught TypeError: toast is not a function` ។
+   ⚠⚠ មូលហេតុ ៖ `toast()` ត្រូវប្រកាសក្នុង **ប្លុក `<script>` ផ្សេង** ⇒ វា
+     មិនមែនជា global ទេ ⇒ ការហៅវាពីប្លុកកំណត់ហេតុគាំងភ្លាម ។
+   ⚠ រឿងធ្ងន់ជាងសារដែលបាត់ ៖ ការគាំងកើតឡើង **ក្រោយ** ការចម្លងរួច ⇒
+     អ្នកប្រើឃើញតែផ្ទាំងក្រហម ហើយមិនដឹងថាកូដចម្លងបានឬអត់ ។
+   ⇒ ប្រើអ្នកហៅដែលមានសុវត្ថិភាព ៖ ប្រើ `toast` បើមាន ; បើគ្មាន ប្រាប់តាម
+     `alert` សម្រាប់កំហុស និងទុកស្ងាត់សម្រាប់សារជោគជ័យ ។
+   ⚠ `typeof x === 'function'` លើឈ្មោះដែលមិនបានប្រកាស **មិនបោះកំហុសទេ**
+     — នោះជាមូលហេតុដែលវិធីនេះដំណើរការ ។ */
+function mtToast(msg, kind){
+  try{ if(typeof toast === 'function'){ toast(msg, kind); return; } }catch(e){}
+  try{ if(typeof window.toast === 'function'){ window.toast(msg, kind); return; } }catch(e){}
+  try{ if(kind === 'err') alert(msg); else console.log(msg); }catch(e){}
+}
 function meetingDataCopy(idx){
   var mt = (trkState.meetings || [])[idx];
-  if(!mt){ toast('រកកំណត់ហេតុនេះមិនឃើញ', 'err'); return; }
+  if(!mt){ mtToast('រកកំណត់ហេតុនេះមិនឃើញ', 'err'); return; }
   var data = {};
   Object.keys(mt).forEach(function(k){ if(MT_COPY_SKIP.indexOf(k) < 0) data[k] = mt[k]; });
   var tin = meetingCurTin();
@@ -38596,7 +38641,7 @@ function meetingDataCopy(idx){
      ដោយកម្មវិធីរុករក ⇒ គេនៅតែយកកូដបានដោយដៃ ។ */
   window.prompt('កូដកំណត់ហេតុលើកទី ' + (idx + 1) + (tin ? ' ( អតប ' + tin + ' )' : '')
     + ' — ចម្លងកូដនេះ រួចបិទភ្ជាប់នៅសហគ្រាសទទួល ៖', code);
-  toast('ចម្លងទិន្នន័យកំណត់ហេតុលើកទី ' + (idx + 1) + ' រួច', 'ok');
+  mtToast('ចម្លងទិន្នន័យកំណត់ហេតុលើកទី ' + (idx + 1) + ' រួច', 'ok');
 }
 function meetingDataPaste(idx){
   var raw = window.prompt('បិទភ្ជាប់កូដកំណត់ហេតុនៅទីនេះ ៖', '');
@@ -38604,7 +38649,7 @@ function meetingDataPaste(idx){
   var payload = null;
   try{ payload = JSON.parse(String(raw).trim()); }catch(e){}
   if(!payload || payload.rsc !== 'meeting' || !payload.data){
-    toast('កូដមិនត្រឹមត្រូវ — សូមចម្លងទាំងអស់រួមទាំងវង់ក្រចក', 'err');
+    mtToast('កូដមិនត្រឹមត្រូវ — សូមចម្លងទាំងអស់រួមទាំងវង់ក្រចក', 'err');
     return;
   }
   var tin = meetingCurTin(), src = String(payload.fromTin || '');
@@ -38621,7 +38666,7 @@ function meetingDataPaste(idx){
     });
     trkSave();
     try{ renderTrackingView(); }catch(e){}
-    toast('បិទភ្ជាប់រួច — សូមពិនិត្យកាលបរិច្ឆេទ និងម៉ោងឡើងវិញ', 'ok');
+    mtToast('បិទភ្ជាប់រួច — សូមពិនិត្យកាលបរិច្ឆេទ និងម៉ោងឡើងវិញ', 'ok');
   });
 }
 
