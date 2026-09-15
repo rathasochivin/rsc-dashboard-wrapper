@@ -735,7 +735,9 @@ function renderVisits(root,kind){
     /* សហគ្រាសដែលមានកាលវិភាគរួច — ផ្គូផ្គងតាម id ក៏បាន តាមអតប ឬឈ្មោះក៏បាន */
     var haveEnt={}, haveTin={}, haveName={};
     S.visits.forEach(function(r){
-      if(r.archived || !r.visitAt) return;
+      if(r.archived) return;
+      /* មានថ្ងៃចុះទីតាំង ឬកំពុងរង់ចាំកំណត់ថ្ងៃ — ទាំងពីរចាត់ថាមានកាលវិភាគរួច */
+      if(!r.visitAt && r.meetAt) return;
       if(r.entId) haveEnt[r.entId]=1;
       if(r.tin) haveTin[String(r.tin).trim().toLowerCase()]=1;
       if(r.nameLatin) haveName[String(r.nameLatin).trim().toLowerCase()]=1;
@@ -748,6 +750,11 @@ function renderVisits(root,kind){
     });
   }
 
+  /* កាលវិភាគដែលសុំលើកពេល តែមិនទាន់ដឹងថ្ងៃ — គ្មានទាំងថ្ងៃចុះទាំងថ្ងៃណាត់ */
+  var waiting = (!meet && !S.showArc)
+    ? S.visits.filter(function(r){ return !r.archived && !r.visitAt && !r.meetAt })
+    : [];
+
   var now=Date.now();
   /* បានចុះរួច = ចេញពីបញ្ជីខាងមុខ ទៅផ្នែក «កន្លងផុត / បានបញ្ចប់» */
   var up=list.filter(function(r){return r.status!=='cancelled' && r.status!=='done' && sortKey(r,kind)>=now-864e5});
@@ -756,7 +763,7 @@ function renderVisits(root,kind){
   var pendingOwned = pending.filter(function(e){ return ownsEnt(e,S.owner) });
   if(!meet && !S.showArc){
     var swap=el('div','seg');
-    [['','ទាំងអស់'],['sched','មានកាលវិភាគ ('+(up.length+past.length)+')'],['pending','មិនទាន់មាន ('+pending.length+')']]
+    [['','ទាំងអស់'],['sched','មានកាលវិភាគ ('+(up.length+past.length)+')'],['pending','មិនទាន់មាន ('+(pending.length+waiting.length)+')']]
       .forEach(function(p){
         var x=el('button',null,p[1]);
         x.setAttribute('aria-pressed', (S.secFilter||'')===p[0]?'true':'false');
@@ -767,9 +774,17 @@ function renderVisits(root,kind){
   }
   if(S.secFilter==='pending' && !meet && !S.showArc){
     var oc2={};
-    TEAM.forEach(function(u){ oc2[u.email]=pending.filter(function(e){ return ownsEnt(e,u.email) }).length });
-    oc2['']=pending.length;
+    TEAM.forEach(function(u){
+      oc2[u.email]=pending.filter(function(e){ return ownsEnt(e,u.email) }).length
+                 + waiting.filter(function(r){ return ownerOfVisit(r)===u.email }).length;
+    });
+    oc2['']=pending.length+waiting.length;
     root.appendChild(ownerChips(oc2));
+    var wait2 = waiting.filter(function(r){ return !S.owner || ownerOfVisit(r)===S.owner });
+    if(wait2.length){
+      section(root,'រង់ចាំកំណត់ថ្ងៃ (សហគ្រាសសុំលើកពេល)', wait2.length);
+      wait2.forEach(function(r){ root.appendChild(visitCard(r)) });
+    }
     var poolP = S.owner ? pending.filter(function(e){ return ownsEnt(e,S.owner) }) : pending;
     var keepP = locationChips(root, poolP);
     drawPending(root, poolP.filter(keepP));
@@ -882,6 +897,7 @@ function section(root,title,n){
 function emptyBox(t,p){ var e=el('div','empty'); e.appendChild(el('b',null,t)); if(p) e.appendChild(document.createTextNode(p)); return e }
 
 function statusMeta(r){
+  if(!r.visitAt && !r.meetAt && !r.archived) return {chip:'c-wait', txt:'⏳ រង់ចាំកំណត់ថ្ងៃ', rail:'moved'};
   if(r.status==='done')      return {cls:'done',   chip:'c-done',  txt:'បានចុះរួច'};
   if(r.status==='cancelled') return {cls:'',       chip:'c-cancel',txt:'បោះបង់'};
   if(r.moved)                return {cls:'moved',  chip:'c-move',  txt:'បានប្តូរពេល'};
@@ -2093,6 +2109,8 @@ var CHECKLIST = [
          ['perm','ឯកសារអចិន្ត្រៃយ៍'],['plan','យុទ្ធសាស្ត្រផែនការ']]},
   {k:'req1',     t:'ធ្វើលិខិតស្នើសុំឯកសារ (៧ថ្ងៃ) លើកទី១',     f:'dnp'},
   {k:'req2',     t:'ធ្វើលិខិតស្នើសុំឯកសារ (៧ថ្ងៃ) លើកទី២',     f:'dnp'},
+  {k:'gotdocs',  t:'ឯកសារសហគ្រាសបានផ្តល់',                      multi:'doc', add:'+ បន្ថែមឯកសារ', dlab:'ថ្ងៃផ្តល់ឱ្យ'},
+  {k:'moredocs', t:'ឯកសារស្នើសុំបន្ថែម',                         multi:'doc', add:'+ បន្ថែមឯកសារ', dlab:'ថ្ងៃស្នើសុំ'},
   {k:'invite',   t:'ធ្វើលិខិតអញ្ជើញ',                           f:'dnp'},
   {k:'draft',    t:'បានពង្រាងមូលដ្ឋានកំណត់ពន្ធ',                f:'d'},
   {k:'showdraft',t:'បង្ហាញពង្រាងជូនអ្នកតំណាងសហគ្រាស (លើកទី១ · លើកទី២ …)', f:'dnp', note:'លើកទី…'},
@@ -2166,6 +2184,16 @@ function checklistForm(e){
             rm.onclick=function(){ v.items.splice(ix,1); drawItems(); save() };
             row.appendChild(rm);
 
+            if(x.multi==='doc'){
+              var dn=input('text', it.name||'', 'ឈ្មោះឯកសារ');
+              dn.oninput=function(){ it.name=dn.value }; dn.onchange=save;
+              field(row,'ឯកសារ',dn);
+              var dv=input('date', it.date||'');
+              dv.onchange=function(){ it.date=dv.value; save() };
+              field(row, x.dlab||'ថ្ងៃ ខែ ឆ្នាំ', dv);
+              host.appendChild(row);
+              return;
+            }
             if(x.multi==='via'){
               var vs=el('select');
               NOTICE.forEach(function(p){ if(!p[0]) return; var o=el('option',null,p[1]); o.value=p[0]; vs.appendChild(o) });
@@ -2195,7 +2223,8 @@ function checklistForm(e){
           var ad=el('button','mini', x.add);
           ad.onclick=function(){
             v.items.push(x.multi==='via' ? {via:'telegram',date:'',name:'',phone:''}
-                                         : {label:(v.items.length?'ឃ្លាំង':'ទីស្នាក់ការសហគ្រាស'),date:'',name:'',phone:''});
+                       : x.multi==='doc' ? {name:'',date:''}
+                       : {label:(v.items.length?'ឃ្លាំង':'ទីស្នាក់ការសហគ្រាស'),date:'',name:'',phone:''});
             drawItems(); save();
           };
           host.appendChild(ad);
@@ -2868,17 +2897,40 @@ function moveForm(r){
     if(r.visitAt && r.meetAt) opts.push(['both','ទាំងពីរ']);
     opts.forEach(function(p){ var o=el('option',null,p[1]); o.value=p[0]; which.appendChild(o) });
     field(b,'ប្តូរអ្វី',which);
+    var later=false;
+    var lt=el('button','mini','⏳ មិនទាន់ដឹងថ្ងៃ — លើកពេលទុកសិន');
+    lt.style.display='block'; lt.style.width='100%'; lt.style.marginBottom='10px';
+    var dtBox=el('div','dtbox');
+    lt.onclick=function(){
+      later=!later;
+      lt.setAttribute('aria-pressed', later?'true':'false');
+      lt.textContent=(later?'✔ ':'')+'⏳ មិនទាន់ដឹងថ្ងៃ — លើកពេលទុកសិន';
+      dtBox.style.display=later?'none':'block';
+    };
+    b.appendChild(lt); b.appendChild(dtBox);
+
     var nv=null, nm=null;
-    if(r.visitAt) nv=dtField(b,'ពេលថ្មី៖ ចុះពិនិត្យទីតាំង', r.visitAt, '', '', 'visit');
-    if(r.meetAt)  nm=dtField(b,'ពេលថ្មី៖ ណាត់ជួប ('+MEET_VENUE+')', r.meetAt, '', '', 'meet');
+    if(r.visitAt) nv=dtField(dtBox,'ពេលថ្មី៖ ចុះពិនិត្យទីតាំង', r.visitAt, '', '', 'visit');
+    if(r.meetAt)  nm=dtField(dtBox,'ពេលថ្មី៖ ណាត់ជួប ('+MEET_VENUE+')', r.meetAt, '', '', 'meet');
     var rs=el('select'); REASONS.forEach(function(t){ rs.appendChild(el('option',null,t)) });
     field(b,'មូលហេតុ',rs);
     var note=field(b,'ពន្យល់បន្ថែម', textarea('','ឧ. សហគ្រាសសុំពន្យារ ១ សប្តាហ៍ ដោយគណនេយ្យករឈប់សម្រាក'));
 
     var go=el('button','save','រក្សាទុក និងជូនដំណឹងក្រុម');
     go.onclick=function(){
-      if((nv && nv.weekend()) || (nm && nm.weekend())) return toast('សូមជ្រើសរើសថ្ងៃធ្វើការ (ច័ន្ទ–សុក្រ)');
+      if(!later && ((nv && nv.weekend()) || (nm && nm.weekend())))
+        return toast('សូមជ្រើសរើសថ្ងៃធ្វើការ (ច័ន្ទ–សុក្រ)');
       var w=which.value, old={v:r.visitAt,m:r.meetAt}, txt=[];
+      if(later){
+        if(w==='visit'||w==='both'){ r.prevVisitAt=old.v; r.visitAt=''; }
+        if(w==='meet' ||w==='both'){ r.prevMeetAt =old.m; r.meetAt =''; }
+        r.moved=true; r.status='planned';
+        r.lastReason=rs.value+(note.value.trim()?' · '+note.value.trim():'');
+        r.updatedAt=new Date().toISOString();
+        r.history=(r.history||[]).concat([{at:r.updatedAt,by:S.me.email,
+          text:'លើកពេលទុកសិន (មិនទាន់ដឹងថ្ងៃ)'+(r.lastReason?' — '+r.lastReason:'')}]);
+        closeSheet(); pushVisit(r); return;
+      }
       if((w==='visit'||w==='both') && nv){ r.prevVisitAt=old.v; r.visitAt=nv.val(); txt.push('ចុះទីតាំង៖ '+fmtFull(old.v)+' → '+fmtFull(r.visitAt)) }
       if((w==='meet' ||w==='both') && nm){ r.prevMeetAt =old.m; r.meetAt =nm.val(); txt.push('ណាត់ជួប៖ '+fmtFull(old.m)+' → '+fmtFull(r.meetAt)) }
       r.moved=true; r.status = r.status==='done'?'done':'planned';
