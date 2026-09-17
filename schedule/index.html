@@ -169,6 +169,11 @@ textarea{min-height:84px;resize:vertical;line-height:1.8;padding:10px 11px;heigh
   display:inline-flex;align-items:center;justify-content:center;font-size:12px;color:#fff;background:#fff}
 .clhead[aria-pressed="true"] .cbx{background:var(--go);border-color:var(--go)}
 .sub{border:1px solid var(--line);border-radius:3px;padding:10px 12px;margin:8px 0;background:#FBFCFD;position:relative}
+.routebox{border:1px solid var(--line);background:#fff;border-radius:3px;padding:10px 12px;margin-bottom:14px}
+.routebox .leg{padding:6px 0;border-bottom:1px solid #EEF2F5;font-size:13px}
+.routebox .leg:last-of-type{border-bottom:0}
+.routebox .leg a{color:var(--focus);text-decoration:none}
+.routebox .mini{display:inline-block;margin-top:8px}
 .pastebox{border:1px dashed #B6C7D6;border-radius:3px;padding:16px 12px;text-align:center;color:var(--slate);
   font-size:13px;background:#fff;min-height:56px}
 .shot img{max-width:100%;border:1px solid var(--line);border-radius:3px;display:block}
@@ -553,14 +558,14 @@ function api(fn,args){
 }
 
 /* ---------- data ---------- */
-function loadLocal(){ S.visits = ls('visits')||[]; S.internal = ls('internal')||[]; S.ents = ls('ents')||[]; normEnts();
+function loadLocal(){ S.visits = ls('visits')||[]; S.internal = ls('internal')||[]; S.ents = ls('ents')||[]; S.seen = ls('seenby')||{}; normEnts();
   if(window.__native) window.__native.schedule(S.visits) }
-function saveLocal(){ ls('visits',S.visits); ls('internal',S.internal); ls('ents',S.ents) }
+function saveLocal(){ ls('visits',S.visits); ls('internal',S.internal); ls('ents',S.ents); ls('seenby',S.seen||{}) }
 
 function refresh(silent){
   if(!online()){ loadLocal(); render(); return Promise.resolve() }
   return api('apiList',[S.token]).then(function(d){
-    S.visits = d.visits||[]; S.internal = d.internal||[]; S.ents = d.enterprises||[]; normEnts();
+    S.visits = d.visits||[]; S.internal = d.internal||[]; S.ents = d.enterprises||[]; S.seen = d.seen||{}; normEnts();
     saveLocal(); render(); checkNew(); markSync(true);
     if(window.__native) window.__native.schedule(S.visits);
   }).catch(function(e){
@@ -655,6 +660,43 @@ function noticesOf(r){
   if(r.noticeVia) return [{via:r.noticeVia, date:r.noticeDate, name:r.noticeName, phone:r.noticePhone,
                            imgs:r.noticeImg?[r.noticeImg]:[]}];
   return [];
+}
+/** អ្នកដែលគួរដឹង ៖ សវនករមានឈ្មោះ + ប្រធានក្រុម */
+function audienceOf(r){
+  var out=(r.auditors||[]).slice();
+  if(out.indexOf(ADMIN_EMAIL)<0) out.push(ADMIN_EMAIL);
+  if(r.createdBy && out.indexOf(r.createdBy)<0) out.push(r.createdBy);
+  return out.filter(function(x,i,a){ return x && a.indexOf(x)===i });
+}
+function seenBy(r){
+  var m=(S.seen||{})[r.id]||{}, at=r.updatedAt||'';
+  return audienceOf(r).filter(function(e){
+    if(e===r.createdBy && !r.moved) return true;          /* អ្នកសរសេរឃើញស្រាប់ */
+    return String(m[e]||'')===String(at) && m[e]!==undefined;
+  });
+}
+/** ចំណាំថាខ្ញុំបានឃើញ រួចផ្ញើទៅម៉ាស៊ីនមេ */
+var seenQueue=[], seenTimer=null;
+function markSeen(list){
+  if(!S.me || !S.token) return;
+  var add=[];
+  (list||[]).forEach(function(r){
+    if(!r || !r.id) return;
+    if(audienceOf(r).indexOf(S.me.email)<0) return;
+    var m=(S.seen[r.id]=S.seen[r.id]||{});
+    if(String(m[S.me.email]||'')===String(r.updatedAt||'')) return;
+    m[S.me.email]=r.updatedAt||'';
+    add.push({id:r.id, at:r.updatedAt||''});
+  });
+  if(!add.length) return;
+  saveLocal();
+  seenQueue=seenQueue.concat(add);
+  clearTimeout(seenTimer);
+  seenTimer=setTimeout(function(){
+    var batch=seenQueue.splice(0,seenQueue.length);
+    if(!online() || !batch.length) return;
+    api('apiSeen',[S.token,batch]).catch(function(){});
+  }, 1200);
 }
 function ownerOfVisit(r){ return (r.auditors && r.auditors[0]) || '' }
 function sortKey(r,kind){
@@ -852,6 +894,7 @@ function renderVisits(root,kind){
   });
 
   if(past.length){ section(root,'កន្លងផុត / បានបញ្ចប់', past.length); past.reverse().forEach(function(r){ root.appendChild(visitCard(r)) }) }
+  markSeen(up.concat(past));
 
   root.appendChild(arcLink(arc));
 }
@@ -936,6 +979,15 @@ function visitCard(r){
         (x.at?'<br><span style="color:var(--ink2)">📍 '+esc(fmtFull(x.at))+'</span>':'');
     }).join('<br>')+'</div></div>':'')+
     ((r.auditors&&r.auditors.length)?'<div class="row"><i>👤</i><div>'+r.auditors.map(nameOf).map(esc).join(' · ')+'</div></div>':'')+
+    (function(){
+      var aud=audienceOf(r), saw=seenBy(r);
+      if(aud.length<2) return '';
+      var miss=aud.filter(function(e){ return saw.indexOf(e)<0 });
+      return '<div class="row"><i>👁</i><div>'+
+        (saw.length?'ឃើញហើយ៖ <span class="lat">'+esc(saw.map(shortOf).join(' · '))+'</span>':'មិនទាន់មានអ្នកឃើញ')+
+        (miss.length?' · <span style="color:var(--mute)">មិនទាន់ឃើញ៖ '+esc(miss.map(shortOf).join(' · '))+'</span>':'')+
+        '</div></div>';
+    })()+
     ((r.siteGeo&&r.siteGeo.lat)?'<div class="row"><i>📍</i><div>ទីតាំងពេលថត៖ <a href="https://www.google.com/maps/search/?api=1&query='+
       r.siteGeo.lat+','+r.siteGeo.lng+'" target="_blank" rel="noopener">'+
       Number(r.siteGeo.lat).toFixed(5)+', '+Number(r.siteGeo.lng).toFixed(5)+'</a>'+
@@ -1018,35 +1070,43 @@ function calEvents(){
     (r.extras||[]).forEach(function(x){
       if(!x.at) return;
       var xd=dt(x.at); if(!xd) return;
-      put(dkey(xd),{ord:xd.getHours()*60+xd.getMinutes(),cls:'visit',ico:'📍',tm:fmtT(x.at),
+      put(dkey(xd),{ord:xd.getHours()*60+xd.getMinutes(),cls:'visit',kind:'visit',ico:'📍',tm:fmtT(x.at),
         title:r.nameLatin||'', sub:(x.label||'ទីតាំងបន្ថែម')+(rs?' · '+rs:'')+(who?' · '+who:'')+(x.address?' · '+x.address:''), rec:r});
     });
-    if(r.visitAt){ var a=dt(r.visitAt); if(a) put(dkey(a),{ord:a.getHours()*60+a.getMinutes(),cls:'visit',ico:'📍',tm:fmtT(r.visitAt),
+    if(r.visitAt){ var a=dt(r.visitAt); if(a) put(dkey(a),{ord:a.getHours()*60+a.getMinutes(),cls:'visit',kind:'visit',ico:'📍',tm:fmtT(r.visitAt),
       title:r.nameLatin||'', sub:'ចុះពិនិត្យទីតាំង'+(rs?' · '+rs:'')+(who?' · '+who:'')+(r.address?' · '+r.address:''), rec:r}) }
-    if(r.meetAt){ var b=dt(r.meetAt); if(b) put(dkey(b),{ord:b.getHours()*60+b.getMinutes(),cls:'meet',ico:'🤝',tm:fmtT(r.meetAt),
+    if(r.meetAt){ var b=dt(r.meetAt); if(b) put(dkey(b),{ord:b.getHours()*60+b.getMinutes(),cls:'meet',kind:'meet',ico:'🤝',tm:fmtT(r.meetAt),
       title:r.nameLatin||'', sub:'ប្រជុំជាមួយសហគ្រាស'+(rs?' · '+rs:'')+(who?' · '+who:'')+' · '+meetPlace(r), rec:r}) }
   });
   S.internal.forEach(function(r){
     var st=dt(r.fromAt); if(!st) return;
     var tail='';
     if(r.type==='daily'){
-      put(dkey(st),{ord:st.getHours()*60+st.getMinutes(),cls:'visit',ico:'📋',tm:fmtT(r.fromAt),
+      put(dkey(st),{ord:st.getHours()*60+st.getMinutes(),cls:'visit',kind:'inner',ico:'📋',tm:fmtT(r.fromAt),
         title:r.entName||'របាយការណ៍', sub:(r.activity||'')+' · '+nameOf(r.email)});
+      return;
+    }
+    if(r.type==='alarm'){
+      if(r.email!==S.me.email) return;
+      var ad=dt(r.fromAt); if(!ad) return;
+      put(dkey(ad),{ord:ad.getHours()*60+ad.getMinutes(),cls:'late',kind:'inner',ico:'🔔',tm:fmtT(r.fromAt),
+        title:r.subject||'ការរំលឹក',
+        sub:'រំលឹកផ្ទាល់ខ្លួន'+(r.leaveAt?' · ចេញដំណើរ '+r.leaveAt:'')+(r.minutes?' · '+r.minutes:''), rec:r});
       return;
     }
     if(r.type==='meeting'){
       if(r.done) return;
-      put(dkey(st),{ord:st.getHours()*60+st.getMinutes(),cls:'meet',ico:'👥',tm:fmtT(r.fromAt),
+      put(dkey(st),{ord:st.getHours()*60+st.getMinutes(),cls:'meet',kind:'inner',ico:'👥',tm:fmtT(r.fromAt),
         title:r.subject||'ប្រជុំផ្ទៃក្នុង', sub:'ដឹកនាំដោយ '+(r.chair||'—')+(meetPlaceIn(r)?' · '+meetPlaceIn(r):'')});
       return;
     }
     if(r.type==='late'){
-      put(dkey(st),{ord:st.getHours()*60+st.getMinutes(),cls:'late',ico:'⏰',tm:fmtT(r.fromAt),
+      put(dkey(st),{ord:st.getHours()*60+st.getMinutes(),cls:'late',kind:'inner',ico:'⏰',tm:fmtT(r.fromAt),
         title:nameOf(r.email), sub:'សុំមកយឺត · '+(r.reason||'')+tail});
     }else{
       var en=dt(r.toAt)||st, cur=new Date(st.getFullYear(),st.getMonth(),st.getDate()), guard=0;
       while(cur<=en && guard++<60){
-        put(dkey(cur),{ord:-1,cls:'leave',ico:'🏖',tm:'ច្បាប់',
+        put(dkey(cur),{ord:-1,cls:'leave',kind:'inner',ico:'🏖',tm:'ច្បាប់',
           title:nameOf(r.email), sub:'សុំច្បាប់ · '+(r.reason||'')+tail});
         cur=addDays(cur,1);
       }
@@ -1181,12 +1241,27 @@ function renderCal(root){
   bar.appendChild(prev); bar.appendChild(el('h2',null,label)); bar.appendChild(next); bar.appendChild(tdy);
   root.appendChild(bar);
 
-  var lg=el('div','legend');
-  [['d-visit','ចុះទីតាំង'],['d-meet','ណាត់ជួប'],['d-leave','ច្បាប់'],['d-late','យឺត']].forEach(function(p){
-    var x=el('div'); var i=el('i'); i.className=p[0]; i.style.width='7px'; i.style.height='7px'; i.style.borderRadius='50%';
-    x.appendChild(i); x.appendChild(el('span',null,p[1])); lg.appendChild(x);
+  /* ច្រោះតាមប្រភេទ — រូបដែលចម្លងក៏តាមដែរ */
+  var cnt={visit:0,meet:0,inner:0,all:0};
+  Object.keys(ev).forEach(function(k){
+    ev[k].forEach(function(e){ cnt.all++; if(cnt[e.kind]!==undefined) cnt[e.kind]++ });
   });
-  root.appendChild(lg);
+  var kf=el('div','areas');
+  [['','ទាំងអស់ ('+cnt.all+')'],['visit','📍 ចុះទីតាំង ('+cnt.visit+')'],
+   ['meet','🤝 ប្រជុំសហគ្រាស ('+cnt.meet+')'],['inner','👥 ផ្ទៃក្នុង ('+cnt.inner+')']].forEach(function(p){
+    var x=el('button',null,p[1]);
+    x.setAttribute('aria-pressed', (S.calKind||'')===p[0]?'true':'false');
+    x.onclick=function(){ S.calKind=p[0]; render() };
+    kf.appendChild(x);
+  });
+  root.appendChild(kf);
+
+  if(S.calKind){
+    Object.keys(ev).forEach(function(k){
+      ev[k]=ev[k].filter(function(e){ return e.kind===S.calKind });
+      if(!ev[k].length) delete ev[k];
+    });
+  }
 
   if(S.cal.mode!=='month'){
     var cp=el('button','arclink noprint','📋 ចម្លងកាលវិភាគជារូបភាព');
@@ -1235,6 +1310,69 @@ function calMonth(root, cur, ev, today){
   drawEvents(root, list2);
 }
 
+/* ---------- ផ្លូវធ្វើដំណើរប្រចាំថ្ងៃ ---------- */
+function geoOf(rec, ev){
+  if(rec && rec.siteGeo && rec.siteGeo.lat) return rec.siteGeo.lat+','+rec.siteGeo.lng;
+  var link=(rec&&rec.mapLink)||'';
+  var m=String(link).match(/(-?\d{1,3}\.\d{4,})[,\s]+(-?\d{1,3}\.\d{4,})/);
+  return m ? (m[1]+','+m[2]) : '';
+}
+function placeOf(e){
+  var r=e.rec||{};
+  if(e.kind==='meet') return {name:MEET_VENUE, q:MEET_VENUE+', Phnom Penh', geo:''};
+  var geo=geoOf(r);
+  var addr=(e.sub||'').split(' · ').slice(-1)[0];
+  return {name:(r.nameLatin||e.title||''), q: geo || (r.address||addr||r.nameLatin||''), geo:geo};
+}
+function kmBetween(a,b){
+  if(!a||!b) return 0;
+  var x=a.split(','), y=b.split(',');
+  var la1=+x[0], lo1=+x[1], la2=+y[0], lo2=+y[1];
+  if([la1,lo1,la2,lo2].some(isNaN)) return 0;
+  var R=6371, rd=Math.PI/180;
+  var dLa=(la2-la1)*rd, dLo=(lo2-lo1)*rd;
+  var h=Math.sin(dLa/2)*Math.sin(dLa/2)+Math.cos(la1*rd)*Math.cos(la2*rd)*Math.sin(dLo/2)*Math.sin(dLo/2);
+  return R*2*Math.atan2(Math.sqrt(h), Math.sqrt(1-h));
+}
+function dirLink(from, to){
+  return 'https://www.google.com/maps/dir/?api=1&origin='+encodeURIComponent(from)+
+         '&destination='+encodeURIComponent(to)+'&travelmode=driving';
+}
+function routeBlock(root, list){
+  var stops=list.filter(function(e){ return e.kind==='visit' || e.kind==='meet' })
+                .slice().sort(function(a,b){ return (a.ord||0)-(b.ord||0) })
+                .map(placeOf).filter(function(p){ return p.q });
+  if(!stops.length) return;
+  var base={name:MEET_VENUE, q:MEET_VENUE+', Phnom Penh', geo:''};
+  var legs=[], seq=[base].concat(stops).concat([base]);
+  for(var i=0;i<seq.length-1;i++){
+    if(seq[i].q===seq[i+1].q) continue;
+    legs.push({a:seq[i], b:seq[i+1]});
+  }
+  if(!legs.length) return;
+
+  root.appendChild(el('div','grouphd','🚗 ផ្លូវធ្វើដំណើរថ្ងៃនេះ'));
+  var box=el('div','routebox');
+  legs.forEach(function(L,i){
+    var row=el('div','leg');
+    var km=kmBetween(L.a.geo, L.b.geo);
+    var a=el('a',null,(i+1)+'. '+L.a.name+' → '+L.b.name+(km?'  ≈ '+km.toFixed(1)+' គម':''));
+    a.href=dirLink(L.a.q, L.b.q); a.target='_blank'; a.rel='noopener';
+    row.appendChild(a);
+    box.appendChild(row);
+  });
+  var all=el('a','mini');
+  all.textContent='🗺 បើកផ្លូវទាំងមូលក្នុង Google Maps';
+  all.target='_blank'; all.rel='noopener';
+  var mids=stops.map(function(p){ return p.q });
+  all.href='https://www.google.com/maps/dir/?api=1&origin='+encodeURIComponent(base.q)+
+           '&destination='+encodeURIComponent(base.q)+
+           '&waypoints='+encodeURIComponent(mids.join('|'))+'&travelmode=driving';
+  box.appendChild(all);
+  box.appendChild(el('div','hint','ចម្ងាយ ≈ គឺជាផ្លូវត្រង់ មិនមែនចម្ងាយផ្លូវពិតទេ — ចុចលើជួរណាមួយ ដើម្បីឱ្យ Google Maps គណនាពេលធ្វើដំណើរពិត។'));
+  root.appendChild(box);
+}
+
 function calDayBlock(root, d, ev, today, compact){
   var k=dkey(d), list=ev[k]||[];
   var h=el('div','dayhd'+(d.getDay()===0||d.getDay()===6?' wknd':''),
@@ -1242,6 +1380,7 @@ function calDayBlock(root, d, ev, today, compact){
   root.appendChild(h);
   if(!list.length && compact){ root.appendChild(el('div','hint','—')); return }
   drawEvents(root, list);
+  if(!compact) routeBlock(root, list);
   if(!compact){
     root.appendChild(el('div','grouphd','បន្ថែមនៅថ្ងៃនេះ'));
     [['📍 ចុះទីតាំង',function(){ visitForm(null,k,'visit') }],
@@ -1272,7 +1411,8 @@ function drawEvents(root, list){
 /* ---------- 2. internal ---------- */
 function renderTeam(root){
   var seg=el('div','seg');
-  [['daily','📋 របាយការណ៍'],['leave','🏖 សុំច្បាប់'],['late','⏰ សុំយឺត'],['meeting','👥 ប្រជុំផ្ទៃក្នុង']].forEach(function(p){
+  [['daily','📋 របាយការណ៍'],['leave','🏖 សុំច្បាប់'],['late','⏰ សុំយឺត'],['meeting','👥 ប្រជុំផ្ទៃក្នុង'],
+   ['alarm','🔔 រំលឹកផ្ទាល់ខ្លួន']].forEach(function(p){
     var b=el('button',null,p[1]);
     b.onclick=function(){ internalForm(p[0]) };
     seg.appendChild(b);
@@ -1287,13 +1427,19 @@ function renderTeam(root){
   var all=S.internal.slice().sort(function(a,b){return (dt(b.fromAt)||0)-(dt(a.fromAt)||0)});
   var doneN=all.filter(function(r){ return r.type==='meeting' && r.done }).length;
   var live=all.filter(function(r){ return S.showDone ? (r.type==='meeting' && r.done) : !(r.type==='meeting' && r.done) });
-  var mine=live.filter(function(r){ return r.type!=='daily' });   /* សារជូនដំណឹង ៖ ច្បាប់ · យឺត · ប្រជុំ */
+  var mine=live.filter(function(r){ return r.type!=='daily' && r.type!=='alarm' });
   var daily=live.filter(function(r){ return r.type==='daily' });
+  var alarms=all.filter(function(r){ return r.type==='alarm' && r.email===S.me.email })
+                .sort(function(a,b){ return (dt(a.fromAt)||0)-(dt(b.fromAt)||0) });
   section(root, S.showDone?'ប្រជុំដែលបានបញ្ចប់':'ការជូនដំណឹង ៖ ច្បាប់ · យឺត · ប្រជុំ', mine.length);
   if(!mine.length) root.appendChild(emptyBox(S.showDone?'គ្មានប្រជុំដែលបានបញ្ចប់':'មិនទាន់មានការជូនដំណឹង'));
   mine.forEach(function(r){ root.appendChild(internalCard(r)) });
 
   if(!S.showDone){
+    section(root,'🔔 ការរំលឹកផ្ទាល់ខ្លួន', alarms.length);
+    if(!alarms.length) root.appendChild(emptyBox('មិនទាន់មានការរំលឹក'));
+    alarms.forEach(function(r){ root.appendChild(alarmCard(r)) });
+
     var auto=autoReports().filter(function(x){ return x.email===S.me.email });
     var myDaily=daily.filter(function(r){ return r.email===S.me.email });
     section(root,'របាយការណ៍ប្រចាំថ្ងៃរបស់ខ្ញុំ (កត់ត្រាស្វ័យប្រវត្តិ)', myDaily.length+auto.length);
@@ -1312,9 +1458,28 @@ function meetPlaceIn(r){
   if(r.floor) x.push('ជាន់ទី '+r.floor);
   return x.join(' · ');
 }
+function alarmCard(r){
+  var c=el('div','rec'), b=el('div','body'), d=dt(r.fromAt);
+  var rail=el('div','rail moved');
+  rail.innerHTML = d? '<span class="d">'+d.getDate()+'</span><span class="m">'+KHM[d.getMonth()]+'</span><span class="t">'+fmtT(r.fromAt)+'</span>' : '';
+  b.appendChild(rail);
+  var meat=el('div','meat');
+  meat.innerHTML='<div class="name">🔔 '+esc(r.subject||'ការរំលឹក')+'<span class="chip c-move">ផ្ទាល់ខ្លួន</span></div>'+
+    '<div class="tin">'+esc(fmtFull(r.fromAt))+'</div>'+
+    (r.leaveAt?'<div class="row"><i>🚗</i><div>ចេញដំណើរម៉ោង <span class="lat">'+esc(r.leaveAt)+'</span></div></div>':'')+
+    (r.minutes?'<div class="row"><i>📝</i><div>'+esc(r.minutes)+'</div></div>':'');
+  b.appendChild(meat); c.appendChild(b);
+  var a=el('div','acts');
+  a.appendChild(btn('⏰ ដាក់ចូលប្រតិទិន (រោទ៍)','key',function(){ downloadAlarmICS(r) }));
+  a.appendChild(btn('✏️ កែ','',function(){ alarmForm(r) }));
+  a.appendChild(btn('🗑 លុប','danger',function(){ delInternal(r) }));
+  c.appendChild(a);
+  return c;
+}
 function internalCard(r){
   if(r.type==='meeting') return meetingCard(r);
   if(r.type==='daily')   return dailyCard(r);
+  if(r.type==='alarm')   return alarmCard(r);
   var c=el('div','rec'), b=el('div','body');
   var d=dt(r.fromAt), late=(r.type==='late');
   var rail=el('div','rail '+(late?'moved':'done'));
@@ -2384,7 +2549,7 @@ function field(parent,label,node,hint){
 }
 function input(type,val,ph){ var i=el('input'); i.type=type; i.value=val||''; if(ph)i.placeholder=ph; return i }
 var WORK_STEP=15;
-var HOURS={ visit:[8,17], meet:[8,17], daily:[7,20] };   /* ចុះទីតាំង/ប្រជុំ ៨–៥ · របាយការណ៍ ៧–៨ យប់ */
+var HOURS={ visit:[8,17], meet:[8,17], daily:[7,20], alarm:[3,17] };   /* ចុះទីតាំង/ប្រជុំ ៨–៥ · របាយការណ៍ ៧–៨ យប់ */
 function isWeekend(dstr){
   if(!dstr) return false;
   var d=keyDate(dstr), w=d.getDay();
@@ -2943,9 +3108,49 @@ function moveForm(r){
   });
 }
 
+function alarmForm(edit){
+  var isNew=!edit;
+  var r = edit ? JSON.parse(JSON.stringify(edit))
+               : {id:uid(), type:'alarm', email:S.me.email, status:'noted', createdAt:new Date().toISOString()};
+  openSheet(isNew?'រំលឹកផ្ទាល់ខ្លួនថ្មី':'កែការរំលឹក', function(b){
+    b.appendChild(el('div','hint','ការរំលឹកនេះឃើញតែអ្នកម្នាក់ប៉ុណ្ណោះ។ ម៉ោងរោទ៍ជ្រើសបានពី ០៣:០០ ព្រឹក ដល់ ១៧:០០។'));
+    var when=dtField(b,'ថ្ងៃ និងម៉ោងរោទ៍', r.fromAt, '', '', 'alarm');
+    var leave=el('select');
+    leave.appendChild(el('option',null,'— មិនកំណត់ —')).value='';
+    for(var h=3;h<=17;h++) for(var m=0;m<60;m+=15){
+      if(h===17 && m>0) break;
+      var v=(h<10?'0':'')+h+':'+(m<10?'0':'')+m;
+      var o=el('option',null,v); o.value=v; leave.appendChild(o);
+    }
+    leave.value=r.leaveAt||'';
+    field(b,'ម៉ោងចេញដំណើរ', leave, 'ម៉ោងដែលត្រូវចេញ ដើម្បីទៅដល់ទាន់ពេល');
+    var what=field(b,'ត្រូវធ្វើអ្វី', textarea(r.subject||'','ឧ. យកឯកសារបោះត្រា · ទៅសហគ្រាស X'));
+    var note=field(b,'កំណត់សម្គាល់បន្ថែម', textarea(r.minutes||'','ឧ. ផ្លូវកកញឹកញាប់ · ត្រូវទិញសាំងមុន'));
+
+    var go=el('button','save','រក្សាទុកការរំលឹក');
+    go.onclick=function(){
+      if(!when.d.value) return toast('សូមកំណត់ថ្ងៃ និងម៉ោងរោទ៍');
+      if(!what.value.trim()) return toast('សូមសរសេរថាត្រូវធ្វើអ្វី');
+      r.fromAt=when.val(); r.toAt=r.fromAt;
+      r.leaveAt=leave.value;
+      r.subject=what.value.trim(); r.reason=r.subject;
+      r.minutes=note.value.trim();
+      r.silent=true;                       /* ផ្ទាល់ខ្លួន — គ្មានសារជូនក្រុម */
+      closeSheet(); pushInternal(r);
+    };
+    b.appendChild(go);
+
+    if(!isNew){
+      var del=el('button','danger','លុបការរំលឹកនេះ');
+      del.onclick=function(){ closeSheet(); delInternal(r) };
+      b.appendChild(del);
+    }
+  });
+}
 function internalForm(type, edit){
   if(type==='meeting') return meetingForm(edit);
   if(type==='daily')   return dailyForm(edit);
+  if(type==='alarm')   return alarmForm(edit);
   openSheet(type==='late'?'សុំមកយឺត':'សុំច្បាប់', function(b){
     var rec={id:uid(), type:type, email:S.me.email, status:'noted', createdAt:new Date().toISOString()};
     var from, to, days;
@@ -3332,6 +3537,17 @@ function checkReminders(){
       hit.forEach(function(min){ done[r.id+'|'+p[0]+'|'+min]=1 });
     });
   });
+  /* រំលឹកផ្ទាល់ខ្លួន ៖ រោទ៍ត្រង់ម៉ោង */
+  (S.internal||[]).forEach(function(r){
+    if(r.type!=='alarm' || r.email!==S.me.email) return;
+    var t=dt(r.fromAt); if(!t) return;
+    var key='alarm|'+r.id+'|'+r.fromAt, diff=now-t.getTime();
+    if(diff>=0 && diff<=30*60000 && !done[key]){
+      notify('🔔 '+(r.subject||'ការរំលឹក'),
+        fmtFull(r.fromAt)+(r.leaveAt?'\nចេញដំណើរម៉ោង '+r.leaveAt:'')+(r.minutes?'\n'+r.minutes:''));
+      done[key]=1; changed=true;
+    }
+  });
   if(changed) ls('reminded',done);
 }
 /* ៣. ដាក់ចូលប្រតិទិនទូរសព្ទ (.ics) — ជូនដំណឹងដំណើរការទោះកម្មវិធីបិទ */
@@ -3358,6 +3574,32 @@ function downloadICS(r){
   a.download=(r.nameLatin||'schedule').replace(/[^\w\- ]+/g,'_')+'.ics';
   document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove() },1500);
   toast('បើកឯកសារនេះ ដើម្បីដាក់ចូលប្រតិទិនទូរសព្ទ');
+}
+
+/** ដាក់ការរំលឹកផ្ទាល់ខ្លួនចូលប្រតិទិនទូរសព្ទ — រោទ៍ដោយប្រតិទិន ទោះកម្មវិធីបិទ */
+function downloadAlarmICS(r){
+  if(!r.fromAt) return toast('មិនទាន់មានម៉ោងរោទ៍');
+  var start=r.fromAt, end=new Date(new Date(start).getTime()+30*60000).toISOString();
+  var alarms=['BEGIN:VALARM','TRIGGER:PT0M','ACTION:DISPLAY','DESCRIPTION:'+(r.subject||'ការរំលឹក'),'END:VALARM'];
+  if(r.leaveAt){
+    var d=dt(start), hm=String(r.leaveAt).split(':');
+    var lv=new Date(d.getFullYear(),d.getMonth(),d.getDate(),Number(hm[0]||0),Number(hm[1]||0),0,0);
+    var mins=Math.round((d.getTime()-lv.getTime())/60000);
+    if(mins>0) alarms=alarms.concat(['BEGIN:VALARM','TRIGGER:-PT'+mins+'M','ACTION:DISPLAY',
+      'DESCRIPTION:ចេញដំណើរម៉ោង '+r.leaveAt,'END:VALARM']);
+  }
+  var ev=['BEGIN:VEVENT','UID:alarm'+r.id+'@rsc','DTSTAMP:'+icsTime(new Date().toISOString()),
+    'DTSTART:'+icsTime(start),'DTEND:'+icsTime(end),
+    'SUMMARY:🔔 '+(r.subject||'ការរំលឹក'),
+    'DESCRIPTION:'+((r.leaveAt?'ចេញដំណើរម៉ោង '+r.leaveAt+'\\n':'')+(r.minutes||'')),
+    ].concat(alarms).concat(['END:VEVENT']).join('\r\n');
+  var ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//RSC//Schedule//KM','CALSCALE:GREGORIAN',ev,'END:VCALENDAR'].join('\r\n');
+  var blob=new Blob([ics],{type:'text/calendar;charset=utf-8'});
+  var a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='reminder.ics';
+  document.body.appendChild(a); a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove() },1500);
+  toast('បើកឯកសារនេះ ដើម្បីដាក់ចូលប្រតិទិន — ប្រតិទិននឹងរោទ៍ជំនួស');
 }
 
 /* ============================================================
