@@ -107,6 +107,10 @@ details.hist li{margin-bottom:5px}
 .empty b{display:block;font-family:'KhmerOS Muol Light',serif;color:var(--ink);font-size:13.5px;margin-bottom:6px;font-weight:400;line-height:1.85}
 .seg{display:flex;border:1px solid var(--line);border-radius:3px;overflow:hidden;background:#fff;margin-bottom:14px}
 .seg button{flex:1;padding:9px 4px;font-size:13px;color:var(--slate)}
+.seg.icons button{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+  gap:4px;padding:9px 3px;font-size:11px;line-height:1.5;min-width:0}
+.seg.icons .ic{font-size:18px;line-height:1.1}
+.seg.icons .tx{display:block;text-align:center;word-break:keep-all}
 .seg button[aria-pressed="true"]{background:var(--ink);color:#fff;font-weight:500}
 
 /* ---------- sheet / forms ---------- */
@@ -1057,6 +1061,11 @@ function btn(t,c,fn){ var b=el('button',c,t); b.onclick=fn; return b }
 function pad2(n){ return (n<10?'0':'')+n }
 function dkey(d){ return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate()) }
 function keyDate(k){ var p=k.split('-'); return new Date(+p[0], +p[1]-1, +p[2]) }
+/** ដើមសប្តាហ៍ = ថ្ងៃច័ន្ទ (សៅរ៍ អាទិត្យ មិនរាប់) */
+function weekStart(d){
+  var w=d.getDay();                 /* 0=អាទិត្យ */
+  return addDays(d, w===0 ? -6 : 1-w);
+}
 function addDays(d,n){ var x=new Date(d.getTime()); x.setDate(x.getDate()+n); return x }
 
 /** រាល់ព្រឹត្តិការណ៍ តម្រៀបតាមថ្ងៃ ៖ {ថ្ងៃ: [ព្រឹត្តិការណ៍…]} */
@@ -1235,7 +1244,7 @@ function renderCal(root){
   var label;
   if(S.cal.mode==='day')  label='ថ្ងៃ'+DAYS[cur.getDay()]+' '+cur.getDate()+' '+KHM[cur.getMonth()]+' '+cur.getFullYear();
   else if(S.cal.mode==='week'){
-    var w0=addDays(cur,-cur.getDay()), w1=addDays(w0,6);
+    var w0=weekStart(cur), w1=addDays(w0,4);   /* ច័ន្ទ → សុក្រ */
     label = w0.getDate()+(w0.getMonth()!==w1.getMonth()?' '+KHM[w0.getMonth()]:'')+' – '+w1.getDate()+' '+KHM[w1.getMonth()]+' '+w1.getFullYear();
   } else label = KHM[cur.getMonth()]+' '+cur.getFullYear();
   bar.appendChild(prev); bar.appendChild(el('h2',null,label)); bar.appendChild(next); bar.appendChild(tdy);
@@ -1267,7 +1276,7 @@ function renderCal(root){
     var cp=el('button','arclink noprint','📋 ចម្លងកាលវិភាគជារូបភាព');
     cp.style.marginBottom='12px';
     cp.onclick=function(){
-      var days = S.cal.mode==='week' ? (function(){ var w=addDays(cur,-cur.getDay()), a=[]; for(var i=0;i<7;i++) a.push(addDays(w,i)); return a })() : [cur];
+      var days = S.cal.mode==='week' ? (function(){ var w=weekStart(cur), a=[]; for(var i=0;i<5;i++) a.push(addDays(w,i)); return a })() : [cur];
       var groups = days.map(function(d){
         var list=(ev[dkey(d)]||[]);
         return {label:'ថ្ងៃ'+DAYS[d.getDay()]+' '+d.getDate()+' '+KHM[d.getMonth()]+' '+d.getFullYear(),
@@ -1281,8 +1290,8 @@ function renderCal(root){
 
   if(S.cal.mode==='month') calMonth(root, cur, ev, today);
   else if(S.cal.mode==='week'){
-    var w0=addDays(cur,-cur.getDay());
-    for(var i=0;i<7;i++) calDayBlock(root, addDays(w0,i), ev, today, true);
+    var w0=weekStart(cur);
+    for(var i=0;i<5;i++) calDayBlock(root, addDays(w0,i), ev, today, true);
   } else calDayBlock(root, cur, ev, today, false);
 }
 
@@ -1410,10 +1419,11 @@ function drawEvents(root, list){
 
 /* ---------- 2. internal ---------- */
 function renderTeam(root){
-  var seg=el('div','seg');
-  [['daily','📋 របាយការណ៍'],['leave','🏖 សុំច្បាប់'],['late','⏰ សុំយឺត'],['meeting','👥 ប្រជុំផ្ទៃក្នុង'],
-   ['alarm','🔔 រំលឹកផ្ទាល់ខ្លួន']].forEach(function(p){
-    var b=el('button',null,p[1]);
+  var seg=el('div','seg icons');
+  [['daily','📋','របាយការណ៍'],['leave','🏖','សុំច្បាប់'],['late','⏰','សុំយឺត'],
+   ['meeting','👥','ប្រជុំផ្ទៃក្នុង'],['alarm','🔔','រំលឹកផ្ទាល់ខ្លួន']].forEach(function(p){
+    var b=el('button');
+    b.innerHTML='<span class="ic">'+p[1]+'</span><span class="tx">'+p[2]+'</span>';
     b.onclick=function(){ internalForm(p[0]) };
     seg.appendChild(b);
   });
