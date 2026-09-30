@@ -2009,6 +2009,12 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
 #calcCard .cc-drafttag{font-size:11px; font-weight:800; letter-spacing:.08em; color:var(--yellow);
   background:var(--yellow-bg); border:1px solid var(--accent); border-radius:6px; padding:2px 8px;}
 @media(max-width:640px){ #calcCard .cc-title{width:100%;} }
+#calcCard .cc-work .cc-bar{display:flex; flex-wrap:wrap; gap:6px; align-items:center;}
+#calcCard .cc-wkbtn{border:1px solid var(--line,#d8d2c2); background:var(--surface,#fff);
+  color:var(--ink,#222); border-radius:8px; padding:5px 10px; cursor:pointer;
+  font:inherit; font-size:12.5px; line-height:1.4; white-space:nowrap; width:auto;}
+#calcCard .cc-wkbtn:hover{background:#f3efe4;}
+#calcCard .cc-wknote{font-size:12px; color:var(--muted,#777); margin:6px 0 8px;}
 #calcCard .cc-work-wrap{overflow:auto; max-height:70vh; border:1px solid #d8d2c2; border-radius:8px;}
 #calcCard .cc-work-tbl{border-collapse:collapse; font-size:12.5px;}
 #calcCard .cc-work-tbl th{background:#f3efe4; border:1px solid #d8d2c2; padding:2px 6px;
@@ -50630,6 +50636,48 @@ function workEval(expr, depth){
   if(typeof r !== 'number' || !isFinite(r)) return '#ERR';
   return Math.round(r * 1e6) / 1e6;
 }
+/* ⭐⭐⭐ [stated] ២០២៦-០៩-៣០ ៖ «ចុចគណនាដំបូងវាដើរ ចុចពីលើម្តងទៀតឈប់ដើរ» ។
+   ⚠⚠ មូលហេតុ ៖ កម្មវិធីដោះស្រាយ `change` របស់ខ្ញុំ **គូរផ្ទាំងទាំងមូលឡើងវិញ**
+     រាល់ក្រឡា ។ លំដាប់ពិតរបស់អ្នកប្រើ ៖
+       ១. ចុចក្រឡា B3 ⇒ ក្រឡា B2 បាត់ focus ⇒ `change` បាញ់
+       ២. ការគូរឡើងវិញជំនួស `innerHTML` ⇒ **ធាតុ B3 ដែលទើបចុចត្រូវបំផ្លាញ**
+       ៣. ការចុចធ្លាក់លើធាតុដែលផ្តាច់ចេញ ⇒ អ្វីដែលវាយបន្ទាប់មិនទៅណាទេ
+     ⇒ មើលទៅដូចជា «ដំបូងដើរ ក្រោយឈប់ដើរ» ។ ឧបករណ៍សាកល្បងរបស់ខ្ញុំមិនចាប់
+       បានទេ ព្រោះវាកំណត់តម្លៃដោយកូដ មិនបានពឹងលើ focus ពិត ។
+   ⇒ កុំគូរឡើងវិញ ៖ គណនាឡើងវិញរួចសរសេរតម្លៃចូលក្រឡាដែលមានស្រាប់ ⇒ ធាតុ
+     DOM នៅរស់ ⇒ focus និងការចុចដើរធម្មតា ។
+   ⚠ ក្រឡាដែលកំពុងកែមិនប៉ះ ⇒ អត្ថបទដែលអ្នកកំពុងវាយមិនត្រូវជំនួសពាក់កណ្តាលផ្លូវ ។ */
+function workRefresh(host, committed){
+  if(!host) return;
+  /* ⭐⭐⭐ [stated] ២០២៦-០៩-៣០ ៖ «នៅមានបញ្ហាពេលចុចពីលើរូបមន្ត» — ក្រឡាដែល
+     ទើបវាយនៅបង្ហាញអត្ថបទដើម ( 20000000 គ្មានក្បៀស · =sum(b1:b3) មិនគណនា )
+     ខណៈក្រឡាមុនៗបង្ហាញត្រឹមត្រូវ ។
+     ⚠⚠ មូលហេតុ ៖ ការរំលងផ្អែកលើ `document.activeElement` ។ ក្នុងអំឡុង
+       `blur` ( ដែលជាពេល `change` បាញ់ ) កម្មវិធីរុករកខ្លះនៅរាប់ក្រឡាដែល
+       កំពុងចាកចេញជា activeElement ⇒ ក្រឡាដែលទើបកែ **ត្រូវរំលង** ⇒ វាមិន
+       ដែលបានធ្វើទ្រង់ទ្រាយ ឬគណនាឡើយ ។
+     ⇒ ក្រឡាដែលទើបប្តេជ្ញា ( `committed` ) ត្រូវធ្វើបច្ចុប្បន្នភាព **ជានិច្ច** ;
+       ការរំលងអនុវត្តតែលើក្រឡាផ្សេងដែលកំពុងវាយ ។ */
+  var live = document.activeElement;
+  host.querySelectorAll('[data-wk]').forEach(function(inp){
+    var ref = inp.getAttribute('data-wk');
+    var raw = workRaw(ref);
+    inp.setAttribute('data-raw', raw);
+    if(inp !== committed && inp === live) return;
+    var val = raw.charAt(0) === '=' ? workValue(ref, 0) : raw;
+    var isErr = (typeof val === 'string' && val.charAt(0) === '#');
+    var plainV = String(val).replace(/[\s,]/g, '');
+    var isNum = !isErr && plainV !== '' && !isNaN(Number(plainV));
+    if(isNum){
+      var nv = Number(plainV);
+      var dec = (String(plainV).split('.')[1] || '').length;
+      val = nv.toLocaleString('en-US', { minimumFractionDigits:Math.min(dec, 6),
+                                         maximumFractionDigits:Math.min(dec, 6) });
+    }
+    inp.value = String(val);
+    if(isNum) inp.classList.add('n'); else inp.classList.remove('n');
+  });
+}
 function paneWork(){
   var w = workState(), sh = workSheet();
   var rows = sh.rows || 30, cols = sh.cols || 8;
@@ -50638,13 +50686,21 @@ function paneWork(){
   h.push('<select data-act="wkPick">' + w.sheets.map(function(x, i){
     return '<option value="' + i + '"' + (i === w.cur ? ' selected' : '') + '>' +
            esc(x.name || ('សន្លឹក ' + (i + 1))) + '</option>'; }).join('') + '</select>');
-  h.push('<button class="cc-x" data-act="wkAdd">＋ សន្លឹកថ្មី</button>');
-  h.push('<button class="cc-x" data-act="wkRen">✎ ប្តូរឈ្មោះ</button>');
-  h.push('<button class="cc-x" data-act="wkDel">🗑 លុបសន្លឹក</button>');
-  h.push('<button class="cc-x" data-act="wkRow">＋ ជួរដេក</button>');
-  h.push('<button class="cc-x" data-act="wkCol">＋ ជួរឈរ</button>');
-  h.push('<span class="cc-note">វាយលេខ ឬរូបមន្តចាប់ផ្តើមដោយ = ។ ឧ. =SUM(B2:B10) · =B2*0.2 · =ROUND(C5,0)</span>');
+  /* ⚠⚠ កុំប្រើ `cc-x` ៖ វាជាប៊ូតុងរូបតំណាង ២៤×២៤ ថេរ ⇒ អក្សរខ្មែរហូរចេញ
+     ហើយជាន់គ្នា ( ឃើញក្នុងរូបថត ) ។ ⇒ ថ្នាក់ផ្ទាល់ខ្លួនដែលទទឹងតាមអត្ថបទ ។ */
+  h.push('<button class="cc-wkbtn" data-act="wkAdd">＋ សន្លឹកថ្មី</button>');
+  h.push('<button class="cc-wkbtn" data-act="wkRen">✎ ប្តូរឈ្មោះ</button>');
+  h.push('<button class="cc-wkbtn" data-act="wkDel">🗑 លុបសន្លឹក</button>');
+  h.push('<button class="cc-wkbtn" data-act="wkRow">＋ ជួរដេក</button>');
+  h.push('<button class="cc-wkbtn" data-act="wkCol">＋ ជួរឈរ</button>');
+  /* ⭐ [stated] ២០២៦-០៩-៣០ ៖ ប៊ូតុងសម្អាត ។
+     ⚠ សម្អាតតែ **ក្រឡា** ប៉ុណ្ណោះ — សន្លឹក ឈ្មោះរបស់វា ចំនួនជួរដេក និង
+       ជួរឈរ នៅដដែល ⇒ រចនាសម្ព័ន្ធដែលអ្នករៀបរួច មិនត្រូវបាត់ជាមួយទិន្នន័យ ។
+     ⚠ សុំការបញ្ជាក់ជាមុន ព្រោះការសម្អាតត្រឡប់វិញមិនបាន ។ */
+  h.push('<button class="cc-wkbtn" data-act="wkClr">🧹 សម្អាតក្រឡា</button>');
   h.push('</div>');
+  h.push('<div class="cc-wknote">វាយលេខ ឬរូបមន្តចាប់ផ្តើមដោយ = ។ ' +
+    'ឧ. =SUM(B2:B10) · =B2*0.2 · =ROUND(C5,0) — ចុចចូលក្រឡាដើម្បីកែរូបមន្ត</div>');
   h.push('<div class="cc-work-wrap"><table class="cc-work-tbl"><thead><tr><th></th>');
   for(var c = 0; c < cols; c++) h.push('<th>' + workColName(c) + '</th>');
   h.push('</tr></thead><tbody>');
@@ -50654,10 +50710,27 @@ function paneWork(){
       var ref = workColName(c2) + r;
       var raw = workRaw(ref);
       var val = raw.charAt(0) === '=' ? workValue(ref, 0) : raw;
-      var isNum = raw !== '' && !isNaN(workNum(val)) && String(val).trim() !== '' &&
-                  !(typeof val === 'string' && val.charAt(0) === '#');
-      h.push('<td><input data-wk="' + ref + '" value="' + escAttr(raw) + '"' +
-             ' data-val="' + escAttr(String(val)) + '"' +
+      var isErr = (typeof val === 'string' && val.charAt(0) === '#');
+      var plainV = String(val).replace(/[\s,]/g, '');
+      var isNum = !isErr && plainV !== '' && !isNaN(Number(plainV));
+      /* ⚠ ក្បៀសដាក់ត្រង់ការបង្ហាញប៉ុណ្ណោះ ⇒ ការចុចចូលក្រឡាបង្ហាញលេខសុទ្ធ
+         ( `data-raw` ) ដែលកែស្រួល ហើយរូបមន្តអានតម្លៃពិត មិនមែនអត្ថបទ ។
+         ⚠ ទសភាគរក្សាតាមដើម ⇒ `fmt` ដែលបង្គត់ទៅចំនួនគត់មិនប្រើត្រង់នេះទេ ។ */
+      if(isNum){
+        var nv = Number(plainV);
+        var dec = (String(plainV).split('.')[1] || '').length;
+        val = nv.toLocaleString('en-US', { minimumFractionDigits:Math.min(dec, 6),
+                                           maximumFractionDigits:Math.min(dec, 6) });
+      }
+      /* ⭐⭐⭐ [stated] ២០២៦-០៩-៣០ ៖ «ប្រើរូបមន្តមិនបាន» ។
+         ⚠⚠ រូបមន្ត **គណនាបានត្រឹមត្រូវ** ( ការសាកបញ្ជាក់ ) តែក្រឡាបង្ហាញ
+           **អត្ថបទដើម** ជានិច្ច ⇒ អ្នកប្រើឃើញ `=SUM(B1:B2)` មិនឃើញលទ្ធផល
+           ⇒ មើលទៅដូចជាមិនដំណើរការ ។ ខ្ញុំទុកលទ្ធផលក្នុង `data-val` ដែល
+           មានតែឧបករណ៍សាកល្បងទើបមើលឃើញ — កំហុសរបស់ខ្ញុំ ។
+         ⇒ បង្ហាញ **លទ្ធផល** ក្នុងក្រឡា ហើយរក្សារូបមន្តក្នុង `data-raw` ។
+           ចុចចូលក្រឡា ⇒ រូបមន្តលេចមកវិញសម្រាប់កែ ( ដូច Excel ) ។ */
+      h.push('<td><input data-wk="' + ref + '" value="' + escAttr(String(val)) + '"' +
+             ' data-raw="' + escAttr(raw) + '"' +
              (isNum ? ' class="n"' : '') + '></td>');
     }
     h.push('</tr>');
@@ -52161,6 +52234,50 @@ function result(rows,res){
 
 /* ================= events ================= */
 function bind(el){
+  /* ⭐ Enter = គណនាភ្លាម ហើយចុះទៅក្រឡាបន្ទាប់ ( ដូចតារាងគណនាទូទៅ ) ។
+     ⚠ `blur()` ធ្វើឱ្យ `change` បាញ់ ⇒ ការគណនា និងការដាក់ក្បៀសកើតឡើង
+       តាមផ្លូវដដែល មិនចម្លងតក្កវិជ្ជាពីរច្បាប់ទេ ។
+     ⚠ Escape ត្រឡប់តម្លៃដើមវិញ មុនចាកចេញ ⇒ ការវាយខុសបោះបង់បាន ។ */
+  el.addEventListener('keydown', function(e){
+    var t = e.target;
+    if(!t || !t.dataset || !t.dataset.wk) return;
+    if(e.key === 'Enter'){
+      e.preventDefault();
+      var m = /^([A-Z]+)(\d+)$/.exec(t.dataset.wk);
+      t.blur();
+      if(m){
+        var nx = el.querySelector('[data-wk="' + m[1] + (Number(m[2]) + 1) + '"]');
+        if(nx) nx.focus();
+      }
+      return;
+    }
+    if(e.key === 'Escape'){
+      e.preventDefault();
+      var prev = t.getAttribute('data-prev');
+      var shE = workSheet();
+      if(!shE.cells) shE.cells = {};
+      if(prev === null || String(prev) === '') delete shE.cells[t.dataset.wk];
+      else shE.cells[t.dataset.wk] = prev;
+      CC.persistNow();
+      t.value = prev || '';
+      t.blur();
+      /* ⚠ ការស្តារតម្លៃដើមអាចធ្វើឱ្យតម្លៃ **មិនប្តូរ** ⇒ `change` មិនបាញ់
+         ⇒ ធ្វើទ្រង់ទ្រាយដោយផ្ទាល់ត្រង់នេះ ។ */
+      try{ workRefresh(t.closest('.cc-work'), t); }catch(err){}
+    }
+  });
+  /* ⭐ ចុចចូលក្រឡា ⇒ បង្ហាញរូបមន្ត ; ចេញ ⇒ បង្ហាញលទ្ធផលវិញ ( តាមការគូរ ) */
+  el.addEventListener('focusin', function(e){
+    var t = e.target;
+    if(t && t.dataset && t.dataset.wk && t.dataset.raw !== undefined){
+      t.value = t.dataset.raw;
+      /* ⚠⚠ ចាំតម្លៃ **មុនកែ** ៖ ការរក្សាទុកកើតឡើងរាល់តួអក្សរ ( ដើម្បីកុំឱ្យ
+         លេខបាត់ ) ⇒ ឃ្លាំងលែងចាំតម្លៃចាស់ ⇒ Escape គ្មានអ្វីត្រឡប់ទៅរក ។
+         ការសាកបានបង្ហាញ ៖ ចុច Escape រួច ក្រឡានៅតែ «999» ។ */
+      t.setAttribute('data-prev', t.dataset.raw);
+      try{ t.select(); }catch(err){}
+    }
+  });
   /* កុំចាប់ CC.state ទុកនៅទីនេះ ៖ listener ភ្ជាប់តែម្តង តែ CC.state ត្រូវជំនួស
      ដោយវត្ថុថ្មីរាល់ពេលបើកឯកសារ ឬសម្អាត។ ដូច្នេះត្រូវអានវាថ្មីរាល់ព្រឹត្តិការណ៍។ */
   var re=function(){CC.persist();CC.render();};
@@ -52189,6 +52306,13 @@ function bind(el){
         if(w.sheets.length<2){ alert('សល់សន្លឹកតែមួយ — លុបមិនបានទេ'); return; }
         if(!confirm('លុបសន្លឹក «'+(workSheet().name||'')+'» មែនទេ? ទិន្នន័យក្នុងវានឹងបាត់។')) return;
         w.sheets.splice(w.cur,1); w.cur=0; CC.persistNow(); re(); return;
+      }
+      if(act==='wkClr'){
+        var shC=workSheet(), nC=Object.keys(shC.cells||{}).length;
+        if(!nC){ alert('សន្លឹកនេះទទេរួចហើយ'); return; }
+        if(!confirm('សម្អាតក្រឡាទាំង '+nC+' ក្នុងសន្លឹក «'+(shC.name||'')+'» មែនទេ?\n'
+                    +'⚠ ត្រឡប់វិញមិនបានទេ។')) return;
+        shC.cells={}; CC.persistNow(); re(); return;
       }
       if(act==='wkRow'){ workSheet().rows=(workSheet().rows||30)+10; CC.persistNow(); re(); return; }
       if(act==='wkCol'){ workSheet().cols=Math.min(26,(workSheet().cols||8)+4);
@@ -52365,6 +52489,25 @@ function bind(el){
   var CC_YEAR_NUM_KEYS = ['base','loan','paid','paidAudit','paidLate','amt2','sales','cost'];
   el.addEventListener("input", function(e){
     var t = e.target;
+    /* ⭐⭐⭐ [stated] ២០២៦-០៩-៣០ ៖ «ពេលបញ្ចូលលេខវាអត់ដើរភ្លាមៗ … រងចាំ
+       ប្រហែល ១០ វិនាទី ទើបចេញការគណនា និងចេញក្បៀស» ។
+       ⚠⚠ ការគណនាភ្ជាប់នឹង `change` ដែលបាញ់តែពេល **ចាកចេញពីក្រឡា** ។ ពេល
+         វាយរួចអង្គុយមើល គ្មានអ្វីកើតឡើងទេ រហូតដល់មានអ្វីមួយផ្សេងធ្វើឱ្យ
+         បាត់ focus ⇒ មើលទៅដូចជាយឺត ១០ វិនាទី ។
+       ⇒ រក្សាទុកលើ `input` ( រាល់តួអក្សរ ) ⇒ លេខមិនបាត់ ទោះជាធាតុត្រូវ
+         ជំនួសដោយការគូរផ្សេង ។ កំណត់សម្គាល់ខាងក្រោមបានចែករឿងដដែលនេះ
+         សម្រាប់ក្រឡាលេខតាមឆ្នាំរួចហើយ ។
+       ⚠ មិនធ្វើទ្រង់ទ្រាយ ឬគណនាត្រង់នេះទេ ⇒ ទស្សន៍ទ្រនិចមិនលោតពេលវាយ ។
+         ការគណនាកើតឡើងលើ Enter ឬពេលចាកចេញពីក្រឡា ។ */
+    if(t.dataset.wk){
+      var shW = workSheet();
+      if(!shW.cells) shW.cells = {};
+      var vW = String(t.value).trim();
+      if(vW === '') delete shW.cells[t.dataset.wk];
+      else shW.cells[t.dataset.wk] = vW;
+      CC.persistNow();
+      return;
+    }
     if(t.dataset.tax == null) return;
     var k3 = t.dataset.k, y = t.dataset.y;
     if(!k3 || y == null) return;
@@ -52515,9 +52658,29 @@ function bind(el){
     if(t.dataset.wk){
       var shI = workSheet();
       if(!shI.cells) shI.cells = {};
-      if(String(t.value).trim() === '') delete shI.cells[t.dataset.wk];
-      else shI.cells[t.dataset.wk] = t.value;
+      /* ⭐⭐⭐ [stated] ២០២៦-០៩-៣០ ៖ «ពេលបញ្ចូលលេខឱ្យវាចេញក្បៀសអូតូផង
+         និងបញ្ចូលលេខខ្មែរក៏បានដែរ» ។
+         ⚠ លេខខ្មែរត្រូវបម្លែងនៅពេល **រក្សាទុក** មិនមែនពេលបង្ហាញទេ ⇒
+           ទិន្នន័យក្នុងឯកសាររក្សាជាលេខឡាតាំងជានិច្ច ហើយរូបមន្តដែលយោង
+           ក្រឡានោះគណនាបានភ្លាម ។ ⭐ មុខងារ `deKh()` មានស្រាប់ក្នុងឯកសារ
+           ហើយកំណត់សម្គាល់របស់វាចែងថា «គ្រប់មុខងារបំបែកលេខហៅ deKh មុនអាន» ។
+         ⚠ ក្បៀសដែលអ្នកវាយត្រូវដកចេញពេលរក្សាទុក ⇒ ឃ្លាំងទុកលេខសុទ្ធ ;
+           ការបង្ហាញទើបដាក់ក្បៀសវិញ ។ អត្ថបទ ( ឧ. «ផលរកឃើញ» ) និងរូបមន្ត
+           រក្សាដដែលបេះបិទ ។ */
+      var vRaw = String(t.value).trim();
+      if(vRaw && vRaw.charAt(0) !== '=' && /[០-៩]/.test(vRaw)){
+        try{ vRaw = deKh(vRaw); }catch(e){}
+      }
+      if(vRaw && vRaw.charAt(0) !== '='){
+        var plain = vRaw.replace(/[\s,]/g, '');
+        if(plain !== '' && !isNaN(Number(plain))) vRaw = plain;
+      }
+      if(vRaw === '') delete shI.cells[t.dataset.wk];
+      else shI.cells[t.dataset.wk] = vRaw;
       CC.persistNow();
+      /* ⚠ ធ្វើបច្ចុប្បន្នភាពនៅនឹងកន្លែង — មិនគូរឡើងវិញ ។ មើលកំណត់សម្គាល់
+         នៅ `workRefresh` សម្រាប់ហេតុផល ។ */
+      try{ workRefresh(t.closest('.cc-work'), t); }catch(err){}
       return;
     }
     if(t.dataset.valign){
