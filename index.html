@@ -38168,6 +38168,31 @@ function trkGuessSector(){
   });
   return score >= 3 ? best : '';
 }
+/* ⭐⭐⭐ [stated] ២០២៦-០៩-៣០ ៖ «រើសលើកទី២ ចេញឯកសារស្នើសុំតាមប្រភេទ
+   សកម្មភាពអាជីវកម្ម ឬអាចមានកន្លែងរើសប្រភេទបាន ដើម្បីបង្ហាញក្នុងនេះតែម្តង» ។
+   ⇒ ប្រអប់ជ្រើសប្រភេទដដែលត្រូវមាននៅ **ក្នុងផ្ទាំងព្រីនផង** ⇒ មិនចាំបាច់
+     ត្រឡប់ទៅផ្ទាំងតាមដានទេ ។
+   ⚠ តក្កវិជ្ជាជំនួសបញ្ជីត្រូវ **រួមគ្នាតែមួយ** សម្រាប់កន្លែងទាំងពីរ ។
+     ការចម្លងកូដពីរច្បាប់ នឹងញែកចេញពីគ្នាថ្ងៃណាមួយ ។ */
+function trkApplySector(ri, sid){
+  const rd = (trkState.rounds || [])[ri];
+  if(!rd) return 0;
+  trkState.sector = sid;
+  if(!sid){ trkSave(); return 0; }
+  const old = {};
+  (Array.isArray(rd.items) ? rd.items : []).forEach(it=>{
+    old[String(it.label || '').trim()] = it;
+  });
+  rd.items = trkSectorDocs(sid).map(d=>{
+    const o = old[d.km] || {};
+    return { label:d.km, en:d.en,
+             received: !!o.received, notExist: !!o.notExist,
+             recvDate: o.recvDate || '', mtgNo: o.mtgNo || '',
+             reqMtg: o.reqMtg || '', issue: o.issue || '', note: o.note || '' };
+  });
+  trkSave();
+  return rd.items.length;
+}
 function trkSectorId(){
   const cur = String(trkState.sector || '');
   return cur || trkGuessSector();
@@ -38877,21 +38902,7 @@ function renderTrackingView(){
       const ri = Number(sel.getAttribute('data-ri')) || 0;
       const rd = trkState.rounds[ri];
       if(!rd) return;
-      const sid = sel.value;
-      trkState.sector = sid;
-      if(!sid){ trkSave(); return; }
-      const old = {};
-      (Array.isArray(rd.items) ? rd.items : []).forEach(it=>{
-        old[String(it.label || '').trim()] = it;
-      });
-      rd.items = trkSectorDocs(sid).map(d=>{
-        const o = old[d.km] || {};
-        return { label:d.km, en:d.en,
-                 received: !!o.received, notExist: !!o.notExist,
-                 recvDate: o.recvDate || '', mtgNo: o.mtgNo || '',
-                 reqMtg: o.reqMtg || '', issue: o.issue || '', note: o.note || '' };
-      });
-      trkSave();
+      trkApplySector(ri, sel.value);
       renderTrackingView();
     });
   });
@@ -40174,10 +40185,20 @@ function letterSkipped(){
   return ld.skipMore[i];
 }
 function syncLetterRoundBox(){
+  const isReq = (((trkState.letterDoc || {}).kind || 'req') === 'req');
+  const round = Number((trkState.letterDoc || {}).round) || 1;
   const lr = document.getElementById('trkLetterRound');
-  if(!lr) return;
-  lr.value = String(Number((trkState.letterDoc || {}).round) || 1);
-  lr.style.display = (((trkState.letterDoc || {}).kind || 'req') === 'req') ? '' : 'none';
+  if(lr){
+    lr.value = String(round);
+    lr.style.display = isReq ? '' : 'none';
+  }
+  /* ⚠ ប្រភេទសហគ្រាសមានន័យតែសម្រាប់ជួរបន្ថែម ( លើកទី ២ ឡើងទៅ ) ⇒ លើកទី ១
+     ជាបញ្ជីស្តង់ដារថេរ មិនអាស្រ័យប្រភេទទេ ។ */
+  const ls = document.getElementById('trkLetterSector');
+  if(ls){
+    ls.value = trkSectorId();
+    ls.style.display = (isReq && round > 1) ? '' : 'none';
+  }
 }
 function letterRoundIdx(){
   const n = Number((trkState.letterDoc || {}).round) || 1;
@@ -45735,6 +45756,11 @@ function docsHtml(){
                   title="លិខិតស្នើសុំឯកសារលើកទីប៉ុន្មាន">
             ${TRK_ROUND_LABELS.map((lb, i)=>`<option value="${i+1}">លើកទី${kh(i+1)}</option>`).join('')}
           </select>
+          <select id="trkLetterSector" class="trk-in" style="width:260px; margin-left:6px;"
+                  title="ប្រភេទសហគ្រាស — បញ្ជីឯកសារប្តូរតាមប្រភេទនេះ">
+            <option value="">— ប្រភេទសហគ្រាស —</option>
+            ${TRK_SECTORS.map(s=>`<option value="${s[0]}">${esc(s[1])}</option>`).join('')}
+          </select>
         </label>
         <label>កម្មវិធី
           <select id="trkDocProg" class="trk-in" style="width:130px;">
@@ -45814,7 +45840,17 @@ function wireDocs(host){
   const lr = document.getElementById('trkLetterRound');
   if(lr){
     lr.onchange = ()=>{ trkState.letterDoc.round = Number(lr.value) || 1;
-                        trkSave(); renderLetter(); };
+                        trkSave(); syncLetterRoundBox(); renderLetter(); };
+  }
+  const ls = document.getElementById('trkLetterSector');
+  if(ls){
+    ls.onchange = ()=>{
+      const ri = letterRoundIdx();
+      if(ri === 0) return;                 /* លើកទី ១ មិនអាស្រ័យប្រភេទ */
+      trkApplySector(ri, ls.value);
+      renderLetter();
+      try{ if(document.getElementById('tracking-container')) renderTrackingView(); }catch(e){}
+    };
   }
   syncLetterRoundBox();
   host.querySelectorAll('.trk-ld').forEach(el=>{
