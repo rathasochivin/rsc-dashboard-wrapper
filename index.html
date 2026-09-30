@@ -2009,6 +2009,16 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
 #calcCard .cc-drafttag{font-size:11px; font-weight:800; letter-spacing:.08em; color:var(--yellow);
   background:var(--yellow-bg); border:1px solid var(--accent); border-radius:6px; padding:2px 8px;}
 @media(max-width:640px){ #calcCard .cc-title{width:100%;} }
+#calcCard .cc-work-wrap{overflow:auto; max-height:70vh; border:1px solid #d8d2c2; border-radius:8px;}
+#calcCard .cc-work-tbl{border-collapse:collapse; font-size:12.5px;}
+#calcCard .cc-work-tbl th{background:#f3efe4; border:1px solid #d8d2c2; padding:2px 6px;
+    position:sticky; top:0; z-index:1; font-weight:700; min-width:28px;}
+#calcCard .cc-work-tbl tbody th{position:sticky; left:0; z-index:2; text-align:right;}
+#calcCard .cc-work-tbl td{border:1px solid #e3ddcc; padding:0;}
+#calcCard .cc-work-tbl input{border:0; outline:none; background:transparent; font:inherit;
+    padding:3px 5px; width:130px;}
+#calcCard .cc-work-tbl input.n{text-align:right;}
+#calcCard .cc-work-tbl input:focus{background:#fffbe9; box-shadow:inset 0 0 0 1px var(--brand,#0F3D3E);}
 @media print{ #calcCard .cc-tabs,#calcCard .cc-flags,#calcCard .cc-bar,#calcCard .cc-x{display:none;} #calcCard .cc-pane{display:block !important;} }
 
 </style>
@@ -50233,7 +50243,7 @@ CC.riskData=function(){
   return out;
 };
 
-var TABS=[["sum","📊 សង្ខេប"],["toi","💰 ពន្ធលើប្រាក់ចំណូល"],["risk","⚠️ វិភាគហានិភ័យ"],["vat","🧾 អាករលើតម្លៃបន្ថែម"],["oth","🧮 ពន្ធផ្សេងៗ"],["ver","🗂 ជំនាន់"],["par","⚙️ ប៉ារ៉ាម៉ែត្រ"],["law","📜 ច្បាប់យោង"],["fx","💱 អត្រាប្តូរប្រាក់"]];
+var TABS=[["sum","📊 សង្ខេប"],["toi","💰 ពន្ធលើប្រាក់ចំណូល"],["risk","⚠️ វិភាគហានិភ័យ"],["vat","🧾 អាករលើតម្លៃបន្ថែម"],["oth","🧮 ពន្ធផ្សេងៗ"],["work","📐 តារាងគណនា"],["ver","🗂 ជំនាន់"],["par","⚙️ ប៉ារ៉ាម៉ែត្រ"],["law","📜 ច្បាប់យោង"],["fx","💱 អត្រាប្តូរប្រាក់"]];
 var MODES=[["tax","ពន្ធត្រូវបង់ប៉ុណ្ណោះ"],["add","+ ពន្ធបន្ថែម (Additional Tax)"],["int","+ ការប្រាក់ (Interest)"],["total","សរុប (Total)"]];
 CC.render=function(){
   var el=document.getElementById("calcCard"); if(!el) return;
@@ -50280,6 +50290,7 @@ CC.render=function(){
   h.push(only("risk",paneRisk));
   h.push(only("vat",function(){ return paneVat(res); }));
   h.push(only("oth",function(){ return paneOth(res); }));
+  h.push(only("work",paneWork));
   h.push(only("ver",paneVer));
   h.push(only("par",panePar));
   /* [stated] ច្បាប់យោងចេញពីផ្ទាំងប៉ារ៉ាម៉ែត្រមកជាផ្ទាំងផ្ទាល់ខ្លួន —
@@ -50449,6 +50460,211 @@ CC.riskExportXls=function(){
   }catch(e){ alert("ទាញជា Excel មិនបានសម្រេច ៖ "+(e&&e.message?e.message:e)); }
 };
 
+/* ⭐⭐⭐ [stated] ២០២៦-០៩-៣០ ៖ «អាចបង្កើត tab ថ្មីមួយដើម្បីជាជម្រើសក្នុងការ
+   គណនា ឬសរសេរចូលដូច Excel ដើម្បីជាមូលដ្ឋានផ្សេងៗក្នុងការគណនាពន្ធឡើងវិញ …
+   មិនបាច់បើក file Excel» ។
+   ⭐ អ្វីដែលត្រូវការ ៖ កន្លែងគណនាសេរី ដែល **រក្សាទុកជាមួយសហគ្រាស** ⇒ ការងារ
+     គណនាមិនរស់នៅក្នុងឯកសារ Excel ដាច់ដោយឡែកដែលងាយបាត់ ។
+   ⚠⚠ ការវាយតម្លៃរូបមន្តមិនប្រើ `eval` ឬ `Function()` ទេ ៖ អត្ថបទដែល
+     អ្នកប្រើវាយមិនត្រូវក្លាយជាកូដដែលរត់ឡើយ ។ ⇒ អ្នកញែកផ្ទាល់ខ្លួន
+     ( shunting-yard ) ទទួលតែលេខ · យោងក្រឡា · ប្រមាណវិធី · និងមុខងារដែល
+     អនុញ្ញាត ។ អ្វីផ្សេងត្រឡប់ #ERR ។
+   ⚠ យោងវដ្ត ( A1 = A1+1 ) ត្រូវចាប់បានដោយជម្រៅ ⇒ #CYCLE មិនមែនគាំងទេ ។
+   ⚠ សន្លឹកច្រើន ៖ «ឯកសារនីមួយៗ» របស់អ្នកគឺសន្លឹកមួយៗ ⇒ បន្ថែម · ប្តូរឈ្មោះ ·
+     លុប បាន ។ */
+var WORK_FN = {
+  SUM:    function(a){ var s=0; a.forEach(function(v){ s+=v; }); return s; },
+  AVERAGE:function(a){ return a.length ? WORK_FN.SUM(a)/a.length : 0; },
+  MIN:    function(a){ return a.length ? Math.min.apply(null,a) : 0; },
+  MAX:    function(a){ return a.length ? Math.max.apply(null,a) : 0; },
+  COUNT:  function(a){ return a.length; },
+  ROUND:  function(a){ var d=a.length>1?a[1]:0, m=Math.pow(10,d);
+                       return Math.round((a[0]||0)*m)/m; },
+  ABS:    function(a){ return Math.abs(a[0]||0); }
+};
+function workState(){
+  var s = CC.state;
+  if(!s.work || typeof s.work !== 'object') s.work = {};
+  if(!Array.isArray(s.work.sheets) || !s.work.sheets.length){
+    s.work.sheets = [{ name:'សន្លឹក ១', cells:{}, rows:30, cols:8 }];
+  }
+  if(!(s.work.cur >= 0) || s.work.cur >= s.work.sheets.length) s.work.cur = 0;
+  return s.work;
+}
+function workSheet(){ var w = workState(); return w.sheets[w.cur]; }
+function workColName(i){
+  var n = '';
+  i = i + 1;
+  while(i > 0){ var r = (i - 1) % 26; n = String.fromCharCode(65 + r) + n; i = Math.floor((i - 1) / 26); }
+  return n;
+}
+function workColIdx(s){
+  var n = 0;
+  for(var i = 0; i < s.length; i++) n = n * 26 + (s.charCodeAt(i) - 64);
+  return n - 1;
+}
+function workRaw(ref){ return String((workSheet().cells || {})[ref] || ''); }
+function workNum(v){
+  if(typeof v === 'number') return v;
+  var t = String(v == null ? '' : v).replace(/[\s,]/g, '');
+  if(t === '' || isNaN(Number(t))) return 0;
+  return Number(t);
+}
+function workValue(ref, depth){
+  depth = depth || 0;
+  if(depth > 30) return '#CYCLE';
+  var raw = workRaw(ref);
+  if(raw.charAt(0) !== '=') return raw;
+  return workEval(raw.slice(1), depth + 1);
+}
+function workRange(a, b, depth){
+  var ma = /^([A-Z]+)(\d+)$/.exec(a), mb = /^([A-Z]+)(\d+)$/.exec(b);
+  if(!ma || !mb) return [];
+  var c1 = workColIdx(ma[1]), r1 = +ma[2], c2 = workColIdx(mb[1]), r2 = +mb[2];
+  var out = [];
+  for(var c = Math.min(c1,c2); c <= Math.max(c1,c2); c++){
+    for(var r = Math.min(r1,r2); r <= Math.max(r1,r2); r++){
+      var v = workValue(workColName(c) + r, depth);
+      if(typeof v === 'string' && v.charAt(0) === '#') return null;
+      if(String(v).trim() !== '') out.push(workNum(v));
+    }
+  }
+  return out;
+}
+function workEval(expr, depth){
+  var toks = [], i = 0, s = String(expr).toUpperCase();
+  while(i < s.length){
+    var ch = s.charAt(i);
+    if(/\s/.test(ch)){ i++; continue; }
+    if(/[0-9.]/.test(ch)){
+      /* ⚠⚠ កុំលេបសញ្ញាក្បៀស ៖ ក្នុងរូបមន្ត ក្បៀសជា **អ្នកបំបែកអាគុយម៉ង់** ។
+         ការសាកបានបង្ហាញ `=ROUND(B2/3,0)` ចេញ 26,667 ជំនួស 266,667 ព្រោះ
+         «3,0» ត្រូវអានជាលេខតែមួយ រួចដកក្បៀសចេញ ⇒ ក្លាយជា 30 ។ */
+      var j = i; while(j < s.length && /[0-9.]/.test(s.charAt(j))) j++;
+      toks.push({ t:'n', v:workNum(s.slice(i, j)) }); i = j; continue;
+    }
+    if(/[A-Z]/.test(ch)){
+      var k = i; while(k < s.length && /[A-Z0-9]/.test(s.charAt(k))) k++;
+      var w = s.slice(i, k); i = k;
+      if(s.charAt(i) === '('){ toks.push({ t:'f', v:w }); continue; }
+      if(s.charAt(i) === ':'){
+        var k2 = i + 1; while(k2 < s.length && /[A-Z0-9]/.test(s.charAt(k2))) k2++;
+        toks.push({ t:'r', a:w, b:s.slice(i + 1, k2) }); i = k2; continue;
+      }
+      var v = workValue(w, depth);
+      if(typeof v === 'string' && v.charAt(0) === '#') return v;
+      toks.push({ t:'n', v:workNum(v) }); continue;
+    }
+    if('+-*/()^,'.indexOf(ch) >= 0){ toks.push({ t:'o', v:ch }); i++; continue; }
+    return '#ERR';
+  }
+  var out = [], ops = [];
+  var prec = { '+':1, '-':1, '*':2, '/':2, '^':3 };
+  for(var p = 0; p < toks.length; p++){
+    var tk = toks[p];
+    if(tk.t === 'n' || tk.t === 'r'){ out.push(tk); continue; }
+    /* ⚠⚠ អាគុយម៉ង់មុខងារត្រូវ **រាប់** មិនមែនទាយទេ ។ ការសាកបានបង្ហាញ
+       `=ROUND(B2/3,0)` ចេញ 26,667 ជំនួស 266,667 ព្រោះការដកចេញពីជង់
+       ទាយចំនួនអាគុយម៉ង់ខុស ។ ⇒ រាប់សញ្ញាក្បៀសពេលញែក រួចដាក់ចំនួននោះ
+       ជាប់នឹងមុខងារ ។ */
+    if(tk.t === 'f'){ tk.n = 1; ops.push(tk); continue; }
+    if(tk.v === ','){
+      while(ops.length && ops[ops.length-1].v !== '(') out.push(ops.pop());
+      for(var z = ops.length - 1; z >= 0; z--){
+        if(ops[z].t === 'f'){ ops[z].n = (ops[z].n || 1) + 1; break; }
+        if(ops[z].v === '(' && z > 0 && ops[z-1].t !== 'f') break;
+      }
+      continue;
+    }
+    if(tk.v === '('){ ops.push(tk); continue; }
+    if(tk.v === ')'){
+      while(ops.length && ops[ops.length-1].v !== '(') out.push(ops.pop());
+      if(!ops.length) return '#ERR';
+      ops.pop();
+      if(ops.length && ops[ops.length-1].t === 'f') out.push(ops.pop());
+      continue;
+    }
+    /* សញ្ញាដកមុខលេខ ⇒ ០ − x */
+    if(tk.v === '-' && (p === 0 || (toks[p-1].t === 'o' && toks[p-1].v !== ')'))){
+      out.push({ t:'n', v:0 });
+    }
+    while(ops.length && ops[ops.length-1].t === 'o' && ops[ops.length-1].v !== '(' &&
+          prec[ops[ops.length-1].v] >= prec[tk.v]) out.push(ops.pop());
+    ops.push(tk);
+  }
+  while(ops.length){ var o = ops.pop(); if(o.v === '(') return '#ERR'; out.push(o); }
+  var st = [];
+  for(var q = 0; q < out.length; q++){
+    var it = out[q];
+    if(it.t === 'n'){ st.push(it.v); continue; }
+    if(it.t === 'r'){ st.push(it); continue; }
+    if(it.t === 'f'){
+      var fn = WORK_FN[it.v];
+      if(!fn) return '#NAME';
+      var take = it.n || 1, args = [];
+      while(take-- > 0 && st.length){
+        var top = st.pop();
+        if(top && top.t === 'r'){
+          var rng = workRange(top.a, top.b, depth);
+          if(rng === null) return '#ERR';
+          args = rng.concat(args);
+        } else args.unshift(workNum(top));
+      }
+      st.push(fn(args));
+      continue;
+    }
+    var b2 = st.pop(), a2 = st.pop();
+    if(a2 && a2.t === 'r') return '#ERR';
+    if(b2 && b2.t === 'r') return '#ERR';
+    a2 = workNum(a2); b2 = workNum(b2);
+    if(it.v === '+') st.push(a2 + b2);
+    else if(it.v === '-') st.push(a2 - b2);
+    else if(it.v === '*') st.push(a2 * b2);
+    else if(it.v === '/') st.push(b2 === 0 ? '#DIV0' : a2 / b2);
+    else if(it.v === '^') st.push(Math.pow(a2, b2));
+    else return '#ERR';
+    if(st[st.length-1] === '#DIV0') return '#DIV0';
+  }
+  if(st.length !== 1) return '#ERR';
+  var r = st[0];
+  if(typeof r !== 'number' || !isFinite(r)) return '#ERR';
+  return Math.round(r * 1e6) / 1e6;
+}
+function paneWork(){
+  var w = workState(), sh = workSheet();
+  var rows = sh.rows || 30, cols = sh.cols || 8;
+  var h = ['<div class="cc-work">'];
+  h.push('<div class="cc-bar">');
+  h.push('<select data-act="wkPick">' + w.sheets.map(function(x, i){
+    return '<option value="' + i + '"' + (i === w.cur ? ' selected' : '') + '>' +
+           esc(x.name || ('សន្លឹក ' + (i + 1))) + '</option>'; }).join('') + '</select>');
+  h.push('<button class="cc-x" data-act="wkAdd">＋ សន្លឹកថ្មី</button>');
+  h.push('<button class="cc-x" data-act="wkRen">✎ ប្តូរឈ្មោះ</button>');
+  h.push('<button class="cc-x" data-act="wkDel">🗑 លុបសន្លឹក</button>');
+  h.push('<button class="cc-x" data-act="wkRow">＋ ជួរដេក</button>');
+  h.push('<button class="cc-x" data-act="wkCol">＋ ជួរឈរ</button>');
+  h.push('<span class="cc-note">វាយលេខ ឬរូបមន្តចាប់ផ្តើមដោយ = ។ ឧ. =SUM(B2:B10) · =B2*0.2 · =ROUND(C5,0)</span>');
+  h.push('</div>');
+  h.push('<div class="cc-work-wrap"><table class="cc-work-tbl"><thead><tr><th></th>');
+  for(var c = 0; c < cols; c++) h.push('<th>' + workColName(c) + '</th>');
+  h.push('</tr></thead><tbody>');
+  for(var r = 1; r <= rows; r++){
+    h.push('<tr><th>' + r + '</th>');
+    for(var c2 = 0; c2 < cols; c2++){
+      var ref = workColName(c2) + r;
+      var raw = workRaw(ref);
+      var val = raw.charAt(0) === '=' ? workValue(ref, 0) : raw;
+      var isNum = raw !== '' && !isNaN(workNum(val)) && String(val).trim() !== '' &&
+                  !(typeof val === 'string' && val.charAt(0) === '#');
+      h.push('<td><input data-wk="' + ref + '" value="' + escAttr(raw) + '"' +
+             ' data-val="' + escAttr(String(val)) + '"' +
+             (isNum ? ' class="n"' : '') + '></td>');
+    }
+    h.push('</tr>');
+  }
+  h.push('</tbody></table></div></div>');
+  return h.join('');
+}
 function paneRisk(){
   var s=CC.state, yrs=s.years||[], D=CC.riskData(), h=[];
   if(!yrs.length) return '<div class="cc-empty">មិនទាន់មានឆ្នាំ — សូមទាញពី TOI ឬបន្ថែមឆ្នាំជាមុនសិន។</div>';
@@ -51953,6 +52169,32 @@ function bind(el){
     var s=CC.state;
     var bs=e.target.closest("[data-basis]");
     if(bs){ CC.showBasis(bs.dataset.basis); return; }
+    var wk=e.target.closest("[data-act^='wk']");
+    if(wk){
+      var w=workState(), act=wk.dataset.act;
+      if(act==='wkAdd'){
+        var nm=prompt('ឈ្មោះសន្លឹកថ្មី','សន្លឹក '+(w.sheets.length+1));
+        if(nm!==null){ w.sheets.push({name:String(nm).trim()||('សន្លឹក '+(w.sheets.length+1)),
+                                      cells:{}, rows:30, cols:8});
+                       w.cur=w.sheets.length-1; CC.persistNow(); re(); }
+        return;
+      }
+      if(act==='wkRen'){
+        var nm2=prompt('ប្តូរឈ្មោះសន្លឹក', workSheet().name||'');
+        if(nm2!==null && String(nm2).trim()){ workSheet().name=String(nm2).trim();
+                                              CC.persistNow(); re(); }
+        return;
+      }
+      if(act==='wkDel'){
+        if(w.sheets.length<2){ alert('សល់សន្លឹកតែមួយ — លុបមិនបានទេ'); return; }
+        if(!confirm('លុបសន្លឹក «'+(workSheet().name||'')+'» មែនទេ? ទិន្នន័យក្នុងវានឹងបាត់។')) return;
+        w.sheets.splice(w.cur,1); w.cur=0; CC.persistNow(); re(); return;
+      }
+      if(act==='wkRow'){ workSheet().rows=(workSheet().rows||30)+10; CC.persistNow(); re(); return; }
+      if(act==='wkCol'){ workSheet().cols=Math.min(26,(workSheet().cols||8)+4);
+                         CC.persistNow(); re(); return; }
+      return;
+    }
     var vf=e.target.closest("[data-vfit]");
     if(vf){
       if(!s.vat.align) s.vat.align={};
@@ -52263,6 +52505,20 @@ function bind(el){
             :(function(){var tt=s.taxes[+t.dataset.i];return {mtr:tt.paid,audit:tt.paidAudit,late:tt.paidLate};})();
       mp[t.dataset.k][t.dataset.y]=num(t.value);
       return re();
+    }
+    if(t.dataset.act==='wkPick'){
+      workState().cur=Number(t.value)||0; CC.persistNow(); return re();
+    }
+    /* ⭐ ក្រឡាតារាងគណនា ៖ រក្សាអត្ថបទដើម ( រូបមន្ត ) មិនមែនលទ្ធផលទេ ។
+       ⚠ មិនគូរឡើងវិញពេលវាយទេ ⇒ ទស្សន៍ទ្រនិចមិនលោត ; ការគណនាឡើងវិញ
+         កើតឡើងនៅ `change` ( ចេញពីក្រឡា ) ។ */
+    if(t.dataset.wk){
+      var shI = workSheet();
+      if(!shI.cells) shI.cells = {};
+      if(String(t.value).trim() === '') delete shI.cells[t.dataset.wk];
+      else shI.cells[t.dataset.wk] = t.value;
+      CC.persistNow();
+      return;
     }
     if(t.dataset.valign){
       if(!s.vat.align) s.vat.align={};
