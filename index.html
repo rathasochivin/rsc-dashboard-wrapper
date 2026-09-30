@@ -1252,6 +1252,10 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
 #view-tracking .lt-tbl th, #docs-modal .lt-tbl th{text-align:center !important; font-weight:700;}
 #view-tracking .lt-tbl td.n, #view-tracking .lt-tbl td.c, #docs-modal .lt-tbl td.n, #docs-modal .lt-tbl td.c{text-align:center;}
 #view-tracking .lt-tbl td.note, #docs-modal .lt-tbl td.note{min-width:110px;}
+#view-tracking .lt-ed, #docs-modal .lt-ed{display:block; min-height:1.3em; outline:none;}
+#view-tracking .lt-ed:focus, #docs-modal .lt-ed:focus{background:#fffbe9; box-shadow:inset 0 0 0 1px var(--brand,#0F3D3E);}
+#view-tracking .lt-ed:empty::before, #docs-modal .lt-ed:empty::before{content:'…'; color:#bbb;}
+@media print{ #view-tracking .lt-ed:empty::before, #docs-modal .lt-ed:empty::before{content:'';} }
 #view-tracking .lt-note-in, #docs-modal .lt-note-in{display:block; min-height:1.4em; outline:none;}
 #view-tracking .lt-note-in:focus, #docs-modal .lt-note-in:focus{background:#fffbe9; box-shadow:inset 0 0 0 1px var(--brand,#0F3D3E);}
 #view-tracking .lt-note-in:empty::before, #docs-modal .lt-note-in:empty::before{content:'…'; color:#bbb;}
@@ -40245,7 +40249,11 @@ function letterDocRows(){
 
 function letterRequestHtml(c){
   const rows = letterDocRows().map((r, n)=>`
-    <tr><td class="n">${kh(n+1)}-</td><td class="km">${esc(r.label)}</td><td class="en">${esc(r.en)}</td>
+    <tr><td class="n">${kh(n+1)}-</td>
+        <td class="km"><span class="lt-ed" data-i="${r.i}" data-fld="label"
+            contenteditable="true">${esc(r.label)}</span></td>
+        <td class="en"><span class="lt-ed" data-i="${r.i}" data-fld="en"
+            contenteditable="true">${esc(r.en)}</span></td>
         <td class="lt-xcell"><button type="button" class="lt-x" data-i="${r.i}" title="លុបជួរនេះ">✕</button></td></tr>`).join('');
   const nno = c.noticeNo ? kh(c.noticeNo) : '..........';
   const nd  = c.noticeDate ? khmerDMY(c.noticeDate) : '..........';
@@ -40257,6 +40265,8 @@ function letterRequestHtml(c){
   យើងខ្ញុំសូមជម្រាបជូនលោក-លោកស្រីនាយក មេត្តាសហការត្រៀមនូវរបាយការណ៍ និងឯកសារចាំបាច់ជាបឋមមួយចំនួន
   សម្រាប់ផ្តល់ឱ្យសវនករពន្ធដារពិនិត្យ ដូចខាងក្រោម៖</p>
   <table class="lt-list">${rows}</table>
+  ${letterRoundIdx() ? `<div class="lt-restore no-print">
+    <button type="button" class="lt-x lt-add-doc">＋ បន្ថែមឯកសារ</button></div>` : ''}
   ${letterSkipped().length ? `<div class="lt-restore">បានលុប ${kh(letterSkipped().length)} ជួរ —
     <button type="button" class="lt-x lt-restore-btn">↺ យកមកវិញទាំងអស់</button></div>` : ''}
   <p class="lt-note">* សវនករពន្ធដារអាចស្នើសុំរបាយការណ៍ ឬឯកសារផ្សេងៗបន្ថែមទៀតនៅពេលក្រោយ ក្នុងកំឡុងពេលធ្វើសវនកម្មសារពើពន្ធ។</p>
@@ -40382,6 +40392,38 @@ function renderLetter(){
 /* ប៊ូតុង ✕ លើជួរឯកសារ ៖ លេចតែលើអេក្រង់ ព្រោះ CSS នេះមាន #view-tracking
    នៅខាងមុខ ហើយឯកសារព្រីនជាឯកសារដាច់ដោយឡែកគ្មានធាតុនោះទេ។ */
 function bindLetterRowDelete(box){
+  /* ⭐⭐ ការកែពាក្យ និងការបន្ថែមជួរត្រូវភ្ជាប់ **ត្រង់នេះ** ៖ ខ្ញុំដាក់វាក្នុង
+     `wireDocs` ជាលើកដំបូង ហើយវាមិនដើរ — `renderLetter()` ជំនួស `innerHTML`
+     រាល់ពេលប្តូរជួរ ឬប្រភេទ ⇒ អ្នកស្តាប់ត្រូវបោះចោលស្ងាត់ៗ ។
+     ⭐ នេះជាកំហុសដដែលនឹងប្រអប់ធីកក្នុងរបាយការណ៍សវនកម្ម ។ ច្បាប់ដដែល ៖
+       ភ្ជាប់អ្នកស្តាប់នៅកន្លែងដែលសរសេរ HTML ចុងក្រោយ ។
+     ⚠ ការកែពាក្យសរសេរចូល **ទិន្នន័យ** មិនមែនត្រឹម DOM ទេ ⇒ វានៅជាប់ពេល
+       គូរឡើងវិញ និងពេលផ្ទុកទំព័រឡើងវិញ ។ */
+  box.querySelectorAll('.lt-ed').forEach(el=>{
+    el.addEventListener('blur', ()=>{
+      const ri = letterRoundIdx();
+      const rd = (trkState.rounds || [])[ri];
+      if(!rd) return;
+      if(!Array.isArray(rd.items)) rd.items = [];
+      const i = Number(el.getAttribute('data-i'));
+      if(!(i >= 0)) return;
+      while(rd.items.length <= i) rd.items.push({ label:'', en:'', received:false,
+        notExist:false, recvDate:'', mtgNo:'', reqMtg:'', issue:'', note:'' });
+      rd.items[i][el.getAttribute('data-fld')] = el.textContent.trim();
+      trkSave();
+    });
+  });
+  box.querySelectorAll('.lt-add-doc').forEach(b=> b.onclick = ()=>{
+    const ri = letterRoundIdx();
+    const rd = (trkState.rounds || [])[ri];
+    if(!rd) return;
+    if(!Array.isArray(rd.items)) rd.items = [];
+    rd.items.push({ label:'ឯកសារថ្មី', en:'', received:false, notExist:false,
+                    recvDate:'', mtgNo:'', reqMtg:'', issue:'', note:'' });
+    trkSave();
+    renderLetter();
+    try{ if(document.getElementById('tracking-container')) renderTrackingView(); }catch(e){}
+  });
   box.querySelectorAll('.lt-x[data-i]').forEach(b=> b.onclick = ()=>{
     const i = Number(b.dataset.i), sk = letterSkipped();
     if(sk.indexOf(i) === -1) sk.push(i);
@@ -45834,7 +45876,16 @@ function wireDocs(host){
     lk.onchange = ()=>{ trkState.letterDoc.kind = lk.value; trkSave();
                         syncLetterRoundBox(); renderLetter(); };
   }
-  /* ⭐ ជម្រើសលើកទី — មានន័យតែសម្រាប់លិខិតស្នើសុំឯកសារ ។
+  /* ⭐⭐⭐ [stated] ២០២៦-០៩-៣០ ៖ «លើកទី ២ គួរ insert បន្ថែមឯកសារដោយដៃបាន
+     និងអាចកែពាក្យនៅលើឯកសារនេះបានផងដែរ» ។
+     ⚠⚠ ការកែពាក្យត្រូវសរសេរចូល **ទិន្នន័យ** មិនមែនត្រឹម DOM ទេ ៖ លិខិតនេះ
+       គូរឡើងវិញរាល់ពេលប្តូរជួរ ឬប្រភេទ ⇒ អ្វីដែលកែតែក្នុង DOM នឹងបាត់ ។
+     ⇒ សរសេរចូល `rounds[ri].items[i]` នៅពេល blur រួច `trkSave()` ។
+     ⚠ មិនគូរឡើងវិញភ្លាមក្រោយកែទេ ⇒ ទស្សន៍ទ្រនិចមិនលោត ; ការគូរឡើងវិញ
+       កើតឡើងពេលបន្ថែម ឬលុបជួរប៉ុណ្ណោះ ។
+     ⚠ លើកទី ១ ៖ ការកែពាក្យដើរដែរ ( សរសេរចូល items ដដែល ) តែការបន្ថែមជួរ
+       មិនអនុញ្ញាតទេ ព្រោះបញ្ជីនោះតម្រង់គ្នានឹង `TRK_DOCS_EN` តាមលិបិក្រម ។ */
+  /* ⭐ ជម្រើសលើកទី — មានន័យតែសម្រាប់លិខិតស្នើសុំអកសារ ។
      ⚠ ការលាក់ត្រូវធ្វើ **រាល់ពេលប្តូរប្រភេទលិខិត** មិនមែនតែពេលភ្ជាប់ដំបូងទេ
        ( ការសាកបានបង្ហាញថាវានៅលេចពេលជ្រើស «លិខិតធានាអះអាង» ) ។ */
   const lr = document.getElementById('trkLetterRound');
