@@ -29328,7 +29328,39 @@ function mergeIntoState(perFileData){
     });
   }
   perFileData.sort((a,b)=> a.year.localeCompare(b.year));
+  /* ⭐⭐⭐ [stated] ២០២៦-១០-០១ ៖ «ទិន្នន័យខ្លះមិនមានទេ ដូចជាចំណាយបៀវត្ស
+     ឆ្នាំ ២០២៥ តែក្នុងនេះលោតចេញមក ដោយយកទិន្នន័យឆ្នាំចាស់មកដាក់ ហើយនៅពេល
+     UPLOAD ទិន្នន័យ TOI ថ្មី វាមិនបាន REPLACE ទិន្នន័យចាស់ឡើយ» ។
+     ⚠⚠ ការជំនួសខាងលើដកតែ **ឆ្នាំដែលលែងមាន** ។ សម្រាប់ឆ្នាំដែល **នៅមាន**
+       ការសរសេរធ្វើតែលើជួរយោងដែលមានក្នុងឯកសារថ្មី ( `rs.values[ref][year] = …`
+       ដំណើរការក្នុងរង្វិលជុំនៃ `refRows` ប៉ុណ្ណោះ ) ⇒ ជួរដែល **អវត្តមាន**
+       ក្នុងឯកសារថ្មី រក្សាតម្លៃចាស់ទុក ។ នោះជាមូលហេតុ B23 ឆ្នាំ ២០២៥ ចេញ
+       ៣១២,៤៦០,៧៥០ ដូចឆ្នាំ ២០២៤ បេះបិទ ៖ វាមិនមែនទិន្នន័យ ២០២៥ ទេ ។
+     ⇒ លុបឆ្នាំនោះចោលទាំងស្រុងជាមុនសិន រួចទើបសរសេរអ្វីដែលឯកសារថ្មីមាន ⇒
+       ឯកសារដែល upload ជាអ្នកកំណត់ចុងក្រោយសម្រាប់ឆ្នាំដែលវាផ្ទុក ។
+     ⚠ លុបតែ **ម្តងក្នុងមួយឆ្នាំក្នុងមួយជុំ** ៖ បើមានឯកសារពីរសម្រាប់ឆ្នាំដដែល
+       ក្នុងការ upload តែមួយ ការលុបលើកទីពីរនឹងលុបអ្វីដែលឯកសារទីមួយទើបសរសេរ ។ */
+  const __wiped = {};
+  function __wipeYear(y){
+    if(__wiped[y]) return;
+    __wiped[y] = true;
+    Object.keys(state.refSteps || {}).forEach(k=>{
+      const rs = state.refSteps[k] || {};
+      ['values','prevValues'].forEach(v=>{
+        Object.keys(rs[v] || {}).forEach(ref=>{
+          if(rs[v][ref]) delete rs[v][ref][y];
+        });
+      });
+    });
+    Object.keys(state.rawSteps || {}).forEach(k=>{
+      const by = (state.rawSteps[k] || {}).byYear || {};
+      delete by[y];
+    });
+    if(state.shareholders) delete state.shareholders[y];
+    if(state.assets && state.assets.byYear) delete state.assets.byYear[y];
+  }
   perFileData.forEach(({year, sheets, info})=>{
+    __wipeYear(year);
     if(!state.years.includes(year)) state.years.push(year);
     state.companyInfo[year] = info;
     if(sheets['Step2']) state.shareholders[year] = extractShareholders(sheets['Step2']);
@@ -39513,8 +39545,21 @@ function buildMinutes(idx){
      កន្លែងចុះហត្ថលេខាត្រងត្រូវរួច តែឃ្លាបើកមិនត្រង។ ⚠ ការត្រងត្រូវធ្វើ
      **ទាំងពីរកន្លែង** បើមិនដូច្នេះ ឈ្មោះលេចខាងលើ តែបាត់ខាងក្រោម។ */
   const ownPick0 = Array.isArray(mt.signOwn) ? mt.signOwn : null;
-  const ownWho = [pi.auditorName, pi.partnerAuditorName]
-              .filter(Boolean)
+  /* ⭐⭐⭐ [stated] ២០២៦-០៩-៣០ ៖ «ពេលចុចដកធីកឈ្មោះសវនករ ១ ចេញ វាបាត់ឈ្មោះ
+     សវនករដែលនៅមានធីកនោះ» ⇒ ឃ្លាបើកចេញ «............» ទោះជានៅមានមួយធីក ។
+     ⚠⚠ មូលហេតុ ៖ ការត្រងធ្វើត្រូវ តែ **បញ្ជីឈ្មោះខុសគ្នារវាងកន្លែងពីរ** ៖
+        · ប្រអប់ធីក និងកន្លែងចុះហត្ថលេខា ⇒ `trkOwnSigners()` ដែល **trim**
+          ឈ្មោះ ហើយរាប់បញ្ចូល `subOfficeName` ផង
+        · ឃ្លាបើកនេះ ⇒ `[pi.auditorName, pi.partnerAuditorName]` **ដោយមិន
+          trim** និងគ្មាន subOffice
+       ⇒ ឈ្មោះដែលមានចន្លោះខាងចុង ( ឬជាអនុប្រធានការិយាល័យ ) មិនដែលត្រូវនឹង
+         អ្វីដែលបានរក្សាទុកក្នុង `signOwn` ⇒ បញ្ជីទទេ ⇒ ចំណុចចុចៗ ។
+     ⭐ កំណត់សម្គាល់ខាងលើបានព្រមានរួចថា «ការត្រងត្រូវធ្វើទាំងពីរកន្លែង» —
+       វាបានធ្វើមែន តែលើ **បញ្ជីពីរផ្សេងគ្នា** ។ ច្បាប់ពិតគឺ ៖ កន្លែងទាំងពីរ
+       ត្រូវអាន **បញ្ជីតែមួយ** ។
+     ⚠ ផលប៉ះពាល់ ៖ បើ `subOfficeName` មានឈ្មោះ ហើយត្រូវបានធីក វានឹងលេច
+       ក្នុងឃ្លាបើកដែរ ( ពីមុនមិនលេច ) ។ នោះជាអ្វីដែលប្រអប់ធីកសន្យា ។ */
+  const ownWho = trkOwnSigners(pi)
               .filter(n => !ownPick0 || ownPick0.indexOf(n) >= 0);
   const mixedList = (ci.mixedAuditorList || []).filter(x => x && x.name);
   const mixPick0 = Array.isArray(mt.signMix) ? mt.signMix : null;
@@ -48065,8 +48110,20 @@ CC.compute=function(){
        កំណត់ពន្ធឡើងវិញ។ ការបង់ក្នុងសវនកម្ម និងការបង់យឺតយ៉ាវ ត្រូវញែក
        បង្ហាញអោយដឹងតែប៉ុណ្ណោះ — មិនដកទេ។
        toiPaid = សរុបសម្រាប់បង្ហាញ ; toiPaidDed = អ្វីដែលដកបានពិត។ */
+    /* ⭐⭐⭐ [stated] ២០២៦-១០-០១ ៖ «៨៣,៤៣៥,៦០៧ គឺត្រូវយកមកដកនឹងពន្ធលើ
+       ប្រាក់ចំណូល … តែហេតុអ្វីវាមិនយកមកដក» ។
+       ⚠⚠ វិធានដែលអ្នកបានកំណត់ពីមុន ( ២០២៦-០៨ ) គឺ ៖ ទឹកប្រាក់ដែលបង់
+         **ក្នុងអំឡុងសវនកម្ម** ជាការបង់ទល់នឹងការកំណត់ពន្ធឡើងវិញនោះផ្ទាល់
+         ⇒ មិនដក ។ កូដធ្វើតាមវិធាននោះ ⇒ ៨៣,៤៣៥,៦០៧ ចូលជួរ «ក្នុងសវនកម្ម
+         ( មិនដក )» ⇒ មិនដក ។ វាមិនមែនកំហុសទេ — វាជាវិធាន ។
+       ⚠⚠ តែករណីនេះខុស ៖ ការបង់អាចមកពី **សវនកម្មមុន** ឬជាការបង់ដែលត្រូវ
+         ដកពិតប្រាកដ ។ ខ្ញុំមិនអាចដឹងបានពីកូដទេ ។
+       ⇒ មិនប្តូរវិធានលំនាំដើម ; បន្ថែម **ប្រអប់ធីកតាមឆ្នាំ** ដែលអនុញ្ញាតឱ្យ
+         ដកការបង់ក្នុងសវនកម្មចេញ ។ លំនាំដើម = មិនធីក ⇒ ឯកសារដែលមានស្រាប់
+         មិនប្រែតម្លៃសោះ ។ */
+    var dedAu=!!((s.toi.dedAudit||{})[y]);
     var toiPaid=toiPaidMtr+toiPaidAudit+toiPaidLate;
-    var toiPaidDed=toiPaidMtr;
+    var toiPaidDed=toiPaidMtr+(dedAu?toiPaidAudit:0);
     /* ត្រូវបង់មុនសិន ចាំដកអ្វីដែលបានបង់ — ព្រោះចំនួនបានបង់ពេលខ្លះរួមទាំង
        ទោសទណ្ឌ ឬការកំណត់ពន្ធឡើងវិញពីសវនកម្មមុន */
     var toiDue=Math.max(0,e52-wht-prep);
@@ -48113,7 +48170,8 @@ CC.compute=function(){
     var vatDue=Math.max(0,outVat-inVat-findInVat-vatCredit+vmAdd-vmSub+vAlign);
     var vatPaidMtr=+s.vat.paid[y]||0, vatPaidAudit=+s.vat.paidAudit[y]||0, vatPaidLate=+s.vat.paidLate[y]||0;
     var vatPaid=vatPaidMtr+vatPaidAudit+vatPaidLate;      /* សរុប — សម្រាប់បង្ហាញ */
-    var vatPaidDed=vatPaidMtr;                            /* ដកបានពិត ៖ សាលកបត្រតែប៉ុណ្ណោះ */
+    /* ⭐ ដូចពន្ធលើប្រាក់ចំណូល ៖ ធីកតាមឆ្នាំដើម្បីដកការបង់ក្នុងសវនកម្ម */
+    var vatPaidDed=vatPaidMtr+(((s.vat.dedAudit||{})[y])?vatPaidAudit:0);                            /* ដកបានពិត ៖ សាលកបត្រតែប៉ុណ្ណោះ */
     var vatPay=Math.max(0,vatDue-vatPaidDed);
 
     out[y]={
@@ -51254,10 +51312,18 @@ function paneToi(res){
      ដែលបង្ហាញលេខដដែល។ តារាងទីពីរត្រូវលុប ; ជួរទាំងបីនេះជាកន្លែងតែមួយ
      ហើយ «ក្នុងសវនកម្ម» ក្លាយជាប្រអប់វាយបានត្រង់នេះ។ */
   line('បានបង់ ៖ តាមសាលកបត្រ (ដកចេញ)',get('toiPaidMtr'),'cc-int',1);
-  h.push('<tr><td>បានបង់ ៖ ក្នុងសវនកម្ម (មិនដក)</td>');
+  h.push('<tr><td>បានបង់ ៖ ក្នុងសវនកម្ម</td>');
   yrs.forEach(function(y){
     h.push('<td class="n"><input class="cc-grid-in" data-pay="toi" data-k="audit" data-y="'+y+'" value="'+
       fmt((s.toi.toiPaidAudit||{})[y]||0)+'"></td>');
+  });
+  h.push('</tr>');
+  /* ⭐ ធីក = ដកចំនួនខាងលើចេញដែរ ។ មើលកំណត់សម្គាល់ក្នុងការគណនា ។ */
+  h.push('<tr><td>↳ ដកការបង់ក្នុងសវនកម្មចេញដែរ</td>');
+  yrs.forEach(function(y){
+    h.push('<td class="n"><span class="cc-chk"><input type="checkbox" data-dedau="toi" data-y="'+y+'"'+
+      (((s.toi.dedAudit||{})[y])?' checked':'')+
+      ' title="លំនាំដើម ៖ មិនដក ។ ធីកបើការបង់នេះជាការបង់ដែលត្រូវដកពិត (ឧ. ពីសវនកម្មមុន)"></span></td>');
   });
   h.push('</tr>');
   line('បានបង់ ៖ យឺតយ៉ាវ (មិនដក)',get('toiPaidLate'),'cc-int',1);
@@ -51375,7 +51441,8 @@ function paneVat(res){
     ["តម្រឹមលម្អៀង (បូក/ដក)","vatAlign"],
     ["អតប ត្រូវបង់ (កំណត់ឡើងវិញ)","vatDue"],
     ["បានបង់ ៖ តាមសាលកបត្រ (ដកចេញ)","vatPaidMtr"],
-    ["បានបង់ ៖ ក្នុងសវនកម្ម (មិនដក)","vatPaidAudit","","vat"],
+    ["បានបង់ ៖ ក្នុងសវនកម្ម","vatPaidAudit","","vat"],
+    ["↳ ដកការបង់ក្នុងសវនកម្មចេញដែរ","vatDedAudit"],
     ["បានបង់ ៖ យឺតយ៉ាវ (មិនដក)","vatPaidLate"],
     ["អតប បានបង់ សរុប","vatPaid"],
     ["ដក ៖ អតបលើសយោងពីឆ្នាំមុន","vatCarryIn"],
@@ -52212,6 +52279,11 @@ function result(rows,res){
          «ត្រូវបង់» ស្មើនឹង «បានបង់ តាមសាលកបត្រ» ក្នុងមួយចុច ។
          ⚠ គម្លាតគណនានៅពេលគូរ ( ត្រូវបង់បច្ចុប្បន្ន ធៀបនឹងបានបង់ ) រួចដាក់
            ក្នុង data-delta ⇒ អ្នកចុចមិនបាច់គណនាខ្លួនឯង ។ */
+      if(r[1]==="vatDedAudit"){
+        h.push('<td class="n"><span class="cc-chk"><input type="checkbox" data-dedau="vat" data-y="'+y+'"'+
+          (((s.vat.dedAudit||{})[y])?' checked':'')+'></span></td>');
+        return;
+      }
       if(r[1]==="vatAlign"){
         var dlt = Math.round(((+s.vat.paid[y]||0) - (+o.vatDue||0)) * 100) / 100;
         h.push('<td class="n"><input class="cc-grid-in" data-valign="'+y+'" value="'+
@@ -52682,6 +52754,12 @@ function bind(el){
          នៅ `workRefresh` សម្រាប់ហេតុផល ។ */
       try{ workRefresh(t.closest('.cc-work'), t); }catch(err){}
       return;
+    }
+    if(t.dataset.dedau){
+      var slotD=t.dataset.dedau==='vat'?s.vat:s.toi;
+      if(!slotD.dedAudit) slotD.dedAudit={};
+      slotD.dedAudit[t.dataset.y]=!!t.checked;
+      return re();
     }
     if(t.dataset.valign){
       if(!s.vat.align) s.vat.align={};
