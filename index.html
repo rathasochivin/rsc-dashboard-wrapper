@@ -46532,6 +46532,22 @@ CC.taxLoanRate=function(t,y){
   if(o===undefined||o===null||o==="") return CC.loanRateOf(t.lt,y);
   return +o||0;
 };
+/* ⭐⭐⭐ [stated] ២០២៦-១០-០១ ៖ «អាករពិសេសលើទំនិញភេសជ្ជៈ គួរគុណនឹង ១០%
+   ហើយមូលដ្ឋានវាគុណនឹង ៩០% សិន» ។
+   ⚠ អត្រា ១០% មានស្រាប់ក្នុង `TAX_VARIANTS.st_good` ( Juice ) ។ អ្វីដែលខ្វះ
+     គឺ **មេគុណមូលដ្ឋាន ៩០%** ៖ អាករពិសេសគិតលើតម្លៃដែលមិនរួមអាករខ្លួនឯង ។
+   ⚠⚠ ខ្ញុំដាក់វាជា **វាលកែបាន តាមឆ្នាំ** ( `t.bfac` ) មិនមែនលេខរឹងទេ ៖
+     · លំនាំដើម ៩០% សម្រាប់ `st_good` តែប៉ុណ្ណោះ
+     · ពន្ធដទៃ និងឆ្នាំដែលអ្នកកំណត់ ១០០% ⇒ គ្មានការប្រែប្រួល
+     ⇒ បើមេគុណនេះមិនត្រូវសម្រាប់ទំនិញណាមួយ ( ស្រាបៀរ · បារី … ) សូមដាក់
+       ១០០% ត្រង់ឆ្នាំនោះ ដោយមិនចាំបាច់កែកូដ ។
+   ⚠ មេគុណអនុវត្តលើមូលដ្ឋានសរុប ( បញ្ចូលដោយដៃ + ពីជំហាន ) ⇒ ត្រូវអនុវត្ត
+     ត្រង់ការគណនា មិនមែនក្នុង `baseOf` ទេ ព្រោះ `baseOf` មិនឃើញចំនួនពីជំហាន ។ */
+CC.baseFactor=function(t,y){
+  var v=(t.bfac||{})[y];
+  if(v===''||v===undefined||v===null) return (t.id==='st_good') ? 0.9 : 1;
+  var n=+v; return isFinite(n)&&n>0 ? n/100 : 1;
+};
 CC.baseOf=function(t,y){
   var manual=(+t.base[y]||0);
   if(t.kind==="loan") return (+t.loan[y]||0)*CC.taxLoanRate(t,y)*((+t.mo[y]||0)/12)+manual;
@@ -47095,6 +47111,17 @@ CC.pullTos=function(){
          ការគណនា ដូច្នេះ ២៥% × 1,366,610 = 341,653 ចេញត្រូវ ខណៈប្រាក់ពន្ធ
          នៅ 1,130,500 — ពិន័យលើមូលដ្ឋានមួយ ប្រាក់ពន្ធពីមូលដ្ឋានមួយទៀត។ */
     s.years.forEach(function(y){
+      /* ⭐⭐⭐ [stated] ២០២៦-១០-០១ ៖ «ពន្ធបៀវត្ស និងអត្ថប្រយោជន៍បន្ថែម save
+         មិនជាប់ បើកឡើងវិញបាត់» ។
+         ⚠⚠ មូលហេតុ ៖ ២ ជួរនេះត្រូវបានរចនាជា **តម្លៃដេរីវេ ១០០% ពី CARD**
+           ( មើលកំណត់សម្គាល់ខាងលើ ២០២៦-០៨-១៦ ) ⇒ រាល់ពេលទាញ តម្លៃពី CARD
+           សរសេរជាន់អ្វីដែលវាយដោយដៃ ⇒ ការវាយមិនដែលរស់រួចជុំមួយ ។
+         ⚠ ច្បាប់នោះត្រឹមត្រូវ **ពេល CARD មានទិន្នន័យ** ។ ពេល CARD ទទេ
+           ( មិនបានផ្ទុកប្រកាសបៀវត្ស ) អ្នកប្រើគ្មានផ្លូវបញ្ចូលតម្លៃទេ ។
+         ⇒ គោរពទង់ `userSet` ដែលមានស្រាប់ ៖ ឆ្នាំដែលអ្នកវាយដោយដៃ មិនត្រូវ
+           សរសេរជាន់ ។ ឆ្នាំដទៃនៅដេរីវេពី CARD ដដែល ។
+         ⚠ ដើម្បីត្រឡប់ទៅតម្លៃ CARD វិញ សូមលុបក្រឡាឱ្យទទេ ⇒ ទង់រលត់ ។ */
+      if((t.userSet||{})[y]) return;
       var v=Math.round(+((tot[String(y)]||{})[pair[1]])||0);
       if((+t.base[y]||0)===v) return;
       t.base[y]=v; n++;
@@ -48347,20 +48374,37 @@ CC.compute=function(){
          ⚠ ការបង្ហាញ (paneOth · ប្រអប់លម្អិត) គោរពទង់នេះរួចហើយ ; មានតែ
            ការគណនាពិតទេដែលភ្លេច។ */
       /* ⚠ ២០២៦-០៨-១៦ ៖ អត្រាលែងជាលេខតែមួយទៀតទេ — ត្រូវឆ្លងកាត់ CC.rateOf */
-      var due = t.amt ? (CC.baseOf(t,y)+extra) : (CC.baseOf(t,y)+extra)*CC.rateOf(t,y);
+      /* ⭐ មេគុណមូលដ្ឋាន ( ឧ. អាករពិសេស ៩០% ) — មើល `CC.baseFactor` */
+      var bFac = CC.baseFactor(t,y);
+      var due = t.amt ? (CC.baseOf(t,y)+extra)
+                      : (CC.baseOf(t,y)+extra)*bFac*CC.rateOf(t,y);
       ass[y]=(t.on||extra>0)?due:0;
       v[y]=(t.on||extra>0)?Math.max(0,due-paid):0;
     });
     /* [stated] ២០២៦-០៨-១៦ ៖ បៀវត្ស និងអត្ថប្រយោជន៍បន្ថែម មានពិន័យ និង
        ការប្រាក់គណនាស្រេចនៅ CARD រួចហើយ — យកមកតែម្តង កុំគិតឡើងវិញ។ */
     if(t.id==='tos' || t.id==='fbt'){
-      var fa={}, fi={};
+      var fa={}, fi={}, any=0;
       yrs.forEach(function(y){
         var o=(tosT[String(y)]||{});
         fa[y]=Math.round(t.id==='tos'?(o.addSalPenalty||0):(o.addFrgPenalty||0));
         fi[y]=Math.round(t.id==='tos'?(o.addSalInterest||0):(o.addFrgInterest||0));
+        any += fa[y] + fi[y];
       });
-      push(t.name,v,t.ib||"m",t.msel,t.np,t.asAdd,ass,t.istart,null,true,fa,fi);
+      /* ⭐⭐⭐ [stated] ២០២៦-១០-០១ ៖ «នៅតែមិនឃើញគុណពិន័យ និងការប្រាក់ដដែរ» ។
+         ⚠⚠ ពិន័យ និងការប្រាក់របស់ ២ ជួរនេះអានផ្ទាល់ពី CARD ( `addSalPenalty`
+           · `addSalInterest` ) ហើយ **បង្ខំជំនួស** ការគណនាធម្មតា ។ ពេល CARD
+           គណនាតែប្រាក់ពន្ធ ដោយគ្មានពិន័យ ( ឬ CARD ទទេ ហើយអ្នកវាយដោយដៃ )
+           តម្លៃបង្ខំនោះគឺ **សូន្យ** ⇒ ពិន័យមិនដែលចេញ ។
+         ⇒ បើ CARD គ្មានពិន័យ និងការប្រាក់សោះសម្រាប់គ្រប់ឆ្នាំ ⇒ កុំបង្ខំ ⇒
+           ទុកឱ្យការគណនាធម្មតាដើរដូចពន្ធដទៃ ។
+         ⚠ ពេល CARD **មាន** តម្លៃ ការប្រព្រឹត្តចាស់នៅដដែលបេះបិទ ⇒ ករណីដែល
+           ធ្លាប់ដំណើរការ មិនប្រែ ។ */
+      if(any > 0){
+        push(t.name,v,t.ib||"m",t.msel,t.np,t.asAdd,ass,t.istart,null,true,fa,fi);
+      }else{
+        push(t.name,v,t.ib||"m",t.msel,t.np,t.asAdd,ass,t.istart);
+      }
       return;
     }
     /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ពន្ធប្រថាប់ត្រាបិទ នៅតែចេញពន្ធបន្ថែម
@@ -51548,6 +51592,9 @@ function paneOth(res){
     if(vcat && yrs.some(function(y){ var vv=taxVariant(t,y); return vv && vv.domEx; }))
       rows.splice(1, 0, ["__dom", "ផលិតក្នុងស្រុក (លើកលែង)", 0]);
     if(vcat || t.id === 'light') rows.splice(vcat ? 2 : 0, 0, ["__yrate", "អត្រាប្រើ (កែបាន)", 0]);
+    /* ⭐ មេគុណមូលដ្ឋាន ៖ លេចតែសម្រាប់ពន្ធដែលមានមេគុណមិនមែន ១០០% ជាលំនាំដើម
+       ( បច្ចុប្បន្ន អាករពិសេសលើទំនិញ ៩០% ) ⇒ ពន្ធដទៃមិនឃើញជួរនេះទេ ។ */
+    if(t.id === 'st_good') rows.splice(vcat ? 3 : 1, 0, ["__bfac", "មេគុណមូលដ្ឋាន (កែបាន)", 0]);
     if((t.ib||"m")==="m" && !t.np) rows.push(["__msel","ខែដែលគិតការប្រាក់",0]);
     var span = rows.length + 1;
 
@@ -51601,6 +51648,12 @@ function paneOth(res){
           h.push('<td class="n">'+(okY
             ? '<label class="cc-flag'+((t.dom||{})[y]?' on':'')+'"><input type="checkbox" data-tax="'+i+'" data-k="dom" data-y="'+y+'"'+((t.dom||{})[y]?' checked':'')+'>ធីក</label>'
             : '<span class="cc-note" style="margin:0">—</span>')+'</td>');
+        }else if(r[0]==="__bfac"){
+          var bf = (t.bfac||{})[y];
+          h.push('<td class="n"><input class="cc-grid-in" data-tax="'+i+'" data-k="bfac" data-y="'+y+'" value="'+
+            (CC.baseFactor(t,y)*100).toFixed(2)+'" title="'+(bf!=null&&bf!==""?"កែដោយដៃ":"លំនាំដើម")+
+            ' — មូលដ្ឋានត្រូវគុណនឹងភាគរយនេះមុនគុណនឹងអត្រា"'+
+            (bf!=null&&bf!==""?' style="color:var(--red)"':'')+'> %</td>');
         }else if(r[0]==="__yrate"){
           var ovr = (t.yrate||{})[y];
           h.push('<td class="n"><input class="cc-grid-in" data-tax="'+i+'" data-k="yrate" data-y="'+y+'" value="'+
@@ -52805,6 +52858,13 @@ function bind(el){
         if(!tx.yrate) tx.yrate={};
         if(String(t.value).trim()==="") delete tx.yrate[t.dataset.y];   /* ទទេ = ត្រឡប់ទៅច្បាប់ */
         else tx.yrate[t.dataset.y]=num(t.value)/100;
+      }
+      /* ⭐ មេគុណមូលដ្ឋាន ៖ ទុកជា **ភាគរយ** ក្នុងឃ្លាំង ( ៩០ មិនមែន ០.៩ )
+         ដូច្នេះអ្វីដែលអ្នកវាយ និងអ្វីដែលរក្សាទុក ដូចគ្នា ។ ទទេ = លំនាំដើម ។ */
+      else if(k3==="bfac"){
+        if(!tx.bfac) tx.bfac={};
+        if(String(t.value).trim()==="") delete tx.bfac[t.dataset.y];
+        else tx.bfac[t.dataset.y]=num(t.value);
       }
       else if(k3==="irate"){
         if(String(t.value).trim()==="") delete tx.irate[t.dataset.y];      /* ទទេ = ត្រឡប់ទៅតារាង */
