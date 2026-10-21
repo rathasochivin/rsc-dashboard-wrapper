@@ -879,9 +879,19 @@ function renderVisits(root,kind){
 
   section(root, S.showArc?'ប័ណ្ណសារ — សវនកម្មបានបញ្ចប់':'ដែលជិតមកដល់', up.length);
   if(!up.length) root.appendChild(emptyBox(meet?'មិនទាន់មានការប្រជុំ':'មិនទាន់មានការចុះទីតាំង'));
-  if(meet) up.sort(function(a,b){
-    return String(a.nameLatin||'').localeCompare(String(b.nameLatin||'')) || sortKey(a,kind)-sortKey(b,kind);
-  });
+  if(meet){
+    /* ក្រុមសហគ្រាសតម្រៀបតាមការប្រជុំជិតបំផុត ហើយក្នុងក្រុមតម្រៀបតាមម៉ោង */
+    var firstAt={};
+    up.forEach(function(r){
+      var k=r.entId||r.nameLatin, t=sortKey(r,kind);
+      if(firstAt[k]===undefined || t<firstAt[k]) firstAt[k]=t;
+    });
+    up.sort(function(a,b){
+      var ka=a.entId||a.nameLatin, kb=b.entId||b.nameLatin;
+      return (firstAt[ka]-firstAt[kb]) || sortKey(a,kind)-sortKey(b,kind)
+          || String(a.nameLatin||'').localeCompare(String(b.nameLatin||''));
+    });
+  }
   var lastEnt=null;
   up.forEach(function(r){
     if(meet){
