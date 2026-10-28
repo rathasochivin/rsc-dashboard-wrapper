@@ -2689,6 +2689,32 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
 #mtr-embed table.mtr-grid .vat-why{cursor:pointer; text-decoration:underline dotted;}
 #mtr-embed table.mtr-grid .vat-why:hover{background:#e8eef5;}
 #mtr-embed .mtr-form-foot{margin-top:20px; font-size:12.5px;}
+/* កំណត់សម្គាល់ការបង់យឺតយ៉ាវ ៖ ក្រោមតារាង ខាងឆ្វេង មុនបន្ទាត់កាលបរិច្ឆេទ ។
+   ⚠ [stated] «កុំឱ្យមានការចុះបន្ទាត់» ⇒ nowrap គ្រប់បន្ទាត់ គ្មាន max-width ។ */
+/* ⚠ [stated] ២០២៦-១០-២៧ ៖ កំណត់សម្គាល់ និងបន្ទាត់កាលបរិច្ឆេទ **ជួរតែមួយ**
+   ⇒ មិនរំលងជួរ ⇒ ទម្រង់មិនលោតទៅសន្លឹកទី ២ ។ ប្រអប់ឆ្វេងនៅដដែលទោះគ្មាន
+   កំណត់សម្គាល់ ⇒ កាលបរិច្ឆេទនៅស្តាំដូចដើម ។ */
+/* ⚠ [stated] ២០២៦-១០-២៧ ៖ កំណត់សម្គាល់ឆ្វេង ; កាលបរិច្ឆេទ **និងហត្ថលេខា**
+   ជាប្លុកស្តាំតែមួយ ⇒ ឈ្មោះនៅក្រោម «រាជធានីភ្នំពេញ …» ដូចធម្មតា ហើយ
+   កំណត់សម្គាល់មិនរុញពួកវាចុះក្រោមឡើយ ⇒ មិនលោតទៅសន្លឹកទី ២ ។ */
+#mtr-embed .mtr-foot-row{
+  display:flex; align-items:flex-start; justify-content:space-between; gap:24px;
+}
+#mtr-embed .mtr-foot-left{flex:1 1 auto; min-width:0;}
+#mtr-embed .mtr-foot-right{flex:0 0 auto;}
+#mtr-embed .mtr-late-note{
+  text-align:left; margin:0; font-size:12px; line-height:1.7;
+  white-space:nowrap; break-inside:avoid; page-break-inside:avoid;
+}
+#mtr-embed .mtr-late-h{font-weight:700; margin-bottom:2px;}
+#mtr-embed .mtr-late-m{margin-top:6px;}
+#mtr-embed .mtr-late-r{white-space:nowrap; line-height:1.7;}
+#mtr-embed .mtr-late-r .k{display:inline-block; min-width:212px;}
+#mtr-embed .mtr-late-r .eq{display:inline-block; width:20px; text-align:center;}
+#mtr-embed .mtr-late-r .v{display:inline-block; min-width:124px; text-align:right;
+  font-variant-numeric:tabular-nums;}
+#mtr-embed .mtr-late-li{margin-top:4px; white-space:nowrap;}
+
 #mtr-embed .mtr-form-date{text-align:right; margin-bottom:26px;}
 /* Blank runs on the date line — filled in by hand after printing. */
 #mtr-embed .mtr-blank{
@@ -11119,7 +11145,8 @@ function computeCompanySummary(storeName){
     const amt = valueOf(r);
     if(useCategory && !amt) return; // this invoice has nothing under the selected column
     const k = companyKey(r);
-    if(!map[k]) map[k] = {key:k, tin:r.tin, name:r.name, total:0, byYear:{}, byMonth:{}};
+    if(!map[k]) map[k] = {key:k, tin:r.tin, name:r.name, total:0, n:0, byYear:{}, byMonth:{}};
+    map[k].n++;
     map[k].total += amt;
     if(y!==null) map[k].byYear[y] = (map[k].byYear[y]||0) + amt;
     /* [stated] ២០២៦-០៨-១៨ ៖ «ចង់មើលសរុបពីខែ១ ដល់ខែ១២ រួចរើសក្រុមហ៊ុន វា
@@ -11131,7 +11158,11 @@ function computeCompanySummary(storeName){
   let years = Array.from(yearsSet).sort((a,b)=>a-b);
   if(yearVal) years = years.filter(y=> String(y)===yearVal);
 
-  const list = Object.values(map).filter(c=> c.total>0).sort((a,b)=> b.total - a.total);
+  /* ⚠⚠ [stated] ២០២៦-១០-២១ ៖ «គេប្រកាសបែបណាបង្ហាញបែបនោះ មិនត្រូវដកចេញ
+     ដោយចិត្តឯងឡើយ» ។ វិក្កយបត្ររង្វាន់ · ជំនួស · បញ្ចុះតម្លៃ មានតម្លៃ
+     **សូន្យ ឬអវិជ្ជមាន** ⇒ វិធានចាស់ `c.total>0` លុបក្រុមហ៊ុនទាំងមូលចោល
+     ( ឧ. `LUKY25-000003` / រង្វាន់អតិថិជនទូទៅ ) ⇒ ប្តូរមករាប់ **ជួរ** វិញ ។ */
+  const list = Object.values(map).filter(c=> c.n > 0).sort((a,b)=> b.total - a.total);
   return {years, list};
 }
 
@@ -14703,6 +14734,65 @@ function rscReadAoa(buf, onProgress){
 }
 window.__rscReadAoa = rscReadAoa;
 
+/* ⭐⭐⭐ [stated] ២០២៦-១០-២១ ៖ «ផ្នែក S/R និង P/R បាត់ទិន្នន័យសម្រាប់លេខ
+   វិក្កយបត្រដែលខុសគ្នា … គេប្រកាសបែបណាបង្ហាញបែបនោះ មិនត្រូវដកចេញដោយចិត្ត
+   ឯងឡើយ» ។
+   ⚠⚠ ការវាស់ ( probe_sr.py · ជួរគំរូ ៥ ក្នុងទម្រង់ SALE ពិត ) ៖
+     · `25SF-000085` ដែល ល.រ រក្សាទុកជា **អក្សរ** "4"  ⇒ **បាត់តាំងពីការអាន**
+         ( វិធានចាស់ ៖ `typeof arr[0] === "number"` )
+     · `LUKY25-000003` និង `25SF-000088` ដែលទឹកប្រាក់ជា **សូន្យ** ⇒ អានចូល
+         បាន តែ **បាត់ពីតារាង S/R** ( វិធានចាស់ ៖ `list.filter(c=> c.total>0)` )
+   ⇒ វិធានទាំងពីរជា «ការដកចេញដោយចិត្តឯង» ⇒ ដកចោល ។
+   ⚠ អ្វីដែល **នៅរក្សាដដែល** ៖ ជួរដែលគ្មានទាំងលេខវិក្កយបត្រ និងអតប មិនមែន
+     ជួរប្រកាសទេ ( ប្លុកសរុប · ក្បាលតារាង ) — នេះជាវិធានរបស់ទម្រង់ GDT
+     ខ្លួនឯង មិនមែនការវិនិច្ឆ័យរបស់យើង ។
+   ⚠ ជួរណាដែលត្រូវរំលង ត្រូវ **កត់ត្រាទុក** ⇒ `__rscSkipped()` ក្នុង console
+     បង្ហាញវាទាំងអស់ ⇒ គ្មានអ្វីបាត់ស្ងាត់ៗទៀតទេ ។ */
+window.__rscSkippedRows = [];
+function __rscSkipped(){
+  try{ console.table(window.__rscSkippedRows); }catch(e){ console.log(window.__rscSkippedRows); }
+  return window.__rscSkippedRows.length;
+}
+function rscLooksDate(v){
+  if(v instanceof Date) return true;
+  if(typeof v === "number") return v > 20000 && v < 80000;      /* Excel serial */
+  var t = String(v == null ? "" : v).trim();
+  return t !== "" && /\d/.test(t) && /[\/\-.]/.test(t);
+}
+function rscLooksNum(v){
+  if(typeof v === "number") return Number.isFinite(v);
+  var t = String(v == null ? "" : v).trim().replace(/[,\s\u00a0]/g, "");
+  return t !== "" && /^-?\d+(\.\d+)?$/.test(t);
+}
+function rscBlankish(v){
+  var t = String(v == null ? "" : v).trim();
+  return t === "" || t === "-" || t === "0";
+}
+/* ជួរក្បាលតារាង ៖ **តែ** ពេលគ្មានកាលបរិច្ឆេទ គ្មានទឹកប្រាក់ ហើយក្រឡាណាមួយ
+   កាន់ចំណងជើងពិតប្រាកដ ។ កុំប្រើពាក្យទូទៅដូច «អាករ» ⇒ «បុគ្គលមិនជាប់អាករ»
+   ដែលជា **តម្លៃ** នឹងត្រូវច្រឡំជាចំណងជើង ។ */
+function rscIsHeaderRow(arr, amtIdx){
+  if(rscLooksDate(arr[1]) || rscLooksNum(arr[amtIdx])) return false;
+  var c = function(i){ return String(arr[i] == null ? "" : arr[i]).trim(); };
+  if(/^(ល\.រ|លេខរៀង|no\.?|#)$/i.test(c(0))) return true;
+  if(/^សរុប/.test(c(0))) return true;
+  if(/កាលបរិច្ឆេទ|^date$/i.test(c(1))) return true;
+  if(/លេខវិក្កយបត្រ|^invoice/i.test(c(2))) return true;
+  for(var i = 3; i <= 7; i++){
+    if(/^(ប្រភេទ|ឈ្មោះ|លេខសម្គាល់|អ្នកផ្គត់ផ្គង់|អតិថិជន)/.test(c(i))) return true;
+  }
+  return false;
+}
+/* លេខរៀងក្នុងឯកសារ ៖ លេខ · អក្សរលេខ ( "4" ) · លេខខ្មែរ ( "៤" ) ។
+   ⚠ ត្រឡប់ null ពេលគ្មាន — **មិនមែនមូលហេតុច្រានចោល** ទៀតទេ ។ */
+function rscSeqNo(v){
+  if(typeof v === "number") return Number.isFinite(v) ? v : null;
+  var t = String(v == null ? "" : v).trim();
+  if(!t) return null;
+  t = t.replace(/[០-៩]/g, function(d){ return String("០១២៣៤៥៦៧៨៩".indexOf(d)); })
+       .replace(/[,\s\u00a0]/g, "");
+  return /^\d+(\.\d+)?$/.test(t) ? Number(t) : null;
+}
 function rowsFromSheet(sheet, kind){
   const map = TEMPLATE_MAP[kind];
   /* ⚠ ទទួលបានទាំង sheet និង AOA ៖ Worker ត្រឡប់ AOA រួចជាស្រេច។ */
@@ -14725,19 +14815,19 @@ function rowsFromSheet(sheet, kind){
   for(const arr of aoa){
     const noVal = arr[0];
     const invVal = arr[2];
-    const isDataRow = (typeof noVal === "number" && noVal > 0 && Number.isFinite(noVal))
-                       && invVal !== undefined && invVal !== "";
-    if(!isDataRow) continue;
+    /* ⚠ លេខរៀង ( ល.រ ) **មិនមែន** លក្ខខណ្ឌទទួលទៀតទេ ៖ ឯកសារពិតរក្សាវាជា
+       អក្សរខ្លះ ជាលេខខ្មែរខ្លះ ឬទទេ ⇒ វិធានចាស់ច្រានជួរប្រកាសពិតចោល ។ */
     /* Whatever the file turns out to be, a genuine sale or purchase line
        carries an invoice number or a counterparty TIN. Summary blocks and
        stray rows from another kind of sheet carry neither — and those were
        reaching the ledger as companies called "ពន្ធលើប្រាក់បៀវត្ស". */
-    const blankish = v => { const t = String(v ?? "").trim(); return t === "" || t === "-" || t === "0"; };
-    if(blankish(invVal) && blankish(arr[map.tin])) continue;
-    /* A counterparty name made only of digits is a value that has landed in
-       the wrong column — a real customer or supplier name has letters. */
-    const nameCell = String(arr[map.name] ?? "").trim();
-    if(nameCell !== "" && /^[\d.,\s-]+$/.test(nameCell)) continue;
+    if(rscBlankish(invVal) && rscBlankish(arr[map.tin])) continue;
+    if(rscIsHeaderRow(arr, map.amount)) continue;
+    /* គ្មានលេខវិក្កយបត្រ ⇒ ទទួលតែពេលមានទឹកប្រាក់ជាលេខ ( ជួរប្រកាសពិត )។ */
+    if(rscBlankish(invVal) && !rscLooksNum(arr[map.amount])){
+      try{ window.__rscSkippedRows.push({ kind:kind, why:'គ្មានលេខវិក្កយបត្រ និងគ្មានទឹកប្រាក់', row:arr.slice(0,8) }); }catch(e){}
+      continue;
+    }
     const amount = parseNum(arr[map.amount]);
     const breakdown = {};
     breakdownDefs.forEach(({label, cols})=>{
@@ -14806,8 +14896,10 @@ function rowsFromOtherExpensesSheet(sheet){
   let autoNo = 1;
   for(const arr of aoa){
     const noVal = arr[0];
-    const isDataRow = (typeof noVal === "number" && noVal > 0 && Number.isFinite(noVal));
-    if(!isDataRow) continue;
+    /* ល.រ ជាអក្សរ ឬលេខខ្មែរ ក៏ជាជួរប្រកាសដែរ ; ក្បាលតារាងត្រូវរំលង ។ */
+    if(rscIsHeaderRow(arr, 6)) continue;
+    if(rscSeqNo(noVal) === null
+       && rscBlankish(arr[2]) && rscBlankish(arr[5]) && !rscLooksNum(arr[6])) continue;
     rows.push({
       no: autoNo++,
       date: excelDateToStr(arr[1]),
@@ -14858,9 +14950,14 @@ function rowsFromCDSheet(sheet, kind){
   for(const arr of aoa){
     const noVal = arr[0];
     const cdVal = arr[2];
-    const isDataRow = (typeof noVal === "number" && noVal > 0 && Number.isFinite(noVal))
-                       && cdVal !== undefined && cdVal !== "";
-    if(!isDataRow) continue;
+    /* ដូច rowsFromSheet ៖ ល.រ មិនមែនលក្ខខណ្ឌទទួល — CN/DN ក៏ត្រូវបង្ហាញ
+       គ្រប់ជួរដែលគេប្រកាសដែរ ។ */
+    if(rscBlankish(cdVal) && rscBlankish(arr[map.tin])) continue;
+    if(rscIsHeaderRow(arr, map.amount)) continue;
+    if(rscBlankish(cdVal) && !rscLooksNum(arr[map.amount])){
+      try{ window.__rscSkippedRows.push({ kind:kind, why:'គ្មានលេខ CN/DN និងគ្មានទឹកប្រាក់', row:arr.slice(0,8) }); }catch(e){}
+      continue;
+    }
     const rawAdj = adjIdx!=null ? String(arr[adjIdx] ?? "").trim().toUpperCase() : "";
     const adjType = rawAdj.includes("DEBIT") ? "DEBIT" : (rawAdj.includes("CREDIT") ? "CREDIT" : (rawAdj || "N/A"));
     const amount = parseNum(arr[map.amount]);
@@ -14942,9 +15039,11 @@ function hasFilenameToken(fileNameLower, tokens){
 function scoreTemplateMapping(aoa, map){
   let score = 0;
   for(const arr of aoa){
-    const noVal = arr[0], invVal = arr[2];
-    const isDataRow = (typeof noVal === "number" && noVal > 0 && Number.isFinite(noVal)) && invVal !== undefined && invVal !== "";
-    if(!isDataRow) continue;
+    const invVal = arr[2];
+    /* ⚠ ដូច rowsFromSheet ៖ ល.រ មិនមែនលក្ខខណ្ឌ ។ បើវិធានចាស់នៅ ឯកសារដែល
+       ល.រ ជាអក្សរនឹងបាន score 0 ទាំងសងខាង ⇒ ឯកសារទាំងមូលត្រូវច្រានចោល ។ */
+    if(rscBlankish(invVal)) continue;
+    if(rscIsHeaderRow(arr, map.amount)) continue;
     const tin = String(arr[map.tin] ?? "").trim();
     const amt = Number(String(arr[map.amount] ?? "").replace(/[^\d.-]/g,"")) || 0;
     if(tin && amt > 0) score++;
@@ -15518,9 +15617,9 @@ function detectFileCategory(fileName, aoa, sheetNames, relPath){
     // already loaded under SALE / PURCHASE to guess which side it adjusts.
     const tinsInFile = new Set();
     for(const arr of aoa){
-      const noVal = arr[0], cdVal = arr[2];
-      const isDataRow = (typeof noVal === "number" && noVal > 0 && Number.isFinite(noVal)) && cdVal !== undefined && cdVal !== "";
-      if(!isDataRow) continue;
+      const cdVal = arr[2];
+      if(rscBlankish(cdVal)) continue;
+      if(rscIsHeaderRow(arr, CD_TEMPLATE_MAP.saleCD.amount)) continue;
       const t = String(arr[CD_TEMPLATE_MAP.saleCD.tin] ?? "").trim();
       if(t) tinsInFile.add(t);
     }
@@ -19099,20 +19198,47 @@ function audHistBind(){
   });
 }
 
+/* ⭐⭐⭐ [stated] ២០២៦-១០-២៣ ៖ «នៅផ្នែកការបង់ពន្ធយឺតយ៉ាវគួរមានបន្ថែម
+   ទឹកប្រាក់ពន្ធ ពន្ធបន្ថែម ការប្រាក់ សរុប (បូកអូតូ) និងប្រើលេខក្បៀស៣ខ្ទង់» ។
+   ⚠ `amount` ចាស់ក្លាយជា **ទឹកប្រាក់ពន្ធ** ⇒ ជួរដែលរក្សាទុករួចមិនបាត់ ។
+   ⚠⚠ កុំគូរតារាងឡើងវិញពេលវាយលេខ ៖ ការគូរឡើងវិញបំផ្លាញប្រអប់ដែលកំពុងវាយ
+     ( មេរៀនដដែលពីផ្ទាំងតារាងគណនា ) ⇒ ធ្វើបច្ចុប្បន្នភាពតែក្រឡា «សរុប»
+     និងជួរសរុបខាងក្រោម ដោយផ្ទាល់ ហើយដាក់ក្បៀសពេល blur ប៉ុណ្ណោះ ។ */
+function lpNum(v){
+  var t = String(v == null ? '' : v).trim();
+  if(!t) return 0;
+  t = t.replace(/[០-៩]/g, function(d){ return String('០១២៣៤៥៦៧៨៩'.indexOf(d)); });
+  var n = Number(t.replace(/[^\d.-]/g, ''));
+  return isFinite(n) ? n : 0;
+}
+function lpFmt(n){ return (Number(n) || 0).toLocaleString('en-US'); }
+/* ⚠ ប្រអប់បញ្ចូល ៖ ទុក **ទទេ** ពេលសូន្យ ។ បើដាក់ "0" ទុក អ្នកប្រើត្រូវលុប
+   វាចេញជាមុនរាល់ដង ហើយបើវាយពីមុខ លេខក្លាយជា ១០ ដង ( 6,686,926 → 66,869,260 ) ។ */
+function lpFmtIn(n){ return (Number(n) || 0) ? lpFmt(n) : ''; }
+function lpRowTotal(r){ return lpNum(r.amount) + lpNum(r.penalty) + lpNum(r.interest); }
+const LP_NUM_COLS = [
+  { k:'amount',   label:'ទឹកប្រាក់ពន្ធ' },
+  { k:'penalty',  label:'ពន្ធបន្ថែម'   },
+  { k:'interest', label:'ការប្រាក់'     },
+];
+
 function renderLatePayView(){
   const taxes = latePayTaxList();
   const yrNow = new Date().getFullYear();
   let html = '<div style="margin-bottom:12px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">' +
-    '<button class="btn btn-brass" id="latePayAdd">+ បន្ថែមការបង់</button></div>';
+    '<button class="btn btn-brass" id="latePayAdd">+ បន្ថែមការបង់</button>' +
+    '<span class="ah-hint">សរុប = ទឹកប្រាក់ពន្ធ + ពន្ធបន្ថែម + ការប្រាក់ (បូកដោយស្វ័យប្រវត្តិ)</span></div>';
   html += '<div class="table-wrap"><table class="ledger"><thead><tr>' +
-    '<th style="min-width:260px;">ប្រភេទពន្ធ</th>' +
-    '<th style="width:110px;">ការិយត្រូវបង់</th>' +
-    '<th style="width:150px;">ការិយបានបង់</th>' +
-    '<th style="width:170px;">ចំនួន (៛)</th>' +
+    '<th style="min-width:220px;">ប្រភេទពន្ធ</th>' +
+    '<th style="width:96px;">ការិយត្រូវបង់</th>' +
+    '<th style="width:140px;">ការិយបានបង់</th>' +
+    LP_NUM_COLS.map(c=>'<th style="width:132px;">'+c.label+' (៛)</th>').join('') +
+    '<th style="width:142px;">សរុប (៛)</th>' +
     '<th>កំណត់សម្គាល់</th>' +
     '<th style="width:50px;"></th></tr></thead><tbody>';
+  const NCOL = 9;
   if(!latePayRows.length){
-    html += '<tr><td colspan="6" style="text-align:center; padding:26px; color:#8a8a8a;">មិនទាន់មាន Late Payment</td></tr>';
+    html += '<tr><td colspan="'+NCOL+'" style="text-align:center; padding:26px; color:#8a8a8a;">មិនទាន់មាន Late Payment</td></tr>';
   }
   latePayRows.forEach((r,i)=>{
     html += '<tr>' +
@@ -19122,18 +19248,18 @@ function renderLatePayView(){
       '</select></td>' +
       '<td><input data-lp="'+i+'" data-k="year" value="'+(r.year||yrNow)+'" style="width:100%; text-align:center;"></td>' +
       '<td><input type="date" data-lp="'+i+'" data-k="date" value="'+(r.date||'')+'" style="width:100%;"></td>' +
-      '<td><input data-lp="'+i+'" data-k="amount" value="'+(r.amount||0)+'" style="width:100%; text-align:right;"></td>' +
+      LP_NUM_COLS.map(c=>
+        '<td><input data-lp="'+i+'" data-k="'+c.k+'" data-num="1" value="'+lpFmtIn(r[c.k])+'" ' +
+        'style="width:100%; text-align:right;"></td>').join('') +
+      '<td class="amt" data-lp-tot="'+i+'" style="text-align:right; font-weight:700;">'+lpFmt(lpRowTotal(r))+'</td>' +
       '<td style="text-align:left;"><input data-lp="'+i+'" data-k="note" value="'+String(r.note||'').replace(/"/g,'&quot;')+'" style="width:100%;"></td>' +
       '<td><button class="btn btn-outline" data-lp-del="'+i+'" style="padding:2px 8px;">×</button></td>' +
     '</tr>';
   });
-  /* សរុបតាមប្រភេទពន្ធ */
-  const tot = {};
-  latePayRows.forEach(r=>{ const a=Number(r.amount)||0; if(!a) return; tot[r.tax]=(tot[r.tax]||0)+a; });
-  const keys = Object.keys(tot);
-  if(keys.length){
+  if(latePayRows.length){
     html += '<tr class="summary-total-row"><td style="text-align:left;"><b>សរុប</b></td><td colspan="2"></td>' +
-      '<td style="text-align:right;"><b>' + keys.reduce((a,k)=>a+tot[k],0).toLocaleString('en-US') + '</b></td>' +
+      LP_NUM_COLS.map(c=>'<td class="amt" data-lp-sum="'+c.k+'" style="text-align:right;"><b>0</b></td>').join('') +
+      '<td class="amt" data-lp-sum="__tot" style="text-align:right;"><b>0</b></td>' +
       '<td colspan="2"></td></tr>';
   }
   html += '</tbody></table></div>';
@@ -19141,27 +19267,53 @@ function renderLatePayView(){
   resultMeta.style.display = '';
   resultMeta.textContent = latePayRows.length + ' Late Payment';
 
-  resultBody.querySelector('#latePayAdd').onclick = ()=>{
-    latePayRows.push({tax: taxes[0], year: String(yrNow), date:'', amount:0, note:''});
+  /* ⚠ ចងព្រឹត្តិការណ៍ **ត្រង់នេះ** — បន្ទាប់ពី innerHTML ត្រូវបានសរសេររួច ។
+     ពីមុនវាចង `addEventListener` លើ resultBody រាល់ការគូរ ⇒ អ្នកស្តាប់
+     កកកុញ ⇒ ការវាយម្តងដំណើរការច្រើនដង ។ */
+  const refreshSums = ()=>{
+    const tot = {amount:0, penalty:0, interest:0, __tot:0};
+    latePayRows.forEach((r,i)=>{
+      LP_NUM_COLS.forEach(c=> tot[c.k] += lpNum(r[c.k]));
+      const rt = lpRowTotal(r);
+      tot.__tot += rt;
+      const cell = resultBody.querySelector('[data-lp-tot="'+i+'"]');
+      if(cell) cell.textContent = lpFmt(rt);
+    });
+    Object.keys(tot).forEach(k=>{
+      const c = resultBody.querySelector('[data-lp-sum="'+k+'"]');
+      if(c) c.innerHTML = '<b>' + lpFmt(tot[k]) + '</b>';
+    });
+  };
+  refreshSums();
+
+  const add = resultBody.querySelector('#latePayAdd');
+  if(add) add.onclick = ()=>{
+    latePayRows.push({tax: taxes[0], year: String(yrNow), date:'', amount:0, penalty:0, interest:0, note:''});
     saveLatePay(); renderLatePayView(); notifyLatePayChanged();
   };
-  resultBody.addEventListener('change', (e)=>{
-    const t = e.target;
-    if(t.dataset && t.dataset.lp != null){
-      const row = latePayRows[Number(t.dataset.lp)];
-      if(!row) return;
-      const k = t.dataset.k;
-      row[k] = (k === 'amount') ? (Number(String(t.value).replace(/[^\d.-]/g,'')) || 0)
-             : (k === 'year')  ? String(t.value).trim()
-             : t.value;
-      saveLatePay(); notifyLatePayChanged();
+  resultBody.querySelectorAll('[data-lp]').forEach(el=>{
+    const row = latePayRows[Number(el.dataset.lp)];
+    if(!row) return;
+    const k = el.dataset.k;
+    const commit = ()=>{
+      row[k] = el.dataset.num ? lpNum(el.value)
+             : (k === 'year') ? String(el.value).trim()
+             : el.value;
+      saveLatePay();
+    };
+    if(el.dataset.num){
+      el.oninput  = ()=>{ commit(); refreshSums(); };
+      el.onchange = ()=>{ commit(); el.value = lpFmtIn(row[k]); refreshSums(); notifyLatePayChanged(); };
+      el.onblur   = ()=>{ el.value = lpFmtIn(row[k]); };
+    }else{
+      el.onchange = ()=>{ commit(); notifyLatePayChanged(); };
     }
   });
-  resultBody.addEventListener('click', (e)=>{
-    const b = e.target.closest && e.target.closest('[data-lp-del]');
-    if(!b) return;
-    latePayRows.splice(Number(b.dataset.lpDel), 1);
-    saveLatePay(); renderLatePayView(); notifyLatePayChanged();
+  resultBody.querySelectorAll('[data-lp-del]').forEach(b=>{
+    b.onclick = ()=>{
+      latePayRows.splice(Number(b.dataset.lpDel), 1);
+      saveLatePay(); renderLatePayView(); notifyLatePayChanged();
+    };
   });
 }
 function notifyLatePayChanged(){
@@ -19171,12 +19323,29 @@ function notifyLatePayChanged(){
 window.__mtrLatePayments = function(){
   const out = {};
   latePayRows.forEach(r=>{
-    const a = Number(r.amount) || 0;
+    /* ⚠ សរុប ( ពន្ធ + ពន្ធបន្ថែម + ការប្រាក់ ) — នេះជាចំនួនដែលសាលកបត្រ
+       កត់ត្រា ដូច្នេះវាជាចំនួនដែលត្រូវដកចេញពីសាលកបត្រដែរ ។ */
+    const a = lpRowTotal(r);
     const y = String(r.year || '').trim();
     const t = String(r.tax || '').trim();
     if(!a || !y || !t) return;
     if(!out[t]) out[t] = {};
     out[t][y] = (out[t][y] || 0) + a;
+  });
+  return out;
+};
+/* បំបែកជា ពន្ធ · ពន្ធបន្ថែម · ការប្រាក់ ៖ [ប្រភេទពន្ធ][ឆ្នាំ] */
+window.__mtrLatePayDetail = function(){
+  const out = {};
+  latePayRows.forEach(r=>{
+    const y = String(r.year || '').trim(), t = String(r.tax || '').trim();
+    if(!y || !t) return;
+    if(!out[t]) out[t] = {};
+    const c = out[t][y] || (out[t][y] = {tax:0, penalty:0, interest:0, total:0});
+    c.tax      += lpNum(r.amount);
+    c.penalty  += lpNum(r.penalty);
+    c.interest += lpNum(r.interest);
+    c.total     = c.tax + c.penalty + c.interest;
   });
   return out;
 };
@@ -21868,6 +22037,176 @@ function exportAccessWorkbook(){
   window.__xlsxSaveStyled(wb, `ACCESS_IMPORT_${getAccessExportTIN()}.xlsx`);
 }
 
+/* ⭐⭐⭐ [stated] ២០២៦-១០-២៣ ៖ «បង្ហាញកំណត់សម្គាល់មួយនៅពេលព្រីន អាចដាក់នៅ
+   ក្រោមតារាងផ្នែកខាងឆ្វេង ដោយបញ្ជាក់ពីខែណា មានបង់ពន្ធយឺតយ៉ាវ ព្រោះបើពិនិត្យ
+   មើលខែ១ ឆ្នាំ២០២៥ តារាងបង់មាន 42,057,952 តែតាមការគណនាតែ 35,371,026 ទេ
+   ដោយសារលំអៀងនោះជាការបង់យឺតយ៉ាវ ដើម្បីងាយស្រួលផ្នែកអ្នកពិនិត្យបន្តអាចដឹងបាន» ។
+   ⚠⚠ ជួរ «គំលាត» ជាជួរធ្វើការ ⇒ `.vat-calc{display:none}` ពេលព្រីន ⇒ អ្នក
+     ពិនិត្យឃើញតែ «អាករបានបង់» ដែលធំជាងការគណនា ដោយគ្មានការពន្យល់សោះ ។
+     កំណត់សម្គាល់នេះជាការពន្យល់នោះ ។
+   ⚠ ខែយកពី **ការិយបានបង់** ( ថ្ងៃបង់ ) ព្រោះនោះជាខែដែលសាលកបត្រកត់ត្រា
+     ⇒ ជាខែដែលលំអៀងលេចនៅក្នុងតារាង ។ បើឆ្នាំពន្ធ ( ការិយត្រូវបង់ ) ខុសពី
+     ឆ្នាំបង់ វាបង្ហាញក្នុងវង់ក្រចក ។
+   ⚠ គ្មានថ្ងៃបង់ ⇒ នៅតែរាយ តែសរសេរ «មិនបានបញ្ជាក់ខែ» — កុំលាក់ជួរចោល ។
+   ⚠ កុំប្រើគែម ៖ ផ្ទាំងព្រីនដាច់ដោយឡែកមាន `.mtr-form *{border:0 !important}`
+     ⇒ គែមនឹងបាត់នៅផ្លូវមួយ ហើយនៅផ្លូវមួយទៀតមាន ⇒ លទ្ធផលពីរបែប ។ */
+/* ⭐⭐⭐ [stated] ២០២៦-១០-២៧ ( ទី ២ ) ៖ «តើវាប្រែប្រួលនៅតាមខែដែរឬទេនៅខែ
+   យឺតយ៉ាវ ឬករណីមានសវនកម្ម» ។
+   ⇒ ខែ ៖ **បាទ** — ខែយកពី «ការិយបានបង់» នៃជួរនីមួយៗ ហើយជួរដែលចំខែដដែល
+     ត្រូវដាក់ជាក្រុមតែមួយ ។
+   ⇒ សវនកម្ម ៖ **ពីមុនមិនបាន** ។ ឥឡូវបាន ៖ លំអៀងក្នុងតារាងអាចកើតពីការបង់
+     ពន្ធយឺតយ៉ាវ **ឬ** ការបង់ក្នុងសវនកម្ម ។ ទាំងពីរឥឡូវរាយក្នុងកំណត់សម្គាល់
+     ដូចគ្នា ។
+   ⚠⚠ តែការបង់សវនកម្មរាយ **តែពេល** ប្រអប់ «រួមបញ្ចូលសវនកម្ម (ដកទឹកប្រាក់)»
+     **មិនត្រូវបានធីក** ៖ ពេលធីក ទឹកប្រាក់សវនកម្មត្រូវកាត់ចេញពីជួរ «អាករ
+     បានបង់» រួចហើយ ( getAllExtractedMonthlyRows → getVATPaidByMonth )
+     ⇒ គ្មានលំអៀងពីសវនកម្មទៀតទេ ⇒ ការរាយវានឹងពន្យល់អ្វីដែលមិនមាន ។ */
+function latePayNoteRows(year, taxNames){
+  const nz = x => String(x == null ? '' : x).replace(/\s+/g, '');
+  const want = taxNames ? taxNames.map(nz).filter(Boolean) : null;
+  const out = [];
+  (latePayRows || []).forEach(r=>{
+    const tot = lpRowTotal(r);
+    if(!tot) return;
+    const tn = String(r.tax || '').trim();
+    if(want && want.indexOf(nz(tn)) < 0) return;
+    const m = String(r.date || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    const payY = m ? m[1] : String(r.year || '').trim();
+    if(String(payY) !== String(year)) return;
+    out.push({ kind:'late', tax:tn, month: m ? Number(m[2]) : null,
+               period: String(r.year || '').trim(),
+               /* ⚠ «កំណត់សម្គាល់» ដែលគេវាយក្នុងតារាងយឺតយ៉ាវ ⇒ ក្លាយជាមូលហេតុ
+                  ⇒ ពាក្យរបស់គេឈ្នះ មិនមែនការទាយរបស់យើង ។ */
+               why: String(r.note || '').trim(),
+               amt:lpNum(r.amount), pen:lpNum(r.penalty), int:lpNum(r.interest), tot:tot });
+  });
+  /* ── ការបង់ក្នុងសវនកម្ម ដែលនៅក្នុងជួរ «អាករបានបង់» ──────────────── */
+  try{
+    const auditOff = !(typeof chkIncludeAudit !== 'undefined' && chkIncludeAudit && chkIncludeAudit.checked);
+    if(auditOff && want && typeof getAuditDeductionsMap === 'function'){
+      /* ⚠ ប្រភពត្រូវជា `getAuditDeductionsMap(true)` ៖ វារាប់ទាំងជួរដៃ
+         ( auditManualRows ) និងសន្លឹកសវនកម្ម ។ `auditPaymentsFor()` រាប់តែ
+         សន្លឹក ⇒ ប្រើវាតែដើម្បីបំបែក ពន្ធ/ពន្ធបន្ថែម/ការប្រាក់ និងលេខកូដ ។ */
+      const dm = getAuditDeductionsMap(true);
+      dm.forEach(function(amt, key){
+        const pk = String(key).split('|');
+        if(String(pk[0]) !== String(year)) return;
+        const tn = String(pk[1] || '').trim();
+        if(!tn || want.indexOf(nz(tn)) < 0) return;
+        const mIdx = Number(pk[2]);
+        const tt = Number(amt) || 0;
+        if(!tt || !(mIdx >= 0 && mIdx <= 11)) return;
+        let a = 0, pn = 0, it = 0; const codes = [];
+        try{
+          (auditPaymentsFor(String(year), tn, mIdx) || []).forEach(function(x){
+            a += (+x.tax || 0); pn += (+x.addTax || 0); it += (+x.interest || 0);
+            if(x.code && codes.indexOf(x.code) < 0) codes.push(x.code);
+          });
+        }catch(e){}
+        /* បំបែកមិនត្រូវនឹងសរុប ( ឧ. ជួរដៃ ) ⇒ កុំបង្ហាញការបំបែកខុស */
+        if(Math.abs((a + pn + it) - tt) > 1){ a = 0; pn = 0; it = 0; }
+        out.push({ kind:'audit', tax:tn, month:mIdx + 1, period:'',
+                   why:'បង់សម្រាប់សវនកម្ម' + (codes.length ? ' ' + codes.join(' · ') : ''),
+                   amt:a, pen:pn, int:it, tot:tt });
+      });
+    }
+  }catch(e){ console.warn('latePayNoteRows audit:', e); }
+  out.sort((a,b)=> (a.month || 99) - (b.month || 99));
+  return out;
+}
+/* ⭐⭐⭐ [stated] ២០២៦-១០-២៣ ៖ បីបន្ទាត់ត្រង់ `white-space:nowrap` ។
+   ⭐⭐⭐ [stated] ២០២៦-១០-២៧ ៖ កំណត់សម្គាល់ឆ្វេង · កាលបរិច្ឆេទ និងហត្ថលេខា
+     ស្តាំ — ក្នុងជួរតែមួយ ( .mtr-foot-row ) ⇒ «ឈ្មោះដាក់នៅក្រោម
+     រាជធានីភ្នំពេញ … ដូចធម្មតាដែរ កុំរំលង» ។
+   ⚠⚠ លំអៀង = បង្គត់(បានបង់) − បង្គត់(ត្រូវបង់) ⇒ បីបន្ទាត់ដកត្រូវគ្នា ។
+   ⚠ ខែដដែលមានច្រើនជួរ ( យឺតយ៉ាវ + សវនកម្ម ) ⇒ បីបន្ទាត់ម្តង មូលហេតុភ្ជាប់គ្នា
+     ហើយបន្ទាត់ផ្កាយមួយក្នុងមួយជួរ ។ */
+function latePayNoteHtml(year, taxNames, showTaxName, figs){
+  let list = [];
+  try{ list = latePayNoteRows(year, taxNames); }catch(e){ return ''; }
+  if(!list.length) return '';
+  /* ⚠ `esc` ក្នុងឯកសារនេះជា **មូលដ្ឋានក្នុងមុខងារនីមួយៗ** មិនមែនសកលទេ ។ */
+  const esc = x => String(x == null ? '' : x)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const rnd = v => Math.round(Number(v) || 0);
+  const n = v => rnd(v).toLocaleString('en-US');
+  /* ⭐⭐⭐ [stated] ២០២៦-១០-២៧ ( ទី ៣ ) ៖ «ជួយដាក់ទឹកប្រាក់សរុប សម្រាប់ ៖
+     អាករបានបង់ក្នុងសាលកបត្រអនុរក្ស និង អាករត្រូវបង់ (តាមប្រកាស) និង លំអៀង
+     ចាំបញ្ជាក់ ទើបមិនត្រូវការចុះបន្ទាត់ច្រើន ករណីមានខែយឺតយ៉ាវច្រើន វាអាច
+     បញ្ជាក់កន្លែងលំអៀងនោះ និងញែកតាមខែ» ។
+     ⇒ បីបន្ទាត់តួលេខចេញ **តែម្តង** ជាសរុបនៃខែដែលពាក់ព័ន្ធ ; ការញែកតាមខែ
+       ទៅនៅបន្ទាត់ផ្កាយវិញ ⇒ ៣ បន្ទាត់ + n បន្ទាត់ ជំនួស ៤n បន្ទាត់ ។
+     ⚠ សរុបត្រូវបូកតាម **ខែដាច់ដោយឡែក** ៖ ខែដដែលមានពីរជួរ ( យឺតយ៉ាវ +
+       សវនកម្ម ) តួលេខខែនោះត្រូវរាប់តែម្តង មិនមែនពីរដងទេ ។
+     ⚠ មូលហេតុនៅក្នុងវង់ក្រចករបស់ «លំអៀង» ទុកតែពេលមាន **ជួរតែមួយ** ;
+       ច្រើនជួរ ⇒ បន្ទាត់ផ្កាយជាអ្នកបញ្ជាក់ ⇒ ស្លាកនៅខ្លី ។ */
+  const monthsSeen = [];
+  list.forEach(r=>{ const k = r.month == null ? 'x' : String(r.month);
+    if(monthsSeen.indexOf(k) < 0) monthsSeen.push(k); });
+  const one = list.length === 1;
+  let head = '';
+  if(typeof figs === 'function'){
+    let paid = 0, due = 0, got = false;
+    monthsSeen.forEach(k=>{
+      const mo = k === 'x' ? null : Number(k);
+      if(!mo) return;
+      let f = null; try{ f = figs(mo); }catch(e){ f = null; }
+      if(!f) return;
+      paid += rnd(f.paid); due += rnd(f.due); got = true;
+    });
+    if(got){
+      const whyOf = r => r.why || ('បង់ពន្ធយឺតយ៉ាវ' +
+        (r.month ? 'នៅខែ' + (KH_MONTH_NAMES[r.month - 1] || r.month) : '') +
+        (r.period && r.period !== String(year) ? ' សម្រាប់ការិយបរិច្ឆេទ ' + r.period : ''));
+      /* ⚠⚠ **កុំប្រើ <table>** ៖ ច្បាប់ CSS ស្រាប់របស់ #mtr-embed ដាក់
+         `text-align:center` និងបន្លាយក្រឡា ⇒ «=» មិនត្រង់ ( probe_css.py ) ។ */
+      const row = (lab, val)=> '<div class="mtr-late-r"><span class="k">' + esc(lab) +
+                               '</span><span class="eq">=</span><span class="v">' +
+                               n(val) + '</span></div>';
+      head = row('អាករបានបង់ក្នុងសាលកបត្រអនុរក្ស', paid) +
+             row('អាករត្រូវបង់ (តាមប្រកាស)', due) +
+             row('លំអៀង' + (one ? ' (' + whyOf(list[0]) + ')' : ''), paid - due);
+    }
+  }
+  /* បន្ទាត់ផ្កាយ ៖ មួយក្នុងមួយជួរ — ខែ · ចំនួន · ការបំបែក · មូលហេតុ */
+  const blocks = head + list.map(r=>{
+    const where = r.month ? ('ខែ ' + r.month) : 'មិនបានបញ្ជាក់ខែ';
+    const mName = r.month ? (KH_MONTH_NAMES[r.month - 1] || String(r.month)) : '';
+    const bd = [];
+    if(r.amt) bd.push('ទឹកប្រាក់ពន្ធ ' + n(r.amt));
+    if(r.pen) bd.push('ពន្ធបន្ថែម ' + n(r.pen));
+    if(r.int) bd.push('ការប្រាក់ ' + n(r.int));
+    let sub = bd.join(' + ');
+    /* មូលហេតុ ៖ ត្រូវចេញពេលមានច្រើនជួរ ( ស្លាក «លំអៀង» លែងកាន់វា ) ឬពេល
+       ជាការបង់សវនកម្ម ឬពេលគេវាយកំណត់សម្គាល់ផ្ទាល់ ។ */
+    const needWhy = !one || r.kind === 'audit' || !!r.why;
+    if(needWhy){
+      /* ⚠ កុំនិយាយខែម្តងទៀត ៖ បន្ទាត់ចាប់ផ្តើមដោយ «* ខែ N» រួចហើយ ។ */
+      const w = r.why || 'បង់ពន្ធយឺតយ៉ាវ';
+      if(!one || !head) sub += (sub ? ' · ' : '') + w;
+      else if(r.kind === 'audit' && !sub) sub = w;
+    }
+    if(r.period && r.period !== String(year)) sub += (sub ? ' · ' : '') + 'ការិយត្រូវបង់ ' + r.period;
+    return '<div class="mtr-late-li">* ' + esc(where) +
+           (showTaxName ? ' — ' + esc(r.tax) : '') +
+           ' ៖ <b>' + n(r.tot) + '</b> ៛' +
+           (sub ? ' (' + esc(sub) + ')' : '') + '</div>';
+  }).join('');
+  return '<div class="mtr-late-note">' +
+    '<div class="mtr-late-h">កំណត់សម្គាល់ ៖</div>' + blocks + '</div>';
+}
+
+/* ⚠ ស្ពានពិនិត្យ ៖ `__latePayNote('2025')` ក្នុង console បង្ហាញកំណត់សម្គាល់
+   ដែលនឹងព្រីន ⇒ អាចផ្ទៀងផ្ទាត់ដោយមិនបាច់ព្រីនពិត ។ */
+try{ window.__latePayNote = function(year, taxNames, showTaxName){
+  return latePayNoteHtml(String(year || new Date().getFullYear()),
+                         taxNames || ['អាករលើតម្លៃបន្ថែម'], !!showTaxName);
+}; }catch(e){}
+try{ window.__latePayNoteRows = function(year, taxNames){
+  return latePayNoteRows(String(year || new Date().getFullYear()), taxNames || null);
+}; }catch(e){}
+try{ window.__buildVATFormSheet = function(y, o){ return buildVATFormSheet(String(y), o || {}); }; }catch(e){}
+
 /* Manual overrides for the header + signature fields. COMPANYINFO sheets
    are not laid out consistently between exports, so every field on the form
    is contenteditable — whatever the user types wins over auto-detection and
@@ -22195,14 +22534,19 @@ function buildMTRFormSheets(year, allRows, info, defaults){
         <tbody>${bodyRows}${totalRow}</tbody>
       </table>
       <div class="mtr-form-foot">
-        ${mtrFormDateLine(mtrFormOverride.docDate)}
-        <div class="mtr-signs">
-          ${MTR_SIGNATORIES.map(s=>`
-            <div class="mtr-sign">
-              <div class="mtr-sign-role">${esc(s.label)}</div>
-              <div class="mtr-sign-space"></div>
-              <div class="mtr-sign-name">${editable(s.key, 'ឈ្មោះ')}</div>
-            </div>`).join('')}
+        <div class="mtr-foot-row">
+          <div class="mtr-foot-left">${latePayNoteHtml(year, cols.map(c=>c.full), true)}</div>
+          <div class="mtr-foot-right">
+            ${mtrFormDateLine(mtrFormOverride.docDate)}
+            <div class="mtr-signs">
+              ${MTR_SIGNATORIES.map(s=>`
+                <div class="mtr-sign">
+                  <div class="mtr-sign-role">${esc(s.label)}</div>
+                  <div class="mtr-sign-space"></div>
+                  <div class="mtr-sign-name">${editable(s.key, 'ឈ្មោះ')}</div>
+                </div>`).join('')}
+            </div>
+          </div>
         </div>
       </div>
     </div>`;
@@ -22834,6 +23178,19 @@ function openFormPrintWindow(sheets){
     table.mtr-grid td.mtr-num{text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap;}
     table.mtr-grid tr.mtr-total td{font-weight:400; background:#fff; border-top:1px solid #333 !important;}
     table.mtr-grid tr{page-break-inside:avoid;}
+    .mtr-foot-row{display:flex; align-items:flex-start; justify-content:space-between; gap:24px;}
+    .mtr-foot-left{flex:1 1 auto; min-width:0;}
+    .mtr-foot-right{flex:0 0 auto;}
+    .mtr-late-note{text-align:left; margin:0; font-size:10.5px;
+      line-height:1.7; white-space:nowrap; break-inside:avoid; page-break-inside:avoid;}
+    .mtr-late-h{font-weight:700; margin-bottom:2px;}
+    .mtr-late-m{margin-top:6px;}
+    .mtr-late-r{white-space:nowrap; line-height:1.7;}
+    .mtr-late-r .k{display:inline-block; min-width:186px;}
+    .mtr-late-r .eq{display:inline-block; width:18px; text-align:center;}
+    .mtr-late-r .v{display:inline-block; min-width:110px; text-align:right;
+      font-variant-numeric:tabular-nums;}
+    .mtr-late-li{margin-top:4px; white-space:nowrap;}
     .mtr-form-foot{margin-top:16px; font-size:11.5px;}
     .mtr-form-date{text-align:right; margin-bottom:24px;}
     .mtr-blank{display:inline-block; width:56px; border-bottom:1px dotted #666; margin:0 3px;}
@@ -23801,14 +24158,22 @@ function buildVATFormSheet(year, opts){
       <tbody>${creditRow}${bodyRows}${totalRow}</tbody>
     </table>
     <div class="mtr-form-foot">
-      ${mtrFormDateLine(mtrFormOverride.docDate)}
-      <div class="mtr-signs">
-        ${MTR_SIGNATORIES.map(sg=>`
-          <div class="mtr-sign">
-            <div class="mtr-sign-role">${esc(sg.label)}</div>
-            <div class="mtr-sign-space"></div>
-            <div class="mtr-sign-name">${editable(sg.key, 'ឈ្មោះ')}</div>
-          </div>`).join('')}
+      <div class="mtr-foot-row">
+        <div class="mtr-foot-left">${latePayNoteHtml(year, ['អាករលើតម្លៃបន្ថែម'], false, (m)=>{
+          const rr = rows[m - 1];
+          return rr ? { paid: rr.c12 || 0, due: rr.cDue || 0, diff: rr.cDiff || 0 } : null;
+        })}</div>
+        <div class="mtr-foot-right">
+          ${mtrFormDateLine(mtrFormOverride.docDate)}
+          <div class="mtr-signs">
+            ${MTR_SIGNATORIES.map(sg=>`
+              <div class="mtr-sign">
+                <div class="mtr-sign-role">${esc(sg.label)}</div>
+                <div class="mtr-sign-space"></div>
+                <div class="mtr-sign-name">${editable(sg.key, 'ឈ្មោះ')}</div>
+              </div>`).join('')}
+          </div>
+        </div>
       </div>
     </div>
   </div>`;
@@ -25460,6 +25825,28 @@ function getAllExtractedMonthlyRows(){
   var keep = window.__rscAuditYearSet && window.__rscAuditYearSet();
   return keep ? rows.filter(function(r){ return r && keep[String(r[0])]; }) : rows;
 }
+/* ⭐⭐⭐ [stated] ២០២៦-១០-២៧ ៖ «ជាក់ស្តែងទឹកប្រាក់ 16,766,283 គឺស្ថិតនៅ
+   បានបង់ ៖ តាមសាលកបត្រ មិនមែនស្ថិតនៅបានបង់ក្នុងសវនកម្មទេ» ។
+   ⚠⚠ មូលហេតុ ៖ `getAllExtractedMonthlyRows_()` **កាត់កងទឹកប្រាក់សវនកម្ម
+     ចេញរួចហើយ** ពេលប្រអប់ «រួមបញ្ចូលសវនកម្ម (ដកទឹកប្រាក់)» ត្រូវបានធីក ។
+     ដូច្នេះ `__mtrPaidByTaxYear()` ប្រគល់លេខ **សុទ្ធ** ( ១៦,៧៦៦,២៨៣ )
+     ខណៈ `__mtrAuditPaidByTaxYear()` ប្រគល់ទឹកប្រាក់សវនកម្មពេញ
+     ( ១៣៣,២៥៥,៦៧២ ) ⇒ `fillSplit` កាត់ម្តងទៀត ⇒ au = min(១៣៣ លាន,
+     ១៦.៧ លាន) = ១៦.៧ លាន ហើយ **តាមសាលកបត្រ = ០** ។
+   ⇒ នេះជាការកាត់ **ពីរដង** ហើយវាធ្វើឱ្យ **ប្រអប់បង្ហាញមួយ** ប្តូរតួលេខ
+     ក្នុងការគណនាពន្ធ — ជារឿងមិនត្រឹមត្រូវដាច់ខាត ។
+   ⇒ ការកែ ៖ កាតុគណនាត្រូវអានជួរ **ដើម** ( មិនទាន់កាត់កង ) ជានិច្ច រួច
+     កាត់ទឹកប្រាក់សវនកម្មតែម្តងគត់ ⇒ លទ្ធផលដូចគ្នាទាំងធីក និងមិនធីក ៖
+       តាមសាលកបត្រ = ១៥០,០២១,៩៥៥ − ១៣៣,២៥៥,៦៧២ = ១៦,៧៦៦,២៨៣
+       ក្នុងសវនកម្ម = ១៣៣,២៥៥,៦៧២
+   ⚠ តារាងប្រចាំខែ/ប្រចាំឆ្នាំនៅប្រើជួរសុទ្ធដដែល — ប្រអប់នោះនៅតែដើរដូចដើម ។ */
+function getAllExtractedMonthlyRowsGross(){
+  var rows = memoByVersion('monthlyGross', function(){
+    return getAllExtractedMonthlyRows_(true);
+  }) || [];
+  var keep = window.__rscAuditYearSet && window.__rscAuditYearSet();
+  return keep ? rows.filter(function(r){ return r && keep[String(r[0])]; }) : rows;
+}
 /* =========================================================================
    ⚠⚠ [stated] ២០២៦-០៨-២២ ៖ «ផ្នែកសាលកបត្រអនុរក្សប្រចាំ អាចបញ្ចូលដោយដៃបាន
    ក្នុងនោះមាន Dropdown ប្រភេទពន្ធ ឬបន្ថែមប្រភេទពន្ធថ្មី ខែ ឆ្នាំ ទឹកប្រាក់
@@ -25531,7 +25918,7 @@ function mtrManualEntries(){
   return map;
 }
 
-function getAllExtractedMonthlyRows_() {
+function getAllExtractedMonthlyRows_(skipAudit) {
   const aggregatedMap = new Map(); 
 
   /* ⚠ ដាក់ជួរដៃចូល **មុន** ឯកសារ ៖ ជួរពីឯកសារបូកបន្ថែមលើគ្រាប់ចុចដដែល
@@ -25612,7 +25999,8 @@ function getAllExtractedMonthlyRows_() {
     }
   });
 
-  const deductionsMap = getAuditDeductionsMap(); 
+  /* skipAudit ៖ ជួរ **ដើម** សម្រាប់កាតុគណនា — កុំកាត់កងនៅទីនេះ ។ */
+  const deductionsMap = skipAudit ? new Map() : getAuditDeductionsMap(); 
   
   for (let [dKey, deductVal] of deductionsMap.entries()) {
     const [yr, tType, mIdxStr] = dKey.split('|');
@@ -26197,7 +26585,10 @@ window.__mtrExportAsync = function(onProgress){
 window.__mtrPaidByTaxYear = function(){
   const out = {};
   try{
-    getAllExtractedMonthlyRows().forEach(r=>{
+    /* ⚠⚠ **ជួរដើម** ( មិនទាន់កាត់កងសវនកម្ម ) ៖ កាតុគណនាកាត់ទឹកប្រាក់
+       សវនកម្មដោយខ្លួនឯងម្តងហើយ ( fillSplit ) ⇒ បើអានជួរសុទ្ធ វាកាត់ពីរដង
+       ហើយជួរ «តាមសាលកបត្រ» ក្លាយជា ០ ។ មើល getAllExtractedMonthlyRowsGross ។ */
+    getAllExtractedMonthlyRowsGross().forEach(r=>{
       const year = String(r[0] ?? '').trim();
       const taxType = String(r[1] ?? '').trim();
       const total = Number(r[r.length - 1]) || 0;
@@ -46912,18 +47303,40 @@ CC.pullFromMtr=function(quiet){
     for(var i=0;i<ks.length;i++){ if(ks[i].indexOf(n)===0||n.indexOf(ks[i])===0) return aidx[ks[i]]; }
     return null;
   };
+  /* ⭐⭐⭐ [stated] ២០២៦-១០-២៣ ៖ «នៅពេលបញ្ចូលផ្នែកពន្ធយឺតយ៉ាវ គួរតែដកចេញនៅ
+     កន្លែងសាលកបត្រអនុរក្ស» ។
+     ⚠⚠ ការបង់យឺតយ៉ាវ **ក៏ជាសាលកបត្រដែរ** ⇒ ចំនួនដដែលមានទាំងក្នុងសរុប
+       សាលកបត្រ និងក្នុងផ្ទាំង 💸 ការបង់យឺតយ៉ាវ ⇒ `CC.taxPaid` ( paid +
+       paidAudit + paidLate ) រាប់ស្ទួន ។
+     ⇒ ញែកដូចការបង់ក្នុងសវនកម្ម ៖
+         តាមសាលកបត្រ = សរុបសាលកបត្រ − ក្នុងសវនកម្ម − យឺតយ៉ាវ
+       សរុបមិនប្តូរ តែការបែងចែកត្រឹមត្រូវ ហើយគ្មានការស្ទួន ។
+     ⚠ គណនាពី **សរុបសាលកបត្រ** រាល់ពេល ⇒ ហៅម្តងទៀតមិនដកពីរដងឡើយ ។
+     ⚠ ដាក់ជាន់ ៖ បើយឺតយ៉ាវធំជាងអ្វីដែលនៅសល់ យកត្រឹមអ្វីដែលនៅសល់ —
+       លេខអវិជ្ជមាននឹងអានថា «បង់តិចជាងគួរ» ដែលខុស ។ */
+  var lf=window.__mtrLatePayments;
+  var ldata=(typeof lf==="function")?(lf()||{}):{};
+  var lidx={}; Object.keys(ldata).forEach(function(k){ lidx[norm(k)]=ldata[k]; });
+  var takeLate=function(name){
+    var n=norm(name); if(lidx[n]) return lidx[n];
+    var ks=Object.keys(lidx);
+    for(var i=0;i<ks.length;i++){ if(ks[i].indexOf(n)===0||n.indexOf(ks[i])===0) return lidx[ks[i]]; }
+    return null;
+  };
   var fill=function(target,d){ var n=0; s.years.forEach(function(y){
     if(d[y]!=null){ target[y]=+d[y]||0; n++; } }); return n; };
   /* សរុបពីសាលកបត្រ ដក ទឹកប្រាក់សវនកម្ម → ជួរ «តាមសាលកបត្រ» ;
      ទឹកប្រាក់សវនកម្ម → ជួរ «ក្នុងសវនកម្ម»។ សរុបនៅដដែល តែការបែងចែក
      ត្រឹមត្រូវ ដូច្នេះការគណនាការប្រាក់ និងពន្ធនៅសល់ក៏ត្រឹមត្រូវដែរ។ */
-  var fillSplit=function(t,d,ad){
+  var fillSplit=function(t,d,ad,ld){
     var n=0;
     s.years.forEach(function(y){
       if(d[y]==null) return;
       var tot=+d[y]||0, au=ad?(+ad[y]||0):0;
       if(au>tot) au=tot;
-      t.paid[y]=tot-au; t.paidAudit[y]=au; n++;
+      var la=ld?(+ld[y]||0):0;
+      if(la>tot-au) la=tot-au;
+      t.paid[y]=tot-au-la; t.paidAudit[y]=au; n++;
     });
     return n;
   };
@@ -46934,7 +47347,7 @@ CC.pullFromMtr=function(quiet){
      ដូច្នេះការដកអ្វីដែលបានបង់តាមសាលកបត្រម្តងទៀត = ដកស្ទួន។ */
   s.taxes.forEach(function(t){
     if(t.id==='tos' || t.id==='fbt') return;
-    var d=take(t.name); if(d && fillSplit(t,d,takeAudit(t.name))) hit++;
+    var d=take(t.name); if(d && fillSplit(t,d,takeAudit(t.name),takeLate(t.name))) hit++;
   });
   var pre=take("ប្រាក់រំដោះពន្ធលើប្រាក់ចំណូល"); if(pre && fill(s.toi.prepaid,pre)) hit++;
   /* ពន្ធលើប្រាក់ចំណូល បានបង់ ៖ ពន្ធប្រចាំឆ្នាំ + ពន្ធអប្បបរមា ដែលបានបង់តាមសាលកបត្រ */
@@ -46944,19 +47357,21 @@ CC.pullFromMtr=function(quiet){
     s.years.forEach(function(y){ if(dd[y]!=null){ tp[y]=(tp[y]||0)+(+dd[y]||0); gotTp=true; } });
   });
   if(gotTp){
-    var ta={};
+    var ta={}, tl={};
     ["ពន្ធលើប្រាក់ចំណូលប្រចាំឆ្នាំ","ពន្ធអប្បបរមា"].forEach(function(nm){
-      var dd=takeAudit(nm); if(!dd) return;
-      s.years.forEach(function(y){ if(dd[y]!=null) ta[y]=(ta[y]||0)+(+dd[y]||0); });
+      var dd=takeAudit(nm); if(dd) s.years.forEach(function(y){ if(dd[y]!=null) ta[y]=(ta[y]||0)+(+dd[y]||0); });
+      var dl=takeLate(nm);  if(dl) s.years.forEach(function(y){ if(dl[y]!=null) tl[y]=(tl[y]||0)+(+dl[y]||0); });
     });
     s.years.forEach(function(y){
       var tot=tp[y]||0, au=ta[y]||0; if(au>tot) au=tot;
-      s.toi.toiPaid[y]=tot-au; s.toi.toiPaidAudit=s.toi.toiPaidAudit||{}; s.toi.toiPaidAudit[y]=au;
+      var la=tl[y]||0; if(la>tot-au) la=tot-au;
+      s.toi.toiPaid[y]=tot-au-la; s.toi.toiPaidAudit=s.toi.toiPaidAudit||{}; s.toi.toiPaidAudit[y]=au;
     });
     hit++;
   }
   var vat=take("អាករលើតម្លៃបន្ថែម");
-  if(vat && fillSplit({paid:s.vat.paid,paidAudit:s.vat.paidAudit},vat,takeAudit("អាករលើតម្លៃបន្ថែម"))) hit++;
+  if(vat && fillSplit({paid:s.vat.paid,paidAudit:s.vat.paidAudit},vat,
+                      takeAudit("អាករលើតម្លៃបន្ថែម"),takeLate("អាករលើតម្លៃបន្ថែម"))) hit++;
   if(!quiet){ CC.persist(); CC.render(); }
   return hit
     ? {ok:true, msg:"✓ បានទាញ "+hit+" ប្រភេទពន្ធពីសាលកបត្រ"}
@@ -46974,6 +47389,12 @@ CC._sourceSig=function(){
   try{ var v=(window.__vatDeclaredByYear&&window.__vatDeclaredByYear())||{};
        Object.keys(v).sort().forEach(function(y){
          parts.push("V"+y+":"+Math.round(v[y].saleTaxable||0)+":"+Math.round(v[y].paid||0)); }); }catch(e){}
+  /* ⚠ ការបង់យឺតយ៉ាវឥឡូវប៉ះពាល់ដល់ការបែងចែកសាលកបត្រ ⇒ ដាក់វាចូលហត្ថលេខា
+     ទើប autoFill បំពេញឡើងវិញពេលផ្ទាំងយឺតយ៉ាវប្តូរ ។ */
+  try{ var lp=(window.__mtrLatePayments&&window.__mtrLatePayments())||{};
+       Object.keys(lp).sort().forEach(function(k){
+         Object.keys(lp[k]).sort().forEach(function(y){
+           parts.push("L"+k+":"+y+":"+Math.round(lp[k][y]||0)); }); }); }catch(e){}
   try{ var m=(window.__mtrPaidByTaxYear&&window.__mtrPaidByTaxYear())||{};
        Object.keys(m).sort().forEach(function(k){ var o=m[k];
          Object.keys(o).sort().forEach(function(y){ parts.push("M"+y+":"+Math.round(o[y]||0)); }); }); }catch(e){}
