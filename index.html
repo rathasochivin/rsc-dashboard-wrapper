@@ -725,6 +725,12 @@ tfoot td{
 
 /* toolbar */
 .toolbar{display:flex; align-items:center; gap:10px; margin-bottom:12px; flex-wrap:wrap;}
+/* [stated] ២០២៦-១០-២៩ ៖ «រុញជួរ excel ដល់ លុប ទៅជួរតែមួយនៃ CROSSCHECK
+   SALE ⇄ CP_PURCHASE» ⇒ ប៊ូតុងឈរជាមួយចំណងជើង ហើយរបារខាងក្រោម
+   នៅសល់តែតម្រង ⇒ លែងបាក់ជាពីរជួរ។ */
+.cross-top{display:flex; align-items:flex-end; gap:14px; flex-wrap:wrap;}
+.cross-top .cross-top-t{flex:1 1 320px; min-width:0;}
+.cross-top .cross-top-b{margin-left:auto; display:flex; gap:8px; align-items:center; flex-wrap:wrap;}
 .btn{
   font-family:inherit; font-size:12.8px; font-weight:600; cursor:pointer;
   border-radius:7px; padding:9px 16px; border:1px solid var(--primary);
@@ -811,6 +817,18 @@ td[contenteditable="true"]:focus{outline:2px solid var(--accent); outline-offset
 
 /* top-10 tables */
 .name-cell.trunc{max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+/* ⭐ [stated] ២០២៦-១០-២៩ ៖ «ផ្នែកឈ្មោះសហគ្រាសប្រកាសកុំឱ្យចេញជាច្រើនជួរ
+   បង្ហាញតែមួយជួរបានហើយ ពេលចុចពីលើនោះចាំបង្ហាញឈ្មោះពេញ» ។
+   ⚠ `tbody td.name-cell{white-space:normal}` ជាច្បាប់ដែលធ្វើឱ្យវារុំ ⇒
+     ត្រូវប្រើ span ក្នុងក្រឡា មិនមែនកែ td ( កុំប៉ះតារាងឯទៀត ) ។ */
+#table-crossCustoms .cus-nm, .cus-nm{
+  display:block; max-width:230px; white-space:nowrap;
+  overflow:hidden; text-overflow:ellipsis; cursor:pointer;
+}
+#table-crossCustoms .cus-nm.open, .cus-nm.open{
+  white-space:normal; overflow:visible; max-width:none;
+}
+
 td.amt-sub{color:var(--muted); font-size:11.8px;}
 
 .badge-count{
@@ -1355,6 +1373,26 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
   }
   #docs-modal .docs-body{ background:#EDEBE3; }
 }
+/* ⭐⭐⭐ [stated] ២០២៦-១០-២៩ ៖ «ហេតុអ្វីផ្ទៃខាងក្រោយរបាយការណ៍នីមួយៗ …
+   តែងតែមានផ្ទៃខាងក្រោយពណ៌សពីខាងក្រោយពីរជាន់» ។
+   មូលហេតុ ៖ កុងតឺន័រមើលជាមុន `.trk-minutes.trk-letter` ជា **សន្លឹក A4 ស**
+   រួចហើយ (ផ្ទៃស · ស៊ុម · ស្រមោល · padding 18mm) ហើយខាងក្នុងវា ឯកសារ
+   សង់ `.rpt-page` ដែលជា **សន្លឹក A4 ស** មួយទៀត ⇒ សពីរជាន់។
+   ⚠ ច្បាប់ចាស់ដោះបានតែករណី `.trk-card > .trk-minutes` ( លិខិត · មូលដ្ឋាន )
+     ⇒ បរិយាយ · សវនកម្ម · សង្ខេប · ឯករាជ្យភាព · យុទ្ធសាស្ត្រ នៅសល់ដដែល។
+   ⇒ ច្បាប់ទូទៅ ៖ កុងតឺន័រណាដែល **មានសន្លឹកនៅខាងក្នុង** មិនត្រូវជាសន្លឹក
+     ខ្លួនឯងទៀតទេ។ បើកម្មវិធីរុករកចាស់មិនស្គាល់ `:has()` វាមិនអនុវត្ត
+     ⇒ ត្រឡប់ទៅរូបរាងចាស់ មិនខូចអ្វីទេ។
+   ⚠ ត្រឹម @media screen ៖ ពេលព្រីន កុងតឺន័រគ្មានផ្ទៃរួចជាស្រេច។ */
+@media screen{
+  #view-tracking .trk-minutes:has(.rpt-page), #docs-modal .trk-minutes:has(.rpt-page){
+    background:transparent; border:0; box-shadow:none; border-radius:0;
+    padding:0; width:auto; max-width:100%;
+  }
+  #view-tracking .trk-card:has(.rpt-page), #docs-modal .trk-card:has(.rpt-page){
+    background:transparent; border:0; box-shadow:none; border-radius:0; padding:0;
+  }
+}
 #view-tracking .rpt-page > .rpt-foot, #docs-modal .rpt-page > .rpt-foot{margin-top:auto;}
 #view-tracking .rpt-page:last-child, #docs-modal .rpt-page:last-child{page-break-after:auto; break-after:auto;}
 #view-tracking .rpt-title, #docs-modal .rpt-title{border:2px solid #1a237e; color:#1a237e; text-align:center; font-weight:700;
@@ -1388,7 +1426,7 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
 #view-tracking .rpt-fin td.key, #docs-modal .rpt-fin td.key{background:#fff8c4;}
 #view-tracking .rpt-fin, #docs-modal .rpt-fin{table-layout:fixed;}
 #view-tracking .rpt-fin th.l, #view-tracking .rpt-fin td.l, #docs-modal .rpt-fin th.l, #docs-modal .rpt-fin td.l{width:32%;}
-#view-tracking .rpt-fin th.c:nth-child(2), #docs-modal .rpt-fin th.c:nth-child(2){width:52px;}
+#view-tracking .rpt-fin th.yo, #docs-modal .rpt-fin th.yo{width:6%;}
 #view-tracking .rpt-fin.rpt-ratio, #docs-modal .rpt-fin.rpt-ratio{table-layout:auto;}
 #view-tracking .rpt-fin.rpt-ratio th.l, #view-tracking .rpt-fin.rpt-ratio td.l, #docs-modal .rpt-fin.rpt-ratio th.l, #docs-modal .rpt-fin.rpt-ratio td.l{width:auto; white-space:nowrap;}
 #view-tracking .rpt-fin.rpt-ratio th.ref, #view-tracking .rpt-fin.rpt-ratio td.ref, #docs-modal .rpt-fin.rpt-ratio th.ref, #docs-modal .rpt-fin.rpt-ratio td.ref{width:auto; white-space:nowrap;}
@@ -1792,6 +1830,55 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
 .xls-btn:hover{opacity:1; background:var(--accent-light); border-color:var(--accent);}
 @media print{ .xls-bar{display:none;} }
 #calcCard .cc-head{display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-bottom:12px;}
+/* ⭐⭐⭐ [stated] ២០២៦-១០-២៩ ៖ «ជួយបន្ថែមទឹកប្រាក់កំណត់ឡើងវិញសរុបនៅផ្នែក
+   ខាងចុងខាងស្តាំ ដើម្បីងាយស្រួលមើលនៅពេលកែប្រែកម្រិតចំណេញ … ដោយមិនចាំបាច់
+   ចូលទៅចុចលើកាតសង្ខេប ។ មួយវិញទៀតអាចចុចមើលទឹកប្រាក់ឆ្នាំណា … ឬតែមួយឆ្នាំបាន» ។
+   ⇒ ស្លាកសរុបឋិតនៅក្បាលកាត ⇒ ឃើញគ្រប់ផ្ទាំង ហើយកែប៉ុន្មានដងក៏ឃើញភ្លាម ។ */
+#calcCard .cc-grand{
+  margin-left:auto; display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+  background:var(--accent-light,#f3efe2); border:1px solid rgba(0,0,0,.08);
+  border-radius:10px; padding:6px 12px;
+}
+#calcCard .cc-gy{display:flex; gap:4px; flex-wrap:wrap;}
+/* [stated] ២០២៦-១០-២៩ ៖ «ជួយពង្រីកលេខឆ្នាំ និងកម្រិតចំណេញ … និងកន្លែង
+   កម្រិតចំណេញអាចចុចកែនៅលើនោះបានផងដែរ» ⇒ ចិបក្លាយជាប្រអប់ ៖ ឆ្នាំជាប៊ូតុង
+   ត្រង ( តម្រង ) ហើយកម្រិតចំណេញជា **ប្រអប់វាយ** ។ */
+#calcCard .cc-gchip{
+  border:1px solid rgba(0,0,0,.14); background:#fff;
+  border-radius:16px; padding:4px 12px 5px;
+  display:flex; flex-direction:column; align-items:center; line-height:1.15;
+}
+#calcCard .cc-gchip.on{background:var(--primary,#1d4b43); border-color:transparent;}
+#calcCard .cc-gchip .y{
+  border:0; background:none; font:inherit; font-size:15px; font-weight:800;
+  color:var(--muted); cursor:pointer; padding:0; width:auto;
+  font-variant-numeric:tabular-nums;
+}
+#calcCard .cc-gchip.on .y{color:#fff;}
+#calcCard .cc-gchip .m{
+  border:0; background:none; font:inherit; font-size:13px; font-weight:700;
+  color:var(--muted); text-align:center; width:58px; padding:0; margin-top:1px;
+  font-variant-numeric:tabular-nums; cursor:text;
+}
+#calcCard .cc-gchip.on .m{color:#fff;}
+#calcCard .cc-gchip .m::placeholder{color:inherit; opacity:.55; font-weight:700;}
+#calcCard .cc-gchip .m:focus{outline:2px solid var(--accent,#c8a24a); outline-offset:2px; border-radius:6px;}
+#calcCard .cc-gy button{
+  border:1px solid rgba(0,0,0,.14); background:#fff; color:var(--muted);
+  font:inherit; font-size:15px; font-weight:800; padding:7px 14px;
+  border-radius:16px; cursor:pointer; width:auto;
+  display:flex; flex-direction:column; align-items:center; line-height:1.2;
+}
+#calcCard .cc-gy button.on{background:var(--primary,#1d4b43); color:#fff; border-color:transparent;}
+#calcCard .cc-grand-amt{display:flex; flex-direction:column; line-height:1.25; text-align:right;}
+#calcCard .cc-grand-amt .r{font-size:16px; font-weight:800; color:var(--primary,#1d4b43);
+  font-variant-numeric:tabular-nums; white-space:nowrap;}
+/* [stated] ២០២៦-១០-២៩ ៖ «ទឹកប្រាក់ដុល្លារដាក់ទំហំស្មើនឹងរៀល» */
+#calcCard .cc-grand-amt .u{font-size:16px; font-weight:800; color:var(--primary,#1d4b43);
+  font-variant-numeric:tabular-nums; white-space:nowrap;}
+#calcCard .cc-grand-amt .k{font-size:10.5px; font-weight:700; color:var(--muted);}
+@media print{ #calcCard .cc-grand{display:none !important;} }
+
 #calcCard .cc-title{font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif; font-size:15px; color:var(--primary); margin-right:auto;}
 #calcCard .cc-sub{display:block; margin-top:3px; font-family:'Khmer OS Siemreap','Noto Sans Khmer',sans-serif; font-size:12px; font-weight:400; color:var(--muted);}
 #calcCard select,#calcCard input[type=text],#calcCard input[type=number]{
@@ -6854,52 +6941,108 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
 
     <!-- CROSSCHECK_SALE -->
     <section class="view" id="view-cross-sale">
-      <div class="topbar">
-        <h2>CROSSCHECK SALE ⇄ CP_PURCHASE</h2>
-        <p>ការលក់របស់យើង ធៀបនឹង ការទិញរបស់ក្រុមហ៊ុនដៃគូ</p>
+      <div class="topbar cross-top">
+        <div class="cross-top-t">
+          <h2>CROSSCHECK SALE ⇄ CP_PURCHASE</h2>
+          <p>ការលក់របស់យើង ធៀបនឹង ការទិញរបស់ក្រុមហ៊ុនដៃគូ</p>
+        </div>
+        <div class="cross-top-b">
+          <button class="btn ghost" onclick="crossExcel('crossSale')" title="ទាញយកលទ្ធផលផ្គូផ្គងទាំងអស់ (គ្រប់ទំព័រ)">⬇ Excel</button>
+          <button class="btn ghost" onclick="crossExcelAll('crossSale')" title="សន្លឹកសង្ខេបគ្រប់ក្រុមហ៊ុន + សន្លឹកលម្អិត">⬇ Excel (គ្រប់ក្រុមហ៊ុន)</button>
+          <button class="btn" onclick="openCrossPurchaseAndPickFolder()"
+                  title="ផ្ទុកបញ្ជីទិញរបស់ក្រុមហ៊ុនដៃគូ">📥 ផ្ទុកឯកសារដៃគូ (ការទិញ)</button>
+          <button class="btn ghost" onclick="clearCpStore('cpPurchase')"
+                  title="លុបទិន្នន័យដៃគូដែលបាន upload">🗑 លុប</button>
+        </div>
       </div>
       <div class="toolbar">
+        <!-- [stated] ២០២៦-១០-២៩ ៖ «នៅផ្នែក crosscheck មានកន្លែង filter រើសឆ្នាំ
+             នៅពីជួរតែ១មុខក្រុមហ៊ុនដៃគូ» ។ តម្រងនេះប្រើអញ្ញត្តិ `crossYear[which]`
+             ដដែលនឹងការចុចឆ្នាំក្នុងតារាងសរុប ⇒ ទាំងពីរផ្លូវតែងតែដូចគ្នា។ -->
         <div class="import-group" style="padding-left:12px;">
+          <span>📅 ឆ្នាំ:</span>
+          <select id="crossyear-crossSale" class="partner-select" style="min-width:150px;" onchange="crossYearSelect('crossSale', this.value)"></select>
+        </div>
+        <div class="import-group">
           <span>🏢 ក្រុមហ៊ុនដៃគូ:</span>
           <select id="filter-crossSale" class="partner-select" onchange="applyPartnerFilter('crossSale')"></select>
         </div>
         <input type="text" id="search-crossSale" class="partner-select" style="min-width:190px"
                placeholder="🔍 លេខវិក្កយបត្រ (យើង ឬ ដៃគូ)…"
                oninput="crossSearchSet('crossSale', this.value)">
-        <span class="import-status" id="filter-count-crossSale"></span>
-        <button class="btn ghost" onclick="crossExcel('crossSale')" title="ទាញយកលទ្ធផលផ្គូផ្គងទាំងអស់ (គ្រប់ទំព័រ)">⬇ Excel</button>
-        <button class="btn ghost" onclick="crossExcelAll('crossSale')" title="សន្លឹកសង្ខេបគ្រប់ក្រុមហ៊ុន + សន្លឹកលម្អិត">⬇ Excel (គ្រប់ក្រុមហ៊ុន)</button>
-        <button class="btn" style="margin-left:auto" onclick="openCrossPurchaseAndPickFolder()"
-                title="ផ្ទុកបញ្ជីទិញរបស់ក្រុមហ៊ុនដៃគូ">📥 ផ្ទុកឯកសារដៃគូ (ការទិញ)</button>
-        <button class="btn ghost" onclick="clearCpStore('cpPurchase')"
-                title="លុបទិន្នន័យដៃគូដែលបាន upload">🗑 លុប</button>
+        <!-- [stated] ២០២៦-១០-២៩ ៖ «លាក់អក្សរ កំពុងបង្ហាញ 377 / 1231 …» ។
+             លាក់ជាលំនាំដើម តែមិនលុបចោល — ព័ត៌មាន «លាក់ … វិក្កយបត្រ
+             (ក្រុមហ៊ុនគ្មានទិន្នន័យដៃគូ)» ជាការប្រាប់ថាមានជួរមិនចេញ
+             ដូច្នេះត្រូវនៅតែមើលបាន ដោយចុច ℹ ។ -->
+        <button class="btn ghost" style="padding:5px 10px;" title="បង្ហាញ / លាក់ព័ត៌មានលម្អិតនៃតម្រង"
+                onclick="crossToggleInfo('crossSale')">ℹ</button>
+        <span class="import-status" id="filter-count-crossSale" style="display:none"></span>
       </div>
       <div class="table-scroll"><table id="table-crossSale"></table></div>
     </section>
 
     <!-- CROSSCHECK_PURCHASE -->
     <section class="view" id="view-cross-purchase">
-      <div class="topbar">
-        <h2>CROSSCHECK PURCHASE ⇄ CP_SALE</h2>
-        <p>ការទិញរបស់យើង ធៀបនឹង ការលក់របស់ក្រុមហ៊ុនដៃគូ</p>
+      <div class="topbar cross-top">
+        <div class="cross-top-t">
+          <h2>CROSSCHECK PURCHASE ⇄ CP_SALE</h2>
+          <p>ការទិញរបស់យើង ធៀបនឹង ការលក់របស់ក្រុមហ៊ុនដៃគូ</p>
+        </div>
+        <div class="cross-top-b">
+          <button class="btn ghost" onclick="crossExcel('crossPurchase')" title="ទាញយកលទ្ធផលផ្គូផ្គងទាំងអស់ (គ្រប់ទំព័រ)">⬇ Excel</button>
+          <button class="btn ghost" onclick="crossExcelAll('crossPurchase')" title="សន្លឹកសង្ខេបគ្រប់ក្រុមហ៊ុន + សន្លឹកលម្អិត">⬇ Excel (គ្រប់ក្រុមហ៊ុន)</button>
+          <button class="btn" onclick="openCrossSaleAndPickFolder()"
+                  title="ផ្ទុកបញ្ជីលក់របស់ក្រុមហ៊ុនដៃគូ">📥 ផ្ទុកឯកសារដៃគូ (ការលក់)</button>
+          <button class="btn ghost" onclick="clearCpStore('cpSale')"
+                  title="លុបទិន្នន័យដៃគូដែលបាន upload">🗑 លុប</button>
+        </div>
       </div>
       <div class="toolbar">
         <div class="import-group" style="padding-left:12px;">
+          <span>📅 ឆ្នាំ:</span>
+          <select id="crossyear-crossPurchase" class="partner-select" style="min-width:150px;" onchange="crossYearSelect('crossPurchase', this.value)"></select>
+        </div>
+        <div class="import-group">
           <span>🏢 ក្រុមហ៊ុនដៃគូ:</span>
           <select id="filter-crossPurchase" class="partner-select" onchange="applyPartnerFilter('crossPurchase')"></select>
         </div>
         <input type="text" id="search-crossPurchase" class="partner-select" style="min-width:190px"
                placeholder="🔍 លេខវិក្កយបត្រ (យើង ឬ ដៃគូ)…"
                oninput="crossSearchSet('crossPurchase', this.value)">
-        <span class="import-status" id="filter-count-crossPurchase"></span>
-        <button class="btn ghost" onclick="crossExcel('crossPurchase')" title="ទាញយកលទ្ធផលផ្គូផ្គងទាំងអស់ (គ្រប់ទំព័រ)">⬇ Excel</button>
-        <button class="btn ghost" onclick="crossExcelAll('crossPurchase')" title="សន្លឹកសង្ខេបគ្រប់ក្រុមហ៊ុន + សន្លឹកលម្អិត">⬇ Excel (គ្រប់ក្រុមហ៊ុន)</button>
-        <button class="btn" style="margin-left:auto" onclick="openCrossSaleAndPickFolder()"
-                title="ផ្ទុកបញ្ជីលក់របស់ក្រុមហ៊ុនដៃគូ">📥 ផ្ទុកឯកសារដៃគូ (ការលក់)</button>
-        <button class="btn ghost" onclick="clearCpStore('cpSale')"
-                title="លុបទិន្នន័យដៃគូដែលបាន upload">🗑 លុប</button>
+        <button class="btn ghost" style="padding:5px 10px;" title="បង្ហាញ / លាក់ព័ត៌មានលម្អិតនៃតម្រង"
+                onclick="crossToggleInfo('crossPurchase')">ℹ</button>
+        <span class="import-status" id="filter-count-crossPurchase" style="display:none"></span>
       </div>
       <div class="table-scroll"><table id="table-crossPurchase"></table></div>
+    </section>
+
+    <section class="view" id="view-cross-customs">
+      <div class="topbar">
+        <h2>CROSSCHECK ការនាំចូល ⇄ ទិន្នន័យគយ</h2>
+        <p>លេខវិក្កយបត្រក្នុង PR ធៀបនឹងលេខប្រតិវេទន៍គយ — អតបនាំចូល ធៀបនឹងប្រាក់អាករលើតម្លៃបន្ថែមរបស់គយ</p>
+      </div>
+      <div class="toolbar">
+        <select id="cus-year" class="partner-select" onchange="cusSetFilter('year', this.value)"></select>
+        <input type="text" id="cus-q" class="partner-select" style="min-width:210px"
+               placeholder="🔍 លេខវិក្កយបត្រ ឬលេខប្រតិវេទន៍…"
+               oninput="cusSetFilter('q', this.value)">
+        <span class="import-status" id="filter-count-crossCustoms"></span>
+        <button class="btn" style="margin-left:auto" onclick="cusPickFile()"
+                title="ផ្ទុកឯកសារ Excel ទិន្នន័យគយ — រើសបានច្រើនឯកសារក្នុងពេលតែមួយ (Ctrl / Shift) ហើយអានគ្រប់សន្លឹក">📥 ផ្ទុកឯកសារគយ (ច្រើនឯកសារបាន)</button>
+        <button class="btn ghost" onclick="clearCustoms()" title="លុបទិន្នន័យគយ">🗑 លុប</button>
+      </div>
+      <div id="cus-tabs" style="display:flex;gap:8px;margin:0 0 10px;flex-wrap:wrap;align-items:center;">
+        <button class="btn" id="cus-tab-diff" style="width:auto;padding:5px 14px;" onclick="cusSetTab('diff')">⇄ ប្រៀបធៀប</button>
+        <button class="btn ghost" id="cus-tab-raw" style="width:auto;padding:5px 14px;" onclick="cusSetTab('raw')">🛃 ទិន្នន័យគយ (ដើម)</button>
+        <span style="width:1px;height:22px;background:#d8d4c6;margin:0 4px;"></span>
+        <button class="btn" id="cus-mode-imp" style="width:auto;padding:5px 14px;" onclick="cusSetMode('imp')">📥 នាំចូល ⇄ PR</button>
+        <button class="btn ghost" id="cus-mode-exp" style="width:auto;padding:5px 14px;" onclick="cusSetMode('exp')">📤 នាំចេញ ⇄ SR</button>
+      </div>
+      <!-- [stated] ២០២៦-១០-២៩ ៖ «អាចរើស file លើសពី១បានទេ» ⇒ បង្ហាញឯកសារ
+           ដែលកំពុងផ្ទុក ជួរប៉ុន្មាន និងឆ្នាំណា ហើយដកមួយៗចេញបាន។ -->
+      <div id="cus-files" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0 0 10px;"></div>
+      <div id="cus-chips" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0 0 10px;"></div>
+      <div class="table-scroll"><table id="table-crossCustoms"></table></div>
     </section>
 
   </main>
@@ -6986,6 +7129,7 @@ let state = {
   purchaseCD: [],
   otherExpenses: [],
   wht: [],
+  customs: [],                      /* 🛃 ទិន្នន័យគយ ( ប្រតិវេទន៍នាំចូល ) */
   companyNotes: {},
   // transient UI state (not persisted): which category row the user drilled
   // into, per store, for the SR (sale) / PR (purchase) breakdown tables.
@@ -7892,6 +8036,7 @@ function stateSnapshot(){
     saleCD: state.saleCD, purchaseCD: state.purchaseCD,
     otherExpenses: state.otherExpenses,
     wht: state.wht, vatRvc: state.vatRvc,
+    customs: state.customs,
     companyNotes: state.companyNotes
   };
 }
@@ -7954,6 +8099,7 @@ function applyParsedState(parsed){
   if(parsed.otherExpenses) state.otherExpenses = parsed.otherExpenses;
   if(parsed.wht) state.wht = parsed.wht;
   if(parsed.vatRvc) state.vatRvc = parsed.vatRvc;
+      if(parsed.customs) state.customs = parsed.customs;
   if(parsed.companyNotes) state.companyNotes = parsed.companyNotes;
 }
 function loadState(){
@@ -7970,6 +8116,7 @@ function loadState(){
       if(parsed.otherExpenses) state.otherExpenses = parsed.otherExpenses;
       if(parsed.wht) state.wht = parsed.wht;
       if(parsed.vatRvc) state.vatRvc = parsed.vatRvc;
+      if(parsed.customs) state.customs = parsed.customs;
       if(parsed.companyNotes) state.companyNotes = parsed.companyNotes;
     }
   }catch(e){}
@@ -8157,6 +8304,7 @@ function clearAllData(){
   state.purchaseCD = [];
   state.otherExpenses = [];
   state.wht = [];
+  state.customs = [];
   state.companyNotes = {};
   state.selectedCategory = {sale:null, purchase:null, cpPurchase:null, cpSale:null, saleCD:null, purchaseCD:null};
   state.whtSelectedType = null;
@@ -8704,6 +8852,7 @@ function buildFullDump(pre){
       cpPurchase: packRows(state.cpPurchase), cpSale: packRows(state.cpSale),
       saleCD: packRows(state.saleCD), purchaseCD: packRows(state.purchaseCD),
       vatRvc: packRows(state.vatRvc),
+      customs: packRows(state.customs),
       otherExpenses: packRows(state.otherExpenses),
       wht: packRows(state.wht),
       companyNotes: state.companyNotes,
@@ -8866,7 +9015,7 @@ function importAllDataFromText(text){
       /* ⚠ ជួរអាចមកជាកញ្ចប់បង្រួម — ត្រូវបើកកញ្ចប់មុនគេ បើមិនដូច្នេះ
          `Array.isArray` ត្រឡប់ false ហើយទិន្នន័យបាត់ស្ងាត់ៗ។
          ឯកសារចាស់ (គ្មាន __p) ឆ្លងកាត់ដោយមិនប៉ះពាល់។ */
-      ["sale","purchase","cpPurchase","cpSale","saleCD","purchaseCD","otherExpenses","wht","vatRvc"]
+      ["sale","purchase","cpPurchase","cpSale","saleCD","purchaseCD","otherExpenses","wht","vatRvc","customs"]
         .forEach(function(k){ try{ main[k] = unpackRows(main[k]); }catch(e){} });
       /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ពេលបើកឯកសារនៅតែជាប់ទិន្នន័យចាស់ ហើយ
          គ្មានកន្លែងអាចលុបបានទេ ព្រោះទិន្នន័យនោះមិនមានការប្រកាសអ្វីសោះ» ។
@@ -8878,7 +9027,7 @@ function importAllDataFromText(text){
          ក្នុងឯកសារ មានន័យថា «គ្មាន» មិនមែន «កុំប៉ះ» ។
          ⚠ នេះក៏ពន្យល់ចំណុចទី ៣ ដែរ (CN/DN មិនកាត់កងរហូតដល់កែដោយដៃ) ៖
          ការកែដោយដៃសរសេរជាន់តារាងចាស់ ទើបលទ្ធផលត្រូវ។ */
-      ['sale','purchase','cpPurchase','cpSale','saleCD','purchaseCD','otherExpenses','wht','vatRvc']
+      ['sale','purchase','cpPurchase','cpSale','saleCD','purchaseCD','otherExpenses','wht','vatRvc','customs']
         .forEach(function(k){ state[k] = Array.isArray(main[k]) ? main[k] : []; });
       /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ទិន្នន័យចាស់នៃ CN DN នៅតែជាប់ដដែល»
          ទោះតារាងត្រូវសម្អាតរួច ។ មូលហេតុទី ២ ៖ ការបូកសរុបអតបត្រូវ
@@ -9012,6 +9161,7 @@ function exportStateToFile(){
     saleCD: state.saleCD, purchaseCD: state.purchaseCD,
     otherExpenses: state.otherExpenses,
     wht: state.wht, vatRvc: state.vatRvc,
+    customs: state.customs,
     companyNotes: state.companyNotes,
     exportedAt: new Date().toISOString(),
   };
@@ -9060,6 +9210,7 @@ function importStateFromFile(evt){
       if(Array.isArray(parsed.otherExpenses)) state.otherExpenses = parsed.otherExpenses;
       if(Array.isArray(parsed.wht)) state.wht = parsed.wht;
       if(Array.isArray(parsed.vatRvc)) state.vatRvc = parsed.vatRvc;
+      if(Array.isArray(parsed.customs)) state.customs = parsed.customs;
       if(parsed.companyNotes && typeof parsed.companyNotes==="object") state.companyNotes = parsed.companyNotes;
       state.selectedCategory = {sale:null, purchase:null, cpPurchase:null, cpSale:null, saleCD:null, purchaseCD:null};
       state.whtSelectedType = null;
@@ -9484,6 +9635,7 @@ const NAV_ITEMS = [
   {group:"7. ផ្គូផ្គងជាមួយក្រុមហ៊ុនដៃគូ", items:[
     {id:"cross-purchase", label:"ការទិញ ⇄ ការលក់របស់ដៃគូ", countKey:"cpSale"},
     {id:"cross-sale", label:"ការលក់ ⇄ ការទិញរបស់ដៃគូ", countKey:"cpPurchase"},
+    {id:"cross-customs", label:"🛃 ការនាំចូល ⇄ ទិន្នន័យគយ", countKey:"customs"},
   ]},
   {group:"", items:[
     {id:"toi", label:"8. 📊 TOI — ពន្ធលើប្រាក់ចំណូល"},
@@ -9523,7 +9675,8 @@ function renderNav(){
 const XLS_VIEW_NAMES = {
   'sale':'SALE','purchase':'PURCHASE','sale-cd':'SALE_CN_DN','purchase-cd':'PURCHASE_CN_DN',
   'other-expenses':'OTHER_EXPENSES','wht':'WHT','cp-sale':'CP_SALE','cp-purchase':'CP_PURCHASE',
-  'cross-sale':'CROSSCHECK_SALE','cross-purchase':'CROSSCHECK_PURCHASE','partners':'PARTNERS',
+  'cross-sale':'CROSSCHECK_SALE','cross-purchase':'CROSSCHECK_PURCHASE',
+  'cross-customs':'CROSSCHECK_CUSTOMS','partners':'PARTNERS',
   'mtr':'MTR','toi':'TOI','tos':'TOS','tracking':'TRACKING','calc':'CALCULATION'
 };
 function xlsSafeSheetName(s, i){
@@ -9622,6 +9775,9 @@ function showView(id){
   document.body.classList.toggle("view-mtr-active", id === "mtr");
   /* គូរតារាងដែលរង់ចាំសម្រាប់ផ្ទាំងនេះ (មើលកំណត់សម្គាល់នៅ renderDataTable) */
   try{ __flushPendingTables(); }catch(e){ console.error("flush", e); }
+  /* ⚠ ផ្ទាំងផ្គូផ្គងគយគូរតាមសំណើ ( មិនស្ថិតក្នុង renderAll ) ⇒ ត្រូវគូរ
+     ពេលបើកផ្ទាំង ; បើមិនដូច្នេះការបើកលើកដំបូងឃើញតារាងទទេ ។ */
+  if(id === 'cross-customs'){ try{ renderCrossCustoms(); }catch(e){ console.error('cross-customs', e); } }
   /* ⚠⚠ [stated] ២០២៦-០៨-១៨ ៖ «ពេលបើកមកផ្ទាំងវាបែបនេះ» — ជួរតម្រងចេញ
      តែតារាងទទេ ហើយ dropdown ប្រភេទគ្មានជម្រើសសោះ។
      មូលហេតុ ៖ `renderAll()` ហៅ `renderDataTable` / `renderSummaryTable`
@@ -10273,16 +10429,31 @@ function __optCacheKey(kind, storeName){
           : (window.__dataVersion || 0);
   return kind + '|' + storeName + '|' + v + '|' + (state[storeName] || []).length;
 }
+/* ⭐⭐⭐ [stated] ២០២៦-១០-២៩ ៖ «នៅពេល filter យកផ្នែកណាមួយ … ឧទាហរណ៍រើសយក
+   ការទិញមិនជាប់អាករ នៅពេលចុចរើសក្រុមហ៊ុន ត្រូវចេញតែក្រុមហ៊ុនណាដែលយើងបាន
+   ចុចរើស filter នោះតែប៉ុណ្ណោះ នឹងបង្ហាញភាគរយពីក្រោយដើម្បីងាយស្រួលមើលផង» ។
+   ⚠⚠ មុននេះបញ្ជីក្រុមហ៊ុនសង់ពី **គ្រប់ជួរ** ហើយបូកតាម `r.amount` ⇒ រើស
+     ប្រភេទណាក៏នៅឃើញក្រុមហ៊ុនទាំងអស់ដដែល ហើយតួលេខជាតម្លៃសរុបលើវិក្កយបត្រ
+     មិនមែនតម្លៃក្នុងប្រភេទនោះទេ ។
+   ⇒ មានប្រភេទ ⇒ បូកតាម `r.breakdown[ប្រភេទ]` ហើយ **រំលងក្រុមហ៊ុនដែលគ្មាន
+     តម្លៃក្នុងប្រភេទនោះ** ; ភាគរយគិតលើសរុបនៃបញ្ជីដែលកំពុងបង្ហាញ ។
+   ⚠ `value` នៅជា **ឈ្មោះសុទ្ធ** ដដែល ( តម្រងប្រៀបធៀបតាមឈ្មោះ ) — បន្ថែម
+     តែ **ស្លាក** ប៉ុណ្ណោះ ។
+   ⚠ កូនសោឃ្លាំងសម្ងាត់ត្រូវរាប់ប្រភេទផង បើមិនដូច្នេះបញ្ជីចាស់ត្រូវប្រគល់មកវិញ ។ */
 function populateMinistryOptions(storeName){
   const sel = document.getElementById('ministry-'+storeName);
   if(!sel) return;
-  const ck = __optCacheKey('min', storeName);
+  const catSelNow = (state.selectedCategory || {})[storeName];
+  const useCat = !!catSelNow && catSelNow !== ALL_CATEGORIES_MARKER;
+  const ck = __optCacheKey('min', storeName) + '|' + (useCat ? catSelNow : '');
   if(__optCache[ck] !== undefined){
     const prev = sel.value;
     sel.innerHTML = __optCache[ck];
     if(prev) sel.value = prev;
     return;
   }
+  const valOf = r => useCat ? (Number((r.breakdown || {})[catSelNow]) || 0)
+                            : (Number(r.amount) || 0);
   const data = state[storeName];
   // Same "highest amount first" ordering as the expense-type dropdown.
   // Names are grouped by a normalized (trimmed, single-spaced,
@@ -10295,8 +10466,10 @@ function populateMinistryOptions(storeName){
   data.forEach(r=>{
     const raw = (r.name||"").toString().trim();
     if(!raw) return;
+    const v = valOf(r);
+    if(useCat && !v) return;          /* គ្មានតម្លៃក្នុងប្រភេទនេះ ⇒ មិនរាយ */
     const norm = normName(raw);
-    totals[norm] = (totals[norm]||0) + (Number(r.amount)||0);
+    totals[norm] = (totals[norm]||0) + v;
     if(!displayCounts[norm]) displayCounts[norm] = {};
     displayCounts[norm][raw] = (displayCounts[norm][raw]||0) + 1;
   });
@@ -10308,10 +10481,13 @@ function populateMinistryOptions(storeName){
   const current = sel.value;
   /* ⚠ កុំដាក់ `selected` ក្នុងខ្សែអក្សរដែលចងចាំ ៖ ការជ្រើសត្រូវកំណត់ក្រោយ
      តាម `sel.value` ដើម្បីអោយ cache ប្រើឡើងវិញបានគ្រប់ស្ថានភាព។ */
-  let html = `<option value="">ទាំងអស់ (ក្រុមហ៊ុន/ក្រសួង)</option>`;
+  const grand = sortedKeys.reduce((a,k)=> a + (totals[k] || 0), 0);
+  const pctOf = v => grand ? (v / grand * 100).toFixed(1) + '%' : '—';
+  let html = `<option value="">ទាំងអស់ (${sortedKeys.length} ក្រុមហ៊ុន/ក្រសួង`
+           + (useCat ? ` · ${fmtAmt(grand)} ៛` : '') + `)</option>`;
   sortedKeys.forEach(norm=>{
     const label = displayFor(norm);
-    html += `<option value="${escAttr(label)}">${label}</option>`;
+    html += `<option value="${escAttr(label)}">${label} — ${fmtAmt(totals[norm])} ៛ · ${pctOf(totals[norm])}</option>`;
   });
   __optCache[ck] = html;
   sel.innerHTML = html;
@@ -10942,6 +11118,9 @@ function refreshDataView(storeName){
   }
   /* ⚠ កុំលេបកំហុសស្ងាត់ៗ ៖ ជុំមុន `catch(e){}` ទទេ លាក់មូលហេតុពិត */
   try{ populateCategoryOptions(storeName); }catch(e){ console.error("catOptions", e); }
+  /* ⚠ បញ្ជីក្រុមហ៊ុនអាស្រ័យលើប្រភេទដែលរើស ⇒ ត្រូវសង់ឡើងវិញត្រង់នេះ ;
+     បើមិនដូច្នេះការប្តូរប្រភេទមិនប៉ះបញ្ជីនោះសោះ ។ */
+  try{ populateMinistryOptions(storeName); }catch(e){ console.error("minOptions", e); }
   const tableId = RAW_TABLE_ID[storeName];
   if(tableId) renderDataTable(tableId, getFilteredIndices(storeName), true, storeName);
   renderSummaryTable(storeName);
@@ -12688,6 +12867,615 @@ function crosscheck(ourRows, cpRows){
    ១,៩៨១ ជួរ × ១០ ក្រឡា = ជាង ២០,០០០ ក្រឡាក្នុងខ្សែអក្សរ HTML តែមួយ។
    ឥឡូវបង្ហាញ ១០០ ជួរក្នុងមួយទំព័រ ព្រមទាំងប៊ូតុង ‹ មុន / បន្ទាប់ ›។ */
 const CROSS_PAGE_SIZE = 100;
+
+/* ═══════════════════════════════════════════════════════════════════════
+   🛃 ទិន្នន័យគយ ( CUSTOMS ) + ការផ្គូផ្គង PR ⇄ ប្រតិវេទន៍គយ
+   ───────────────────────────────────────────────────────────────────────
+   ⭐⭐⭐ [stated] ២០២៦-១០-២៨ ៖ «ចង់ធ្វើការ crosscheck លេខវិក្កយបត្រ នៅតារាង
+     PR ជាមួយនឹង លេខប្រតិវេទន៍គយ … ពេលខ្លះនៅ PR មិនដាក់អក្សរពីមុខ I ពេលខ្លះ
+     ដាក់ … ប្រៀបធៀបជាមួយទឹកប្រាក់នៅក្នុង PR ការនាំចូលបន្ទុករដ្ឋ ឬ ការនាំចូល
+     ១០% ជាមួយនឹងតារាង excel ប្រាក់អាករតម្លៃបន្ថែម ដោយរកគម្លាតខុសគ្នា» ។
+   ⭐ [stated] «ប្រាក់អាករលើតម្លៃបន្ថែម គឺនៅជួរ P» ⇒ សន្ទស្សន៍ 15 ។
+   ⚠ ជួរឈរថេរ ( មិនទាយតាមឈ្មោះក្បាលតារាង ) ព្រោះអ្នកប្រើប្រាប់ផ្ទាល់ ;
+     តែឈ្មោះក្បាលតារាងនៅត្រូវបានអានទុក ⇒ `__cusCols()` បង្ហាញថាជួរនីមួយៗ
+     ជាអ្វី ⇒ បើឯកសារប្តូរទម្រង់ វាដឹងភ្លាម មិនមែនទាយស្ងាត់ៗ ។
+   ⚠ អានសន្លឹក **ទាំងអស់** ⇒ ៣ សន្លឹកតាមឆ្នាំ ឬ ១ សន្លឹករួម ដើរដូចគ្នា ។
+     ឆ្នាំយកពី **កាលបរិច្ឆេទប្រតិវេទន៍** មិនមែនឈ្មោះសន្លឹក ( ឈ្មោះសន្លឹក
+     ជាជម្រើសបម្រុងតែពេលកាលបរិច្ឆេទអានមិនបាន ) ។
+   ═══════════════════════════════════════════════════════════════════════ */
+/* ⭐ [stated] ២០២៦-១០-២៩ ៖ «ពេលចុចទិន្នន័យគយដើមជួយដាក់ពេញ ដោយបន្ថែម
+   ប្រាក់ពន្ធគយ និងប្រាក់អាករពិសេសផង» ⇒ បន្ថែម N · O · Q ។
+     M(12) តម្លៃគិតពន្ធគយ · N(13) ប្រាក់អាករនាំចេញ · O(14) ប្រាក់ពន្ធគយ
+     P(15) ប្រាក់អាករលើតម្លៃបន្ថែម · Q(16) ប្រាក់អាករពិសេស */
+const CUS_COL = { tin:1, name:2, date:3, decTin:4, decName:5, decNo:6,
+                  decType:7, office:8, goods:9, qty:10, unit:11,
+                  base:12, expDuty:13, duty:14, vat:15, spt:16 };
+let cusHeader = {};          /* ឈ្មោះក្បាលតារាងដែលអានបាន — សម្រាប់ផ្ទៀងផ្ទាត់ */
+window.__cusCols = function(){
+  const out = {};
+  Object.keys(CUS_COL).forEach(k=>{
+    out[k] = { col: String.fromCharCode(65 + CUS_COL[k]), idx: CUS_COL[k],
+               header: cusHeader[CUS_COL[k]] || '(មិនបានអាន)' };
+  });
+  try{ console.table(out); }catch(e){ console.log(out); }
+  return out;
+};
+function cusNum(v){
+  if(typeof v === 'number') return isFinite(v) ? v : 0;
+  let t = String(v == null ? '' : v).trim();
+  if(!t) return 0;
+  t = t.replace(/[០-៩]/g, d => String('០១២៣៤៥៦៧៨៩'.indexOf(d)));
+  const n = Number(t.replace(/[^0-9.\-]/g, ''));
+  return isFinite(n) ? n : 0;
+}
+/* ⭐ សោផ្គូផ្គង ៖ `I104159` · `104159` · `0104159` ⇒ តែមួយ ។
+   ⚠ លេខដែលមានអក្សរ **កណ្តាល** ( `25SF-000085` ) ⇒ null ⇒ មិនផ្គូផ្គង —
+     ការច្របាច់វាជាលេខនឹងបង្កើតការផ្គូផ្គងក្លែងក្លាយ ។ */
+function cusDeclKey(v){
+  const t = String(v == null ? '' : v).trim()
+    .replace(/[០-៩]/g, d => String('០១២៣៤៥៦៧៨៩'.indexOf(d)))
+    .replace(/[\s ]/g, '');
+  const m = t.match(/^[A-Za-z]?0*(\d+)$/);
+  return m ? m[1] : null;
+}
+function cusYearOf(v, sheetName){
+  const d = parseDMY(excelDateToStr(v));
+  if(d) return String(d.getFullYear());
+  const m = String(sheetName || '').match(/(20[0-5]\d)/);
+  return m ? m[1] : '';
+}
+function rowsFromCustomsSheet(aoa, sheetName){
+  const out = [];
+  (aoa || []).forEach(arr=>{
+    if(!arr) return;
+    /* ក្បាលតារាង ៖ ចាំទុកឈ្មោះជួរឈរដើម្បីផ្ទៀងផ្ទាត់ក្រោយ */
+    const c6 = String(arr[CUS_COL.decNo] == null ? '' : arr[CUS_COL.decNo]).trim();
+    if(c6.indexOf('ប្រតិវេទន៍') >= 0){
+      for(let i = 0; i <= 20; i++){
+        const h = String(arr[i] == null ? '' : arr[i]).trim();
+        if(h) cusHeader[i] = h;
+      }
+      return;
+    }
+    if(rscBlankish(arr[CUS_COL.decNo])) return;
+    const dateStr = excelDateToStr(arr[CUS_COL.date]);
+    const hasDate = !!parseDMY(dateStr);
+    const hasNum  = rscLooksNum(arr[CUS_COL.vat]) || rscLooksNum(arr[CUS_COL.base]);
+    /* ជួរប្រកាសពិតមានយ៉ាងតិចកាលបរិច្ឆេទ ឬទឹកប្រាក់ ⇒ ឯទៀតជាក្បាល/សរុប ។ */
+    if(!hasDate && !hasNum){
+      try{ window.__rscSkippedRows.push({ kind:'customs', why:'គ្មានកាលបរិច្ឆេទ និងគ្មានទឹកប្រាក់', row:arr.slice(0,8) }); }catch(e){}
+      return;
+    }
+    out.push({
+      no: out.length + 1,
+      sheet: String(sheetName || ''),
+      date: dateStr,
+      year: cusYearOf(arr[CUS_COL.date], sheetName),
+      decNo: String(arr[CUS_COL.decNo]).trim(),
+      key: cusDeclKey(arr[CUS_COL.decNo]),
+      decType: String(arr[CUS_COL.decType] ?? '').trim(),
+      office:  String(arr[CUS_COL.office]  ?? '').trim(),
+      goods:   String(arr[CUS_COL.goods]   ?? '').trim(),
+      supTin:  String(arr[CUS_COL.decTin]  ?? '').trim(),
+      supName: String(arr[CUS_COL.decName] ?? '').trim(),
+      base:    cusNum(arr[CUS_COL.base]),
+      expDuty: cusNum(arr[CUS_COL.expDuty]),
+      duty:    cusNum(arr[CUS_COL.duty]),
+      vat:     cusNum(arr[CUS_COL.vat]),
+      spt:     cusNum(arr[CUS_COL.spt])
+    });
+  });
+  return out;
+}
+function detectIsCustoms(fn, aoa, sheetNames, relPath){
+  const p = String(fn || '') + ' ' + String(relPath || '');
+  if(/គយ|customs/i.test(p)) return true;
+  const head = (aoa || []).slice(0, 14).map(r => (r || []).join(' ')).join(' ');
+  return head.indexOf('លេខប្រតិវេទន៍គយ') >= 0
+      || head.indexOf('អគ្គនាយកដ្ឋានគយ') >= 0
+      || head.indexOf('ប្រតិវេទន៍គយ') >= 0;
+}
+/* ══ បញ្ចូលទិន្នន័យគយតាម **ឯកសារ** ═══════════════════════════════════
+   [stated] ២០២៦-១០-២៩ ៖ «កន្លែង upload file អាចរើស file លើសពី១បានទេ
+   ព្រោះករណីខ្លះ file ដើមឆ្នាំផ្សេងៗគ្នា និង file ខ្លះបានបញ្ចូលគ្នា» ។
+   ⚠ មុននេះការផ្ទុកគយ **ជំនួសទាំងស្រុង** ⇒ ផ្ទុក ២០២៣ រួចផ្ទុក ២០២៤
+     ២០២៣ រលត់ ។ ឥឡូវច្រោះតាមឈ្មោះឯកសារ ៖
+       · ឈ្មោះដដែល  → ជំនួសជួរចាស់របស់វា (ករណីកែឯកសារ រួចផ្ទុកម្តងទៀត)
+       · ឈ្មោះថ្មី   → បន្ថែម (ករណីមួយឯកសារមួយឆ្នាំ)
+   ⚠ មិនលុបជួរតាម **ឆ្នាំ** ទេ ៖ ឆ្នាំតែមួយអាចបែកជាពីរឯកសារ ហើយការលុប
+     តាមឆ្នាំនឹងបោះឯកសារទីមួយចោលស្ងាត់ៗ — ផ្ទុយនឹងច្បាប់ «គេប្រកាសបែបណា
+     បង្ហាញបែបនោះ» ។ */
+function cusMergeByFile(existing, incoming){
+  const names = {};
+  (incoming || []).forEach(function(r){ names[String(r.src || '')] = 1; });
+  const kept = (existing || []).filter(function(r){ return !names[String(r.src || '')]; });
+  const out = kept.concat(incoming || []);
+  out.forEach(function(r, i){ r.no = i + 1; });
+  return out;
+}
+/* ឯកសារគយដែលកំពុងផ្ទុក ៖ ឈ្មោះ · ចំនួនជួរ · ឆ្នាំដែលវាគ្រប */
+function cusFileList(){
+  const g = {};
+  (state.customs || []).forEach(function(r){
+    const k = String(r.src || '(មិនស្គាល់ឯកសារ)');
+    const s = g[k] = g[k] || {name:k, n:0, years:{}};
+    s.n++; if(r.year) s.years[r.year] = 1;
+  });
+  return Object.keys(g).map(function(k){
+    const s = g[k];
+    return {name:s.name, n:s.n, years:Object.keys(s.years).sort()};
+  }).sort(function(a,b){ return a.name < b.name ? -1 : 1; });
+}
+function cusDropFile(name){
+  appConfirm('ដកឯកសារ «' + name + '» ចេញពីទិន្នន័យគយមែនទេ?').then(function(ok){
+    if(!ok) return;
+    state.customs = (state.customs || []).filter(function(r){ return String(r.src || '(មិនស្គាល់ឯកសារ)') !== name; });
+    state.customs.forEach(function(r, i){ r.no = i + 1; });
+    saveState();
+    try{ renderCrossCustoms(); }catch(e){}
+    try{ renderPartnersView(); }catch(e){}
+    try{ toast('បានដកឯកសារ ' + name, 'ok'); }catch(e){}
+  });
+}
+function mergeCustomsRows(existing, incoming){
+  const byKey = new Map();
+  const k = r => [r.decNo, r.year, r.goods, r.base, r.duty, r.vat, r.spt].join('|');
+  (existing || []).forEach(r => byKey.set(k(r), r));
+  (incoming || []).forEach(r => byKey.set(k(r), r));
+  const out = Array.from(byKey.values());
+  out.forEach((r, i) => { r.no = i + 1; });
+  return out;
+}
+
+/* ── ផ្នែក PR ៖ ជួរដែលមានអតបនាំចូល ( ១០% ឬ បន្ទុករដ្ឋ ) ─────────────── */
+function cusPrVat(r){
+  const v = r.vat || {};
+  return (Number(v.vatExport) || 0) + (Number(v.vatReverseImport) || 0);
+}
+function cusPrRows(){
+  return (state.purchase || []).filter(r => cusPrVat(r) !== 0);
+}
+function cusRowYear(dateStr){
+  const d = parseDMY(dateStr);
+  if(d) return String(d.getFullYear());
+  const m = String(dateStr || '').match(/(20[0-5]\d)/);
+  return m ? m[1] : '';
+}
+/* ⭐ ផ្គូផ្គង ៖ ជុំទី ១ តាម លេខ+ឆ្នាំ ; ជុំទី ២ តាម លេខតែម្នាក់ឯង សម្រាប់
+   អ្វីដែលនៅសល់ ⇒ ករណីឆ្នាំខុស **បង្ហាញ ហើយដាក់ស្លាក** មិនមែនបោះចោលទេ ។ */
+function cusBuild(){
+  const M = cusM();
+  const prG = {}, cuG = {};
+  M.pick().forEach(r=>{
+    const key = cusDeclKey(r.invoiceNo);
+    const yr  = cusRowYear(r.date);
+    const id  = (key ? key : '~' + String(r.invoiceNo || '')) + '|' + yr;
+    if(!prG[id]) prG[id] = { id, key, year:yr, inv:String(r.invoiceNo || ''), rows:[], vat:0 };
+    prG[id].rows.push(r); prG[id].vat += M.amt(r);
+  });
+  (state.customs || []).forEach(r=>{
+    if(!r.key || !M.cuPick(r)) return;
+    const id = r.key + '|' + (r.year || '');
+    if(!cuG[id]) cuG[id] = { id, key:r.key, year:r.year || '', decNo:r.decNo, rows:[], vat:0 };
+    cuG[id].rows.push(r); cuG[id].vat += M.cuAmt(r);
+  });
+  const usedCu = {}, out = [];
+  const mk = (p, c, note)=>{
+    const pv = p ? Math.round(p.vat) : 0;
+    const cv = c ? Math.round(c.vat) : 0;
+    const diff = pv - cv;
+    return { key: (p && p.key) || (c && c.key) || '',
+             inv: p ? p.inv : '', decNo: c ? c.decNo : '',
+             prYear: p ? p.year : '', cuYear: c ? c.year : '',
+             prVat: pv, cuVat: cv, diff,
+             prRows: p ? p.rows : [], cuRows: c ? c.rows : [],
+             note: note || '',
+             status: (!c) ? 'pr' : (!p) ? 'cus' : (Math.abs(diff) <= 1 ? 'ok' : 'diff') };
+  };
+  /* ជុំទី ១ ៖ លេខ + ឆ្នាំ */
+  Object.keys(prG).forEach(id=>{
+    const p = prG[id];
+    if(p.key && cuG[id]){ usedCu[id] = 1; out.push(mk(p, cuG[id], '')); p.done = 1; }
+  });
+  /* ជុំទី ២ ៖ លេខតែម្នាក់ឯង ( ឆ្នាំខុស ) */
+  const byKeyLeft = {};
+  Object.keys(cuG).forEach(id=>{ if(!usedCu[id]) (byKeyLeft[cuG[id].key] = byKeyLeft[cuG[id].key] || []).push(cuG[id]); });
+  Object.keys(prG).forEach(id=>{
+    const p = prG[id];
+    if(p.done || !p.key) return;
+    const cand = (byKeyLeft[p.key] || []).filter(c => !usedCu[c.id])[0];
+    if(cand){ usedCu[cand.id] = 1; p.done = 1; out.push(mk(p, cand, 'ឆ្នាំខុសគ្នា')); }
+  });
+  /* នៅសល់ */
+  Object.keys(prG).forEach(id=>{ const p = prG[id]; if(!p.done) out.push(mk(p, null, p.key ? '' : 'លេខមិនមែនជាលេខប្រតិវេទន៍')); });
+  Object.keys(cuG).forEach(id=>{ if(!usedCu[id]) out.push(mk(null, cuG[id], '')); });
+  out.sort((a,b)=>{
+    const rank = { diff:0, pr:1, cus:2, ok:3 };
+    if(rank[a.status] !== rank[b.status]) return rank[a.status] - rank[b.status];
+    return Math.abs(b.diff) - Math.abs(a.diff);
+  });
+  return out;
+}
+function cusStatusLabel(k){
+  return { ok:'✅ ត្រូវគ្នា', diff:'⚠ គម្លាតទឹកប្រាក់',
+           pr:cusM().onlyOur, cus:'🛃 មានតែក្នុងគយ' }[k];
+}
+const CUS_STATUS = new Proxy({}, { get:(t,k)=> cusStatusLabel(String(k)) });
+
+/* ⭐⭐⭐ [stated] ២០២៦-១០-២៨ ៖ «នៅក្នុងនេះមានតែនាំចូលផ្គូផ្គងជាមួយនឹង PR តែ
+   ទិន្នន័យគយខ្លះមានទាំងនាំចូល និងនាំចេញ ។ ករណីនាំចេញ គឺផ្គូផ្គងជាមួយនឹង
+   SR នាំចេញ» ។
+   ⇒ របៀបពីរ ៖
+       នាំចូល ⇄ PR  ៖ អតបនាំចូល១០% + បន្ទុករដ្ឋ  ធៀប  ប្រាក់អាករលើតម្លៃបន្ថែម ( ជួរ P )
+       នាំចេញ ⇄ SR  ៖ តម្លៃមិនរួមអតប ( ជួរនាំចេញ )  ធៀប  តម្លៃគិតពន្ធគយ ( ជួរ M )
+   ⚠ ហេតុអ្វីនាំចេញធៀប **តម្លៃ** មិនមែនអាករ ៖ ការនាំចេញជាប់អត្រា ០%
+     ⇒ អាករទាំងសងខាងជាសូន្យ ⇒ ការធៀបអាករគ្មានន័យ ។ តម្លៃទើបជាអ្វីដែល
+     ប្រៀបធៀបបាន ។ បើអ្នកចង់ធៀបជួរផ្សេង ប្រាប់មក វាជាបន្ទាត់តែមួយ ។
+   ⚠ ជួរគយត្រូវញែកតាម «ប្រភេទប្រតិវេទន៍គយ» ( ជួរ H ) ⇒ នាំចូលមិនលាយនឹង
+     នាំចេញ ហើយការរាប់ក៏មិនស្ទួនដែរ ។ */
+let cusMode = 'imp';                 /* 'imp' = នាំចូល ⇄ PR | 'exp' = នាំចេញ ⇄ SR */
+function cusSetMode(m){ cusMode = m; cusFilter.status = ''; renderCrossCustoms(); }
+function cusIsExportRow(r){ return /នាំចេញ/.test(String((r && r.decType) || '')); }
+/* ជួរលក់ដែលជាការនាំចេញ ៖ មានអតបលើការនាំចេញ ឬជាប់អត្រា ០% */
+/* ⭐⭐⭐ [stated] ២០២៦-១០-២៨ ៖ «បើ SR មិនមានទិន្នន័យនាំចេញ និង តារាងទិន្នន័យ
+   គយមិនមានទិន្នន័យនាំចេញ ហេតុអ្វីវាចេញបែបនេះ?» ⇒ ជួរ `TI2023-00881` លេចក្នុង
+   របៀបនាំចេញ ទាំងដែលវាមិនមែនការនាំចេញ ។
+   ⚠⚠ មូលហេតុ ៖ ខ្ញុំប្រើ `zeroRated` ជាសញ្ញានៃការនាំចេញ ។ តែ `zeroRated`
+     មកពី `flagOn(arr[a+3])` — ពិត **ពេលក្រឡាមិនទទេ** ប៉ុណ្ណោះ ហើយជួរឈរ
+     «អាករលើតម្លៃបន្ថែមអត្រា ០%» តែងកាន់ **អក្សរស្លាក** មិនមែនលេខ ( មាន
+     សរសេរទុករួចក្នុង rowsFromSheet ) ⇒ ជួរលក់ក្នុងស្រុកក៏ត្រូវចាត់ជាការ
+     នាំចេញដែរ ។
+   ⚠ ហើយការលក់អត្រា ០% ក៏ **មិនស្មើ** ការនាំចេញទេ ។
+   ⇒ ប្រើវិធានដែល **កម្មវិធីនេះប្រើរួចស្រេច** សម្រាប់ការនាំចេញ ៖
+       getVATMonthlyAggregates ៖ `if(pos(v.vatExport)) b.saleExport10 += …`
+     គឺ **អតបលើការនាំចេញ > 0** ប៉ុណ្ណោះ — មួយវិធានសម្រាប់ទាំងកម្មវិធី ។
+   ⚠ បើជួរណានៅតែលេចខុស ៖ រត់ `__cusWhySr('<លេខវិក្កយបត្រ>')` ក្នុង console
+     វាបង្ហាញតម្លៃវាលនីមួយៗ ⇒ ដឹងភ្លាមថាមកពីជួរឈរណា ។ */
+function cusSrIsExport(r){
+  return (Number((r.vat || {}).vatExport) || 0) > 0;
+}
+window.__cusWhySr = function(inv){
+  const q = String(inv || '').trim().toLowerCase();
+  const out = (state.sale || [])
+    .filter(r => !q || String(r.invoiceNo || '').toLowerCase().indexOf(q) >= 0)
+    .map(r=>{
+      const v = r.vat || {};
+      return { invoiceNo:r.invoiceNo, date:r.date, name:r.name,
+               baseExclVat:v.baseExclVat, 'អាករ០%(vatZeroExport)':v.vatZeroExport,
+               'zeroRated(ទង់)':!!v.zeroRated, 'អតបនាំចេញ(vatExport)':v.vatExport,
+               'អតបក្នុងស្រុក(vatLocal)':v.vatLocal,
+               'ចាត់ជាការនាំចេញ':cusSrIsExport(r) };
+    });
+  try{ console.table(out); }catch(e){ console.log(out); }
+  return out;
+};
+function cusSrAmt(r){ return Number((r.vat || {}).baseExclVat) || 0; }
+const CUS_MODE = {
+  imp: { srcStore:'purchase', srcLabel:'PR', pick:cusPrRows, amt:cusPrVat,
+         cuAmt:r=>Number(r.vat)||0, cuPick:r=>!cusIsExportRow(r),
+         ourCol:'អតប នាំចូល (PR)', cuCol:'អាករតម្លៃបន្ថែម (គយ)',
+         onlyOur:'📄 មានតែក្នុង PR', title:'នាំចូល ⇄ PR' },
+  exp: { srcStore:'sale', srcLabel:'SR',
+         pick:()=> (state.sale || []).filter(cusSrIsExport), amt:cusSrAmt,
+         cuAmt:r=>Number(r.base)||0, cuPick:cusIsExportRow,
+         ourCol:'តម្លៃមិនរួមអតប (SR)', cuCol:'តម្លៃគិតពន្ធគយ (គយ)',
+         onlyOur:'📄 មានតែក្នុង SR', title:'នាំចេញ ⇄ SR' },
+};
+function cusM(){ return CUS_MODE[cusMode] || CUS_MODE.imp; }
+let cusFilter = { year:'', status:'', q:'' };
+
+/* ⭐⭐⭐ [stated] ២០២៦-១០-២៨ ៖ «ចុចចូលមើលទិន្នន័យគយនៅកន្លែងណា? ហើយកន្លែងណា
+   កន្លែងប្រៀបធៀប» ⇒ ពីមុនមានតែតារាងប្រៀបធៀប ; ទិន្នន័យគយដើមមើលបានតែ
+   តាមប៊ូតុង 👁 ក្នុងជួរនីមួយៗ ⇒ គ្មានកន្លែងមើលទាំងមូល ។
+   ⇒ ប្តូរផ្ទាំងពីរក្នុងទីតាំងតែមួយ ៖ «⇄ ប្រៀបធៀប» និង «🛃 ទិន្នន័យគយ (ដើម)» ។ */
+let cusTab = 'diff';                 /* 'diff' | 'raw' */
+let cusRawPage = 0;
+const CUS_RAW_PAGE = 300;
+function cusSetTab(t){ cusTab = t; cusRawPage = 0; renderCrossCustoms(); }
+function cusRawGo(p){ cusRawPage = p; renderCrossCustoms(); }
+function renderCustomsRaw(host){
+  const q = String(cusFilter.q || '').trim().toLowerCase();
+  let rows = (state.customs || []).filter(r=>{
+    if(cusFilter.year && String(r.year) !== cusFilter.year) return false;
+    if(q && String(r.decNo).toLowerCase().indexOf(q) < 0
+         && String(r.supName).toLowerCase().indexOf(q) < 0
+         && String(r.goods).toLowerCase().indexOf(q) < 0) return false;
+    return true;
+  });
+  const sumOf = k => rows.reduce((a,r)=> a + (Number(r[k]) || 0), 0);
+  const tot = sumOf('vat'), totB = sumOf('base');
+  const totE = sumOf('expDuty'), totD = sumOf('duty'), totS = sumOf('spt');
+  const pages = Math.max(1, Math.ceil(rows.length / CUS_RAW_PAGE));
+  if(cusRawPage >= pages) cusRawPage = pages - 1;
+  const page = rows.slice(cusRawPage * CUS_RAW_PAGE, (cusRawPage + 1) * CUS_RAW_PAGE);
+  let h = `<thead><tr><th>ល.រ</th><th>កាលបរិច្ឆេទ</th><th>លេខប្រតិវេទន៍គយ</th>
+    <th>ប្រភេទ</th><th>ការិយាល័យ</th><th>អតប ប្រកាស</th>
+    <th style="text-align:left;">ឈ្មោះសហគ្រាសប្រកាស</th><th>លេខកូដទំនិញ</th>
+    <th>តម្លៃគិតពន្ធគយ</th><th>អាករនាំចេញ</th><th>ពន្ធគយ</th>
+    <th>អាករតម្លៃបន្ថែម</th><th>អាករពិសេស</th><th>សន្លឹក</th></tr></thead><tbody>`;
+  h += `<tr class="summary-total-row"><td colspan="8"><b>សរុប (${rows.length} ជួរ)</b></td>
+    <td class="amt"><b>${fmtAmt(totB)}</b></td><td class="amt"><b>${fmtAmt(totE)}</b></td>
+    <td class="amt"><b>${fmtAmt(totD)}</b></td><td class="amt"><b>${fmtAmt(tot)}</b></td>
+    <td class="amt"><b>${fmtAmt(totS)}</b></td><td></td></tr>`;
+  if(!page.length){
+    h += `<tr><td colspan="14" style="padding:22px;text-align:center;color:var(--muted);">គ្មានជួរតាមតម្រងនេះទេ</td></tr>`;
+  }
+  page.forEach((r,i)=>{
+    h += `<tr><td>${cusRawPage * CUS_RAW_PAGE + i + 1}</td><td>${fmtDate(r.date)}</td>
+      <td><b>${escAttr(r.decNo)}</b></td><td>${escAttr(r.decType)}</td><td>${escAttr(r.office)}</td>
+      <td>${escAttr(r.supTin)}</td><td class="name-cell"><span class="cus-nm" title="${escAttr(r.supName)}"
+        onclick="this.classList.toggle('open')">${escAttr(r.supName)}</span></td>
+      <td>${escAttr(r.goods)}</td><td class="amt">${fmtAmt(r.base)}</td>
+      <td class="amt">${fmtAmt(r.expDuty)}</td><td class="amt">${fmtAmt(r.duty)}</td>
+      <td class="amt"><b>${fmtAmt(r.vat)}</b></td><td class="amt">${fmtAmt(r.spt)}</td>
+      <td>${escAttr(r.sheet)}</td></tr>`;
+  });
+  h += `</tbody>`;
+  host.innerHTML = h;
+  const cEl = document.getElementById('filter-count-crossCustoms');
+  if(cEl) cEl.textContent = rows.length + ' ជួរគយ' + (pages > 1 ? ` · ទំព័រ ${cusRawPage+1}/${pages}` : '');
+  const chips = document.getElementById('cus-chips');
+  if(chips && pages > 1){
+    let nav = '<span class="import-status" style="margin-left:10px;">';
+    for(let p = 0; p < pages; p++){
+      nav += `<button class="btn ${p===cusRawPage?'':'ghost'}" style="width:auto;padding:2px 9px;font-size:12px;margin-right:4px;"
+               onclick="cusRawGo(${p})">${p+1}</button>`;
+    }
+    chips.innerHTML += nav + '</span>';
+  }
+}
+
+function cusSetFilter(k, v){ cusFilter[k] = v; renderCrossCustoms(); }
+function renderCrossCustoms(){
+  const host = document.getElementById('table-crossCustoms');
+  if(!host) return;
+  const all = cusBuild();
+  /* ឆ្នាំសម្រាប់តម្រង */
+  const years = {};
+  all.forEach(e=>{ if(e.prYear) years[e.prYear] = 1; if(e.cuYear) years[e.cuYear] = 1; });
+  const ySel = document.getElementById('cus-year');
+  if(ySel){
+    const cur = cusFilter.year;
+    ySel.innerHTML = '<option value="">គ្រប់ឆ្នាំ</option>' +
+      Object.keys(years).sort().reverse().map(y=>`<option value="${escAttr(y)}"${y===cur?' selected':''}>ឆ្នាំ ${escAttr(y)}</option>`).join('');
+  }
+  /* ប្តូររូបរាងប៊ូតុងផ្ទាំង */
+  try{
+    const bd = document.getElementById('cus-tab-diff'), br = document.getElementById('cus-tab-raw');
+    if(bd) bd.className = 'btn' + (cusTab === 'diff' ? '' : ' ghost');
+    if(br) br.className = 'btn' + (cusTab === 'raw'  ? '' : ' ghost');
+    const mi = document.getElementById('cus-mode-imp'), me = document.getElementById('cus-mode-exp');
+    if(mi) mi.className = 'btn' + (cusMode === 'imp' ? '' : ' ghost');
+    if(me) me.className = 'btn' + (cusMode === 'exp' ? '' : ' ghost');
+    /* ⭐ [stated] ២០២៦-១០-២៨ ៖ «អាចចុច UPLOAD FILE EXCEL តែម្តង ចេញទាំងនាំចូល
+       និងនាំចេញបានទេ?» — បាន ហើយវាធ្វើបែបនោះរួចហើយ ។ ដាក់ចំនួនជួរលើប៊ូតុង
+       ⇒ ឃើញភ្លាមថាឯកសារតែមួយនាំចូលបានទាំងពីរប្រភេទ ⇒ លែងត្រូវឆ្ងល់ ។ */
+    try{
+      const cs = state.customs || [];
+      const nExp = cs.filter(cusIsExportRow).length, nImp = cs.length - nExp;
+      if(mi) mi.textContent = '📥 នាំចូល ⇄ PR' + (cs.length ? ' (' + nImp + ')' : '');
+      if(me) me.textContent = '📤 នាំចេញ ⇄ SR' + (cs.length ? ' (' + nExp + ')' : '');
+    }catch(e){}
+    const tb = document.getElementById('cus-tabs');
+    if(tb) tb.style.opacity = '1';
+  }catch(e){}
+  /* ឯកសារគយដែលកំពុងផ្ទុក — ផ្ទុកច្រើនឯកសារបាន ⇒ ត្រូវឃើញថាមានអ្វីខ្លះ */
+  try{
+    const fbox = document.getElementById('cus-files');
+    if(fbox){
+      const fl = cusFileList();
+      fbox.innerHTML = !fl.length ? '' :
+        '<span class="import-status">📄 ឯកសារគយ ' + fl.length + ' ៖</span>'
+        + fl.map(function(f){
+            return '<span class="import-status" style="border:1px solid var(--line);border-radius:99px;'
+              + 'padding:3px 10px;display:inline-flex;gap:7px;align-items:center;">'
+              + '<b>' + escAttr(f.name) + '</b> · ' + f.n + ' ជួរ'
+              + (f.years.length ? ' · ឆ្នាំ ' + escAttr(f.years.join(', ')) : '')
+              + ' <a href="javascript:void(0)" title="ដកឯកសារនេះចេញ" style="color:var(--red)"'
+              + ' onclick="cusDropFile(' + JSON.stringify(f.name).replace(/"/g, '&quot;') + ')">✕</a></span>';
+          }).join('')
+        /* ⚠ ករណីផ្ទុកទាំងឯកសារមួយឆ្នាំមួយ ទាំងឯកសាររួម ⇒ ប្រតិវេទន៍តែមួយ
+           រាប់ពីរដង ។ មិនលុបដោយខ្លួនឯងទេ (ច្បាប់ «គេប្រកាសបែបណា បង្ហាញ
+           បែបនោះ») — តែត្រូវប្រាប់ឱ្យឃើញ ហើយអោយចុច ✕ ដកដោយខ្លួនគេ។ */
+        + (function(){
+            const seen = {}, dup = {};
+            (state.customs || []).forEach(function(r){
+              const k = String(r.key || r.decNo || '') + '|' + String(r.year || '');
+              const s = String(r.src || '');
+              if(seen[k] && seen[k] !== s){ dup[k] = 1; }
+              else if(!seen[k]) seen[k] = s;
+            });
+            const n = Object.keys(dup).length;
+            return n ? '<span class="import-status" style="color:var(--red);font-weight:600;">'
+              + '⚠ ប្រតិវេទន៍ ' + n + ' លេខ មានក្នុងឯកសារលើសពីមួយ (រាប់ស្ទួន) — សូមចុច ✕ ដកឯកសារដែលជាន់គ្នាចេញ'
+              + '</span>' : '';
+          })();
+    }
+  }catch(e){ console.error('cus files', e); }
+  if(!state.customs || !state.customs.length){
+    const chips1 = document.getElementById('cus-chips');
+    if(chips1) chips1.innerHTML = '';
+    host.innerHTML = `<tbody><tr><td style="padding:26px;text-align:center;color:var(--muted);">
+      មិនទាន់មានទិន្នន័យគយ — ផ្ទុកឯកសារ Excel គយនៅផ្នែក 📂 ផ្ទុកឯកសារ
+      ( វាស្គាល់ខ្លួនឯង ) ឬចុច «📥 ផ្ទុកឯកសារគយ» ខាងលើ ។</td></tr></tbody>`;
+    return;
+  }
+  if(cusTab === 'raw'){
+    const chips0 = document.getElementById('cus-chips');
+    if(chips0) chips0.innerHTML = '<span class="import-status">ជួរដើមពីឯកសារគយ — គ្រប់សន្លឹក គ្រប់ឆ្នាំ ( ប្រើតម្រងឆ្នាំ និងប្រអប់ស្វែងរកខាងលើ )</span>';
+    renderCustomsRaw(host);
+    return;
+  }
+  const q = String(cusFilter.q || '').trim().toLowerCase();
+  /* ⭐⭐⭐ [stated] ២០២៦-១០-២៩ ៖ «ករណីរើសឆ្នាំណា បង្ហាញចំនួននៃគម្លាតទឹកប្រាក់,
+     មានតែក្នុង PR រហូតដល់គម្លាតសរុបនៃ filter ដែលរើសនោះ» ។
+     ⚠⚠ មុននេះចំនួន និងសរុបគណនាពី `all` ⇒ ការរើសឆ្នាំប្តូរតែតារាង ឯ
+       chips នៅបង្ហាញលេខគ្រប់ឆ្នាំដដែល ⇒ អានទៅច្រឡំ ។
+     ⚠ តែវាមិនត្រូវគោរព **តម្រងស្ថានភាព** ទេ ៖ chips ទាំងនោះ **ជា**
+       តម្រងស្ថានភាព ⇒ បើគណនាក្រោយវា ចុចមួយ ⇒ មួយទៀតក្លាយជា 0 ហើយ
+       លែងចុចបានវិញ ។
+     ⇒ `base` = ត្រងឆ្នាំ + ស្វែងរក ( សម្រាប់ចំនួន និងសរុប )
+       `rows` = base + ត្រងស្ថានភាព ( សម្រាប់តារាង ) ។ */
+  const keep = e=>{
+    if(cusFilter.year && e.prYear !== cusFilter.year && e.cuYear !== cusFilter.year) return false;
+    if(q && String(e.inv).toLowerCase().indexOf(q) < 0
+         && String(e.decNo).toLowerCase().indexOf(q) < 0
+         && String(e.key).indexOf(q) < 0) return false;
+    return true;
+  };
+  const base = all.filter(keep);
+  const rows = base.filter(e=> !cusFilter.status || e.status === cusFilter.status);
+  /* សង្ខេប — តាមតម្រងឆ្នាំ/ស្វែងរក */
+  const cnt = { ok:0, diff:0, pr:0, cus:0 }, sum = { pr:0, cu:0, diff:0 };
+  base.forEach(e=>{ cnt[e.status]++; sum.pr += e.prVat; sum.cu += e.cuVat;
+                    if(e.status === 'diff') sum.diff += e.diff; });
+  const chips = document.getElementById('cus-chips');
+  if(chips){
+    chips.innerHTML =
+      ['diff','pr','cus','ok'].map(k=>
+        `<button class="btn ${cusFilter.status===k?'':'ghost'}" style="width:auto;padding:4px 10px;font-size:12px;"
+           onclick="cusSetFilter('status','${cusFilter.status===k?'':k}')">${CUS_STATUS[k]} : <b>${cnt[k]}</b></button>`).join(' ') +
+      `<span class="import-status" style="margin-left:10px;">${cusFilter.year ? 'ឆ្នាំ ' + escAttr(cusFilter.year) + ' · ' : ''}${cusM().srcLabel} សរុប <b>${fmtAmt(sum.pr)}</b> ៛ ·
+        គយសរុប <b>${fmtAmt(sum.cu)}</b> ៛ · គម្លាតសរុប <b>${fmtAmt(sum.pr - sum.cu)}</b> ៛</span>`;
+  }
+  /* ⚠⚠ ឯកសារគយគ្មានជួរប្រភេទនេះ ⇒ គ្រប់ជួររបស់យើងចេញជា «មានតែក្នុង …»
+     ដែលអានទៅដូចជាបញ្ហា ។ ប្រាប់មូលហេតុឱ្យច្បាស់ ជាជាងទុកឱ្យទាយ ។
+     ⚠ ត្រូវបន្ថែម **ក្រោយ** ការគូរ chips ៖ ការសរសេរមុននឹងត្រូវសរសេរជាន់ ។ */
+  try{
+    const nType = (state.customs || []).filter(cusM().cuPick).length;
+    if(!nType && chips){
+      chips.innerHTML += '<div class="import-status" style="color:var(--red);flex-basis:100%;margin-top:4px;">'
+        + '⚠ ឯកសារគយ <b>គ្មានជួរ' + (cusMode === 'exp' ? 'នាំចេញ' : 'នាំចូល') + 'ទេ</b>'
+        + ' ( តាមជួរ «ប្រភេទប្រតិវេទន៍គយ» ) ⇒ ជួរ ' + cusM().srcLabel
+        + ' ទាំងអស់ចេញជា «មានតែក្នុង ' + cusM().srcLabel + '» ជាធម្មតា ។</div>';
+    }
+  }catch(e){}
+  const M = cusM();
+  let html = `<thead><tr><th>ល.រ</th><th>លេខវិក្កយបត្រ (${M.srcLabel})</th><th>លេខប្រតិវេទន៍គយ</th>
+    <th>ឆ្នាំ</th><th>${M.ourCol}</th><th>${M.cuCol}</th><th>គម្លាត</th>
+    <th>ស្ថានភាព</th><th></th></tr></thead><tbody>`;
+  if(!rows.length){
+    html += `<tr><td colspan="9" style="padding:22px;text-align:center;color:var(--muted);">គ្មានជួរតាមតម្រងនេះទេ</td></tr>`;
+  }
+  rows.forEach((e,i)=>{
+    const cls = e.status === 'diff' ? ' style="background:#FDEAEA"'
+              : e.status === 'pr'   ? ' style="background:#FFF8E6"'
+              : e.status === 'cus'  ? ' style="background:#EEF4FB"' : '';
+    html += `<tr${cls}><td>${i+1}</td>
+      <td><b>${escAttr(e.inv || '—')}</b></td>
+      <td><b>${escAttr(e.decNo || '—')}</b></td>
+      <td>${escAttr(e.prYear || e.cuYear || '')}${e.note ? ` <span class="hint" style="color:var(--red)">${escAttr(e.note)}</span>` : ''}</td>
+      <td class="amt">${e.prRows.length ? fmtAmt(e.prVat) : '—'}</td>
+      <td class="amt">${e.cuRows.length ? fmtAmt(e.cuVat) : '—'}</td>
+      <td class="amt"><b>${(e.prRows.length && e.cuRows.length) ? fmtAmt(e.diff) : '—'}</b></td>
+      <td>${CUS_STATUS[e.status]}</td>
+      <td><button class="btn-view" onclick="cusDetail('${escJsAttr(e.key)}','${escJsAttr(e.inv)}','${escJsAttr(e.decNo)}','${escJsAttr(e.prYear)}','${escJsAttr(e.cuYear)}')">👁 មើល</button></td>
+    </tr>`;
+  });
+  html += `</tbody>`;
+  host.innerHTML = html;
+  const cEl = document.getElementById('filter-count-crossCustoms');
+  if(cEl) cEl.textContent = rows.length + ' / ' + base.length + ' ជួរ'
+    + (base.length !== all.length ? ' ( ទាំងអស់ ' + all.length + ' )' : '');
+}
+/* ចុចមើល ៖ ជួរពិតទាំងសងខាង */
+function cusDetail(key, inv, decNo, prYear, cuYear){
+  const e = cusBuild().find(x => String(x.key) === String(key)
+              && String(x.inv) === String(inv) && String(x.decNo) === String(decNo)
+              && String(x.prYear) === String(prYear) && String(x.cuYear) === String(cuYear));
+  if(!e) return;
+  /* ⚠ ត្រូវប្រកាសនៅ **លើគេ** ៖ `M` ប្រើក្នុងចំណងជើងរងខាងក្រោម ហើយ `const`
+     មាន TDZ ⇒ ការប្រកាសពាក់កណ្តាលមុខងារធ្វើឱ្យប្រអប់លម្អិតបើកមិនរួច
+     ( «Cannot access 'M' before initialization» — ចាប់បានដោយ probe_exp.py ) ។ */
+  const M = cusM(), isExp = cusMode === 'exp';
+  const num = v => fmtAmt(Number(v) || 0);
+  let h = `<div style="background:#fbfaf6;border-radius:12px;max-width:min(1040px,96vw);width:100%;
+      max-height:88vh;overflow:auto;padding:18px 20px;box-shadow:0 18px 50px rgba(0,0,0,.3);">
+    <h3 style="margin:0 0 4px;font-size:16px;">${CUS_STATUS[e.status]} — ${escAttr(e.inv || e.decNo)}</h3>
+    <p style="margin:0 0 12px;font-size:12.5px;color:#6b6a63;">
+      ${M.srcLabel} <b>${num(e.prVat)}</b> ៛ − គយ <b>${num(e.cuVat)}</b> ៛ = គម្លាត <b>${num(e.diff)}</b> ៛
+      ${e.note ? ' · ' + escAttr(e.note) : ''}</p>`;
+  h += `<div style="font-size:12.5px;font-weight:700;margin:10px 0 6px;">📄 ${M.srcLabel} — ${isExp ? 'ការនាំចេញ' : 'ការនាំចូល'} (${e.prRows.length} ជួរ)</div>
+    <table class="ledger" style="width:100%;"><thead><tr><th>កាលបរិច្ឆេទ</th><th>លេខវិក្កយបត្រ</th>
+      <th style="text-align:left;">${isExp ? 'អតិថិជន' : 'អ្នកផ្គត់ផ្គង់'}</th><th>តម្លៃមិនរួមអតប</th>
+      ${isExp ? '<th>អតបលើការនាំចេញ</th><th>អាករ ០%</th><th>ចំនួនប្រៀបធៀប</th>'
+              : '<th>នាំចូល១០%</th><th>នាំចូល (បន្ទុករដ្ឋ)</th><th>សរុបអតប</th>'}</tr></thead><tbody>`;
+  /* ⭐ [stated] ២០២៦-១០-២៨ ៖ «ជួយសរុបទឹកប្រាក់នៅពីលើទឹកប្រាក់ … ដើម្បីងាយ
+     ស្រួលមើល» ⇒ ជួរសរុបនៅ **លើគេ** ដូចផ្ទាំងទិន្នន័យដើម ( មិនមែនខាងក្រោម
+     ដែលត្រូវរមូរចុះទៅរក ) ។ */
+  if(e.prRows.length){
+    const tB  = e.prRows.reduce((a,r)=> a + (Number((r.vat||{}).baseExclVat) || 0), 0);
+    const t10 = e.prRows.reduce((a,r)=> a + (Number((r.vat||{}).vatExport) || 0), 0);
+    const tRv = e.prRows.reduce((a,r)=> a + (isExp ? (Number((r.vat||{}).vatZeroExport) || 0)
+                                                   : (Number((r.vat||{}).vatReverseImport) || 0)), 0);
+    h += `<tr class="summary-total-row"><td colspan="3"><b>សរុប (${e.prRows.length} ជួរ)</b></td>
+      <td class="amt"><b>${num(tB)}</b></td><td class="amt"><b>${num(t10)}</b></td>
+      <td class="amt"><b>${num(tRv)}</b></td><td class="amt"><b>${num(isExp ? tB : t10 + tRv)}</b></td></tr>`;
+  }
+  if(!e.prRows.length) h += `<tr><td colspan="7" style="text-align:center;padding:14px;color:#8a8a8a;">គ្មានជួរក្នុង PR</td></tr>`;
+  e.prRows.forEach(r=>{
+    const v = r.vat || {};
+    h += `<tr><td>${fmtDate(r.date)}</td><td><b>${escAttr(r.invoiceNo || '')}</b></td>
+      <td style="text-align:left;">${escAttr(r.name || '')}</td>
+      <td class="amt">${num(v.baseExclVat)}</td><td class="amt">${num(v.vatExport)}</td>
+      <td class="amt">${num(isExp ? v.vatZeroExport : v.vatReverseImport)}</td>
+      <td class="amt"><b>${num(M.amt(r))}</b></td></tr>`;
+  });
+  h += `</tbody></table>`;
+  h += `<div style="font-size:12.5px;font-weight:700;margin:14px 0 6px;">🛃 ទិន្នន័យគយ — ${isExp ? 'នាំចេញ' : 'នាំចូល'} (${e.cuRows.length} ជួរ)</div>
+    <table class="ledger" style="width:100%;"><thead><tr><th>កាលបរិច្ឆេទ</th><th>លេខប្រតិវេទន៍</th>
+      <th>ប្រភេទ</th><th style="text-align:left;">ឈ្មោះសហគ្រាសប្រកាស</th><th>លេខកូដទំនិញ</th>
+      <th>តម្លៃគិតពន្ធគយ</th><th>ពន្ធគយ</th><th>អាករតម្លៃបន្ថែម</th><th>អាករពិសេស</th></tr></thead><tbody>`;
+  if(e.cuRows.length){
+    const cSum = k => e.cuRows.reduce((a,r)=> a + (Number(r[k]) || 0), 0);
+    h += `<tr class="summary-total-row"><td colspan="5"><b>សរុប (${e.cuRows.length} ជួរ)</b></td>
+      <td class="amt"><b>${num(cSum('base'))}</b></td><td class="amt"><b>${num(cSum('duty'))}</b></td>
+      <td class="amt"><b>${num(cSum('vat'))}</b></td><td class="amt"><b>${num(cSum('spt'))}</b></td></tr>`;
+  }
+  if(!e.cuRows.length) h += `<tr><td colspan="9" style="text-align:center;padding:14px;color:#8a8a8a;">គ្មានជួរក្នុងទិន្នន័យគយ</td></tr>`;
+  e.cuRows.forEach(r=>{
+    h += `<tr><td>${fmtDate(r.date)}</td><td><b>${escAttr(r.decNo)}</b></td>
+      <td>${escAttr(r.decType)}</td><td style="text-align:left;"><span class="cus-nm" title="${escAttr(r.supName)}"
+        onclick="this.classList.toggle('open')">${escAttr(r.supName)}</span></td>
+      <td>${escAttr(r.goods)}</td><td class="amt">${num(r.base)}</td>
+      <td class="amt">${num(r.duty)}</td><td class="amt"><b>${num(r.vat)}</b></td>
+      <td class="amt">${num(r.spt)}</td></tr>`;
+  });
+  h += `</tbody></table>
+    <div style="text-align:right;margin-top:14px;"><button class="btn primary" data-cus-close="1">បិទ</button></div></div>`;
+  const w = document.createElement('div');
+  w.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:18px;';
+  w.innerHTML = h;
+  document.body.appendChild(w);
+  w.addEventListener('click', ev=>{
+    if(ev.target === w || (ev.target.closest && ev.target.closest('[data-cus-close]'))) w.remove();
+  });
+}
+/* ⚠ ប្រអប់ជ្រើសឯកសារស្ថិតក្នុងផ្ទាំងផ្គូផ្គងដែលអាចត្រូវលាក់ ⇒ បង្កើត
+   ប្រអប់ឯករាជ្យមួយភ្ជាប់នឹង <body> វិញ ⇒ ចុចបានពីកាតទំព័រដើមដែរ ។ */
+function cusPickFile(){
+  let inp = document.getElementById('customs-file-input-global');
+  if(!inp){
+    inp = document.createElement('input');
+    inp.type = 'file'; inp.id = 'customs-file-input-global';
+    inp.multiple = true; inp.accept = '.xlsx,.xls';
+    inp.style.display = 'none';
+    inp.addEventListener('change', handleAutoFileImport);
+    document.body.appendChild(inp);
+  }
+  inp.value = '';
+  inp.click();
+}
+function clearCustoms(){
+  appConfirm('លុបទិន្នន័យគយទាំងអស់មែនទេ?').then(function(ok){
+    if(!ok) return;
+    state.customs = [];
+    saveState(); renderAll();
+    try{ renderCrossCustoms(); }catch(e){}
+    try{ toast('បានលុបទិន្នន័យគយ', 'ok'); }catch(e){}
+  });
+}
+
 let crossPage = {crossSale:0, crossPurchase:0};
 
 function renderCrossPager(which, total, page, pages){
@@ -13039,6 +13827,53 @@ function crossClearYear(which){
   crossYear[which] = ""; crossDiffOnly[which] = false; crossStat[which] = ""; crossPage[which] = 0;
   renderFilteredCross(which);
 }
+/* ══ តម្រងឆ្នាំនៅលើរបារឧបករណ៍ ══════════════════════════════════════
+   [stated] ២០២៦-១០-២៩ ៖ «មានកន្លែង filter រើសឆ្នាំ នៅពីជួរតែ១មុខ
+   ក្រុមហ៊ុនដៃគូ» ។
+   ⚠ មិនបង្កើតអញ្ញត្តិថ្មីទេ — ប្រើ `crossYear[which]` ដដែល ដូច្នេះ
+     ការចុចឆ្នាំក្នុងតារាងសរុប និងការរើសក្នុងប្រអប់នេះ ជាតម្រងតែមួយ
+     ហើយប្រអប់តែងតែបង្ហាញឆ្នាំដែលកំពុងជាប់តម្រងពិតប្រាកដ។ */
+function crossYearSelect(which, v){
+  const y = String(v || "");
+  crossYear[which] = y;
+  /* រើសឆ្នាំ = មើលឆ្នាំនោះទាំងមូល ⇒ លាងតម្រងរងដែលចុចពីតារាងសរុប
+     (លំអៀងតែប៉ុណ្ណោះ / ស្ថានភាព) ទើបមិនចេញទទេដោយមិនដឹងមូលហេតុ */
+  crossDiffOnly[which] = false;
+  crossStat[which] = "";
+  crossPage[which] = 0;
+  renderFilteredCross(which);
+}
+/* បង្ហាញ / លាក់បន្ទាត់ព័ត៌មានលម្អិតនៃតម្រង (លាក់ជាលំនាំដើម) */
+function crossToggleInfo(which){
+  const el = document.getElementById("filter-count-" + which);
+  if(!el) return;
+  el.style.display = (el.style.display === "none") ? "" : "none";
+}
+/* សង់បញ្ជីឆ្នាំពីជួរពិតដែលមានក្នុងផ្ទាំង (ក្រោយតម្រងក្រុមហ៊ុន) ព្រមទាំង
+   ចំនួនវិក្កយបត្រ ⇒ ដឹងមុនចុចថាឆ្នាំណាមានប៉ុន្មានជួរ។ */
+function populateCrossYearSelect(which, rows){
+  const sel = document.getElementById("crossyear-" + which);
+  if(!sel) return;
+  const cnt = {};
+  (rows || []).forEach(function(r){
+    const y = crossRowYear(r);
+    cnt[y] = (cnt[y] || 0) + 1;
+  });
+  const years = Object.keys(cnt).sort();
+  /* បើឆ្នាំដែលជាប់តម្រងលែងមានជួរ (ប្តូរក្រុមហ៊ុន ឬលុបឆ្នាំចោល)
+     ដោះតម្រងចេញស្វ័យប្រវត្តិ — កុំទុកតារាងទទេគ្មានការពន្យល់ */
+  if(crossYear[which] && !cnt[crossYear[which]]){
+    crossYear[which] = ""; crossDiffOnly[which] = false; crossStat[which] = "";
+  }
+  const cur = crossYear[which] || "";
+  let html = '<option value="">— គ្រប់ឆ្នាំ (' + (rows || []).length + ' វិក្កយបត្រ) —</option>';
+  years.forEach(function(y){
+    html += '<option value="' + escAttr(y) + '"' + (y === cur ? ' selected' : '') + '>'
+      + escAttr(y) + ' (' + cnt[y] + ')</option>';
+  });
+  sel.innerHTML = html;
+  sel.value = cur;
+}
 /* ══ ⚖ យកលទ្ធផលផ្គូផ្គងទៅជាផលរកឃើញក្នុងកាតគណនាពន្ធ ═══════════════
    [stated] ២០២៦-០៨-១៣ ៖ «ជួយចែកទឹកប្រាក់នឹង 1.1 ករណីផលរួមទាំងអស់ ដើម្បី
    យកជាមូលដ្ឋានផលរកឃើញជាប់អតប … មានពីរកន្លែងដើម្បីចុចហើយកំណត់ ៖
@@ -13073,9 +13908,36 @@ function crossCloseAssess(){
    តាមប្រភេទ — គេធីកយកមួយណាក៏បាន ឬយកទាំងអស់។ */
 const CROSS_VK = {
   vat:  {id:"vat",  label:"ការលក់ជាប់អតប ១០%",  type:"ផលរកឃើញផ្សេងៗ",      vatOn:true,  div:true},
+  /* ⭐⭐ [stated] ២០២៦-១០-២៩ ៖ «នៅផ្នែកនេះគឺការកំណត់លើការលក់ក្នុងស្រុក
+     បន្ទុករដ្ឋ មិនមែនជាប់អតប ១០% ទេ» ។
+     មុននេះ ៖ `crossVatKind` ត្រឡប់ "vat" សម្រាប់ជួរបន្ទុករដ្ឋដែរ ⇒ វាលាយ
+     ចូលជួរ «ការលក់ជាប់អតប ១០%» ទោះបីតារាងខាងក្រោមសរសេរ «ក្នុងស្រុក
+     (បន្ទុករដ្ឋ)» ក៏ដោយ ⇒ ស្លាកក្នុងប្រអប់មិនត្រូវនឹងអ្វីដែលប្រកាស។
+     ⇒ ឥឡូវបំបែកជាជួរដោយឡែក ហើយធីក ÷១.១ នៅដដែលជាលំនាំដើម ⇒ តួលេខ
+       មិនប្តូរ មានតែការចាត់ថ្នាក់ និងស្លាកដែលត្រូវវិញ។ */
+  rvc:  {id:"rvc",  label:"ក្នុងស្រុក (បន្ទុករដ្ឋ)", type:"ផលរកឃើញផ្សេងៗ",   vatOn:true,  div:true},
   nonv: {id:"nonv", label:"មិនជាប់អតប",          type:"ផលរកឃើញ មិនជាប់អតប", vatOn:false, div:false},
   exp:  {id:"exp",  label:"នាំចេញ (អត្រា ០%)",   type:"លំអៀងទិន្នន័យនាំចេញ", vatOn:false, div:false}
 };
+/* ជួរបន្ទុករដ្ឋ ៖ អានទាំងពីរផ្លូវ — វាលថេរ និងចំណងជើងជួរឈរពិតរបស់ឯកសារ */
+function crossIsReverse(r){
+  const v = (r && r.vat) || {};
+  if((Number(v.vatReverseLocal) || 0) > 0)  return "local";
+  if((Number(v.vatReverseImport) || 0) > 0) return "imp";
+  const bk = crossVkReverse(r);
+  if(bk.local > 0) return "local";
+  if(bk.imp > 0)   return "imp";
+  return "";
+}
+/* ⚠ ដាច់ពី `crossVatKind` ដោយចេតនា ៖ `crossVatKind` ប្រើដោយ
+   `crossDisallowData` ផងដែរ ហើយការប្តូរវានឹងប្តូរការគណនានៃមុខងារ
+   «⚖ កំណត់គេមិនប្រកាស» ដែលគេមិនបានសុំ។ ការបំបែកនេះសម្រាប់ប្រអប់
+   «⚖ កំណត់ចំណូលឡើងវិញ» តែប៉ុណ្ណោះ។ */
+function crossAssessKind(r){
+  const k = crossVatKind(r);
+  if(k !== "vat") return k;
+  return crossIsReverse(r) ? "rvc" : "vat";
+}
 function crossVatKind(r){
   const v = r && r.vat;
   if(v){
@@ -13151,15 +14013,41 @@ function crossVkTitle(r){
   return out.length ? out.join(" · ") : "គ្មានជួរឈរអតបណាមួយមានតម្លៃ";
 }
 function crossVkLabel(r, which){ return crossVkDetail(r, which); }
+/* ══ ទិសនៃលំអៀង ៖ ខាងណាដែលជាមូលដ្ឋានកំណត់ ═══════════════════════════
+   ⭐⭐⭐ [stated] ២០២៦-១០-២៩ ៖ «ពេលចុចកំណត់លំអៀង មិនត្រូវចេញសញ្ញា −
+   ពីខាងមុខឡើយ ព្រោះពេលដាក់ចូលកាត វាមិនបានទៅគណនាពន្ធបន្ថែមឡើយ» ។
+   មូលហេតុពិត ៖ `dAmt = យើង − ដៃគូ` ។ នៅផ្ទាំង **លក់** មូលដ្ឋានកំណត់គឺ
+   ពេល **ដៃគូប្រកាសលើសយើង** (យើងប្រកាសខ្វះ) ⇒ `dAmt` អវិជ្ជមាន ⇒ ចូល
+   កាតជាលេខអវិជ្ជមាន ⇒ គ្មានពន្ធបន្ថែម ។ នៅផ្ទាំង **ទិញ** ផ្ទុយមកវិញ ៖
+   មូលដ្ឋានគឺពេល **យើងប្រកាសលើសដៃគូ** (ទាមទារចំណាយ/អតបធាតុចូលលើស)
+   ⇒ `dAmt` វិជ្ជមានស្រាប់ ។
+   ⇒ ដូច្នេះមិនមែនគ្រាន់ «ដកសញ្ញាដក» ទេ — ត្រូវបញ្ច្រាសទិសតាមផ្ទាំង ៖
+       លក់   ៖ មូលដ្ឋាន = ដៃគូ − យើង   ( = −dAmt )
+       ទិញ   ៖ មូលដ្ឋាន = យើង − ដៃគូ   ( = +dAmt )
+   ⚠ មិនយក `Math.abs` ទេ ៖ បើទិសផ្ទុយ (យើងប្រកាសលើសនៅផ្ទាំងលក់) នោះ
+     **គ្មានអ្វីត្រូវកំណត់** — `abs` នឹងបង្កើតពន្ធបន្ថែមដែលមិនត្រូវ។
+     ករណីនោះជួរនោះបិទ ហើយប្រាប់មូលហេតុជំនួសវិញ។ */
+function crossAssessSign(which){ return which === "crossSale" ? -1 : 1; }
 /* ផលបូកតាមប្រភេទអតប សម្រាប់ជួរដែលកំពុងបង្ហាញ */
-function crossVkSplit(rows, kind){
-  const out = {vat:{n:0,amt:0}, nonv:{n:0,amt:0}, exp:{n:0,amt:0}};
+function crossVkSplit(rows, kind, which){
+  const sg = (kind === "ourmiss") ? 1 : crossAssessSign(which);
+  /* ⭐⭐⭐ [stated] ២០២៦-១០-២៩ ៖ «ពេលចុចគ្រប់ឆ្នាំ ចំនួនលំអៀងវារត់ចូលតែ
+     ឆ្នាំ ២០២៥ វាមិនបានបែងចែកទៅតាមឆ្នាំឡើយ» ។
+     មូលហេតុ ៖ ផលបូកធ្វើជា **លេខតែមួយគ្មានឆ្នាំ** ហើយប្រអប់បញ្ជូនវា
+     ទាំងស្រុងទៅឆ្នាំក្នុងប្រអប់ជ្រើស ⇒ លំអៀង ២០២៣ និង ២០២៤ រលាយចូល
+     ២០២៥ ។ ⇒ បូក **តាមឆ្នាំ** ក្នុង `years` / `nYears` ។ */
+  const mk = function(){ return {n:0, amt:0, years:{}, nYears:{}}; };
+  const out = {vat:mk(), rvc:mk(), nonv:mk(), exp:mk()};
   rows.forEach(r=>{
     let a;
     if(kind === "ourmiss"){ if(!r.theirs) return; a = Number(r.cpAmount)||0; }
     else { if(r.theirs) return; if(r.dAmt===null || r.dAmt===undefined) return; a = Number(r.dAmt)||0; }
-    const k = crossVatKind(r);
-    out[k].n++; out[k].amt += a;
+    const k = crossAssessKind(r);
+    const y = crossRowYear(r);
+    const v = a * sg;
+    out[k].n++; out[k].amt += v;
+    out[k].years[y]  = (out[k].years[y]  || 0) + v;
+    out[k].nYears[y] = (out[k].nYears[y] || 0) + 1;
   });
   return out;
 }
@@ -13584,15 +14472,87 @@ function crossOpenAssess(which, kind){
   rows = rows.concat(full.__theirs || []);
   const Y = crossYear[which];
   if(Y) rows = rows.filter(r=> crossRowYear(r)===Y);
+  /* ⚠ ឆ្នាំដែលលុបចោល (✕) និងក្រុមហ៊ុនដែលដកចេញ (🚫) ត្រូវច្រោះនៅទីនេះដែរ
+     ដូចក្នុង `renderFilteredCross` — បើមិនដូច្នេះ ប្រអប់នេះរាប់ជួរដែល
+     តារាងសរុបតាមឆ្នាំមិនរាប់ ⇒ លេខពីរកន្លែងលែងផ្ទៀងគ្នា។ */
+  const offY = crossYearOff[which] || {};
+  if(Object.keys(offY).length) rows = rows.filter(r=> !offY[crossRowYear(r)]);
+  const exA = crossExcluded[which] || {};
+  if(Object.keys(exA).length){
+    rows = rows.filter(function(r){
+      const k = r.theirs
+        ? ((r.cpOwnerTin ? (crossExclKeyFor(which, r.cpOwnerTin) || "") : ""))
+        : partnerKey(r);
+      return !k || !exA[k];
+    });
+  }
+  /* ⭐⭐⭐ [stated] ២០២៦-១០-២៩ ៖ «ឆ្នាំ ២០២៥ លំអៀង 104 តែចុចចូលកំណត់លំអៀង
+     មាន 103 … ហេតុអ្វីវាខុសគ្នា» ។
+     មូលហេតុ ៖ លេខទាំងពីរ **មិនរាប់របស់ដូចគ្នា** ៖
+       · តារាងសរុបតាមឆ្នាំ ៖ លំអៀង = យើងប្រកាស − គេប្រកាស លើ **គ្រប់ជួរ**
+         រួមទាំងវិក្កយបត្រដែល «យើងមិនបានប្រកាស» (ជួរខាងដៃគូ) និង
+         «គេមិនបានប្រកាស» (គ្មានជួរខាងដៃគូ) ។
+       · ប្រអប់ «⚖ កំណត់លើលំអៀង» ៖ តែវិក្កយបត្រដែល **ផ្គូផ្គងបាន តែខុស
+         ទឹកប្រាក់** ។ ពីរប្រភេទខាងលើមានប៊ូតុងដោយឡែករបស់វា។
+     ⇒ មិនផ្លាស់លេខទេ (ទាំងពីរត្រឹមត្រូវក្នុងន័យរបស់វា) — បង្ហាញ **ការ
+       ផ្ទៀងផ្ទាត់** ឱ្យឃើញថាលេខខុសគ្នាប៉ុន្មាន និងមកពីណា។ */
+  const reconY = {};
+  if(kind !== "ourmiss"){
+    rows.forEach(function(r){
+      const y = crossRowYear(r);
+      const o = reconY[y] = reconY[y] || {gap:0, ourmiss:0, miss:0, nOur:0, nMiss:0};
+      if(r.theirs){
+        const c = Number(r.cpAmount) || 0;
+        o.gap -= c; o.ourmiss += c; o.nOur++; return;
+      }
+      const a = Number(r.amount) || 0;
+      const blank = (r.cpAmount === null || r.cpAmount === undefined);
+      o.gap += a - (blank ? 0 : (Number(r.cpAmount) || 0));
+      if(blank){ o.miss += a; o.nMiss++; }
+    });
+  }
   if(kind === "ourmiss") rows = rows.filter(r=> r.status===STATUS.OURMISS);
   else rows = rows.filter(r=> !r.theirs && r.status!==STATUS.MATCH
                               && r.status!==STATUS.GROUP && r.status!==STATUS.MANUAL);
 
-  const split = crossVkSplit(rows, kind);
+  const split = crossVkSplit(rows, kind, which);
   const years = Array.from(new Set(rows.map(crossRowYear))).filter(y=> /^\d{4}$/.test(y)).sort();
   const year0 = Y || years[years.length-1] || String(new Date().getFullYear());
-  const on = {vat:true, nonv:true, exp:true};
-  const dv = {vat:true, nonv:false, exp:false};   /* ចែក ១.១ តែផ្នែកជាប់អតប */
+  /* [stated] ២០២៦-១០-២៩ ៖ បន្ទុករដ្ឋជាជួរដោយឡែក ⇒ ធីក ÷១.១ ដដែល
+     (តួលេខមិនប្តូរពីមុន) តែអាចដោះបាន បើតម្លៃប្រកាសមិនរួមអតប។ */
+  const VKS = ["vat", "rvc", "nonv", "exp"];
+  const on = {vat:true, rvc:true, nonv:true, exp:true};
+  /* [stated] ២០២៦-១០-២៩ ៖ «បែងចែកតាមឆ្នាំ» ជាលំនាំដើម ពេលជួរគ្របច្រើនឆ្នាំ
+     ហើយគ្មានតម្រងឆ្នាំកំពុងដើរ។ ករណីមានតម្រងឆ្នាំ ⇒ ឆ្នាំនោះ។ */
+  const ALLY = "__all";
+  let yrPick = (Y && years.indexOf(Y) >= 0) ? Y
+             : (years.length > 1 ? ALLY : (years[0] || year0));
+  /* ឆ្នាំនៃប្រភេទមួយ ក្នុងវិសាលភាពដែលកំពុងជ្រើស */
+  const scopeYears = function(id){
+    const ys = Object.keys(split[id].years).filter(y=> /^\d{4}$/.test(y)).sort();
+    return yrPick === ALLY ? ys : ys.filter(y=> y === yrPick);
+  };
+  /* ⚠ ឆ្នាំជាឯកតា ៖ ឆ្នាំណាទិសផ្ទុយ (អវិជ្ជមាន) គ្មានមូលដ្ឋានកំណត់ ⇒ រំលង
+     ទាំងក្នុងការបង្ហាញ ទាំងក្នុងសរុប ទាំងក្នុងការបញ្ជូន ⇒ លេខទាំងបីដូចគ្នា */
+  const posSum = function(id){
+    return scopeYears(id).reduce(function(t,y){
+      const v = Number(split[id].years[y]) || 0; return t + (v > 0 ? v : 0); }, 0);
+  };
+  const nInScope = function(id){
+    return scopeYears(id).reduce(function(t,y){ return t + (split[id].nYears[y] || 0); }, 0);
+  };
+  const skipYears = function(id){
+    return scopeYears(id).filter(function(y){ return (Number(split[id].years[y]) || 0) <= 0; });
+  };
+  const dv = {vat:true, rvc:true, nonv:false, exp:false};   /* ចែក ១.១ តែផ្នែកជាប់អតប */
+  /* ស្លាកបន្ទុករដ្ឋខុសគ្នារវាងផ្ទាំងលក់ និងផ្ទាំងទិញ */
+  const vkLabel = function(id){
+    const buy = which === "crossPurchase";
+    if(id === "rvc") return buy ? "ការទិញ / នាំចូល (បន្ទុករដ្ឋ)" : "ការលក់ក្នុងស្រុក (បន្ទុករដ្ឋ)";
+    /* ⚠ ផ្ទាំងទិញក៏ប្រើស្លាកដដែល «ការលក់…» ពីមុន ⇒ កែតាមផ្ទាំង */
+    if(id === "vat") return buy ? "ការទិញជាប់អតប ១០%" : "ការលក់ជាប់អតប ១០%";
+    return CROSS_VK[id].label;
+  };
 
   const w = document.createElement("div");
   w.id = "crossAssessBox";
@@ -13611,50 +14571,124 @@ function crossOpenAssess(which, kind){
   const money = function(n){ return fmtAmt(Math.round(n)); };
   const draw = function(){
     const line = function(id){
-      const k = CROSS_VK[id], s = split[id];
-      const base = dv[id] ? s.amt/1.1 : s.amt;
-      const dim = s.n ? "" : "opacity:.45;";
-      return '<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-top:1px solid #eee;'+dim+'">'
+      const n = nInScope(id), raw = posSum(id);
+      const base = dv[id] ? raw/1.1 : raw;
+      const usable = n > 0 && raw > 0;
+      const bad = n > 0 && !usable;
+      const dim = usable ? "" : "opacity:.45;";
+      const why = which === "crossSale"
+        ? "យើងប្រកាសលើសដៃគូ — គ្មានចំណូលខ្វះត្រូវកំណត់"
+        : "ដៃគូប្រកាសលើសយើង — គ្មានចំណាយលើសត្រូវកំណត់";
+      const sk = skipYears(id);
+      const ys = scopeYears(id);
+      /* បំបែកតាមឆ្នាំនៅក្រោមជួរ ⇒ ឃើញមុនចុចថាឆ្នាំណាទទួលប៉ុន្មាន */
+      const perYear = (usable && ys.length > 1)
+        ? '<div style="padding:0 0 7px 26px;font-size:11.5px;color:#555;display:flex;gap:12px;flex-wrap:wrap">'
+          + ys.map(function(y){
+              const v = Number(split[id].years[y]) || 0;
+              return v > 0
+                ? '<span><b>' + y + '</b> ៖ ' + money(dv[id] ? v/1.1 : v) + ' ៛</span>'
+                : '<span style="color:#B3261E">' + y + ' ៖ រំលង</span>';
+            }).join("")
+          + '</div>'
+        : "";
+      return '<div style="border-top:1px solid #eee;'+dim+'">'
+        + '<div style="display:flex;align-items:center;gap:10px;padding:7px 0;">'
         + '<label style="flex:1 1 auto;display:flex;align-items:center;gap:7px;font-size:13px">'
-        + '<input type="checkbox" data-vk="' + id + '"' + (on[id] && s.n ? " checked" : "") + (s.n ? "" : " disabled") + '>'
-        + '<span><b>' + k.label + '</b> <span style="color:#888;font-size:11.5px">' + s.n + ' វិក្កយបត្រ</span></span></label>'
+        + '<input type="checkbox" data-vk="' + id + '"' + (on[id] && usable ? " checked" : "") + (usable ? "" : " disabled") + '>'
+        + '<span><b>' + vkLabel(id) + '</b> <span style="color:#888;font-size:11.5px">' + n + ' វិក្កយបត្រ</span>'
+        + (bad ? ' <span style="color:#B3261E;font-size:11px">· ' + why + '</span>' : '')
+        + (usable && sk.length ? ' <span style="color:#B3261E;font-size:11px">· រំលងឆ្នាំ ' + sk.join(", ") + ' (' + why + ')</span>' : '')
+        + '</span></label>'
         + '<label style="font-size:12px;color:#555;white-space:nowrap">'
-        + '<input type="checkbox" data-dv="' + id + '"' + (dv[id] ? " checked" : "") + (s.n ? "" : " disabled") + '> ÷១.១</label>'
+        + '<input type="checkbox" data-dv="' + id + '"' + (dv[id] ? " checked" : "") + (usable ? "" : " disabled") + '> ÷១.១</label>'
         + '<div style="text-align:right;min-width:190px;font-size:13px">'
-        + money(s.amt) + ' ៛ → <b style="color:#0F3D3E">' + money(base) + ' ៛</b></div></div>';
+        + money(raw) + ' ៛ → <b style="color:#0F3D3E">' + money(base) + ' ៛</b></div></div>'
+        + perYear + '</div>';
     };
+    /* ══ ផ្ទៀងផ្ទាត់នឹងតារាងសរុបតាមឆ្នាំ ═══════════════════════════════
+       [stated] ២០២៦-១០-២៩ ៖ «ហេតុអ្វីវាខុសគ្នា» ⇒ បង្ហាញសមីការឱ្យឃើញ ៖
+         តារាង = ប្រអប់នេះ + យើងមិនបានប្រកាស + គេមិនបានប្រកាស
+       (ពីរធាតុចុងក្រោយមានប៊ូតុងកំណត់ដោយឡែករបស់វា) ។ */
+    let recon = "";
+    try{
+      if(kind !== "ourmiss"){
+        const sg = crossAssessSign(which);
+        const ys = (yrPick === ALLY) ? years : [yrPick];
+        const lines = [];
+        let anyGap = false;
+        ys.forEach(function(y){
+          const o = reconY[y] || {gap:0, ourmiss:0, miss:0, nOur:0, nMiss:0};
+          if(!o.nMiss) return;
+          anyGap = true;
+          let dlg = 0;
+          VKS.forEach(function(id){ dlg += Number(split[id].years[y]) || 0; });
+          /* ⚠ ចាប់ពី fix147 តារាងលែងរាប់ទឹកប្រាក់ «យើងមិនបានប្រកាស» ក្នុង
+             លំអៀងទៀតហើយ ⇒ ធាតុនេះលែងបង្កើតគម្លាត (ទុកជា ០ ដើម្បីកុំឱ្យ
+             សមីការខុស បើជួរចាស់នៅសល់)។ */
+          const partOur  = 0;
+          const partMiss =  sg * o.miss;      /* ចំណែករបស់ «គេមិនបានប្រកាស» */
+          lines.push('<div style="padding:2px 0"><b>' + y + '</b> ៖ តារាង <b>'
+            + money(dlg + partOur + partMiss) + '</b> ៛ = ប្រអប់នេះ <b>' + money(dlg) + '</b> ៛'
+            + (o.nOur && partOur ? ' + យើងមិនបានប្រកាស ' + money(partOur) + ' ៛ (' + o.nOur + ')' : '')
+            + (o.nMiss ? ' + គេមិនបានប្រកាស '  + money(partMiss) + ' ៛ (' + o.nMiss + ')' : '')
+            + '</div>');
+        });
+        if(anyGap){
+          recon = '<div style="margin-top:10px;padding:8px 10px;border-radius:8px;background:#F3F6F5;'
+            + 'font-size:11.8px;color:#394">'
+            + '<b>ហេតុអ្វីលេខនេះតិចជាងលំអៀងក្នុងតារាងសរុបតាមឆ្នាំ ៖</b> '
+            + 'តារាងនោះរាប់ <b>គ្រប់ជួរ</b> រួមទាំងវិក្កយបត្រដែលម្ខាងមិនបានប្រកាស ; '
+            + 'ប្រអប់នេះរាប់តែវិក្កយបត្រដែល<b>ផ្គូផ្គងបាន តែខុសទឹកប្រាក់</b> ។ '
+            + 'ពីរប្រភេទនោះមានប៊ូតុងកំណត់ដោយឡែក (⚖ កំណត់យើងមិនប្រកាស / ⚖ កំណត់គេមិនប្រកាស) ។'
+            + '<div style="margin-top:5px">' + lines.join("") + '</div></div>';
+        }
+      }
+    }catch(e){ console.error("recon", e); }
     let had = "";
     try{
       const CC = window.CalcCard;
       const parts = [];
-      ["vat","nonv","exp"].forEach(id=>{
+      const hadYears = (yrPick === ALLY) ? years : [yrPick];
+      VKS.forEach(id=>{
         const src = "cross:" + which + ":" + kind + ":" + id;
         const f = ((CC.state.toi.findings)||[]).filter(x=> x && x.src === src)[0];
-        const v = f ? (Number(f.amt[year0])||0) : 0;
-        if(v) parts.push(CROSS_VK[id].label + " " + money(v) + " ៛");
+        if(!f) return;
+        hadYears.forEach(function(y){
+          const v = Number(f.amt[y]) || 0;
+          if(v) parts.push(vkLabel(id) + " " + y + " ៖ " + money(v) + " ៛");
+        });
       });
       if(parts.length) had = '<div style="margin-top:10px;padding:7px 9px;border-radius:8px;background:#FDEAEA;'
-        + 'color:#B3261E;font-size:12px">មានរួចក្នុងកាតគណនា ឆ្នាំ ' + year0 + ' ៖ ' + parts.join(" · ")
+        + 'color:#B3261E;font-size:12px">មានរួចក្នុងកាតគណនា ៖ ' + parts.join(" · ")
         + ' — ការបញ្ចូលនេះនឹង <b>ជំនួស</b> តួលេខរបស់ក្រុមហ៊ុនដៃគូនេះ (ចុចច្រើនដងក៏មិនស្ទួនទេ)</div>';
     }catch(e){}
     let tot = 0;
-    ["vat","nonv","exp"].forEach(id=>{ if(on[id] && split[id].n) tot += dv[id] ? split[id].amt/1.1 : split[id].amt; });
+    VKS.forEach(id=>{ const raw = posSum(id);
+      if(on[id] && raw > 0) tot += dv[id] ? raw/1.1 : raw; });
 
     box.innerHTML =
       '<div style="font-weight:700;color:#0F3D3E;font-size:15px;margin-bottom:4px">⚖ កំណត់ចំណូលឡើងវិញពីលទ្ធផលផ្គូផ្គង</div>'
       + '<div style="font-size:12.5px;color:#555;margin-bottom:12px">'
       + (kind==="ourmiss" ? "មូលដ្ឋាន ៖ វិក្កយបត្រដែល <b>យើងមិនបានប្រកាស</b>"
-                          : "មូលដ្ឋាន ៖ <b>លំអៀង</b> នៃវិក្កយបត្រដែលមិនត្រូវគ្នា")
+                          : (which === "crossSale"
+                             ? "មូលដ្ឋាន ៖ <b>លំអៀង</b> នៃវិក្កយបត្រដែលមិនត្រូវគ្នា (ដៃគូប្រកាស − យើងប្រកាស)"
+                             : "មូលដ្ឋាន ៖ <b>លំអៀង</b> នៃវិក្កយបត្រដែលមិនត្រូវគ្នា (យើងប្រកាស − ដៃគូប្រកាស)"))
       + ' · ' + rows.length + ' វិក្កយបត្រ</div>'
       + '<div style="display:flex;align-items:center;gap:10px;font-size:13px;margin-bottom:4px">'
       + '<span style="flex:1 1 auto">ការិយបរិច្ឆេទ</span>'
       + '<select id="caYear" style="padding:5px 8px;border:1px solid #C9D2D3;border-radius:8px;font:inherit">'
-      + (years.length ? years : [year0]).map(y=> '<option'+(y===year0?" selected":"")+'>'+y+'</option>').join("")
+      + (years.length > 1
+         ? '<option value="' + ALLY + '"' + (yrPick===ALLY ? " selected" : "") + '>បែងចែកតាមឆ្នាំ (' + years.length + ' ឆ្នាំ)</option>'
+         : "")
+      + (years.length ? years : [year0]).map(y=>
+          '<option value="'+y+'"'+(y===yrPick?" selected":"")+'>'+y+'</option>').join("")
       + '</select></div>'
       + '<div style="font-size:12.5px;color:#555;margin:10px 0 2px">ប្រភេទចំណូល — កម្មវិធីចាត់ថ្នាក់តាមជួរឈរអតបក្នុងទិន្នានុប្បវត្តិ ៖</div>'
-      + line("vat") + line("nonv") + line("exp")
+      + VKS.map(line).join("")
       + '<div style="display:flex;justify-content:space-between;border-top:2px solid #0F3D3E;padding-top:8px;margin-top:4px;font-size:13.5px">'
       + '<b>មូលដ្ឋានសរុបដែលនឹងកំណត់</b><b style="color:#0F3D3E">' + money(tot) + ' ៛</b></div>'
+      + recon
       + had
       + '<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">'
       + '<button class="btn ghost" id="caNo">បោះបង់</button>'
@@ -13662,19 +14696,28 @@ function crossOpenAssess(which, kind){
 
     box.querySelectorAll("[data-vk]").forEach(el=>{ el.onchange = function(){ on[this.dataset.vk] = this.checked; draw(); }; });
     box.querySelectorAll("[data-dv]").forEach(el=>{ el.onchange = function(){ dv[this.dataset.dv] = this.checked; draw(); }; });
-    box.querySelector("#caYear").onchange = draw;
+    box.querySelector("#caYear").onchange = function(){ yrPick = this.value; draw(); };
     box.querySelector("#caNo").onclick = crossCloseAssess;
     box.querySelector("#caYes").onclick = function(){
-      const yr = box.querySelector("#caYear").value;
-      let n = 0;
-      ["vat","nonv","exp"].forEach(id=>{
-        if(!on[id] || !split[id].n) return;
-        const amt = Math.round(dv[id] ? split[id].amt/1.1 : split[id].amt);
-        if(!amt) return;
-        crossPushFinding(yr, amt, CROSS_VK[id], kind, which);
-        n++;
+      let n = 0, tot2 = 0;
+      const ysDone = {};
+      VKS.forEach(id=>{
+        if(!on[id]) return;
+        scopeYears(id).forEach(function(y){
+          const v = Number(split[id].years[y]) || 0;
+          /* ⚠ លេខអវិជ្ជមានមិនបង្កើតពន្ធបន្ថែមក្នុងកាតទេ ⇒ កុំបញ្ជូនវាទៅ */
+          if(v <= 0) return;
+          const amt = Math.round(dv[id] ? v/1.1 : v);
+          if(!amt) return;
+          crossPushFinding(y, amt, CROSS_VK[id], kind, which, true);
+          ysDone[y] = 1; tot2 += amt; n++;
+        });
       });
-      if(!n) alert("គ្មានប្រភេទណាត្រូវបញ្ចូលទេ");
+      if(!n){ alert("គ្មានប្រភេទណាត្រូវបញ្ចូលទេ"); return; }
+      try{
+        toast("បញ្ចូលទៅកាតគណនាពន្ធរួច ៖ " + n + " ធាតុ · ឆ្នាំ "
+              + Object.keys(ysDone).sort().join(", ") + " · សរុប " + fmtAmt(tot2) + " ៛", "ok");
+      }catch(e){}
       crossCloseAssess();
     };
   };
@@ -13682,7 +14725,7 @@ function crossOpenAssess(which, kind){
 }
 
 /* បញ្ចូលទៅ CC.state.toi.findings ដោយប្រើម៉ាស៊ីនដែលមានស្រាប់ */
-function crossPushFinding(year, amount, kindDef, from, which){
+function crossPushFinding(year, amount, kindDef, from, which, quiet){
   try{
     const CC = window.CalcCard;
     if(!CC || !CC.state){ alert("កាតគណនាពន្ធមិនទាន់ត្រៀម"); return; }
@@ -13734,7 +14777,10 @@ function crossPushFinding(year, amount, kindDef, from, which){
     f.amt[year] = sum;
     CC.persist(); CC.render();
     const lbl = (from==="ourmiss" ? "យើងមិនបានប្រកាស" : "លំអៀង");
-    try{ toast("បញ្ចូលទៅកាតគណនាពន្ធរួច ៖ " + lbl + " " + year + " · " + fmtAmt(Math.round(amount)) + " ៛", "ok"); }catch(e){}
+    /* ⚠ ពេលបញ្ជូនម្តងមួយឆ្នាំ សារអាចលេចច្រើនដង ⇒ អ្នកហៅបង្ហាញសារសង្ខេបវិញ */
+    if(!quiet){
+      try{ toast("បញ្ចូលទៅកាតគណនាពន្ធរួច ៖ " + lbl + " " + year + " · " + fmtAmt(Math.round(amount)) + " ៛", "ok"); }catch(e){}
+    }
   }catch(e){
     console.error("crossPushFinding", e);
     alert("បញ្ចូលមិនបាន ៖ " + (e && e.message ? e.message : e));
@@ -13851,7 +14897,7 @@ function crossPartnerSummary(which, scoped, partners){
     .map(s=> Object.assign(s, {gap: s.our - s.cp}))
     .sort((a,b)=> Math.abs(b.gap) - Math.abs(a.gap));
 }
-function renderCrossPartnerSummary(which, list){
+function renderCrossPartnerSummary(which, list, yearTag){
   const tableId = which==="crossSale" ? "table-crossSale" : "table-crossPurchase";
   const table = document.getElementById(tableId);
   if(!table) return;
@@ -13934,6 +14980,9 @@ function renderCrossPartnerSummary(which, list){
   if(filters[which] || !list.length){ box.innerHTML = h; return; }
   h += '<div style="display:flex;align-items:center;gap:10px;margin:0 0 6px;font-size:13px;">'
     + '<b>📋 សង្ខេបគ្រប់ក្រុមហ៊ុន (' + list.length + ')</b>'
+    /* បញ្ជាក់ច្បាស់ថាលេខខាងក្រោមជាលេខឆ្នាំណា — កុំឱ្យច្រឡំជាសរុបគ្រប់ឆ្នាំ */
+    + (yearTag ? '<span class="hint" style="padding:2px 9px;border-radius:99px;'
+        + 'background:var(--primary);color:#fff;font-weight:600;">📅 ឆ្នាំ ' + escAttr(yearTag) + '</span>' : '')
     + '<span style="flex:0 0 160px;height:8px;border-radius:99px;background:var(--line);overflow:hidden;display:inline-block">'
     + '<span style="display:block;height:100%;width:' + pct + '%;background:var(--primary)"></span></span>'
     + '<span class="hint">ពិនិត្យរួច ' + nDone + ' / ' + list.length + ' ក្រុមហ៊ុន</span>'
@@ -14002,10 +15051,18 @@ function renderCrossYearSummary(which, rows){
   const g = {};
   rows.forEach(r=>{
     const y = crossRowYear(r);
-    const s = g[y] = g[y] || {n:0, our:0, cp:0, match:0, diff:0, miss:0, ourmiss:0, cpn:0};
+    const s = g[y] = g[y] || {n:0, our:0, cp:0, cpMiss:0, match:0, diff:0, miss:0, ourmiss:0, cpn:0};
     if(r.theirs){          /* វិក្កយបត្ររបស់ដៃគូដែលយើងមិនបានប្រកាស */
+      /* ⭐⭐⭐ [stated] ២០២៦-១០-២៩ ៖ «សម្រាប់យើងមិនបានប្រកាស មានប៊ូតុងផ្សេង
+         ហើយ ដូច្នេះមិនគួរយកចេញនៅផ្នែកនេះទេ» ។
+         មុននេះ ៖ ទឹកប្រាក់របស់ជួរទាំងនេះបូកចូល `s.cp` ⇒ ហូរចូល «លំអៀង»
+         ទាំងដែលវាមានជួរឈររបស់វាផ្ទាល់ និងប៊ូតុង ⚖ ផ្ទាល់ ⇒ រាប់ពីរដង
+         ហើយលេខក្នុងតារាង ខុសពីលេខក្នុងប្រអប់ ⚖ កំណត់លើលំអៀង។
+         ⇒ ទុកវាក្នុង `cpMiss` ដាច់ដោយឡែក ៖ «លំអៀង» ក្លាយជាលំអៀងនៃ
+           វិក្កយបត្រដែលផ្គូផ្គងបានសុទ្ធ ហើយលេខពីរកន្លែងផ្ទៀងគ្នា។
+         ⚠ មិនបាត់ទិន្នន័យទេ — បង្ហាញក្នុងជួរ «យើងមិនបានប្រកាស» វិញ។ */
       s.ourmiss++; s.cpn++;
-      s.cp += Number(r.cpAmount)||0;
+      s.cpMiss += Number(r.cpAmount)||0;
       return;
     }
     s.n++;
@@ -14016,9 +15073,9 @@ function renderCrossYearSummary(which, rows){
     else s.diff++;
   });
   const years = Object.keys(g).sort();
-  const tot = {n:0, our:0, cp:0, match:0, diff:0, miss:0, ourmiss:0, cpn:0};
+  const tot = {n:0, our:0, cp:0, cpMiss:0, match:0, diff:0, miss:0, ourmiss:0, cpn:0};
   years.forEach(y=>{ const s=g[y];
-    tot.n+=s.n; tot.our+=s.our; tot.cp+=s.cp; tot.match+=s.match;
+    tot.n+=s.n; tot.our+=s.our; tot.cp+=s.cp; tot.cpMiss+=s.cpMiss; tot.match+=s.match;
     tot.diff+=s.diff; tot.miss+=s.miss; tot.ourmiss+=s.ourmiss; tot.cpn+=s.cpn; });
   const cy = crossYear[which];
   let h = '<table class="ledger"><thead><tr>'
@@ -14049,14 +15106,18 @@ function renderCrossYearSummary(which, rows){
       + '<td>' + (isTot ? '<b>សរុប</b>'
           : '<a href="javascript:void(0)" onclick="crossPickYear(\''+which+'\',\''+y+'\',false)"><b>'+y+'</b></a>') + '</td>'
       + '<td class="amt">'+fmtAmt(s.our)+'</td>'
-      + '<td class="amt">'+fmtAmt(s.cp)+'</td>'
+      + '<td class="amt"' + (s.cpMiss
+          ? ' title="មិនរាប់វិក្កយបត្រដែលយើងមិនបានប្រកាស ' + fmtAmt(s.cpMiss)
+            + ' ៛ — សរុបពេញ ' + fmtAmt(s.cp + s.cpMiss) + ' ៛"'
+          : '') + '>'+fmtAmt(s.cp)+'</td>'
       + '<td class="amt '+cls+'" title="'+(tone.pct?tone.pct.toFixed(1)+'% នៃខាងយើង':'គ្មានលំអៀង')+'">' + tone.dot + ' ' + (isTot ? fmtAmt(d)
           : crossMark(crossDone(which, "diff", y))
             + '<a href="javascript:void(0)" onclick="crossPickYear(\''+which+'\',\''+y+'\',true)" title="មើលវិក្កយបត្រដែលលំអៀង">'+fmtAmt(d)+'</a>') + '</td>'
       + '<td>'+num(y,s.match,'match',isTot)+'</td>'
       + '<td>'+num(y,s.diff,'diff',isTot)+'</td>'
       + '<td>'+num(y,s.miss,'miss',isTot)+'</td>'
-      + '<td>'+num(y,s.ourmiss,'ourmiss',isTot)+'</td>'
+      + '<td>'+num(y,s.ourmiss,'ourmiss',isTot)
+          + (s.cpMiss ? '<div class="hint" style="font-size:11px">'+fmtAmt(s.cpMiss)+' ៛</div>' : '')+'</td>'
       + '<td>'+s.n+'</td><td>'+s.cpn+'</td>'
       + '<td>' + (isTot ? '' : '<a href="javascript:void(0)" title="លាក់ឆ្នាំនេះចេញពីការផ្គូផ្គង" '
           + 'onclick="crossYearDrop(\''+which+'\',\''+y+'\')" style="color:var(--red)">✕</a>') + '</td></tr>';
@@ -14102,6 +15163,43 @@ function clearCpStore(store){
     });
 }
 
+/* ══ ដៃគូណាជាម្ចាស់ជួរ «យើងមិនបានប្រកាស» ═══════════════════════════
+   ⭐⭐⭐ [stated] ២០២៦-១០-២៩ ៖ «នៅពេលចុចយើងមិនបានប្រកាស មិនដឹងថាជា
+   ក្រុមហ៊ុនដៃគូណា» ។
+   មូលហេតុ ៖ ជួរទាំងនេះមកពី **ឯកសាររបស់ដៃគូ** ហើយក្នុងឯកសារនោះ
+   លេខអតប និងឈ្មោះដែលសរសេរគឺ **របស់យើង** (គេកត់យើងជាអ្នកផ្គត់ផ្គង់)
+   ⇒ ជួរឈរ «ឈ្មោះ» បង្ហាញឈ្មោះខ្លួនយើងវិញ មិនមែនដៃគូទេ។
+   អត្តសញ្ញាណដៃគូពិតស្ថិតក្នុង `cpFolderTin` / `cpOwnerTin` (ម្ចាស់ថត
+   ដែល upload) ⇒ យកពីទីនោះ រួចផ្គូនឹងបញ្ជី `__partners` ដើម្បីបានឈ្មោះពេញ។ */
+function crossOwnerOf(which, r){
+  const full = which === "crossSale" ? crossSaleResult : crossPurchaseResult;
+  const ps = (full && full.__partners) || [];
+  const t = tin9(r.cpFolderTin || r.cpOwnerTin || "");
+  if(t){
+    const hit = ps.filter(function(p){ return tin9(p.tin) === t; })[0];
+    if(hit) return {name: hit.name || "", tin: hit.tin || ""};
+    return {name: r.cpFolderName || r.cpOwnerName || "", tin: r.cpFolderTin || r.cpOwnerTin || ""};
+  }
+  const nm = r.cpFolderName || r.cpOwnerName || "";
+  if(nm) return {name: nm, tin: ""};
+  /* ឯកសារដៃគូតែមួយក្នុងផ្ទាំង ⇒ គ្មានអ្វីច្រឡំបានទេ */
+  if(ps.length === 1) return {name: ps[0].name || "", tin: ps[0].tin || ""};
+  return null;
+}
+function crossTheirsNameCell(which, r){
+  const o = crossOwnerOf(which, r);
+  const mine = r.name
+    ? '<div style="font-size:11px;color:var(--muted)">ក្នុងឯកសារគេសរសេរ ៖ ' + escAttr(r.name) + '</div>'
+    : "";
+  if(!o || !(o.name || o.tin)){
+    return '<b style="color:var(--red)">មិនស្គាល់ដៃគូ</b>'
+      + '<div style="font-size:11px;color:var(--muted)">ផ្ទុកឯកសារដៃគូឡើងវិញ ដើម្បីឱ្យមានចំណាំម្ចាស់</div>'
+      + mine;
+  }
+  return '<b>' + escAttr(o.name || "(មិនស្គាល់ឈ្មោះ)") + '</b>'
+    + (o.tin ? '<div style="font-size:11px;color:var(--muted)">អតប ' + escAttr(o.tin) + '</div>' : "")
+    + mine;
+}
 function renderCrossTable(tableId, rows, ourLabel, which){
   const table = document.getElementById(tableId);
   const sel = which ? crossSel[which] : {ours:{}, theirs:{}};
@@ -14129,7 +15227,8 @@ function renderCrossTable(tableId, rows, ourLabel, which){
              title="បញ្ចូល CN / DN របស់ដៃគូលើវិក្កយបត្រនេះ">${r.invoiceNo}</a>
           <br><span style="font-size:11px;color:var(--muted)" title="${escAttr(crossVkTitle(r))}">${crossVkLabel(r, which)}${
             r.cpAdj ? ` · CN/DN ${r.cpAdj>0?"+":""}${fmtAmt(r.cpAdj)}` : ""}</span></td>
-      <td class="name-cell">${r.name}</td>
+      <td class="name-cell"${r.theirs ? ' title="វិក្កយបត្ររបស់ដៃគូដែលយើងមិនបានប្រកាស — ឈ្មោះខាងលើជាក្រុមហ៊ុនដៃគូ (ម្ចាស់ឯកសារ)"' : ''}>${
+        r.theirs ? crossTheirsNameCell(which, r) : r.name}</td>
       <td class="amt">${fmtAmt(r.amount)}</td>
       <td>${r.cpDate? fmtDate(r.cpDate):"—"}</td>
       <td class="amt"${r.cpInvoice?` title="លេខវិក្កយបត្រដៃគូ ៖ ${escAttr(r.cpInvoice)}"`:''}>${r.cpAmount!==null && r.cpAmount!==undefined? fmtAmt(r.cpAmount):"—"}</td>
@@ -15602,6 +16701,9 @@ function detectFileCategory(fileName, aoa, sheetNames, relPath){
   if(detectIsVATRVC(fn, aoa, sheetNames || []) && (__vrcNamed || !__looksVatcr)) return 'vatRvc';
 
   if(detectIsVATCRSheet(aoa) || detectIsMTRSheet(aoa)) return 'mtr';
+  /* 🛃 ទិន្នន័យគយ ៖ ត្រូវពិនិត្យ **មុន** ការទាយ SALE/PURCHASE ព្រោះវាមាន
+     ជួរឈរច្រើនដែលអាចឆ្លងច្រឡំ ។ */
+  if(detectIsCustoms(fn, aoa, sheetNames || [], relPath)) return 'customs';
   if(detectIsTOI(sheetNames) || detectIsTOIByPath(fileName, relPath)) return 'toi';
   if(detectIsTOS(fileName, relPath, aoa)) return 'tos';
   if(detectIsWHT(fn, aoa)) return 'wht';
@@ -15944,7 +17046,7 @@ async function handleAutoFileImport(evt){
   window.__rscDupRows = [];
   const memFails = [];
   const __rowSrc = {};
-  const buckets = {sale:[], purchase:[], saleCD:[], purchaseCD:[], otherExpenses:[], wht:[], vatRvc:[], mtrFiles:[], toiFiles:[], tosFiles:[]};
+  const buckets = {sale:[], purchase:[], saleCD:[], purchaseCD:[], otherExpenses:[], wht:[], vatRvc:[], customs:[], mtrFiles:[], toiFiles:[], tosFiles:[]};
   const unresolved = [];
   let companyInfoSheet = null; // {sheet, sourceName} — from whichever file has a "COMPANYINFO" tab, regardless of that file's main category
 
@@ -16070,6 +17172,28 @@ async function handleAutoFileImport(evt){
       if(category === "tos"){
         try{ window.__rscImpLog.push({ file:file.name, category:'tos', forwarded:true, rowsImported:null }); }catch(e){}
         buckets.tosFiles.push(file); continue;
+      }
+      if(category === "customs"){
+        /* ⚠⚠ អាន **គ្រប់សន្លឹក** ៖ អ្នកប្រើអាចដាក់ ៣ សន្លឹកតាមឆ្នាំ ឬ ១ សន្លឹក
+           រួម ⇒ ទាំងពីរត្រូវដើរដូចគ្នា ។ ឆ្នាំយកពីកាលបរិច្ឆេទប្រតិវេទន៍ ។ */
+        const __n0 = buckets.customs.length;
+        try{
+          let wbC = wb;
+          if(!wbC) wbC = XLSX.read(new Uint8Array(buf), {type:"array", cellDates:true, cellHTML:false});
+          (wbC.SheetNames || []).forEach(function(sn){
+            const aoaC = XLSX.utils.sheet_to_json(wbC.Sheets[sn], {header:1, raw:true, defval:"", blankrows:false});
+            const rs = rowsFromCustomsSheet(aoaC, sn);
+            /* ⭐ ចំណាំឈ្មោះឯកសារលើជួរនីមួយៗ ⇒ ការផ្ទុកលើកក្រោយជំនួស
+               **តែឯកសារឈ្មោះដដែល** មិនលុបឯកសារឆ្នាំផ្សេងចោលទេ
+               (មើល `cusMergeByFile`) ។ */
+            rs.forEach(function(r){ r.src = String(file.name || ''); });
+            if(rs.length) buckets.customs = buckets.customs.concat(rs);
+          });
+        }catch(e){ console.error('customs read:', file.name, e); }
+        const __got = buckets.customs.length - __n0;
+        try{ window.__rscImpLog.push({ file:file.name, category:'customs', rowsImported:__got }); }catch(e){}
+        if(!__got) unresolved.push(file.name + " (គ្មានជួរទិន្នន័យគយ)");
+        continue;
       }
       if(statusEl){
         statusEl.textContent = "⏳ កំពុងរៀបចំទិន្នន័យ " + file.name + " …";
@@ -16372,7 +17496,7 @@ async function handleAutoFileImport(evt){
     if(ciSheet) forwardCompanyInfoToTOI(ciSheet, companyInfoSheet.sourceName);
   }
 
-  const labelMap = {sale:"SALE", purchase:"PURCHASE", saleCD:"SALE_CN/DN", purchaseCD:"PURCHASE_CN/DN", otherExpenses:"OTHER EXPENSES", wht:"WHT ពន្ធកាត់ទុក", vatRvc:"វិធីគិតអាករជំនួស", mtrFiles:"MTR (ពន្ធ/សវនកម្ម)", toiFiles:"TOI (ពន្ធលើប្រាក់ចំណូល)", tosFiles:"TOS (ពន្ធលើប្រាក់បៀវត្សរ៍)"};
+  const labelMap = {sale:"SALE", purchase:"PURCHASE", saleCD:"SALE_CN/DN", purchaseCD:"PURCHASE_CN/DN", otherExpenses:"OTHER EXPENSES", wht:"WHT ពន្ធកាត់ទុក", vatRvc:"វិធីគិតអាករជំនួស", customs:"🛃 ទិន្នន័យគយ", mtrFiles:"MTR (ពន្ធ/សវនកម្ម)", toiFiles:"TOI (ពន្ធលើប្រាក់ចំណូល)", tosFiles:"TOS (ពន្ធលើប្រាក់បៀវត្សរ៍)"};
   const updatedStores = [];
   Object.keys(buckets).forEach(store=>{
     if(buckets[store].length > 0){
@@ -16397,6 +17521,17 @@ async function handleAutoFileImport(evt){
            មិនគិតពីរបៀបបន្ថែម/ជំនួស ។ */
         state.vatRvc = mergeVatRvcRows(state.vatRvc || [], buckets.vatRvc);
         updatedStores.push(store);
+        return;
+      }
+      if(store === "customs"){
+        /* [stated] ២០២៦-១០-២៩ ៖ ឯកសារគយអាចមានច្រើន (មួយឆ្នាំមួយឯកសារ ឬរួម)
+           ⇒ ច្រោះតាមឈ្មោះឯកសារជានិច្ច ៖ ឈ្មោះដដែលជំនួស ឈ្មោះថ្មីបន្ថែម ។
+           របៀបបន្ថែម (📦) នៅតែបញ្ចូលតាមខ្លឹមសារដូចមុន។ */
+        state.customs = addMode ? mergeCustomsRows(state.customs || [], buckets.customs)
+                                : cusMergeByFile(state.customs || [], buckets.customs);
+        updatedStores.push(store);
+        try{ renderCrossCustoms(); }catch(e){}
+        try{ renderPartnersView(); }catch(e){}
         return;
       }
       if(store === "wht"){
@@ -16928,7 +18063,11 @@ function populatePartnerSelect(selectId, rows, filterStore){
 function applyPartnerFilter(which){
   const sel = document.getElementById("filter-"+which);
   filters[which] = sel.value;
-  crossPage[which] = 0; crossYear[which] = ""; crossDiffOnly[which] = false;
+  /* ⚠ [stated] ២០២៦-១០-២៩ ៖ ឥឡូវឆ្នាំជាតម្រងលើរបារ ⇒ មិនលុបវាពេល
+     ប្តូរក្រុមហ៊ុនទៀតទេ (បើលុប ការមើលឆ្នាំតែមួយឆ្លងក្រុមហ៊ុនធ្វើមិនកើត)។
+     `populateCrossYearSelect` ជាអ្នកដោះឱ្យ បើឆ្នាំនោះគ្មានជួរក្នុង
+     ក្រុមហ៊ុនថ្មី។ តម្រងរង (លំអៀង/ស្ថានភាព) នៅតែលុបដដែល។ */
+  crossPage[which] = 0; crossDiffOnly[which] = false;
   renderFilteredCross(which);
 }
 function filterFromSummary(which, key){
@@ -16968,6 +18107,8 @@ function renderFilteredCross(which, hasData){
     crossYearOff[which] = {};
     const selEl = document.getElementById("filter-" + which);
     if(selEl) selEl.value = "";
+    const yrEl = document.getElementById("crossyear-" + which);
+    if(yrEl) yrEl.innerHTML = '<option value="">— គ្រប់ឆ្នាំ —</option>';
     const inpEl = document.getElementById("search-" + which);
     if(inpEl) inpEl.value = "";
     return;
@@ -16993,11 +18134,23 @@ function renderFilteredCross(which, hasData){
      បូក `theirs` — បើសង់ពី `scoped` នោះពេលជ្រើសក្រុមហ៊ុនណាមួយ វានឹង
      នៅសល់តែមួយជួរ ហើយបាត់ន័យសង្ខេប។ */
   try{
-    const allRows = shown.concat(theirs).filter(r=>{
+    let allRows = shown.concat(theirs).filter(r=>{
       const off = crossYearOff[which] || {};
       return !Object.keys(off).length || !off[crossRowYear(r)];
     });
-    renderCrossPartnerSummary(which, crossPartnerSummary(which, allRows, full.__partners || []));
+    /* ⚠⚠ [stated] ២០២៦-១០-២៩ ៖ «ពេលចុចឆ្នាំ ២០២៥ ឬឆ្នាំណាមួយ អត់ឃើញមាន
+       ការប្រែប្រួលនៃតារាងសង្ខេបក្រុមហ៊ុន» ។
+       មូលហេតុ ៖ តារាងសង្ខេបសង់ពី `shown + theirs` ដោយច្រោះតែឆ្នាំដែល
+       **លុបចោល** (crossYearOff) ⇒ តម្រងឆ្នាំមិនប៉ះវាសោះ។ ឥឡូវច្រោះតាម
+       `crossYear` ដែរ ⇒ លេខក្នុងតារាងសង្ខេបជាលេខនៃឆ្នាំនោះពិត។
+       ⚠ ច្រោះតែពេលឆ្នាំនោះ**មានជួរពិត** — បើឆ្នាំចាស់នៅជាប់ (ប្តូរ
+         ក្រុមហ៊ុន) `populateCrossYearSelect` នឹងដោះវាបន្តិចទៀត ដូច្នេះ
+         កុំឱ្យតារាងសង្ខេបទទេមួយប៉ព្រិចភ្នែក។ */
+    const cyS = crossYear[which];
+    if(cyS && allRows.some(r=> crossRowYear(r) === cyS)){
+      allRows = allRows.filter(r=> crossRowYear(r) === cyS);
+    }
+    renderCrossPartnerSummary(which, crossPartnerSummary(which, allRows, full.__partners || []), cyS);
     /* ⚠ បន្ទាប់ពីគូរតារាងសង្ខេប (ដែលនៅតែបង្ហាញធាតុដែលដកចេញ ដើម្បីអោយ
        យកមកវិញបាន) ទើបច្រោះជួរដែលដកចេញពីតារាងខាងក្រោម និងសរុប។ */
   }catch(e){ console.error("partner summary", e); }
@@ -17010,6 +18163,9 @@ function renderFilteredCross(which, hasData){
       return !k || !exX[k];
     });
   }
+  /* ⚠ ត្រូវសង់បញ្ជីឆ្នាំ **មុន** ការច្រោះតាមឆ្នាំ — បើសង់ក្រោយ បញ្ជីនឹង
+     នៅសល់តែឆ្នាំដែលកំពុងរើស ហើយលែងប្តូរទៅឆ្នាំផ្សេងបាន */
+  populateCrossYearSelect(which, scoped);
   renderCrossYearSummary(which, scoped);
   let rows = scoped;
   if(crossYear[which]) rows = rows.filter(r=> crossRowYear(r)===crossYear[which]);
@@ -17973,9 +19129,22 @@ function renderPartnersView(){
      title:"ការទិញ ⇄ ការលក់របស់ដៃគូ", stat: fmtCount(state.cpSale.length)},
     {id:"cross-sale", icon:"🤝", color:"var(--red)", bg:"var(--red-bg)",
      title:"ការលក់ ⇄ ការទិញរបស់ដៃគូ", stat: fmtCount(state.cpPurchase.length)},
+    /* ⭐⭐⭐ [stated] ២០២៦-១០-២៨ ៖ «រកអត់ឃើញ គួរមានកន្លែង UPLOAD ទិន្នន័យគយ
+       នៅកន្លែងផ្គូផ្គងនេះតែម្តង និង បន្ថែម CARD ផ្គូផ្គង ទិន្នន័យគយ» ។
+       ⚠ មេរៀនដដែលដែលសរសេរទុកខាងលើ ៖ ការបន្ថែមផ្ទាំងថ្មីត្រូវប៉ះ **បញ្ជីពីរ**
+         — ម៉ឺនុយឆ្វេង (`NAV_ITEMS`) និង **កាតលើទំព័រដើម** (ទីនេះ) ។ ខ្ញុំបាន
+         បន្ថែមតែម៉ឺនុយ ⇒ គេរកមិនឃើញ ។ */
+    {id:"cross-customs", icon:"🛃", color:"var(--red)", bg:"var(--red-bg)",
+     title:"ផ្គូផ្គង ទិន្នន័យគយ", stat: fmtCount((state.customs||[]).length),
+     subLinks:[{ label:"📥 ផ្ទុកឯកសារគយ", action:"cusPickFile()" }]},
   ];
   container.innerHTML =
     `<div class="section-title">🏢 ក្រុមហ៊ុនដៃគូ &amp; ផ្គូផ្គង<div class="rule"></div></div>`
+    + `<div style="display:flex;gap:8px;flex-wrap:wrap;margin:0 0 10px;">
+         <button class="btn primary" style="width:auto;" onclick="cusPickFile()"
+           title="ផ្ទុកឯកសារ Excel ទិន្នន័យគយ — រើសបានច្រើនឯកសារក្នុងពេលតែមួយ (Ctrl / Shift) ហើយអានគ្រប់សន្លឹក">🛃 UPLOAD ទិន្នន័យគយ (ច្រើនឯកសារបាន)</button>
+         <button class="btn ghost" style="width:auto;" onclick="showView('cross-customs')">⇄ មើលការផ្គូផ្គងគយ</button>
+       </div>`
     + `<div class="module-grid">${cards.map(moduleCardHtml).join("")}</div>`;
 }
 
@@ -17999,8 +19168,10 @@ function trackingCardStat(){
 }
 
 function moduleCardHtml(c){
+  /* ⚠ `action` ៖ តំណរងខ្លះមិនមែនជាការប្តូរផ្ទាំងទេ ( ឧ. បើកប្រអប់ផ្ទុក
+     ឯកសារ ) ⇒ អនុញ្ញាតកូដផ្ទាល់ ដោយរក្សាឥរិយាបថចាស់ជាលំនាំដើម ។ */
   const subLinksHtml = (c.subLinks||[]).map(s=>
-    `<span class="mc-sublink" onclick="event.stopPropagation(); showView('${s.id}')">${s.label} →</span>`
+    `<span class="mc-sublink" onclick="event.stopPropagation(); ${s.action ? s.action : `showView('${s.id}')`}">${s.label} →</span>`
   ).join("");
   return `
     <button class="module-card" style="--mc-color:${c.color}; --mc-color-bg:${c.bg};" onclick="showView('${c.id}')">
@@ -18225,6 +19396,10 @@ function renderAll(){
   document.getElementById("count-saleCD").textContent = state.saleCD.length;
   document.getElementById("count-purchaseCD").textContent = state.purchaseCD.length;
   document.getElementById("count-otherExpenses").textContent = state.otherExpenses.length;
+  const cusCountEl = document.getElementById("count-customs");
+  if(cusCountEl) cusCountEl.textContent = (state.customs || []).length;
+  const cusView = document.getElementById("view-cross-customs");
+  if(cusView && cusView.classList.contains("active")){ try{ renderCrossCustoms(); }catch(e){} }
   const oeView = document.getElementById("view-other-expenses");
   if(oeView && oeView.classList.contains("active")) renderOtherExpensesTable();
   const whtCountEl = document.getElementById("count-wht");
@@ -22081,9 +23256,16 @@ function latePayNoteRows(year, taxNames){
                amt:lpNum(r.amount), pen:lpNum(r.penalty), int:lpNum(r.interest), tot:tot });
   });
   /* ── ការបង់ក្នុងសវនកម្ម ដែលនៅក្នុងជួរ «អាករបានបង់» ──────────────── */
+  /* ⭐⭐⭐ [stated] ២០២៦-១០-២៩ ៖ «នៅក្នុងឆ្នាំ ២០២៣ មានការបង់ពន្ធជាដំណាក់កាល
+     តាមខែ តែនៅក្នុងសម្រង់អាករអត់ឃើញចេញសម្គាល់ដើម្បីបញ្ជាក់ថាជាការបង់លើ
+     សវនកម្ម» ។
+     ⚠⚠ មូលហេតុ ៖ ខ្ញុំដាក់ច្រកតាម **ប្រអប់ «រួមបញ្ចូលសវនកម្ម»** — ហើយប្រអប់
+       នោះ **ធីករួចជាលំនាំដើម** ⇒ ជួរសវនកម្មត្រូវបិទស្ងាត់ៗ ទាំងដែលគម្លាត
+       នៅតែលេចក្នុងតារាង ។ ការសម្រេចរបស់ខ្ញុំខុស ៖ អ្វីដែលសម្រេចថាត្រូវ
+       ពន្យល់ឬអត់ គឺ **តួលេខក្នុងតារាង** មិនមែនស្ថានភាពប្រអប់ទេ ។
+     ⇒ ប្រមូលជានិច្ច ; ការត្រងធ្វើនៅ latePayNoteHtml តាមគម្លាតពិត ។ */
   try{
-    const auditOff = !(typeof chkIncludeAudit !== 'undefined' && chkIncludeAudit && chkIncludeAudit.checked);
-    if(auditOff && want && typeof getAuditDeductionsMap === 'function'){
+    if(want && typeof getAuditDeductionsMap === 'function'){
       /* ⚠ ប្រភពត្រូវជា `getAuditDeductionsMap(true)` ៖ វារាប់ទាំងជួរដៃ
          ( auditManualRows ) និងសន្លឹកសវនកម្ម ។ `auditPaymentsFor()` រាប់តែ
          សន្លឹក ⇒ ប្រើវាតែដើម្បីបំបែក ពន្ធ/ពន្ធបន្ថែម/ការប្រាក់ និងលេខកូដ ។ */
@@ -22124,6 +23306,23 @@ function latePayNoteRows(year, taxNames){
 function latePayNoteHtml(year, taxNames, showTaxName, figs){
   let list = [];
   try{ list = latePayNoteRows(year, taxNames); }catch(e){ return ''; }
+  /* ⚠⚠ ជួរសវនកម្មចេញ **តែពេលខែនោះពិតជាមានគម្លាត** ៖
+       · ប្រអប់មិនធីក ⇒ ទឹកប្រាក់សវនកម្មនៅក្នុង «អាករបានបង់» ⇒ មានគម្លាត ⇒ ពន្យល់
+       · ប្រអប់ធីក    ⇒ ត្រូវកាត់ចេញរួច ⇒ គ្មានគម្លាត ⇒ មិនចាំបាច់ពន្យល់
+     ⇒ ច្បាប់តែមួយដែលត្រឹមត្រូវទាំងពីរករណី ដោយមិនពឹងលើស្ថានភាពប្រអប់ ។
+     ⚠ គ្មានតួលេខ ( ទម្រង់ MTR ) ⇒ ថយទៅពឹងលើប្រអប់ដូចមុន ។ */
+  try{
+    if(typeof figs === 'function'){
+      list = list.filter(r=>{
+        if(r.kind !== 'audit' || !r.month) return true;
+        let f = null; try{ f = figs(r.month); }catch(e){ f = null; }
+        if(!f) return true;
+        return Math.abs(Math.round(f.paid || 0) - Math.round(f.due || 0)) > 1;
+      });
+    }else if(typeof chkIncludeAudit !== 'undefined' && chkIncludeAudit && chkIncludeAudit.checked){
+      list = list.filter(r => r.kind !== 'audit');
+    }
+  }catch(e){}
   if(!list.length) return '';
   /* ⚠ `esc` ក្នុងឯកសារនេះជា **មូលដ្ឋានក្នុងមុខងារនីមួយៗ** មិនមែនសកលទេ ។ */
   const esc = x => String(x == null ? '' : x)
@@ -41088,16 +42287,40 @@ function rptPeriodYears(){
   for(let y = lo; y <= hi; y++) out.push(y);
   return out;
 }
+/* ══ ឆ្នាំដែលត្រូវបង្ហាញក្នុងតារាង ក.១ ═══════════════════════════════
+   ⭐⭐⭐ [stated] ២០២៦-១០-២៩ ៖ «ករណីមានកម្មវិធីច្រើន ហើយកម្មវិធីនោះមានតែ
+   ១ឆ្នាំ ក៏ត្រូវបង្ហាញគម្លាតឱ្យឃើញពីឆ្នាំបច្ចុប្បន្ន និងឆ្នាំ N-1 ដែរ ។
+   លុះត្រាតែមានតែ១ឆ្នាំ» ។
+   មុននេះ ៖ ឆ្នាំច្រោះតាមការិយបរិច្ឆេទរបស់កម្មវិធី ⇒ កម្មវិធីមួយឆ្នាំ
+   នៅសល់ជួរឈរតែមួយ ⇒ គ្មានគូប្រៀបធៀប ⇒ ជួរ «គំលាត %» បាត់ទាំងស្រុង
+   ទោះបី TOI មានតួលេខឆ្នាំ N−1 ស្រាប់ក៏ដោយ។
+   ⇒ បើវិសាលភាពនៅសល់តែ ១ ឆ្នាំ ហើយ TOI **មានតួលេខ** ឆ្នាំ N−1 ⇒ យក
+     ឆ្នាំនោះមកបន្ថែមជាជួរប្រៀបធៀប ហើយដាក់សញ្ញា * ប្រាប់ថាវានៅក្រៅ
+     ការិយបរិច្ឆេទ។
+   ⚠ មិនបង្កើតជួរឈរឆ្នាំដែល TOI គ្មានទិន្នន័យទេ (ច្បាប់ចាស់នៅដដែល) ⇒
+     បើពិតជាមានតែ ១ ឆ្នាំ វានៅតែ ១ ជួរឈរ ដូចគេសុំ។ */
+function rptScopeYears(allYears){
+  const all = (allYears || []).map(Number).filter(function(y){ return !!y; }).sort(function(a,b){ return b-a; });
+  let ys = all.slice();
+  const want = rptPeriodYears();
+  if(want && want.length){
+    const inRange = ys.filter(function(y){ return want.indexOf(y) >= 0; });
+    if(inRange.length) ys = inRange;
+  }
+  let prev = null;
+  if(ys.length === 1){
+    const p = ys[0] - 1;
+    if(all.indexOf(p) >= 0){ ys = [ys[0], p]; prev = p; }
+  }
+  return {years: ys, prev: prev, all: all};
+}
 function rptFinTable(stepKey, c){
   const TITLE = stepKey === 'Step4' ? 'តារាងតុល្យការ' : 'គណនីលទ្ធផល';
   let t = {order:[], labels:{}, values:{}, years:[]};
   try{ t = (window.__getTOIStepTable && window.__getTOIStepTable(stepKey)) || t; }catch(e){}
-  let ys = t.years.slice().sort((a,b)=> b-a);            // ចុះ
-  const want = rptPeriodYears();
-  if(want && want.length){
-    const inRange = ys.filter(y => want.indexOf(Number(y)) >= 0);
-    if(inRange.length) ys = inRange;                     /* បើគ្មានឆ្នាំណាត្រូវ ⇒ ទុកដូចមុន */
-  }
+  const scope = rptScopeYears(t.years);
+  let ys = scope.years;
+  const prevY = scope.prev;
   /* [stated] ២០២៦-០៨-១៧ ៖ ករណីគ្មាន TOI ក្នុងការិយសវនកម្ម ត្រូវសរសេរជា
      សេចក្តីថ្លែង មិនមែនជាសារបច្ចេកទេស «មិនទាន់មានទិន្នន័យ» ទេ។ */
   if(!ys.length){
@@ -41111,10 +42334,27 @@ function rptFinTable(stepKey, c){
   /* ក្បាលតារាងតាមទម្រង់ដើម ៖ ក្រឡាទី១ ជាឈ្មោះតារាង (តារាងតុល្យការ /
      គណនីលទ្ធផល) មិនមែនពាក្យ «បរិយាយ» ទេ ; ជួរកូដឈ្មោះ «យោង» ; ហើយ
      ក្រោមឆ្នាំនីមួយៗសរសេរឯកតា ដូច្នេះលែងត្រូវការជួរ «ឯកតា ៖ …» ដាច់ឡែក។ */
-  let head = `<tr><th class="l" rowspan="2">${esc(TITLE)}</th><th class="c" rowspan="2">យោង</th>`;
+  /* ⭐⭐ [stated] ២០២៦-១០-២៩ ៖ «តារាងជួយធ្វើ auto fit កុំឱ្យធំតូចបែបនេះ
+     សម្រាប់គម្លាតអាចដាក់ឱ្យតូចបាន តែឆ្នាំនីមួយៗនោះ គួរតែស្មើៗគ្នា» ។
+     ⚠⚠ មូលហេតុពិតនៃទទឹងមិនស្មើ ៖ ច្បាប់ `.rpt-fin th.c:nth-child(2)
+       {width:52px}` ប៉ុនប៉ងកំណត់ជួរ «យោង» — តែក្បាលតារាងមាន **ពីរជួរដេក**
+       ហើយក្នុងជួរទី ២ ក្រឡាទី ២ គឺជាក្រឡាឯកតានៃ **ឆ្នាំចុងក្រោយ** ⇒
+       ជួរឈរឆ្នាំនោះត្រូវបង្ហាប់មក ៥២px ។ នោះជាមូលហេតុដែលឆ្នាំមួយធំ
+       មួយតូច។ ⇒ ដាក់ថ្នាក់ `yo` លើជួរ «យោង» ផ្ទាល់ ហើយគណនាទទឹងនៅទីនេះ។
+     ទទឹង ៖ បរិយាយ ៣០% · យោង ៦% · គំលាត ៨% ក្នុងមួយគូ · ឆ្នាំចែកស្មើៗគ្នា */
+  const LBLW = 30, YOW = 6, GAPW = 8;
+  const nGap = Math.max(0, ys.length - 1);
+  const yrW = Math.max(8, (100 - LBLW - YOW - GAPW * nGap) / ys.length);
+  let head = `<tr><th class="l" style="width:${LBLW}%" rowspan="2">${esc(TITLE)}</th>`
+           + `<th class="c yo" style="width:${YOW}%" rowspan="2">យោង</th>`;
   ys.forEach((y, i)=>{
-    head += `<th class="c">${kh(y)}</th>`;
-    if(i < ys.length - 1) head += `<th class="c" rowspan="2">គំលាត %<br>(${kh(String(y).slice(2))}/${kh(String(ys[i+1]).slice(2))})</th>`;
+    /* [stated] ២០២៦-១០-២៩ ៖ «លុបពាក្យនេះចេញ» (បន្ទាត់ពន្យល់ក្រោមតារាង) ⇒
+       ទុកតែសញ្ញា * ហើយការពន្យល់ផ្លាស់ទៅជា tooltip ⇒ សន្លឹកព្រីនស្អាត */
+    const yrTip = (y === prevY)
+      ? ` title="ឆ្នាំ ${kh(y)} នៅក្រៅការិយបរិច្ឆេទសវនកម្ម — យកមកដើម្បីគណនាគំលាត"`
+      : '';
+    head += `<th class="c"${yrTip} style="width:${yrW.toFixed(2)}%">${kh(y)}${y === prevY ? '*' : ''}</th>`;
+    if(i < ys.length - 1) head += `<th class="c" style="width:${GAPW}%" rowspan="2">គំលាត %<br>(${kh(String(y).slice(2))}/${kh(String(ys[i+1]).slice(2))})</th>`;
   });
   head += '</tr><tr>' + ys.map(()=> `<th class="c u">${unitTxt}</th>`).join('') + '</tr>';
   const body = t.order.map(ref=>{
@@ -41150,7 +42390,7 @@ function rptFinTable(stepKey, c){
 function rptRatioTable(){
   let t = {order:[], labels:{}, values:{}, years:[]};
   try{ t = (window.__getTOIStepTable && window.__getTOIStepTable('Step5')) || t; }catch(e){}
-  let ys = t.years.slice().sort((a,b)=> b-a);
+  let ys = rptScopeYears(t.years).years;
   /* ⚠⚠ [stated] ២០២៦-០៨-២៣ ៖ «ផលធៀបមិនឃើញមានតួលេខ និងដាច់តារាងទៀតផង» —
      រូបបង្ហាញឆ្នាំ ២០២១‥២០២៦ (៦ ឆ្នាំ × ២ ជួរឈរ) ទទេទាំងអស់ ហើយហៀរ
      ចេញក្រៅសន្លឹក។
@@ -41159,11 +42399,6 @@ function rptRatioTable(){
        ២. ឆ្នាំដែល TOI **គ្មានតួលេខ B0/B4…** នៅតែបង្កើតជួរឈរ ⇒ ជួរឈរទទេ
           ដែលគ្រាន់តែធ្វើអោយតារាងវែងហួស។
      ⇒ ច្រោះតាមការិយ (ដូច rptFinTable) រួចទម្លាក់ឆ្នាំដែលគ្មានតួលេខសោះ។ */
-  const want = (typeof rptPeriodYears === 'function') ? rptPeriodYears() : null;
-  if(want && want.length){
-    const inRange = ys.filter(y => want.indexOf(Number(y)) >= 0);
-    if(inRange.length) ys = inRange;
-  }
   const hasFig = function(y){
     return ['B0','B4','B5','B6'].some(function(ref){
       const v = (t.values[ref] || {})[y];
@@ -41503,7 +42738,7 @@ const RPT_CSS = `
      ចាក់សោ table-layout ហើយកំណត់ទទឹងជួរដំបូង។ ដូចគ្នាសម្រាប់ ខ.១ / ខ.២។ */
   .rpt-fin{table-layout:fixed;}
   .rpt-fin th.l,.rpt-fin td.l{width:32%;}
-  .rpt-fin th.c:nth-child(2){width:52px;}
+  .rpt-fin th.yo{width:6%;}
   /* ១) ជួរដេកមិនត្រូវដាច់ពាក់កណ្តាលពេលតារាងឆ្លងទំព័រ ហើយក្បាលតារាង
      ចេញឡើងវិញនៅទំព័របន្ត។ ចំណាំ ៖ ធាតុ flex បំបែកទំព័រមិនល្អ ដូច្នេះ
      .rpt-page ជា flex តែពេលវាពិតជាមានបាតទំព័រ (ត្រូវការ margin-top:auto)។ */
@@ -43383,7 +44618,22 @@ function narrData(){
   try{ st = window.CalcCard && CalcCard.state; res = CalcCard.compute(); }
   catch(e){ res = null; }
   if(!res || !st) return null;
-  const years = (st.years || []).slice().sort(function(a, b){ return a - b; });
+  /* ⭐⭐⭐ [stated] ២០២៦-១០-២៩ ៖ «ផ្នែកបរិយាយកំណត់ពន្ធ និងផ្នែករបាយការណ៍
+     សង្ខេប ក៏ត្រូវកែទៅតាមការរើសនៅកម្មវិធីណាមួយ ឆ្នាំនៃកម្មវិធីនោះ» ។
+     មុននេះ ៖ ឯកសារបរិយាយយក **គ្រប់ឆ្នាំ** ក្នុងកាតគណនា ⇒ ប្តូរកម្មវិធី
+     ទាំងផ្នែកឆ្នាំ ទាំងតារាងសរុប ទាំងជើងទំព័រ មិនប្រែ។
+     ⇒ ច្រោះតាមការិយបរិច្ឆេទរបស់កម្មវិធី (`basisYears()`) ដូចរបាយការណ៍
+       សវនកម្ម ⇒ ឯកសារទាំងបីរាប់ឆ្នាំដូចគ្នា។
+     ⚠ ការពារអេក្រង់ទទេ ៖ គ្មានការិយ ឬគ្មានឆ្នាំត្រូវគ្នា ⇒ គ្រប់ឆ្នាំដូចមុន។ */
+  const allY = (st.years || []).slice().map(Number).sort(function(a, b){ return a - b; });
+  let years = allY;
+  try{
+    const want = (basisYears() || []).map(Number);
+    if(want.length){
+      const hit = allY.filter(function(y){ return want.indexOf(y) >= 0; });
+      if(hit.length) years = hit;
+    }
+  }catch(e){}
   return { st: st, res: res, years: years };
 }
 
@@ -44745,7 +45995,12 @@ function arResultTable(){
   try{
     if(window.CalcCard.autoFill) CalcCard.autoFill(true);
     res = CalcCard.compute();
-    years = (CalcCard.state.years || []).slice();
+    /* ⭐⭐⭐ [stated] ២០២៦-១០-២៩ ៖ «នៅខុសផ្នែកសរុបរួម» ។
+       តារាង VI មានបញ្ជីឆ្នាំ **ផ្ទាល់ខ្លួន** ( `CalcCard.state.years` )
+       ⇒ ក្រោយកែជើងទំព័រឱ្យដើរតាមកម្មវិធី លេខពីរកន្លែងបែកគ្នា ៖
+       ជើងទំព័របានឆ្នាំកម្មវិធី ឯ «សរុបរួម» នៅបូកគ្រប់ឆ្នាំដដែល។
+       ⇒ ប្រើ `arYears()` ដូចគ្នា ⇒ សរុបរួម = ប្រាក់ពន្ធក្នុងជើងទំព័រ។ */
+    years = arYears();
   }catch(e){ return ''; }
   var live = (res.rows || []).filter(function(r){
     return years.reduce(function(a, y){ return a + (+r.tot[y] || 0); }, 0) > 0;
@@ -44850,8 +46105,8 @@ function arFindingsTable(years){
 
 function arBody(){
   var x = arCtx(), c = x.c, ci = x.ci;
-  var years = [];
-  try{ years = (window.CalcCard.state.years || []).slice().sort(function(a,b){ return a - b; }); }catch(e){}
+  /* [stated] ២០២៦-១០-២៩ ៖ ឆ្នាំតាមកម្មវិធីដែលកំពុងជ្រើស — មើល `arYears()` */
+  var years = arYears();
   var H = [];
 
   /* ---------- ក្បាលឯកសារ ---------- */
@@ -44859,9 +46114,25 @@ function arBody(){
      បារកូដពីក្រោម «ជាតិ សាសនា ព្រះមហាក្សត្រ»។ letterheadHtml() មាន
      ត្រា និងជ្វេងស្រាប់ ដូច្នេះមិនត្រូវសង់ដោយដៃទៀតទេ។ */
   /* [stated] លេខកម្មវិធីមកពី Data Entry «P កម្មវិធី» — ឈ្មោះវាលខុសគ្នាតាមផ្លូវ */
+  /* ⭐⭐⭐ [stated] ២០២៦-១០-២៩ ៖ «នៅផ្នែករបាយការណ៍សវនកម្មនៅខុសផ្នែក
+     លេខបារកូដ Pcode and P កម្មវិធី» ។
+     មូលហេតុ ៖ លេខនេះអានពី `coverInfo()` ដែលជា **កំណត់ត្រាតែមួយ** ចងនឹង
+     «P កម្មវិធី» ក្នុង Data Entry (`de.coverProgram`) ⇒ ប្តូរកម្មវិធីក្នុង
+     ឯកសារ លេខមិនប្រែ ⇒ កម្មវិធីទី២ ព្រីនចេញលេខរបស់កម្មវិធីទី១។
+     ⇒ យកពី **កម្មវិធីដែលកំពុងជ្រើស** ជាមុន (`basisProgramme().pg`
+       ដដែលនឹងការិយបរិច្ឆេទ) ; បើកម្មវិធីនោះមិនទាន់បំពេញ `pg` ប្រើ
+       `pcode` របស់វា ; អស់ហើយទើបត្រឡប់ទៅ coverInfo ដូចមុន។
+     ⚠ នៅតែប្រើ «P កម្មវិធី» (pg) មិនមែន Pcode ទេ — នោះជាច្បាប់ចាស់របស់
+       ឯកសារនេះ (ឯកសារបរិយាយទើបប្រើ Pcode) ។ */
   var pcode = '';
-  ['progPG','programNumber','programCode','progCode','pcode','progNo']
-    .forEach(function(k){ if(!pcode && ci[k]) pcode = String(ci[k]).trim(); });
+  try{
+    var prAR = basisProgramme() || {};
+    pcode = String(prAR.pg || prAR.pcode || '').trim();
+  }catch(e){ pcode = ''; }
+  if(!pcode){
+    ['progPG','programNumber','programCode','progCode','pcode','progNo']
+      .forEach(function(k){ if(!pcode && ci[k]) pcode = String(ci[k]).trim(); });
+  }
   /* [stated] គំរូបារកូដមានស្រាប់ ៖ letterheadHtml(extra) ដាក់ខ្លឹមសារ
      បន្ថែមចូលជួរឈរស្តាំដោយខ្លួនវា ហើយ barcode39Svg() គូស Code39 ពិត។
      ការសង់ដោយដៃ និងការចងទីតាំងដោយភាគរយ ត្រូវបានលុបចោលទាំងស្រុង។ */
@@ -45133,12 +46404,30 @@ function arBody(){
   return H.join('');
 }
 
+/* ══ ឆ្នាំរបស់របាយការណ៍សវនកម្ម ═══════════════════════════════════════
+   ⭐⭐⭐ [stated] ២០២៦-១០-២៩ ៖ «នៅពេលចុចរើសកម្មវិធី ទី១ ឬ ទី២ វាលោតចេញ
+   ទឹកប្រាក់ពន្ធសរុប វាមិនលោតទៅតាមឆ្នាំដែលមានក្នុងកម្មវិធីទី១ ឬទី២នោះទេ» ។
+   មូលហេតុ ៖ `arBody()` និង `arGrand()` យក **គ្រប់ឆ្នាំ** ក្នុង
+   `CalcCard.state.years` ដោយមិនមើលកម្មវិធីសោះ ⇒ ប្តូរកម្មវិធី លេខមិនប្តូរ។
+   ⇒ ច្រោះតាមការិយបរិច្ឆេទរបស់កម្មវិធី (`basisYears()` — ដដែលនឹងឯកសារ
+     «មូលដ្ឋាននៃការកំណត់ពន្ធ»)។
+   ⚠ ការពារអេក្រង់ទទេ ៖ បើកម្មវិធីគ្មានការិយ ឬគ្មានឆ្នាំណាត្រូវគ្នានឹង
+     កាតគណនា ⇒ ត្រឡប់ទៅគ្រប់ឆ្នាំដូចមុន ជាជាងបង្ហាញ ០ ដោយគ្មានការពន្យល់។ */
+function arYears(){
+  var all = [];
+  try{ all = (window.CalcCard.state.years || []).map(Number).slice().sort(function(a,b){ return a - b; }); }catch(e){}
+  var want = [];
+  try{ want = (basisYears() || []).map(Number); }catch(e){}
+  if(!want.length) return all;
+  var hit = all.filter(function(y){ return want.indexOf(y) >= 0; });
+  return hit.length ? hit : all;
+}
 /* ប្រាក់ពន្ធសរុប — ដូចជើងទំព័រនៃឯកសារបរិយាយ */
 function arGrand(){
   var g = 0;
   try{
     var d = narrData(), rows = (d && d.res.rows) || [];
-    (d ? d.years : []).forEach(function(y){
+    arYears().forEach(function(y){
       rows.forEach(function(r){ g += +r.tot[y] || 0; });
     });
   }catch(e){}
@@ -46439,7 +47728,13 @@ function wireDocs(host){
       basisState().progNo = n;
       rptState().progNo = n;
       trkSave();
+      /* ⚠ [stated] ២០២៦-១០-២៩ ៖ របាយការណ៍សវនកម្ម (និងបរិយាយ/សង្ខេប) ក៏ត្រូវ
+         គូរឡើងវិញដែរ — បើមិនដូច្នេះ ទោះការច្រោះឆ្នាំត្រឹមត្រូវក៏ដោយ អេក្រង់
+         នៅបង្ហាញលេខចាស់របស់កម្មវិធីមុន។ */
       renderLetter(); renderIndep(); renderWorkPapers(); renderBasis(); renderStrategyReport();
+      try{ renderAudit(); }catch(e){}
+      try{ renderNarr(); }catch(e){}
+      try{ renderSummary(); }catch(e){}
     };
   }
   renderIndep();
@@ -50802,7 +52097,8 @@ CC.render=function(){
   var h=[];
 
   /* [stated] ២០២៦-០៨-២៨ ៖ ដកអក្សររៀបរាប់ក្រោមចំណងជើងចេញ */
-  h.push('<div class="cc-head"><div class="cc-title">ការគណនាពន្ធឡើងវិញ</div></div>');
+  h.push('<div class="cc-head"><div class="cc-title">ការគណនាពន្ធឡើងវិញ</div>'
+    + ccGrandHtml(res) + '</div>');
   h.push('<span class="cc-lbl">បង្ហាញ</span><select data-set="mode">'+MODES.map(function(m){
     return '<option value="'+m[0]+'"'+(s.mode===m[0]?" selected":"")+'>'+m[1]+'</option>';}).join("")+'</select>');
   h.push('<button class="btn ghost" data-act="print">🖨️ បោះពុម្ព</button>');
@@ -51520,7 +52816,15 @@ function paneToi(res){
     '<input type="number" step="0.1" placeholder="ឧ. 10" data-set="tmAll" value="'+esc(t.tmarginAll||"")+'" style="width:92px"> %'+
     '<span class="cc-lbl">កម្រិតចំណេញដុល (mark-up លើថ្លៃដើម)</span>'+
     '<input type="number" step="0.01" placeholder="ឧ. 1.15" data-set="mkAll" value="'+esc(t.markupAll||"")+'" style="width:92px"> ×'+
-    '<button class="btn ghost" data-act="clearMargin">សម្អាតទាំងអស់</button></div>');
+    '<button class="btn ghost" data-act="clearMargin">សម្អាតទាំងអស់</button>'+
+    /* ⭐ [stated] ២០២៦-១០-២៩ ៖ «នៅពេលចុចយកកន្លែងកម្រិតវាលោតទៅគ្រប់ឆ្នាំ បើ
+       ចង់ឱ្យវាចេញកម្រិតចំណេញផ្សេងគ្នាតាមឆ្នាំ តើចុចកែកន្លែងណា?» ⇒ ជួរ
+       «តាមឆ្នាំ» ក្នុងតារាងខាងក្រោមមានរួចស្រេច ហើយវា **ឈ្នះ** លើតម្លៃគ្រប់
+       ឆ្នាំ ( អាទិភាព ៖ mark-up ឆ្នាំ → % ឆ្នាំ → mark-up គ្រប់ឆ្នាំ → % គ្រប់ឆ្នាំ ) ។
+       ⚠ តែគ្មានកន្លែងណាប្រាប់រឿងនេះទេ ⇒ ដាក់បន្ទាត់ណែនាំមួយត្រង់នេះ ។ */
+    '<span class="cc-lbl" style="color:var(--muted);font-weight:400">'+
+    '↓ ចង់បានកម្រិតផ្សេងគ្នាតាមឆ្នាំ ៖ វាយក្នុងជួរ «តាមឆ្នាំ» ក្នុងតារាងខាងក្រោម — ឆ្នាំណាបំពេញ ឆ្នាំនោះឈ្នះ'+
+    '</span></div>');
   }
 
   if(TOOL==="cut"){
@@ -52157,6 +53461,71 @@ function asgTable(){
   return h.join("");
 }
 
+/* ⭐⭐⭐ [stated] ២០២៦-១០-២៩ ៖ «នៅផ្នែកជំនាន់ជួយបន្ថែមលុយដុល្លារផង» ។
+   ⚠ ដុល្លារយកពី `summary().grandUsd` ដែលគិត **តាមអត្រាប្តូរប្រាក់នៃឆ្នាំ
+     នីមួយៗ** ( CC.fxOf ) មិនមែនអត្រាតែមួយទេ — ដូចកន្លែងឯទៀតក្នុងកាតគណនា ។
+   ⚠⚠ ហើយ `CC.summaryWith(snap)` ប្តូរ `CC.state` ទៅជំនាន់នោះមុនគណនា
+     ⇒ ដុល្លាររបស់ជំនាន់ណាមួយប្រើ **អត្រាដែលជំនាន់នោះកាន់** មិនមែនអត្រា
+     បច្ចុប្បន្នទេ ⇒ តួលេខចាស់មិនប្រែប្រួលពេលអ្នកកែអត្រាថ្ងៃនេះ ។ */
+function ccUsd(v){
+  var n = Number(v) || 0;
+  if(!n) return '—';
+  return '$' + n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+
+/* ⭐ ស្លាកសរុបនៅក្បាលកាត ៖ តួលេខដដែលនឹងជួរ «សរុបប្រាក់ពន្ធនិងទោសទណ្ឌ»
+   ក្នុងផ្ទាំងសង្ខេប ( ហៅ `CC.summary` ដដែល ) ⇒ លេខពីរកន្លែងមិនអាចខុសគ្នា ។
+   ⚠ ដុល្លារក្នុងមួយឆ្នាំ = foot[y] ÷ អត្រាឆ្នាំនោះ ។ នេះស្មើ `grandUsd`
+     បេះបិទ ព្រោះគ្រប់បន្ទាត់ក្នុងឆ្នាំតែមួយចែកនឹងអត្រាតែមួយ ។
+   ⚠ ការជ្រើសឆ្នាំជា **តម្រងស្លាក** ប៉ុណ្ណោះ — វាមិនប៉ះពាល់ការគណនា ឬ
+     តារាងណាមួយឡើយ ⇒ ចុចមើលដោយសុវត្ថិភាព ។ */
+function ccGrandHtml(res){
+  var s = CC.state, sm = null;
+  try{ sm = CC.summary(res); }catch(e){ sm = null; }
+  var cols = (sm && sm.cols) ? sm.cols.map(String) : [];
+  if(!cols.length) return '';
+  var selAll = Array.isArray(s.grandYears) ? s.grandYears.map(String) : [];
+  var sel = selAll.filter(function(y){ return cols.indexOf(y) >= 0; });
+  var use = sel.length ? sel : cols;
+  var r = 0, u = 0;
+  use.forEach(function(y){
+    var v = Number((sm.foot || {})[y]) || 0;
+    r += v; u += v / (CC.fxOf(y) || 4000);
+  });
+  /* ⭐ កម្រិតចំណេញចុងក្រោយនៃឆ្នាំនោះ ( `res.y[y].marginFinal` ) — តួលេខ
+     ដដែលនឹងជួរ «កម្រិតចំណេញចុងក្រោយ» ក្នុងផ្ទាំង TOI ⇒ កែម្តងឃើញភ្លាម
+     ទាំងពីរកន្លែង ។ គ្មានតួលេខ ⇒ ទុកទទេ កុំបង្ហាញ 0.0% បោកភ្នែក ។ */
+  var mOf = function(y){
+    try{
+      var o = ((res || {}).y || {})[y] || ((res || {}).y || {})[String(y)];
+      if(!o || o.marginFinal == null || !isFinite(o.marginFinal)) return '';
+      return pct(o.marginFinal);
+    }catch(e){ return ''; }
+  };
+  /* ⭐ ប្រអប់កម្រិតចំណេញក្នុងចិប ៖
+       · មានតម្លៃខ្មៅ  = ឆ្នាំនោះកំណត់ដោយដៃ ( s.toi.tmargin[y] )
+       · ប្រផេះ ( placeholder ) = កម្រិតដែលកំពុងមានពិត ⇒ លុបឱ្យទទេ = ត្រឡប់
+         ទៅលំនាំដើម ។ ច្បាប់ដដែលនឹងតារាង «តាមឆ្នាំ» ខាងក្រោម ។ */
+  var tm = (CC.state.toi && CC.state.toi.tmargin) || {};
+  var yChip = function(y, on){
+    var own = String(tm[y] == null ? '' : tm[y]).trim();
+    return '<div class="cc-gchip' + (on ? ' on' : '') + '">'
+         + '<button class="y" data-gy="' + y + '" title="ចុចដើម្បីត្រងឆ្នាំនេះ">' + y + '</button>'
+         + '<input class="m" data-gm="' + y + '" value="' + esc(own) + '"'
+         + ' placeholder="' + esc(mOf(y) || '—') + '" title="វាយកម្រិតចំណេញសុទ្ធ (%) សម្រាប់ឆ្នាំនេះ ; ទទេ = លំនាំដើម">'
+         + '</div>';
+  };
+  var chips = '<button data-gy="" class="' + (!sel.length ? 'on' : '') + '">គ្រប់ឆ្នាំ</button>'
+            + cols.slice().sort().map(function(y){
+                return yChip(y, sel.indexOf(y) >= 0); }).join('');
+  return '<div class="cc-grand"><div class="cc-gy">' + chips + '</div>'
+       + '<div class="cc-grand-amt">'
+       + '<span class="k">សរុបប្រាក់ពន្ធនិងទោសទណ្ឌ' + (sel.length ? ' (' + use.slice().sort().join(', ') + ')' : '') + '</span>'
+       + '<span class="r">' + fmt(r) + ' ៛</span>'
+       + '<span class="u">' + ccUsd(u) + '</span>'
+       + '</div></div>';
+}
+
 /* ---- ជំនាន់នៃការកំណត់ពន្ធ ---- */
 function paneVer(){
   var s=CC.state,vs=s.versions||[],h=[];
@@ -52169,7 +53538,9 @@ function paneVer(){
   if(!vs.length) return h.join("")+'<div class="cc-empty">មិនទាន់មានជំនាន់ណាត្រូវបានរក្សាទុកទេ</div>';
   h.push('<div class="cc-scroll"><table><thead><tr><th style="width:60px">ល.រ</th><th style="min-width:190px">ឈ្មោះ</th>'+
     '<th style="width:120px">កាលបរិច្ឆេទ</th><th style="min-width:200px">កំណត់សម្គាល់</th>'+
-    '<th class="n">សរុបប្រាក់ពន្ធនិងទោសទណ្ឌ</th><th style="width:150px"></th></tr></thead><tbody>');
+    '<th class="n">សរុបប្រាក់ពន្ធនិងទោសទណ្ឌ (៛)</th>'+
+    '<th class="n" style="width:140px">សរុប (USD)</th>'+
+    '<th style="width:150px"></th></tr></thead><tbody>');
   vs.slice().reverse().forEach(function(v){
     var i=vs.indexOf(v);
     var sm=CC.summaryWith(v.snap);
@@ -52178,11 +53549,14 @@ function paneVer(){
       '<td class="n">'+esc(String(v.at).slice(0,10))+'</td>'+
       '<td><input class="cc-grid-in" style="text-align:left" data-ver="'+i+'" data-k="note" value="'+esc(v.note||"")+'"></td>'+
       '<td class="n">'+fmt(sm?sm.grand:0)+'</td>'+
+      '<td class="n">'+ccUsd(sm?sm.grandUsd:0)+'</td>'+
       '<td><button class="btn ghost" data-act="diffVer" data-i="'+i+'">🔍 ធៀប</button> '+
           '<button class="cc-x" data-act="delVer" data-i="'+i+'">×</button></td></tr>');
   });
   var cur=CC.summary(CC._lastRes||CC.compute());
-  h.push('<tr class="cc-sum"><td colspan="4">បច្ចុប្បន្ន</td><td class="n">'+fmt(cur?cur.grand:0)+'</td><td></td></tr>');
+  h.push('<tr class="cc-sum"><td colspan="4">បច្ចុប្បន្ន</td>'+
+    '<td class="n">'+fmt(cur?cur.grand:0)+'</td>'+
+    '<td class="n">'+ccUsd(cur?cur.grandUsd:0)+'</td><td></td></tr>');
   h.push('</tbody></table></div>');
   return h.join("");
 }
@@ -52882,6 +54256,19 @@ function bind(el){
       s.vat.align[yF]=(+s.vat.align[yF]||0)+(+vf.dataset.delta||0);
       re(); return;
     }
+    /* ⭐ តម្រងឆ្នាំរបស់ស្លាកសរុប ៖ «គ្រប់ឆ្នាំ» សម្អាត ; ឆ្នាំមួយបិទ/បើក
+       ⇒ ២០២៤-២០២៥ ឬ ២០២៣-២០២៤ ឬតែមួយឆ្នាំ សុទ្ធតែធ្វើបាន ។ */
+    /* ⚠ ប្រអប់កម្រិតចំណេញនៅក្នុងចិប ៖ ការចុចលើវាមិនត្រូវត្រងឆ្នាំទេ ។ */
+    if(e.target && e.target.dataset && e.target.dataset.gm != null) return;
+    var gy=e.target.closest("[data-gy]");
+    if(gy){
+      var yv=String(gy.dataset.gy||"");
+      var cur=Array.isArray(s.grandYears)?s.grandYears.map(String):[];
+      if(!yv) cur=[];
+      else { var ix=cur.indexOf(yv); if(ix>=0) cur.splice(ix,1); else cur.push(yv); }
+      s.grandYears=cur;
+      CC.persist(); re(); return;
+    }
     var b=e.target.closest("[data-tab]"); if(b){s.tab=b.dataset.tab;re();return;}
     /* ផ្លូវកាត់ទៅជំហាន ៖ បើកផ្ទាំង TOI រួចប្តូរជំហាន ហើយរំកិលទៅមើលភ្លាម */
     var g=e.target.closest("[data-goto]");
@@ -53088,6 +54475,19 @@ function bind(el){
     if(t.dataset.riskcut){ CC.riskCutToggle(t.dataset.riskcut, t.dataset.y, t.checked); return; }
     if(t.dataset.riskadd){ CC.riskAddToggle(t.dataset.riskadd, t.dataset.y, t.checked); return; }
     if(t.dataset.set==="mode"){ s.mode=t.value; return re(); }
+    /* ⭐ កម្រិតចំណេញដែលវាយក្នុងចិបក្បាលកាត ៖ ដូចក្រឡា «តាមឆ្នាំ» បេះបិទ ។
+       ⚠ ត្រូវបើកឧបករណ៍ «កម្រិតចំណេញ» ផង ⇒ បើមិនដូច្នេះ `compute()` មិនយក
+         តម្លៃនេះមកប្រើសោះ ហើយអ្នកប្រើឃើញថាវាយទៅគ្មានអ្វីកើតឡើង ។
+       ⚠ ហើយលុប mark-up របស់ឆ្នាំនោះចេញ ៖ mark-up មានអាទិភាពខ្ពស់ជាង ⇒
+         បើទុកវា ការវាយ % នឹងគ្មានប្រសិទ្ធភាព ដែលជាការភ្ញាក់ផ្អើល ។ */
+    if(t.dataset.gm != null){
+      var gmY=String(t.dataset.gm), gmV=String(t.value||"").replace(/[%\s]/g,"").trim();
+      if(!s.toi.tmargin) s.toi.tmargin={};
+      if(gmV==="") delete s.toi.tmargin[gmY];
+      else { s.toi.tmargin[gmY]=gmV; s.toi.adjTool="margin";
+             if(s.toi.markup) delete s.toi.markup[gmY]; }
+      CC.persist(); return re();
+    }
     if(t.dataset.set==="tmAll"){ s.toi.tmarginAll=String(t.value).trim(); return re(); }
     if(t.dataset.set==="mkAll"){ s.toi.markupAll=String(t.value).trim(); return re(); }
     if(t.dataset.set==="cutMode"){ s.toi.cutMode=String(t.value).trim(); return re(); }
