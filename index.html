@@ -1863,6 +1863,14 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
 #calcCard .cc-gchip.on .m{color:#fff;}
 #calcCard .cc-gchip .m::placeholder{color:inherit; opacity:.55; font-weight:700;}
 #calcCard .cc-gchip .m:focus{outline:2px solid var(--accent,#c8a24a); outline-offset:2px; border-radius:6px;}
+/* [stated] ២០២៦-១១-០២ ៖ «ជួយបង្ហាញទឹកប្រាក់ពន្ធសរុបនៅក្រោមភាគរយនៃឆ្នាំ
+   នីមួយៗផង» ⇒ បន្ទាត់ទី ៣ ក្នុងចិប ។ តូចជាងភាគរយបន្តិច ដើម្បីកុំឱ្យចិប
+   ធំពេក ហើយ tabular-nums ⇒ ខ្ទង់លេខឈរត្រង់គ្នា ។ */
+#calcCard .cc-gchip .t{
+  font-size:11.5px; font-weight:700; color:var(--muted); opacity:.9;
+  margin-top:2px; white-space:nowrap; font-variant-numeric:tabular-nums;
+}
+#calcCard .cc-gchip.on .t{color:#fff; opacity:.95;}
 #calcCard .cc-gy button{
   border:1px solid rgba(0,0,0,.14); background:#fff; color:var(--muted);
   font:inherit; font-size:15px; font-weight:800; padding:7px 14px;
@@ -6510,6 +6518,33 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
       @media print{ #cardViewBtn{ display:none !important; } }
       .am-mark{ margin-left:6px; font-size:11px; font-weight:700; color:var(--primary,#14403A);
         background:#E6EFEA; border-radius:10px; padding:1px 7px; }
+      /* [stated] ២០២៦-១១-០២ ៖ កែទឹកប្រាក់ · បំណុល · ស្ថានភាព ក្នុងតារាង
+         សវនកម្មដោយផ្ទាល់ ។ ប្រអប់មើលទៅដូចអត្ថបទធម្មតា រហូតដល់ចង្អុល ឬចុច
+         ⇒ តារាងនៅតែអានស្រួលដូចមុន ។ ពណ៌លឿង = វាលនោះត្រូវបានកែដោយដៃ ។ */
+      .aov-in{ font:inherit; font-size:13px; text-align:right; border:1px solid transparent;
+        background:transparent; border-radius:6px; padding:1px 5px; width:132px;
+        font-variant-numeric:tabular-nums; color:inherit; }
+      .aov-in:hover{ border-color:var(--line,#d8d4c6); background:#fff; }
+      .aov-in:focus{ outline:2px solid var(--accent,#c8a24a); outline-offset:1px; background:#fff; }
+      .aov-in.ed{ background:#FFF8E1; border-color:#E6C96B; font-weight:700; }
+      .aov-amt-row{ display:flex; align-items:center; justify-content:flex-end; gap:4px; }
+      .aov-debt-row{ display:flex; align-items:center; justify-content:flex-end; gap:4px;
+        font-size:11px; color:var(--mtr-ink-soft,#6b6a63); margin-top:2px; }
+      .aov-debt-row .aov-in{ font-size:11.5px; width:104px; }
+      /* [stated] ២០២៦-១១-០៣ ៖ ក្រឡាកែបាននៅសន្លឹកខាងក្នុង */
+      .adt-in{ width:118px; text-align:right; font-family:inherit; font-size:12.5px;
+               padding:3px 6px; border:1px solid var(--line,#d8d4c4); border-radius:6px;
+               background:#fff; }
+      .adt-in:focus{ outline:2px solid var(--brass,#b08d3f); outline-offset:-1px; }
+      .adt-in.ed{ background:#FFF8E1; font-weight:700; }
+      .adt-hint{ font-size:11.5px; color:var(--mtr-ink-soft,#6b6a63); }
+      .adt-hint.on{ color:var(--ok,#2e7d32); font-weight:700; }
+      select.aov-in{ text-align:center; width:auto; min-width:104px; cursor:pointer; }
+      .aov-rev{ font-size:13px; line-height:1; color:var(--mtr-seal,#a83e3e);
+        text-decoration:none; padding:0 2px; border-radius:4px; }
+      .aov-rev:hover{ background:#F7E7E7; }
+      @media print{ .aov-in{ border:0 !important; background:transparent !important; }
+        .aov-rev{ display:none !important; } }
       @media print{ .vm-panel{ display:none !important; } }
 
       @media print{ #upload-status-dock{ display:none !important; } }
@@ -7042,6 +7077,8 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
            ដែលកំពុងផ្ទុក ជួរប៉ុន្មាន និងឆ្នាំណា ហើយដកមួយៗចេញបាន។ -->
       <div id="cus-files" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0 0 10px;"></div>
       <div id="cus-chips" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0 0 10px;"></div>
+      <!-- [stated] ២០២៦-១១-០២ ៖ របារផ្គូផ្គងដោយដៃ ( គយ ⇄ PR/SR ) -->
+      <div id="cus-pair" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0 0 10px;"></div>
       <div class="table-scroll"><table id="table-crossCustoms"></table></div>
     </section>
 
@@ -8361,6 +8398,9 @@ const LOCAL_BACKUP = [
   { exact:  'vatManYearsV1'      },
   { exact:  'auditManualV1'      }, /* 🔍 សវនកម្ម ដោយដៃ */
   { exact:  'auditProgManualV1'  }, /* កម្មវិធីសវនកម្ម ដោយដៃ */
+  { exact:  'auditAmtOverrideV1'  }, /* ✎ កំណែទឹកប្រាក់/ស្ថានភាពសវនកម្ម */
+  { exact:  'cusManualV1'          }, /* 🔗 ផ្គូផ្គងគយដោយដៃ */
+  { exact:  'cusExclV1'            }, /* 🚫 ជួរដកចេញពីការប្រៀបធៀបគយ */
   { exact:  'cdManualV1'         }, /* ✎ PR/SR CN·DN បញ្ចូលដោយដៃ (ជួរពេញ) */
   { exact:  'crossReviewedV1'     }, /* ✓ ក្រុមហ៊ុនដែលពិនិត្យរួច (crosscheck) */
   { exact:  'crossExcludeV1'       }, /* 🚫 ក្រុមហ៊ុនដែលដកចេញដោយដៃ (crosscheck) */
@@ -13060,7 +13100,7 @@ function cusBuild(){
     cuG[id].rows.push(r); cuG[id].vat += M.cuAmt(r);
   });
   const usedCu = {}, out = [];
-  const mk = (p, c, note)=>{
+  const mk = (p, c, note, manual)=>{
     const pv = p ? Math.round(p.vat) : 0;
     const cv = c ? Math.round(c.vat) : 0;
     const diff = pv - cv;
@@ -13069,12 +13109,31 @@ function cusBuild(){
              prYear: p ? p.year : '', cuYear: c ? c.year : '',
              prVat: pv, cuVat: cv, diff,
              prRows: p ? p.rows : [], cuRows: c ? c.rows : [],
+             /* លេខសម្គាល់ក្រុម ៖ ត្រូវការសម្រាប់ការធីកផ្គូផ្គងដោយដៃ */
+             pid: p ? p.id : '', cid: c ? c.id : '', manual: !!manual,
              note: note || '',
              status: (!c) ? 'pr' : (!p) ? 'cus' : (Math.abs(diff) <= 1 ? 'ok' : 'diff') };
   };
+  /* ជុំមុនគេបង្អស់ ៖ ជួរដែលអ្នកប្រើដកចេញ — មិនចូលរួមក្នុងការផ្គូផ្គងទេ
+     ( ប៉ុន្តែនៅតែត្រឡប់មកវិញ ដើម្បីឱ្យមើលឃើញ និងដាក់ចូលវិញបាន ) */
+  const mkEx = (p, c)=>{
+    const r = mk(p, c, p ? 'ដកចេញ ៖ មិនមែនការនាំចូលទំនិញ' : 'ដកចេញដោយដៃ');
+    r.status = 'excl'; r.excl = 1; return r;
+  };
+  const exc = cusExclFor(cusMode);
+  Object.keys(prG).forEach(id=>{ if(exc['pr:' + id]){ prG[id].done = 1; out.push(mkEx(prG[id], null)); } });
+  Object.keys(cuG).forEach(id=>{ if(exc['cu:' + id]){ usedCu[id] = 1;  out.push(mkEx(null, cuG[id])); } });
+  /* ជុំទី ០ ៖ ការផ្គូផ្គងដោយដៃ — ដើរមុនគេ ដូច្នេះវាឈ្នះក្បួនស្វ័យប្រវត្តិ */
+  cusManualFor(cusMode).forEach(function(mp){
+    const p = prG[mp.p], c = cuG[mp.c];
+    if(!p || !c || p.done || usedCu[mp.c]) return;
+    usedCu[mp.c] = 1; p.done = 1;
+    out.push(mk(p, c, 'ផ្គូផ្គងដោយដៃ', true));
+  });
   /* ជុំទី ១ ៖ លេខ + ឆ្នាំ */
   Object.keys(prG).forEach(id=>{
     const p = prG[id];
+    if(p.done || usedCu[id]) return;        /* ⚠ ផ្គូដោយដៃរួចហើយ ⇒ កុំស្ទួន */
     if(p.key && cuG[id]){ usedCu[id] = 1; out.push(mk(p, cuG[id], '')); p.done = 1; }
   });
   /* ជុំទី ២ ៖ លេខតែម្នាក់ឯង ( ឆ្នាំខុស ) */
@@ -13090,7 +13149,7 @@ function cusBuild(){
   Object.keys(prG).forEach(id=>{ const p = prG[id]; if(!p.done) out.push(mk(p, null, p.key ? '' : 'លេខមិនមែនជាលេខប្រតិវេទន៍')); });
   Object.keys(cuG).forEach(id=>{ if(!usedCu[id]) out.push(mk(null, cuG[id], '')); });
   out.sort((a,b)=>{
-    const rank = { diff:0, pr:1, cus:2, ok:3 };
+    const rank = { diff:0, pr:1, cus:2, ok:3, excl:4 };
     if(rank[a.status] !== rank[b.status]) return rank[a.status] - rank[b.status];
     return Math.abs(b.diff) - Math.abs(a.diff);
   });
@@ -13098,7 +13157,8 @@ function cusBuild(){
 }
 function cusStatusLabel(k){
   return { ok:'✅ ត្រូវគ្នា', diff:'⚠ គម្លាតទឹកប្រាក់',
-           pr:cusM().onlyOur, cus:'🛃 មានតែក្នុងគយ' }[k];
+           pr:cusM().onlyOur, cus:'🛃 មានតែក្នុងគយ',
+           excl:'🚫 ដកចេញ' }[k];
 }
 const CUS_STATUS = new Proxy({}, { get:(t,k)=> cusStatusLabel(String(k)) });
 
@@ -13113,6 +13173,83 @@ const CUS_STATUS = new Proxy({}, { get:(t,k)=> cusStatusLabel(String(k)) });
      ប្រៀបធៀបបាន ។ បើអ្នកចង់ធៀបជួរផ្សេង ប្រាប់មក វាជាបន្ទាត់តែមួយ ។
    ⚠ ជួរគយត្រូវញែកតាម «ប្រភេទប្រតិវេទន៍គយ» ( ជួរ H ) ⇒ នាំចូលមិនលាយនឹង
      នាំចេញ ហើយការរាប់ក៏មិនស្ទួនដែរ ។ */
+/* ══ ផ្គូផ្គងដោយដៃ ៖ គយ ⇄ PR/SR ═══════════════════════════════════════
+   ⭐⭐⭐ [stated] ២០២៦-១១-០២ ៖ «តាមពិតកន្លែងខ្លះត្រូវគ្នាទេ តែដោយសារតែការ
+   កត់ត្រាខុសកន្លែង វាធ្វើឱ្យខុស អាចមានកន្លែងដើម្បីធីកផ្គូផ្គងទិន្នន័យទាំង ២
+   ដើម្បីកុំឱ្យបង្ហាញឃើញខុសបានទេ» ។
+   ⇒ ធីកជួរ «មានតែក្នុង PR» មួយ និងជួរ «មានតែក្នុងគយ» មួយ រួចចុច 🔗 ។
+   ⚠ រក្សាទុកតាម **របៀប** ( នាំចូល / នាំចេញ ) ៖ ជួរដែលផ្គូក្នុងរបៀបមួយ
+     មិនមែនជាគូក្នុងរបៀបមួយទៀតទេ ។
+   ⚠ មិនកែទិន្នន័យដើមទេ — ការផ្គូផ្គងរក្សាទុកដាច់ដោយឡែក ហើយអាចដោះវិញ
+     ( ✕ ) ⇒ ច្បាប់ដដែល «គេប្រកាសបែបណា បង្ហាញបែបនោះ» ។ */
+const CUS_MAN_KEY = 'cusManualV1';
+let cusManual = [];
+try{ cusManual = JSON.parse(localStorage.getItem(CUS_MAN_KEY) || '[]') || []; }catch(e){ cusManual = []; }
+function cusManualSave(){
+  try{ localStorage.setItem(CUS_MAN_KEY, JSON.stringify(cusManual)); }catch(e){}
+}
+function cusManualFor(mode){ return cusManual.filter(function(x){ return x && x.m === mode; }); }
+/* ══ ដកជួរចេញពីការប្រៀបធៀប ═══════════════════════════════════════════
+   ⭐⭐⭐ [stated] ២០២៦-១១-០៣ ៖ «ត្រូវមានកន្លែងធីកដើម្បីលុបលើ PR ដែរ ការ
+   កត់ត្រានាំចូលតែជាប្រភេទការបង់លើចំណាយកំពង់ផែ ដែលមិនមែនជាទំនិញ» ។
+   ⇒ ឧ. `202500142073 — កំពង់ផែស្វយ័តក្រុងព្រះសីហនុ` ៖ ជាថ្លៃសេវាកំពង់ផែ
+     ( អាករតាមវិធីគិតអាករជំនួស ) មិនមែនការនាំចូលទំនិញ ⇒ គ្មានប្រតិវេទន៍គយ
+     ⇒ បើទុកវាក្នុងតារាង វាចេញជា «មានតែក្នុង PR» ដែលមិនមែនជាកំហុសទេ ។
+   ⚠⚠ នេះ **មិនផ្ទុយ** នឹងច្បាប់ «គេប្រកាសបែបណា បង្ហាញបែបនោះ» ឡើយ ៖
+     ១. អ្នកប្រើជាអ្នកសម្រេច មិនមែនកម្មវិធីទាយដោយខ្លួនឯងទេ
+     ២. ទិន្នន័យដើមមិនប៉ះពាល់ — ជួរនៅគ្រប់កន្លែងផ្សេងដដែល
+     ៣. ជួរដែលដកចេញនៅ **មើលឃើញ** តាម chip «🚫 ដកចេញ» ហើយដាក់ចូលវិញបាន ( ↩ )
+   ⚠ សរុបទឹកប្រាក់មិនរាប់ជួរដែលដកចេញទេ — នោះជាគោលបំណងទាំងមូល ។ */
+const CUS_EXC_KEY = 'cusExclV1';
+let cusExcl = {};
+try{ cusExcl = JSON.parse(localStorage.getItem(CUS_EXC_KEY) || '{}') || {}; }catch(e){ cusExcl = {}; }
+function cusExclFor(mode){ return cusExcl[mode] || (cusExcl[mode] = {}); }
+function cusExclSave(){
+  try{ localStorage.setItem(CUS_EXC_KEY, JSON.stringify(cusExcl)); }catch(e){}
+}
+function cusExcludeTicked(){
+  const m = cusExclFor(cusMode);
+  let n = 0;
+  Object.keys(cusSel.pr).forEach(function(id){ m['pr:' + id] = 1; n++; });
+  Object.keys(cusSel.cu).forEach(function(id){ m['cu:' + id] = 1; n++; });
+  if(!n){ try{ toast('សូមធីកជួរដែលចង់ដកចេញជាមុនសិន', 'err'); }catch(e){} return; }
+  cusExclSave();
+  cusSel = { pr:{}, cu:{} };
+  try{ toast('បានដក ' + n + ' ជួរចេញពីការប្រៀបធៀប', 'ok'); }catch(e){}
+  renderCrossCustoms();
+}
+function cusInclude(side, id){
+  const m = cusExclFor(cusMode);
+  delete m[side + ':' + id];
+  cusExclSave();
+  try{ toast('បានដាក់ជួរចូលវិញ', 'ok'); }catch(e){}
+  renderCrossCustoms();
+}
+let cusSel = { pr:{}, cu:{} };
+function cusTick(side, id, on){
+  if(on) cusSel[side][id] = 1; else delete cusSel[side][id];
+  renderCrossCustoms();
+}
+function cusPairNow(){
+  const ps = Object.keys(cusSel.pr), cs = Object.keys(cusSel.cu);
+  if(ps.length !== 1 || cs.length !== 1){
+    try{ toast('សូមធីក ១ ជួរក្នុង ' + cusM().srcLabel + ' និង ១ ជួរក្នុងគយ', 'err'); }catch(e){}
+    return;
+  }
+  cusManual.push({ m: cusMode, p: ps[0], c: cs[0] });
+  cusManualSave();
+  cusSel = { pr:{}, cu:{} };
+  try{ toast('បានផ្គូផ្គងដោយដៃ', 'ok'); }catch(e){}
+  renderCrossCustoms();
+}
+function cusUnpair(pid, cid){
+  cusManual = cusManual.filter(function(x){
+    return !(x && x.m === cusMode && String(x.p) === String(pid) && String(x.c) === String(cid));
+  });
+  cusManualSave();
+  try{ toast('បានដកការផ្គូផ្គងដោយដៃចេញ', 'ok'); }catch(e){}
+  renderCrossCustoms();
+}
 let cusMode = 'imp';                 /* 'imp' = នាំចូល ⇄ PR | 'exp' = នាំចេញ ⇄ SR */
 function cusSetMode(m){ cusMode = m; cusFilter.status = ''; renderCrossCustoms(); }
 function cusIsExportRow(r){ return /នាំចេញ/.test(String((r && r.decType) || '')); }
@@ -13324,15 +13461,18 @@ function renderCrossCustoms(){
     return true;
   };
   const base = all.filter(keep);
-  const rows = base.filter(e=> !cusFilter.status || e.status === cusFilter.status);
+  /* ⚠ ជួរដែលដកចេញ ៖ លាក់ជាធម្មតា ហើយឃើញពេលចុច chip «🚫 ដកចេញ» ប៉ុណ្ណោះ */
+  const rows = base.filter(e=> cusFilter.status ? e.status === cusFilter.status : e.status !== 'excl');
   /* សង្ខេប — តាមតម្រងឆ្នាំ/ស្វែងរក */
-  const cnt = { ok:0, diff:0, pr:0, cus:0 }, sum = { pr:0, cu:0, diff:0 };
-  base.forEach(e=>{ cnt[e.status]++; sum.pr += e.prVat; sum.cu += e.cuVat;
+  const cnt = { ok:0, diff:0, pr:0, cus:0, excl:0 }, sum = { pr:0, cu:0, diff:0 };
+  base.forEach(e=>{ cnt[e.status]++;
+                    if(e.status === 'excl') return;   /* មិនរាប់ចូលសរុប */
+                    sum.pr += e.prVat; sum.cu += e.cuVat;
                     if(e.status === 'diff') sum.diff += e.diff; });
   const chips = document.getElementById('cus-chips');
   if(chips){
     chips.innerHTML =
-      ['diff','pr','cus','ok'].map(k=>
+      ['diff','pr','cus','ok'].concat(cnt.excl ? ['excl'] : []).map(k=>
         `<button class="btn ${cusFilter.status===k?'':'ghost'}" style="width:auto;padding:4px 10px;font-size:12px;"
            onclick="cusSetFilter('status','${cusFilter.status===k?'':k}')">${CUS_STATUS[k]} : <b>${cnt[k]}</b></button>`).join(' ') +
       `<span class="import-status" style="margin-left:10px;">${cusFilter.year ? 'ឆ្នាំ ' + escAttr(cusFilter.year) + ' · ' : ''}${cusM().srcLabel} សរុប <b>${fmtAmt(sum.pr)}</b> ៛ ·
@@ -13351,20 +13491,61 @@ function renderCrossCustoms(){
     }
   }catch(e){}
   const M = cusM();
-  let html = `<thead><tr><th>ល.រ</th><th>លេខវិក្កយបត្រ (${M.srcLabel})</th><th>លេខប្រតិវេទន៍គយ</th>
+  /* ⭐ [stated] ២០២៦-១១-០២ ៖ របារផ្គូផ្គងដោយដៃ — ចេញតែពេលមានជួរម្ខាងណា
+     មួយដែលមិនទាន់ផ្គូ ⇒ មិនរំខានពេលអ្វីៗត្រូវគ្នាអស់ហើយ ។ */
+  try{
+    const bar = document.getElementById('cus-pair');
+    if(bar){
+      const nP = Object.keys(cusSel.pr).length, nC = Object.keys(cusSel.cu).length;
+      const anyLeft = base.some(function(e){ return e.status === 'pr' || e.status === 'cus'; });
+      const nMan = cusManualFor(cusMode).length;
+      const nExc = Object.keys(cusExclFor(cusMode)).length;
+      bar.innerHTML = (!anyLeft && !nMan && !nExc) ? '' :
+        '<span class="import-status">🔗 ការកត់ត្រាខុសកន្លែង ៖ ធីក <b>១</b> ជួរក្នុង '
+        + escAttr(M.srcLabel) + ' និង <b>១</b> ជួរក្នុងគយ រួចចុចផ្គូផ្គង</span>'
+        + '<button class="btn" style="width:auto;padding:4px 12px;font-size:12px;"'
+        + (nP === 1 && nC === 1 ? '' : ' disabled')
+        + ' onclick="cusPairNow()">🔗 ផ្គូផ្គងដោយដៃ (' + nP + ' + ' + nC + ')</button>'
+        /* ⭐ [stated] ២០២៦-១១-០៣ ៖ ធីករួចដកចេញ — សម្រាប់ការបង់ដែលមិនមែន
+           ការនាំចូលទំនិញ ( ថ្លៃកំពង់ផែ ។ល។ ) */
+        + '<button class="btn ghost" style="width:auto;padding:4px 12px;font-size:12px;"'
+        + (nP + nC ? '' : ' disabled')
+        + ' onclick="cusExcludeTicked()">🚫 ដកចេញ (' + (nP + nC) + ')</button>'
+        + (nMan ? '<span class="import-status">· ផ្គូផ្គងដោយដៃរួច <b>' + nMan + '</b> គូ</span>' : '');
+    }
+  }catch(e){ console.error('cus pair bar', e); }
+  let html = `<thead><tr><th style="width:34px">ធីក</th><th>ល.រ</th><th>លេខវិក្កយបត្រ (${M.srcLabel})</th><th>លេខប្រតិវេទន៍គយ</th>
     <th>ឆ្នាំ</th><th>${M.ourCol}</th><th>${M.cuCol}</th><th>គម្លាត</th>
     <th>ស្ថានភាព</th><th></th></tr></thead><tbody>`;
   if(!rows.length){
-    html += `<tr><td colspan="9" style="padding:22px;text-align:center;color:var(--muted);">គ្មានជួរតាមតម្រងនេះទេ</td></tr>`;
+    html += `<tr><td colspan="10" style="padding:22px;text-align:center;color:var(--muted);">គ្មានជួរតាមតម្រងនេះទេ</td></tr>`;
   }
   rows.forEach((e,i)=>{
-    const cls = e.status === 'diff' ? ' style="background:#FDEAEA"'
+    const cls = e.status === 'excl' ? ' style="background:#F1F1F1;color:#8a8a8a"'
+              : e.status === 'diff' ? ' style="background:#FDEAEA"'
               : e.status === 'pr'   ? ' style="background:#FFF8E6"'
-              : e.status === 'cus'  ? ' style="background:#EEF4FB"' : '';
-    html += `<tr${cls}><td>${i+1}</td>
+              : e.status === 'cus'  ? ' style="background:#EEF4FB"'
+              : e.manual            ? ' style="background:#EAF6EE"' : '';
+    /* ធីកបានតែជួរដែលមិនទាន់ផ្គូ — ធីកគឺដើម្បីផ្គូផ្គង */
+    const tick = (e.status === 'pr')
+      ? '<input type="checkbox" ' + (cusSel.pr[e.pid] ? 'checked ' : '')
+        + 'onchange="cusTick(\'pr\',\'' + escJsAttr(e.pid) + '\',this.checked)">'
+      : (e.status === 'cus')
+      ? '<input type="checkbox" ' + (cusSel.cu[e.cid] ? 'checked ' : '')
+        + 'onchange="cusTick(\'cu\',\'' + escJsAttr(e.cid) + '\',this.checked)">'
+      : '';
+    const unpair = e.manual
+      ? ' <a href="javascript:void(0)" title="ដកការផ្គូផ្គងដោយដៃចេញ" style="color:var(--red)"'
+        + ' onclick="cusUnpair(\'' + escJsAttr(e.pid) + '\',\'' + escJsAttr(e.cid) + '\')">✕</a>'
+      : (e.status === 'excl')
+      ? ' <a href="javascript:void(0)" title="ដាក់ចូលការប្រៀបធៀបវិញ" style="color:var(--primary)"'
+        + ' onclick="cusInclude(\'' + (e.pid ? 'pr' : 'cu') + '\',\''
+        + escJsAttr(e.pid || e.cid) + '\')">↩ ដាក់ចូលវិញ</a>'
+      : '';
+    html += `<tr${cls}><td>${tick}</td><td>${i+1}</td>
       <td><b>${escAttr(e.inv || '—')}</b></td>
       <td><b>${escAttr(e.decNo || '—')}</b></td>
-      <td>${escAttr(e.prYear || e.cuYear || '')}${e.note ? ` <span class="hint" style="color:var(--red)">${escAttr(e.note)}</span>` : ''}</td>
+      <td>${escAttr(e.prYear || e.cuYear || '')}${e.note ? ` <span class="hint" style="color:${e.manual ? 'var(--primary)' : 'var(--red)'}">${escAttr(e.note)}</span>${unpair}` : ''}</td>
       <td class="amt">${e.prRows.length ? fmtAmt(e.prVat) : '—'}</td>
       <td class="amt">${e.cuRows.length ? fmtAmt(e.cuVat) : '—'}</td>
       <td class="amt"><b>${(e.prRows.length && e.cuRows.length) ? fmtAmt(e.diff) : '—'}</b></td>
@@ -19458,6 +19639,9 @@ const ENTERPRISE_KEYS = [
   "vatManYearsV1",                  /* ឆ្នាំ VAT បន្ថែមដោយដៃ */
   "auditManualV1",                  /* 🔍 សវនកម្ម បញ្ចូលដោយដៃ */
   "auditProgManualV1",              /* កម្មវិធីសវនកម្ម បញ្ចូលដោយដៃ */
+  "auditAmtOverrideV1",             /* ✎ កំណែទឹកប្រាក់/ស្ថានភាពសវនកម្ម */
+  "cusManualV1",                    /* 🔗 ផ្គូផ្គងគយដោយដៃ */
+  "cusExclV1",                      /* 🚫 ជួរដកចេញពីការប្រៀបធៀបគយ */
   "toi_dashboard_risk_data_v4",     /* ការវិភាគហានិភ័យ */
   "toi_dashboard_data_entry_v1",    /* 📝 Data Entry */
   "toi_dashboard_cover_v1",         /* COVER */
@@ -25848,6 +26032,42 @@ function auditCodeList(){
 /* [stated] ផ្នែកទី២ ត្រូវមាន ៦ ជួរ ដូចឯកសារដែល upload បេះបិទ ៖
    លេខកូដកម្មវិធី · ការិយសវនកម្ម · ប្រភេទសវនកម្ម · ទឹកប្រាក់ពន្ធ · ស្ថានភាព ·
    កាលបរិច្ឆេទបង្កើត។ ដូច្នេះវាជាកំណត់ត្រាសវនកម្មពេញលេញ មិនមែនត្រឹមកម្មវិធីទេ។ */
+/* ══ កំណែទឹកប្រាក់/ស្ថានភាពសវនកម្ម ដោយដៃ ══════════════════════════════
+   ⭐⭐⭐ [stated] ២០២៦-១១-០២ ៖ «ករណីសហគ្រាសបានបង់ ឬមានការកែប្រែទឹកប្រាក់
+   ពន្ធ (រៀល) ឬទឹកប្រាក់ក្នុងបំណុល គួរតែអាចមានកន្លែងអាចកែប្រែបាន ដោយមិន
+   ចាំបាច់ UPLOAD ទិន្នន័យជាថ្មី ព្រោះពី UPLOAD អាចនៅមិនទាន់បានបង់ … តែមក
+   ដល់បច្ចុប្បន្នអាចមានការប្រែប្រួល» ។
+   ⚠ **មិនកែឯកសារដើមទេ** ៖ តម្លៃពីឯកសារនៅដដែល ហើយកំណែរក្សាទុកដាច់ដោយឡែក
+     តាមលេខកូដកម្មវិធី ⇒ ចុច «↩ តម្លៃដើម» ពេលណាក៏ត្រឡប់វិញបាន ។ នេះជា
+     ច្បាប់ដដែល «គេប្រកាសបែបណាបង្ហាញបែបនោះ» — ការកែជាការកែរបស់**យើង**
+     ហើយត្រូវឃើញថាជាការកែ ។
+   ⚠ បន្ទាប់ពីកែ ត្រូវបោះឃ្លាំងសម្ងាត់ `audits` ចោល ( `__bumpDataVersion` )
+     បើមិនដូច្នេះតារាងនៅអានលេខចាស់ពីឃ្លាំង ។ */
+const AUDIT_OV_KEY = 'auditAmtOverrideV1';
+let auditAmtOverride = {};
+try{ auditAmtOverride = JSON.parse(localStorage.getItem(AUDIT_OV_KEY) || '{}') || {}; }catch(e){ auditAmtOverride = {}; }
+function saveAuditOverride(){
+  try{ localStorage.setItem(AUDIT_OV_KEY, JSON.stringify(auditAmtOverride)); }catch(e){}
+  if(window.__bumpDataVersion) window.__bumpDataVersion();
+}
+/* `patch` ៖ {amount, debt, status} — តម្លៃ null/'' = លុបកំណែនៃវាលនោះចេញ */
+function auditOvSet(code, patch){
+  const k = String(code || '').trim();
+  if(!k) return;
+  const cur = Object.assign({}, auditAmtOverride[k] || {});
+  Object.keys(patch).forEach(function(f){
+    const v = patch[f];
+    if(v === null || v === undefined || v === '') delete cur[f];
+    else cur[f] = v;
+  });
+  if(Object.keys(cur).length) auditAmtOverride[k] = cur; else delete auditAmtOverride[k];
+  saveAuditOverride();
+}
+function auditOvClear(code){
+  delete auditAmtOverride[String(code || '').trim()];
+  saveAuditOverride();
+}
+window.__auditOverrides = function(){ return JSON.parse(JSON.stringify(auditAmtOverride)); };
 const AUDIT_PROG_KEY = 'auditProgManualV1';
 let auditProgManual = [];
 try{ auditProgManual = JSON.parse(localStorage.getItem(AUDIT_PROG_KEY) || '[]') || []; }catch(e){ auditProgManual = []; }
@@ -25968,16 +26188,21 @@ function getAllAuditSheetData_() {
             auditTaxSelections[auditCode] = {};
           }
 
+          /* [stated] ២០២៦-១១-០២ ៖ កំណែដោយដៃឈ្នះតម្លៃក្នុងឯកសារ ហើយតម្លៃ
+             ដើមត្រូវភ្ជាប់មកជាមួយ ( `orig*` ) ⇒ បង្ហាញបាន និងត្រឡប់បាន ។ */
+          const ovA = auditAmtOverride[auditCode] || null;
           allAudits.push({
             code: auditCode,
             period: period,
-            debtAmount: debtAmt,
-            hasDebtLine: hasDebtLine,
+            debtAmount: (ovA && ovA.debt !== undefined) ? Number(ovA.debt) || 0 : debtAmt,
+            hasDebtLine: hasDebtLine || !!(ovA && ovA.debt !== undefined),
             type: auditType || '',
-            amount: taxAmt,
-            status: status || '',
+            amount: (ovA && ovA.amount !== undefined) ? Number(ovA.amount) || 0 : taxAmt,
+            status: (ovA && ovA.status !== undefined) ? String(ovA.status) : (status || ''),
             createdDate: createdDate || '',
-            sheetName: sheetName
+            sheetName: sheetName,
+            origAmount: taxAmt, origDebt: debtAmt, origStatus: status || '',
+            ovFields: ovA ? Object.keys(ovA) : []
           });
           i += 3;
           continue;
@@ -26134,7 +26359,39 @@ function getAuditBreakdownAcrossWorkbooks(auditCode) {
       }
     });
   });
+  /* ⭐⭐⭐ [stated] ២០២៦-១១-០៣ ៖ «នៅពេលកែសន្លឹកខាងមុខ នៅផ្នែកខាងក្នុង គួរមាន
+     ជម្រើសដើម្បីកែដែរ ករណីចុចកែទឹកប្រាក់ពន្ធ ។ បើមិនបានចុចកែទឹកប្រាក់ពន្ធទេ
+     មិនអាចកែបានឡើយ» ។
+     ⇒ អនុវត្តកំណែ **ត្រង់នេះ** កន្លែងតែមួយ ៖ សរុបរួម · ការបែងចែកដំណាក់កាល
+       និងការកាត់កងប្រចាំខែ ( getAuditDeductionsMap ) សុទ្ធតែអានមុខងារនេះ
+       ⇒ លេខដូចគ្នាគ្រប់កន្លែង ។ បើកែនៅកន្លែងគូរតារាង ការកាត់កងនឹងនៅតាម
+       លេខចាស់ ហើយគ្មាននរណាដឹងថាខុសត្រង់ណា ។
+     ⚠ «សរុបទឹកប្រាក់» មិនឱ្យកែដោយដៃទេ ៖ វា = ពន្ធ + ពន្ធបន្ថែម + ការប្រាក់
+       ដូចវិធានដែលតារាងនេះប្រកាសរួចស្រេច ។ */
+  const ovDet = ((auditAmtOverride[String(auditCode || '').trim()] || {}).det) || {};
+  const n_ = function(v){ return Number(deKh(String(v == null ? '' : v)).replace(/[,\s៛]/g, '').trim()) || 0; };
+  breakdownRows.forEach(function(r, i){
+    const o = ovDet[i];
+    if(!o) return;
+    if(o.tax != null) r[2] = o.tax;
+    if(o.add != null) r[3] = o.add;
+    if(o.int != null) r[4] = o.int;
+    r[5] = n_(r[2]) + n_(r[3]) + n_(r[4]);
+    r.ovDet = o;                       /* សម្រាប់ដាក់ពណ៌ក្រឡាដែលកែរួច */
+  });
   return breakdownRows;
+}
+/* កែបាន ⇔ បានកែទឹកប្រាក់ពន្ធនៅសន្លឹកខាងមុខរួចហើយ */
+function auditDetEditable(code){
+  return ((auditAmtOverride[String(code || '').trim()] || {}).amount) != null;
+}
+function auditDetSet(code, idx, field, val){
+  const k = String(code || '').trim();
+  const cur = Object.assign({}, (auditAmtOverride[k] || {}).det || {});
+  const row = Object.assign({}, cur[idx] || {});
+  if(val === null) delete row[field]; else row[field] = val;
+  if(Object.keys(row).length) cur[idx] = row; else delete cur[idx];
+  auditOvSet(k, { det: Object.keys(cur).length ? cur : null });
 }
 
 function getAuditDeductionsMap(force) {
@@ -26468,6 +26725,9 @@ function renderAuditView_() {
         <div style="display:flex; align-items:center; gap:10px;">
           <button class="back-btn" id="backToAuditList">← ត្រឡប់ក្រោយវិញ</button>
           <span>លេខកូដកម្មវិធី៖ ${activeAuditCode} (អាចកំណត់បង់ជាដំណាក់កាល និងកែប្រែទឹកប្រាក់តាមការចង់បាន)</span>
+          ${auditDetEditable(activeAuditCode)
+            ? '<span class="adt-hint on" title="ត្រឡប់ទៅតម្លៃដើមវិញនៅសន្លឹកខាងមុខ ( ↩ តម្លៃដើម )">✎ កែទឹកប្រាក់លម្អិតបាន</span>'
+            : ''}
         </div>
         <div style="display:flex; align-items:center; gap:8px;">
           <span style="font-size:12.5px; font-weight:600;">ថ្ងៃខែឆ្នាំបង់ប្រាក់ (គ្រប់ប្រភេទពន្ធ)</span>
@@ -26612,13 +26872,22 @@ function renderAuditView_() {
       }
 
       gTax += stTax; gAdd += stAdd; gInt += stInt; gTot += stTot;
+      /* ⭐ [stated] ២០២៦-១១-០៣ ៖ ក្រឡាកែបាន តែពេលសន្លឹកខាងមុខត្រូវបានកែ */
+      const dEd = auditDetEditable(activeAuditCode);
+      const dOv = r.ovDet || {};
+      const dCell = function(f, v){
+        if(!dEd) return formatNum(v);
+        return '<input class="adt-in' + (dOv[f] != null ? ' ed' : '') + '"'
+          + ' data-idx="' + idx + '" data-f="' + f + '"'
+          + ' value="' + escAttr(formatNumInput(v)) + '">';
+      };
       html += `<tr>
         <td>${r[0]}</td>
         <td style="text-align:left;">${r[1]}</td>
-        <td>${formatNum(r[2])}</td>
-        <td>${formatNum(r[3])}</td>
-        <td>${formatNum(r[4])}</td>
-        <td>${formatNum(r[5])}</td>
+        <td>${dCell('tax', r[2])}</td>
+        <td>${dCell('add', r[3])}</td>
+        <td>${dCell('int', r[4])}</td>
+        <td${dEd ? ' title="សរុបស្វ័យប្រវត្តិ = ពន្ធ + ពន្ធបន្ថែម + ការប្រាក់"' : ''}>${formatNum(r[5])}</td>
         <td style="text-align:right;">
           <div style="display:flex; flex-direction:column; gap:4px; align-items:flex-end;" id="stageContainer_${CSS.escape(selKey)}">
             ${(!sel.stages || sel.stages.length === 0) ? `
@@ -26683,6 +26952,21 @@ function renderAuditView_() {
     resultBody.innerHTML = html;
     wireAuditManual();
 
+    /* ⭐ [stated] ២០២៦-១១-០៣ ៖ រក្សាទុកពេលចេញពីប្រអប់ ( change ) ដូចសន្លឹក
+       ខាងមុខ ⇒ មិនគូរតារាងឡើងវិញពាក់កណ្តាលការវាយ ។ */
+    document.querySelectorAll('.adt-in').forEach(function(el){
+      el.addEventListener('keydown', function(ev){ if(ev.key === 'Enter') el.blur(); });
+      el.addEventListener('change', function(){
+        const t = deKh(String(el.value || '')).replace(/[,\s៛]/g, '').trim();
+        if(t !== '' && !isFinite(Number(t))){
+          toast('ទឹកប្រាក់មិនត្រឹមត្រូវ — សូមវាយជាលេខ', 'err'); renderAuditView(); return;
+        }
+        auditDetSet(activeAuditCode, Number(el.dataset.idx), el.dataset.f,
+                    t === '' ? null : Number(t));
+        toast('បានកែទឹកប្រាក់លម្អិត', 'ok');
+        renderAuditView();
+      });
+    });
     el('backToAuditList').addEventListener('click', () => {
       activeAuditCode = null;
       renderAuditView();
@@ -26966,15 +27250,64 @@ function renderAuditView_() {
     const payMark = payN
       ? '<span class="am-mark" title="មានការបង់ប្រាក់បញ្ចូលដោយដៃ ' + payN + ' ជួរ">✎ ' + payN + '</span>'
       : '';
+    /* ⭐ [stated] ២០២៦-១១-០២ ៖ កែទឹកប្រាក់ · បំណុល · ស្ថានភាព ត្រង់នេះ ។
+       ជួរ «បញ្ចូលដោយដៃ» មិនដាក់ប្រអប់ទេ — វាកែនៅផ្ទាំង ✎ ខាងលើរួចហើយ
+       ហើយការដាក់ពីរកន្លែងនឹងច្រឡំថាកន្លែងណាជាប្រភព ។ */
+    const ovF = item.ovFields || [];
+    const edA = ovF.indexOf('amount') >= 0, edD = ovF.indexOf('debt') >= 0, edS = ovF.indexOf('status') >= 0;
+    const tipOf = function(on, orig){
+      return on ? ' title="តម្លៃក្នុងឯកសារ ៖ ' + escAttr(String(orig == null ? '' : orig)) + '"' : '';
+    };
+    const STATS = ['បានបង់', 'មិនទាន់បង់', 'បង់មួយផ្នែក'];
+    const stOpts = STATS.concat(STATS.indexOf(item.status) < 0 && item.status ? [item.status] : [])
+      .map(function(s){ return '<option' + (s === item.status ? ' selected' : '') + '>' + escAttr(s) + '</option>'; }).join('');
+    /* ⭐⭐ [stated] ២០២៦-១១-០៣ ៖ «ផ្នែកដែលមិនមានបំណុល មិនគួរលោតបំណុលមកទេ
+       គួរលោតតែផ្នែកណាដែលមានបំណុលពន្ធស្រាប់ ឬមានជម្រើសសម្រាប់ករណី ស្ថានភាព
+       «មិនទាន់បង់» ។ សម្រាប់ករណីបានបង់ ហើយមិនមានបំណុលមកស្រាប់ មិនគួរលោត
+       ចេញបំណុល ០ មកទេ» ។
+       ⇒ បង្ហាញជួរបំណុល តែពេល ៖
+           ១. មានបំណុលពិតក្នុងឯកសារ ( > 0 )
+           ២. ឬ ស្ថានភាពជា «មិនទាន់បង់» / «បង់មួយផ្នែក» ⇒ តាមន័យ នៅសល់បំណុល
+           ៣. ឬ អ្នកប្រើបានកែបំណុលនោះរួចហើយ ( កុំលាក់ការកែរបស់គេ )
+       ⚠ ប្តូរស្ថានភាពទៅ «មិនទាន់បង់» ⇒ តារាងគូរឡើងវិញ ⇒ ប្រអប់បំណុលលេចឡើង
+         ដោយខ្លួនឯង ⇒ នោះគឺ «ជម្រើស» ដែលស្នើសុំ ។ */
+    const debtN = Number(item.debtAmount || 0);
+    const stHasDebt = (item.status === 'មិនទាន់បង់' || item.status === 'បង់មួយផ្នែក');
+    const showDebt = debtN > 0 || stHasDebt || edD;
+    const amtCell = item.manual
+      ? formatNum(item.amount) + (showDebt
+          ? '<div style="font-size:11px;color:var(--mtr-ink-soft,#6b6a63);">(ទឹកប្រាក់ក្នុងបំណុល៖ '
+            + debtN.toLocaleString('en-US') + ' ៛)</div>' : '')
+      /* ⭐ [stated] ២០២៦-១១-០៣ ៖ «ផ្នែកតម្លៃដើម កុំចុះបន្ទាត់បន្ថែម ព្រោះវា
+         ធ្វើឱ្យទំហំតារាងធំពេក» ⇒ ↩ ឈរលើ **បន្ទាត់តែមួយ** ជាមួយប្រអប់ទឹកប្រាក់
+         ( រូបតំណាងតែម្នាក់ឯង + tooltip ) ⇒ កម្ពស់ជួរមិនកើនឡើយ ។ */
+      : '<div class="aov-amt-row">'
+        + (ovF.length ? '<a href="javascript:void(0)" class="aov-rev" data-code="' + escAttr(item.code)
+            + '" title="ត្រឡប់ទៅតម្លៃក្នុងឯកសារវិញ">↩</a>' : '')
+        + '<input class="aov-in aov-amt' + (edA ? ' ed' : '') + '" data-code="' + escAttr(item.code) + '"'
+          + ' data-orig="' + escAttr(String(Number(item.origAmount || 0))) + '"'
+          + tipOf(edA, formatNum(item.origAmount))
+          + ' value="' + escAttr(Number(item.amount || 0).toLocaleString('en-US')) + '">'
+        + '</div>'
+        + (showDebt
+          ? '<div class="aov-debt-row"><span>បំណុល៖</span>'
+            + '<input class="aov-in aov-debt' + (edD ? ' ed' : '') + '" data-code="' + escAttr(item.code) + '"'
+              + ' data-orig="' + escAttr(String(Number(item.origDebt || 0))) + '"'
+              + tipOf(edD, Number(item.origDebt || 0).toLocaleString('en-US') + ' ៛')
+              + ' value="' + escAttr(debtN.toLocaleString('en-US')) + '"> ៛</div>'
+          : '')
+;
+    const stCell = item.manual
+      ? escAttr(item.status)
+      : '<select class="aov-in aov-st' + (edS ? ' ed' : '') + '" data-code="' + escAttr(item.code) + '"'
+        + ' data-orig="' + escAttr(String(item.origStatus || '')) + '"'
+        + tipOf(edS, item.origStatus) + '>' + stOpts + '</select>';
     html += `<tr>
       <td style="text-align:center;">${doneMark}<span class="audit-link" data-code="${item.code}">${item.code}</span>${payMark}</td>
       <td style="text-align:center;">${item.period}</td>
       <td style="text-align:left;">${item.type}</td>
-      <td>${formatNum(item.amount)}${(item.hasDebtLine || Number(item.debtAmount||0) > 0)
-          ? '<div style="font-size:11px; color:' + (Number(item.debtAmount||0) > 0 ? 'var(--mtr-seal,#a83e3e)' : 'var(--mtr-ink-soft,#6b6a63)') + ';">(ទឹកប្រាក់ក្នុងបំណុល៖ '
-            + Number(item.debtAmount || 0).toLocaleString('en-US') + ' ៛)</div>'
-          : ''}</td>
-      <td style="text-align:center;">${item.status}</td>
+      <td>${amtCell}</td>
+      <td style="text-align:center;">${stCell}</td>
       <td style="text-align:center;">${item.createdDate}</td>
     </tr>`;
   });
@@ -26986,6 +27319,56 @@ function renderAuditView_() {
   document.querySelectorAll('.audit-link').forEach(link => {
     link.addEventListener('click', (e) => {
       activeAuditCode = e.target.getAttribute('data-code');
+      renderAuditView();
+    });
+  });
+
+  /* ⭐ [stated] ២០២៦-១១-០២ ៖ ការកែទឹកប្រាក់ · បំណុល · ស្ថានភាព ។
+     ⚠ រក្សាទុកពេល **ចេញពីប្រអប់** ( change ) មិនមែនរាល់តួអក្សរទេ ⇒ មិន
+       គូរតារាងឡើងវិញពាក់កណ្តាលការវាយ ។ Enter ក៏រក្សាទុកដែរ ។ */
+  const aovNum = function(v){
+    const t = deKh(String(v == null ? '' : v)).replace(/[,\s៛]/g, '').trim();
+    if(t === '') return null;
+    const n = Number(t);
+    return isFinite(n) ? n : null;
+  };
+  const aovSave = function(el, field){
+    const code = el.getAttribute('data-code');
+    const n = aovNum(el.value);
+    if(n === null){ toast('ទឹកប្រាក់មិនត្រឹមត្រូវ — សូមវាយជាលេខ', 'err'); renderAuditView(); return; }
+    /* ⭐ [stated] ២០២៦-១១-០៣ ៖ វាយត្រឡប់ទៅលេខក្នុងឯកសារវិញ ⇒ ដកកំណែចេញ
+       ⇒ ក្រឡាលែងមានពណ៌ «កែរួច» ហើយសន្លឹកខាងក្នុងក៏ចាក់សោវិញដែរ ។
+       បើទុកកំណែដែលស្មើតម្លៃដើម វានឹងបង្ហាញថាកែរួច ទាំងដែលគ្មានអ្វីកែ ។ */
+    const orig = Number(el.getAttribute('data-orig') || 0);
+    const same = (n === orig);
+    auditOvSet(code, (field === 'amount') ? { amount: same ? null : n }
+                                          : { debt:   same ? null : n });
+    toast(same ? 'ត្រឡប់ទៅតម្លៃក្នុងឯកសារវិញ'
+               : ('បានកែ' + (field === 'amount' ? 'ទឹកប្រាក់ពន្ធ' : 'ទឹកប្រាក់ក្នុងបំណុល') + ' ' + code), 'ok');
+    renderAuditView();
+  };
+  document.querySelectorAll('.aov-amt').forEach(function(el){
+    el.addEventListener('change', function(){ aovSave(el, 'amount'); });
+    el.addEventListener('keydown', function(ev){ if(ev.key === 'Enter') el.blur(); });
+  });
+  document.querySelectorAll('.aov-debt').forEach(function(el){
+    el.addEventListener('change', function(){ aovSave(el, 'debt'); });
+    el.addEventListener('keydown', function(ev){ if(ev.key === 'Enter') el.blur(); });
+  });
+  document.querySelectorAll('.aov-st').forEach(function(el){
+    el.addEventListener('change', function(){
+      const sameSt = (el.value === (el.getAttribute('data-orig') || ''));
+      auditOvSet(el.getAttribute('data-code'), { status: sameSt ? null : el.value });
+      toast(sameSt ? 'ត្រឡប់ទៅស្ថានភាពក្នុងឯកសារវិញ'
+                   : ('បានកែស្ថានភាព ' + el.getAttribute('data-code')), 'ok');
+      renderAuditView();
+    });
+  });
+  document.querySelectorAll('.aov-rev').forEach(function(el){
+    el.addEventListener('click', function(){
+      const code = el.getAttribute('data-code');
+      auditOvClear(code);
+      toast('បានត្រឡប់ ' + code + ' ទៅតម្លៃក្នុងឯកសារវិញ', 'ok');
       renderAuditView();
     });
   });
@@ -38462,11 +38845,30 @@ window.__toiImport = function(data){
       cell.count += 1;
     });
 
+    /* ⭐⭐⭐ [stated] ២០២៦-១០-៣០ ៖ «នៅផ្នែកប្រាក់បៀវត្ស … ចុចអ្វីមួយ គឺយឺត» ។
+       ⚠⚠ មូលហេតុ ៖ ពីរបន្ទាត់ខាងក្រោម ( សញ្ជាតិ · ទីលំនៅ ) ស្កេន `allRows`
+         **ពេញ** ក្នុងមួយបុគ្គលិក ហើយ `.map()` បង្កើតអារេថ្មីពេញទំហំរាល់ដង ៖
+           ១,០០០ បុគ្គលិក × ៦០,០០០ ជួរ × ២ = ១២០ លានប្រតិបត្តិការ
+           បូកនឹងអារេបណ្តោះអាសន្ន ២,០០០ ដែលនីមួយៗមាន ៦០,០០០ ធាតុ ។
+         ហើយ `render()` ហៅវារាល់ពេលចុច ⇒ ការចុចមួយ ~៣.៤ វិនាទី ។
+       ⇒ ប្រមូលសញ្ជាតិ/ទីលំនៅ **ម្តងជាមុន** ក្នុងការដើរតែមួយជុំ (O(n)) ។
+       ⚠ រក្សាន័យដដែល ៖ ស្កេន `allRows` ( រួមជួរគ្មានខែ ) ហើយយក **តម្លៃ
+         ដំបូងដែលមិនទទេ** តាមលំដាប់ដដែល ⇒ លទ្ធផលមិនប្រែ ។ */
+    const metaByName = new Map();
+    allRows.forEach(r => {
+      const k = String(r.name == null ? '' : r.name).trim();
+      if (!k) return;
+      let m = metaByName.get(k);
+      if (!m){ m = { nationality: '', residency: '' }; metaByName.set(k, m); }
+      if (!m.nationality && r.nationality) m.nationality = r.nationality;
+      if (!m.residency && r.residency) m.residency = r.residency;
+    });
     const employees = Array.from(byName.entries()).map(([name, yearMap]) => {
       const valuesByYear = new Map();
       yearMap.forEach((cell, year) => valuesByYear.set(year, cell.count ? cell.sum / cell.count : null));
-      const nationality = allRows.map(r => r.name.trim() === name ? r.nationality : null).find(Boolean) || '';
-      const residency = allRows.map(r => r.name.trim() === name ? r.residency : null).find(Boolean) || 'resident';
+      const meta = metaByName.get(name) || {};
+      const nationality = meta.nationality || '';
+      const residency = meta.residency || 'resident';
       const maxValue = Math.max(0, ...Array.from(valuesByYear.values()).filter(v => v != null));
       return { name, nationality, residency, valuesByYear, maxValue };
     }).sort((a,b) => b.maxValue - a.maxValue || a.name.localeCompare(b.name, 'km'));
@@ -38762,20 +39164,20 @@ window.__toiImport = function(data){
 
   function bulkRevertReassessments(year){ // year: a specific number, or 'all'
     if (!modalEmpName) return;
-    const targetIds = allRows
-      .filter(r => r.name.trim() === modalEmpName.trim() && r.amended && (year === 'all' || r.year === year))
-      .map(r => r.id);
-    const removeIds = [];
+    /* ⚠ [stated] ២០២៦-១០-៣០ (ល្បឿន) ៖ មុននេះ រាល់ `id` ត្រូវស្វែងរក
+       `allRows.find()` ពេញមួយជុំ ហើយការលុបប្រើ `removeIds.includes()`
+       ក្នុង `filter` ⇒ O(n×m) ។ ដើរលើ **ជួរផ្ទាល់** ហើយប្រើ Set វិញ ។ */
+    const targets = allRows
+      .filter(r => r.name.trim() === modalEmpName.trim() && r.amended && (year === 'all' || r.year === year));
+    const removeIds = new Set();
     let revertedCount = 0;
-    targetIds.forEach(id => {
-      const row = allRows.find(r => r.id === id);
-      if (!row) return;
+    targets.forEach(row => {
       const result = fullyRevertRowCore(row);
-      if (result === 'remove') removeIds.push(id);
+      if (result === 'remove') removeIds.add(row.id);
       else if (result === true) revertedCount++;
     });
-    if (removeIds.length) allRows = allRows.filter(r => !removeIds.includes(r.id));
-    const total = removeIds.length + revertedCount;
+    if (removeIds.size) allRows = allRows.filter(r => !removeIds.has(r.id));
+    const total = removeIds.size + revertedCount;
     els.empModalStatus.textContent = total
       ? `បានលុបការកំណត់ពន្ធឡើងវិញ ${total} ចំណុច ${year === 'all' ? '(គ្រប់ឆ្នាំ)' : '(ឆ្នាំ ' + year + ')'}`
       : 'គ្មានការកំណត់ពន្ធឡើងវិញត្រូវលុបទេ';
@@ -38788,21 +39190,21 @@ window.__toiImport = function(data){
   // Reverts every amended row across every employee (not scoped to one profile) —
   // used by the top-level "delete all reassessments" button.
   function revertAllReassessmentsGlobal(){
-    const targetIds = allRows.filter(r => r.amended).map(r => r.id);
-    if (!targetIds.length){
+    /* ⚠ ដូច `bulkRevertReassessments` ៖ ដើរលើជួរផ្ទាល់ និងប្រើ Set
+       ⇒ ការលុបទាំងអស់លែងជា O(n×m) ។ */
+    const targets = allRows.filter(r => r.amended);
+    if (!targets.length){
       els.reassessAllStatus.textContent = 'គ្មានការកំណត់ពន្ធឡើងវិញត្រូវលុបទេ';
       return;
     }
-    const removeIds = [];
+    const removeIds = new Set();
     let revertedCount = 0;
-    targetIds.forEach(id => {
-      const row = allRows.find(r => r.id === id);
-      if (!row) return;
+    targets.forEach(row => {
       const result = fullyRevertRowCore(row);
-      if (result === 'remove') removeIds.push(id);
+      if (result === 'remove') removeIds.add(row.id);
       else if (result === true) revertedCount++;
     });
-    if (removeIds.length) allRows = allRows.filter(r => !removeIds.includes(r.id));
+    if (removeIds.size) allRows = allRows.filter(r => !removeIds.has(r.id));
     refreshManualPanels();
     render();
   }
@@ -53507,12 +53909,26 @@ function ccGrandHtml(res){
        · ប្រផេះ ( placeholder ) = កម្រិតដែលកំពុងមានពិត ⇒ លុបឱ្យទទេ = ត្រឡប់
          ទៅលំនាំដើម ។ ច្បាប់ដដែលនឹងតារាង «តាមឆ្នាំ» ខាងក្រោម ។ */
   var tm = (CC.state.toi && CC.state.toi.tmargin) || {};
+  /* ⭐ [stated] ២០២៦-១១-០២ ៖ ទឹកប្រាក់ពន្ធសរុបរបស់ឆ្នាំនោះ នៅក្រោមភាគរយ ។
+     ប្រភព ៖ `sm.foot[y]` — ជួរ «សរុប» ដដែលនឹងតារាងខាងក្រោម ⇒ លេខតែមួយ
+     មិនមែនការគណនាស្របគ្នាទី ២ ដែលអាចបែកគ្នា ។
+     ⚠ ឆ្នាំគ្មានពន្ធ ⇒ ទុកទទេ មិនសរសេរ «0 ៛» ដែលអានទៅដូចបានគណនារួច ។ */
+  var tOf = function(y){
+    var v = Number((sm.foot || {})[y]) || 0;
+    if(!v) return '';
+    /* [stated] ២០២៦-១១-០២ ៖ «ខ្ញុំសុំប្តូរជាលុយដុល្លារវិញ» ⇒ ដុល្លារនៅលើចិប
+       ហើយរៀលផ្លាស់ទៅជា tooltip ( ប្តូរកន្លែងគ្នា ) ។ អត្រាតាមឆ្នាំ `CC.fxOf(y)`
+       ដដែលនឹងសញ្ញាសរុប ⇒ លេខពីរកន្លែងនៅតែត្រូវគ្នា ។ */
+    var usd = v / (CC.fxOf(y) || 4000);
+    return '<span class="t" title="' + esc(fmt(v) + ' ៛') + '">' + ccUsd(usd) + '</span>';
+  };
   var yChip = function(y, on){
     var own = String(tm[y] == null ? '' : tm[y]).trim();
     return '<div class="cc-gchip' + (on ? ' on' : '') + '">'
          + '<button class="y" data-gy="' + y + '" title="ចុចដើម្បីត្រងឆ្នាំនេះ">' + y + '</button>'
          + '<input class="m" data-gm="' + y + '" value="' + esc(own) + '"'
          + ' placeholder="' + esc(mOf(y) || '—') + '" title="វាយកម្រិតចំណេញសុទ្ធ (%) សម្រាប់ឆ្នាំនេះ ; ទទេ = លំនាំដើម">'
+         + tOf(y)
          + '</div>';
   };
   var chips = '<button data-gy="" class="' + (!sel.length ? 'on' : '') + '">គ្រប់ឆ្នាំ</button>'
