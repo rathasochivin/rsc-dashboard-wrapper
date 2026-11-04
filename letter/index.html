@@ -937,7 +937,10 @@ body.locked{overflow:hidden;}
    ================================================================== */
 (function(){
   'use strict';
-  var DEFAULT_EXEC = '';          /* ⚙ ដាក់ URL …/exec របស់ AUDIT SCHEDULE ត្រង់នេះ */
+  /* URL ម៉ាស៊ីនមេ AUDIT SCHEDULE ( ផ្តល់ដោយអ្នកប្រើ ២០២៦-១១-០៥ ) ។
+     ⚠ ពេលកែ Code.gs ត្រូវ Manage deployments → ✏️ → New version
+       ( កុំចុច New deployment ព្រោះ URL នឹងប្តូរ ហើយត្រូវកែត្រង់នេះវិញ ) ។ */
+  var DEFAULT_EXEC = 'https://script.google.com/macros/s/AKfycbwVmwb-VA-By455ueGTIQp_nWgOpIhfBhM8NIHLBn7tlH-DpTwni3ahWKr3IEWBMXHXSQ/exec';
   var K_EXEC = 'auditLetter.exec', K_TOK = 'auditLetter.token',
       K_DEV  = 'auditLetter.device', K_EM = 'auditLetter.email';
   var OFFLINE_USERS = ['rathasochivin@gmail.com','khoeundenit@gmail.com','pichpanhapang@gmail.com'];
