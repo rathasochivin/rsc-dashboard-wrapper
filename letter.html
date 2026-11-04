@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Audit Letter · កំណត់បង្ហាញ — BUILD 05/11 · KB4</title>
+<style>
+/* ==================================================================
+   កំណត់បង្ហាញ — ទម្រង់ព្រីន A4 បញ្ឈរ   ( BUILD 04/11 · KB2 )
+   ទំហំទាំងអស់វាស់ចេញពីរូបដើម ( ទំព័រ A4 ពេញ 905×1280px ⇒ 4.3095 px/mm )
+   ហើយសរសេរជា mm ⇒ មិនប្រែប្រួលតាម metric របស់ font ។
+   ================================================================== */
+:root{
+  --fs: 10.5pt;          /* អក្សរតួ — ទំហំ **តែមួយ** សម្រាប់អត្ថបទទាំងអស់ */
+  --lh: 6.9mm;           /* គម្លាតបន្ទាត់ — បន្ថយបន្តិច តែមិនកៀកគ្នា */
+  --ink: #000;
+  --line: 0.25mm;
+  --lpzx: 0mm;           /* ការរំកិលបារកូដលិខិត ផ្តេក */
+  --lpzy: 0mm;           /* ការរំកិលបារកូដលិខិត បញ្ឈរ */
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;background:#6b6b6b;}
+body{
+  font-family:'Khmer OS Siemreap','Khmer OS','Noto Serif Khmer',serif;
+  font-size:var(--fs); font-weight:700; color:var(--ink);
+}
+/* [stated] អក្សរក្នុងរង្វង់ក្រចក ( ) មិនដិត */
+i, .nb{font-style:italic; font-weight:400;}
+
+/* ----------------------------------------------------- របារឧបករណ៍ */
+#bar{
+  position:sticky; top:0; z-index:50; background:#1f2430; color:#fff;
+  padding:8px 14px; display:flex; flex-wrap:wrap; gap:8px; align-items:center;
+  font-size:12.5px; font-weight:400;
+  font-family:'Khmer OS Siemreap',system-ui,sans-serif;
+}
+#bar button{
+  font:inherit; font-size:12.5px; padding:6px 12px; border:0; border-radius:7px;
+  background:#394154; color:#fff; cursor:pointer;
+}
+#bar button:hover{background:#4a5468;}
+#bar button.go{background:#2f7d4f;}
+#bar button.go:hover{background:#39965f;}
+#bar input{
+  font:inherit; font-size:12.5px; padding:6px 10px; border:0; border-radius:7px;
+  background:#fff; color:#111; width:180px;
+}
+#bar input.dateIn{width:150px; font-family:system-ui,sans-serif;}
+#bar .sep{width:1px; height:20px; background:#4a5468; margin:0 4px;}
+#bar .hint{opacity:.72;}
+#bar b{font-weight:600;}
+#dtWarn{color:#ffb4a8;}
+
+/* ----------------------------------------------------------- ទំព័រ */
+.sheet{
+  width:210mm; height:297mm; background:#fff; position:relative;
+  margin:16px auto; box-shadow:0 2px 14px rgba(0,0,0,.45); overflow:hidden;
+}
+.sheet > *{position:absolute;}
+
+/* ============ ១. ជួរបារកូដខាងលើ ============
+   វាស់បាន ៖ ប្រអប់ DT  x 103..363 · y 52..161 ⇒ 60.3 × 25.3mm នៅ 23.9 / 12.1
+            បារកូដលិខិត x 616..816 · y 56..153 ⇒ 46.6 × 22.5mm នៅ 142.9 / 13.0 */
+.dtbox{
+  left:23.9mm; top:12.1mm; width:60.3mm; height:25.3mm;
+  border:var(--line) solid var(--ink);
+}
+.lbox{ left:142.9mm; top:13.0mm; width:46.6mm; height:22.5mm; }
+
+.pz{position:relative; display:flex; align-items:center; justify-content:center;
+    overflow:hidden; text-align:center;}
+.pz img{max-width:100%; max-height:100%; display:block; object-fit:contain;}
+
+/* ប្រអប់ DT — បីជួរ ៖ បារកូដ · DT…… · បោះពុម្ពនៅថ្ងៃទី……
+   ⚠ [stated] «DT នោះតម្រឹមនៅស្មើនឹងជួរ បោះពុម្ព» ⇒ ជួរទី២ និងទី៣
+     ចាប់ផ្តើមត្រង់គែមឆ្វេង **តែមួយ** ( 6.3mm ពីគែមប្រអប់ — ដូចរូបទី២ ) ។ */
+/* ⚠ តំបន់បិទភ្ជាប់ត្រូវ **ទាប** ពេលទទេ ៖ បើទុក 12.6mm ជានិច្ច ពាក្យ
+   «បារកូដ» ( តម្រឹមកណ្តាលបញ្ឈរ ) ធ្លាក់មកត្រង់ 7mm ហើយជល់នឹងជួរ «DT……»
+   នៅ 9mm ។ ពេលមានបារកូដ វាត្រូវការកម្ពស់ពេញសម្រាប់បន្ទះ + លេខ ។ */
+.dtslot{position:absolute; left:2.5mm; right:2.5mm; top:1.6mm; height:12.6mm;}
+.dtslot.empty{height:7.2mm;}
+/* [stated] ពាក្យ «បារកូដ» ប្រើ Khmer OS Muol Light */
+.dtslot .kh{line-height:1.35; font-weight:400;
+  font-family:'Khmer OS Muol Light','Khmer OS Muol','Khmer OS Moul Light',
+              'Khmer OS Muollight','Noto Serif Khmer',serif;}
+.dtslot .gen{width:100%;}
+.dtslot svg{display:block; width:100%; height:7.7mm;}
+.dtslot .num{line-height:1.3; letter-spacing:.04em; margin-top:0.6mm;}
+/* ⚠ [stated] «អក្សរ DT ជួយពង្រីកឱ្យស្មើនឹងអក្សរខ្មែរ» ៖ ក្នុង Khmer OS
+   Siemreap អក្សរឡាតាំងគូសតូចជាងអក្សរខ្មែរ — វាស់ពីរូបរបស់គេ ៖ «DT»
+   កម្ពស់ 21px ខណៈតួអក្សរខ្មែរ ~27px ⇒ ត្រូវការ ×1.3 ។
+   [stated] ជួរ DT និង ជួរ បោះពុម្ព មិនដិត ។ */
+.dtline, .dtdate{font-weight:400;}
+/* [stated] «DT» ៖ 10.5 ×1.3 = 13.65 · +3 = 16.65 · −2 = 14.65 · −2 =
+   12.65 · −1 = **11.65pt** ⇒ 11.65 / 10.5 = 1.11em */
+.dtline .dt{font-size:1.11em; line-height:1;}
+.dtline{position:absolute; left:6.3mm; right:3mm; top:9.0mm;
+        display:flex; align-items:flex-end; line-height:1.3;}
+.dtdate{position:absolute; left:6.3mm; right:3mm; top:16.5mm;
+        text-align:left; line-height:1.3; white-space:nowrap;}
+
+/* ============ ២. ចំណងជើង — Khmer OS Muol Light ============
+   ⚠ Muol Light គ្មានទម្ងន់ដិត ⇒ កុំដាក់ 700 ( browser ក្លែងបន្ថែម faux bold
+     ហើយអក្សរប្រឡាក់ ) ។ ⚠ Muol ទូលាយ ⇒ កាត់ត្រឹម 170mm ដើម្បីឱ្យ fitW()
+     បន្ថយទំហំមុនអក្សរលាតដល់គែមក្រដាស ; 20mm សងខាង ⇒ កណ្តាល 105mm ។ */
+.muol{
+  font-family:'Khmer OS Muol Light','Khmer OS Muol','Khmer OS Moul Light',
+              'Khmer OS Muollight','Noto Serif Khmer',serif;
+  font-weight:400;
+}
+/* គម្លាតចំណងជើង ៖ 6.8 → 8.5 → **7.6mm** ( បន្ថយបន្តិច តែមិនកៀកគ្នា ) */
+.title{left:20mm; right:20mm; top:37.3mm; text-align:center; line-height:7.6mm;}
+.title > div{white-space:nowrap;}
+
+/* ============ ៣. បន្ទាត់ព័ត៌មាន ============ */
+/* ចន្លោះចំណងជើង→ព័ត៌មាន ៖ ចំណងជើងបញ្ចប់ 60.1mm ⇒ 64.5 ឱ្យចន្លោះ 4.4mm */
+.info{left:25.3mm; width:170mm; top:64.5mm; line-height:var(--lh);}
+.info .it{display:flex; align-items:flex-end; white-space:nowrap;}
+/* ចំណុចៗ ៖ អក្សរពិតៗ រួចកាត់ផ្នែកលើស ⇒ បំពេញទទឹងគ្រប់ font */
+.lead{flex:1 1 auto; overflow:hidden; white-space:nowrap; letter-spacing:.06em;
+      font-weight:400;}
+/* [stated] វាលបញ្ចូលអក្សរ ៖ អត្ថបទក្នុងរង្វង់ក្រចកជា **កន្លែងទំនេរ**
+   ( placeholder ) — វាបាត់ភ្លាមពេលចាប់ផ្តើមវាយ ។
+   ⚠ `:empty` ផ្គូផ្គងតែពេលគ្មានកូនសោះ ; browser ទុក <br> ចោលពេលលុបអស់
+     ⇒ JS សម្អាត innerHTML ពេល textContent ទទេ ( មើល wireFields ) ។ */
+/* ⚠⚠ `pre-wrap` ធ្វើឱ្យវាលចុះពីរបន្ទាត់ ( ទោះ `.it` ជា nowrap ក៏ដោយ —
+   កូនសរសេរជាន់លើឪពុក ) ⇒ បន្ទាត់ «គោរពស្នើសុំ» កម្ពស់ 14.8mm លាតចុះ
+   គ្របលើបន្ទាត់ខ្លី · «មតិផ្សេងៗ» និងតារាង ( ចាប់បានដោយ probe ៖ ការចុច
+   លើវាលត្រូវ <td> ស្ទាក់ ) ។ ⇒ `pre` ⇒ នៅមួយបន្ទាត់ ហើយ fitInfo()
+   បន្ថយទំហំជំនួសវិញ ។ */
+/* [stated] អក្សរដែលវាយបញ្ចូល មិនដិត ( ស្លាកនៅដិតដដែល ) */
+.fld{display:inline-block; min-width:4mm; outline:none; white-space:pre;
+     font-weight:400;}
+.fld:empty::before{content:attr(data-ph); font-style:italic; font-weight:400;}
+[contenteditable]{outline:none;}
+@media screen{
+  /* ⚠ `background` ជាទម្រង់សង្ខេប ⇒ វាលុប `background-image` ចោល ⇒
+     បន្ទាត់ចំណុចនៃផ្ទៃសរសេរបាត់ពេលចុចចូល ។ ប្រើ `background-color` វិញ ។ */
+  [contenteditable]:focus{background-color:#f7faff;}
+  .fld:focus{background-color:#eaf3ff;}
+  /* ⚠ វាល «កម្មវត្ថុ» ធ្លាប់ទទេ ( min-width 4mm ) ⇒ មើលមិនឃើញថាវាយបាន ។
+     ឥឡូវកន្លែងទំនេររបស់វាជាចំណុចៗ ពេញបន្ទាត់ ⇒ ចុចលើបន្ទាត់ចំណុចបាន
+     ហើយ hover បង្ហាញថាវាជាកន្លែងវាយ ។ */
+  .fld:hover{background:#f1f6ff; cursor:text;}
+}
+.fsub:empty::before{font-style:normal; letter-spacing:.06em;}
+/* វាលថ្ងៃ/ខែ/ឆ្នាំ ក្នុងជួរ «បោះពុម្ព» ៖ កន្លែងទំនេរជាចំណុចៗ មិនផ្តេក */
+.dfld{min-width:3mm;}
+.dfld:empty::before{font-style:normal; letter-spacing:.06em;}
+
+/* ============ ៤. បន្ទាត់ខ្លី + មតិផ្សេងៗ ============ */
+.hr{left:25.8mm; top:95.3mm; width:45mm; height:0;
+    border-top:0.2mm solid #7a7a7a;}
+.mtitle{left:25.3mm; top:97.0mm; line-height:var(--lh);}
+
+/* ============ ៥. តារាង ============
+   កម្ពស់ជួរក្បាលបានបង្កើនពី 6.6 → 8.5mm ដើម្បីឱ្យអក្សរមានដកដង្ហើម
+   ( [stated] «កុំឱ្យកៀកនឹងតារាងពេក» ) ហើយជួរទទេកាត់បន្តិច ⇒ សរុប
+   174.5mm ; ក្បាលតារាង 108.2 ⇒ បាត 282.7mm ( ដើម 283.1mm ) ។ */
+/* [stated] តារាងខិតឡើងលើមកជិត «មតិផ្សេងៗ៖» ៖ 108.2 → 105.0mm */
+.tw{left:25.3mm; top:105.0mm; width:170mm;}
+table.frm{width:170mm; border-collapse:collapse; table-layout:fixed;}
+table.frm td{border:var(--line) solid var(--ink); padding:0;}
+/* ⚠⚠ [stated] «កុំឱ្យដាច់ស្រះអក្សរនៅក្នុងតារាង ដូចជា មតិ ជាដើម» ៖
+   អក្សរខ្មែរមានស្រះនៅលើ ( ិ ី ើ ) និងជើងអក្សរនៅក្រោម ( ្ត ្ឋ ) ដែល
+   លាតហួសប្រអប់បន្ទាត់ ។ ជាមួយ `line-height:1.25` + `overflow:hidden`
+   ប្រអប់នោះតូចពេក ⇒ ស្រះត្រូវកាត់ដាច់ ។
+   ⇒ បង្កើន line-height ដល់ 1.6 ( អក្សរខ្មែរត្រូវការយ៉ាងហោច ~1.5 ) ហើយ
+     **ដក `overflow:hidden` ចេញ** — មុខងារតម្រូវទំហំធានាថាអត្ថបទចូល
+     ក្នុងកម្ពស់ជួររួចហើយ ដូច្នេះការកាត់នោះគ្មានប្រយោជន៍ មានតែគ្រោះថ្នាក់ ។
+   ពិនិត្យ ៖ ជួរ 9.5mm ⇒ ទំនេរ 6.6mm ; 10.5pt × 1.6 = 5.93mm ⇒ ចូល ។ */
+table.frm td.h{
+  text-align:center; vertical-align:middle;
+  line-height:1.2; padding:0.5mm 3mm;
+}
+/* ⚠ ប្រអប់បន្ទាត់ ( line-height ) 1.6 ធំជាងទឹកខ្មៅពិតច្រើន ៖ វាស់បាន
+   ទឹកខ្មៅត្រឹម 3.2mm ក្នុងប្រអប់ 5.9mm ⇒ ស៊ុមនៅឆ្ងាយ 1.25mm ។ បន្ថយមក
+   1.2 ⇒ ស៊ុមខិតជិត ។ ការកាត់អក្សរលែងកើតឡើងទេ ព្រោះ `overflow` ជា
+   `visible` រួចហើយ — ស្រះលាតហួសប្រអប់បន្ទាត់បានដោយសេរី ។ */
+/* [stated] បន្ថែមគម្លាតរវាង «សេចក្តីសម្រេច…» និង «…ពន្ធដារ» ឱ្យឃើញច្បាស់ ។
+   ជួរនេះខ្ពស់ 17mm ⇒ ទំនេរ 14.1mm ; ពីរបន្ទាត់ 10.5pt × 1.8 = 13.3mm ⇒ ចូល ។ */
+table.frm td.h.muol{ line-height:1.6; }
+table.frm td.h .hw{ overflow:visible; }
+table.frm td.h .hw > span{display:block;}
+table.frm td.c{vertical-align:top;}
+/* ជួរក្បាល 9.5mm ( ពី 8.5 ) ៖ ទុកទីធ្លាលើស ~២០% ⇒ ទោះ font នៅម៉ាស៊ីន
+   ណាមួយខ្ពស់ជាង ក្បាលតារាងក៏មិនត្រូវបង្រួម ⇒ ទំហំនៅស្មើនឹង «កម្មវត្ថុ»
+   ដដែល ។ ជួរទទេកាត់ត្រឡប់វិញ ⇒ សរុបនៅ 174.5mm ដដែល ។ */
+/* [stated] ពង្រីកប្រលោះសរសេររបស់ «មតិអនុប្រធាន/មតិប្រធានការិយាល័យ»
+   ( +3mm ) និង «មតិប្រធាននាយកដ្ឋាន» ( +2mm ) ។ សរុប 178.5mm ;
+   ក្បាលតារាង 105.0 ⇒ បាត 283.5mm ( ឯកសារដើម 283.1mm ) ។ */
+/* [stated] ស៊ុមខិតជិតអក្សរ តែកុំឱ្យដាច់អក្សរ ៖ ជួរក្បាល 9.5 → 8.0mm
+   ( Muol ២ បន្ទាត់ 17 → 15mm ) ហើយ padding 1.2 → 0.8mm ។ កម្ពស់ដែល
+   សល់ចែកទៅប្រលោះសរសេរវិញ ⇒ សរុបនៅ 178.5mm ដដែល ។ */
+/* ⚠ វាស់ទឹកខ្មៅពិតដោយ pixel ( probe_ink ) ៖ ក្នុងជួរ 8mm អក្សរនៅឆ្ងាយ
+   ស៊ុម 1.4mm ខាងលើ និង 2.7mm ខាងក្រោម ។ បង្រួមមកត្រឹម 6.8mm ( Muol
+   12.5mm ) ⇒ ស៊ុមខិតជិតអក្សរ តែនៅសល់ចន្លោះគ្រប់គ្រាន់សម្រាប់ស្រះ ។
+   កម្ពស់ដែលសល់ចែកទៅប្រលោះសរសេរវិញ ⇒ សរុប 178.4mm ។ */
+.r-h1{height:6.5mm;}  .r-b1{height:33mm;}
+.r-h2{height:6.5mm;}  .r-b2{height:36mm;}
+.r-h3{height:6.5mm;}  .r-b3{height:38mm;}
+.r-h4{height:11.5mm;} .r-b4{height:38.5mm;}
+/* «១ ថ្ងៃ» អង្គុយ **លើ** បន្ទាត់បែងចែក ហើយកាត់បន្ទាត់នោះឱ្យដាច់ — ដូចដើម */
+/* [stated] «១ ថ្ងៃ» នៅកណ្តាលផ្ទៃ ( ទាំងផ្តេក ទាំងបញ្ឈរ ) និងមិនដិត ។
+   កណ្តាលបញ្ឈរនៃផ្ទៃទី១ = ក្បាល 9.5 + ពាក់កណ្តាលផ្ទៃ 28/2 = 23.5mm ។ */
+.day{
+  position:absolute; left:48.36%; top:23mm; transform:translate(-50%, -50%);
+  background:#fff; padding:0 2mm; line-height:1.3; white-space:nowrap;
+  font-weight:400;
+}
+
+/* ============ ឧបករណ៍បិទភ្ជាប់ ( អេក្រង់តែប៉ុណ្ណោះ ) ============ */
+.pz.empty{outline:0.4mm dashed #b9c0cc; outline-offset:-0.4mm;}
+.pz.armed{outline:0.5mm solid #2f7d4f; outline-offset:-0.5mm; background:#f2fbf5;}
+.pz .hintbox{
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  font-size:8.5pt; font-weight:400; color:#8b93a1; pointer-events:none;
+  text-align:center; padding:1mm; font-family:'Khmer OS Siemreap',system-ui,sans-serif;
+}
+.pztools{position:absolute; z-index:9; display:flex; gap:4px; font-family:system-ui,sans-serif;}
+.pztools button{
+  font-size:11px; padding:2px 7px; border:1px solid #c7ccd6; border-radius:6px;
+  background:#fff; cursor:pointer; line-height:1.5;
+}
+.pztools button:hover{background:#eef1f6;}
+.t-dt{left:23.9mm; top:38.0mm;}
+.t-lb{left:142.9mm; top:36.2mm;}
+
+/* ==================================================================
+   ទំព័រទី ១ ៖ ទម្រង់លិខិត
+   វាស់ចេញពីរូបដើម ( 1202px ទទឹង = 210mm ⇒ 5.724 px/mm ) ៖
+     ប្លុកបារកូដ+កាលបរិច្ឆេទ  x 584..1053 · y 82..274  ⇒ 81.9 × 33.5mm
+     «សូមគោរពជូន» ទឹកខ្មៅ y 330 ⇒ 57.7mm · គម្លាតបន្ទាត់ 37px ⇒ 6.5mm
+     «កម្មវត្ថុ៖»          y 468 ⇒ 81.8mm · ឆ្វេង 147px ⇒ 25.7mm
+     «សេចក្តីដូចមានចែង…»   y 565 ⇒ 98.7mm · ឆ្វេង 238px ⇒ 41.6mm ( ចូល 15.7mm )
+     បន្ទាត់ចំណុច x 148..1059 ⇒ 25.9..185.0mm · គម្លាត 35.8px ⇒ 6.26mm
+     «ប្រធាននាយកដ្ឋាន»     y 1179 ⇒ 206.0mm · គែមស្តាំ 1075 ⇒ 187.8mm
+   ================================================================== */
+/* ⚠ [stated] ទំព័រទី១ ព្រីនលើក្រដាសដែលមាន LOGO អ.ព.ដ រួចស្រេច ⇒
+   បារកូដមិនត្រូវជាន់ LOGO ។ គោលដើមខិតទៅស្តាំ 7mm ( 102 → 109mm ) ហើយ
+   មានប៊ូតុង ◀ ▶ ▲ ▼ នៅរបារ ដើម្បីរំកិលបន្ថែមម្តង 1mm តាមក្រដាសពិត ។ */
+.lpz{left:calc(109mm + var(--lpzx)); top:calc(14.3mm + var(--lpzy));
+     width:81.9mm; height:33.5mm;}
+.t-l1{left:calc(109mm + var(--lpzx)); top:calc(48.6mm + var(--lpzy));}
+.ltitle{left:12mm; right:12mm; top:56.3mm; text-align:center; line-height:6.5mm;}
+.ltitle > div{white-space:nowrap;}
+.lsubj{left:25.7mm; width:161.8mm; top:80.3mm; line-height:6.5mm;
+       display:flex; align-items:flex-end; white-space:nowrap;}
+/* ⚠ ផ្ទៃសរសេរ ៖ បន្ទាត់ចំណុចជា **ផ្ទៃខាងក្រោយ** ដែលកើតឡើងម្តងរាល់បន្ទាត់
+   ដូច្នេះអត្ថបទដែលវាយ ហូរតាមបន្ទាត់ដោយខ្លួនឯង ។
+   `text-indent` ⇒ បន្ទាត់ដំបូងនៃ **កថាខណ្ឌនីមួយៗ** ចូល 15.7mm ដូច្នេះ
+   ពេលចុច Enter កថាខណ្ឌថ្មីចាប់ផ្តើមត្រង់ជួរ «សេចក្តីដូចមានចែង…» ដដែល
+   ហើយបន្ទាត់ដែលរុំ ត្រឡប់ទៅគែមឆ្វេងវិញ — ដូចក្នុងរូប ។ */
+.lbody{
+  left:25.9mm; top:97.5mm; width:161.6mm; height:99mm;
+  line-height:6.26mm; font-weight:400; text-indent:15.7mm;
+  /* ⚠⚠ [stated] «វាយដល់ចុងខាងស្តាំ គួរលោតទៅខាងក្រោមអូតូ» ៖ អក្សរខ្មែរ
+     សរសេរជាប់គ្នាគ្មានដកឃ្លា ⇒ បើ browser រកចំណុចកាត់ពាក្យមិនឃើញ
+     ( ជួរព្យាង្គដដែលៗ ) វាទុកឱ្យអក្សរហក់ហួសគែមស្តាំ ។ `anywhere` ⇒
+     កាត់បន្ទាត់នៅកន្លែងណាក៏បាន ពេលគ្មានជម្រើសផ្សេង ។ */
+  overflow-wrap:anywhere; word-break:normal;
+  background-image:radial-gradient(circle at 50% 5.5mm, #444 0.16mm, rgba(0,0,0,0) 0.18mm);
+  background-size:0.88mm 6.26mm;
+}
+/* អត្ថបទនាំមុខបាំងចំណុចនៅពីក្រោយវា ( ដូចរូបដើម ចំណុចចាប់ក្រោយ «ខ្ញុំបាទ» ) ។
+   ⚠ `background` លើ span ធម្មតា គ្របតែកម្ពស់អក្សរ ⇒ ចំណុចដែលនៅ 5.5mm
+     ក្រោមកំពូលបន្ទាត់ នៅតែលេចឡើង ( ឃើញក្នុង PDF ) ។ ⇒ `inline-block`
+     + `line-height` ស្មើកម្ពស់បន្ទាត់ ⇒ ប្រអប់ផ្ទៃខាងក្រោយគ្របពេញ ។ */
+/* ⚠⚠ ពីរកំហុសដែល probe ចាប់បាន ជាមួយ `display:inline-block` ៖
+   ១. `text-indent` ជាលក្ខណៈ **តំណពូជ** ហើយ inline-block ជាប្រអប់ប្លុក
+      ⇒ អក្សរខាងក្នុងត្រូវចូលម្តងទៀត ⇒ ចូលទ្វេដង ( វាស់បាន 49.6mm
+      ជំនួស 24.8mm ) ។
+   ២. ការវាយបន្តនៅចុងបន្ទាត់ ធ្លាក់ចូល **ក្នុង** inline-block នោះ ហើយ
+      inline-block រីកតាមមាតិកា ⇒ អក្សរហក់ហួសគែមស្តាំ 22.5mm ។
+   ⇒ ប្រើ `display:inline` វិញ ៖ padding បញ្ឈរលើធាតុ inline គូសផ្ទៃ
+     ខាងក្រោយហួសប្រអប់បន្ទាត់ ដោយមិនប៉ះពាល់ការរៀបចំ ហើយអក្សរដែលវាយ
+     ហូរ និងរុំបន្ទាត់ធម្មតា ។ */
+.lbody .mask{background:#fff; text-indent:0;
+  margin-left:-15.7mm; padding:1.5mm 0 1.2mm 15.7mm;}
+.lsign{left:0; right:22.2mm; top:204.5mm; text-align:right; line-height:6.5mm;}
+
+/* ==================================================================
+   ផ្ទាំងចូលប្រើ ( AUDIT LETTER ) — រចនាដូច AUDIT SCHEDULE
+   ពណ៌យកចេញពីរូបអេក្រង់ ៖ ផ្ទៃ #12283C · ប្រអប់ #1A3450 · ប៊ូតុង #FFF
+   បដាកំហុស #22405C ខ្សែឆ្វេង #E08C82 · រូបតំណាង ក្រហម #A83226
+   ================================================================== */
+#gate{
+  position:fixed; inset:0; z-index:9999; background:#12283C;
+  display:flex; align-items:center; justify-content:center; padding:24px;
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  /* ⚠ `body` មានទម្ងន់ 700 ( សម្រាប់ទម្រង់ ) ⇒ ស្លាកនៅផ្ទាំងចូលចេញដិតខុស
+     ពីរូបដើម ។ កំណត់ទម្ងន់ធម្មតាឡើងវិញនៅទីនេះ ។ */
+  font-weight:400;
+}
+#gate .card{width:100%; max-width:400px;}
+#gate .ico{width:56px; height:56px; display:block; margin-bottom:26px;}
+#gate h1{margin:0 0 34px; color:#fff; font-size:30px; font-weight:700; letter-spacing:.2px;}
+#gate label{display:block; color:#8FA8BE; font-size:13.5px; margin:0 0 7px;}
+#gate .fieldwrap{position:relative; margin-bottom:22px;}
+#gate input{
+  width:100%; height:52px; background:#1A3450; border:0; border-radius:5px;
+  color:#fff; font-size:15.5px; padding:0 14px; outline:none;
+  font-family:inherit;
+}
+#gate input::placeholder{color:#5C7B9B;}
+#gate input:focus{box-shadow:inset 0 0 0 2px #3D739B;}
+#gate .show{
+  position:absolute; right:14px; top:0; height:52px; line-height:52px;
+  color:#8FA8BE; font-size:14.5px; cursor:pointer; user-select:none;
+  background:none; border:0; font-family:inherit; padding:0;
+}
+#gate .show:hover{color:#cfe0ee;}
+#gate .signin{
+  width:100%; height:56px; margin-top:6px; border:0; border-radius:5px;
+  background:#fff; color:#12283C; font-size:17px; font-weight:600; cursor:pointer;
+  font-family:inherit;
+}
+#gate .signin:hover{background:#eaf1f7;}
+#gate .msg{
+  margin-top:18px; background:#22405C; border-left:4px solid #E08C82;
+  color:#dfe9f2; font-size:14.5px; padding:16px 18px; display:none;
+}
+#gate .msg.on{display:block;}
+body.locked{overflow:hidden;}
+@media print{ #gate{display:none !important;} }
+
+/* ============ ព្រីន ============ */
+@page{ size:A4 portrait; margin:0; }
+@media print{
+  html,body{background:#fff;}
+  #bar, .pztools{display:none !important;}
+  .sheet{margin:0; box-shadow:none; width:210mm; height:297mm;}
+  .pz.empty, .pz.armed{outline:0 !important; background:transparent !important;}
+  /* [stated] «ករណីមិនបានបញ្ចូលលេខ DT ពេលព្រីន មិនចេញផ្នែកនេះមកជាមួយទេ»
+     ⇒ ប្រអប់ DT ទទេ លែងព្រីន ( នៅបង្ហាញលើអេក្រង់ដដែល ដើម្បីវាយលេខ ) ។ */
+  .dtbox.dt-empty{display:none !important;}
+  .pz .hintbox{display:none !important;}
+  /* ច្បាប់ផ្ទះ ៖ `page-break-after` តែមួយ — WebKit រាប់ទាំងមុខទាំងក្រោយ
+     ហើយបន្ថែមទំព័រទទេ ។ */
+  .sheet{page-break-after:always;}
+  .sheet:last-of-type{page-break-after:auto;}
+  *{-webkit-print-color-adjust:exact; print-color-adjust:exact;}
+}
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <div class="card">
+    <svg class="ico" viewBox="0 0 64 64" aria-hidden="true">
+      <rect x="6" y="14" width="52" height="38" rx="4" fill="#C8D5DF"/>
+      <path d="M6 18a4 4 0 0 1 4-4h44a4 4 0 0 1 4 4v4L32 38 6 22z" fill="#A83226"/>
+      <rect x="14" y="32" width="20" height="4" rx="2" fill="#12283C" opacity=".35"/>
+      <rect x="14" y="40" width="30" height="4" rx="2" fill="#12283C" opacity=".2"/>
+    </svg>
+    <h1>Audit Letter</h1>
+
+    <label for="gEmail">Email</label>
+    <div class="fieldwrap">
+      <input id="gEmail" type="email" placeholder="name@gmail.com" autocomplete="username" spellcheck="false">
+    </div>
+
+    <label for="gPass">Password</label>
+    <div class="fieldwrap">
+      <input id="gPass" type="password" autocomplete="current-password">
+      <button type="button" class="show" id="gShow">Show</button>
+    </div>
+
+    <button type="button" class="signin" id="gBtn">Sign in</button>
+    <div class="msg" id="gMsg"></div>
+  </div>
+</div>
+
+<div id="bar">
+  <button class="go" id="btnPrint">🖨 ព្រីន</button>
+  <div class="sep"></div>
+  <span>លេខ DT ៖</span><input id="dtNo" placeholder="DT202601190955" autocomplete="off">
+  <span id="dtWarn"></span>
+  <div class="sep"></div>
+  <span>ថ្ងៃបោះពុម្ព ៖</span><input type="date" id="pdDate" class="dateIn">
+  <button id="btnToday">ថ្ងៃនេះ</button><button id="btnNoDate">សម្អាត</button>
+  <div class="sep"></div>
+  <span>បារកូដលិខិត ៖</span>
+  <button id="lpzL">◀</button><button id="lpzR">▶</button>
+  <button id="lpzU">▲</button><button id="lpzD">▼</button>
+  <button id="lpzZ">↺ ដើម</button><span id="lpzPos" class="hint"></span>
+  <div class="sep"></div>
+  <button id="btnMinus">ក− អក្សរតូច</button>
+  <button id="btnPlus">ក+ អក្សរធំ</button>
+</div>
+
+<!-- ============ ទំព័រទី ១ ៖ ទម្រង់លិខិត ============ -->
+<div class="sheet" id="sheet1">
+  <div class="pz empty lpz" id="pzL1" tabindex="0">
+    <div class="hintbox">បារកូដ + ថ្ងៃខែឆ្នាំ<br>( ចុច រួច Ctrl+V )</div>
+  </div>
+  <div class="pztools t-l1"><button data-pick="pzL1">📁</button><button data-clr="pzL1">✕</button></div>
+
+  <div class="ltitle muol" id="ltitle" contenteditable="true" spellcheck="false">
+    <div>សូមគោរពជូន</div>
+    <div>ឯកឧត្តមរដ្ឋមន្ត្រីប្រតិភូអមនាយករដ្ឋមន្ត្រី</div>
+    <div>និងជាប្រតិភូរាជរដ្ឋាភិបាល ទទួលបន្ទុកជាអគ្គនាយកនៃអគ្គនាយកដ្ឋានពន្ធដារ</div>
+  </div>
+
+  <div class="lsubj" id="lsubj" contenteditable="true" spellcheck="false"><span class="muol">កម្មវត្ថុ៖&nbsp;</span><span class="fld fsub" contenteditable="true" data-ph="..............................................................................................."></span><span class="lead">............................................................</span></div>
+
+  <div class="lbody" id="lbody" contenteditable="true" spellcheck="false"><div><span class="mask">សេចក្តីដូចមានចែងក្នុងកម្មវត្ថុខាងលើ&nbsp; &nbsp;ខ្ញុំបាទ</span></div></div>
+
+  <div class="lsign muol" id="lsign" contenteditable="true" spellcheck="false">ប្រធាននាយកដ្ឋាន</div>
+</div>
+
+<!-- ============ ទំព័រទី ២ ៖ កំណត់បង្ហាញ ============ -->
+<div class="sheet" id="sheet">
+
+  <!-- ១. បារកូដ DT / OT -->
+  <div class="dtbox">
+    <div class="pz empty dtslot" id="pzDt" tabindex="0">
+      <div class="ph"><div class="kh">បារកូដ</div></div>
+      <div class="hintbox"></div>
+    </div>
+    <div class="dtline" id="dtLine"><span class="dt">DT</span><span class="lead">..........................................................</span></div>
+    <div class="dtdate" id="dtDate" contenteditable="true" spellcheck="false">បោះពុម្ពនៅថ្ងៃទី<span class="fld dfld" contenteditable="true" data-ph="..."></span>ខែ<span class="fld dfld" contenteditable="true" data-ph="...."></span> ឆ្នាំ<span class="fld dfld" contenteditable="true" data-ph="......."></span></div>
+  </div>
+
+  <!-- ២. បារកូដលិខិត -->
+  <div class="pz empty lbox" id="pzLb" tabindex="0">
+    <div class="hintbox">បារកូដលិខិត<br>( ចុច រួច Ctrl+V )</div>
+  </div>
+
+  <div class="pztools t-dt"><button data-clr="pzDt">✕</button></div>
+  <div class="pztools t-lb"><button data-pick="pzLb">📁</button><button data-clr="pzLb">✕</button></div>
+
+  <!-- ៣. ចំណងជើង -->
+  <div class="title muol" id="ttl" contenteditable="true" spellcheck="false">
+    <div>កំណត់បង្ហាញ</div>
+    <div>ស្តីពី</div>
+    <div>ការស្នើសុំការសម្រេចលើឯកសារ ឬលិខិតស្នាមទូទៅ</div>
+  </div>
+
+  <!-- ៤. បន្ទាត់ព័ត៌មាន -->
+  <div class="info" id="inf" contenteditable="true" spellcheck="false">
+    <div class="it"><span>- កម្មវត្ថុ៖&nbsp;</span><span class="fld fsub" contenteditable="true" data-ph=".............................................................................................................."></span><span class="lead">........................................................................................................................................................</span></div>
+    <div class="it"><span>- ប្រភពដើមឯកសារ៖&nbsp;</span><span class="fld" contenteditable="true" data-ph="(អង្គភាព/សហគ្រាស/ស្ថាប័ននានា)"></span><span>&nbsp;&nbsp;លេខអតប៖&nbsp;</span><span class="fld" contenteditable="true" data-ph="(បើមាន)"></span></div>
+    <div class="it"><span>- មន្ត្រីទទួលបន្ទុក៖&nbsp;</span><span class="fld" contenteditable="true" data-ph="(ឈ្មោះមន្ត្រី និង ឈ្មោះអនុប្រធានការិយាល័យ)"></span></div>
+    <div class="it"><span>- គោរពស្នើសុំ៖&nbsp;</span><span class="fld" contenteditable="true" data-ph="(ការសម្រេចជាគោលការណ៍/ពិនិត្យសម្រេចលើជម្រើសណាមួយ/ជ្រាបជូនជារបាយការណ៍ ។ល។)"></span></div>
+  </div>
+
+  <div class="hr"></div>
+  <div class="mtitle" id="mt" contenteditable="true" spellcheck="false">មតិផ្សេងៗ៖</div>
+
+  <!-- ៥. តារាងមតិ -->
+  <div class="tw">
+    <table class="frm">
+      <colgroup><col style="width:48.36%"><col style="width:51.64%"></colgroup>
+      <tbody id="tb" contenteditable="true" spellcheck="false">
+        <tr class="r-h1" data-h="6.5"><td class="h"><div class="hw"><span>មតិអនុប្រធាននាយកដ្ឋាន</span></div></td><td class="h"><div class="hw"><span>មតិប្រធានការិយាល័យ</span></div></td></tr>
+        <tr class="r-b1"><td class="c"></td><td class="c"></td></tr>
+        <tr class="r-h2" data-h="6.5"><td class="h" colspan="2"><div class="hw"><span>មតិប្រធាននាយកដ្ឋាន (១ ថ្ងៃ)</span></div></td></tr>
+        <tr class="r-b2"><td class="c" colspan="2"></td></tr>
+        <tr class="r-h3" data-h="6.5"><td class="h" colspan="2"><div class="hw"><span>មតិអគ្គនាយករងទទួលបន្ទុក /ទីប្រឹក្សា ក.ស.ហ.វ ជួយការងារ អ.ព.ដ (១ ថ្ងៃ)</span></div></td></tr>
+        <tr class="r-b3"><td class="c" colspan="2"></td></tr>
+        <tr class="r-h4 mrow" data-h="11.5"><td class="h muol" colspan="2"><div class="hw"><span>សេចក្តីសម្រេចរបស់រដ្ឋមន្ត្រីប្រតិភូអមនាយករដ្ឋមន្ត្រី<br>ប្រតិភូរាជរដ្ឋាភិបាលទទួលបន្ទុកជាអគ្គនាយកនៃអគ្គនាយកដ្ឋានពន្ធដារ</span></div></td></tr>
+        <tr class="r-b4"><td class="c" colspan="2"></td></tr>
+      </tbody>
+    </table>
+    <div class="day" id="day" contenteditable="true" spellcheck="false">១ ថ្ងៃ</div>
+  </div>
+
+</div>
+
+<input type="file" id="fileIn" accept="image/*" style="display:none">
+
+<script>
+(function(){
+  'use strict';
+
+  /* =================================================================
+     CODE 128-B — បង្កើតបារកូដពីលេខ DT ដែលវាយចូល ( គ្មាន CDN · ធ្វើការ
+     ពេល offline ដូចឯកសារព្រីនឯទៀត ) ។
+     តារាងទម្រង់ ៖ ១០៧ ធាតុ · ធាតុនីមួយៗជាទទឹង បន្ទះ/ចន្លោះ ឆ្លាស់គ្នា
+     ( បូកបាន ១១ ម៉ូឌុល ; ធាតុបញ្ចប់មាន ៧ តួ ) ។
+     ១០៣ = Start A · ១០៤ = Start B · ១០៥ = Start C · ១០៦ = Stop ។
+     ================================================================= */
+  var C128 = [
+    '212222','222122','222221','121223','121322','131222','122213','122312',
+    '132212','221213','221312','231212','112232','122132','122231','113222',
+    '123122','123221','223211','221132','221231','213212','223112','312131',
+    '311222','321122','321221','312212','322112','322211','212123','212321',
+    '232121','111323','131123','131321','112313','132113','132311','211313',
+    '231113','231311','112133','112331','132131','113123','113321','133121',
+    '313121','211331','231131','213113','213311','213131','311123','311321',
+    '331121','312113','312311','332111','314111','221411','431111','111224',
+    '111422','121124','121421','141122','141221','112214','112412','122114',
+    '122411','142112','142211','241211','221114','413111','241112','134111',
+    '111242','121142','121241','114212','124112','124211','411212','421112',
+    '421211','212141','214121','412121','111143','111341','131141','114113',
+    '114311','411113','411311','113141','114131','311141','411131','211412',
+    '211214','211232','2331112'
+  ];
+  var QUIET = 10;                       /* តំបន់ស្ងាត់ ≥ ១០ ម៉ូឌុលសងខាង */
+
+  function code128b(txt){
+    var codes = [104], i, c;            /* Start B */
+    for(i = 0; i < txt.length; i++){
+      c = txt.charCodeAt(i);
+      if(c < 32 || c > 126) return null;   /* Code 128-B ទទួលតែ ASCII ៣២–១២៦ */
+      codes.push(c - 32);
+    }
+    var sum = 104;
+    for(i = 1; i < codes.length; i++) sum += codes[i] * i;
+    codes.push(sum % 103);              /* ផលបូកត្រួតពិនិត្យ */
+    codes.push(106);                    /* Stop */
+    var w = [];
+    for(i = 0; i < codes.length; i++){
+      var p = C128[codes[i]];
+      for(var j = 0; j < p.length; j++) w.push(+p[j]);
+    }
+    return w;                           /* បន្ទះ · ចន្លោះ · បន្ទះ … */
+  }
+
+  function barSvg(txt){
+    var w = code128b(txt);
+    if(!w) return null;
+    var total = 0, i;
+    for(i = 0; i < w.length; i++) total += w[i];
+    var x = QUIET, rects = '';
+    for(i = 0; i < w.length; i++){
+      if(i % 2 === 0 && w[i] > 0){
+        rects += '<rect x="' + x + '" y="0" width="' + w[i] + '" height="100"/>';
+      }
+      x += w[i];
+    }
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '
+         + (total + QUIET * 2) + ' 100" preserveAspectRatio="none"'
+         + ' shape-rendering="crispEdges" fill="#000">' + rects + '</svg>';
+  }
+
+  /* ---------------------------------------------- ប្រអប់បិទភ្ជាប់រូប */
+  var pzDt = document.getElementById('pzDt');
+  var pzLb = document.getElementById('pzLb');
+  var pzL1 = document.getElementById('pzL1');
+  var zones = [pzDt, pzLb, pzL1];
+  var armed = null, pickTarget = null;
+  var fileIn = document.getElementById('fileIn');
+  var dtLine = document.getElementById('dtLine');
+  var dtNo   = document.getElementById('dtNo');
+  var dtWarn = document.getElementById('dtWarn');
+
+  function arm(z){
+    armed = z;
+    zones.forEach(function(q){ q.classList.toggle('armed', q === z); });
+  }
+  window.__arm = arm;
+  function ph(z){ return z.querySelector('.ph'); }
+  /* ប្រអប់ DT ទទេ ⇒ ដាក់ស្លាក `dt-empty` ⇒ CSS ព្រីនលាក់វា ។ */
+  function syncDtBox(){
+    var box = document.querySelector('.dtbox');
+    if(box) box.classList.toggle('dt-empty', pzDt.classList.contains('empty'));
+  }
+
+  function setImage(z, src){
+    if(!z) return;
+    var old = z.querySelector('img'); if(old) old.remove();
+    var gen = z.querySelector('.gen'); if(gen) gen.remove();
+    var p = ph(z); if(p) p.style.display = 'none';
+    var img = document.createElement('img');
+    img.src = src;
+    z.insertBefore(img, z.firstChild);
+    z.classList.remove('empty');
+    if(z === pzDt) dtLine.style.display = 'none';
+    syncDtBox();
+  }
+  function clearZone(z){
+    if(!z) return;
+    var img = z.querySelector('img'); if(img) img.remove();
+    var gen = z.querySelector('.gen'); if(gen) gen.remove();
+    var p = ph(z); if(p) p.style.display = '';
+    z.classList.add('empty');
+    if(z === pzDt){ dtLine.style.display = ''; }
+    syncDtBox();
+  }
+  function readFile(f, z){
+    if(!f || !/^image\//.test(f.type)) return false;
+    var fr = new FileReader();
+    fr.onload = function(){ setImage(z, fr.result); };
+    fr.readAsDataURL(f);
+    return true;
+  }
+
+  /* វាយលេខ DT ⇒ គូសបារកូដភ្លាម */
+  function renderDt(){
+    var v = (dtNo.value || '').trim().toUpperCase();
+    var img = pzDt.querySelector('img');
+    if(img) img.remove();                 /* លេខដែលវាយ ឈ្នះលើរូបដែលបិទភ្ជាប់ */
+    var gen = pzDt.querySelector('.gen'); if(gen) gen.remove();
+    if(!v){ dtWarn.textContent = ''; clearZone(pzDt); return; }
+    var svg = barSvg(v);
+    if(!svg){
+      dtWarn.textContent = '⚠ ប្រើបានតែអក្សរ/លេខឡាតាំង';
+      clearZone(pzDt); return;
+    }
+    dtWarn.textContent = '';
+    var box = document.createElement('div');
+    box.className = 'gen';
+    box.innerHTML = svg;
+    var num = document.createElement('div');
+    num.className = 'num';
+    num.textContent = v;
+    box.appendChild(num);
+    var p = ph(pzDt); if(p) p.style.display = 'none';
+    pzDt.insertBefore(box, pzDt.firstChild);
+    pzDt.classList.remove('empty');
+    dtLine.style.display = 'none';
+    syncDtBox();
+  }
+  dtNo.addEventListener('input', renderDt);
+  syncDtBox();
+
+  /* ------------------------------------------- ថ្ងៃបោះពុម្ព
+     [stated] «ដាក់នៅជួរ DT ដើម្បីរើសថ្ងៃក៏បាន និង AUTO រើសថ្ងៃនេះ តែអាច
+     ចុចរើសថ្ងៃ ឬបញ្ចូលថ្ងៃបានដែរ» ⇒ ប្រអប់ជ្រើសថ្ងៃនៅរបារ បំពេញវាល
+     ថ្ងៃ/ខែ/ឆ្នាំ ក្នុងជួរ «បោះពុម្ព» ; ការវាយដោយដៃក្នុងវាលនោះនៅដំណើរការ
+     ដដែល ( ប្រអប់មិនសរសេរជាន់ លើកលែងពេលគេប្តូរថ្ងៃ ) ។ */
+  var pdDate   = document.getElementById('pdDate');
+  var KH_DIGIT = '០១២៣៤៥៦៧៨៩';
+  function khNum(n){
+    return String(n).replace(/[0-9]/g, function(d){ return KH_DIGIT.charAt(+d); });
+  }
+  function dfields(){ return document.querySelectorAll('.dfld'); }
+  function applyPrintDate(){
+    var f = dfields();
+    if(f.length < 3) return;
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(pdDate.value || '');
+    if(!m){ f[0].innerHTML = ''; f[1].innerHTML = ''; f[2].innerHTML = ''; }
+    else {
+      f[0].textContent = khNum(+m[3]);   /* ថ្ងៃ — ដក 0 នាំមុខ */
+      f[1].textContent = khNum(+m[2]);   /* ខែ  */
+      f[2].textContent = khNum(m[1]);    /* ឆ្នាំ */
+    }
+    if(typeof fitAll === 'function') fitAll();
+  }
+  function todayStr(){
+    var d = new Date(), p = function(n){ return (n < 10 ? '0' : '') + n; };
+    return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+  }
+  pdDate.addEventListener('change', applyPrintDate);
+  pdDate.addEventListener('input',  applyPrintDate);
+  document.getElementById('btnToday').addEventListener('click', function(){
+    pdDate.value = todayStr(); applyPrintDate();
+  });
+  document.getElementById('btnNoDate').addEventListener('click', function(){
+    pdDate.value = ''; applyPrintDate();
+  });
+
+  /* ---------------------------------------------- វាលបញ្ចូលអក្សរ */
+  function wireFields(){
+    var fs = document.querySelectorAll('.fld');
+    for(var i = 0; i < fs.length; i++){
+      (function(f){
+        f.addEventListener('input', function(){
+          /* ⚠ ពេលលុបអស់ browser ទុក <br> ចោល ⇒ `:empty` លែងផ្គូផ្គង
+             ⇒ អត្ថបទក្នុងរង្វង់ក្រចកមិនត្រឡប់មកវិញ ។ */
+          if(!f.textContent.replace(/[\s\u00A0]/g, '')) f.innerHTML = '';
+        });
+        f.addEventListener('keydown', function(e){
+          if(e.key === 'Enter'){ e.preventDefault(); }   /* វាលមួយបន្ទាត់ */
+        });
+        f.addEventListener('paste', function(e){
+          e.preventDefault(); e.stopPropagation();        /* អត្ថបទសុទ្ធ */
+          var t = (e.clipboardData || window.clipboardData).getData('text') || '';
+          document.execCommand('insertText', false, t.replace(/[\r\n]+/g, ' '));
+        });
+        f.addEventListener('focus', function(){ arm(null); });
+      })(fs[i]);
+    }
+  }
+  wireFields();
+  /* ចុចកន្លែងណាក្រៅប្រអប់បារកូដ ⇒ ដោះការតម្រង់ ( កុំឱ្យ Ctrl+V របស់អត្ថបទ
+     ទម្លាក់រូបចូលប្រអប់បារកូដដោយចៃដន្យ ) ។ */
+  document.addEventListener('mousedown', function(e){
+    if(!(e.target.closest && e.target.closest('.pz'))) arm(null);
+  }, true);
+
+  zones.forEach(function(z){
+    z.addEventListener('mousedown', function(){ arm(z); });
+    z.addEventListener('focus', function(){ arm(z); });
+    z.addEventListener('dragover', function(e){ e.preventDefault(); arm(z); });
+    z.addEventListener('drop', function(e){
+      e.preventDefault(); arm(z);
+      var dt = e.dataTransfer;
+      if(dt && dt.files && dt.files.length) readFile(dt.files[0], z);
+    });
+  });
+
+  document.addEventListener('paste', function(e){
+    var z = armed; if(!z) return;
+    var items = (e.clipboardData && e.clipboardData.items) || [];
+    for(var i = 0; i < items.length; i++){
+      if(items[i].kind === 'file'){
+        if(readFile(items[i].getAsFile(), z)){ e.preventDefault(); return; }
+      }
+    }
+  });
+
+  document.addEventListener('click', function(e){
+    var b = e.target.closest ? e.target.closest('[data-pick],[data-clr]') : null;
+    if(!b) return;
+    if(b.dataset.pick){
+      pickTarget = document.getElementById(b.dataset.pick);
+      arm(pickTarget); fileIn.value = ''; fileIn.click();
+    } else {
+      if(b.dataset.clr === 'pzDt'){ dtNo.value = ''; dtWarn.textContent = ''; }
+      clearZone(document.getElementById(b.dataset.clr));
+    }
+  });
+  fileIn.addEventListener('change', function(){
+    if(fileIn.files && fileIn.files.length) readFile(fileIn.files[0], pickTarget);
+  });
+
+  /* =================================================================
+     ការតម្រូវទំហំអក្សរ
+     ⚠⚠ [stated] «ទំហំអក្សរ … ស្មើៗគ្នា» ⇒ មិនត្រូវបន្ថយ **បន្ទាត់ម្តងមួយៗ**
+       ដោយឡែកឡើយ ( ជុំមុនធ្វើដូច្នោះ ⇒ បន្ទាត់ «កម្មវត្ថុ» តូចជាងគេ ) ។
+       ឥឡូវគណនាទំហំ **តែមួយ** ឱ្យក្រុមទាំងមូល = ទំហំតូចបំផុតដែលគ្រប់
+       បន្ទាត់ក្នុងក្រុមនោះចូល ។
+     ================================================================= */
+  function mmPx(){
+    var sh = document.getElementById('sheet');
+    return sh ? sh.getBoundingClientRect().width / 210 : 0;
+  }
+  /* ទទឹងទឹកខ្មៅពិត ៖ `scrollWidth` មើលមិនឃើញការលើសរបស់អត្ថបទតម្រឹមកណ្តាល
+     ( វារាប់តែខាងស្តាំ ) ⇒ ប្រើ Range លើមាតិកាវិញ ។ */
+  function inkW(e){
+    try{
+      var r = document.createRange(); r.selectNodeContents(e);
+      var b = r.getBoundingClientRect();
+      if(b && b.width) return Math.max(b.width, e.scrollWidth);
+    }catch(err){}
+    return e.scrollWidth;
+  }
+  /* បន្ទាត់ព័ត៌មាន ៖ វាស់តែផ្នែកដែល **មិនមែន** ចំណុចៗ ( ចំណុចៗ បត់បែន
+     ⇒ វាបំពេញទទឹងជានិច្ច ហើយធ្វើឱ្យការវាស់យល់ច្រឡំថាលើស ) ។ */
+  function infoOver(its){
+    for(var i = 0; i < its.length; i++){
+      var e = its[i], need = 0, ch = e.children;
+      for(var j = 0; j < ch.length; j++){
+        if(ch[j].classList.contains('lead')) continue;   /* ចំណុចៗ បត់បែន */
+        need += ch[j].getBoundingClientRect().width;
+      }
+      if(need > e.clientWidth + 1) return true;
+    }
+    return false;
+  }
+  function fitInfo(){
+    var its = document.querySelectorAll('.info .it');
+    if(!its.length) return;
+    for(var i = 0; i < its.length; i++) its[i].style.fontSize = '';
+    var px = parseFloat(getComputedStyle(its[0]).fontSize), guard = 0;
+    while(infoOver(its) && px > 7 && guard++ < 90){
+      px -= 0.3;
+      for(var k = 0; k < its.length; k++) its[k].style.fontSize = px + 'px';
+    }
+  }
+  /* ក្បាលតារាង ៖ ទំហំតែមួយសម្រាប់គ្រប់ក្បាល ( ក្រឡា Muol ជា font ផ្សេង
+     ⇒ គិតជាក្រុមដោយឡែក ) ។ កម្ពស់ទំនេរ = កម្ពស់ជួរគោលដៅ ដក padding ដក
+     ស៊ុម — មិនអាចប្រើ `height:100%` លើកូនរបស់ <td> ទេ ៖ Chrome ដោះភាគរយ
+     នោះជា `auto` ⇒ ការវាស់ស្មើគ្នាជានិច្ច ⇒ រង្វិលមិនដើរ ។ */
+  function fitHeadGroup(sel){
+    var mm = mmPx(); if(!(mm > 0)) return;
+    var rows = document.querySelectorAll(sel);
+    var list = [], i;
+    for(i = 0; i < rows.length; i++){
+      /* ⚠ ជួរដេកទី១ មាន **ពីរ** ក្រឡាក្បាល ; ជុំមុនយកតែក្រឡាដំបូង ⇒ ក្រឡា
+         «មតិប្រធានការិយាល័យ» មិនដែលបង្រួម ⇒ វាធំជាងគេ ( វាស់បាន 16.67px
+         ធៀប 14.57px ) ⇒ ទំហំមិនស្មើគ្នា ។ ត្រូវយក **គ្រប់** ក្រឡា ។ */
+      var tds = rows[i].querySelectorAll('td.h');
+      for(var t = 0; t < tds.length; t++){
+        var td = tds[t];
+        var sp = td.querySelector('.hw > span');
+        if(!sp) continue;
+        var cs = getComputedStyle(td);
+        list.push({ sp: sp, box: td, avail:
+          parseFloat(rows[i].getAttribute('data-h')) * mm
+          - parseFloat(cs.paddingTop)  - parseFloat(cs.paddingBottom)
+          - parseFloat(cs.borderTopWidth) - parseFloat(cs.borderBottomWidth) });
+      }
+    }
+    if(!list.length) return;
+    for(i = 0; i < list.length; i++) list[i].sp.style.fontSize = '';
+    var px = parseFloat(getComputedStyle(list[0].box).fontSize), guard = 0;
+    function over(){
+      for(var k = 0; k < list.length; k++){
+        if(list[k].sp.offsetHeight > list[k].avail + 0.5) return true;
+        if(inkW(list[k].sp) > list[k].box.clientWidth + 1) return true;
+      }
+      return false;
+    }
+    while(over() && px > 7 && guard++ < 90){
+      px -= 0.35;
+      for(i = 0; i < list.length; i++) list[i].sp.style.fontSize = px + 'px';
+    }
+  }
+  function fitW(sel, minPx){
+    var els = document.querySelectorAll(sel);
+    for(var i = 0; i < els.length; i++){
+      var e = els[i];
+      e.style.fontSize = '';
+      var px = parseFloat(getComputedStyle(e).fontSize), guard = 0;
+      while(inkW(e) > e.clientWidth + 1 && px > minPx && guard++ < 90){
+        px -= 0.3; e.style.fontSize = px + 'px';
+      }
+    }
+  }
+  /* ⚠ [stated] «អក្សរផ្តើមពី សេចក្តី… នៅជួរពីអក្សរដែលវាយក្នុងកម្មវត្ថុ
+     ឱ្យស្មើជួរគ្នា» ៖ ទទឹងស្លាក «កម្មវត្ថុ៖» អាស្រ័យលើ font ( Muol ) ⇒
+     មិនអាចសរសេរលេខថេរបានទេ — ត្រូវវាស់ពេលដំណើរការ ។ */
+  function syncIndent(){
+    var body = document.getElementById('lbody');
+    var f = document.querySelector('#lsubj .fld');
+    if(!body || !f) return;
+    var d = f.getBoundingClientRect().left - body.getBoundingClientRect().left;
+    if(!(d > 0)) return;
+    body.style.textIndent = d + 'px';
+    var m = body.querySelector('.mask');
+    if(m){ m.style.marginLeft = (-d) + 'px'; m.style.paddingLeft = d + 'px'; }
+  }
+
+  function fitAll(){
+    fitInfo();
+    /* ⚠⚠ [stated] «បន្ថយទំហំ FONT មតិអនុប្រធាន ដល់ សេចក្តីសម្រេច ឱ្យស្មើ
+       នឹងទំហំ FONT កម្មវត្ថុ» ⇒ ក្បាលតារាងយកទំហំ **ពិត** របស់បន្ទាត់
+       «កម្មវត្ថុ» ក្រោយ fitInfo() ជាមូលដ្ឋាន មិនមែន --fs ដើមទេ ។ */
+    var it0 = document.querySelector('.info .it');
+    if(it0){
+      var basePx = parseFloat(getComputedStyle(it0).fontSize);
+      var tds = document.querySelectorAll('.frm td.h');
+      for(var i = 0; i < tds.length; i++){
+        /* [stated] ក្រឡា «សេចក្តីសម្រេច…» តូចជាងគេ ១ pt ( 1pt = 96/72 px ) */
+        var px = tds[i].classList.contains('muol') ? basePx - (96 / 72) : basePx;
+        tds[i].style.fontSize = px + 'px';
+      }
+    }
+    fitHeadGroup('.frm tr[data-h]:not(.mrow)');
+    fitHeadGroup('.frm tr.mrow');
+    fitW('.title > div', 8);
+    fitW('.ltitle > div', 8);
+    fitW('.lsign', 8);
+    syncIndent();
+    fitW('.dtdate', 6);
+    /* ⚠⚠ កុំវាស់ `.dtline` ៖ វាផ្ទុក `.lead` ដែលមាន `overflow:hidden`
+       ហើយ inkW() ( Range ) រាប់ចំណុចៗ **ទាំងផ្នែកដែលត្រូវកាត់ចោល** ⇒
+       វាឃើញថា «លើស» ជានិច្ច ⇒ បង្រួមបន្ទាត់ DT រហូត ( វាស់បាន 9.5px
+       ធៀបនឹង 14px ដែលគួរមាន ) ។ ចំណុចៗ បត់បែនរួចស្រេច — គ្មានអ្វីត្រូវ
+       តម្រូវទេ ។ */
+  }
+  window.__fit = fitAll;
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(fitAll);
+  setTimeout(fitAll, 60);
+  window.addEventListener('beforeprint', fitAll);
+  document.addEventListener('input', function(){
+    clearTimeout(window.__ft); window.__ft = setTimeout(fitAll, 180);
+  });
+
+  /* [stated] «ប៊ូតុងកែអត្ថបទ មិនចាំបាច់ទៀតទេ ព្រោះគ្រប់ផ្នែកអាចវាយបាន» ⇒
+     ចំណងជើង · បន្ទាត់ព័ត៌មាន · «មតិផ្សេងៗ៖» · ជួរបោះពុម្ព · «១ ថ្ងៃ» និង
+     តារាងទាំងមូល សុទ្ធតែ `contenteditable` ជានិច្ច ( សរសេរក្នុង HTML ) ។ */
+
+  /* រំកិលតំបន់បារកូដលិខិតម្តង 1mm ⇒ គេចពី LOGO លើក្រដាសដែលបោះពុម្ពរួច ។
+     ព្រំដែន ៖ គែមស្តាំមិនឱ្យហួស 205mm ហើយគែមលើមិនឱ្យឡើងលើសក្រដាស ។ */
+  var LX = 0, LY = 0;
+  function lpzMove(dx, dy){
+    LX = Math.max(-60, Math.min(14, LX + dx));
+    LY = Math.max(-8,  Math.min(40, LY + dy));
+    var r = document.documentElement.style;
+    r.setProperty('--lpzx', LX + 'mm');
+    r.setProperty('--lpzy', LY + 'mm');
+    var t = [];
+    if(LX) t.push((LX > 0 ? 'ស្តាំ ' : 'ឆ្វេង ') + Math.abs(LX) + 'mm');
+    if(LY) t.push((LY > 0 ? 'ចុះ ' : 'ឡើង ') + Math.abs(LY) + 'mm');
+    document.getElementById('lpzPos').textContent = t.length ? t.join(' · ') : 'ទីតាំងដើម';
+  }
+  document.getElementById('lpzL').addEventListener('click', function(){ lpzMove(-1, 0); });
+  document.getElementById('lpzR').addEventListener('click', function(){ lpzMove( 1, 0); });
+  document.getElementById('lpzU').addEventListener('click', function(){ lpzMove(0, -1); });
+  document.getElementById('lpzD').addEventListener('click', function(){ lpzMove(0,  1); });
+  document.getElementById('lpzZ').addEventListener('click', function(){ LX = 0; LY = 0; lpzMove(0, 0); });
+  lpzMove(0, 0);
+
+  var FS = 10.5;
+  function setFs(v){
+    FS = Math.max(9, Math.min(16, Math.round(v * 10) / 10));
+    document.documentElement.style.setProperty('--fs', FS + 'pt');
+    fitAll();
+  }
+  document.getElementById('btnMinus').addEventListener('click', function(){ setFs(FS - 0.25); });
+  document.getElementById('btnPlus').addEventListener('click', function(){ setFs(FS + 0.25); });
+  document.getElementById('btnPrint').addEventListener('click', function(){
+    zones.forEach(function(q){ q.classList.remove('armed'); });
+    fitAll();
+    window.print();
+  });
+
+  /* AUTO ៖ បើកមកដាក់ថ្ងៃនេះភ្លាម ( ប្តូរ ឬសម្អាតបានគ្រប់ពេល ) */
+  pdDate.value = todayStr();
+  applyPrintDate();
+})();
+</script>
+
+<script>
+/* ==================================================================
+   ផ្ទាំងចូលប្រើ
+   ⚠⚠ សំខាន់ ៖ ឯកសារនេះជា HTML **តែមួយសន្លឹក** ⇒ ពាក្យសម្ងាត់ស្ថិតនៅ
+     ក្នុងឯកសារខ្លួនឯង ។ អ្នកណាបើកកូដមើល ក៏ឃើញវាដែរ ។ ដូច្នេះវាជា
+     **ផ្ទាំងរំលឹក** ( កុំឱ្យគេបើកដោយចៃដន្យ ) មិនមែនជាការការពារពិតទេ ។
+     បើចង់បានការពារពិត ត្រូវភ្ជាប់ទៅ Apps Script របស់ AUDIT SCHEDULE ។
+   ⚙ កែអ្នកប្រើ និងពាក្យសម្ងាត់ត្រង់ `USERS` និង `PASSWORD` ខាងក្រោម ។
+   ================================================================== */
+(function(){
+  'use strict';
+  var USERS = ['rathasochivin@gmail.com', 'khoeundenit@gmail.com', 'pichpanhapang@gmail.com'];
+  var PASSWORD = 'gdt2026';
+  var HOURS = 8;                       /* រយៈពេលនៃវគ្គ */
+
+  var gate = document.getElementById('gate');
+  var em   = document.getElementById('gEmail');
+  var pw   = document.getElementById('gPass');
+  var msg  = document.getElementById('gMsg');
+
+  function say(t){ msg.textContent = t; msg.className = t ? 'msg on' : 'msg'; }
+  function open_(){
+    gate.style.display = 'none';
+    document.body.classList.remove('locked');
+    if(typeof window.__fit === 'function') window.__fit();
+  }
+  function lock(reason){
+    gate.style.display = 'flex';
+    document.body.classList.add('locked');
+    if(reason) say(reason);
+    setTimeout(function(){ em.focus(); }, 60);
+  }
+
+  /* វគ្គដែលនៅសល់ ? */
+  var ok = false, expired = false;
+  try{
+    var raw = sessionStorage.getItem('auditLetter.session');
+    if(raw){
+      var o = JSON.parse(raw);
+      if(o && o.t && (Date.now() - o.t) < HOURS * 3600e3) ok = true;
+      else { expired = true; sessionStorage.removeItem('auditLetter.session'); }
+    }
+  }catch(e){}
+
+  if(ok) open_(); else lock(expired ? 'Session expired. Please sign in again.' : '');
+
+  document.getElementById('gShow').addEventListener('click', function(){
+    var hid = pw.type === 'password';
+    pw.type = hid ? 'text' : 'password';
+    this.textContent = hid ? 'Hide' : 'Show';
+    pw.focus();
+  });
+
+  function trySignIn(){
+    var e = (em.value || '').trim().toLowerCase();
+    var p = pw.value || '';
+    if(!e || !p){ say('Please enter your email and password.'); return; }
+    if(USERS.indexOf(e) < 0 || p !== PASSWORD){
+      say('Incorrect email or password.');
+      pw.value = ''; pw.focus();
+      return;
+    }
+    try{ sessionStorage.setItem('auditLetter.session',
+         JSON.stringify({ u: e, t: Date.now() })); }catch(err){}
+    say(''); open_();
+  }
+  document.getElementById('gBtn').addEventListener('click', trySignIn);
+  [em, pw].forEach(function(f){
+    f.addEventListener('keydown', function(ev){ if(ev.key === 'Enter') trySignIn(); });
+  });
+})();
+</script>
+</body>
+</html>
