@@ -316,6 +316,8 @@ table.frm td.c{vertical-align:top;}
   font-family:inherit;
 }
 #gate .signin:hover{background:#eaf1f7;}
+#gate .lead{color:#9DB4C9; font-size:14.5px; line-height:1.6; margin:0 0 26px;}
+#gate .lead b{color:#dce8f2;}
 #gate .msg{
   margin-top:18px; background:#22405C; border-left:4px solid #E08C82;
   color:#dfe9f2; font-size:14.5px; padding:16px 18px; display:none;
@@ -355,15 +357,21 @@ body.locked{overflow:hidden;}
     </svg>
     <h1>Audit Letter</h1>
 
-    <label for="gEmail">Email</label>
-    <div class="fieldwrap">
-      <input id="gEmail" type="email" placeholder="name@gmail.com" autocomplete="username" spellcheck="false">
+    <div id="gWeb" style="display:none">
+      <p class="lead">Sign in with your <b>teamsmos.com</b> account.<br>
+      Your email is confirmed by the server — the same sign-in as Audit Schedule.</p>
     </div>
 
-    <label for="gPass">Password</label>
-    <div class="fieldwrap">
-      <input id="gPass" type="password" autocomplete="current-password">
-      <button type="button" class="show" id="gShow">Show</button>
+    <div id="gLocal" style="display:none">
+      <label for="gEmail">Email</label>
+      <div class="fieldwrap">
+        <input id="gEmail" type="email" placeholder="name@gmail.com" autocomplete="username" spellcheck="false">
+      </div>
+      <label for="gPass">Password</label>
+      <div class="fieldwrap">
+        <input id="gPass" type="password" autocomplete="current-password">
+        <button type="button" class="show" id="gShow">Show</button>
+      </div>
     </div>
 
     <button type="button" class="signin" id="gBtn">Sign in</button>
@@ -372,6 +380,7 @@ body.locked{overflow:hidden;}
 </div>
 
 <div id="bar">
+  <span id="gWho" class="hint"></span>
   <button class="go" id="btnPrint">🖨 ព្រីន</button>
   <div class="sep"></div>
   <span>លេខ DT ៖</span><input id="dtNo" placeholder="DT202601190955" autocomplete="off">
@@ -908,75 +917,137 @@ body.locked{overflow:hidden;}
 
 <script>
 /* ==================================================================
-   ផ្ទាំងចូលប្រើ
-   ⚠⚠ សំខាន់ ៖ ឯកសារនេះជា HTML **តែមួយសន្លឹក** ⇒ ពាក្យសម្ងាត់ស្ថិតនៅ
-     ក្នុងឯកសារខ្លួនឯង ។ អ្នកណាបើកកូដមើល ក៏ឃើញវាដែរ ។ ដូច្នេះវាជា
-     **ផ្ទាំងរំលឹក** ( កុំឱ្យគេបើកដោយចៃដន្យ ) មិនមែនជាការការពារពិតទេ ។
-     បើចង់បានការពារពិត ត្រូវភ្ជាប់ទៅ Apps Script របស់ AUDIT SCHEDULE ។
-   ⚙ កែអ្នកប្រើ និងពាក្យសម្ងាត់ត្រង់ `USERS` និង `PASSWORD` ខាងក្រោម ។
+   ការចូលប្រើ — ផ្ទៀងផ្ទាត់ជាមួយ **ម៉ាស៊ីនមេ** teamsmos.com
+   ⚠⚠ ហេតុអ្វីប្តូរ ៖ [stated] «វាគួរមានការបញ្ជាក់ពី email ដូច audit
+     schedule ដែរ មិនចឹងអ្នកផ្សេងអាចចូលបានពេលណាក៏បាន» — ត្រូវហើយ ។
+     ពាក្យសម្ងាត់ដែលសរសេរក្នុងឯកសារ អ្នកណាបើកកូដមើលក៏ឃើញ ⇒ មិនមែន
+     ជាការផ្ទៀងផ្ទាត់ទេ ។ ឥឡូវទំព័រនេះទាមទារ **វគ្គរស់** របស់ teamsmos
+     ហើយសួរ Apps Script ថាអ្នកណាជាម្ចាស់វគ្គនោះ ។
+   ⚙ បើ URL ឬឈ្មោះ function ប្តូរ កែត្រង់ `CFG` ខាងក្រោមនេះតែមួយកន្លែង ។
+   ⚠ ក្នុងករណី `file://` ( ច្បាប់ចម្លងក្រៅបណ្តាញ ) គ្មានម៉ាស៊ីនមេទេ ⇒
+     ត្រឡប់ទៅប្រើពាក្យសម្ងាត់ក្នុងឯកសារវិញ ហើយប្រាប់ឱ្យដឹងច្បាស់ ។
    ================================================================== */
 (function(){
   'use strict';
-  var USERS = ['rathasochivin@gmail.com', 'khoeundenit@gmail.com', 'pichpanhapang@gmail.com'];
-  var PASSWORD = 'gdt2026';
-  var HOURS = 8;                       /* រយៈពេលនៃវគ្គ */
+  var CFG = {
+    exec:  'https://script.google.com/macros/s/AKfycbzLnWeB05H8oqWAtM1hiw_FdYunlns01NkHR4MjsY5QbiT3Xuh-xdSDzKIuIYbB33k0/exec',
+    fn:    'getClientAccessInfoForCurrentUser',
+    login: '/login.html'
+  };
+  var OFFLINE_USERS = ['rathasochivin@gmail.com', 'khoeundenit@gmail.com', 'pichpanhapang@gmail.com'];
+  var OFFLINE_PASS  = 'gdt2026';
 
   var gate = document.getElementById('gate');
   var em   = document.getElementById('gEmail');
   var pw   = document.getElementById('gPass');
   var msg  = document.getElementById('gMsg');
+  var btn  = document.getElementById('gBtn');
+  var isFile = location.protocol === 'file:';
 
-  function say(t){ msg.textContent = t; msg.className = t ? 'msg on' : 'msg'; }
-  function open_(){
+  function say(t, cls){ msg.textContent = t || ''; msg.className = t ? ('msg on' + (cls ? ' ' + cls : '')) : 'msg'; }
+  function open_(who){
     gate.style.display = 'none';
     document.body.classList.remove('locked');
+    var w = document.getElementById('gWho');
+    if(w) w.textContent = who ? ('👤 ' + who) : '';
     if(typeof window.__fit === 'function') window.__fit();
   }
-  function lock(reason){
-    gate.style.display = 'flex';
-    document.body.classList.add('locked');
-    if(reason) say(reason);
-    setTimeout(function(){ em.focus(); }, 60);
+  function lock(){ gate.style.display = 'flex'; document.body.classList.add('locked'); }
+
+  /* ---------- ករណីក្រៅបណ្តាញ ៖ ពាក្យសម្ងាត់ក្នុងឯកសារ ---------- */
+  function offlineMode(){
+    document.getElementById('gWeb').style.display = 'none';
+    document.getElementById('gLocal').style.display = 'block';
+    say('ច្បាប់ចម្លងក្រៅបណ្តាញ — ការផ្ទៀងផ្ទាត់ email ធ្វើមិនបានទេ។');
+    btn.onclick = function(){
+      var e = (em.value || '').trim().toLowerCase(), p = pw.value || '';
+      if(!e || !p){ say('Please enter your email and password.'); return; }
+      if(OFFLINE_USERS.indexOf(e) < 0 || p !== OFFLINE_PASS){
+        say('Incorrect email or password.'); pw.value = ''; pw.focus(); return;
+      }
+      try{ sessionStorage.setItem('auditLetter.offline', e); }catch(x){}
+      open_(e + ' (offline)');
+    };
+    try{
+      var o = sessionStorage.getItem('auditLetter.offline');
+      if(o) return open_(o + ' (offline)');
+    }catch(x){}
+    lock();
   }
 
-  /* វគ្គដែលនៅសល់ ? */
-  var ok = false, expired = false;
-  try{
-    var raw = sessionStorage.getItem('auditLetter.session');
-    if(raw){
-      var o = JSON.parse(raw);
-      if(o && o.t && (Date.now() - o.t) < HOURS * 3600e3) ok = true;
-      else { expired = true; sessionStorage.removeItem('auditLetter.session'); }
+  /* ---------- ករណីលើបណ្តាញ ៖ សួរម៉ាស៊ីនមេ ---------- */
+  function tokenNow(){
+    var m = /[?&]token=([^&#]+)/.exec(location.search);
+    if(m){
+      var t = decodeURIComponent(m[1]);
+      try{ localStorage.setItem('rsc_token', t); }catch(x){}
+      try{ history.replaceState({}, '', location.pathname); }catch(x){}
+      return t;
     }
-  }catch(e){}
-
-  if(ok) open_(); else lock(expired ? 'Session expired. Please sign in again.' : '');
-
-  document.getElementById('gShow').addEventListener('click', function(){
-    var hid = pw.type === 'password';
-    pw.type = hid ? 'text' : 'password';
-    this.textContent = hid ? 'Hide' : 'Show';
-    pw.focus();
-  });
-
-  function trySignIn(){
-    var e = (em.value || '').trim().toLowerCase();
-    var p = pw.value || '';
-    if(!e || !p){ say('Please enter your email and password.'); return; }
-    if(USERS.indexOf(e) < 0 || p !== PASSWORD){
-      say('Incorrect email or password.');
-      pw.value = ''; pw.focus();
-      return;
-    }
-    try{ sessionStorage.setItem('auditLetter.session',
-         JSON.stringify({ u: e, t: Date.now() })); }catch(err){}
-    say(''); open_();
+    try{ return localStorage.getItem('rsc_token') || ''; }catch(x){ return ''; }
   }
-  document.getElementById('gBtn').addEventListener('click', trySignIn);
-  [em, pw].forEach(function(f){
-    f.addEventListener('keydown', function(ev){ if(ev.key === 'Enter') trySignIn(); });
-  });
+  function emailIn(o, depth){
+    if(o == null || depth > 4) return '';
+    if(typeof o === 'string') return /@/.test(o) ? o : '';
+    if(typeof o !== 'object') return '';
+    var keys = Object.keys(o);
+    for(var i = 0; i < keys.length; i++){
+      var v = o[keys[i]];
+      if(typeof v === 'string' && /@/.test(v)) return v;
+    }
+    for(var j = 0; j < keys.length; j++){
+      var r = emailIn(o[keys[j]], (depth || 0) + 1);
+      if(r) return r;
+    }
+    return '';
+  }
+  function needSignIn(text){
+    say(text);
+    btn.textContent = 'Sign in';
+    btn.onclick = function(){ location.href = CFG.login; };
+    lock();
+  }
+  function verify(tok){
+    say('Checking your session…');
+    /* ⚠ `text/plain` គឺចាំបាច់ ៖ វាធ្វើឱ្យជាសំណើធម្មតា គ្មាន OPTIONS
+       preflight ដែល Apps Script ឆ្លើយមិនបាន ។ */
+    fetch(CFG.exec, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ fn: CFG.fn, args: [tok] })
+    }).then(function(r){ return r.text(); }).then(function(t){
+      var o = null;
+      try{ o = JSON.parse(t); }catch(x){}
+      if(!o){ needSignIn('Could not read the reply from the server. Please sign in again.'); return; }
+      if(o.error || o.ok === false){
+        try{ localStorage.removeItem('rsc_token'); }catch(x){}
+        needSignIn('Session expired. Please sign in again.');
+        return;
+      }
+      var who = emailIn(o, 0);
+      if(!who){
+        try{ localStorage.removeItem('rsc_token'); }catch(x){}
+        needSignIn('Session expired. Please sign in again.');
+        return;
+      }
+      say(''); open_(who);
+    }).catch(function(e){
+      /* ⚠ បរាជ័យក្នុងការតភ្ជាប់ ⇒ **មិនបើក** ឱ្យចូលឡើយ ។ */
+      needSignIn('Cannot reach the sign-in server (' + (e && e.message ? e.message : 'network') + '). Please sign in again.');
+    });
+  }
+
+  if(isFile){ offlineMode(); }
+  else {
+    document.getElementById('gWeb').style.display = 'block';
+    document.getElementById('gLocal').style.display = 'none';
+    var tok = tokenNow();
+    lock();
+    if(tok) verify(tok);
+    else needSignIn('Please sign in with your teamsmos.com account.');
+  }
 })();
 </script>
+
 </body>
 </html>
