@@ -30,7 +30,7 @@ i, .nb{font-style:italic; font-weight:400;}
 /* ----------------------------------------------------- របារឧបករណ៍ */
 #bar{
   position:sticky; top:0; z-index:50; background:#1f2430; color:#fff;
-  padding:8px 14px; display:flex; flex-wrap:wrap; gap:8px; align-items:center;
+  padding:8px 14px; display:flex; flex-direction:column; gap:7px; align-items:stretch;
   font-size:12.5px; font-weight:400;
   font-family:'Khmer OS Siemreap',system-ui,sans-serif;
 }
@@ -47,6 +47,11 @@ i, .nb{font-style:italic; font-weight:400;}
 }
 #bar input.dateIn{width:150px; font-family:system-ui,sans-serif;}
 #bar .sep{width:1px; height:20px; background:#4a5468; margin:0 4px;}
+/* [stated] «ចុះបន្ទាត់ជាពីរជួរ ចាប់ពីបារកូដលិខិត» ។
+   ⚠ ពឹងលើ `flex-wrap` មិនបានទេ — វាចុះបីជួរ ឬមួយជួរតាមទទឹងផ្ទាំង ។
+   ដាក់ជា **ពីរជួរច្បាស់លាស់** ⇒ ជួរទីពីរចាប់ពី «លេខ DT» ជានិច្ច ។ */
+#bar .r{display:flex; flex-wrap:wrap; gap:8px; align-items:center;}
+#bar .r + .r{border-top:1px solid #2c3444; padding-top:7px;}
 #bar .hint{opacity:.72;}
 #bar b{font-weight:600;}
 #dtWarn{color:#ffb4a8;}
@@ -407,21 +412,26 @@ body.locked{overflow:hidden;}
 </div>
 
 <div id="bar">
+ <div class="r">
+  <button id="fNew">🧹 សម្អាត</button>
   <button id="fSave">💾 រក្សាទុក</button>
   <button id="fOpen">📂 បើក</button>
   <button id="fCopy">📋 ចម្លង</button>
-  <button id="fDown">⬇ ទាញជាឯកសារ</button>
-  <button id="fUp">⬆ បើកពីឯកសារ</button>
+  <button id="fShare">✉ ផ្ទេរឱ្យ</button>
+  <button id="fDown">⬇ ទាញ</button>
+  <button id="fWord">📝 Word</button>
+  <button id="fUp">⬆ ពីឯកសារ</button>
   <input type="file" id="fFile" accept=".json,application/json" style="display:none">
   <span id="fName" class="hint"></span>
   <div class="sep"></div>
-  <span id="gWho" class="hint"></span>
   <button class="go" id="btnPrint">🖨 ព្រីន</button>
-  <div class="sep"></div>
+  <span id="gWho" class="hint"></span>
+ </div>
+ <div class="r">
   <span>លេខ DT ៖</span><input id="dtNo" placeholder="DT202601190955" autocomplete="off">
   <span id="dtWarn"></span>
   <div class="sep"></div>
-  <span>ថ្ងៃបោះពុម្ព ៖</span><input type="date" id="pdDate" class="dateIn">
+  <span>ថ្ងៃ ៖</span><input type="date" id="pdDate" class="dateIn">
   <button id="btnToday">ថ្ងៃនេះ</button><button id="btnNoDate">សម្អាត</button>
   <div class="sep"></div>
   <span>បារកូដលិខិត ៖</span>
@@ -429,8 +439,9 @@ body.locked{overflow:hidden;}
   <button id="lpzU">▲</button><button id="lpzD">▼</button>
   <button id="lpzZ">↺ ដើម</button><span id="lpzPos" class="hint"></span>
   <div class="sep"></div>
-  <button id="btnMinus">ក− អក្សរតូច</button>
-  <button id="btnPlus">ក+ អក្សរធំ</button>
+  <button id="btnMinus">ក−</button>
+  <button id="btnPlus">ក+</button>
+ </div>
 </div>
 
 <!-- ============ ទំព័រទី ១ ៖ ទម្រង់លិខិត ============ -->
@@ -985,6 +996,12 @@ body.locked{overflow:hidden;}
   /* AUTO ៖ បើកមកដាក់ថ្ងៃនេះភ្លាម ( ប្តូរ ឬសម្អាតបានគ្រប់ពេល ) */
   pdDate.value = todayStr();
   applyPrintDate();
+
+  /* រូបភាពនៃលិខិត **ទទេ** ⇒ ប៊ូតុង 🧹 សម្អាត ស្តារមកវិញ ។
+     ចាប់យកក្រោយពេលទម្រង់តម្រូវទំហំរួច ទើបបានស្ថានភាពពិត ។ */
+  setTimeout(function(){
+    try{ window.__letterBlank = window.__letterSnap(); }catch(e){}
+  }, 400);
 })();
 </script>
 
@@ -1176,7 +1193,15 @@ body.locked{overflow:hidden;}
   function show(on){ bx.className = on ? 'on' : ''; }
   function label(){ nm.textContent = cur.title ? ('📄 ' + cur.title) : ''; }
   function online(){ return location.protocol !== 'file:' && typeof window.__alCall === 'function'; }
-  function toast(t){ nm.textContent = t; setTimeout(label, 2600); }
+  /* ⚠ ម៉ោងចាស់របស់ toast មុន នឹងលុបសារថ្មីចោល ( ឃើញនៅ probe ៖ សារ
+     កំហុស «គណនីនេះមិនមានសិទ្ធិ» បាត់ភ្លាម ) ⇒ លុបម៉ោងចាស់ជាមុន ។
+     សារកំហុស ( ⚠ ) ឈរយូរជាង ដើម្បីឱ្យអានទាន ។ */
+  var toastT = 0;
+  function toast(t){
+    clearTimeout(toastT);
+    nm.textContent = t;
+    toastT = setTimeout(label, /^\s*⚠/.test(t) ? 7000 : 2600);
+  }
 
   /* ---------------- រក្សាទុកលើម៉ាស៊ីនមេ ---------------- */
   function save(asNew){
@@ -1226,11 +1251,8 @@ body.locked{overflow:hidden;}
         cur.id = r.id; cur.title = r.title; label(); show(false); toast('✅ បើករួច');
       }).catch(function(e){ bb.innerHTML = '<div class="empty">⚠ ' + esc(e.message) + '</div>'; });
     } else if(b.dataset.s){
-      var to = prompt('ផ្ទេរជូន email ណា? ( ត្រូវជាសមាជិកក្រុម )', '');
-      if(to === null || !to.trim()) return;
-      window.__alCall('apiLetterShare', [null, id, to.trim()])
-        .then(function(){ toast('✅ ផ្ទេររួច — បានជូនដំណឹងតាម email'); show(false); })
-        .catch(function(e){ alert('⚠ ' + e.message); });
+      var row = b.closest('tr');
+      share(id, row ? row.cells[0].textContent : '');
     } else if(b.dataset.d){
       if(!confirm('លុបលិខិតនេះមែនទេ?')) return;
       window.__alCall('apiLetterDelete', [null, id])
@@ -1277,6 +1299,162 @@ body.locked{overflow:hidden;}
     };
     rd.readAsText(f);
   });
+  /* ⚠ ពីមុន ✉ ផ្ទេរ មានតែក្នុងប្រអប់ 📂 បើក ⇒ គេមើលមិនឃើញ ។
+     ឥឡូវមានប៊ូតុងលើរបារផ្ទាល់ សម្រាប់លិខិតដែលកំពុងបើក ។ */
+  function share(id, title){
+    var to = prompt('ផ្ទេរលិខិត «' + (title || '') + '» ជូន email ណា?\n( ត្រូវជាសមាជិកក្រុម )', '');
+    if(to === null) return;
+    to = to.trim(); if(!to) return;
+    nm.textContent = '⏳ កំពុងផ្ទេរ…';
+    window.__alCall('apiLetterShare', [null, id, to])
+      .then(function(){ toast('✅ ផ្ទេរជូន ' + to + ' រួច — គាត់ទទួលដំណឹងតាម email'); show(false); })
+      .catch(function(e){ toast('⚠ ' + e.message); });
+  }
+  document.getElementById('fNew').addEventListener('click', function(){
+    if(!window.__letterBlank){ toast('⚠ មិនទាន់ត្រៀមរួច — សូមរង់ចាំមួយភ្លែត'); return; }
+    if(!confirm('សម្អាតអ្វីៗដែលបានបញ្ចូលទាំងអស់ ហើយចាប់ផ្តើមលិខិតថ្មី?')) return;
+    window.__letterRestore(window.__letterBlank);
+    cur.id = ''; cur.title = ''; label();
+    toast('🧹 សម្អាតរួច — ចាប់ផ្តើមលិខិតថ្មី');
+  });
+  document.getElementById('fShare').addEventListener('click', function(){
+    if(!online()){ toast('ក្រៅបណ្តាញ — ប្រើ ⬇ ទាញជាឯកសារ រួចផ្ញើតាម email'); return; }
+    if(!cur.id){ toast('សូមចុច 💾 រក្សាទុកជាមុនសិន រួចទើបផ្ទេរបាន'); return; }
+    share(cur.id, cur.title);
+  });
+
+  /* ================================================================
+     ទាញជា Word
+     ⚠⚠ ត្រង់ៗ ៖ ទំព័រនេះសង់ដោយប្រអប់ដាក់ទីតាំងជា mm ( position:absolute )
+       ហើយ Word **អានទ្រង់ទ្រាយបែបនោះមិនកើតទេ** ។ ដូច្នេះឯកសារ Word
+       សង់ឡើងវិញជាកថាខណ្ឌ និងតារាងពិតរបស់ Word ⇒ មាតិកាគ្រប់យ៉ាងដដែល
+       កែបាន ប៉ុន្តែទីតាំងខុសពីការព្រីនផ្ទាល់បន្តិច ។
+       ចង់បានដូចបេះបិទ ⇒ ប្រើ 🖨 ព្រីន → Save as PDF ។
+     ⚠ បារកូដ DT ជា SVG ⇒ Word អានមិនបាន ⇒ បម្លែងទៅ PNG ជាមុន ។
+     ================================================================ */
+  function svgToPng(svg, w, h){
+    return new Promise(function(res){
+      try{
+        var xml = new XMLSerializer().serializeToString(svg);
+        var img = new Image();
+        img.onload = function(){
+          var c = document.createElement('canvas');
+          c.width = w; c.height = h;
+          var g = c.getContext('2d');
+          g.fillStyle = '#fff'; g.fillRect(0, 0, w, h);
+          g.drawImage(img, 0, 0, w, h);
+          try{ res(c.toDataURL('image/png')); }catch(e){ res(''); }
+        };
+        img.onerror = function(){ res(''); };
+        img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(xml);
+      }catch(e){ res(''); }
+    });
+  }
+  function imgOf(zoneId){
+    var z = document.getElementById(zoneId);
+    if(!z) return Promise.resolve('');
+    var im = z.querySelector('img');
+    if(im && im.src) return Promise.resolve(im.src);
+    var sv = z.querySelector('svg');
+    if(sv) return svgToPng(sv, 760, 110);
+    return Promise.resolve('');
+  }
+  function txt(sel){
+    var e = document.querySelector(sel);
+    return e ? e.innerText.replace(/ /g, ' ').replace(/\s+\n/g, '\n').trim() : '';
+  }
+  function esc2(t){ return String(t==null?'':t).replace(/[&<>]/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c]; }); }
+
+  function buildDoc(dtImg, lbImg, l1Img){
+    var KH = "'Khmer OS Siemreap','Khmer OS',serif";
+    var MU = "'Khmer OS Muol Light','Khmer OS Muol',serif";
+    var P  = 'font-family:' + KH + ';font-size:10.5pt;line-height:150%;margin:0 0 4pt;';
+    var h = [];
+    h.push('<html xmlns:o="urn:schemas-microsoft-com:office:office" ' +
+           'xmlns:w="urn:schemas-microsoft-com:office:word" ' +
+           'xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8">' +
+           '<style>@page{size:21cm 29.7cm;margin:1.4cm 1.5cm 1.4cm 2.5cm;}' +
+           'body{font-family:' + KH + ';font-size:10.5pt;}' +
+           'table{border-collapse:collapse;}' +
+           'td{border:0.5pt solid #000;padding:3pt 6pt;vertical-align:middle;}' +
+           '.c{text-align:center;}.r{text-align:right;}' +
+           '</style></head><body>');
+
+    /* ---------- ទំព័រ ១ ៖ លិខិត ---------- */
+    if(l1Img) h.push('<p class="r" style="' + P + '"><img src="' + l1Img + '" width="310"></p>');
+    ['សូមគោរពជូន','ឯកឧត្តមរដ្ឋមន្ត្រីប្រតិភូអមនាយករដ្ឋមន្ត្រី',
+     'និងជាប្រតិភូរាជរដ្ឋាភិបាល ទទួលបន្ទុកជាអគ្គនាយកនៃអគ្គនាយកដ្ឋានពន្ធដារ']
+      .forEach(function(t, i){
+        var e = document.querySelectorAll('#ltitle > div')[i];
+        h.push('<p class="c" style="font-family:' + MU + ';font-size:10.5pt;line-height:170%;margin:0;">'
+               + esc2(e ? e.innerText.trim() : t) + '</p>');
+      });
+    var subj = txt('#lsubj .fld');
+    h.push('<p style="' + P + 'margin-top:12pt;"><span style="font-family:' + MU + '">កម្មវត្ថុ៖</span> '
+           + (subj ? esc2(subj) : '<span style="letter-spacing:1pt">' + new Array(70).join('.') + '</span>') + '</p>');
+    var body = txt('#lbody').split(/\n+/).filter(function(x){ return x.trim(); });
+    if(!body.length) body = ['សេចក្តីដូចមានចែងក្នុងកម្មវត្ថុខាងលើ   ខ្ញុំបាទ'];
+    body.forEach(function(line){
+      h.push('<p style="' + P + 'text-indent:1.57cm;text-align:justify;">' + esc2(line) + '</p>');
+    });
+    for(var i = 0; i < Math.max(0, 14 - body.length); i++){
+      h.push('<p style="' + P + 'border-bottom:0.75pt dotted #666;margin:0 0 6pt;">&nbsp;</p>');
+    }
+    h.push('<p class="r" style="font-family:' + MU + ';font-size:10.5pt;margin-top:22pt;">'
+           + esc2(txt('#lsign') || 'ប្រធាននាយកដ្ឋាន') + '</p>');
+
+    /* ---------- ទំព័រ ២ ៖ កំណត់បង្ហាញ ---------- */
+    h.push('<br clear="all" style="mso-special-character:line-break;page-break-before:always">');
+    h.push('<table style="width:100%;border:0"><tr>'
+      + '<td style="border:0;width:50%;vertical-align:top">'
+      + '<table style="width:7.2cm"><tr><td style="height:2.5cm;text-align:center">'
+      + (dtImg ? '<img src="' + dtImg + '" width="200"><br>' : '<span style="font-family:' + MU + '">បារកូដ</span><br>')
+      + '<span style="font-size:9.5pt">' + esc2(txt('#dtDate')) + '</span>'
+      + '</td></tr></table></td>'
+      + '<td style="border:0;width:50%;text-align:right;vertical-align:top">'
+      + (lbImg ? '<img src="' + lbImg + '" width="176">' : '') + '</td></tr></table>');
+    [].forEach.call(document.querySelectorAll('#ttl > div'), function(e){
+      h.push('<p class="c" style="font-family:' + MU + ';font-size:10.5pt;line-height:190%;margin:0;">'
+             + esc2(e.innerText.trim()) + '</p>');
+    });
+    h.push('<p style="margin:10pt 0 0">&nbsp;</p>');
+    [].forEach.call(document.querySelectorAll('#inf .it'), function(e){
+      h.push('<p style="' + P + '">' + esc2(e.innerText.replace(/ /g,' ').trim()) + '</p>');
+    });
+    h.push('<p style="' + P + 'font-weight:bold;margin-top:10pt">' + esc2(txt('#mt') || 'មតិផ្សេងៗ៖') + '</p>');
+    var rows = document.querySelectorAll('#tb tr');
+    h.push('<table style="width:100%">');
+    [].forEach.call(rows, function(tr){
+      var isH = tr.querySelector('td.h');
+      h.push('<tr>');
+      [].forEach.call(tr.children, function(td){
+        var span = td.colSpan > 1 ? ' colspan="' + td.colSpan + '"' : '';
+        var hh = isH ? '' : ' height="' + Math.round(parseFloat(tr.style.height || '30') * 28.35) + '"';
+        h.push('<td' + span + hh + ' style="' + (isH ? 'text-align:center;' : '')
+          + (td.classList.contains('muol') ? 'font-family:' + MU + ';' : '')
+          + 'font-size:10.5pt;">' + (isH ? esc2(td.innerText.trim()) : '&nbsp;') + '</td>');
+      });
+      h.push('</tr>');
+    });
+    h.push('</table></body></html>');
+    return h.join('');
+  }
+
+  document.getElementById('fWord').addEventListener('click', function(){
+    toast('⏳ កំពុងត្រៀមឯកសារ Word…');
+    Promise.all([imgOf('pzDt'), imgOf('pzLb'), imgOf('pzL1')]).then(function(r){
+      var html = buildDoc(r[0], r[1], r[2]);
+      var b = new Blob(['﻿', html], {type:'application/msword'});
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(b);
+      a.download = ((cur.title || 'letter').replace(/[\\/:*?"<>|]/g, '_')) + '.doc';
+      document.body.appendChild(a); a.click();
+      setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
+      toast('📝 ទាញជា Word រួច');
+    }).catch(function(e){ toast('⚠ ' + e.message); });
+  });
+
   document.getElementById('fSave').addEventListener('click', function(){ save(false); });
   document.getElementById('fOpen').addEventListener('click', openList);
 })();
