@@ -330,6 +330,27 @@ table.frm td.c{vertical-align:top;}
 body.locked{overflow:hidden;}
 @media print{ #gate{display:none !important;} }
 
+/* ===== ប្រអប់ឯកសារលិខិត ===== */
+#lbx{position:fixed; inset:0; z-index:9998; background:rgba(10,22,34,.55);
+  display:none; align-items:center; justify-content:center; padding:24px;
+  font-family:'Khmer OS Siemreap',system-ui,sans-serif; font-weight:400;}
+#lbx.on{display:flex;}
+#lbx .box{background:#fff; width:100%; max-width:620px; max-height:80vh; overflow:auto;
+  border-radius:10px; padding:20px 22px; box-shadow:0 10px 40px rgba(0,0,0,.4);}
+#lbx h3{margin:0 0 14px; font-size:16px; color:#12283C;}
+#lbx table{width:100%; border-collapse:collapse; font-size:13px;}
+#lbx th{text-align:left; color:#6b7a8c; font-weight:600; padding:6px 8px; border-bottom:1px solid #e3e8ee;}
+#lbx td{padding:7px 8px; border-bottom:1px solid #f0f3f7; vertical-align:middle;}
+#lbx td.a{text-align:right; white-space:nowrap;}
+#lbx button{font:inherit; font-size:12.5px; padding:5px 11px; border:1px solid #c7ccd6;
+  border-radius:6px; background:#fff; cursor:pointer; margin-left:4px;}
+#lbx button:hover{background:#eef2f7;}
+#lbx button.p{background:#12283C; color:#fff; border-color:#12283C;}
+#lbx .close{float:right; border:0; font-size:17px; padding:2px 8px;}
+#lbx .empty{color:#8b93a1; padding:18px 4px;}
+#lbx .mine{color:#2f7d4f;}
+@media print{ #lbx{display:none !important;} }
+
 /* ============ ព្រីន ============ */
 @page{ size:A4 portrait; margin:0; }
 @media print{
@@ -386,6 +407,14 @@ body.locked{overflow:hidden;}
 </div>
 
 <div id="bar">
+  <button id="fSave">💾 រក្សាទុក</button>
+  <button id="fOpen">📂 បើក</button>
+  <button id="fCopy">📋 ចម្លង</button>
+  <button id="fDown">⬇ ទាញជាឯកសារ</button>
+  <button id="fUp">⬆ បើកពីឯកសារ</button>
+  <input type="file" id="fFile" accept=".json,application/json" style="display:none">
+  <span id="fName" class="hint"></span>
+  <div class="sep"></div>
   <span id="gWho" class="hint"></span>
   <button class="go" id="btnPrint">🖨 ព្រីន</button>
   <div class="sep"></div>
@@ -909,6 +938,44 @@ body.locked{overflow:hidden;}
   }
   document.getElementById('btnMinus').addEventListener('click', function(){ setFs(FS - 0.25); });
   document.getElementById('btnPlus').addEventListener('click', function(){ setFs(FS + 0.25); });
+  /* ============================================================
+     រូបភាពពេញនៃលិខិត ៖ អ្វីគ្រប់យ៉ាងដែលអ្នកប្រើបានវាយ ឬបិទភ្ជាប់ ។
+     រក្សាជា innerHTML ⇒ វាល · រូបបារកូដ · តារាង មកវិញគ្រប់យ៉ាង ។
+     ⚠ ក្រោយស្តារ ត្រូវភ្ជាប់ event ឡើងវិញ ( `wireFields` ) ព្រោះធាតុ
+       ចាស់ត្រូវបានជំនួស ហើយ handler ចាស់បាត់ទៅជាមួយ ។
+     ============================================================ */
+  var SNAP_IDS = ['ltitle','lsubj','lbody','lsign','ttl','inf','mt','dtDate','day','tb','pzDt','pzLb','pzL1'];
+  window.__letterSnap = function(){
+    var o = { v:1, html:{}, cls:{}, val:{} };
+    SNAP_IDS.forEach(function(id){
+      var e = document.getElementById(id);
+      if(e){ o.html[id] = e.innerHTML; o.cls[id] = e.className; }
+    });
+    o.val.dtNo   = (document.getElementById('dtNo')  || {}).value || '';
+    o.val.pdDate = (document.getElementById('pdDate')|| {}).value || '';
+    o.val.lpzx = LX; o.val.lpzy = LY; o.val.fs = FS;
+    o.val.dtLine = (document.getElementById('dtLine') || {}).style
+                   ? document.getElementById('dtLine').style.display : '';
+    return o;
+  };
+  window.__letterRestore = function(o){
+    if(!o || !o.html) throw new Error('ឯកសារមិនមែនជាលិខិត');
+    SNAP_IDS.forEach(function(id){
+      var e = document.getElementById(id);
+      if(e && typeof o.html[id] === 'string'){
+        e.innerHTML = o.html[id];
+        if(o.cls && o.cls[id]) e.className = o.cls[id];
+      }
+    });
+    var d = document.getElementById('dtNo');   if(d) d.value = (o.val && o.val.dtNo)   || '';
+    var q = document.getElementById('pdDate'); if(q) q.value = (o.val && o.val.pdDate) || '';
+    var dl = document.getElementById('dtLine');
+    if(dl) dl.style.display = (o.val && o.val.dtLine) || '';
+    LX = (o.val && +o.val.lpzx) || 0; LY = (o.val && +o.val.lpzy) || 0; lpzMove(0, 0);
+    if(o.val && o.val.fs) setFs(+o.val.fs);
+    wireFields(); syncDtBox(); fitAll();
+  };
+
   document.getElementById('btnPrint').addEventListener('click', function(){
     zones.forEach(function(q){ q.classList.remove('armed'); });
     fitAll();
@@ -989,6 +1056,14 @@ body.locked{overflow:hidden;}
         return o.data;
       });
   }
+  /* ⚠ `null` ទីមួយ = កន្លែងសម្រាប់ token ⇒ បំពេញនៅទីនេះ ដូច្នេះកូដ
+     ផ្នែកឯកសារមិនចាំបាច់ប៉ះ token ឡើយ ។ */
+  window.__alCall = function(fn, args){
+    var a = (args || []).slice();
+    if(a.length && a[0] === null) a[0] = ls(K_TOK);
+    return call(fn, a);
+  };
+  window.__alWho  = function(){ return ls(K_EM); };
   function busy(on, label){
     btn.disabled = on; btn.textContent = on ? (label || 'Working…')
       : (stage === 'code' ? 'Verify' : 'Sign in');
@@ -1077,5 +1152,134 @@ body.locked{overflow:hidden;}
 </script>
 
 
+<div id="lbx"><div class="box">
+  <button class="close" id="lbxX">✕</button>
+  <h3 id="lbxT">លិខិតដែលបានរក្សាទុក</h3>
+  <div id="lbxB"></div>
+</div></div>
+
+<script>
+/* ==================================================================
+   ឯកសារលិខិត ៖ រក្សាទុក · បើក · ចម្លង · ផ្ទេរតាម email
+   ម៉ាស៊ីនមេ ៖ `apiLetterSave/List/Get/Delete/Share` ( ឯកសារ Letters.gs )
+   ⚠ លិខិតផ្ទុករូបបារកូដជា data URL ⇒ ធំជាងដែនកំណត់ក្រឡា Sheet ( ៥ម៉ឺនតួ )
+     ដូច្នេះម៉ាស៊ីនមេទុកវាជាឯកសារក្នុង Drive ហើយ Sheet ទុកតែលេខសម្គាល់ ។
+   ⚠ ទាញ/បើកជាឯកសារ `.json` ដំណើរការសូម្បីក្រៅបណ្តាញ ។
+   ================================================================== */
+(function(){
+  'use strict';
+  var cur = { id:'', title:'' };
+  var bx = document.getElementById('lbx'), bb = document.getElementById('lbxB'),
+      bt = document.getElementById('lbxT'), nm = document.getElementById('fName');
+  function esc(t){ return String(t==null?'':t).replace(/[&<>"]/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function show(on){ bx.className = on ? 'on' : ''; }
+  function label(){ nm.textContent = cur.title ? ('📄 ' + cur.title) : ''; }
+  function online(){ return location.protocol !== 'file:' && typeof window.__alCall === 'function'; }
+  function toast(t){ nm.textContent = t; setTimeout(label, 2600); }
+
+  /* ---------------- រក្សាទុកលើម៉ាស៊ីនមេ ---------------- */
+  function save(asNew){
+    if(!online()){ toast('ក្រៅបណ្តាញ — ប្រើ ⬇ ទាញជាឯកសារ'); return; }
+    var t = prompt('ឈ្មោះលិខិត', cur.title || 'លិខិត ' + new Date().toLocaleDateString('en-GB'));
+    if(t === null) return;
+    t = t.trim() || 'លិខិត';
+    var data;
+    try{ data = JSON.stringify(window.__letterSnap()); }
+    catch(e){ toast('រក្សាទុកមិនបាន ៖ ' + e.message); return; }
+    nm.textContent = '⏳ កំពុងរក្សាទុក…';
+    window.__alCall('apiLetterSave', [null, asNew ? null : (cur.id || null), t, data])
+      .then(function(r){ cur.id = r.id; cur.title = t; label(); toast('✅ រក្សាទុករួច'); })
+      .catch(function(e){ toast('⚠ ' + e.message); });
+  }
+
+  /* ---------------- បញ្ជីលិខិត ---------------- */
+  function openList(){
+    if(!online()){ toast('ក្រៅបណ្តាញ — ប្រើ ⬆ បើកពីឯកសារ'); return; }
+    bt.textContent = 'លិខិតដែលបានរក្សាទុក';
+    bb.innerHTML = '<div class="empty">កំពុងទាញបញ្ជី…</div>';
+    show(true);
+    window.__alCall('apiLetterList', [null]).then(function(list){
+      if(!list || !list.length){ bb.innerHTML = '<div class="empty">មិនទាន់មានលិខិតណាមួយទេ។</div>'; return; }
+      var h = '<table><tr><th>ឈ្មោះលិខិត</th><th>ម្ចាស់</th><th>កែចុងក្រោយ</th><th></th></tr>';
+      list.forEach(function(r){
+        h += '<tr><td>' + esc(r.title) + '</td>'
+           + '<td class="' + (r.mine ? 'mine' : '') + '">' + esc(r.mine ? 'ខ្ញុំ' : r.owner) + '</td>'
+           + '<td>' + esc(r.updatedAt) + '</td><td class="a">'
+           + '<button class="p" data-o="' + esc(r.id) + '">បើក</button>'
+           + (r.mine ? '<button data-s="' + esc(r.id) + '">✉ ផ្ទេរ</button>'
+                     + '<button data-d="' + esc(r.id) + '">🗑</button>' : '')
+           + '</td></tr>';
+      });
+      bb.innerHTML = h + '</table>';
+    }).catch(function(e){ bb.innerHTML = '<div class="empty">⚠ ' + esc(e.message) + '</div>'; });
+  }
+
+  bb.addEventListener('click', function(ev){
+    var b = ev.target.closest ? ev.target.closest('button') : null;
+    if(!b) return;
+    var id = b.dataset.o || b.dataset.s || b.dataset.d;
+    if(b.dataset.o){
+      bb.innerHTML = '<div class="empty">កំពុងបើក…</div>';
+      window.__alCall('apiLetterGet', [null, id]).then(function(r){
+        window.__letterRestore(JSON.parse(r.data));
+        cur.id = r.id; cur.title = r.title; label(); show(false); toast('✅ បើករួច');
+      }).catch(function(e){ bb.innerHTML = '<div class="empty">⚠ ' + esc(e.message) + '</div>'; });
+    } else if(b.dataset.s){
+      var to = prompt('ផ្ទេរជូន email ណា? ( ត្រូវជាសមាជិកក្រុម )', '');
+      if(to === null || !to.trim()) return;
+      window.__alCall('apiLetterShare', [null, id, to.trim()])
+        .then(function(){ toast('✅ ផ្ទេររួច — បានជូនដំណឹងតាម email'); show(false); })
+        .catch(function(e){ alert('⚠ ' + e.message); });
+    } else if(b.dataset.d){
+      if(!confirm('លុបលិខិតនេះមែនទេ?')) return;
+      window.__alCall('apiLetterDelete', [null, id])
+        .then(function(){ if(cur.id === id){ cur.id=''; cur.title=''; label(); } openList(); })
+        .catch(function(e){ alert('⚠ ' + e.message); });
+    }
+  });
+  document.getElementById('lbxX').addEventListener('click', function(){ show(false); });
+  bx.addEventListener('click', function(e){ if(e.target === bx) show(false); });
+
+  /* ---------------- ចម្លងដើម្បីបង្កើតថ្មី ---------------- */
+  document.getElementById('fCopy').addEventListener('click', function(){
+    cur.id = '';                       /* ដាច់ពីច្បាប់ដើម ⇒ រក្សាទុកបង្កើតថ្មី */
+    cur.title = cur.title ? (cur.title + ' (ច្បាប់ចម្លង)') : '';
+    label();
+    toast('📋 ក្លាយជាច្បាប់ចម្លង — ចុច 💾 ដើម្បីរក្សាជាលិខិតថ្មី');
+  });
+
+  /* ---------------- ឯកសារក្នុងម៉ាស៊ីន ---------------- */
+  document.getElementById('fDown').addEventListener('click', function(){
+    var o;
+    try{ o = window.__letterSnap(); }catch(e){ toast('⚠ ' + e.message); return; }
+    o.title = cur.title || 'letter';
+    var b = new Blob([JSON.stringify(o)], {type:'application/json'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(b);
+    a.download = (o.title.replace(/[\\/:*?"<>|]/g,'_')) + '.json';
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 400);
+    toast('⬇ ទាញរួច');
+  });
+  var fi = document.getElementById('fFile');
+  document.getElementById('fUp').addEventListener('click', function(){ fi.value=''; fi.click(); });
+  fi.addEventListener('change', function(){
+    var f = fi.files && fi.files[0]; if(!f) return;
+    var rd = new FileReader();
+    rd.onload = function(){
+      try{
+        var o = JSON.parse(rd.result);
+        window.__letterRestore(o);
+        cur.id = ''; cur.title = o.title || f.name.replace(/\.json$/i,'');
+        label(); toast('✅ បើករួច');
+      }catch(e){ toast('⚠ បើកមិនបាន ៖ ' + e.message); }
+    };
+    rd.readAsText(f);
+  });
+  document.getElementById('fSave').addEventListener('click', function(){ save(false); });
+  document.getElementById('fOpen').addEventListener('click', openList);
+})();
+</script>
 </body>
 </html>
