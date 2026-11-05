@@ -43,9 +43,9 @@ i, .nb{font-style:italic; font-weight:400;}
 #bar button.go:hover{background:#39965f;}
 #bar input{
   font:inherit; font-size:12.5px; padding:6px 10px; border:0; border-radius:7px;
-  background:#fff; color:#111; width:180px;
+  background:#fff; color:#111; width:150px;
 }
-#bar input.dateIn{width:150px; font-family:system-ui,sans-serif;}
+#bar input.dateIn{width:132px; font-family:system-ui,sans-serif;}
 #bar .sep{width:1px; height:20px; background:#4a5468; margin:0 4px;}
 /* [stated] «ចុះបន្ទាត់ជាពីរជួរ ចាប់ពីបារកូដលិខិត» ។
    ⚠ ពឹងលើ `flex-wrap` មិនបានទេ — វាចុះបីជួរ ឬមួយជួរតាមទទឹងផ្ទាំង ។
@@ -70,11 +70,47 @@ i, .nb{font-style:italic; font-weight:400;}
   left:23.9mm; top:12.1mm; width:60.3mm; height:25.3mm;
   border:var(--line) solid var(--ink);
 }
+/* ⚠ ដូចទំព័រ ១ ៖ វាស់ពីរូបអ្នកប្រើ ( ស៊ុមប្រអប់ DT 346px = 60.3mm
+   ⇒ 5.737 px/mm ) ទឹកខ្មៅបារកូដស្តាំ = 231px = **40.3mm** ក្នុងប្រអប់
+   46.6mm ។ ⇒ កំណត់ **ទទឹង** ( មិនមែនកម្ពស់ ) · `flex:0 0 auto` កុំឱ្យ
+   ប្រអប់ flex បង្រួញវា · ហើយដាក់យុថ្កានៅ **ជ្រុងស្តាំក្រោម** ដូច្នេះ
+   ពេលធំ វាលូតទៅឆ្វេង និងឡើងលើ មិនទៅប៉ះចំណងជើង ( នៅ 37.3mm ) ។ */
 .lbox{ left:142.9mm; top:13.0mm; width:46.6mm; height:22.5mm; }
+/* ⚠ ច្បាប់ `.pz` សរសេរនៅ **ក្រោម** នេះ ⇒ `align-items:center` របស់វាឈ្នះ
+   ( វាស់ឃើញ ៖ រូបនៅកណ្តាល y 9.9..38.6 ជាន់ចំណងជើង 37.3mm ) ។
+   ⇒ ត្រូវប្រើ `.pz.lbox` ដើម្បីឱ្យយុថ្កាជ្រុងស្តាំក្រោមដំណើរការ ។ */
+.pz.lbox{ overflow:visible; justify-content:flex-end; align-items:flex-end; }
+.lbox img{ width:calc(46.6mm * var(--lbzs,1.08)); height:auto;
+           max-width:none; max-height:none; flex:0 0 auto; }
 
 .pz{position:relative; display:flex; align-items:center; justify-content:center;
     overflow:hidden; text-align:center;}
-.pz img{max-width:100%; max-height:100%; display:block; object-fit:contain;}
+/* ⚠⚠ [វាស់ពីរូបអ្នកប្រើ] រូបបារកូដដែល paste ចូល ចេញតូច ព្រោះ
+   `max-width/max-height` គ្រាន់តែជា **ពិដាន** ប៉ុណ្ណោះ — រូបតូច
+   ( ឧ. 132×65px ) បង្ហាញតាមទំហំធម្មជាតិរបស់វា = 34.8 × 17.2mm
+   ក្នុងប្រអប់ 81.9 × 33.5mm ( ត្រឹម ៤២% ) ⇒ ទើបមើលទៅតូច ។
+   ⇒ ដាក់ `width/height` ឱ្យវា **ពង្រីកឡើង** ដល់ប្រអប់ ។ */
+.pz img{max-width:100%; max-height:100%; width:100%; height:100%;
+        display:block; object-fit:contain;}
+/* ⚠⚠ កំហុសទី ២ ៖ ខ្ញុំយក 0.78 ដោយវាស់តែ **ផ្នែកបារកូដ** ក្នុងរូបទី១ ។
+   តែរូបដែល paste ពិតមាន **បារកូដ + ថ្ងៃខែឆ្នាំ ២ ជួរ** ជាប់គ្នា ( ដូច
+   អក្សរណែនាំសរសេរ ) ហើយវាស់ពីរូបអ្នកប្រើ ៖ សរុប 470 × 193px ⇒ សមាមាត្រ
+   2.435 ≈ សមាមាត្រប្រអប់ 81.9/33.5 = 2.445 ។ ⇒ រូបត្រូវ **ពេញប្រអប់**
+   ( LS = 1.00 ) ។ 0.78 បានបង្រួមវាត្រឹម ៧៨% ⇒ ទើបនៅតែតូច ។
+   ⊖ ⊕ នៅតែមាន សម្រាប់កែ ៤% ម្តង បើក្រដាសពិតត្រូវការតូចជាង ។ */
+/* ⚠⚠⚠ ការវាស់ចុងក្រោយ ( ពីរូបថតអ្នកប្រើ v05-11-c ) ៖
+     ធាតុរូប = 72.2 × 33.5mm តែ **ទឹកខ្មៅពិត** = តែ 63.9mm ព្រោះរូបដែល
+     copy មក មានស ជុំវិញ ~១២% ។ ប្រអប់ 81.9mm ( វាស់ពីរូបដើមអ្នក ៖
+     x584..1053 @5.724px/mm = 102.0..183.9mm ) គឺត្រឹមត្រូវ —
+     អ្វីដែលខុសគឺ ៖ ខ្ញុំកំណត់ **កម្ពស់** ⇒ សមាមាត្ររូប 2.156 តូចជាង
+     សមាមាត្រប្រអប់ 2.445 ⇒ ទទឹងឈប់ត្រឹម 72.2mm មិនដល់ 81.9mm ។
+     ⇒ ប្តូរមកកំណត់ **ទទឹង** វិញ ហើយឱ្យកម្ពស់លើសប្រអប់បាន ។
+     ទឹកខ្មៅ/ធាតុ = 0.884 ⇒ ដើម្បីឱ្យទឹកខ្មៅ = 81.9mm ត្រូវ LS = 1.13 ។ */
+.lpz{overflow:visible;}
+/* ⚠ `.pz` ជា flex ⇒ ធាតុកូន **បង្រួញដោយស្វ័យប្រវត្តិ** ពេលធំជាងប្រអប់
+     ( វាស់ឃើញ ៖ ដាក់ 92.55mm តែគូសចេញ 81.9mm ) ⇒ ត្រូវ `flex-shrink:0` ។ */
+.lpz img{width:calc(81.9mm * var(--lpzs,1.23)); height:auto;
+         max-width:none; max-height:none; margin:auto; flex:0 0 auto;}
 
 /* ប្រអប់ DT — បីជួរ ៖ បារកូដ · DT…… · បោះពុម្ពនៅថ្ងៃទី……
    ⚠ [stated] «DT នោះតម្រឹមនៅស្មើនឹងជួរ បោះពុម្ព» ⇒ ជួរទី២ និងទី៣
@@ -217,6 +253,8 @@ table.frm td.c{vertical-align:top;}
 /* ============ ឧបករណ៍បិទភ្ជាប់ ( អេក្រង់តែប៉ុណ្ណោះ ) ============ */
 .pz.empty{outline:0.4mm dashed #b9c0cc; outline-offset:-0.4mm;}
 .pz.armed{outline:0.5mm solid #2f7d4f; outline-offset:-0.5mm; background:#f2fbf5;}
+/* កាន់តែធានា ៖ លាក់ដោយ CSS ផង កុំពឹងលើ JS តែមួយ ។ */
+.pz:not(.empty) .hintbox{display:none !important;}
 .pz .hintbox{
   position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
   font-size:8.5pt; font-weight:400; color:#8b93a1; pointer-events:none;
@@ -246,18 +284,43 @@ table.frm td.c{vertical-align:top;}
    មានប៊ូតុង ◀ ▶ ▲ ▼ នៅរបារ ដើម្បីរំកិលបន្ថែមម្តង 1mm តាមក្រដាសពិត ។ */
 .lpz{left:calc(109mm + var(--lpzx)); top:calc(14.3mm + var(--lpzy));
      width:81.9mm; height:33.5mm;}
-.t-l1{left:calc(109mm + var(--lpzx)); top:calc(48.6mm + var(--lpzy));}
-.ltitle{left:12mm; right:12mm; top:56.3mm; text-align:center; line-height:6.5mm;}
+.t-l1{left:calc(109mm + var(--lpzx)); top:calc(54.0mm + var(--lpzy));}
+/* ⚠ [stated] «ទម្លាក់បន្ទាត់ចុះក្រោម ១ កន្លែង សូមគោរពជូន» ⇒ ចុះ 6.5mm
+   ( = ១ បន្ទាត់ ) ហើយអ្វីដែលនៅក្រោមចុះតាម ដើម្បីកុំឱ្យជាន់គ្នា ។ */
+.ltitle{left:12mm; right:12mm; top:62.8mm; text-align:center; line-height:6.5mm;}
 .ltitle > div{white-space:nowrap;}
-.lsubj{left:25.7mm; width:161.8mm; top:80.3mm; line-height:6.5mm;
-       display:flex; align-items:flex-end; white-space:nowrap;}
+/* ⚠⚠⚠ [stated] «ជួយកែ និងចុះបន្ទាត់កន្លែងកម្មវត្ថុផង ព្រោះមិនអាចចុះ
+   ដោយដៃបាន» ។ សាកបួនវិធីរក្សារចនាសម្ព័ន្ធចាស់ ( execCommand ·
+   Range.insertNode · សរសេរ textContent · focus មុន/ក្រោយ ) — បរាជ័យ
+   ទាំងអស់ ព្រោះ Enter ក្នុង <span contenteditable> ដែលខ្ចប់ក្នុង
+   contenteditable មួយទៀត ត្រូវ Chromium បំបែកចេញទៅធាតុមេ ហើយ caret
+   ដែលយើងកំណត់ ត្រូវវាទម្លាក់ចោល ( វាស់ឃើញរាល់ដង ៖ អក្សរបន្ទាប់ធ្លាក់
+   មុន \n ) ។
+   ⇒ ប្តូររចនាសម្ព័ន្ធ ៖ ស្លាក «កម្មវត្ថុ៖» ចេញទៅ **ក្រៅ** ផ្ទៃកែ
+   ហើយ `#lsubj` ក្លាយជា **ប្លុក contenteditable សុទ្ធ** ដូច `.lbody`
+   ( ដែល Enter ដើរធម្មតារួចហើយ ) ។ បន្ទាត់ចំណុចប្តូរពី <span class=lead>
+   មកជា **ផ្ទៃខាងក្រោយ** ⇒ គ្រប់បន្ទាត់មានចំណុចដោយស្វ័យប្រវត្តិ ។ */
+.lsubjrow{left:25.7mm; width:161.8mm; top:86.8mm; line-height:6.5mm;
+          display:flex; align-items:flex-start;}
+.lsubjrow .slab{white-space:nowrap; flex:0 0 auto;}
+/* [stated] «ពេលវាយបញ្ជុលអក្សរ កុំឱ្យចេញដិត» ⇒ អត្ថបទដែលវាយមិនដិត
+   ( ពីមុនច្បាប់នេះនៅលើ `.fld` ដែលឥឡូវលែងមាន ) ។ */
+.lsubj{position:static; flex:1 1 auto; min-width:0; line-height:6.5mm; font-weight:400;
+       white-space:pre-wrap; overflow-wrap:anywhere; text-indent:0;
+       background-image:radial-gradient(circle at 50% 5.7mm, #444 0.16mm, rgba(0,0,0,0) 0.18mm);
+       background-size:0.88mm 6.5mm;}
 /* ⚠ ផ្ទៃសរសេរ ៖ បន្ទាត់ចំណុចជា **ផ្ទៃខាងក្រោយ** ដែលកើតឡើងម្តងរាល់បន្ទាត់
    ដូច្នេះអត្ថបទដែលវាយ ហូរតាមបន្ទាត់ដោយខ្លួនឯង ។
    `text-indent` ⇒ បន្ទាត់ដំបូងនៃ **កថាខណ្ឌនីមួយៗ** ចូល 15.7mm ដូច្នេះ
    ពេលចុច Enter កថាខណ្ឌថ្មីចាប់ផ្តើមត្រង់ជួរ «សេចក្តីដូចមានចែង…» ដដែល
    ហើយបន្ទាត់ដែលរុំ ត្រឡប់ទៅគែមឆ្វេងវិញ — ដូចក្នុងរូប ។ */
 .lbody{
-  left:25.9mm; top:97.5mm; width:161.6mm; height:99mm;
+  /* ⚠⚠ [stated] «អាចចុចលុបជួរណាមួយក៏បាន ដើម្បីខិតផ្នែកប្រធាននាយកដ្ឋាន
+     ឡើងមកខាងលើបាន» ⇒ កម្ពស់ថេរ 92.5mm មិនអាចធ្វើដូច្នេះបានទេ ព្រោះ
+     ចំណុចជា **ផ្ទៃខាងក្រោយ** គ្មានអ្វីឱ្យលុប ។ ⇒ កម្ពស់តាមមាតិកា
+     ហើយបំពេញជួរទទេពិតៗពេលចាប់ផ្តើម ⇒ លុបជួរណាក៏បាន ហើយ `syncBody()`
+     រំកិល «ប្រធាននាយកដ្ឋាន» តាមភ្លាម ។ */
+  left:25.9mm; top:104.0mm; width:161.6mm; height:auto; min-height:6.26mm;
   line-height:6.26mm; font-weight:400; text-indent:15.7mm;
   /* ⚠⚠ [stated] «វាយដល់ចុងខាងស្តាំ គួរលោតទៅខាងក្រោមអូតូ» ៖ អក្សរខ្មែរ
      សរសេរជាប់គ្នាគ្មានដកឃ្លា ⇒ បើ browser រកចំណុចកាត់ពាក្យមិនឃើញ
@@ -334,6 +397,13 @@ table.frm td.c{vertical-align:top;}
 #gate .cfg button:hover{color:#9DB4C9;}
 body.locked{overflow:hidden;}
 @media print{ #gate{display:none !important;} }
+/* ⚠⚠ [stated] «ពេលព្រីនកុំរំលេច ......» ⇒ បន្ទាត់ចំណុចជាខ្សែនាំដៃតែប៉ុណ្ណោះ
+   ⇒ ព្រីនចេញតែអក្សរដែលវាយ ។ ( អក្សរណែនាំក្នុងរង្វង់ក្រចក () នៅដដែល ) */
+@media print{
+  .lead{visibility:hidden !important;}
+  .lbody, .lsubj{background-image:none !important;}
+  .ph-dots:empty::before{visibility:hidden !important;}
+}
 
 /* ===== ប្រអប់ឯកសារលិខិត ===== */
 #lbx{position:fixed; inset:0; z-index:9998; background:rgba(10,22,34,.55);
@@ -424,23 +494,28 @@ body.locked{overflow:hidden;}
   <input type="file" id="fFile" accept=".json,application/json" style="display:none">
   <span id="fName" class="hint"></span>
   <div class="sep"></div>
+  <button id="btnMinus" title="បន្ថយទំហំអក្សរ">ក−</button>
+  <button id="btnPlus" title="ពង្រីកទំហំអក្សរ">ក+</button>
+  <div class="sep"></div>
   <button class="go" id="btnPrint">🖨 ព្រីន</button>
   <span id="gWho" class="hint"></span>
+  <span class="hint" id="ver">v05-11-j</span>
  </div>
  <div class="r">
-  <span>លេខ DT ៖</span><input id="dtNo" placeholder="DT202601190955" autocomplete="off">
+  <span>DT ៖</span><input id="dtNo" placeholder="DT2026…" autocomplete="off">
   <span id="dtWarn"></span>
   <div class="sep"></div>
   <span>ថ្ងៃ ៖</span><input type="date" id="pdDate" class="dateIn">
-  <button id="btnToday">ថ្ងៃនេះ</button><button id="btnNoDate">សម្អាត</button>
+  <button id="btnToday">ថ្ងៃនេះ</button><button id="btnNoDate" title="លុបថ្ងៃ">✕</button>
   <div class="sep"></div>
-  <span>បារកូដលិខិត ៖</span>
-  <button id="lpzL">◀</button><button id="lpzR">▶</button>
-  <button id="lpzU">▲</button><button id="lpzD">▼</button>
-  <button id="lpzZ">↺ ដើម</button><span id="lpzPos" class="hint"></span>
-  <div class="sep"></div>
-  <button id="btnMinus">ក−</button>
-  <button id="btnPlus">ក+</button>
+  <span>បារកូដ ១</span>
+  <button id="lpzL" title="ឆ្វេង 1mm">◀</button><button id="lpzR" title="ស្តាំ 1mm">▶</button>
+  <button id="lpzU" title="ឡើង 1mm">▲</button><button id="lpzD" title="ចុះ 1mm">▼</button>
+  <button id="lpzS" title="បន្ថយទំហំ">⊖</button><button id="lpzB" title="ពង្រីក">⊕</button>
+  <span>បារកូដ ២</span>
+  <button id="lbzS" title="បន្ថយទំហំ">⊖</button><button id="lbzB" title="ពង្រីក">⊕</button>
+  <button id="lpzZ" title="ត្រឡប់ទំហំ និងទីតាំងដើម ( ទាំងពីរ )">↺</button>
+  <span id="lpzPos" class="hint"></span><span id="lbzPos" class="hint"></span>
  </div>
 </div>
 
@@ -457,7 +532,7 @@ body.locked{overflow:hidden;}
     <div>និងជាប្រតិភូរាជរដ្ឋាភិបាល ទទួលបន្ទុកជាអគ្គនាយកនៃអគ្គនាយកដ្ឋានពន្ធដារ</div>
   </div>
 
-  <div class="lsubj" id="lsubj" contenteditable="true" spellcheck="false"><span class="muol">កម្មវត្ថុ៖&nbsp;</span><span class="fld fsub" contenteditable="true" data-ph="..............................................................................................."></span><span class="lead">............................................................</span></div>
+  <div class="lsubjrow"><span class="muol slab">កម្មវត្ថុ៖&nbsp;</span><div class="lsubj" id="lsubj" contenteditable="true" spellcheck="false"></div></div>
 
   <div class="lbody" id="lbody" contenteditable="true" spellcheck="false"><div><span class="mask">សេចក្តីដូចមានចែងក្នុងកម្មវត្ថុខាងលើ&nbsp; &nbsp;ខ្ញុំបាទ</span></div></div>
 
@@ -606,7 +681,10 @@ body.locked{overflow:hidden;}
     zones.forEach(function(q){ q.classList.toggle('armed', q === z); });
   }
   window.__arm = arm;
-  function ph(z){ return z.querySelector('.ph'); }
+  /* ⚠⚠ កំហុស ៖ ធាតុអក្សរណែនាំមានឈ្មោះ `.hintbox` មិនមែន `.ph` ទេ
+     ⇒ `ph()` ត្រឡប់ null ជានិច្ច ⇒ អក្សរ «បារកូដ + ថ្ងៃខែឆ្នាំ ( ចុច
+     រួច Ctrl+V )» មិនដែលលាក់ ហើយជាន់លើបារកូដ ( ឃើញក្នុងរូប ) ។ */
+  function ph(z){ return z.querySelector('.hintbox, .ph'); }
   /* ប្រអប់ DT ទទេ ⇒ ដាក់ស្លាក `dt-empty` ⇒ CSS ព្រីនលាក់វា ។ */
   function syncDtBox(){
     var box = document.querySelector('.dtbox');
@@ -622,6 +700,15 @@ body.locked{overflow:hidden;}
     img.src = src;
     z.insertBefore(img, z.firstChild);
     z.classList.remove('empty');
+    /* ⚠⚠ ដាក់ទំហំជា **inline** ( មិនពឹង CSS ) ⇒ ទោះជាឯកសារចាស់ ឬ
+       ច្បាប់ណាមកសង្កត់ក៏ដោយ រូបនៅតែចេញតាមទំហំដែលវាស់បាន ។ */
+    if(z.classList.contains('lpz')) sizeLpz();
+    if(z.classList.contains('lbox') && window.__lbz) window.__lbz(0);
+    img.addEventListener('load', function(){
+      if(z.classList.contains('lpz')) sizeLpz();
+      if(z.classList.contains('lbox') && window.__lbz) window.__lbz(0);
+      if(window.__lpzRefresh) window.__lpzRefresh();
+    });
     if(z === pzDt) dtLine.style.display = 'none';
     syncDtBox();
   }
@@ -712,24 +799,47 @@ body.locked{overflow:hidden;}
     var fs = document.querySelectorAll('.fld');
     for(var i = 0; i < fs.length; i++){
       (function(f){
+        /* ⚠⚠ នេះគឺជាមូលហេតុពិតដែល «មិនអាចចុះបន្ទាត់ដោយដៃបាន» ៖
+           `keydown` ខាងក្រោម ហាមឃាត់ Enter លើ **គ្រប់វាល** ។
+           វាល «កម្មវត្ថុ» ( .fsub ) ត្រូវអនុញ្ញាត ព្រោះអត្ថបទវែង ។ */
+        var multi = f.classList.contains('fsub');
         f.addEventListener('input', function(){
           /* ⚠ ពេលលុបអស់ browser ទុក <br> ចោល ⇒ `:empty` លែងផ្គូផ្គង
              ⇒ អត្ថបទក្នុងរង្វង់ក្រចកមិនត្រឡប់មកវិញ ។ */
           if(!f.textContent.replace(/[\s\u00A0]/g, '')) f.innerHTML = '';
+          if(multi){ syncSubj(); syncIndent(); }
         });
         f.addEventListener('keydown', function(e){
-          if(e.key === 'Enter'){ e.preventDefault(); }   /* វាលមួយបន្ទាត់ */
+          /* វាលមួយបន្ទាត់ ⇒ ហាមឃាត់ Enter ។ វាល «កម្មវត្ថុ» ( .fsub )
+             ទុកឱ្យ browser ចុះបន្ទាត់ដោយខ្លួនវា ។ */
+          if(e.key === 'Enter' && !multi){ e.preventDefault(); }
         });
         f.addEventListener('paste', function(e){
           e.preventDefault(); e.stopPropagation();        /* អត្ថបទសុទ្ធ */
           var t = (e.clipboardData || window.clipboardData).getData('text') || '';
-          document.execCommand('insertText', false, t.replace(/[\r\n]+/g, ' '));
+          document.execCommand('insertText', false,
+            multi ? t : t.replace(/[\r\n]+/g, ' '));
+          if(multi){ syncSubj(); syncIndent(); }
         });
         f.addEventListener('focus', function(){ arm(null); });
       })(fs[i]);
     }
   }
   wireFields();
+  (function(){
+    var sj = document.getElementById('lsubj'); if(!sj) return;
+    sj.addEventListener('keydown', function(e){ if(e.key === 'Tab') e.preventDefault(); });
+    /* ⚠⚠ សាកបួនវិធី ( execCommand · Range.insertNode · សរសេរ
+       textContent · focus មុន/ក្រោយ ) — Chromium ទម្លាក់ caret ដែលយើង
+       កំណត់ចោលទាំងអស់ ( វាស់ឃើញ ៖ អក្សរបន្ទាប់ធ្លាក់មុន \n ជានិច្ច ) ។
+       ⇒ ទុកឱ្យ browser ចុះបន្ទាត់ដោយខ្លួនវា ។ អ្វីដែលខ្វះពីមុនគឺ
+       `white-space:nowrap` និងការហាមឃាត់ Enter ក្នុង `wireFields()`
+       ដែលពេលនេះដោះចេញសម្រាប់វាល «កម្មវត្ថុ» ហើយ ។ */
+    sj.addEventListener('input', function(){ syncSubj(); syncIndent(); });
+    var bd = document.getElementById('lbody');
+    if(bd) bd.addEventListener('input', syncBody);
+    window.__subjWired = true;
+  })();
   /* ចុចកន្លែងណាក្រៅប្រអប់បារកូដ ⇒ ដោះការតម្រង់ ( កុំឱ្យ Ctrl+V របស់អត្ថបទ
      ទម្លាក់រូបចូលប្រអប់បារកូដដោយចៃដន្យ ) ។ */
   document.addEventListener('mousedown', function(e){
@@ -755,6 +865,13 @@ body.locked{overflow:hidden;}
         if(readFile(items[i].getAsFile(), z)){ e.preventDefault(); return; }
       }
     }
+    /* ⚠ ចម្លងពី Word/Excel/គេហទំព័រ ⇒ ក្តារតម្រៀបគ្មាន `file` ទេ
+       មានតែ `text/html` ។ ទាញ `src` ចេញពីវា ។ */
+    try{
+      var html = e.clipboardData && e.clipboardData.getData('text/html');
+      var m = html && html.match(/<img[^>]+src=["']([^"']+)["']/i);
+      if(m && /^data:image\//.test(m[1])){ setImage(z, m[1]); e.preventDefault(); }
+    }catch(_){}
   });
 
   document.addEventListener('click', function(e){
@@ -869,9 +986,49 @@ body.locked{overflow:hidden;}
   /* ⚠ [stated] «អក្សរផ្តើមពី សេចក្តី… នៅជួរពីអក្សរដែលវាយក្នុងកម្មវត្ថុ
      ឱ្យស្មើជួរគ្នា» ៖ ទទឹងស្លាក «កម្មវត្ថុ៖» អាស្រ័យលើ font ( Muol ) ⇒
      មិនអាចសរសេរលេខថេរបានទេ — ត្រូវវាស់ពេលដំណើរការ ។ */
+  /* ផ្ទៃសរសេរចាប់ក្រោមជួរកម្មវត្ថុជានិច្ច ( គម្លាតដើម 10.7mm ) ហើយបាត
+     នៅទីតាំងដដែល 196.5mm ⇒ កម្មវត្ថុចុះ ២-៣ បន្ទាត់ក៏មិនជាន់គ្នា ។ */
+  function syncSubj(){
+    var sj = document.querySelector('.lsubjrow');
+    var bd = document.getElementById('lbody');
+    var sh = document.getElementById('sheet1');
+    if(!sj || !bd || !sh) return;
+    var k = sh.getBoundingClientRect().width / 210;
+    if(!k) return;
+    var bottom = (sj.getBoundingClientRect().bottom - sh.getBoundingClientRect().top) / k;
+    var top = Math.round((bottom + 10.7) * 10) / 10;
+    bd.style.top = top + 'mm';
+    syncBody();
+  }
+  /* ហត្ថលេខាដើរតាមបាតផ្ទៃសរសេរ ( គម្លាតដើម 8mm ) ។ */
+  function syncBody(){
+    var bd = document.getElementById('lbody');
+    var sg = document.getElementById('lsign');
+    var sh = document.getElementById('sheet1');
+    if(!bd || !sg || !sh) return;
+    var r = sh.getBoundingClientRect();
+    var k = r.width / 210; if(!k) return;
+    var bottom = (bd.getBoundingClientRect().bottom - r.top) / k;
+    sg.style.top = Math.min(282, Math.round((bottom + 8) * 10) / 10) + 'mm';
+  }
+  /* បំពេញជួរទទេពិតៗ ⇒ មានអ្វីឱ្យលុប ( ជំនួសកម្ពស់ថេរចាស់ 92.5mm ) ។ */
+  function fillBodyLines(){
+    var bd = document.getElementById('lbody'); if(!bd) return;
+    if(bd.children.length > 1) return;
+    for(var i = 0; i < 13; i++){
+      var d = document.createElement('div');
+      d.appendChild(document.createElement('br'));
+      bd.appendChild(d);
+    }
+  }
+  function markPhDots(){
+    [].forEach.call(document.querySelectorAll('.fld[data-ph]'), function(e){
+      if(/^[.\u2026\s]+$/.test(e.getAttribute('data-ph') || '')) e.classList.add('ph-dots');
+    });
+  }
   function syncIndent(){
     var body = document.getElementById('lbody');
-    var f = document.querySelector('#lsubj .fld');
+    var f = document.getElementById('lsubj');
     if(!body || !f) return;
     var d = f.getBoundingClientRect().left - body.getBoundingClientRect().left;
     if(!(d > 0)) return;
@@ -900,7 +1057,7 @@ body.locked{overflow:hidden;}
     fitW('.title > div', 8);
     fitW('.ltitle > div', 8);
     fitW('.lsign', 8);
-    syncIndent();
+    syncIndent(); markPhDots(); fillBodyLines(); syncSubj();
     fitW('.dtdate', 6);
     /* ⚠⚠ កុំវាស់ `.dtline` ៖ វាផ្ទុក `.lead` ដែលមាន `overflow:hidden`
        ហើយ inkW() ( Range ) រាប់ចំណុចៗ **ទាំងផ្នែកដែលត្រូវកាត់ចោល** ⇒
@@ -922,23 +1079,72 @@ body.locked{overflow:hidden;}
 
   /* រំកិលតំបន់បារកូដលិខិតម្តង 1mm ⇒ គេចពី LOGO លើក្រដាសដែលបោះពុម្ពរួច ។
      ព្រំដែន ៖ គែមស្តាំមិនឱ្យហួស 205mm ហើយគែមលើមិនឱ្យឡើងលើសក្រដាស ។ */
-  var LX = 0, LY = 0;
-  function lpzMove(dx, dy){
+  var LX = -7, LY = 2, LS = 1.23;
+  function sizeLpz(){
+    var i = document.querySelector('#pzL1 img'); if(!i) return;
+    i.style.width     = (81.9 * LS).toFixed(2) + 'mm';
+    i.style.height    = 'auto';
+    i.style.maxWidth  = 'none';
+    i.style.maxHeight = 'none';
+    i.style.objectFit = 'contain';
+    i.style.flex      = '0 0 auto';
+  }
+  function lpzMove(dx, dy, ds){
     LX = Math.max(-60, Math.min(14, LX + dx));
     LY = Math.max(-8,  Math.min(40, LY + dy));
+    LS = Math.max(0.50, Math.min(2.00, Math.round((LS + (ds || 0)) * 100) / 100));
     var r = document.documentElement.style;
     r.setProperty('--lpzx', LX + 'mm');
     r.setProperty('--lpzy', LY + 'mm');
+    r.setProperty('--lpzs', LS);
+    sizeLpz();
+    /* បង្ហាញការរំកិល **តែពេលខុសពីលំនាំដើម** ⇒ របារខ្លីជាង ( ២ ជួរ ) ។ */
     var t = [];
-    if(LX) t.push((LX > 0 ? 'ស្តាំ ' : 'ឆ្វេង ') + Math.abs(LX) + 'mm');
-    if(LY) t.push((LY > 0 ? 'ចុះ ' : 'ឡើង ') + Math.abs(LY) + 'mm');
-    document.getElementById('lpzPos').textContent = t.length ? t.join(' · ') : 'ទីតាំងដើម';
+    if(LX !== -7) t.push((LX > 0 ? 'ស្តាំ ' : 'ឆ្វេង ') + Math.abs(LX) + 'mm');
+    if(LY !==  2) t.push((LY > 0 ? 'ចុះ ' : 'ឡើង ') + Math.abs(LY) + 'mm');
+    var im = document.querySelector('#pzL1 img');
+    if(im){
+      var k = document.getElementById('sheet1').getBoundingClientRect().width / 210;
+      var r = im.getBoundingClientRect();
+      t.push('១:' + (r.width / k).toFixed(1));
+    } else {
+      t.push('១:' + (81.9 * LS).toFixed(1));
+    }
+    document.getElementById('lpzPos').textContent = t.join(' · ');
   }
   document.getElementById('lpzL').addEventListener('click', function(){ lpzMove(-1, 0); });
   document.getElementById('lpzR').addEventListener('click', function(){ lpzMove( 1, 0); });
   document.getElementById('lpzU').addEventListener('click', function(){ lpzMove(0, -1); });
   document.getElementById('lpzD').addEventListener('click', function(){ lpzMove(0,  1); });
-  document.getElementById('lpzZ').addEventListener('click', function(){ LX = 0; LY = 0; lpzMove(0, 0); });
+  var LB = 1.08;
+  function lbzSize(d){
+    LB = Math.max(0.50, Math.min(2.00, Math.round((LB + (d || 0)) * 100) / 100));
+    document.documentElement.style.setProperty('--lbzs', LB);
+    var i = document.querySelector('#pzLb img');
+    if(i){
+      i.style.width = (46.6 * LB).toFixed(2) + 'mm';
+      i.style.height = 'auto'; i.style.maxWidth = 'none';
+      i.style.maxHeight = 'none'; i.style.flex = '0 0 auto';
+      i.style.objectFit = 'contain';
+    }
+    var sh = document.getElementById('sheet');
+    var k  = sh ? sh.getBoundingClientRect().width / 210 : 0;
+    var r  = i && k ? i.getBoundingClientRect() : null;
+    document.getElementById('lbzPos').textContent =
+      ' · ២:' + ((r ? r.width / k : 46.6 * LB)).toFixed(1) + 'mm';
+  }
+  document.getElementById('lbzS').addEventListener('click', function(){ lbzSize(-0.05); });
+  document.getElementById('lbzB').addEventListener('click', function(){ lbzSize( 0.05); });
+  /* ↺ តែមួយសម្រាប់បារកូដទាំងពីរ ( របារចេញតែ ២ ជួរ ) ។ */
+  window.__lbz = lbzSize;
+  lbzSize(0);
+  document.getElementById('lpzS').addEventListener('click', function(){ lpzMove(0, 0, -0.05); });
+  document.getElementById('lpzB').addEventListener('click', function(){ lpzMove(0, 0,  0.05); });
+  document.getElementById('lpzZ').addEventListener('click', function(){
+    LX = -7; LY = 2; LS = 1.23; lpzMove(0, 0);
+    LB = 1.08; if(window.__lbz) window.__lbz(0);
+  });
+  window.__lpzRefresh = function(){ lpzMove(0, 0); };
   lpzMove(0, 0);
 
   var FS = 10.5;
@@ -964,7 +1170,7 @@ body.locked{overflow:hidden;}
     });
     o.val.dtNo   = (document.getElementById('dtNo')  || {}).value || '';
     o.val.pdDate = (document.getElementById('pdDate')|| {}).value || '';
-    o.val.lpzx = LX; o.val.lpzy = LY; o.val.fs = FS;
+    o.val.lpzx = LX; o.val.lpzy = LY; o.val.lpzs = LS; o.val.lbzs = LB; o.val.fs = FS;
     o.val.dtLine = (document.getElementById('dtLine') || {}).style
                    ? document.getElementById('dtLine').style.display : '';
     return o;
@@ -982,9 +1188,11 @@ body.locked{overflow:hidden;}
     var q = document.getElementById('pdDate'); if(q) q.value = (o.val && o.val.pdDate) || '';
     var dl = document.getElementById('dtLine');
     if(dl) dl.style.display = (o.val && o.val.dtLine) || '';
-    LX = (o.val && +o.val.lpzx) || 0; LY = (o.val && +o.val.lpzy) || 0; lpzMove(0, 0);
+    LX = (o.val && +o.val.lpzx) || 0; LY = (o.val && +o.val.lpzy) || 0;
+    LS = (o.val && +o.val.lpzs) || 1.23; lpzMove(0, 0);
+    LB = (o.val && +o.val.lbzs) || 1.08; lbzSize(0);
     if(o.val && o.val.fs) setFs(+o.val.fs);
-    wireFields(); syncDtBox(); fitAll();
+    wireFields(); syncDtBox(); fitAll(); syncSubj();
   };
 
   document.getElementById('btnPrint').addEventListener('click', function(){
@@ -1043,7 +1251,15 @@ body.locked{overflow:hidden;}
     return '';
   }
   function say(t){ msg.textContent = t || ''; msg.className = t ? 'msg on' : 'msg'; }
-  function lock(){ gate.style.display = 'flex'; document.body.classList.add('locked'); }
+  /* ⚠⚠ [stated] «សម្រាប់ file ប្រើ offline មិនចាំបាច់ sign in ចូលទេ» ៖
+     ពេលបើកជា **ឯកសារក្នុងម៉ាស៊ីន** ( file:// ) គ្មានម៉ាស៊ីនមេឱ្យផ្ទៀងផ្ទាត់
+     ទេ ហើយអ្នកដែលបើកបាន គឺមានឯកសារនៅនឹងដៃរួចហើយ ⇒ ចូលតែម្តង ។
+     ពេលបើកពី teamsmos.com ( https:// ) នៅតែត្រូវ sign in ដូចដើម ។ */
+  var OFFLINE_FILE = (location.protocol === 'file:');
+  function lock(){
+    if(OFFLINE_FILE){ open_(''); return; }
+    gate.style.display = 'flex'; document.body.classList.add('locked');
+  }
   function open_(who){
     gate.style.display = 'none'; document.body.classList.remove('locked');
     var w = document.getElementById('gWho'); if(w) w.textContent = who ? ('👤 ' + who) : '';
@@ -1359,6 +1575,32 @@ body.locked{overflow:hidden;}
     if(sv) return svgToPng(sv, 760, 110);
     return Promise.resolve('');
   }
+  /* ⚠⚠ អត្ថបទក្នុងរង្វង់ក្រចក ( placeholder ) គូសដោយ CSS `::before`
+     ⇒ `innerText` មើលមិនឧ83ឧ ⇒ បន្ទាត់ព័ត៌មានចេញទទេក្នុង Word ។
+     វាលទទេ ⇒ យក `data-ph` មកជំនួស ។ */
+  function lineText(el){
+    if(!el) return '';
+    var out = '';
+    [].forEach.call(el.childNodes, function(n){
+      if(n.nodeType === 3){ out += n.nodeValue; return; }
+      if(n.nodeType !== 1) return;
+      /* ⚠ `.lead` លើទំព័រផ្ទុកចំណុចជាង ១៥០ គ្រាប់ ( វាកាត់ដោយ overflow )
+         ⇒ បើយកទាំងអស់ចូល Word បន្ទាត់ចុះពីរជួរ ហើយតារាងហូរទៅទំព័រទី ៣ ។
+         ឯកសារដើមប្រើ ១២៩ គ្រាប់ ⇒ យក ១២៩ ត្រង់ៗ ( ១១៥ ពីមុនជាការទុក
+         ចន្លោះដោយខ្ញុំយល់ច្រឡំថាតារាងហូរដោយការចុះបន្ទាត់ ) ។ */
+      if(n.classList && n.classList.contains('lead')){
+        out += new Array(130).join('.');
+        return;
+      }
+      if(n.classList && n.classList.contains('fld')){
+        var v = n.textContent.replace(/[\s ]/g, '');
+        out += v ? n.textContent : (n.getAttribute('data-ph') || '');
+        return;
+      }
+      out += lineText(n);
+    });
+    return out.replace(/ /g, ' ').replace(/\s+/g, ' ').trim();
+  }
   function txt(sel){
     var e = document.querySelector(sel);
     return e ? e.innerText.replace(/ /g, ' ').replace(/\s+\n/g, '\n').trim() : '';
@@ -1367,77 +1609,145 @@ body.locked{overflow:hidden;}
     return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c]; }); }
 
   function buildDoc(dtImg, lbImg, l1Img){
+    /* ទ្រង់ទ្រាយយកចេញពីឯកសារ Word ពិតរបស់គេ ( 1._Letter_Sample_Final ) ៖
+         ទំព័រ A4 · គែម   លើ 1.59cm · ស្តាំ 2.27cm · ក្រោម 0.75cm · ឆ្វេង 2.54cm
+         ចំណងជើង · ហត្ថលេខា · ក្បាល «សេចក្តីសម្រេច…» = Khmer OS Muol Light 11pt
+         អត្ថបទឯទៀត = Khmer OS Siemreap 11pt ( ក្បាលតារាង 10pt )
+         តារាង ៖ ២ ជួរឈរ 4665/4965 twips = 48.44% / 51.56% · ទទឹង 16.99cm
+         កម្ពស់ជួរ ( twips → mm ) ៖ 357·1412·255·1457·398·1493·782·2222
+                                  = 6.3 · 24.9 · 4.5 · 25.7 · 7.0 · 26.3 · 13.8 · 39.2 */
     var KH = "'Khmer OS Siemreap','Khmer OS',serif";
     var MU = "'Khmer OS Muol Light','Khmer OS Muol',serif";
-    var P  = 'font-family:' + KH + ';font-size:10.5pt;line-height:150%;margin:0 0 4pt;';
+    /* ⚠⚠ គម្លាតបន្ទាត់ ៖ វាស់ពី `w:spacing` ក្នុងឯកសារដើមផ្ទាល់ ៖
+         ទំព័រ ១ = `w:line="216" auto` ⇒ ៩០%  ·  ទំព័រ ២ = `w:line="240"` ⇒ ១០០%
+         ( ពីមុនខ្ញុំដាក់ ១៥០% ⇒ ១ បន្ទាត់ = 11.1mm ជំនួស 5.5mm ⇒ ផ្នែកលើតារាង
+           ក្លាយ 147.7mm ជំនួស 65mm ⇒ តារាងធ្លាក់ទំព័រ ៣ ) */
+    var P  = 'font-family:' + KH + ';font-size:11.0pt;margin:0;line-height:90%;';
+    var PM = 'font-family:' + MU + ';font-size:11.0pt;margin:0;line-height:90%;';
+    var RH = [6.3, 24.9, 4.5, 25.7, 7.0, 26.3, 13.8, 39.2];
+    /* ចំនួនចំណុចយកតាមឯកសារដើម ៖ «កម្មវត្ថុ» ទំព័រ១ = 42 «…» ·
+       តួអក្សរទំព័រ១ = 743 «…» ក្នុងកថាខណ្ឌតែមួយ ដែលរុំបន្ទាត់ពេញទំព័រ ·
+       «កម្មវត្ថុ» ទំព័រ២ = 129 «.» ។
+       ⚠ ប្រវែងត្រូវថយតាមអក្សរដែលវាយ បើមិនដូច្នេះវាហូរទៅទំព័រទី ៣ ។ */
+    function dots(n, ch){ return n > 0 ? new Array(n + 1).join(ch || '…') : ''; }
     var h = [];
-    h.push('<html xmlns:o="urn:schemas-microsoft-com:office:office" ' +
-           'xmlns:w="urn:schemas-microsoft-com:office:word" ' +
-           'xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8">' +
-           '<style>@page{size:21cm 29.7cm;margin:1.4cm 1.5cm 1.4cm 2.5cm;}' +
-           'body{font-family:' + KH + ';font-size:10.5pt;}' +
-           'table{border-collapse:collapse;}' +
-           'td{border:0.5pt solid #000;padding:3pt 6pt;vertical-align:middle;}' +
-           '.c{text-align:center;}.r{text-align:right;}' +
-           '</style></head><body>');
+    h.push('<html xmlns:o="urn:schemas-microsoft-com:office:office" '
+      + 'xmlns:w="urn:schemas-microsoft-com:office:word" '
+      + 'xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8">'
+      + '<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View>'
+      + '<w:Zoom>100</w:Zoom></w:WordDocument></xml><![endif]-->'
+      + '<style>@page{size:21.0cm 29.7cm;mso-page-orientation:portrait;'
+      + 'margin:1.59cm 2.27cm 0.75cm 2.54cm;}'
+      + 'div.Section1{page:Section1;} body{font-family:' + KH + ';font-size:11.0pt;}'
+      + 'p{margin:0;line-height:100%;mso-line-height-rule:auto;} table{border-collapse:collapse;}'
+      /* ⚠ `windowtext` ជាពាក្យរបស់ Word ប៉ុណ្ណោះ — កម្មវិធីដទៃមិនស្គាល់
+         ⇒ ស៊ុមតារាងបាត់ទាំងស្រុង ( ឧ83ឧ ) ។ */
+      /* ⚠⚠ Word និង LibreOffice **មិនអនុវត្ត** ច្បាប់ស៊ុមពី stylesheet
+         លើ `td` ទេ ( សាកបើកពិត ⇒ តារាងចេញគ្មានខ្សែសោះ ) ។ ត្រូវសរសេរ
+         ស៊ុម inline លើក្រឡានីមួយៗ និងដាក់ `border=1` លើតារាង ។ */
+      + 'td{padding:1pt 5pt;vertical-align:middle;'
+      + 'font-family:' + KH + ';font-size:10.0pt;}'
+      + '</style></head><body><div class=Section1>');
 
-    /* ---------- ទំព័រ ១ ៖ លិខិត ---------- */
-    if(l1Img) h.push('<p class="r" style="' + P + '"><img src="' + l1Img + '" width="310"></p>');
-    ['សូមគោរពជូន','ឯកឧត្តមរដ្ឋមន្ត្រីប្រតិភូអមនាយករដ្ឋមន្ត្រី',
-     'និងជាប្រតិភូរាជរដ្ឋាភិបាល ទទួលបន្ទុកជាអគ្គនាយកនៃអគ្គនាយកដ្ឋានពន្ធដារ']
-      .forEach(function(t, i){
-        var e = document.querySelectorAll('#ltitle > div')[i];
-        h.push('<p class="c" style="font-family:' + MU + ';font-size:10.5pt;line-height:170%;margin:0;">'
-               + esc2(e ? e.innerText.trim() : t) + '</p>');
-      });
-    var subj = txt('#lsubj .fld');
-    h.push('<p style="' + P + 'margin-top:12pt;"><span style="font-family:' + MU + '">កម្មវត្ថុ៖</span> '
-           + (subj ? esc2(subj) : '<span style="letter-spacing:1pt">' + new Array(70).join('.') + '</span>') + '</p>');
-    var body = txt('#lbody').split(/\n+/).filter(function(x){ return x.trim(); });
-    if(!body.length) body = ['សេចក្តីដូចមានចែងក្នុងកម្មវត្ថុខាងលើ   ខ្ញុំបាទ'];
-    body.forEach(function(line){
-      h.push('<p style="' + P + 'text-indent:1.57cm;text-align:justify;">' + esc2(line) + '</p>');
-    });
-    for(var i = 0; i < Math.max(0, 14 - body.length); i++){
-      h.push('<p style="' + P + 'border-bottom:0.75pt dotted #666;margin:0 0 6pt;">&nbsp;</p>');
+    /* ---------------- ទំព័រ ១ ៖ លិខិត ---------------- */
+    /* ⚠ ទទឹងក្នុង Word = ទទឹងពិតលើអេក្រង់ ( CSS px @96dpi = mm × 3.7795 )
+       ដូច្នេះអ្វីដែលឃើញ គឺអ្វីដែលបានបោះពុម្ព ។ 300px ថេរពីមុនមិនត្រូវ ។ */
+    function imgW(sel, dflt){
+      var e = document.querySelector(sel);
+      var w = e ? Math.round(e.getBoundingClientRect().width) : 0;
+      return w > 20 ? w : dflt;
     }
-    h.push('<p class="r" style="font-family:' + MU + ';font-size:10.5pt;margin-top:22pt;">'
+    if(l1Img) h.push('<p style="' + P + 'text-align:right">'
+                     + '<img src="' + l1Img + '" width="' + imgW('#pzL1 img', 204) + '"></p>');
+    [].forEach.call(document.querySelectorAll('#ltitle > div'), function(e){
+      h.push('<p style="' + PM + 'text-align:center">' + esc2(e.innerText.trim()) + '</p>');
+    });
+    h.push('<p style="' + PM + 'font-size:8.0pt">&nbsp;</p>');
+    var subj1 = txt('#lsubj');        /* វាលទទេ ⇒ ចំណុចៗ */
+    h.push('<p style="' + P + 'text-align:justify"><span style="font-family:' + MU + '">កម្មវត្ថុ៖</span> '
+           + esc2(subj1) + dots(42 - Math.round(subj1.length * 0.8)) + '</p>');
+    h.push('<p style="' + P + '">&nbsp;</p><p style="' + P + 'font-size:7.0pt">&nbsp;</p>');
+
+    var body = txt('#lbody').split(/\n+/).map(function(x){ return x.trim(); })
+                 .filter(function(x){ return x; });
+    if(!body.length) body = ['សេចក្តីដូចមានចែងក្នុងកម្មវត្ថុខាងលើ ខ្ញុំបាទ'];
+    /* ⚠ ៧៤៣ «…» = ចំនួនពិតក្នុងឯកសារដើម ( វាស់ពី `document.xml` ) ។
+       ទំព័រ ១ របស់ឯកសារដើមបញ្ចប់តែ ~134mm ⇒ រូបបារកូដ ~33mm ខាងលើ
+       មិនធ្វើឱ្យហូរទេ ។ មូលហេតុទំព័រ ៣ ពិតជា `line-height` ទេ ។ */
+    var typed = body.join('').length;
+    var fill  = Math.max(60, 743 - typed * 2);
+    body.forEach(function(line, i){
+      h.push('<p style="' + P + 'text-align:justify;text-indent:1.57cm">'
+             + esc2(line) + (i === body.length - 1 ? dots(fill) : '') + '</p>');
+    });
+    h.push('<p style="' + P + '">&nbsp;</p>');
+    h.push('<p style="' + PM + 'text-align:right">'
            + esc2(txt('#lsign') || 'ប្រធាននាយកដ្ឋាន') + '</p>');
 
-    /* ---------- ទំព័រ ២ ៖ កំណត់បង្ហាញ ---------- */
+    /* ---------------- ទំព័រ ២ ៖ កំណត់បង្ហាញ ---------------- */
     h.push('<br clear="all" style="mso-special-character:line-break;page-break-before:always">');
-    h.push('<table style="width:100%;border:0"><tr>'
-      + '<td style="border:0;width:50%;vertical-align:top">'
-      + '<table style="width:7.2cm"><tr><td style="height:2.5cm;text-align:center">'
-      + (dtImg ? '<img src="' + dtImg + '" width="200"><br>' : '<span style="font-family:' + MU + '">បារកូដ</span><br>')
-      + '<span style="font-size:9.5pt">' + esc2(txt('#dtDate')) + '</span>'
-      + '</td></tr></table></td>'
-      + '<td style="border:0;width:50%;text-align:right;vertical-align:top">'
-      + (lbImg ? '<img src="' + lbImg + '" width="176">' : '') + '</td></tr></table>');
+    P  = 'font-family:' + KH + ';font-size:11.0pt;margin:0;line-height:100%;';
+    PM = 'font-family:' + MU + ';font-size:11.0pt;margin:0;line-height:100%;';
+    h.push('<table style="width:16.99cm;border:0;margin-bottom:2pt"><tr>'
+      + '<td style="border:0;width:50%;vertical-align:top;padding:0">'
+      + (dtImg || txt('#dtDate')
+          ? '<table border=1 cellspacing=0 style="width:6.0cm;border-collapse:collapse"><tr>'
+            + '<td style="border:0.5pt solid #000000;height:2.3cm;text-align:center;padding:2pt">'
+            + (dtImg ? '<img src="' + dtImg + '" width="185"><br>'
+                     : '<span style="font-family:' + MU + ';font-size:10pt">បារកូដ</span><br>'
+                       + '<span style="font-size:10pt">DT' + dots(30, '.') + '</span><br>')
+            + '<span style="font-size:9.0pt">' + esc2(txt('#dtDate')) + '</span>'
+            + '</td></tr></table>' : '')
+      + '</td>'
+      + '<td style="border:0;width:50%;text-align:right;vertical-align:top;padding:0">'
+      + (lbImg ? '<img src="' + lbImg + '" width="' + imgW('#pzLb img', 168) + '">' : '') + '</td></tr></table>');
+
     [].forEach.call(document.querySelectorAll('#ttl > div'), function(e){
-      h.push('<p class="c" style="font-family:' + MU + ';font-size:10.5pt;line-height:190%;margin:0;">'
-             + esc2(e.innerText.trim()) + '</p>');
+      h.push('<p style="' + PM + 'text-align:center">' + esc2(e.innerText.trim()) + '</p>');
     });
-    h.push('<p style="margin:10pt 0 0">&nbsp;</p>');
+    h.push('<p style="' + P + 'font-size:6.0pt">&nbsp;</p>');
     [].forEach.call(document.querySelectorAll('#inf .it'), function(e){
-      h.push('<p style="' + P + '">' + esc2(e.innerText.replace(/ /g,' ').trim()) + '</p>');
+      h.push('<p style="' + P + '">' + esc2(lineText(e)) + '</p>');
     });
-    h.push('<p style="' + P + 'font-weight:bold;margin-top:10pt">' + esc2(txt('#mt') || 'មតិផ្សេងៗ៖') + '</p>');
-    var rows = document.querySelectorAll('#tb tr');
-    h.push('<table style="width:100%">');
-    [].forEach.call(rows, function(tr){
-      var isH = tr.querySelector('td.h');
-      h.push('<tr>');
-      [].forEach.call(tr.children, function(td){
-        var span = td.colSpan > 1 ? ' colspan="' + td.colSpan + '"' : '';
-        var hh = isH ? '' : ' height="' + Math.round(parseFloat(tr.style.height || '30') * 28.35) + '"';
-        h.push('<td' + span + hh + ' style="' + (isH ? 'text-align:center;' : '')
-          + (td.classList.contains('muol') ? 'font-family:' + MU + ';' : '')
-          + 'font-size:10.5pt;">' + (isH ? esc2(td.innerText.trim()) : '&nbsp;') + '</td>');
-      });
+    h.push('<p style="' + P + '">' + esc2(txt('#mt') || 'មតិផ្សេងៗ៖') + '</p>');
+
+    var BD = 'border:0.5pt solid #000000;';
+    h.push('<table border=1 cellspacing=0 cellpadding=0 '
+      + 'style="width:16.99cm;border-collapse:collapse">'
+      + '<col style="width:48.44%"><col style="width:51.56%">');
+    var trs = document.querySelectorAll('#tb tr');
+    [].forEach.call(trs, function(tr, i){
+      var hd = tr.querySelector('td.h');
+      var hh = RH[i] != null ? RH[i] : 20;
+      /* ⚠ កម្ពស់ជួរ ៖ Word អាន CSS mm បាន តែកម្មវិធីដទៃអានមិនបាន
+         ( សាកបើកពិត ⇒ ជួរសរសេររួមតូចអស់ ) ⇒ ដាក់ទាំង attribute ជា px
+         ទាំង CSS ជា mm ; `mso-height-rule:exactly` ឱ្យ Word គោរពពិត ។ */
+      var hpx = Math.round(hh * 3.7795);
+      /* ⚠⚠ ឯកសារដើមគ្មាន `w:hRule` ⇒ Word យល់ជា **«យ៉ាងតិច»** ។
+         `exactly` ដែលខ្ញុំដាក់ពីមុន ធ្វើឱ្យ Word **កាត់អក្សរ** នៅជួរ
+         «មតិប្រធាននាយកដ្ឋាន (១ ថ្ងៃ)» ដែលខ្ពស់តែ 4.5mm ( ឃើញក្នុងរូប ) ។ */
+      h.push('<tr height=' + hpx + ' style="height:' + hh + 'mm;mso-height-rule:atleast">');
+      if(hd){
+        [].forEach.call(tr.children, function(td){
+          var sp = td.colSpan > 1 ? ' colspan=' + td.colSpan : '';
+          /* ⚠ ឯកសារដើម ៖ អក្សរក្បាលតារាង `w:sz=20` ⇒ ១០pt ។ ១១pt ធ្វើឱ្យជួរ
+             4.5mm ពោង ⇒ តារាងវែងលើស ។ ជួរ «សេចក្តីសម្រេច…» = `w:line=264` ⇒ ១១០% ។ */
+          h.push('<td' + sp + ' height=' + hpx + ' style="' + BD + 'height:' + hh + 'mm;text-align:center;'
+            + 'font-size:10.0pt;line-height:' + (td.classList.contains('muol') ? '110' : '100') + '%;'
+            + (td.classList.contains('muol') ? 'font-family:' + MU + ';' : '')
+            + '">' + esc2(td.innerText.replace(/\s+/g,' ').trim()) + '</td>');
+        });
+      } else if(i === 1){
+        /* ជួរទី ២ ៖ ឯកសារដើមដាក់ «១ ថ្ងៃ» កណ្តាលក្នុង **ក្រឡាទាំងពីរ** */
+        var c1d = BD + 'height:' + hh + 'mm;text-align:center;font-size:9.0pt;line-height:100%;font-family:' + MU;
+        h.push('<td height=' + hpx + ' style="' + c1d + '">១ ថ្ងៃ</td>'
+             + '<td height=' + hpx + ' style="' + c1d + '">១ ថ្ងៃ</td>');
+      } else {
+        h.push('<td colspan=2 height=' + hpx + ' style="' + BD + 'height:' + hh + 'mm">&nbsp;</td>');
+      }
       h.push('</tr>');
     });
-    h.push('</table></body></html>');
+    h.push('</table></div></body></html>');
     return h.join('');
   }
 
