@@ -1209,6 +1209,19 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
   #mtr-embed .toolrow, #mtr-embed .toolrow > .left, #mtr-embed .toolrow > .right{
     min-width:0 !important; max-width:100% !important; flex-wrap:wrap;
   }
+  /* ⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «ផ្នែក download excel ដាក់វានៅជួរណា
+     មានអក្សរស្រាប់តែមួយជួរ កុំឲ្យវាចុះបន្ទាត់តែឯង» ।
+     ⚠ របារជា flex ពីរក្រុម ៖ .left ( ថេប + ចំណងជើង ) និង .right
+       ( ធីក + EXCEL ) ⇒ លើទូរស័ព្ទ ក្រុមទាំងពីរបែកជួរ ⇒ EXCEL
+       អង្គុយដោយឯកៀង ।
+     ⇒ `display:contents` លុបប្រអប់ក្រុមចោល ⇒ ធាតុទាំងអស់ក្លាយជា
+       បងប្អូននៃជួរតែមួយ ⇒ វារុំតាមធម្មជាតិ ⇒ EXCEL អង្គុយជាមួយ
+       ចំណងជើង «ទម្រង់ព្រីន MTR — ឆ្នាំ …» ।
+     ⚠ ជួរថេបធំ ⇒ វានៅកាន់បន្ទាត់ផ្ទាល់ខ្លួនដដែល ( រំកិលបាន ) । */
+  .toolrow > .left, .toolrow > .right,
+  #mtr-embed .toolrow > .left, #mtr-embed .toolrow > .right{ display:contents !important; }
+  .toolrow{ display:flex !important; flex-wrap:wrap !important;
+            align-items:center !important; gap:8px 10px !important; }
 
   /* ២ ៖ គោលដៅចុច ≥ ៤០px និងអក្សរ ១៦px ក្នុងប្រអប់ —
      ⚠ ១៦px ជាកម្រិតដែល iOS ឈប់ពង្រីកអេក្រង់ដោយស្វ័យប្រវត្តិពេលចុចវាល។
@@ -4233,9 +4246,16 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     }
     /* ⚠ `min-width` ឈ្នះលើ `max-width` សម្រាប់ CSS ⇒ បើមិនដាក់
        `min-width:0` ទេ តារាងនៅតែ ៧៦០px ដដែល ( វាស់បាន ) । */
+    /* ⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «ផ្នែកការបង់ពន្ធ ហេតុអ្វីមើលទៅដូចដាច់
+       តារាង» ។ ⚠⚠ នោះជាកំហុសរបស់ខ្ញុំ ៖ ខ្ញុំដាក់ display:block លើ
+         **តួតារាងផ្ទាល់** ដើម្បីឱ្យវារំកិល ⇒ ប្រអប់តារាងក្លាយជា ២៨០px
+         តែខ្លឹមសារខាងក្នុងបង្រួមតាមធម្មជាតិ ⇒ **សល់ទំនេរសនៅខាងស្តាំ**
+         ⇒ មើលទៅដូចតារាងដាច់ ( វាស់បាន ៖ តារាង ២៨០ · មេ ២៨២ ) ។
+       ⇒ តារាងត្រឡប់ជា table ពេញទទឹងវិញ ; ការរំកិលទុកឱ្យ .table-wrap
+         ធ្វើ ( វាជាប្រអប់ខាងក្រៅ ⇒ មិនបំបែកតារាង ) ។ */
     #toi-embed #coverPanel table.ledger{
-      display:block !important; max-width:100% !important; min-width:0 !important;
-      overflow-x:auto !important; -webkit-overflow-scrolling:touch;
+      display:table !important; width:100% !important;
+      max-width:100% !important; min-width:0 !important;
     }
     #toi-embed #coverPanel table.ledger > tbody,
     #toi-embed #coverPanel table.ledger > thead{ min-width:0 !important; }
@@ -4257,21 +4277,45 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
       padding:0 !important; white-space:normal !important;
       vertical-align:top !important; text-align:left !important;
     }
-    /* ស្លាក ( ក្រឡាគ្មានប្រអប់ ) ៖ បន្ទាត់ខ្លួនឯងនៅលើវាល */
-    #toi-embed #coverPanel table.cv-grid > tbody > tr > td{
-      font-size:13.5px; line-height:1.6; color:var(--toi-slate,#5B6478);
+    /* ⭐⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «ជួយរៀបវាទៅមួយជួរនៃកន្លែងត្រូវបំពេញ
+       ដូចជា សវនករ ៖ រដ្ឋា សុជីវិន កុំចុះបន្ទាត់ … និងដាក់ទំហំ font
+       ស្មើគ្នាផងដែរ» ។
+       ⚠ ជុំមុនខ្ញុំដាក់ស្លាកនៅ**លើ**ប្រអប់ ( ១ វាល ២ បន្ទាត់ ) ។ វាដោះ
+         ការហៀរបាន តែវាធ្វើឱ្យទម្រង់វែងមួយជាងមុន ហើយខុសពីក្រដាស ។
+       ⇒ ឥឡូវ ៖ ជួរនីមួយៗជា flex ⇒ **ស្លាកឈរមុខ ប្រអប់ឈរក្រោយ ក្នុងជួរ
+         តែមួយ** ; ប្រអប់ស្រូបទំហំដែលនៅសល់ ។ បើវាលវែងពេក វារុំទៅបន្ទាត់
+         ក្រោមដោយស្វ័យប្រវត្តិ ( អាសយដ្ឋាន · សកម្មភាព ) ⇒ មិនហៀរ ។
+       ⚠ `:has()` ជាអ្វីដែលបែងចែកក្រឡាស្លាក ( គ្មានប្រអប់ ) ពីក្រឡាវាល ។
+         វាមានលើ iOS 16.4+ · Chrome 105+ ។ បើឧបករណ៍ចាស់មិនស្គាល់ វា
+         ត្រឡប់ទៅរបៀបស្លាកនៅលើវិញ — នៅតែអានបាន មិនខូច ។
+       ⚠ ទំហំអក្សរ ៖ ស្លាក និងប្រអប់ **១៤px ដូចគ្នា** ( មុននេះ ១៣ និង ១៥ ) ។ */
+    #toi-embed #coverPanel table.cv-grid tr{
+      display:flex !important; flex-wrap:wrap; align-items:center; gap:4px 8px;
     }
-    #toi-embed #coverPanel table.cv-grid > tbody > tr > td + td{ margin-top:2px; }
+    #toi-embed #coverPanel table.cv-grid td{
+      width:auto !important; flex:0 0 auto;
+      font-size:14px !important; line-height:1.6; color:var(--toi-slate,#5B6478);
+    }
+    #toi-embed #coverPanel table.cv-grid td > span{ font-size:14px !important; }
+    /* ⚠ មិនត្រឹមតែឲ្យប្រអប់ស្រូបទំហំនៅសល់ទេ ៖ បើប្រអប់តូច
+       គូស្លាក/ប្រអប់ទី២ នឹងឡើងមករួមជួរដែល ⇒ មើលមិនដឹងថាស្លាកណា
+       ជាប់នឹងប្រអប់ណា ( កើតឡើងពិតក្នុងរូបថត ) ।
+       ⇒ ប្រអប់យ៉ាងតិច ៥៥% នៃជួរ ⇒ គូទី២ មិនអាចសម ⇒
+         **១ គូ ១ ជួរ** ជានិច្ច ⇒ ស្លាកនិងប្រអប់នៅជាប់គ្នាជានិច្ច । */
+    #toi-embed #coverPanel table.cv-grid td:has(.cf-wrap){
+      flex:1 1 55%; min-width:55%;
+    }
     /* ⭐ វាល ៖ ពេញទទឹងជានិច្ច ( inline style width:160px ត្រូវផ្តួល ) */
     #toi-embed #coverPanel .cf-wrap{
       display:block !important; width:100% !important; max-width:100% !important;
       margin-bottom:6px;
     }
+    /* ⭐ ទំហំអក្សរស្មើស្លាក ៖ ១៤px ដូចគ្នា ( [stated] ) */
     #toi-embed #coverPanel .field-input,
     #toi-embed #coverPanel textarea.cf-edit,
     #toi-embed #coverPanel select{
       width:100% !important; max-width:100% !important; min-width:0 !important;
-      box-sizing:border-box !important; font-size:15px !important;
+      box-sizing:border-box !important; font-size:14px !important;
     }
     #toi-embed #coverPanel textarea.cf-edit{ height:auto !important; min-height:40px; }
     /* ⚠ iOS មិនគោរព width លើ input[type=date] បើគ្មាន appearance:none */
@@ -4286,10 +4330,35 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
       display:block !important; width:100% !important; min-width:0 !important;
     }
     /* ⭐ ចំណងជើងផ្ទាំង ៖ អនុញ្ញាតឲ្យចុះបន្ទាត់ ⇒ លែងត្រូវកាត់ដោយ overflow */
-    #toi-embed #coverPanel h1, #toi-embed #coverPanel h2,
-    #toi-embed #coverPanel h3, #toi-embed #coverPanel .cv-doc-title,
+    /* ⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «អក្សរ សេចក្ដីបរិយាយការងារចុះធ្វើសវនកម្ម
+       ពន្ធដារ កុំឱ្យចុះបន្ទាត់ ដាក់តែមួយជួរបានហើយ» ។
+       ⚠ ការវាស់ ៖ ១ ជួរត្រូវការ ៣២៧px ឯទទឹងមានត្រឹម ២៨២px
+         ⇒ ១៥ × ២៨២ ÷ ៣២៧ = ១២,៩px ⇒ ដាក់ ១២px ( មានចន្លោះសុវត្ថិភាព ) ។ */
+    #toi-embed #coverPanel h1{
+      white-space:nowrap !important; font-size:12px !important;
+      overflow:hidden; text-overflow:ellipsis; margin-bottom:10px !important;
+    }
+    /* ⭐⭐ [stated] «បន្ថយទំហំអក្សរ III. … ការប្តូរទំហំមិនមែនតែលេខ III ទេ
+       គឺដាក់ស្មើៗគ្នា» ⇒ ចំណងជើងផ្នែកទាំងអស់ ១៣px ស្មើគ្នា ( មុននេះ ១៥px
+       សម្រាប់ I·II·III និង ១៤px សម្រាប់ចំណងជើងរង ) ។
+       ⚠ «III. ដំណើរការនៃការធ្វើសវនកម្ម និងកិច្ចសហការ» ត្រូវការ ~៤៦០px
+         ក្នុង ២៨២px ⇒ មិនអាចឈរ ១ ជួរបានទេ លើកលែងតែអក្សរតូចជាង ៩px
+         ( អានមិនកើត ) ⇒ ទុកឱ្យរុំ តែអក្សរតូច និងស្មើគេ ។ */
+    #toi-embed #coverPanel h2, #toi-embed #coverPanel h3,
+    #toi-embed #coverPanel h4, #toi-embed #coverPanel .cv-doc-title,
     #toi-embed #coverPanel .cv-head, #toi-embed #coverPanel .cv-sub{
       white-space:normal !important; overflow-wrap:anywhere;
+      font-size:13px !important; line-height:1.5 !important;
+    }
+    /* ⭐⭐ [stated] «ផ្នែកធីកនេះធំពេកហើយ» ។
+       ⚠ ការវាស់ ៖ ប្រអប់ធីកចេញមក ៦៦×៤២px និង ៩៤×៤២px ( គួរតែ ~១៨px )
+         ⇒ វាត្រូវបានលាតដោយច្បាប់គោលដៅចុច ៤០px និងការលាតក្នុងក្រឡា ។
+       ⇒ ចាក់ទំហំពិតប្រាកដ ១៨ × ១៨px ។ */
+    #toi-embed #coverPanel input[type="checkbox"],
+    #toi-embed #coverPanel input[type="radio"]{
+      width:18px !important; height:18px !important;
+      min-width:18px !important; min-height:18px !important;
+      max-width:18px !important; flex:0 0 auto !important; margin:0 auto;
     }
     #toi-embed #coverPanel{ max-width:100% !important; overflow-x:hidden !important; }
   }
@@ -5644,6 +5713,57 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     /* ⚠ លើទូរស័ព្ទ ឈ្នាប់ច្រើន ⇒ បង្រួមរឹម និងអក្សរបន្តិច ⇒ ១ ជួរផ្ទុក
        បាន ២–៣ ឈ្នាប់ ជំនួស ១ ⇒ បញ្ជីខ្លីជាង មើលឃើញទាំងអស់ក្នុងពេលតែមួយ ។ */
     #tos-embed .matrix-toggle-btn{ padding:7px 12px; font-size:12px; }
+    /* ⭐ [stated] ២០២៦-១១-១៣ ៖ «កំណត់ពន្ធឡើងវិញ · មិនទាន់កំណត់ ដាក់វាតែ
+       មួយជួរ ជាមួយនឹងគ្រប់ស្ថានភាព» ⇒ ឈ្នាប់ក្រុមនេះតូចជាងគេបន្តិច
+       ⇒ ៣ ឈ្នាប់សមក្នុងទទឹង ៣៥៤px ។ */
+    /* ⚠ ការវាស់ ៖ ៣ អ្នកស្ថានភាព ត្រូវការ ៣១៥px ខណៈពេលជួរមាន ៣០៦px
+       ⇒ បង្រួមអក្សរ និងរឹម ⇒ ~៣០២px ⇒ សម ១ ជួរ । */
+    #tos-embed .amd-filter-btn{ padding:6px 7px !important; font-size:11px !important; }
+    /* ⭐ បង្ខំឲ្យក្រុមស្ថានភាពចាប់ផ្តើមបន្ទាត់ថ្មី ⇒ សន្សំជាមួយគ្នា
+       ( ស្ការបែងចែកបញ្ឈរក្លាយជាបន្ទាត់នៅលើទូរស័ព្ទ ) । */
+    #tos-embed .mx-sep{
+      flex:1 0 100% !important; width:auto !important; height:0 !important;
+      margin:0 !important; background:none !important;
+    }
+    /* ⚠ `.matrix-toggle` ជាធាតុ flex ក្នុងជួររឝមជាមួយប្រអប់ស្វែងរក
+       ⇒ វាមិនទាន់ទទឹងពេញ ⇒ ៣ អ្នកស្ថានភាពខ្វះបីប្រាំpx ⇒ បែកជួរ ।
+       ⇒ ឲ្យវាកាន់បន្ទាត់ពេញលើទូរស័ព្ទ । */
+    #tos-embed .matrix-toggle{ gap:8px 6px; flex:1 1 100% !important; }
+    /* ⚠⚠ វាស់បាន ៖ ប្រអប់ឈ្នាប់មានទទឹងតែ ២៦៨px ខណៈពេលផ្ទាំងមាន
+       ៣៥៤px ⇒ រឹមកាត ២២px × ២ ស៊ុកយកទិន្នផល । ៣ អ្នកស្ថានភាពត្រូវការ
+       ៣០៤px ⇒ បង្រួមរឹមកាតមក ១២px ⇒ ទទឹងប្រអប់ ~៣០៨px ⇒ សម । */
+    #tos-embed section.missing-card{ padding-left:12px !important; padding-right:12px !important; }
+    /* ⭐ [stated] «បន្ថែមទំហំអក្សរ បៀវត្ស ស្វែងរកឈ្មោះបុគ្គលិក»
+       ⚠ ១៦px ជាកម្រិតដែល iOS ឈប់ពង្រីកអេក្រង់ពេលចុចវាល ⇒ ២ ក្នុង ១ ។ */
+    #tos-embed .mx-search input{ font-size:16px !important; padding-top:10px; padding-bottom:10px; }
+    #tos-embed .mx-search-ico{ font-size:15px; }
+    /* ⭐ ជួរប៊ូតុង EXCEL · លុប · ពិនិត្យ ៖ បង្រួមល្មមឱ្យសម ១ ជួរ */
+    #tos-embed .btn{ font-size:12.5px; padding-left:11px; padding-right:11px; }
+    /* ⚠ ចន្លោះ `gap:10px` សរសេរជា inline style ⇒ ត្រូវ !important ទើបផ្តួល
+       ⇒ សន្សំ ៨px ⇒ ប៊ូតុង ៣ សមក្នុងទ្រូង ៣០៦px । កុំព្យូទ័រនៅ ១០px ដដែល । */
+    #tos-embed div[style*="justify-content:flex-end"]{ gap:6px !important; }
+    /* ⭐ តារាងបុគ្គលិក ៖ ឈ្មោះ និងស្លាក «✓ n» ឈរជួរតែមួយ */
+    #tos-embed table.emp-grid td.name-cell{ white-space:nowrap !important; }
+    #tos-embed .mx-badge{ margin-left:5px; padding:1px 6px; font-size:10.5px; }
+    /* ⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «តារាងបុគ្គលិក ពីឈ្មោះដល់ឆ្នាំ ជួយរៀបឱ្យ
+       ងាយមើល» ។
+       ⚠ តារាងនេះធំជាងអេក្រង់ ⇒ ត្រូវរំកិលផ្តេក ⇒ ពេលរំកិលទៅមើលឆ្នាំ
+         **ឈ្មោះបាត់ពីអេក្រង់** ⇒ លែងដឹងថាជាជួររបស់នរណា ។
+       ⇒ ខ្ទាស់ជួរឈរឈ្មោះនៅគែមឆ្វេង ( sticky ) ⇒ ឈ្មោះនៅជាប់ជានិច្ច
+         ខណៈឆ្នាំរំកិលកាត់ពីក្រោយ ។
+       ⚠ ក្រឡា sticky ត្រូវមានផ្ទៃពណ៌ផ្ទាល់ខ្លួន បើមិនដូច្នេះទេ អក្សរ
+         ខាងក្រោយនឹងផុសកាត់វា ។ */
+    #tos-embed table.emp-grid thead th:first-child,
+    #tos-embed table.emp-grid tbody td.name-cell{
+      position:sticky; left:0; z-index:3;
+      background:var(--tos-card,#fff);
+      box-shadow:1px 0 0 var(--tos-line,#e3ded0);
+      max-width:170px; overflow:hidden; text-overflow:ellipsis;
+    }
+    #tos-embed table.emp-grid tbody tr.mx-amended td.name-cell{ background:#FFFBF0; }
+    #tos-embed table.emp-grid tbody tr:nth-child(even) td.name-cell{ background:#fbf9f3; }
+    /* ជួរឆ្នាំ ៖ អក្សរតូចបន្តិច ⇒ ឃើញឆ្នាំច្រើនជាងក្នុងការរំកិលតែមួយ */
+    #tos-embed table.emp-grid td.tabular, #tos-embed table.emp-grid th{ font-size:12px; }
     #tos-embed .matrix-toggle-row{ gap:10px 12px; justify-content:flex-start; }
     /* ប្រអប់ស្វែងរក ៖ ពេញទទឹង ⇒ គែមត្រង់ជាមួយឈ្នាប់ខាងលើ */
     #tos-embed .mx-search{ width:100%; }
@@ -7346,8 +7466,12 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
            stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
       <span>EXCEL</span>
     </button>
-    <button type="button" class="btn danger-ghost" id="revertAllReassessBtn">លុបការកំណត់ពន្ធ</button>
-    <button type="button" class="btn gold" id="viewAllReassessBtn">ពិនិត្យការកំណត់ពន្ធ (<span id="reassessCountBadge">0</span>)</button>
+    <button type="button" class="btn danger-ghost" id="revertAllReassessBtn" title="លុបការកំណត់ពន្ធឡើងវិញទាំងអស់">លុបការកំណត់</button>
+    <!-- [stated] ២០២៦-១១-១៣ ៖ «ផ្នែក excel ដល់ការពិនិត្យ រៀបវាតែមួយជួរ» ។
+         ⚠ ទទឹងជួរវាស់បាន ៣០៦px តែប៊ូតុង ៣ ត្រូវការ ៤២៦px ⇒ បាក់ ២ ជួរ ។
+         ⇒ បង្រួមស្លាកវែងបំផុត ( ១៨០px ) ⇒ សមក្នុង ១ ជួរ ។ អត្ថន័យពេញ
+           នៅក្នុង title ដដែល ។ -->
+    <button type="button" class="btn gold" id="viewAllReassessBtn" title="ពិនិត្យការកំណត់ពន្ធឡើងវិញទាំងអស់">ពិនិត្យ (<span id="reassessCountBadge">0</span>)</button>
   </div>
 
 
@@ -7556,6 +7680,18 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
       .vm-panel{border:1px solid var(--line); border-radius:10px; padding:12px 14px; margin-bottom:14px; background:var(--surface);}
       .vm-head{display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:8px;}
       .vm-head .btn{margin-left:auto;}
+      /* ⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «បន្ថែមជួរ ដាក់វានៅជាមួយនឹង បញ្ចូល
+         សាលកបត្រអនុរក្សដោយដៃ» ។
+         ⚠ លើទូរស័ព្ទ ស្លាក «🔓 ដោះសោដើម្បីកែ (មានឯកសារ upload រួចហើយ)»
+           វែងពេក ⇒ វារុញប៊ូតុងទៅបន្ទាត់ទី ៣ ។
+         ⇒ តម្រៀបឡើងវិញ ៖ ចំណងជើង + ប៊ូតុង នៅបន្ទាត់ទី ១ ជានិច្ច ;
+           ស្លាកដោះសោធ្លាក់ទៅបន្ទាត់ទី ២ ពេញទទឹង ។ */
+      @media screen and (max-width: 760px){
+        .vm-head{ gap:8px 10px; }
+        .vm-head > b{ order:1; flex:1 1 auto; min-width:0; }
+        .vm-head .btn{ order:2; margin-left:auto !important; flex:0 0 auto; white-space:nowrap; }
+        .vm-head .vm-lock, .vm-head > .vm-note{ order:3; flex:1 0 100%; margin:0; }
+      }
       .vm-lock{display:flex; align-items:center; gap:6px; font-size:12.5px; cursor:pointer;}
       .vm-note{font-size:12px; color:var(--muted);}
       .vm-tbl{min-width:0;}
@@ -27145,7 +27281,8 @@ function vatcrManualPanel(){
                ? '<br>សន្លឹកដែលបានអាន ៖ ' + esc(window.__vatcrScan.join(' · ')) : ''}</span>`}
       <button class="btn btn-plainlink" id="vmAdd" style="width:auto;"${dis}>＋ បន្ថែមជួរ</button>
     </div>
-    ${locked ? '<div class="vm-note">🔒 ជួរទាំងនេះចាក់សោ ព្រោះទិន្នន័យពីឯកសារជាគោល។ ដោះសោខាងលើបើត្រូវកែករណីខុស។</div>' : ''}
+    <!-- [stated] ២០២៦-១១-១៣ ៖ «លុបអក្សរ 🔒 ជួរទាំងនេះចាក់សោ …» ⇒ ដកចេញ ។
+         ⚠ ការចាក់សោខ្លួនឯងនៅដដែល ( វាលពិការ ) — ដកតែសារពន្យល់ ។ -->
     ${vatcrManual.length ? `<table class="ledger vm-tbl"><thead><tr>
       <th>ប្រភេទសំណើ</th><th style="width:90px;">ឆ្នាំ</th><th style="width:80px;">ខែ</th>
       <th style="width:150px;">កាលបរិច្ឆេទ</th><th style="width:150px;">សរុបទឹកប្រាក់</th><th style="width:50px;"></th>
@@ -30235,7 +30372,8 @@ function mtrManualPanel(){
         : `<span class="vm-note">គ្មានឯកសារសាលកបត្រ — អាចបញ្ចូលដោយដៃបាន</span>`}
       <button class="btn btn-plainlink" id="mmAdd" style="width:auto;"${dis}>＋ បន្ថែមជួរ</button>
     </div>
-    ${locked ? '<div class="vm-note">🔒 ជួរទាំងនេះចាក់សោ ព្រោះទិន្នន័យពីឯកសារជាគោល។ ដោះសោខាងលើបើត្រូវកែករណីខុស។</div>' : ''}
+    <!-- [stated] ២០២៦-១១-១៣ ៖ «លុបអក្សរ 🔒 ជួរទាំងនេះចាក់សោ …» ⇒ ដកចេញ ។
+         ⚠ ការចាក់សោខ្លួនឯងនៅដដែល ( វាលពិការ ) — ដកតែសារពន្យល់ ។ -->
     ${mtrManual.length ? `<table class="ledger vm-tbl"><thead><tr>
       <th>ប្រភេទពន្ធ</th><th style="width:90px;">ឆ្នាំ</th><th style="width:80px;">ខែ</th>
       <th style="width:160px;">ពន្ធបានបង់ (៛)</th><th style="width:50px;"></th>
@@ -41773,9 +41911,9 @@ window.__toiImport = function(data){
     const nNot = natScope.length - nAmd;
     if (nAmd > 0){
       els.matrixNatFilter.innerHTML += '<span class="mx-sep"></span>'
-        + `<button type="button" class="matrix-toggle-btn nat-filter-btn amd-filter-btn${matrixAmdFilter === 'all' ? ' active' : ''}" data-amd="all" title="បង្ហាញគ្រប់ស្ថានភាព">គ្រប់ស្ថានភាព (${natScope.length})</button>`
-        + `<button type="button" class="matrix-toggle-btn nat-filter-btn amd-filter-btn${matrixAmdFilter === 'yes' ? ' active' : ''}" data-amd="yes" title="បុគ្គលិកដែលមានការកំណត់ពន្ធឡើងវិញយ៉ាងហោចណាស់ ១ ចំណុច">✓ កំណត់ពន្ធឡើងវិញរួច (${nAmd})</button>`
-        + `<button type="button" class="matrix-toggle-btn nat-filter-btn amd-filter-btn${matrixAmdFilter === 'no' ? ' active' : ''}" data-amd="no" title="បុគ្គលិកដែលមិនទាន់កំណត់ពន្ធឡើងវិញ">○ មិនទាន់កំណត់ (${nNot})</button>`;
+        + `<button type="button" class="matrix-toggle-btn nat-filter-btn amd-filter-btn${matrixAmdFilter === 'all' ? ' active' : ''}" data-amd="all" title="បង្ហាញគ្រប់ស្ថានភាព">គ្រប់ (${natScope.length})</button>`
+        + `<button type="button" class="matrix-toggle-btn nat-filter-btn amd-filter-btn${matrixAmdFilter === 'yes' ? ' active' : ''}" data-amd="yes" title="បុគ្គលិកដែលមានការកំណត់ពន្ធឡើងវិញយ៉ាងហោចណាស់ ១ ចំណុច">✓ កំណត់រួច (${nAmd})</button>`
+        + `<button type="button" class="matrix-toggle-btn nat-filter-btn amd-filter-btn${matrixAmdFilter === 'no' ? ' active' : ''}" data-amd="no" title="បុគ្គលិកដែលមិនទាន់កំណត់ពន្ធឡើងវិញ">○ មិនទាន់ (${nNot})</button>`;
     } else {
       matrixAmdFilter = 'all';
     }
@@ -41827,7 +41965,12 @@ window.__toiImport = function(data){
       }).join('');
       const residencyLabel = emp.residency === 'nonresident' ? 'អនិវាសនជន' : 'និវាសនជន';
       const badge = emp.amendedTotal
-        ? `<span class="mx-badge" title="កំណត់ពន្ធឡើងវិញសរុប ${emp.amendedTotal} ចំណុច · ពន្ធបន្ថែម ${fmt(emp.addTaxTotal)}">✓ កំណត់ឡើងវិញ ${emp.amendedTotal}</span>`
+        /* ⭐ [stated] ២០២៦-១១-១៣ ៖ «កន្លែងកំណត់ឡើងវិញពីក្រោយឈ្មោះ ទុកតែ
+           ធីក និងលេខបានហើយ និងដាក់វាតែមួយជួរជាមួយនឹងឈ្មោះបុគ្គលិក» ។
+           ⚠ ស្លាកវែង ( «✓ កំណត់ឡើងវិញ ៩» ) ធំជាងទំហំដែលក្រឡាឈ្មោះនៅសល់
+             ⇒ វាធ្លាក់ទៅបន្ទាត់ទី ២ ។ ទុកតែ «✓ ៩» ⇒ ឈរជាប់ឈ្មោះបាន ។
+           ⚠ អត្ថន័យពេញនៅក្នុង title ដដែល ( ដាក់កណ្តុរ ឬចុចឱ្យយូរ ) ។ */
+        ? `<span class="mx-badge" title="កំណត់ពន្ធឡើងវិញសរុប ${emp.amendedTotal} ចំណុច · ពន្ធបន្ថែម ${fmt(emp.addTaxTotal)}">✓ ${emp.amendedTotal}</span>`
         : '';
       const rowCls = emp.amendedTotal ? ' class="mx-amended"' : '';
       return `<tr${rowCls}><td class="name-cell"><button type="button" class="name-link" data-name="${escapeHtml(emp.name)}">${escapeHtml(emp.name)}</button>${badge}</td><td>${escapeHtml(emp.nationality || '-')}</td><td>${residencyLabel}</td>${cells}</tr>`;
@@ -46329,9 +46472,9 @@ const RPT_CSS = `
     /* ⭐ គោលដៅ ២៤៨mm ( មើលកំណត់សម្គាល់ក្នុង NARR_CSS ) ៖
          · សន្លឹកធម្មតា ..... ២៦៩mm × ០,៩២២ = ២៤៨mm
          · សន្លឹកមុខការងារ .. ២៨០mm × ០,៨៨៥ = ២៤៨mm */
-    html.rsc-mobile-print .rpt-page.cv-cover-page{ zoom:var(--cv-zoomp, 0.885) !important; }
+    html.rsc-mobile-print .rpt-page.cv-cover-page{ zoom:var(--cv-zoomp, 0.936) !important; }
     html.rsc-mobile-print .rpt-page:not(.nr-page):not(.cv-cover-page){
-      zoom:var(--rpt-zoomp, 0.922) !important;
+      zoom:var(--rpt-zoomp, 0.974) !important;
     }
     /* ⭐ [stated] ២០២៦-១១-១៣ ៖ «របាយការណ៍សវនកម្ម ទំព័រទី១ និងទី២ វាស្ថិតនៅ
        ជាមួយគ្នា ដោយវាធ្លាក់ទំព័រ» ⇒ បង្ខំការបំបែកសន្លឹកម្តងទៀតឱ្យច្បាស់
@@ -49542,7 +49685,7 @@ const NARR_CSS = `
      ⚠ គ្មាន backtick ក្នុងកំណត់សម្គាល់នេះ ៖ NARR_CSS ជា template literal ។ */
   html.rsc-mobile-print .nr-page{
     height:var(--nr-ph, 266mm) !important; max-height:var(--nr-ph, 266mm) !important;
-    zoom:var(--nr-zoomp, 0.932) !important; }
+    zoom:var(--nr-zoomp, 0.985) !important; }
   html.rsc-mobile-print .nr-page > .nr-foot{ bottom:0 !important; margin:0 !important; }
   /* ══ ទូរស័ព្ទ/ថេប្លេត ៖ កម្ពស់ស្វ័យប្រវត្តិ + ជើងទំព័រហូរតាមមាតិកា ══
      ⚠⚠ កុំដាក់ backtick ក្នុងកំណត់សម្គាល់នេះ ៖ NARR_CSS ជា template literal
@@ -51653,7 +51796,20 @@ function applyRptPageMm(v){
   var MOB = false;
   try{ MOB = (typeof RSC_MOBILE_PRINT !== 'undefined' && RSC_MOBILE_PRINT); }catch(e){}
   if(MOB){
-    var tgt = ok ? n : 248;
+    /* ⭐⭐⭐ [stated] ២០២៦-១១-១៣ ( ជុំទី ៥ ) ៖ «Footer ផ្នែកបរិយាយ
+       កំណត់ពន្ធ របាយការណ៍សង្ខេប និងសវនកម្ម នៅតែសល់ធំ» ।
+     ⚠⚠ ការគិតឡើងវិញ ៖ គោលដៅ ២៤៨mm មកពីការវាស់ឆ្នាំ ២០២៦-០៨
+       ( «២៥២ ដើរ · ២៥៦ ទ្វេសន្លឹក» ) — តែការវាស់នោះធ្វើឡើងពេល
+       មាតិកា**ហូរលើសប្រអប់បាន** ⇒ អ្វីដែលវាស់គឺពីការហូរ មិនមែន
+       ផ្ទៃបោះពុម្ពពិត । ឥឡូវប្រអប់កម្ពស់ថេរ ⇒ វាមិនអាចហូរបានទេ ।
+     ⚠ ពីរូបរបស់អ្នកប្រើ ៖ «No Printer Selected» ⇒ ព្រីនជា PDF
+       ⇒ **គ្មានរឹមរឹងរបស់ម៉ាស៊ីនព្រីនទេ** ⇒ ផ្ទៃបោះពុម្ព
+       = ២៩៧ − រឹម @page ១៤ × ២ = **២៦៩mm** ।
+     ⇒ លើកគោលដៅទៅ **២៦២mm** ( សុវត្ថិភាព ៧mm )
+       ⇒ ចន្លោះក្រោមជើងទំព័រចុះពី ~២១mm មកនៅ ~៧mm ।
+     ⚠ បើសន្លឹកទទេត្រឡប់មកវិញ ៖ បន្ថយលេខក្នុងប្រអប់ «កម្ពស់ទំព័រ (mm)»
+       ម្តង ៤mm ⇒ វាបន្ថយការបង្រួមតាមសាច់ដំណើរ। */
+    var tgt = ok ? n : 262;
     root.style.setProperty('--nr-ph', '266mm');
     root.style.setProperty('--rpt-ph', '269mm');
     root.style.setProperty('--nr-zoomp',  String(Math.round(tgt / 266 * 1000) / 1000));
