@@ -613,6 +613,53 @@ body.view-mtr-active main{align-self:flex-start; min-height:0;}
 }
 .module-card .mc-sublink:hover{color:var(--mc-color, var(--primary)); text-decoration:underline;}
 
+/* ══════════════════════════════════════════════════════════════════════
+   ⭐⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «តើអ្នកអាចរចនាប្រអប់កាតពន្ធលើប្រាក់ចំណូល
+     និងកាតផ្សេងៗទៀត ឱ្យមានភាពស្អាត និងងាយស្រួលមើលបានទេ ខ្ញុំមានអារម្មណ៍
+     ថាវាមិនសូវស្អាត» ។
+   អ្វីដែលមិនស្អាតលើទូរស័ព្ទ ( តាមរូប និងការវាស់ ) ៖
+     ១ `grid-auto-rows:1fr` ធ្វើឱ្យ**គ្រប់កាតខ្ពស់ស្មើកាតខ្ពស់បំផុត** ⇒
+       កាតដែលមានតែចំណងជើង ( ពន្ធលើប្រាក់ចំណូល · សាលកបត្រ · បៀវត្ស ·
+       តាមដាន ) សល់ចន្លោះទទេធំនៅក្រោម ⇒ មើលទៅទទេៗ ។ លើកុំព្យូទ័រច្បាប់
+       នេះត្រឹមត្រូវ ( កាតឈរក្បែរគ្នាក្នុងជួរតែមួយ ) តែលើទូរស័ព្ទកាត
+       **ឈរតែមួយជួរឈរ** ⇒ ការធ្វើឱ្យស្មើគ្នាគ្មានអត្ថន័យទេ ។
+     ២ ចំណងជើង ២២px Muol + លេខ ៣០px ⇒ ធ្ងន់ពេកក្នុងទទឹង ៣៩០px ។
+     ៣ តំណរង ( ទិន្នានុប្បវត្តិលក់ CN DN → ) ជាអក្សរប្រផេះធម្មតា ⇒
+       មើលមិនដឹងថាចុចបាន ។
+     ៤ អក្សរចំណងជើងលោតឡើងចុះ ( mcBounce ) ⇒ លើអេក្រង់តូចវារំខាន ។
+   ⇒ លើទូរស័ព្ទ ៖ កាតកម្ពស់តាមមាតិកា · អក្សរសមាមាត្រ · តំណរងក្លាយជា
+     **ឈ្នាប់មានស៊ុម** រៀបជាជួរដេករុំបន្ទាត់ ⇒ ដឹងភ្លាមថាចុចបាន ។
+   ⚠ កុំព្យូទ័រមិនប្តូរអ្វីទាំងអស់ ( ច្បាប់ក្នុង max-width:760px ) ។
+   ══════════════════════════════════════════════════════════════════════ */
+@media screen and (max-width: 760px){
+  /* ១ · កម្ពស់តាមមាតិកា ⇒ លែងមានចន្លោះទទេក្រោមកាតខ្លី */
+  .module-grid{
+    grid-template-columns:minmax(0,1fr) !important;
+    grid-auto-rows:auto !important; gap:12px !important;
+  }
+  /* ២ · សមាមាត្រអក្សរ ៖ ចំណងជើងនាំមុខ លេខជាដៃគូ មិនប្រជែងគ្នា */
+  .module-card .mc-body{ padding:14px 16px 13px !important; gap:7px !important; }
+  .module-card .mc-title{ font-size:17px !important; line-height:1.45 !important; }
+  .module-card .mc-stat{ font-size:23px !important; }
+  .module-card .mc-stat .mc-unit{ font-size:14px !important; margin-left:5px !important; }
+  .module-card .mc-icon{ width:34px !important; height:34px !important; font-size:17px !important; }
+  .module-card .mc-head{ gap:9px !important; }
+  .module-card .mc-bar{ height:3px !important; }
+  /* ៣ · អក្សរឈប់លោត ⇒ អានស្ងប់ */
+  .module-card .mc-title .mc-char{ animation:none !important; }
+  /* ៤ · តំណរង ⇒ ឈ្នាប់មានស៊ុម រៀបជាជួរដេក រុំបន្ទាត់ */
+  .module-card .mc-foot{ align-items:flex-start !important; gap:10px !important; }
+  .module-card .mc-sublinks{
+    flex-direction:row !important; flex-wrap:wrap !important; gap:6px !important;
+  }
+  .module-card .mc-sublink{
+    border:1px solid var(--line); border-radius:999px;
+    padding:4px 11px; font-size:12.5px !important; line-height:1.5 !important;
+    background:var(--surface); color:var(--mc-color, var(--primary));
+    white-space:nowrap;
+  }
+}
+
 /* Dashboard hero banner — welcoming, colorful, gently animated title.
    Each word gets its own accent color from the app's existing palette and
    rises/fades in with a staggered delay (set inline per word via JS) so
@@ -1143,6 +1190,25 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
   }
   .toolbar::-webkit-scrollbar, .tabs::-webkit-scrollbar{ display:none; }
   .toolbar > *, .tabs > *{ flex:0 0 auto; }
+  /* ⭐⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «ផ្នែកសាលកបត្រ … ឱ្យងាយមើល» ( រូប ៖ ជួរថេប
+     កាត់ដាច់នៅគែមស្តាំ ហើយអេក្រង់ទាំងមូលតូចៗ ) ។
+     ⚠⚠ ឫសគល់ ( វាស់បាន ) ៖ `overflow-x:auto` **មិនគ្រប់គ្រាន់** សម្រាប់
+       ធាតុ flex ៖ ធាតុ flex មាន `min-width:auto` ជាលំនាំដើម ⇒ វានៅតែ
+       លាតតាមមាតិកា ( វាស់បាន ៖ #viewTabs ទទឹង ៤៨៣px ក្នុងអេក្រង់ ៣៩០px )
+       ⇒ ទំព័រលាតដល់ ៥១៨px ⇒ **ទូរស័ព្ទបង្រួមអេក្រង់ទាំងមូល** ( iOS
+       shrink-to-fit · Android overview mode ) ⇒ អក្សរគ្រប់ផ្នែកតូចៗ ។
+     ⇒ `min-width:0` + `max-width:100%` លើជួរ និងលើមេ flex របស់វា
+       ⇒ ជួរថេបរំកិលក្នុងខ្លួនឯងពិត ហើយទំព័រនៅត្រឹមទទឹងអេក្រង់ ។ */
+  .toolbar, .topbar, .tabs, .hub-bar,
+  #toi-embed .toolbar, #mtr-embed .toolbar, #tos-embed .toolbar,
+  #toi-embed .tabs, #mtr-embed .tabs, #tos-embed .tabs{
+    min-width:0 !important; max-width:100% !important;
+  }
+  /* មេ flex ៖ បើមិនដាក់ min-width:0 ទេ វារុញទំព័រជំនួសកូន */
+  .toolrow, .toolrow > .left, .toolrow > .right,
+  #mtr-embed .toolrow, #mtr-embed .toolrow > .left, #mtr-embed .toolrow > .right{
+    min-width:0 !important; max-width:100% !important; flex-wrap:wrap;
+  }
 
   /* ២ ៖ គោលដៅចុច ≥ ៤០px និងអក្សរ ១៦px ក្នុងប្រអប់ —
      ⚠ ១៦px ជាកម្រិតដែល iOS ឈប់ពង្រីកអេក្រង់ដោយស្វ័យប្រវត្តិពេលចុចវាល។
@@ -1293,10 +1359,13 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
   /* ១ · សញ្ញាថា «នៅមានទៀតខាងស្តាំ» ៖ គែមស្តាំរសាត់បន្តិច ។ ថ្នាក់
      `atb-more` ដាក់/ដកដោយ JS ⇒ ពេលអូសដល់ចុង គែមត្រឡប់ជាធម្មតាវិញ
      ⇒ មិនបញ្ឆោតថានៅមានបន្តទាំងដែលអស់ហើយ ។ */
-  #app-topbar.atb-more{
-    -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 38px),transparent);
-            mask-image:linear-gradient(90deg,#000 calc(100% - 38px),transparent);
-  }
+  /* ⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «ហេតុអ្វីមានស្រមោលចាំងៗនៅផ្នែក
+     ខាងស្តាំ ।।। ទាល់អូសទៅស្តាំអស់ទើបបាត» ।
+     ចម្លើយ ៖ នោះជា **សញ្ញាណរបស់ខ្ញុំផ្ទាល់** ( មាស់រសាត់គែមស្តាំ )
+       ដែលខ្ញុំបានដាក់ ដើម្បីប្រាប់ថា «នៅមានប៊ូតុងទៀតខាងស្តាំ» ।
+       វាបាត់ពេលអូសដល់ចុង ព្រោះមិនមានអ្វីនៅសល់ទៀត ।
+     ⇒ លុបចេញ ៖ គេមរុំរួយមូលដ្ឋានជាងសញ្ញាណបន្តិច । របារនៅអូសបានដដែល । */
+  #app-topbar.atb-more{ -webkit-mask-image:none; mask-image:none; }
   /* ២ · ទំហំចុចសមនឹងម្រាមដៃ ៖ កម្ពស់អប្បបរមា ៤៤px តាមស្តង់ដារ
      ⚠ បង្កើនតែ **កម្ពស់** ៖ ទទឹងនៅតូចដដែល ⇒ ចំនួនប៊ូតុងដែលឃើញមិនថយ ។ */
   #app-topbar .atb-btn{ min-height:44px !important; }
@@ -5434,12 +5503,37 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
   #tos-embed .legend-swatches .sw-high{ background:var(--tos-success-bg); border:1px solid var(--tos-success); }
   #tos-embed .legend-swatches .sw-low{ background:var(--tos-gold-100); border:1px solid var(--tos-gold-600); }
 
-  #tos-embed .matrix-toggle{ display:flex; gap:8px; margin:2px 0 14px; }
+  /* ⭐⭐⭐ [stated] ២០២៦-១១-១៣ ៖ ឈ្នាប់តម្រង ( ទាំងអស់ · សញ្ជាតិ ·
+     គ្រប់ស្ថានភាព … ) បាក់ជា **១ តួអក្សរ ១ បន្ទាត់** លើទូរស័ព្ទ ។
+     ⚠⚠ ឫសគល់ ៖ ជួរនេះជា `display:flex` **គ្មាន `flex-wrap`** ⇒ ពេលទទឹង
+       មិនគ្រប់ ធាតុ flex ត្រូវច្របាច់ ( flex-shrink លំនាំដើម = ១ ) រហូត
+       តូចជាងពាក្យ ⇒ អក្សរបាក់បញ្ឈរ ។
+     ⇒ រុំបន្ទាត់ + ហាមច្របាច់ឈ្នាប់ ( flex:0 0 auto ) + ហាមបាក់ពាក្យ ។ */
+  #tos-embed .matrix-toggle{ display:flex; flex-wrap:wrap; gap:8px; margin:2px 0 14px; }
   #tos-embed .matrix-toggle-row{ display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px 16px; margin:2px 0 14px; }
   #tos-embed .matrix-toggle-btn{
     border:1px solid var(--tos-line); background:#fff; color:var(--tos-slate);
     padding:7px 16px; border-radius:999px; font-family:inherit; font-size:12.5px;
     font-weight:600; cursor:pointer;
+    /* ⭐ ឈ្នាប់រក្សាទំហំពាក្យខ្លួនឯង ⇒ រុំជាជាងច្របាច់ */
+    flex:0 0 auto; white-space:nowrap;
+  }
+  /* ⭐ ប៊ូតុងទាំងអស់ក្នុងម៉ូឌុលនេះ ៖ ហាមបាក់ពាក្យពាក់កណ្តាល */
+  #tos-embed .btn{ flex:0 0 auto; white-space:nowrap; }
+  @media screen and (max-width: 760px){
+    /* ⚠ លើទូរស័ព្ទ ឈ្នាប់ច្រើន ⇒ បង្រួមរឹម និងអក្សរបន្តិច ⇒ ១ ជួរផ្ទុក
+       បាន ២–៣ ឈ្នាប់ ជំនួស ១ ⇒ បញ្ជីខ្លីជាង មើលឃើញទាំងអស់ក្នុងពេលតែមួយ ។ */
+    #tos-embed .matrix-toggle-btn{ padding:7px 12px; font-size:12px; }
+    #tos-embed .matrix-toggle-row{ gap:10px 12px; justify-content:flex-start; }
+    /* ប្រអប់ស្វែងរក ៖ ពេញទទឹង ⇒ គែមត្រង់ជាមួយឈ្នាប់ខាងលើ */
+    #tos-embed .mx-search{ width:100%; }
+    #tos-embed .mx-search input{ width:100% !important; max-width:100% !important; }
+    /* តារាងបុគ្គលិក ៖ រំកិលក្នុងប្រអប់ខ្លួនឯង មិនមែនរំកិលទាំងទំព័រ */
+    #tos-embed .missing-table-wrap{
+      max-width:100% !important; overflow-x:auto !important;
+      -webkit-overflow-scrolling:touch;
+    }
+    #tos-embed{ max-width:100% !important; overflow-x:hidden !important; }
   }
   #tos-embed .matrix-toggle-btn.active{ background:var(--tos-navy-800); border-color:var(--tos-navy-800); color:#fff; }
   /* ប្រអប់ស្វែងរកឈ្មោះបុគ្គលិក */
@@ -7120,7 +7214,13 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     <div class="stub gold"><div class="label">ពន្ធអត្ថប្រយោជន៍បន្ថែម (កំណត់ឡើងវិញ)</div><div class="value tabular" id="statReassessFringeTax">0 KHR</div></div>
   </div>
 
-  <div style="display:flex; justify-content:flex-end; gap:10px; margin:10px 4px 0;">
+  <!-- ⭐ [stated] ២០២៦-១១-១៣ ៖ «ជួយកែសម្រួលផ្នែកសាលកបត្រ · បៀវត្ស ដើម្បី
+       ឱ្យងាយមើល និងប្រើប្រាស់» ។
+       ⚠ ជួរនេះជា flex **គ្មាន flex-wrap** ⇒ លើទូរស័ព្ទ ប៊ូតុងទាំង ៣ ត្រូវ
+         ច្របាច់ឱ្យតូចជាងអត្ថបទរបស់វា ⇒ អក្សរបាក់ ហើយលេខក្នុងវង់ក្រចក
+         ដាច់ចេញពីពាក្យ ( មើលរូបរបស់អ្នកប្រើ ) ។
+       ⇒ រុំបន្ទាត់ជំនួសការច្របាច់ ។ -->
+  <div style="display:flex; justify-content:flex-end; flex-wrap:wrap; gap:10px; margin:10px 4px 0;">
     <button class="btn gold" id="exportBtn" type="button" disabled title="នាំចេញជា Excel">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
            stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
@@ -12973,7 +13073,8 @@ function renderCompanyLevelTable(storeName){
   const mWarn = mOn
     ? ` <span class="hint" style="margin-left:8px;color:var(--red)">⚠ តម្រងខែ ៖ <b>${escAttr(mOn)}</b> — <a href="javascript:void(0)" onclick="clearMonthFilter('${storeName}')">បង្ហាញគ្រប់ខែ</a></span>`
     : "";
-  const backBtn = `<div style="margin-bottom:10px;"><button class="btn ghost" onclick="backToCategories('${storeName}')">← ត្រឡប់ទៅប្រភេទ</button> <span class="hint" style="margin-left:8px;">ប្រភេទ: <b>${catLabel}</b></span>${mWarn}</div>`;
+  /* ⭐ ដូចពន្ធកាត់ទុកដែរ ៖ ១ ជួរជានិច្ច ( មើលកំណត់សម្គាល់នៅ backToWHTTypes ) */
+  const backBtn = `<div style="margin-bottom:10px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; min-width:0;"><button class="btn ghost" onclick="backToCategories('${storeName}')" style="white-space:nowrap; flex:0 0 auto;">← ត្រឡប់</button> <span class="hint" style="min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">ប្រភេទ: <b>${catLabel}</b></span>${mWarn}</div>`;
 
   if(list.length===0){
     table.innerHTML = `<tbody><tr><td style="padding:18px;text-align:center;color:var(--muted);">គ្មានទិន្នន័យសម្រាប់ប្រភេទនេះទេ</td></tr></tbody>`;
@@ -21147,7 +21248,13 @@ function renderWHTSummaryTable(){
     table.innerHTML = html;
   }else{
     const typeName = state.whtSelectedType;
-    backHost.innerHTML = `<div style="margin-bottom:10px;"><button class="btn ghost" onclick="backToWHTTypes()">← ត្រឡប់ទៅប្រភេទពន្ធកាត់ទុក</button> <span class="hint" style="margin-left:8px;">ប្រភេទ: <b>${typeName}</b></span></div>`;
+    /* ⭐ [stated] ២០២៦-១១-១៣ ៖ «កន្លែង ត្រឡប់ទៅពន្ធកាត់ទុក កែពាក្យ រក្សា
+       តែពាក្យ ត្រឡប់ បានហើយ និងកុំឱ្យធ្លាក់ទៅជា ២ ជួរ» ។
+       ⚠ ពាក្យវែង ( ១៩ តួ ) + ចំណងជើងប្រភេទ ⇒ លើសទទឹងទូរស័ព្ទ ⇒ បាក់ ២ ជួរ ។
+       ⇒ ប៊ូតុងសល់ «← ត្រឡប់» ហើយដាក់ `white-space:nowrap` លើទាំងពីរ
+         ជាមួយ `flex` ⇒ ប៊ូតុងថេរ ឯចំណងជើងបង្រួញ និងកាត់ដោយ ellipsis
+         បើវែងពេក ⇒ **១ ជួរជានិច្ច** ។ */
+    backHost.innerHTML = `<div style="margin-bottom:10px; display:flex; align-items:center; gap:8px; min-width:0;"><button class="btn ghost" onclick="backToWHTTypes()" style="white-space:nowrap; flex:0 0 auto;">← ត្រឡប់</button> <span class="hint" style="min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">ប្រភេទ: <b>${typeName}</b></span></div>`;
     const {years, totalRow, names} = computeWHTNameSummary(rows, typeName);
     if(names.length === 0){
       table.innerHTML = `<tbody><tr><td style="padding:18px;text-align:center;color:var(--muted);">គ្មានទិន្នន័យសម្រាប់ប្រភេទនេះទេ</td></tr></tbody>`;
