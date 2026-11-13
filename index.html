@@ -1388,6 +1388,48 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
   #view-tracking .trk-grid > label > textarea, #docs-modal .trk-grid > label > textarea{
     height:auto !important; min-height:62px; align-self:stretch;
   }
+  /* ⭐⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «ផ្នែកធីកនេះតូចពេកមើលមិនចង់ឃើញ» ។
+     ⚠⚠ វាស់ឃើញ ៖ ប្រអប់ធីកទទឹង ១៦px កម្ពស់ត្រូវបានទាញជា ៤២px ហើយ**ត្រូវ
+       រុញទៅគែមស្តាំ** ( x = ៣២២ ) ព្រោះច្បាប់ខាងលើដាក់វាចូល `grid-column:2`
+       ដូចប្រអប់ដទៃ ⇒ ចំណុចតូចមួយឆ្ងាយពីអក្សររបស់វា ⇒ មើលស្ទើរមិនឃើញ ។
+     ⇒ ជួរដែលមានប្រអប់ធីក ត្រឡប់មក `flex` វិញ ៖ ប្រអប់នៅមុខអក្សរតាម
+       លំដាប់ក្នុង HTML ហើយទំហំ ២៤px ច្បាស់ និងងាយចុច ។ */
+  #view-tracking .trk-grid > label:has(> input[type="checkbox"]),
+  #docs-modal .trk-grid > label:has(> input[type="checkbox"]),
+  #view-tracking .trk-when > label:has(> input[type="checkbox"]),
+  #docs-modal .trk-when > label:has(> input[type="checkbox"]){
+    display:flex !important; grid-template-columns:none !important;
+    align-items:center !important; gap:10px !important;
+  }
+  #view-tracking .trk-grid > label > input[type="checkbox"],
+  #docs-modal .trk-grid > label > input[type="checkbox"],
+  #view-tracking .trk-when > label > input[type="checkbox"],
+  #docs-modal .trk-when > label > input[type="checkbox"],
+  #view-tracking input[type="checkbox"].trk-in, #docs-modal input[type="checkbox"].trk-in{
+    grid-column:auto !important; flex:0 0 auto !important;
+    width:24px !important; height:24px !important; min-width:24px !important;
+    margin:0 !important; accent-color:var(--primary,#0F3D3E);
+  }
+  /* ⭐⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «អក្សរវាធំជាងអក្សរនៅពីខាងមុខ … ហើយប្រអប់
+     នៅវែងខ្លី» ។ វាស់ឃើញ ៖ ស្លាក ១៣.៥px ឯអក្សរក្នុងប្រអប់ **១៦px**
+     ( តម្លៃលំនាំដើមរបស់កម្មវិធីរុករក ដែលឈ្នះច្បាប់របស់យើង ) ។
+     ⇒ បង្ខំទាំងពីរឱ្យ **១៤.៥px ដូចគ្នា** ហើយ `box-sizing:border-box` ⇒
+       ទទឹងប្រអប់រាប់រួមទាំងស៊ុម ⇒ គែមស្តាំត្រង់គ្នាគ្រប់ជួរ ។ */
+  #view-tracking .trk-grid > label, #docs-modal .trk-grid > label,
+  #view-tracking .trk-when > label, #docs-modal .trk-when > label,
+  #view-tracking .hub-row > label, #docs-modal .hub-row > label{
+    font-size:14.5px !important;
+  }
+  #view-tracking .trk-grid > label > select, #docs-modal .trk-grid > label > select,
+  #view-tracking .trk-grid > label > input,  #docs-modal .trk-grid > label > input,
+  #view-tracking .trk-grid > label > textarea, #docs-modal .trk-grid > label > textarea,
+  #view-tracking .trk-when > label > select, #docs-modal .trk-when > label > select,
+  #view-tracking .trk-when > label > input,  #docs-modal .trk-when > label > input,
+  #view-tracking .hub-row > label > select, #docs-modal .hub-row > label > select,
+  #view-tracking .hub-row > label > input,  #docs-modal .hub-row > label > input{
+    font-size:14.5px !important; box-sizing:border-box !important;
+    max-width:100% !important;
+  }
   /* ៤ · ប៊ូតុង ៖ ជួរដាច់ ពេញទទឹង ទំហំចុងសមម្រាមដៃ */
   #view-tracking .trk-grid > button, #docs-modal .trk-grid > button,
   #view-tracking .hub-row > button, #docs-modal .hub-row > button,
@@ -1457,7 +1499,25 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
 #view-tracking .trk-grid label, #docs-modal .trk-grid label{display:flex; align-items:center; gap:8px;}
 #view-tracking .trk-chips, #docs-modal .trk-chips{display:flex; flex-wrap:wrap; gap:10px;}
 #view-tracking .trk-chip, #docs-modal .trk-chip{display:inline-flex; align-items:center; gap:6px; border:1px solid var(--line); border-radius:999px; padding:5px 12px; font-size:12.5px; background:#fff;}
+/* ⭐⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «ផ្នែកកំណត់ហេតុនៅមិនទាន់ស្អាតដូចពេលចុច
+   ព្រីនកំណត់ហេតុ» ។
+   ⚠⚠ វាស់ឃើញ ៖ ប្រអប់មើលជាមុនទទឹងត្រឹម **៣១៦px** លើទូរស័ព្ទ ខណៈក្រដាស
+     ពិតទទឹង ២១០mm ( ៧៩៤px ) ⇒ ក្បាលលិខិត ៣ ជួរឈរច្របាច់ធ្លាក់បន្ទាត់
+     ម្តងមួយពាក្យ ⇒ មិនដូចក្រដាសសោះ ។
+   ⇒ ដូចការមើលជាមុនឯកសារផ្លូវការបេះបិទ ៖ ចាក់ទទឹងក្រដាសឱ្យនឹង រួចបង្រួម
+     ទាំងសន្លឹកដោយ zoom ( `--trkm-zoom` កំណត់ដោយ `nrFitPaper` ) ។
+   ⚠ zoom បង្រួម**ការបង្ហាញ** ដោយមិនប៉ះការចុះបន្ទាត់ ⇒ អ្វីដែលឃើញ =
+     អ្វីដែលចេញលើក្រដាស ។
+   ⚠ លើកុំព្យូទ័រ ៧៩៤px តូចជាងផ្ទាំង ⇒ zoom = ១ ⇒ មិនប្តូរអ្វីក្រៅពីការ
+     ដាក់កណ្តាល ។
+   ⚠ ដាក់ក្នុង `@media screen` ⇒ ការព្រីនពិតមិនរងផលទេ ។ */
 #view-tracking .trk-minutes, #docs-modal .trk-minutes{margin-top:14px; padding:18px 20px; border:1px solid var(--line); border-radius:10px; background:#fff; font-size:13px; line-height:1.9;}
+@media screen{
+  #view-tracking .trk-minutes:not(.trk-letter), #docs-modal .trk-minutes:not(.trk-letter){
+    width:210mm; max-width:none; margin-left:auto; margin-right:auto;
+    zoom:var(--trkm-zoom, 1);
+  }
+}
 /* ⚠⚠ [stated] ២០២៦-០៨-២៣ ៖ «វាមាន background ដល់ទី ២ ជាន់ ៖ ផ្ទាំងស ១ និង
    ផ្ទាំងក្រោយសនឹង ១ ទៀត … មើលទៅមិនស្អាតសោះ» — **នៅលើអេក្រង់** (មិនមែនពេល
    ព្រីន)។ រកឃើញដោយស្កេនធាតុទាំងអស់ក្នុងផ្ទាំង ៖ `.trk-card` (ស ស៊ុម មូល)
@@ -20249,8 +20309,9 @@ function computePartnerSummary(rows){
 }
 
 function renderPartnerSummary(containerId, rows, which){
-  const summary = computePartnerSummary(rows);
   const table = document.getElementById(containerId);
+  if(!table) return;   /* ⚠ ធ្លាប់គ្មានការពារ ⇒ បោះកំហុសបើតារាងមិននៅ */
+  const summary = computePartnerSummary(rows);
   if(summary.length===0){
     table.innerHTML = `<tbody><tr><td style="padding:16px;text-align:center;color:var(--muted);">មិនទាន់មានទិន្នន័យក្រុមហ៊ុនដៃគូ</td></tr></tbody>`;
     return;
@@ -21465,6 +21526,33 @@ function renderAll(){
   __deferHeavy("cd-overview-sale",     ()=>{ renderCDOverview("sale"); });
   __deferHeavy("cd-overview-purchase", ()=>{ renderCDOverview("purchase"); });
   __deferHeavy("top-products-card",    ()=>{ renderTopProducts(); });
+  /* ⭐⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «ទី១ ដៃគូ sale and purchase អត់ចេញ ; ទី២
+     អតិថិជន top10 ទាល់ចុចលើ អតិថិជន និង អ្នកផ្គត់ផ្គង់ ទើបវាចេញ» ។
+
+     ⭐ ឫសគល់ ( probe បញ្ជាក់ ) ៖ តារាងទាំងពីរឋិតក្នុង **view-dashboard**
+       ( សកម្ម ) តែការគូររបស់វាព្យួរលើ `__deferHeavy("table-crossSale")`
+       ហើយ `table-crossSale` ឋិតក្នុង **view-cross-sale** ដែល**បិទ** ។
+       `__tblInActiveView` ត្រឡប់ false ⇒ ការងារចូលជួររង់ចាំ ⇒ `runCrosscheck`
+       មិនរត់ទេរហូតដល់អ្នកប្រើបើកផ្ទាំងផ្គូផ្គង ⇒ តារាងដៃគូទទេ ឯ Top 10
+       ចេញតែពេលចុចប៊ូតុងប្តូរ ( ព្រោះប៊ូតុងហៅ `renderTopCompanies` ផ្ទាល់ ) ។
+
+     ⇒ ដាក់ចំណងជើង**ក្នុងទិដ្ឋភាពទូទៅផ្ទាល់** ៖
+       · Top 10 ៖ `computeTopCompanies` អានពីឃ្លាំងផ្ទាល់ មិនត្រូវការ
+         ការផ្គូផ្គងទេ ⇒ ហៅភ្លាមៗ ⇒ ចេញតាំងពីដំបូង ។
+       · ដៃគូ ៖ ត្រូវការលទ្ធផលផ្គូផ្គង ⇒ ហៅ `runCrosscheck` ប៉ុន្តែ**ពេល
+         ទំនេរ** ( requestIdleCallback ) ⇒ ទំព័របង្ហាញរួចសិន រួចទើបបំពេញ
+         ⇒ មិនធ្វើឱ្យការបើកទំព័រយឺតដូចមុនពេលមានការពន្យារ ។
+     ⚠ `runCrosscheck` គូរតារាងដៃគូ និង Top 10 នៅចុងបញ្ចប់ស្រាប់ ⇒ ទិន្នន័យ
+       ត្រូវបានធ្វើបច្ចុប្បន្នភាពម្តងទៀតដោយស្វ័យប្រវត្តិ ។
+     ⚠ ជួររង់ចាំ `table-crossSale` នៅដដែល ⇒ ការបើកផ្ទាំងផ្គូផ្គងដំណើរការ
+       ដូចមុនបេះបិទ ។ */
+  __deferHeavy("top-companies", ()=>{ renderTopPartners(); });
+  __deferHeavy("partner-summary-sale", ()=>{
+    const go = function(){ try{ runCrosscheck(); }catch(e){ console.error('ដៃគូ:', e); } };
+    if(typeof window.requestIdleCallback === 'function'){
+      window.requestIdleCallback(go, { timeout: 2500 });
+    }else{ setTimeout(go, 300); }
+  });
   __deferHeavy("table-crossSale", ()=>{ runCrosscheck(); });
   }catch(err){
     console.error("renderAll បានឈប់ដោយ error:", err);
@@ -43278,6 +43366,10 @@ function renderTrackingView(){
       </div>
       <div id="trkSignPick" class="trk-signpick"></div>
       <div id="trkTypeFields" class="trk-typefields"></div>
+      <!-- ⭐ [stated] ២០២៦-១១-១៣ ៖ បដា «🔒 បានរក្សាទុករួច … ✏️ កែឡើងវិញ»
+           ត្រូវចេញ**ក្រៅសន្លឹក** ៖ សន្លឹកឥឡូវជាក្រដាស A4 ដែលបង្រួមដោយ zoom
+           ⇒ បើបដានៅខាងក្នុង ប៊ូតុងនឹងតូចរហូតចុចមិនកើត ។ -->
+      <div id="trkMinBanner"></div>
       <div id="trkMinutes" class="trk-minutes"></div>
     </div>`;
 
@@ -44651,7 +44743,12 @@ function renderMinutes(idx){
          <button class="btn btn-outline" id="trkUnlock" style="width:auto; margin-left:8px;">✏️ កែឡើងវិញ</button>
        </div>`
     : '';
-  box.innerHTML = banner + letterheadHtml() + minutesToHtml(lastMinutes);
+  const bh = document.getElementById('trkMinBanner');
+  if(bh) bh.innerHTML = banner;
+  box.innerHTML = (bh ? '' : banner) + letterheadHtml() + minutesToHtml(lastMinutes);
+  /* ⇒ បង្រួមសន្លឹកឱ្យសមនឹងផ្ទាំង ( ដូចការមើលជាមុនឯកសារផ្លូវការ ) ។
+     ⚠ ត្រូវរង់ចាំការរៀបចំរួចសិន ⇒ setTimeout ។ */
+  try{ setTimeout(function(){ try{ window.__nrFit && window.__nrFit(); }catch(e){} }, 40); }catch(e){}
   const un = document.getElementById('trkUnlock');
   if(un) un.onclick = ()=> clearMinutesSnapshot(idx);
 }
@@ -48497,7 +48594,29 @@ function nrFitPaper(){
     else host.style.setProperty('--nr-zoom', String(Math.round(z * 1000) / 1000));
     if(prev && z === 1) host.style.removeProperty('--nr-zoom');
   });
+  /* ⭐ [stated] ២០២៦-១១-១៣ ៖ សន្លឹកកំណត់ហេតុក៏បង្រួមសមនឹងផ្ទាំងដែរ ។
+     ⚠ វាស់នៅ zoom ១ សិន បើមិនដូច្នេះទទឹងដែលអានបានជាទទឹងដែលបង្រួមរួច
+       ⇒ រូបមន្តរត់ចុះរហូត ។ */
+  try{
+    var __mb = document.getElementById('trkMinutes');
+    if(__mb && __mb.parentElement){
+      __mb.style.setProperty('--trkm-zoom', '1');
+      var __pw = __mb.getBoundingClientRect().width;
+      /* ⚠ `clientWidth` រាប់បញ្ចូល padding របស់កាតផង ⇒ សន្លឹកហៀរចេញ
+         ប៉ុនទំហំ padding ។ ត្រូវដកវាចេញដើម្បីបានទទឹង**មាតិកា**ពិត ។ */
+      var __ps = getComputedStyle(__mb.parentElement);
+      var __av = __mb.parentElement.clientWidth
+               - (parseFloat(__ps.paddingLeft) || 0)
+               - (parseFloat(__ps.paddingRight) || 0) - 2;
+      var __z = (__pw > 0 && __av > 0 && __av < __pw) ? Math.max(0.3, __av / __pw) : 1;
+      if(__z === 1) __mb.style.removeProperty('--trkm-zoom');
+      else __mb.style.setProperty('--trkm-zoom', String(Math.round(__z * 1000) / 1000));
+    }
+  }catch(e){}
 }
+/* ⚠ `nrFitPaper` ឋិតក្នុងប្លុកនេះ ⇒ ផ្នែកដទៃមើលមិនឃើញ ។ បង្ហាញតាម window
+   ដើម្បីឱ្យការគូរកំណត់ហេតុហៅវាបាន ។ */
+try{ window.__nrFit = nrFitPaper; }catch(e){}
 try{
   window.addEventListener('resize', function(){
     clearTimeout(window.__nrFitT);
