@@ -1519,6 +1519,68 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
   #view-tracking .table-wrap, #view-tracking .table-scroll{
     overflow-x:auto; -webkit-overflow-scrolling:touch; overscroll-behavior-x:contain;
   }
+  /* ══════════════════════════════════════════════════════════════
+     ⭐⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «ប្រអប់បំពេញ កន្លែងថ្ងៃខែឆ្នាំលើលិខិត
+     និងផ្នែកដទៃទៀត ជួយរៀបតារាងកុំឱ្យហៀរចេញក្រៅ» ។
+
+     ⚠⚠ វាស់ឃើញ ៖ ប្រអប់បំពេញ**មិនហៀរក្រៅក្រឡា**ទេ ( ហៀរ ០ គ្រប់ក្រឡា ) ;
+       អ្វីដែលហៀរគឺ **តារាងខ្លួនឯង** ៖ ទទឹង ៩០០–១០៤០px ក្នុងផ្ទាំង ៣១៦px
+       ⇒ ត្រូវអូសផ្តេកទើបឃើញជួរឈរខាងស្តាំ ⇒ បំពេញពិបាក ។
+     ⇒ តារាង**បំពេញទិន្នន័យ** ប្តូរជា **ប្លុកមួយជួរដេកមួយ** លើទូរស័ព្ទ ៖
+       ក្បាលតារាងលាក់ ; ក្រឡានីមួយៗបង្ហាញស្លាករបស់ខ្លួន ( `data-lbl` )
+       នៅឆ្វេង និងប្រអប់បំពេញនៅស្តាំ ⇒ **គ្មានការរំកិលផ្តេកទៀតទេ** ។
+     ⚠ ប៉ះតែតារាងដែលដាក់ថ្នាក់ `trk-stack` ( លិខិត · ឯកសារស្នើសុំ ) ;
+       តារាងរបាយការណ៍អានតែប៉ុណ្ណោះនៅដដែល ។
+     ⚠ កុំព្យូទ័រមិនរងផលសោះ ។
+     ══════════════════════════════════════════════════════════════ */
+  #view-tracking .trk-tbl.trk-stack{
+    min-width:0 !important; width:100% !important; display:block;
+    border-collapse:separate; border-spacing:0;
+  }
+  #view-tracking .trk-tbl.trk-stack thead{ display:none; }
+  #view-tracking .trk-tbl.trk-stack tbody,
+  #view-tracking .trk-tbl.trk-stack tr{ display:block; width:100%; }
+  #view-tracking .trk-tbl.trk-stack tr{
+    border:1px solid var(--line); border-radius:10px; background:#fff;
+    padding:8px 10px; margin:0 0 10px;
+  }
+  #view-tracking .trk-tbl.trk-stack tr:nth-child(even){ background:#FBFAF6; }
+  #view-tracking .trk-tbl.trk-stack td{
+    display:grid; grid-template-columns:136px minmax(0,1fr);
+    align-items:center; gap:8px;
+    border:0 !important; padding:5px 0 !important; width:auto !important;
+    min-width:0 !important; text-align:left !important; white-space:normal !important;
+  }
+  #view-tracking .trk-tbl.trk-stack td::before{
+    content:attr(data-lbl); font-size:12.5px; color:var(--muted); line-height:1.5;
+  }
+  /* ក្រឡាគ្មានស្លាក ( ល.រ · ឈ្មោះលិខិត · បរិយាយ ) ៖ ពេញទទឹង ជាចំណងជើងជួរ */
+  #view-tracking .trk-tbl.trk-stack td[data-lbl=""]{
+    grid-template-columns:minmax(0,1fr); font-weight:600;
+    padding-bottom:7px !important; margin-bottom:3px;
+    border-bottom:1px solid var(--line) !important;
+  }
+  #view-tracking .trk-tbl.trk-stack td[data-lbl=""]::before{ display:none; }
+  #view-tracking .trk-tbl.trk-stack td.trk-no{
+    font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif;
+    color:var(--primary); font-size:12.5px; border-bottom:0 !important;
+    padding-bottom:0 !important; margin-bottom:0;
+  }
+  /* ⭐ [stated] ២០២៦-១១-១៣ ៖ «ទំហំអក្សរនៅផ្នែកទទួលនៅកំណត់ហេតុ កុំឱ្យធំ
+     ជាងគេពេក» ⇒ វាលទាំងអស់ក្នុងប្លុក ( រួមទាំងប្រអប់ជ្រើស «លើកទី…» )
+     ប្រើទំហំ **១៣.៥px ដូចគ្នាទាំងអស់** ⇒ គ្មានវាលណាធំលេចជាងគេ ។
+     ⚠ ស្លាកនៅ ១២.៥px ⇒ នៅតែបែកចេញពីតម្លៃបាន តែមិនលោតភ្នែក ។ */
+  #view-tracking .trk-tbl.trk-stack td > input,
+  #view-tracking .trk-tbl.trk-stack td > select,
+  #view-tracking .trk-tbl.trk-stack td > textarea{
+    width:100% !important; min-width:0 !important; max-width:100% !important;
+    box-sizing:border-box !important; height:42px !important; font-size:13.5px !important;
+  }
+  #view-tracking .trk-tbl.trk-stack td > textarea{ height:auto !important; min-height:46px; }
+  #view-tracking .trk-tbl.trk-stack td > input[type="checkbox"]{
+    width:24px !important; height:24px !important; justify-self:start;
+  }
+  #view-tracking .trk-tbl.trk-stack td.trk-lbl{ min-width:0 !important; }
 }
 
 @media (max-width: 900px){
@@ -1553,6 +1615,27 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
 #view-tracking .trk-lbl, #docs-modal .trk-lbl{text-align:left; font-size:12.5px;}
 #view-tracking .trk-in, #docs-modal .trk-in{border:1px solid var(--line); border-radius:6px; padding:5px 7px; font-size:12.5px; font-family:inherit; background:#fff;}
 #view-tracking .trk-in:focus, #docs-modal .trk-in:focus{outline:none; border-color:var(--primary);}
+/* ⭐⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «ជួយធ្វើប្រអប់ថ្ងៃខែឱ្យដូចផ្នែកដទៃផង កុំឱ្យ
+   ប្រអប់ថ្ងៃខែឆ្នាំនោះវែងជាងផ្នែកដទៃ» ។
+   ⚠⚠ មូលហេតុ ៖ លើ **iOS Safari** `input[type=date]` និង `[type=time]`
+     ប្រើរូបរាងដើមរបស់ប្រព័ន្ធ ( `-webkit-appearance` ) ⇒ វា**មិនគោរព
+     `width`** ទេ តែរីកតាមអត្ថបទខាងក្នុង ( «10 Nov 2026» ) ហើយដាក់អក្សរ
+     ចំកណ្តាលទៀត ⇒ វែងជាង និងមិនដូចវាលដទៃ ។ កុំព្យូទ័រមិនមានបញ្ហានេះទេ
+     ដូច្នេះវាមើលមិនឃើញលើអេក្រង់ធំ ។
+   ⇒ បិទរូបរាងដើម រួចចាក់ទទឹង និងការតម្រឹមដូចវាលដទៃបេះបិទ ។
+   ⚠ ការចុចបើកប្រតិទិននៅដំណើរការដដែល — បិទតែ**រូបរាង** មិនមែនមុខងារទេ ។ */
+#view-tracking input[type="date"], #view-tracking input[type="time"],
+#view-tracking input[type="datetime-local"], #view-tracking input[type="month"],
+#docs-modal input[type="date"], #docs-modal input[type="time"],
+#docs-modal input[type="datetime-local"], #docs-modal input[type="month"]{
+  -webkit-appearance:none; appearance:none;
+  width:100%; min-width:0; max-width:100%; box-sizing:border-box;
+  text-align:left; font-family:inherit;
+}
+/* ⚠ ប្រអប់ក្នុងតារាង ៖ រក្សាទទឹងដែល HTML ចែង ( ១៥០px ) លើកុំព្យូទ័រ */
+#view-tracking .trk-tbl input[type="date"], #docs-modal .trk-tbl input[type="date"]{
+  width:100%;
+}
 #view-tracking input[type=checkbox].trk-in, #docs-modal input[type=checkbox].trk-in{width:16px; height:16px; padding:0;}
 #view-tracking .trk-grid, #docs-modal .trk-grid{display:flex; flex-wrap:wrap; gap:12px; align-items:center; font-size:12.5px;}
 #view-tracking .trk-grid label, #docs-modal .trk-grid label{display:flex; align-items:center; gap:8px;}
@@ -1572,6 +1655,17 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
    ⚠ ដាក់ក្នុង `@media screen` ⇒ ការព្រីនពិតមិនរងផលទេ ។ */
 /* ⭐ បញ្ជី «ឯកសារបានពិនិត្យ» ៖ ប្រអប់ដាច់ដោយឡែក ២ ជួរឈរលើកុំព្យូទ័រ
    ១ ជួរលើទូរស័ព្ទ ⇒ អានបានទាំងស្រុង មិនបាច់រំកិលផ្តេក ។ */
+/* ⭐ [stated] ២០២៦-១១-១៣ ៖ «កន្លែងចុចកែឡើងវិញ ដាក់តែមួយជួរជាមួយនឹង
+   កំណត់ហេតុនេះបានរក្សាទុក ដោយទុកតែរូបខ្មៅដៃបានហើយ» ។ */
+#view-tracking .trk-locked{ display:flex; align-items:center; gap:10px; flex-wrap:nowrap; }
+#view-tracking .trk-unlock-ic{
+  width:38px !important; min-width:38px; height:34px; padding:0 !important;
+  display:inline-flex; align-items:center; justify-content:center;
+  font-size:17px; line-height:1; flex:0 0 auto; margin:0 !important;
+}
+@media screen and (max-width: 760px){
+  #view-tracking .trk-unlock-ic{ width:44px !important; min-width:44px; height:40px; }
+}
 #view-tracking .trk-revbox{
   margin-top:12px; padding:12px 14px; border:1px solid var(--line);
   border-radius:10px; background:#faf9f5;
@@ -43283,12 +43377,15 @@ function renderTrackingView(){
   }catch(e){}
   const ci = coverInfo(), pi = personInfo();
 
+  /* ⚠ `data-lbl` ៖ ឈ្មោះជួរឈរសរសេរលើក្រឡាផ្ទាល់ ⇒ ពេលតារាងប្តូរជា**ប្លុក**
+     លើទូរស័ព្ទ ( មើល `.trk-stack` ក្នុង CSS ) ក្រឡានីមួយៗនៅតែដឹងថាខ្លួនជា
+     អ្វី ⇒ លែងត្រូវការក្បាលតារាង ⇒ លែងត្រូវការការរំកិលផ្តេក ។ */
   const lettersRows = TRK_LETTERS.map((label, i)=>`
     <tr>
-      <td class="trk-lbl">${esc(label)}</td>
-      <td>${inp('letters.'+i+'.date','date')}</td>
-      <td>${inp('letters.'+i+'.recvDate','date')}</td>
-      <td>${inp('letters.'+i+'.rep')}</td>
+      <td class="trk-lbl" data-lbl="">${esc(label)}</td>
+      <td data-lbl="ថ្ងៃខែឆ្នាំលើលិខិត">${inp('letters.'+i+'.date','date')}</td>
+      <td data-lbl="ថ្ងៃខែឆ្នាំទទួលឯកសារ">${inp('letters.'+i+'.recvDate','date')}</td>
+      <td data-lbl="ឈ្មោះអ្នកតំណាង">${inp('letters.'+i+'.rep')}</td>
     </tr>`).join('');
 
   /* One card per request round. Round 0 is the fixed initial list — its
@@ -43304,20 +43401,20 @@ function renderTrackingView(){
 
     const rows = rd.items.map((it, ii)=>`
       <tr>
-        <td style="text-align:center;">${kh(ii+1)}</td>
+        <td class="trk-no" data-lbl="">${kh(ii+1)}</td>
         <!-- ⭐ [stated] ២០២៦-០៩-០១ ៖ «ផ្នែក ឯកសារបឋម … ពី១ដល់១០នោះអាចកែបាន» ។
              ឈ្មោះឯកសាររស់នៅក្នុង rd.items[ii].label ជាស្ថានភាពស្រាប់
              ( blankRound បង្កាប់វាពី TRK_DOCS ) ⇒ ការប្តូរទៅជាប្រអប់វាយ
              រក្សាទុក និងផ្ទុកឡើងវិញដោយស្វ័យប្រវត្តិ គ្មានផ្លូវថ្មីត្រូវតម្រង់ ។ -->
-        <td class="trk-lbl">${txt('rounds.'+ri+'.items.'+ii+'.label', primary ? 1 : 2)}</td>
-        ${primary ? '' : `<td style="text-align:center;">${sel('rounds.'+ri+'.items.'+ii+'.reqMtg', meetingOptionsOpen(), '110px')}</td>`}
-        <td style="text-align:center;">${chk('rounds.'+ri+'.items.'+ii+'.received')}</td>
-        <td style="text-align:center;">${it.received
+        <td class="trk-lbl" data-lbl="បរិយាយឯកសារ">${txt('rounds.'+ri+'.items.'+ii+'.label', primary ? 1 : 2)}</td>
+        ${primary ? '' : `<td style="text-align:center;" data-lbl="ស្នើសុំនៅកំណត់ហេតុ">${sel('rounds.'+ri+'.items.'+ii+'.reqMtg', meetingOptionsOpen(), '110px')}</td>`}
+        <td style="text-align:center;" data-lbl="បានទទួល">${chk('rounds.'+ri+'.items.'+ii+'.received')}</td>
+        <td style="text-align:center;" data-lbl="មិនមាន">${it.received
           /* [stated] ទទួលរួច → «មិនមាន» ចុចលែងបាន ; ទាំងពីរព្រមគ្នាផ្ទុយគ្នា */
           ? '<input class="trk-in" type="checkbox" disabled title="ទទួលរួចហើយ">'
           : chk('rounds.'+ri+'.items.'+ii+'.notExist')}</td>
-        <td>${inp('rounds.'+ri+'.items.'+ii+'.recvDate','date','150px')}</td>
-        <td style="text-align:center;">${sel('rounds.'+ri+'.items.'+ii+'.mtgNo', meetingOptionsOpen(), '110px')}</td>
+        <td data-lbl="ថ្ងៃទទួលបានឯកសារ">${inp('rounds.'+ri+'.items.'+ii+'.recvDate','date','150px')}</td>
+        <td style="text-align:center;" data-lbl="ទទួលនៅកំណត់ហេតុ">${sel('rounds.'+ri+'.items.'+ii+'.mtgNo', meetingOptionsOpen(), '110px')}</td>
         ${primary
           /* ⭐ [stated] ២០២៦-១១-១៣ ៖ «លុបផ្នែកជួរឯកសារបានពិនិត្យចេញ» ⇒ ជួរឈរ
              នេះត្រូវដកចេញពីតារាង ហើយទៅជា**បញ្ជីដាច់ដោយឡែក**ខាងក្រោមតារាង ។
@@ -43354,7 +43451,7 @@ function renderTrackingView(){
           ? 'ស្មានតាមសកម្មភាពអាជីវកម្មក្នុង COVER — ចុចជ្រើសដើម្បីបញ្ជាក់ ឬប្តូរ'
           : 'បញ្ជីឯកសារប្តូរតាមប្រភេទដែលជ្រើស'}</span>
       </div>`}
-      ${rd.items.length ? `<div class="table-wrap"><table class="ledger trk-tbl">
+      ${rd.items.length ? `<div class="table-wrap"><table class="ledger trk-tbl trk-stack">
         <thead><tr><th>ល.រ</th><th style="text-align:left;">បរិយាយឯកសារ</th>
           ${primary ? '' : '<th class="trk-nowrap">ស្នើសុំនៅកំណត់ហេតុ</th>'}
           <th>បានទទួល</th><th>មិនមាន</th><th>ថ្ងៃទទួលបានឯកសារ</th>
@@ -43388,16 +43485,17 @@ function renderTrackingView(){
     m = m || {};
     var has = !!(m.date);
     if(has) meetDone++;
+    /* ⚠ `data-lbl` ⇒ តារាងនេះក៏ប្តូរជាប្លុកលើទូរស័ព្ទដែរ ( `.trk-stack` ) */
     return '<tr>' +
-      '<td class="trk-lbl">' + esc(meetingLabel(i)) + '</td>' +
-      '<td>' + esc(typeLabel(m.type)) + '</td>' +
-      '<td style="text-align:center;">' + (m.date ? khmerDMY(m.date) : '—') + '</td>' +
-      '<td style="text-align:center;">' + (m.start ? khmerTime(m.start) : '—') +
+      '<td class="trk-lbl" data-lbl="">' + esc(meetingLabel(i)) + '</td>' +
+      '<td data-lbl="ប្រភេទកិច្ចប្រជុំ">' + esc(typeLabel(m.type)) + '</td>' +
+      '<td style="text-align:center;" data-lbl="ថ្ងៃខែឆ្នាំ">' + (m.date ? khmerDMY(m.date) : '—') + '</td>' +
+      '<td style="text-align:center;" data-lbl="ម៉ោង">' + (m.start ? khmerTime(m.start) : '—') +
         (m.end ? ' – ' + khmerTime(m.end) : '') + '</td>' +
-      '<td style="text-align:center;">' + (m.minutes ? kh(String(m.minutes)) : '—') + '</td>' +
-      '<td>' + (esc(m.place || '') || '—') + '</td>' +
-      '<td style="text-align:center;">' + (esc(m.room || '') || '—') + '</td>' +
-      '<td style="text-align:center;">' + (has ? '✅' : '⏳') + '</td>' +
+      '<td style="text-align:center;" data-lbl="រយៈពេល (នាទី)">' + (m.minutes ? kh(String(m.minutes)) : '—') + '</td>' +
+      '<td data-lbl="ទីកន្លែង">' + (esc(m.place || '') || '—') + '</td>' +
+      '<td style="text-align:center;" data-lbl="បន្ទប់លេខ">' + (esc(m.room || '') || '—') + '</td>' +
+      '<td style="text-align:center;" data-lbl="ស្ថានភាព">' + (has ? '✅' : '⏳') + '</td>' +
     '</tr>';
   }).join('');
 
@@ -43490,7 +43588,7 @@ function renderTrackingView(){
 
     <div class="trk-card">
       <h3>១. លិខិត និងកាលបរិច្ឆេទសំខាន់ៗ</h3>
-      <div class="table-wrap"><table class="ledger trk-tbl">
+      <div class="table-wrap"><table class="ledger trk-tbl trk-stack">
         <thead><tr>
           <th style="text-align:left;">ឈ្មោះលិខិត</th><th>ថ្ងៃខែឆ្នាំលើលិខិត</th>
           <th>ថ្ងៃខែឆ្នាំទទួលឯកសារ</th><th>ឈ្មោះអ្នកតំណាង</th>
@@ -43502,9 +43600,10 @@ function renderTrackingView(){
 
     <div class="trk-card">
       <h3>៤. របាយការណ៍ការប្រជុំ <span class="trk-mbadge">បានជួប ${kh(String(meetDone))}/${kh(String(trkState.meetings.length))} លើក</span></h3>
-      <div class="table-wrap"><table class="ledger trk-tbl">
+      <div class="table-wrap"><table class="ledger trk-tbl trk-stack">
         <thead><tr>
           <th style="text-align:left;">លើកទី</th><th>ប្រភេទកិច្ចប្រជុំ</th><th>ថ្ងៃខែឆ្នាំ</th><th>ម៉ោង</th>
+          <!-- ស្លាកជួរឈរនៅក្រឡា ⇒ ប្លុកលើទូរស័ព្ទ -->
           <th>រយៈពេល (នាទី)</th><th>ទីកន្លែង</th><th class="trk-nowrap">បន្ទប់លេខ</th><th>ស្ថានភាព</th>
         </tr></thead><tbody>${meetRows}</tbody>
       </table></div>
@@ -44851,7 +44950,8 @@ function renderMinutes(idx){
   const banner = snap
     /* [stated] ២០២៦-១១-១៣ ៖ «លុបអក្សរនេះចេញ — ការកែតារាងខាងលើមិនប៉ះពាល់វាទេ។» */
     ? `<div class="trk-locked">🔒 កំណត់ហេតុនេះបានរក្សាទុករួច (${esc(savedStamp(snap.at))})
-         <button class="btn btn-outline" id="trkUnlock" style="width:auto; margin-left:8px;">✏️ កែឡើងវិញ</button>
+         <button class="btn btn-outline trk-unlock-ic" id="trkUnlock" title="កែឡើងវិញ"
+                 aria-label="កែឡើងវិញ">✏️</button>
        </div>`
     : '';
   const bh = document.getElementById('trkMinBanner');
@@ -61388,20 +61488,28 @@ else CC.init();
     rf.onclick = loadList;
     bar.appendChild(q); bar.appendChild(rf);
 
-    var cols = el('div', 'display:flex;gap:14px;padding:8px 18px 4px;flex:1 1 auto;min-height:230px;');
+    /* ⭐⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «លុបពាក្យចេញ ៖ សហគ្រាសដែលបានរក្សាទុក
+       ( ឈ្មោះ · លេខអតប ) និង ជំនាន់ឯកសារ ( ថ្មីជាងគេនៅលើ ) ; ជួយរៀបចំ
+       ផ្នែកនេះឱ្យបានស្អាត កុំឱ្យតារាងធំជាងអក្សរពេក» ។
+       ⚠ មូលហេតុដែលប្រអប់ធំហួស ៖ `select.size = 9` ⇒ បញ្ជីកម្ពស់ ៩ ជួរ
+         ជានិច្ច ទោះមានតែ ១ ឯកសារ ; ហើយជួរឈរ ២ ឈរក្បែរគ្នា ៥៥%/៤៥%
+         នៃផ្ទាំងចង្អៀត ⇒ ប្រអប់វែងឆ្ងាយ តែអក្សរមានតែបន្ទាត់តែមួយ ។
+       ⇒ លើអេក្រង់តូច ៖ ឈរជា**ជួរឈរតែមួយ** និងកម្ពស់បញ្ជីតូចជាង ។
+       ⇒ ស្លាកទាំងពីរដកចេញតាមការស្នើ ។ */
+    var __pkNarrow = ((window.innerWidth || 999) < 760);
+    var cols = el('div', 'display:flex;gap:14px;padding:8px 18px 4px;flex:1 1 auto;'
+      + (__pkNarrow ? 'flex-direction:column;min-height:0;' : 'min-height:230px;'));
     var lc = el('div', 'flex:1 1 55%;display:flex;flex-direction:column;min-width:0;');
-    lc.appendChild(el('div', 'font-size:12.5px;color:#666;margin-bottom:5px;', 'សហគ្រាសដែលបានរក្សាទុក (ឈ្មោះ · លេខអតប)'));
     var gsel = document.createElement('select');
-    gsel.size = 9;
+    gsel.size = __pkNarrow ? 5 : 9;
     gsel.style.cssText = 'width:100%;flex:1 1 auto;border:1px solid #ccc;border-radius:9px;padding:5px;font-size:13.5px;font-family:inherit;';
     gsel.onchange = function(){ pk.gKey = gsel.value; renderVers(); };
     gsel.ondblclick = doOpen;
     lc.appendChild(gsel);
 
     var rc = el('div', 'flex:1 1 45%;display:flex;flex-direction:column;min-width:0;');
-    rc.appendChild(el('div', 'font-size:12.5px;color:#666;margin-bottom:5px;', 'ជំនាន់ឯកសារ (ថ្មីជាងគេនៅលើ)'));
     var vsel = document.createElement('select');
-    vsel.size = 9;
+    vsel.size = __pkNarrow ? 4 : 9;
     vsel.style.cssText = 'width:100%;flex:1 1 auto;border:1px solid #ccc;border-radius:9px;padding:5px;font-size:13px;font-family:inherit;';
     vsel.onchange = function(){ pk.fileId = vsel.value; };
     vsel.ondblclick = doOpen;
