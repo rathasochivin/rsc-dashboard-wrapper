@@ -2310,13 +2310,29 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
   font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif;
   font-weight:600; font-size:11.5px; }
 #view-tracking .smw-nm, #docs-modal .smw-nm{ margin-top:2px; }
+#view-tracking .smw-r:has(.smw-fill), #docs-modal .smw-r:has(.smw-fill){
+  display:grid; grid-template-columns:19px 126px minmax(0,1fr);
+  align-items:start; column-gap:4px; }
+#view-tracking .smw-r.smw-amt, #docs-modal .smw-r.smw-amt{
+  grid-template-columns:19px 126px max-content auto; align-items:baseline; }
+#view-tracking .smw-r.smw-amt > .v2, #docs-modal .smw-r.smw-amt > .v2{ margin-left:6px; }
+#view-tracking .smw-fill, #docs-modal .smw-fill{
+  font:inherit; color:inherit; border:0; outline:none; background:transparent;
+  padding:0; margin:0; width:100%; resize:none; overflow:hidden;
+  line-height:1.85; display:block; }
+#view-tracking textarea.smw-fill, #docs-modal textarea.smw-fill{ min-height:20px; }
+#view-tracking .smw-fill::placeholder, #docs-modal .smw-fill::placeholder{ color:#9a9a9a; }
+#view-tracking .smw-inline, #docs-modal .smw-inline{
+  width:auto !important; min-width:0; max-width:none; display:inline-block; }
+#view-tracking .smw-col, #docs-modal .smw-col{ min-width:0; }
+#view-tracking .smw-note, #docs-modal .smw-note{ color:#444; }
 #view-tracking .smw-page, #docs-modal .smw-page{ position:relative; }
 #view-tracking .smw-foot, #docs-modal .smw-foot{
   position:absolute; left:0; right:0; bottom:0;
   text-align:center; font-size:11px; color:#666; }
 /* ⭐ សញ្ញា ▪ · វាលហូរតត្រង់ · ប្រអប់ហត្ថលេខាខាងស្តាំ ( ត្រូវដូច SMW_CSS ) */
 #view-tracking .smw-r .bq, #docs-modal .smw-r .bq{
-  flex:0 0 auto; color:#111; margin-right:4px; font-size:9px; line-height:1.9; }
+  flex:0 0 auto; color:#111; margin-right:5px; font-size:15px; line-height:1.15; }
 #view-tracking .smw-r:has(.smw-flow), #docs-modal .smw-r:has(.smw-flow){ display:block; }
 #view-tracking .smw-flow, #docs-modal .smw-flow{ display:inline; }
 #view-tracking .smw-sign, #docs-modal .smw-sign{
@@ -5612,6 +5628,37 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
       -webkit-overflow-scrolling:touch; scrollbar-width:none;
     }
     #tos-embed .period-box::-webkit-scrollbar{ display:none; }
+    /* ⭐ ក្បាលផ្ទាំងបុគ្គលិក ៖ ឈ្មោះ · សញ្ជាតិ · ស្ថានភាព ក្នុងជួរតែមួយ
+       ⇒ បង្ខំលេខអត្តសញ្ញាណឱ្យចុះជួរទី ២ ( flex-basis ១០០% ) ។ */
+    #tos-embed .modal-title-row{ row-gap:4px !important; gap:6px !important; }
+    #tos-embed .modal-head h3{ font-size:15px !important; }
+    #tos-embed .meta-inline{ font-size:11.5px !important; }
+    #tos-embed .inline-select{ font-size:11.5px !important; padding:2px 4px !important; }
+    #tos-embed .meta-sep-id{ display:none !important; }
+    #tos-embed .meta-id{ flex:1 0 100% !important; }
+    #tos-embed .id-input{ min-width:130px !important; }
+    /* ⚠⚠ វាស់បាន ( ៣៩០px ) ៖ ជួរក្បាលទទឹង ២៩៦px តែខ្លឹមសារត្រូវការ ៣២៤px
+       ( ឈ្មោះ ៧១ · សញ្ជាតិ ១០១ · ស្ថានភាព ១២០ · សញ្ញា ៨ · ចន្លោះ ២៤ )
+       ⇒ នៅតែបាក់ ៣ ជួរ ។ មូលហេតុ ៖ `all:unset` លើវាលសញ្ជាតិដក width ចេញ
+         ⇒ វាលរីកតាម `size` ( ៧ តួ ⇒ ១០១px ) ធំជាងអ្វីដែលត្រូវការ ។
+       ⇒ ចាក់ទទឹងផ្ទាល់ ៖ ៧១ + ៥២ + ៩៨ + ៨ + ២៤ = ២៥៣px ⇒ សម ១ ជួរ ។ */
+    #tos-embed #empModalNationality{
+      width:52px !important; min-width:0 !important; font-size:11.5px !important; }
+    #tos-embed #empModalResidency{
+      max-width:100px !important; font-size:11px !important; padding:2px 3px !important; }
+    #tos-embed .meta-save-btn{
+      height:26px !important; min-height:26px !important; padding:0 10px !important;
+      font-size:11px !important; }
+    /* ⭐ ប្រអប់បំពេញ ៖ ២ ជួរ ⇒ បន្ថយទំហំអក្សរឱ្យសមទទឹង ៣៩០px */
+    #tos-embed .bulk-fill-box{ gap:8px !important; padding:10px !important; }
+    #tos-embed .bulk-fill-box .bf-row{ gap:7px !important; }
+    #tos-embed .bulk-fill-box .field{ font-size:10.5px !important; line-height:1.4; }
+    #tos-embed .bulk-fill-box .bf-row input,
+    #tos-embed .bulk-fill-box .bf-row select{
+      font-size:12px !important; padding:7px 6px !important; }
+    #tos-embed .bulk-fill-box .bf-go{
+      width:38px !important; min-width:38px !important; height:34px !important;
+      min-height:34px !important; }
     #tos-embed .period-box label{ flex:0 0 auto; font-size:12px; }
     #tos-embed .period-box input[type="date"]{
       -webkit-appearance:none; appearance:none; font-size:13px; }
@@ -5848,6 +5895,19 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     border:1px solid var(--tos-line); border-radius:6px; padding:7px 9px; font-family:inherit; font-size:12.5px; background:#fff; width:220px;
   }
   #tos-embed .bulk-fill-box .btn{ height:34px; padding:0 14px; font-size:12.5px; }
+  /* ⭐ ជួរក្នុងប្រអប់បំពេញ ៖ វាលបែងចែកទទឹងស្មើគ្នា ហើយមិនធ្លាក់បន្ទាត់ */
+  #tos-embed .bulk-fill-box .bf-row{
+    display:flex; flex-wrap:nowrap; align-items:flex-end; gap:10px;
+    flex:1 0 100%; width:100%; min-width:0;
+  }
+  #tos-embed .bulk-fill-box .bf-row > .field{ flex:1 1 0; min-width:0; }
+  #tos-embed .bulk-fill-box .bf-row > .field > input,
+  #tos-embed .bulk-fill-box .bf-row > .field > select{ width:100% !important; }
+  /* ⭐ ប៊ូតុង ▶ ជាការ៉េ ⇒ មិនស៊ីទទឹងវាលខែ */
+  #tos-embed .bulk-fill-box .bf-go{
+    flex:0 0 auto; width:40px; min-width:40px; padding:0 !important;
+    display:inline-flex; align-items:center; justify-content:center; font-size:13px;
+  }
   #tos-embed .btn.danger-ghost{
     background:#fff; border:1.5px solid var(--tos-danger); color:var(--tos-danger);
     border-radius:8px; font-family:inherit; font-weight:600; cursor:pointer;
@@ -7691,16 +7751,23 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
       <div class="modal-title-row">
         <h3 id="empModalTitle">-</h3>
         <span class="meta-sep">·</span>
-        <span class="meta-inline">សញ្ជាតិ៖ <input type="text" id="empModalNationality" class="inline-input" placeholder="—" size="9" /></span>
+        <!-- ⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «លុបអក្សរ សញ្ជាតិ រក្សាទុក ខ្មែរ ឬ
+             វៀតណាម · រុញផ្នែកនិវាសនជន/អនិវាសនជន នៅជួរជាមួយនឹង លឹម មឿន ខ្មែរ
+             ដោយលុបអក្សរ ស្ថានភាព ចេញ» ។
+             ⚠ ស្លាកមិនបាត់អត្ថន័យទេ ៖ ផ្លាស់ទៅ title + placeholder
+               ⇒ ចុចសង្កត់ឃើញដដែល តែលែងស៊ីទទឹងនៅជួរក្បាល ។
+             ⚠ លេខអត្តសញ្ញាណផ្លាស់ទៅក្រោយ ⇒ វាធ្លាក់ជួរទី ២ ដោយខ្លួនឯង
+               ⇒ ឈ្មោះ · សញ្ជាតិ · ស្ថានភាព នៅជួរតែមួយ ។ -->
+        <span class="meta-inline"><input type="text" id="empModalNationality" class="inline-input" placeholder="សញ្ជាតិ" size="7" title="សញ្ជាតិ" /></span>
         <span class="meta-sep">·</span>
-        <span class="meta-inline">លេខអត្តសញ្ញាណ៖ <input type="text" id="empModalId" class="inline-input id-input" placeholder="—" size="22" /></span>
-        <span class="meta-sep">·</span>
-        <span class="meta-inline">ស្ថានភាព៖
+        <span class="meta-inline">
           <select id="empModalResidency" class="inline-select" title="ស្ថានភាពពន្ធសាមីខ្លួន">
             <option value="resident">និវាសនជន</option>
             <option value="nonresident">អនិវាសនជន ២០%</option>
           </select>
         </span>
+        <span class="meta-sep meta-sep-id">·</span>
+        <span class="meta-inline meta-id">លេខអត្តសញ្ញាណ៖ <input type="text" id="empModalId" class="inline-input id-input" placeholder="—" size="22" /></span>
         <button type="button" class="btn ghost meta-save-btn" id="empModalSaveMeta">រក្សាទុក</button>
       </div>
       <button type="button" class="modal-close" id="empModalClose" aria-label="បិទ">✕</button>
@@ -42185,9 +42252,6 @@ window.__toiImport = function(data){
       ? `<p class="mx-hit" style="border:1px solid var(--tos-gold-600);border-radius:9px;
            padding:7px 11px;background:#FFFBF0;">
            <b style="color:#7a5f10;">✓ កំណត់ពន្ធឡើងវិញរួច ${amdList.length} នាក់</b>
-           ក្នុងចំណោម ${employees.length} នាក់ដែលបង្ហាញ
-           · ពន្ធបន្ថែមសរុប <b>${fmt(amdSum)}</b>
-           <span class="hint" style="margin:0;">( ជួរពណ៌មាស · ក្រឡាមានស៊ុម = ឆ្នាំដែលកែ )</span>
          </p>`
       : '';
 
@@ -42311,25 +42375,36 @@ window.__toiImport = function(data){
     const filledCount = filledMonths.size;
     const amendedThisYear = empRows.filter(r => r.year === year && r.amended).length;
     els.empBulkFill.innerHTML = `
+      <!-- ⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «កន្លែងបញ្ចូលទឹកប្រាក់ ប្រាក់បៀវត្ស
+           អត្ថប្រយោជន៍ គួរដាក់នៅជួរជាមួយគ្នា · ផ្នែករើសខែ និងបញ្ចូលខែ ដាក់នៅ
+           ជួរតែមួយ ហើយពាក្យ កំណត់ឡើងវិញ ប្តូរទៅជាសញ្ញា Play នៅជួរជាមួយរើសខែ» ។
+           ⚠ មុននេះវាលទាំង ៤ ដេកក្នុង flex-wrap តែមួយ ⇒ លើទូរស័ព្ទវាធ្លាក់
+             មួយវាលមួយជួរ ( ៤ ជួរ ) ⇒ វែងពេក ។
+           ⇒ ដាក់ជាពីរជួរច្បាស់លាស់ដោយ .bf-row ⇒ មិនអាស្រ័យលើទទឹងអេក្រង់ទៀត ។ -->
       <div class="bulk-fill-box">
-        <label class="field">ប្រាក់បៀវត្ស (USD) សម្រាប់ឆ្នាំ ${year}
-          <input type="text" inputmode="decimal" id="bulkSalaryUsd" placeholder="0.00">
-        </label>
-        <label class="field">អត្ថប្រយោជន៍បន្ថែម (USD)
-          <input type="text" inputmode="decimal" id="bulkFringeUsd" placeholder="0.00">
-        </label>
-        <label class="field">ខែដែលមានទិន្នន័យស្រាប់ (${filledCount}/12)
-          <select id="bulkMode" title="ជ្រើសរើសថាតើខែណាខ្លះគួរត្រូវបានប៉ះពាល់">
-            <option value="empty" title="បន្ថែមខែទទេប៉ុណ្ណោះ កុំសរសេរជាន់លើខែមានស្រាប់">តែខែមិនប្រកាស</option>
-            <option value="existing" title="កែតែខែដែលមានប្រកាសរួចស្រាប់ មិនបន្ថែមខែថ្មី">គ្រប់ខែមានស្រាប់</option>
-            <option value="all" title="កំណត់គ្រប់ខែ ទោះមានទិន្នន័យស្រាប់ក៏ដោយ">គ្រប់ខែ</option>
-          </select>
-        </label>
-        <label class="field">ខែណាខ្លះ ( ទទេ = គ្រប់ខែ )
-          <input type="text" id="bulkMonths" placeholder="ឧ. 10,11,12 ឬ 10-12"
-                 title="វាយលេខខែ ញែកដោយក្បៀស ឬជាចន្លោះ — ឧ. 10,11,12 · 10-12 · 3,6,9-12">
-        </label>
-        <button type="button" class="btn gold" id="bulkApplyBtn">កំណត់ឡើងវិញ</button>
+        <div class="bf-row">
+          <label class="field">ប្រាក់បៀវត្ស (USD) សម្រាប់ឆ្នាំ ${year}
+            <input type="text" inputmode="decimal" id="bulkSalaryUsd" placeholder="0.00">
+          </label>
+          <label class="field">អត្ថប្រយោជន៍បន្ថែម (USD)
+            <input type="text" inputmode="decimal" id="bulkFringeUsd" placeholder="0.00">
+          </label>
+        </div>
+        <div class="bf-row">
+          <label class="field">ខែដែលមានទិន្នន័យស្រាប់ (${filledCount}/12)
+            <select id="bulkMode" title="ជ្រើសរើសថាតើខែណាខ្លះគួរត្រូវបានប៉ះពាល់">
+              <option value="empty" title="បន្ថែមខែទទេប៉ុណ្ណោះ កុំសរសេរជាន់លើខែមានស្រាប់">តែខែមិនប្រកាស</option>
+              <option value="existing" title="កែតែខែដែលមានប្រកាសរួចស្រាប់ មិនបន្ថែមខែថ្មី">គ្រប់ខែមានស្រាប់</option>
+              <option value="all" title="កំណត់គ្រប់ខែ ទោះមានទិន្នន័យស្រាប់ក៏ដោយ">គ្រប់ខែ</option>
+            </select>
+          </label>
+          <label class="field">ខែណាខ្លះ ( ទទេ = គ្រប់ខែ )
+            <input type="text" id="bulkMonths" placeholder="ឧ. 10,11,12 ឬ 10-12"
+                   title="វាយលេខខែ ញែកដោយក្បៀស ឬជាចន្លោះ — ឧ. 10,11,12 · 10-12 · 3,6,9-12">
+          </label>
+          <button type="button" class="btn gold bf-go" id="bulkApplyBtn"
+                  title="កំណត់ឡើងវិញ" aria-label="កំណត់ឡើងវិញ">&#9654;</button>
+        </div>
         ${amendedThisYear ? `<button type="button" class="btn danger-ghost" id="bulkRevertYearBtn">លុបការកំណត់ពន្ធ ${year} (${amendedThisYear})</button>` : ''}
         <!-- [stated] ២០២៦-១១-១៣ ៖ «លុបចេញ ⚑ ការកំណត់ឡើងវិញ តម្លើងតែ
              ប៉ុណ្ណោះ …» ⇒ ដកសារពន្យល់ ។
@@ -42935,7 +43010,10 @@ window.__toiImport = function(data){
         + `ដូច្នេះតួលេខដែលបានប្រកាសនៅដដែល`;
       els.empModalStatus.style.color = 'var(--muted)';
     } else {
-      els.empModalStatus.textContent = 'បានរក្សាទុកព័ត៌មានសញ្ជាតិ/អត្តសញ្ញាណ/ស្ថានភាព';
+      /* ⭐ [stated] ២០២៦-១១-១៣ ៖ «លុបអក្សរ បានរក្សាទុកព័ត៌មានសញ្ជាតិ/
+         អត្តសញ្ញាណ/ស្ថានភាព» ⇒ ករណីគ្មានអ្វីប្តូរ មិនបង្ហាញសារទេ ។
+         ⚠ ការរក្សាទុកនៅដំណើរការដដែល — ដកតែអក្សរប៉ុណ្ណោះ ។ */
+      els.empModalStatus.textContent = '';
       els.empModalStatus.style.color = 'var(--success)';
     }
     renderEmployeeModal();
@@ -51468,10 +51546,23 @@ function smwState(){
    សរសេរតតែម្តង មិនបាច់ចុះបន្ទាត់ទេ ដូចក្នុង Word គំរូ» ។
    ⇒ វាលក្លាយជា **inline** ⇒ អត្ថបទបន្តភ្លាមក្រោយស្លាក ហើយរុំដោយខ្លួនឯង
      ពេលដល់គែម ( ដូច Word ) ជំនួសការចាប់ផ្តើមបន្ទាត់ថ្មី ។ */
+/* ⭐⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «មិនអាចបំពេញបានផ្នែកជួបពិភាក្សា ដល់
+   សម្គាល់» និង «អក្សរពេលសរសេរ … ត្រូវប្រើការតម្រឹមជួរអក្សរដូចក្នុងរូប» ។
+   ⚠⚠ មូលហេតុ ៖ ខ្ញុំប្រើ `contenteditable` លើ **span inline** ។ វាដើរលើ
+     កុំព្យូទ័រ ( តេស្តបាន ៖ វាយចូល និងរក្សាទុកបានគ្រប់ ) តែលើ iOS ការចុច
+     លើ span inline ក្នុងសន្លឹកដែលត្រូវបង្រួមដោយ `zoom` ច្រើនតែចាប់មិនបាន
+     ⇒ វាយមិនចូល ។
+   ⇒ ប្តូរទៅ **textarea ពិត** ៖ ជាវាលបញ្ចូលស្តង់ដារ ⇒ iOS ចាប់បានជានិច្ច
+     ហើយក្តារចុចលេចឡើងធម្មតា ។
+   ⭐ តម្រឹមជួរដូច Word ៖ ជួរក្លាយជា grid ៣ ជួរឈរ ( ▪ · ស្លាក · អត្ថបទ )
+     ⇒ អត្ថបទរុំត្រឡប់មក**គែមឆ្វេងរបស់ខ្លួន** មិនមែនគែមទំព័រ ។ */
 function smwFill(key, lines, ph){
   var v = String(smwState()[key] || '');
-  return '<span class="smw-fill smw-flow" contenteditable="true" data-smw="' + key + '"'
-    + ' data-ph="' + esc(ph || '') + '">' + esc(v) + '</span></div>';
+  /* WARNING : do NOT close the row here. It used to emit </div>, which
+     closed .smw-col early and threw .smw-note into its own grid cell
+     ( measured : note rendered one character per line ). */
+  return '<textarea class="smw-fill" rows="' + (lines || 1) + '" data-smw="' + key + '"'
+    + ' placeholder="' + esc(ph || '') + '">' + esc(v) + '</textarea>';
 }
 function smwHtml(forPrint){
   var c = smwCtx();
@@ -51513,24 +51604,27 @@ function smwHtml(forPrint){
     '<div class="smw-h">II. កិច្ចសហការរបស់អ្នកជាប់ពន្ធ៖</div>' +
     '<div class="smw-b">' +
       '<div class="smw-r"><span class="bq">▪</span><span class="k2">ការជួបពិភាក្សា៖</span>' +
-      smwFill('meet', 3, 'ឧ. បានជួបម្ចាស់សហគ្រាស ៣ ដង ; បានជួបម្ចាស់សហគ្រាស និងភ្នាក់ងារ ៤ ដង ; មិនបានជួបម្ចាស់ ឬតំណាងសហគ្រាសទេ …') +
+      smwFill('meet', 3, 'ឧ. បានជួបម្ចាស់សហគ្រាស ៣ ដង ; បានជួបម្ចាស់សហគ្រាស និងភ្នាក់ងារ ៤ ដង ; មិនបានជួបម្ចាស់ ឬតំណាងសហគ្រាសទេ …') + '</div>' +
       '<div class="smw-r"><span class="bq">▪</span><span class="k2">ការផ្ដល់ឯកសារ៖</span>' +
-      smwFill('docs', 3, 'ឧ. សហគ្រាសបានផ្តល់ឯកសារតាមការស្នើសុំ ; ស្នើសុំឯកសារចំនួន ១០ ប៉ុន្តែសហគ្រាសឱ្យបានតែ ១ គឺ … ; ស្នើសុំ ១០ មិនបានឱ្យ ៣ គឺ GL, TB, របាយការណ៍ធនាគារ …') +
+      smwFill('docs', 3, 'ឧ. សហគ្រាសបានផ្តល់ឯកសារតាមការស្នើសុំ ; ស្នើសុំឯកសារចំនួន ១០ ប៉ុន្តែសហគ្រាសឱ្យបានតែ ១ គឺ … ; ស្នើសុំ ១០ មិនបានឱ្យ ៣ គឺ GL, TB, របាយការណ៍ធនាគារ …') + '</div>' +
     '</div>' +
     '<div class="smw-h">III. មូលដ្ឋាននៃការកំណត់ពន្ធ៖</div>' +
     '<div class="smw-b">' +
       '<div class="smw-r"><span class="bq">▪</span><span class="k2">មូលដ្ឋាន៖</span>' +
-      smwFill('basis', 3, 'ឧ. របាយការណ៍ធនាគារ, ទិន្នន័យ Cross-Check, លម្អៀងទិន្នន័យនាំចូល, លម្អៀងចំនួនបុគ្គលិកបានប្រកាស និងជាក់ស្ដែង, លម្អៀងចំណូលប្រចាំខែ និងប្រចាំឆ្នាំ, ចំណាយសេវាទៅរូបវន្តបុគ្គល …') +
+      smwFill('basis', 3, 'ឧ. របាយការណ៍ធនាគារ, ទិន្នន័យ Cross-Check, លម្អៀងទិន្នន័យនាំចូល, លម្អៀងចំនួនបុគ្គលិកបានប្រកាស និងជាក់ស្ដែង, លម្អៀងចំណូលប្រចាំខែ និងប្រចាំឆ្នាំ, ចំណាយសេវាទៅរូបវន្តបុគ្គល …') + '</div>' +
       '<div class="smw-r smw-amt"><span class="bq">▪</span><span class="k2">ទឹកប្រាក់កំណត់ពន្ធ៖</span>' +
-        '<span class="smw-fill smw-inline" contenteditable="true" data-smw="amount" data-ph="X,XXX,XXX,XXX">' +
-        esc(amount) + '</span><span class="v2">រៀល</span></div>' +
+        '<input class="smw-fill smw-inline" type="text" data-smw="amount" ' +
+        'placeholder="X,XXX,XXX,XXX" value="' + esc(amount) + '">' +
+        '<span class="v2">រៀល</span></div>' +
+      /* ⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «ផ្នែក យើងខ្ញុំសូមភ្ជាប់ … នៅតែមាន
+         spacing ឆ្ងាយពីជួរសម្គាល់» ។
+         ⚠ ចន្លោះនោះគឺ **ជួរវាល «ឯកភាព» ទទេមួយដាច់ដោយឡែក** ដែលខ្ញុំបន្ថែម ។
+         ⇒ ផ្លាស់វាចូលក្នុងជួរ «សម្គាល់៖» ផ្ទាល់ ⇒ សល់ជួរតែមួយ ⇒ ចន្លោះបាត់ ។
+         ⚠ អត្ថបទណែនាំ ( បើសហគ្រាសឯកភាព … ) ចុះទៅបន្ទាត់ក្រោមក្នុងជួរដដែល ។ */
       '<div class="smw-r"><span class="bq">▪</span><span class="k2">សម្គាល់៖</span>' +
-        '<span class="v2">បើសហគ្រាសឯកភាព សវនករត្រូវបំពេញថា «សហគ្រាសឯកភាពលើការកំណត់ពន្ធនេះ» ' +
-        'បើសហគ្រាសមិនឯកភាព សវនករពុំចាំបាច់បំពេញទេ</span></div>' +
-      /* ⚠ `smwFill` បិទជួរដោយ `</div>` ⇒ ការហៅវាដោយឯកទើងនឹង
-         បិទ `.smw-b` មុនពេល ⇒ ប្លុកហត្ថលេខាធ្លាក់ចេញក្រៅក្រដាស ( កំហុសវាស់បាន )
-         ⇒ ត្រូវបើកជួរជាមុនជានិច្ច । */
-      '<div class="smw-r">' + smwFill('agree', 1, '') +
+        '<div class="smw-col">' + smwFill('agree', 1, 'បើឯកភាព សរសេរ ៖ សហគ្រាសឯកភាពលើការកំណត់ពន្ធនេះ') +
+        '<div class="smw-note">បើសហគ្រាសឯកភាព សវនករត្រូវបំពេញថា «សហគ្រាសឯកភាពលើការកំណត់ពន្ធនេះ» ' +
+        'បើសហគ្រាសមិនឯកភាព សវនករពុំចាំបាច់បំពេញទេ</div></div></div>' +
       '<div class="smw-r smw-attach">យើងខ្ញុំសូមភ្ជាប់មកជាមួយនូវលិខិតស្នើសុំឯកសារ លិខិតអញ្ជើញ និងកំណត់ហេតុ។</div>' +
     '</div>' +
     '<div class="smw-sign">' +
@@ -51591,11 +51685,30 @@ const SMW_CSS = `
     font-weight:600; font-size:11.5px; }
   .smw-nm{ margin-top:2px; }
   /* ⭐ ជើងទំព័រ ៖ ខ្ទាស់បាតសន្លឹក ចំកណ្តាល */
+  /* [stated] 2026-11-13 : Word-style hanging indent for the fill rows.
+     Row = grid of 3 columns : bullet | label | value-block. The value block
+     wraps back to ITS OWN left edge, not the page margin. */
+  .smw-r:has(.smw-fill){
+    display:grid; grid-template-columns:19px 126px minmax(0,1fr);
+    align-items:start; column-gap:4px; }
+  .smw-r.smw-amt{ grid-template-columns:19px 126px max-content auto; align-items:baseline; }
+  .smw-r.smw-amt > .v2{ margin-left:6px; }
+  .smw-fill{
+    font:inherit; color:inherit; border:0; outline:none; background:transparent;
+    padding:0; margin:0; width:100%; resize:none; overflow:hidden;
+    line-height:1.85; display:block; }
+  textarea.smw-fill{ min-height:20px; }
+  .smw-fill::placeholder{ color:#9a9a9a; }
+  /* ⚠ min-width:120px បង្ខំវាលឱ្យធំជាងលេខ ⇒ ត្រូវដោះចេញ ដើម្បីឱ្យ
+     size ( កំណត់ក្នុង renderSmw ) សម្រេចទទឹងពិតប្រាកដ ។ */
+  .smw-inline{ width:auto !important; min-width:0; max-width:none; display:inline-block; }
+  .smw-col{ min-width:0; }
+  .smw-note{ color:#444; }
   .smw-page{ position:relative; }
   .smw-foot{ position:absolute; left:0; right:0; bottom:0;
     text-align:center; font-size:11px; color:#666; }
   /* ⭐ [stated] ២០២៦-១១-១៣ ៖ សញ្ញា ▪ នៅមុខជួរនីមួយៗ ដូចក្នុង Word */
-  .smw-r .bq{ flex:0 0 auto; color:#111; margin-right:4px; font-size:9px; line-height:1.9; }
+  .smw-r .bq{ flex:0 0 auto; color:#111; margin-right:5px; font-size:15px; line-height:1.15; }
   /* ⭐ វាលបំពេញហូរតត្រង់ក្រោយស្លាក ⇒ ជួរក្លាយជាប្លុកធម្មតា ( មិនមែន flex )
      ⚠ :has() មានលើ iOS 16.4+ · Chrome 105+ ; បើគ្មាន វាត្រឡប់ទៅរបៀបចាស់ */
   .smw-r:has(.smw-flow){ display:block; }
@@ -51613,12 +51726,39 @@ function renderSmw(){
   var host = document.getElementById('trkSmw');
   if(!host) return;
   host.innerHTML = smwHtml(false);
+  /* ⚠ ឥឡូវវាលជា textarea / input ⇒ អានតាម `value` មិនមែន `textContent` */
+  /* WARNING : an EMPTY textarea reports a 1-line scrollHeight ( the
+     placeholder is not measured ), so auto-growing it collapses the box and
+     the placeholder gets clipped ( measured ). Only grow once it has text;
+     an empty field keeps the height its rows attribute gives it. */
+  var grow = function(t){
+    if(!t) return;
+    /* ⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «អក្សរ រៀល រត់ពីក្រោយលេខ មិនត្រូវដាក់ fix ទេ
+       ពេលខ្លះអាចឆ្ងាយពីលេខពេក» ។
+       ⚠ ពេលខ្ញុំប្តូរវាលទឹកប្រាក់ពី span ទៅ input ( ដើម្បីឱ្យវាយបានលើ iOS )
+         ចន្លោះនោះត្រឡប់មកវិញ ៖ input គ្មានការរួញតាមខ្លឹមសារដូច span ទេ
+         ⇒ វាទទឹង ~២០០px ខណៈលេខយកត្រឹម ~១០៥px ⇒ «រៀល» ឆ្ងាយ ។
+       ⇒ កំណត់ size តាមចំនួនតួពិត ⇒ វាលរួញតាមលេខ ⇒ «រៀល» ជាប់ជានិច្ច ។ */
+    if(t.tagName === 'INPUT'){
+      var txt = String(t.value || t.getAttribute('placeholder') || '');
+      t.size = Math.max(txt.length, 4);
+      return;
+    }
+    if(t.tagName !== 'TEXTAREA') return;
+    if(!t.value){ t.style.height = ''; return; }
+    t.style.height = 'auto';
+    t.style.height = Math.max(t.scrollHeight, 20) + 'px';
+  };
   host.querySelectorAll('[data-smw]').forEach(function(el){
+    grow(el);
     el.addEventListener('input', function(){
-      smwState()[el.getAttribute('data-smw')] = el.textContent;
+      smwState()[el.getAttribute('data-smw')] = el.value;
+      grow(el);
       trkSave();
     });
   });
+  try{ requestAnimationFrame(function(){
+    host.querySelectorAll('textarea[data-smw]').forEach(grow); }); }catch(e){}
   try{ setTimeout(function(){ try{ window.__nrFit && window.__nrFit(); }catch(e){} }, 40); }catch(e){}
 }
 function printSmw(){
