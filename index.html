@@ -1693,6 +1693,8 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
 @media screen{
   #view-tracking .trk-minutes:not(.trk-letter), #docs-modal .trk-minutes:not(.trk-letter){
     width:210mm; max-width:none; margin-left:auto; margin-right:auto;
+    /* ⭐ រឹមក្រដាសដូចពេលព្រីន ⇒ អក្សរមិនជាប់គែម */
+    padding-left:16mm !important; padding-right:16mm !important;
     zoom:var(--trkm-zoom, 1);
   }
 }
@@ -1703,9 +1705,23 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
    ជាន់គ្នា ដែលឃើញច្បាស់ជាងគេនៅឯកសារលិខិត។
    ⇒ ពេលលិខិតស្ថិតក្នុងកាតរួចហើយ ដកស៊ុម ស្រមោល និងផ្ទៃរបស់វាចេញ ⇒ នៅសល់
      សន្លឹកតែមួយ។ ⚠ កុំដក `padding` ៖ វារក្សាចន្លោះអត្ថបទពីគែមកាត។ */
-#view-tracking .trk-card > .trk-minutes, #docs-modal .trk-card > .trk-minutes{
+/* ⭐⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «នៅលើអេក្រង់ពាក្យ យើងខ្ញុំសូមជម្រាបជូនលោក-
+   ឃើញហៀរចេញក្រៅតារាង ទាំងដែលពេលព្រីនឃើញស្អាតធម្មតា» ។
+   ⚠⚠ ឫសគល់ ( ដាននៃច្បាប់ CSS វាស់បាន ) ៖ ច្បាប់នេះដាក់ `padding-left:0`
+     និង `padding-right:0` ។ វាសរសេរសម្រាប់ **កំណត់ហេតុ** ( ដែលមិនមែនជា
+     ក្រដាស ) តែវាក៏ប៉ះ **លិខិត** ដែរ ព្រោះលិខិតកាន់ថ្នាក់ទាំងពីរ
+     ( `trk-minutes trk-letter` ) ⇒ រឹម ១៦mm របស់ក្រដាសត្រូវលុបចោល
+     ⇒ អក្សរជាប់គែមក្រដាស ( វាស់បាន ៖ padding 68.03px **0px** ) ។
+     ពេលព្រីនមិនប៉ះ ព្រោះម៉ាស៊ីនព្រីនមានរឹម @page ផ្ទាល់ខ្លួន ។
+   ⇒ បង្អត់លិខិតចេញពីច្បាប់នេះ ⇒ លិខិតត្រឡប់ទៅ `padding:18mm 16mm`
+     ដូចរឹម @page ពេលព្រីនបេះបិទ ។ */
+#view-tracking .trk-card > .trk-minutes:not(.trk-letter),
+#docs-modal .trk-card > .trk-minutes:not(.trk-letter){
   margin-top:0; border:0; border-radius:0; background:transparent; box-shadow:none;
   padding-left:0; padding-right:0;
+}
+#view-tracking .trk-card > .trk-letter, #docs-modal .trk-card > .trk-letter{
+  margin-top:0; border-radius:0; box-shadow:none;
 }
 /* [stated] ២០២៦-០៨-១៣ ៖ ចង្វាក់គម្លាតដូចគ្នាទាំងអេក្រង់ និងក្រដាស —
    ៦px រវាងប្លុកធម្មតា · ១២px មុនចំណងជើង។ ⚠ ត្រូវប្តូរទាំងពីរកន្លែង ;
@@ -50800,13 +50816,22 @@ function printInPage(bodyHtml, css, pageRule, __dateAsked){
 
 function printLetter(){
   const kinds = { req:'លិខិតស្នើសុំឯកសារ', recv:'លិខិតទទួលឯកសារ', guar:'លិខិតធានាអះអាង' };
+  /* ⭐⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «នៅផ្នែកលិខិតទាំងអស់ ព្រីនរើសថ្ងៃណាចេញ
+     ថ្ងៃនោះ ពេលរើសហើយចូលទៅកន្លែងព្រីនតែម្តង» និង «ពាក្យ ថ្ងៃបញ្ចប់ធ្វើ
+     សវនកម្ម លុបចេញ» ។
+     ⚠ លិខិតមានវាល **ថ្ងៃចុះលិខិត** ផ្ទាល់ខ្លួនរួចហើយ ហើយអត្ថបទលិខិតក៏
+       យកថ្ងៃនោះមកបោះពុម្ពដែរ ⇒ ប្រអប់សួរថ្ងៃ ( ថ្ងៃបញ្ចប់ធ្វើសវនកម្ម )
+       គឺ**ស្ទួន និងមិនពាក់ព័ន្ធ** សម្រាប់លិខិត ។
+     ⇒ បញ្ជូន `__dateAsked = true` ⇒ រំលងប្រអប់ ⇒ ចុច 🖨 ម្តង ចូលព្រីនភ្លាម
+       តាមថ្ងៃដែលបានរើសក្នុងលិខិត ។
+     ⚠ ឯកសារផ្លូវការដទៃនៅសួរដដែល ព្រោះវាគ្មានវាលថ្ងៃផ្ទាល់ខ្លួនទេ ។ */
   printInPage(
     `<div class="lt-wrap">${(letterUsesLetterhead() ? letterheadHtml() : '') + letterBodyHtml()}</div>`,
     `.lt-wrap,.lt-tbl,.lt-list,.lt-sign,.lt-sign2,.lt-foot2,.lt-box{page-break-inside:avoid; break-inside:avoid;}
      .lt-tbl tr,.lt-list tr{page-break-inside:avoid; break-inside:avoid;}
      ${LETTERHEAD_CSS}
      ${LETTER_CSS}`,
-    '@page{ size:A4; margin:18mm 16mm; }');
+    '@page{ size:A4; margin:18mm 16mm; }', true);
 }
 
 /* [stated] ២០២៦-០៨-១៣ ៖ កំណត់ហេតុត្រូវមានជើងទំព័រ ៖
@@ -50997,7 +51022,8 @@ function docsHtml(){
     <div class="trk-card">
       <div class="trk-grid">
         <label>ថ្ងៃចុះលិខិត <input type="date" class="trk-in trk-ld" data-ld="letterDate" style="width:150px;"></label>
-        <label>អ្នកតំណាង (ជំនួស) <input class="trk-in trk-ld" data-ld="repName" placeholder="ទទេ = យកពីតារាងតាមដាន" style="width:200px;"></label>
+        <!-- [stated] ២០២៦-១១-១៣ ៖ «លុបពាក្យ (ជំនួស)» -->
+        <label>អ្នកតំណាង <input class="trk-in trk-ld" data-ld="repName" placeholder="ទទេ = យកពីតារាងតាមដាន" style="width:200px;"></label>
         <button class="btn btn-outline" id="trkLetterPrint" style="width:auto;">🖨️ ព្រីនលិខិត</button>
       </div>
       <div id="trkLetter" class="trk-minutes trk-letter"></div>
