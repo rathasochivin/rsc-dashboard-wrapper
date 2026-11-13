@@ -1322,6 +1322,104 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
   .module-card .mc-stat{ font-size:21px; }
 }
 
+/* ══════════════════════════════════════════════════════════════════
+   ⭐⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «ជួយរៀបផ្នែកនេះឱ្យស្អាតផង វាលោតមក អត់ស្អាត
+   ម្យ៉ាងអក្សរធំ អក្សរតូចនៅឡើយ រៀបបែបណាឱ្យងាយមើល និងប្រើប្រាស់ … និង
+   ផ្នែករូបទី២ក៏ដូចគ្នា» ( កំណត់ហេតុប្រជុំ · របារជ្រើសឯកសារក្នុងព្រីនឯកសារ ) ។
+
+   មូលហេតុ ៖ ជួរទាំងពីរជា `display:flex; flex-wrap:wrap` ហើយ **វាលនីមួយៗ
+     មានទទឹងថេរជា px សរសេរក្នុង HTML ផ្ទាល់** ( ១៤០ · ២១០ · ៣០០ · ១៩០ ·
+     ១២០ · ២៦០ · ១៣០px … ) ។ លើកុំព្យូទ័រវាឈរជាជួរផ្តេកស្អាត ; លើទូរស័ព្ទ
+     ( ~៣៧៤px ) វាបត់ម្តងមួយ ⇒ ស្លាកនៅឆ្វេង វាលទទឹងចៃដន្យនៅស្តាំ ⇒ គែម
+     ស្តាំមិនត្រង់គ្នាសោះ ហើយស្លាកវែង ( «ជ្រើសឯកសារ» · «ប្រភេទលិខិត» )
+     ធ្លាក់ ២ បន្ទាត់ ⇒ មើលទៅដូចអក្សរធំតូចឆ្លាស់គ្នា ។
+
+   ⇒ លើអេក្រង់តូច ប្តូរជា **ក្រឡាចត្រង្គ ២ ជួរឈរ** ៖ ស្លាក ១០៦px ឆ្វេង ·
+     វាលពេញទំហំដែលនៅសល់ស្តាំ ⇒ គែមស្តាំត្រង់គ្នាទាំងអស់ ហើយវាលធំល្មម
+     សម្រាប់ម្រាមដៃ ( កម្ពស់ ៤២px ) ។ ប៊ូតុងពេញទទឹងនៅជួរដាច់ខាងក្រោម ។
+   ⚠ ត្រូវ `!important` ៖ ទទឹងជា **inline style** ក្នុង HTML ហើយកម្ពស់
+     ៣៦px មកពីច្បាប់ `#…​.doc-hub .hub-row .trk-in` ដែលខ្លាំងជាង ។
+   ⚠ កុំព្យូទ័រមិនរងផលសោះ ( ច្បាប់ក្នុង `max-width:760px` ប៉ុណ្ណោះ ) ។
+   ══════════════════════════════════════════════════════════════════ */
+@media screen and (max-width: 760px){
+  /* ⚠⚠ `!important` ចាំបាច់ត្រង់នេះ ៖ ប្លុកនេះឋិតនៅ**មុន** ( បន្ទាត់ ~១៣២០ )
+     ច្បាប់គោលរបស់ `.hub-row label` និង `.trk-grid > label` ( បន្ទាត់ ~១៦១៣
+     និង ~១៤៥១ ) ។ ដោយ specificity ស្មើគ្នា ច្បាប់ដែលមកក្រោយឈ្នះ ⇒ បើគ្មាន
+     `!important` នោះ `display:flex` គោលឈ្នះវិញ ហើយប្រអប់ ២ នៅជួរតែមួយ
+     ច្របាច់គ្នា ( វាស់បាន ៖ គែមស្តាំខុសគ្នា ១៣០px ) ។ */
+  /* ១ · ជួរមេ ៖ មួយវាលក្នុងមួយជួរដេក */
+  /* ⚠ `.trk-when` ៖ វាល «ប្រភេទ · ថ្ងៃខែឆ្នាំ · ម៉ោង · ទីកន្លែង · បន្ទប់លេខ»
+     JS ដាក់ចូល **ក្នុង span.trk-when** មិនមែនក្នុង `.trk-grid` ទេ ⇒ បើមិន
+     រាប់បញ្ចូល វានៅ `display:flex` ដដែល ( វាស់បាន ៖ ៧ វាលនោះគែមស្តាំមិន
+     ត្រង់នឹងវាលដទៃ ) ។ */
+  #view-tracking .trk-grid, #docs-modal .trk-grid,
+  #view-tracking .trk-when, #docs-modal .trk-when,
+  #view-tracking .hub-row, #docs-modal .hub-row,
+  #view-tracking .doc-hub .hub-row, #docs-modal .doc-hub .hub-row{
+    display:grid !important; grid-template-columns:minmax(0,1fr) !important;
+    gap:10px; align-items:stretch !important; justify-content:stretch !important;
+    font-size:13.5px;
+  }
+  /* ២ · វាលនីមួយៗ ៖ ស្លាកឆ្វេងទទឹងថេរ · ប្រអប់ស្តាំពេញទំហំសល់ */
+  #view-tracking .trk-grid > label, #docs-modal .trk-grid > label,
+  #view-tracking .trk-when > label, #docs-modal .trk-when > label,
+  #view-tracking .hub-row > label, #docs-modal .hub-row > label{
+    display:grid !important; grid-template-columns:106px minmax(0,1fr) !important;
+    align-items:center !important; gap:6px 8px; white-space:normal !important;
+    min-height:0 !important; margin:0;
+  }
+  #view-tracking .trk-grid > .trk-when, #docs-modal .trk-grid > .trk-when{
+    grid-column:1 / -1;
+  }
+  /* ៣ · ប្រអប់ ៖ ពេញទទឹង កម្ពស់ស្មើគ្នា អក្សរអានបាន */
+  #view-tracking .trk-grid > label > select, #docs-modal .trk-grid > label > select,
+  #view-tracking .trk-grid > label > input,  #docs-modal .trk-grid > label > input,
+  #view-tracking .trk-grid > label > textarea, #docs-modal .trk-grid > label > textarea,
+  #view-tracking .trk-when > label > select, #docs-modal .trk-when > label > select,
+  #view-tracking .trk-when > label > input,  #docs-modal .trk-when > label > input,
+  #view-tracking .hub-row > label > select, #docs-modal .hub-row > label > select,
+  #view-tracking .hub-row > label > input,  #docs-modal .hub-row > label > input,
+  #view-tracking .doc-hub .hub-row > label > select, #docs-modal .doc-hub .hub-row > label > select,
+  #view-tracking .doc-hub .hub-row > label > input,  #docs-modal .doc-hub .hub-row > label > input{
+    grid-column:2; width:100% !important; min-width:0 !important;
+    margin-left:0 !important; height:42px !important; font-size:14px;
+  }
+  /* វាលអត្ថបទវែង ៖ កម្ពស់តាមខ្លួនឯង មិនបង្ខំ ៤២px */
+  #view-tracking .trk-grid > label > textarea, #docs-modal .trk-grid > label > textarea{
+    height:auto !important; min-height:62px; align-self:stretch;
+  }
+  /* ៤ · ប៊ូតុង ៖ ជួរដាច់ ពេញទទឹង ទំហំចុងសមម្រាមដៃ */
+  #view-tracking .trk-grid > button, #docs-modal .trk-grid > button,
+  #view-tracking .hub-row > button, #docs-modal .hub-row > button,
+  #view-tracking .doc-hub .hub-row > button, #docs-modal .doc-hub .hub-row > button,
+  #view-tracking .doc-hub .hub-row #docsPrint, #docs-modal .doc-hub .hub-row #docsPrint{
+    grid-column:1 / -1; width:100% !important; margin-left:0 !important;
+    height:46px !important; font-size:15px;
+  }
+  #view-tracking .doc-hub .hub-row #docsPrint, #docs-modal .doc-hub .hub-row #docsPrint{
+    font-size:20px;
+  }
+  /* ៥ · វាលអត្ថបទវែងដែលស្លាកឋិតលើ ( .trk-wide ) ៖ ១ ជួរឈរ */
+  #view-tracking .trk-grid > label.trk-wide, #docs-modal .trk-grid > label.trk-wide{
+    grid-template-columns:minmax(0,1fr) !important;
+  }
+  #view-tracking .trk-grid > label.trk-wide > span.trk-lb,
+  #docs-modal .trk-grid > label.trk-wide > span.trk-lb{
+    flex:none; padding-top:0; grid-column:1; font-weight:600;
+  }
+  #view-tracking .trk-grid > label.trk-wide > textarea,
+  #docs-modal .trk-grid > label.trk-wide > textarea{ grid-column:1; }
+  /* ៦ · ក្បាលកាត ៖ ប៊ូតុងចុះជួរផ្ទាល់ខ្លួន ⇒ ចំណងជើងលែងច្របាច់ធ្លាក់បន្ទាត់ */
+  #view-tracking .trk-card > h3, #docs-modal .trk-card > h3{ flex-wrap:wrap !important; }
+  #view-tracking .trk-acts, #docs-modal .trk-acts{
+    margin-left:0 !important; width:100%; justify-content:flex-start;
+    flex-wrap:wrap; gap:8px;
+  }
+  #view-tracking .trk-ic, #docs-modal .trk-ic{
+    width:46px !important; height:42px !important; font-size:19px;
+  }
+}
+
 @media (max-width: 900px){
   .app{flex-direction:column;}
   .sidebar{width:100%; height:auto; position:relative; flex-direction:row; overflow-x:auto;}
@@ -6335,12 +6433,33 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
            ⚠ `renderYoY` នៅទុកក្នុងកូដ ( មានការពារ null ស្រាប់ ) ប៉ុន្តែការ
              ហៅរបស់វាត្រូវដកចេញ ⇒ គ្មានការគណនាឥតប្រយោជន៍ពេលបើកទំព័រ ។ -->
 
-      <!-- ⭐ [stated] ២០២៦-១១-១៣ ៖ «លុបចេញ 🏆 ១០ សហគ្រាសកំពូល ( Top 10 )»
-           និង «លុបចេញ 🤝 សង្ខេបតាមក្រុមហ៊ុនដៃគូ» ⇒ ដកទាំងចំណងជើង ទាំង
-           តារាង និងប៊ូតុងប្តូរ អតិថិជន / អ្នកផ្គត់ផ្គង់ ។
-           ⚠ មុខងារគណនា ( `computePartnerSummary` · `computeTopCompanies` )
-             នៅទុកក្នុងកូដ ព្រោះផ្នែកដទៃយោងវា ; ដកតែ**ការហៅ**ចេញ ⇒ គ្មាន
-             ការគណនាឥតប្រយោជន៍ពេលផ្ទុកឯកសារ ។ -->
+      <!-- ⭐ [stated] ២០២៦-១១-១៣ ( កែតម្រូវ ) ៖ «មុននោះខ្ញុំឱ្យលុបតែអក្សរទេ
+           សម្រាប់ពីចំណុចនេះ ដោយឡែកតារាងនៅអាចមើលបានធម្មតា» ⇒ ដក**តែ
+           បន្ទាត់ចំណងជើង** «🏆 ១០ សហគ្រាសកំពូល ( Top 10 )» និង «🤝 សង្ខេប
+           តាមក្រុមហ៊ុនដៃគូ» ។ តារាង ប៊ូតុងប្តូរ និងការគណនានៅដដែលទាំងស្រុង ។ -->
+      <div class="chart-row" style="align-items:start;">
+        <div class="chart-card" style="padding:14px;">
+          <h3>ដៃគូ — SALE (អតិថិជន)</h3>
+          <div class="table-scroll" style="max-height:320px;"><table id="partner-summary-sale"></table></div>
+        </div>
+        <div class="chart-card" style="padding:14px;">
+          <h3>ដៃគូ — PURCHASE (អ្នកផ្គត់ផ្គង់)</h3>
+          <div class="table-scroll" style="max-height:320px;"><table id="partner-summary-purchase"></table></div>
+        </div>
+      </div>
+
+      <!-- តារាងនេះវែង ដូច្នេះទុកតែមួយ ហើយប្តូររវាង អតិថិជន / អ្នកផ្គត់ផ្គង់
+           ដោយចុចប៊ូតុង — កាតលែងខុសកម្ពស់គ្នាទៀត។ -->
+      <div class="chart-card" style="padding:14px;">
+        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:10px;">
+          <h3 style="margin:0;">🏆 <span id="top10-title">អតិថិជន</span> TOP 10</h3>
+          <div id="top10-switch" style="margin-left:auto; display:inline-flex; border:1px solid var(--line); border-radius:8px; overflow:hidden;">
+            <button type="button" class="top10-tab is-on" data-side="sale">អតិថិជន</button>
+            <button type="button" class="top10-tab" data-side="purchase">អ្នកផ្គត់ផ្គង់</button>
+          </div>
+        </div>
+        <div class="table-scroll" style="max-height:420px;"><table id="top-companies"></table></div>
+      </div>
 
       <div class="section-title">🛒 ទំនិញ/សេវាលក់ដាច់ (Top 5)<div class="rule"></div></div>
       <div class="chart-card" id="top-products-card"></div>
@@ -20480,11 +20599,10 @@ function runCrosscheck(){
   renderKPI("kpi-sale", crossSaleResult, hasCpPurchase);
   renderKPI("kpi-purchase", crossPurchaseResult, hasCpSale);
 
-  /* [stated] ២០២៦-១១-១៣ ៖ ផ្នែក «សង្ខេបតាមក្រុមហ៊ុនដៃគូ» និង «Top 10»
-     ត្រូវដកចេញពីទិដ្ឋភាពទូទៅ ។
-     ⚠⚠ ចាំបាច់ត្រូវដកការហៅ ៖ `renderPartnerSummary` សរសេរ
-       `table.innerHTML` ដោយ**គ្មានការពារ null** ⇒ បើទុកការហៅទាំងដកតារាង
-       នឹងបោះកំហុសពេលផ្ទុកឯកសារ ។ */
+  renderPartnerSummary("partner-summary-sale", crossSaleResult, "crossSale");
+  renderPartnerSummary("partner-summary-purchase", crossPurchaseResult, "crossPurchase");
+
+  renderTopPartners();
 }
 
 /* =========================================================
@@ -43114,7 +43232,11 @@ function renderTrackingView(){
      ដែលគេបញ្ចូល និងមើលច្រើនជាងគេ។ ទុកជាអថេរ រួចដាក់ចូលពុម្ព
      ដើម្បីកុំចម្លងកូដ HTML ពីរកន្លែង។ */
   const minutesCard = `    <div class="trk-card">
-      <h3>📝 កំណត់ហេតុប្រជុំ (បង្កើតដោយស្វ័យប្រវត្តិ)
+      <!-- ⭐ [stated] ២០២៦-១១-១៣ ៖ «ឡឬកអក្សរ បង្កើតដោយស្វ័យប្រវត្តិ លុបចោល
+           បាន កុំឱ្យធ្លាក់អក្សរមើលទៅមិនស្អាត» ⇒ ចំណងជើងវែងពេក ( ៣៣ តួ )
+           ច្របាច់ជាមួយប៊ូតុង ៦ ⇒ ធ្លាក់ ៤ បន្ទាត់លើទូរស័ព្ទ ។ ដកវង់ក្រចក
+           ចេញ ⇒ នៅតែ ១ បន្ទាត់ ។ -->
+      <h3>📝 កំណត់ហេតុប្រជុំ
         <span class="trk-acts">
           <button class="trk-ic" id="trkPrint" title="ព្រីន"        aria-label="ព្រីន">🖨️</button>
           <button class="trk-ic trk-ic-p" id="trkSaveMinutes" title="រក្សាទុកកំណត់ហេតុ" aria-label="រក្សាទុកកំណត់ហេតុ">💾</button>
@@ -45524,6 +45646,10 @@ const RPT_CSS = `
   @media print{
     .rpt-page:not(.nr-page){ min-height:var(--rpt-ph, 269mm) !important; height:auto !important;
                padding-bottom:6mm !important; }
+    /* ⭐ សុវត្ថិភាពទ្វេ ៖ បើ --rpt-ph មិនទាន់ត្រូវបានកំណត់ ( JS មិនទាន់រត់ )
+       ទូរស័ព្ទនៅតែទទួលលេខតូចជាង ⇒ មិនហៀរ ។
+       ⚠ គ្មាន backtick ក្នុងកំណត់សម្គាល់នេះ ៖ RPT_CSS ជា template literal ។ */
+    html.rsc-mobile-print .rpt-page:not(.nr-page){ min-height:var(--rpt-ph, 252mm) !important; }
     .rpt-page:not(.nr-page) > .rpt-foot{ margin-bottom:0 !important; padding-bottom:0 !important; }
     .rpt-page:last-child{ page-break-after:auto !important; break-after:auto !important; }
   }
@@ -50709,7 +50835,24 @@ const RPT_PH_KEY = (typeof RSC_MOBILE_PRINT !== 'undefined' && RSC_MOBILE_PRINT)
      ភស្តុតាងម្តងទៀតថាការគណនាកម្ពស់ពីរូបមន្តមិនអាចទុកចិត្តបានទេ — មានតែ
      ការវាស់ពិតប៉ុណ្ណោះ។
    ⚠ ថេប្លេតនៅ 269 ដដែល (តម្លៃដែលគេវាស់ពីមុន)។ */
-const RPT_PH_DEFAULT = 269;   /* [stated] ២០២៦-០៨-២៣ ៖ «ទាល់ 269 MM បានឃើញ FOOTER ស្អាត» — ដូចគ្នាទាំង PC និងថេប្លេត */
+/* ⭐⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «នៅពេលចុចព្រីនទំព័រទី១គឺមានតែ១ទំព័រទេ តែវា
+   លោតដាច់ធ្លាក់ទៅសន្លឹកទី២ និងផ្នែកខ្លះទៀត មានទំព័រទទេនៅពីក្រោយ»
+   ( រូបថត iPhone ៖ ១៣ សន្លឹក ដោយសន្លឹក ២·៣·៥·៧·៩·១១·១៣ ទទេ ) ។
+
+   ⭐ ឫសគល់ ៖ តម្លៃលំនាំដើម **២៦៩mm ត្រូវបានប្រើទាំង PC ទាំងទូរស័ព្ទ** ។
+     ប៉ុន្តែយើង**វាស់រួចហើយ**ក្នុងវេនមុនថា ផ្ទៃបោះពុម្ពពិតរបស់ iOS មាន
+     ត្រឹម ~២៥២–២៥៦mm ( មើល `window.__nrPageMm = RSC_MOBILE_PRINT ? 252 : 266`
+     សម្រាប់ឯកសារបរិយាយ ) ។ ដូច្នេះប្រអប់ `.rpt-page` **ខ្ពស់ជាងសន្លឹក
+     ប្រហែល ១៧mm** ⇒ កន្ទុយរបស់រាល់ទំព័រហៀរទៅសន្លឹកបន្ទាប់ ⇒ សន្លឹកទទេ
+     ( ឬស្ទើរទទេ ) បន្ទាប់ពីរាល់ទំព័រ ។
+     ⚠ នេះជាមូលហេតុដែលឯកសារបរិយាយ ( .nr-page ⇒ ២៥២ ) ព្រីនបានល្អ ឯឯកសារ
+       `.rpt-page` ( ⇒ ២៦៩ ) ខូច — ឯកសារទាំងពីរគ្រួសារប្រើលេខផ្សេងគ្នា ។
+   ⇒ ដាក់លំនាំដើមតាមឧបករណ៍ដូច `.nr-page` បេះបិទ ៖ ទូរស័ព្ទ/ថេប្លេត ២៥២ ·
+     កុំព្យូទ័រ ២៦៩ ( **PC មិនប្តូរអ្វីសោះ** ) ។
+   ⚠ ប្រអប់ «កម្ពស់ទំព័រ mm» នៅដដែល ហើយរក្សាទុកដាច់ដោយឡែកតាមឧបករណ៍
+     ( `rptPageMmMobileV1` / `rptPageMmV1` ) ⇒ លៃលើទូរស័ព្ទមិនប៉ះ PC ។ */
+const RPT_PH_DEFAULT = (typeof RSC_MOBILE_PRINT !== 'undefined' && RSC_MOBILE_PRINT)
+  ? 252 : 269;
 function applyRptPageMm(v){
   /* ⚠⚠ [stated] ២០២៦-០៨-២២ ៖ «តែវាប៉ះពាល់ដល់របាយការណ៍ផ្សេងទៀត ដូច
      បរិយាយកំណត់ពន្ធ · របាយការណ៍សវនកម្ម · របាយការណ៍សង្ខេប» ។
