@@ -1570,6 +1570,31 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
    ⚠ លើកុំព្យូទ័រ ៧៩៤px តូចជាងផ្ទាំង ⇒ zoom = ១ ⇒ មិនប្តូរអ្វីក្រៅពីការ
      ដាក់កណ្តាល ។
    ⚠ ដាក់ក្នុង `@media screen` ⇒ ការព្រីនពិតមិនរងផលទេ ។ */
+/* ⭐ បញ្ជី «ឯកសារបានពិនិត្យ» ៖ ប្រអប់ដាច់ដោយឡែក ២ ជួរឈរលើកុំព្យូទ័រ
+   ១ ជួរលើទូរស័ព្ទ ⇒ អានបានទាំងស្រុង មិនបាច់រំកិលផ្តេក ។ */
+#view-tracking .trk-revbox{
+  margin-top:12px; padding:12px 14px; border:1px solid var(--line);
+  border-radius:10px; background:#faf9f5;
+}
+#view-tracking .trk-revhead{
+  font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif;
+  font-size:12.5px; color:var(--primary); margin-bottom:8px;
+}
+#view-tracking .trk-revlist{
+  display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:6px 18px;
+}
+#view-tracking .trk-revit{
+  display:flex; align-items:center; gap:9px; font-size:13px; line-height:1.6;
+}
+#view-tracking .trk-revit input[type="checkbox"]{ flex:0 0 auto; }
+@media screen and (max-width: 760px){
+  #view-tracking .trk-revlist{ grid-template-columns:minmax(0,1fr); gap:10px; }
+  #view-tracking .trk-revit{ font-size:14px; }
+}
+/* ⭐ [stated] ២០២៦-១១-១៣ ៖ «បរិយាយឯកសារមានទំហំធំជាងមួយ ដោយមិនចាំបាច់ចុះ
+   បន្ទាត់ឡើយ» ⇒ ជួរឈរបរិយាយទទួលទទឹងអប្បបរមា ៣៦០px ( មុន ១២៤px ) ។
+   ⚠ ធ្វើបានដោយសារជួរឈរ «ឯកសារបានពិនិត្យ» ( ២១៨px ) ត្រូវបានដកចេញ ។ */
+#view-tracking .trk-tbl td.trk-lbl{ min-width:360px; }
 #view-tracking .trk-minutes, #docs-modal .trk-minutes{margin-top:14px; padding:18px 20px; border:1px solid var(--line); border-radius:10px; background:#fff; font-size:13px; line-height:1.9;}
 @media screen{
   #view-tracking .trk-minutes:not(.trk-letter), #docs-modal .trk-minutes:not(.trk-letter){
@@ -43294,7 +43319,16 @@ function renderTrackingView(){
         <td>${inp('rounds.'+ri+'.items.'+ii+'.recvDate','date','150px')}</td>
         <td style="text-align:center;">${sel('rounds.'+ri+'.items.'+ii+'.mtgNo', meetingOptionsOpen(), '110px')}</td>
         ${primary
-          ? `<td class="trk-rev">${chk('rounds.0.review.'+ii+'.checked')} <span>${esc((TRK_REVIEW[ii]||{}).label||'')}</span></td>`
+          /* ⭐ [stated] ២០២៦-១១-១៣ ៖ «លុបផ្នែកជួរឯកសារបានពិនិត្យចេញ» ⇒ ជួរឈរ
+             នេះត្រូវដកចេញពីតារាង ហើយទៅជា**បញ្ជីដាច់ដោយឡែក**ខាងក្រោមតារាង ។
+             ⚠⚠ កុំលុបទិន្នន័យ ៖ `rounds.0.review[N].checked` ជាប្រភពនៃ
+               ចំណុច «ឯកសារបានពិនិត្យ» នៅ COVER ( មើល TRK_REVIEW[].col ) ។
+               បើដកការធីកចោលទាំងស្រុង នោះ COVER លែងអាចបំពេញបាន ។
+             ⚠ បញ្ជីនេះមិនទាក់ទងនឹងជួរដេកនៃតារាងសោះ ( ល.រ ១ នៃតារាងគឺ
+               «រចនាសម្ព័ន្ធ…» ឯ ល.រ ១ នៃបញ្ជីពិនិត្យគឺ «សៀវភៅប្រតិបត្តិការ» )
+               ⇒ ការដាក់វាជាជួរឈរក្នុងតារាងតែមួយ ជាអ្វីដែលធ្វើឱ្យតារាង
+               ធំហួស និងជួរបរិយាយចង្អៀត ។ */
+          ? ''
           : `<td style="text-align:center;"><button class="trk-del" data-del="${ri}.${ii}" title="លុប">✕</button></td>`}
       </tr>`).join('');
 
@@ -43325,9 +43359,15 @@ function renderTrackingView(){
           ${primary ? '' : '<th class="trk-nowrap">ស្នើសុំនៅកំណត់ហេតុ</th>'}
           <th>បានទទួល</th><th>មិនមាន</th><th>ថ្ងៃទទួលបានឯកសារ</th>
           <th class="trk-nowrap">ទទួលនៅកំណត់ហេតុ</th>
-          <th${primary ? ' style="text-align:left;"' : ''}>${primary ? 'ឯកសារបានពិនិត្យ' : ''}</th></tr></thead>
+          ${primary ? '' : '<th></th>'}</tr></thead>
         <tbody>${rows}</tbody></table></div>`
         : '<div class="trk-empty">មិនទាន់មានឯកសារស្នើសុំក្នុងលើកនេះទេ។</div>'}
+      ${primary ? `<div class="trk-revbox">
+        <div class="trk-revhead">ឯកសារបានពិនិត្យ</div>
+        <div class="trk-revlist">${TRK_REVIEW.map((rv, ii)=>
+          `<label class="trk-revit">${chk('rounds.0.review.'+ii+'.checked')}`
+          + `<span>${esc(rv.label || '')}</span></label>`).join('')}</div>
+      </div>` : ''}
       ${primary ? '' : `<div class="trk-grid" style="margin-top:8px;">
         <button class="btn btn-outline trk-add" data-add="${ri}" style="width:auto;">➕ បន្ថែមឯកសារ</button>
       </div>`}
