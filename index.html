@@ -3318,7 +3318,17 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
 #mtr-embed .ah-bar{
   display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:14px;
 }
-#mtr-embed .ah-bar .btn{ width:auto; flex:none; padding:9px 14px; }
+#mtr-embed .ah-bar .btn{ width:auto; flex:none; padding:9px 14px; white-space:nowrap; }
+/* ⭐ [stated] ២០២៦-១១-១៣ ៖ «ដាក់ទាំងអស់នោះតែមួយជួរបានហើយ»
+   ⚠ ក្រោយបង្រួមស្លាក ជួរត្រូវការ ~៣២៤px + ចន្លោះ ⇒ នៅលើទូរស័ព្ទ ( ផ្ទៃ
+     ~៣០៦px ) វានៅតែបាក់ ⇒ បង្រួមរឹម និងចន្លោះបន្តិច ⇒ សម ១ ជួរ ។ */
+@media screen and (max-width: 760px){
+  #mtr-embed .ah-bar{ gap:6px; flex-wrap:nowrap; overflow-x:auto;
+    -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+  #mtr-embed .ah-bar::-webkit-scrollbar{ display:none; }
+  #mtr-embed .ah-bar .btn{ padding:9px 10px; font-size:13px; }
+  #mtr-embed .ah-bar .ah-sep{ margin:0 2px; }
+}
 #mtr-embed .ah-bar .ah-sep{
   width:1px; align-self:stretch; background:var(--mtr-paper-line); margin:0 4px;
 }
@@ -5565,6 +5575,35 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
   }
   #tos-embed .stub .label{ font-size:12px; color:var(--tos-slate); }
   #tos-embed .stub .value{ font-family:'JetBrains Mono','Khmer OS Siemreap',monospace; font-size:19px; font-weight:600; color:var(--tos-navy-800); margin-top:4px; }
+  /* ⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «បង្រួមលេខ ឬបន្ថយទំហំលេខឱ្យតូចជាងនេះ
+     ដើម្បីឱ្យ KHR នៅតែមួយជួរជាមួយនឹងលេខ កុំឱ្យចុះបន្ទាត់» ។
+     ⚠ លេខវែងបំផុត «821,241,105 KHR» = ១៥ តួ ⇒ នៅ ១៩px វាត្រូវការ ~១៧៥px
+       ខណៈប្រអប់មានត្រឹម ~១៤០px លើទូរស័ព្ទ ⇒ បាក់ ២ បន្ទាត់ ។
+     ⇒ លើទូរស័ព្ទ ៖ ១៤px + ហាមចុះបន្ទាត់ ⇒ ~១២៩px ⇒ សម ១ ជួរ ។ */
+  @media screen and (max-width: 760px){
+    #tos-embed .stub .value{
+      font-size:14px !important; letter-spacing:-0.2px;
+      white-space:nowrap !important;
+    }
+    #tos-embed .stub .label{ font-size:11.5px !important; }
+    /* ⭐ [stated] «ជួយខែដាក់ចំកណ្តាល center» ⇒ ជួរឈរខែក្នុងតារាងបុគ្គលិក */
+    #tos-embed #empGridTable td:first-child,
+    #tos-embed #empGridTable th:first-child{ text-align:center !important; }
+    /* ⭐ [stated] ប្រអប់រយៈពេលធ្វើការ ៖ ១ ជួរ */
+    #tos-embed .period-box{
+      display:flex !important; flex-wrap:nowrap !important;
+      align-items:center; gap:8px; overflow-x:auto;
+      -webkit-overflow-scrolling:touch; scrollbar-width:none;
+    }
+    #tos-embed .period-box::-webkit-scrollbar{ display:none; }
+    #tos-embed .period-box label{ flex:0 0 auto; font-size:12px; }
+    #tos-embed .period-box input[type="date"]{
+      -webkit-appearance:none; appearance:none; font-size:13px; }
+    #tos-embed .period-box .btn{ flex:0 0 auto; padding:8px 10px; }
+  }
+  /* ⭐ ខែចំកណ្តាលលើកុំព្យូទ័រដែរ ( [stated] មិនបានបែងចែកឧបករណ៍ ) */
+  #tos-embed #empGridTable td:first-child,
+  #tos-embed #empGridTable th:first-child{ text-align:center; }
   #tos-embed .stub.gold .value{ color:var(--tos-gold-600); }
 
   
@@ -5750,6 +5789,19 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     font-size:10px; font-weight:700; cursor:pointer; padding:0; z-index:2;
   }
   #tos-embed .info-btn:hover{ background:#EFF2F8; }
+  /* ⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «ជួយកែកន្លែងរូបសញ្ញា ! មានរង្វង់ផង» ។
+     ⚠⚠ ឫសគល់ពីរយ៉ាង ៖
+       ១. តួអក្សរ «ⓘ» **មានរង្វង់ក្នុងខ្លួនវារួចហើយ** ហើយ CSS ក៏គូរ
+          រង្វង់មួយទៀត ⇒ រង្វង់ទ្វេ ។ ⇒ ប្តូរតួអក្សរទៅជា «i» ធម្មតា ។
+       ២. ច្បាប់គោលដៅចុងលើទូរស័ព្ទ ( `.btn, button{ min-height:40px }` )
+          លាតប៊ូតុង ១៧px ទៅជា ១៧ × ៤០ ⇒ **ពងក្រពើ** មិនមែនរង្វង់ ។
+          ⇒ ចាក់ទំហំពិតប្រាកដឱ្យប៊ូតុងនេះ ។ */
+  #tos-embed .info-btn{
+    min-height:17px !important; max-height:17px !important;
+    min-width:17px !important; max-width:17px !important;
+    display:inline-flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono',monospace; font-style:italic;
+  }
   #tos-embed .info-btn.info-btn-solo{ right:-6px; opacity:.55; }
   #tos-embed .info-btn.info-btn-solo:hover{ opacity:1; }
   #tos-embed .amend-detail-box{
@@ -7638,12 +7690,15 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
       <button type="button" class="modal-close" id="empModalClose" aria-label="បិទ">✕</button>
     </div>
     <div class="modal-body">
+      <!-- ⭐ [stated] ២០២៦-១១-១៣ ៖ «លុប 📅 រយៈពេលធ្វើការ · លុបអក្សរ ទុកទទេ
+           = មិនកំណត់ … · ថ្ងៃចូលធ្វើការ និងថ្ងៃឈប់ និងសញ្ញាសម្អាត ដាក់វា
+           មួយជួរ ( សម្អាត ទុកតែសញ្ញា )» ។
+           ⚠ អត្ថន័យរបស់ប៊ូតុងសម្អាតផ្លាស់ទៅ `title` ⇒ មិនបាត់ ។ -->
       <div class="period-box">
-        <strong>&#128197; រយៈពេលធ្វើការ</strong>
         <label>ថ្ងៃចូលធ្វើការ <input type="date" id="empWorkStart"></label>
         <label>ថ្ងៃឈប់ធ្វើការ <input type="date" id="empWorkEnd"></label>
-        <button type="button" class="btn ghost" id="empWorkClear">&#8629; សម្អាត</button>
-        <span id="empWorkHint" style="color:var(--tos-slate);">ទុកទទេ = មិនកំណត់ &middot; ឈប់ធ្វើការទទេ = នៅបន្តធ្វើការ</span>
+        <button type="button" class="btn ghost" id="empWorkClear"
+                title="សម្អាតថ្ងៃចូល និងថ្ងៃឈប់ធ្វើការ">&#8629;</button>
       </div>
       <div id="empMissingInfo" class="modal-hint"></div>
       <div id="empModalStatus" class="hint"></div>
@@ -23077,14 +23132,17 @@ function renderHistoryView(){
      ពេញ។ ត្រូវដាក់ `width:auto` លើប៊ូតុងក្នុង embed នេះជានិច្ច —
      ផ្ទាំងការបង់យឺតយ៉ាវក៏ធ្វើដូចគ្នា។ [stated] ចង់អោយនៅជួរតែមួយ។ */
   let html = '<div class="ah-bar">' +
-    '<button class="btn ' + (sub === 'margin' ? 'btn-brass' : 'btn-outline') + '" data-ah-sub="margin">📈 កម្រិតចំណេញ</button>' +
-    '<button class="btn ' + (sub === 'basis'  ? 'btn-brass' : 'btn-outline') + '" data-ah-sub="basis">🧾 មូលដ្ឋានកំណត់ពន្ធ</button>' +
+    /* ⭐ [stated] ២០២៦-១១-១៣ ៖ «កម្រិតចំណេញ ⇒ %NP · មូលដ្ឋានកំណត់ពន្ធ ⇒
+       Tax Base · ទាញពីការគណនា ទុកតែសញ្ញា · ＋ឆ្នាំមុន ＋ឆ្នាំក្រោយ ⇒ សញ្ញា
+       + − · ហើយដាក់ទាំងអស់តែមួយជួរ · លុប 🟨 = បញ្ចូលដោយដៃ» ។
+       ⚠ អត្ថន័យពេញនៅក្នុង `title` ទាំងអស់ ⇒ ដាក់កណ្តុរ ឬចុចឱ្យយូរ ឃើញ ។ */
+    '<button class="btn ' + (sub === 'margin' ? 'btn-brass' : 'btn-outline') + '" data-ah-sub="margin" title="កម្រិតចំណេញ">📈 %NP</button>' +
+    '<button class="btn ' + (sub === 'basis'  ? 'btn-brass' : 'btn-outline') + '" data-ah-sub="basis" title="មូលដ្ឋានកំណត់ពន្ធ">🧾 Tax Base</button>' +
     (sub === 'margin'
       ? '<span class="ah-sep"></span>' +
-        '<button class="btn btn-outline" id="ahPull" title="បំពេញពី 🧮 ការគណនាពន្ធឡើងវិញ">↻ ទាញពីការគណនា</button>' +
-        '<button class="btn btn-outline" id="ahYearPrev">＋ ឆ្នាំមុន</button>' +
-        '<button class="btn btn-outline" id="ahYearNext">＋ ឆ្នាំក្រោយ</button>' +
-        '<span class="ah-hint">🟨 = បញ្ចូលដោយដៃ</span>'
+        '<button class="btn btn-outline" id="ahPull" title="ទាញពី 🧮 ការគណនាពន្ធឡើងវិញ">↻</button>' +
+        '<button class="btn btn-outline" id="ahYearPrev" title="បន្ថែមឆ្នាំមុន">−</button>' +
+        '<button class="btn btn-outline" id="ahYearNext" title="បន្ថែមឆ្នាំក្រោយ">＋</button>'
       : '<span class="ah-sep"></span>' +
         '<button class="btn btn-brass" id="ahBasisAdd">+ បន្ថែមជួរ</button>') +
     '</div>';
@@ -42248,11 +42306,10 @@ window.__toiImport = function(data){
         </label>
         <button type="button" class="btn gold" id="bulkApplyBtn">កំណត់ឡើងវិញ</button>
         ${amendedThisYear ? `<button type="button" class="btn danger-ghost" id="bulkRevertYearBtn">លុបការកំណត់ពន្ធ ${year} (${amendedThisYear})</button>` : ''}
-        <p class="hint" style="flex:1 1 100%;margin:6px 0 0;">
-          ⚑ ការកំណត់ឡើងវិញ <b>តម្លើងតែប៉ុណ្ណោះ</b> ៖ ខែណាដែលសហគ្រាសប្រកាស
-          ខ្ពស់ជាងលេខដែលវាយ ប្រព័ន្ធ <b>រក្សាលេខគេ</b> មិនបន្ថយឡើយ ។
-          ប្រាក់បៀវត្ស និងអត្ថប្រយោជន៍ គិតដាច់ពីគ្នា ។
-        </p>
+        <!-- [stated] ២០២៦-១១-១៣ ៖ «លុបចេញ ⚑ ការកំណត់ឡើងវិញ តម្លើងតែ
+             ប៉ុណ្ណោះ …» ⇒ ដកសារពន្យល់ ។
+             ⚠ ឥរិយាបថមិនប្តូរទេ ៖ ការកំណត់ឡើងវិញនៅតែ **តម្លើងតែប៉ុណ្ណោះ**
+               ដដែល ( មើល bulkFillYear ) — ដកតែអក្សរពន្យល់ ។ -->
       </div>`;
     document.getElementById('bulkApplyBtn').addEventListener('click', () => {
       const usdSalary = toNumber(document.getElementById('bulkSalaryUsd').value);
@@ -42537,7 +42594,7 @@ window.__toiImport = function(data){
         const amendedCls = row && row.amended ? ' emp-cell-amended' : '';
         const revertBtn = row
           ? `${row.amended ? `<button type="button" class="revert-btn" data-id="${row.id}" title="ត្រលប់ទៅតម្លៃមុនកំណត់ឡើងវិញ">↺</button>` : ''}
-             <button type="button" class="info-btn${row.amended ? '' : ' info-btn-solo'}" data-id="${row.id}" title="មើលលម្អិត / កែអត្រាប្តូរប្រាក់">ⓘ</button>`
+             <button type="button" class="info-btn${row.amended ? '' : ' info-btn-solo'}" data-id="${row.id}" title="មើលលម្អិត / កែអត្រាប្តូរប្រាក់">i</button>`
           : '';
         const sFlag = salaryFlagsByYear[y].get(m);
         const fFlag = fringeFlagsByYear[y].get(m);
