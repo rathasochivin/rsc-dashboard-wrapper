@@ -4185,6 +4185,116 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
   #toi-embed table.de-fit-table tbody td input{font-size:12.5px !important; white-space:nowrap;}
 
   /* ══════════════════════════════════════════════════════════════════
+     ⭐⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «ជួយកែផ្នែក COVER ឱ្យងាយមើល និងងាយ
+       បញ្ចូលព័ត៌មាន» ។
+     ⚠⚠ ការវាស់លើអេក្រង់ ៣៩០px ៖ `table.cv-grid` ជា `table-layout:fixed`
+       ទទឹង **៧៦០px** ( ទម្រង់ក្រដាស A4 ) ⇒ **ធាតុ ១៦៩ ហៀរចេញក្រៅ**
+       ⇒ ប្រអប់កាត់ដាច់ ស្លាកជាន់ប្រអប់ ⇒ បំពេញមិនកើត ។
+     ⇒ លើទូរស័ព្ទ ៖ បំបែកតារាងជា **ប្លុក** ⇒ ស្លាកនៅលើ ប្រអប់នៅក្រោម
+       ពេញទទឹង ⇒ ១ វាល ១ ជួរ ដូចទម្រង់ក្រដាសតែរៀបបញ្ឈរ ។
+     ⚠ មិនត្រូវការ `:has()` ទេ ៖ ក្រឡាស្លាកគ្មាន `.cf-wrap` ⇒ វាចេញជា
+       បន្ទាត់អក្សរធម្មតា ឯក្រឡាវាលមាន `.cf-wrap` ⇒ វាចេញជាប្រអប់ ។
+     ⚠⚠ `@media screen` ប៉ុណ្ណោះ ៖ ការព្រីន COVER ប្រើតារាងដដែល —
+       បើច្បាប់នេះលេចចូលការព្រីន ទម្រង់ក្រដាសនឹងខូចទាំងស្រុង ។
+     ══════════════════════════════════════════════════════════════════ */
+  @media screen and (max-width: 760px){
+    /* ⚠ ប្រើ descendant ( មិនមែន > ) ៖ ជួរខ្លះមិនស្ថិតក្នុង
+       tbody ផ្ទាល់ ⇒ ជួរទាំងនោះនៅប្រាំផ្តេក ⇒ ហៀរ ( វាស់បាន ) ।
+       ⚠ តារាងទិន្នន័យ .ledger ខាងក្នុងមិនត្រូវបំបែកទេ ⇒ បងអត់ । */
+    #toi-embed #coverPanel table.cv-grid,
+    #toi-embed #coverPanel table.cv-grid tbody,
+    #toi-embed #coverPanel table.cv-grid tr,
+    #toi-embed #coverPanel table.cv-grid td{
+      display:block !important; width:100% !important;
+      max-width:100% !important; min-width:0 !important;
+    }
+    /* ⚠⚠ កុំដាក់ `table.ledger` ខ្លួនអ្នកចូលទីនេះ ៖ ច្បាប់នេះមក
+       ក្រោយ ⇒ `display:revert` នឹងផ្តួល `display:block; overflow-x:auto`
+       ខាងក្រោម ⇒ តារាងត្រឡប់ទៅ ៧៦០px វិញ ( វាស់បាន ) ।
+       ⇒ ស្តារតែ**ខាងក្នុង**តារាងដែលត្រូវនៅជាតារាងដដែល । */
+    #toi-embed #coverPanel table.cv-grid table.ledger tbody,
+    #toi-embed #coverPanel table.cv-grid table.ledger thead,
+    #toi-embed #coverPanel table.cv-grid table.ledger tr,
+    #toi-embed #coverPanel table.cv-grid table.ledger th,
+    #toi-embed #coverPanel table.cv-grid table.ledger td{
+      display:revert !important; width:auto !important;
+    }
+    /* ⭐ តារាងទិន្នន័យធំ ( ៧៦០px ) ៖ រំកិលក្នុងខ្លួនឯង មិនរុញទំព័រ */
+    /* ⚠⚠ វាស់បាន ៖ ប្រអប់កុំប្រសុំរវាង #coverPanel និង .table-wrap
+       មាន `min-width:760px` ⇒ វាបង្ខំអ្វីៗខាងក្នុងឲ្យធំតាមវា
+       ⇒ `overflow-x:auto` គ្មានអ្វីរំកិលឱើយ । កាត់វាចេញជាមុនសិន । */
+    /* ⚠⚠ `> div` មិនគ្រប់គ្រាន់ទេ ៖ ប្រអប់ `min-width:760px` ស្ថិតជាប់នៅ
+       ជ្រៅខាងក្នុង ⇒ វាបង្ខំទាំងចំណងជើង h1 ឲ្យធំ ៧៦០px ដែរ
+       ( វាស់បាន ៖ h1 ទ៊ិទឹង ៧៦០px ក្នុងផ្ទាំង ២៨៨px ) ⇒ លើសគែម । */
+    #toi-embed #coverPanel div{ min-width:0 !important; max-width:100% !important; }
+    #toi-embed #coverPanel .table-wrap{
+      max-width:100% !important; min-width:0 !important; width:100% !important;
+      overflow-x:auto !important; -webkit-overflow-scrolling:touch;
+    }
+    /* ⚠ `min-width` ឈ្នះលើ `max-width` សម្រាប់ CSS ⇒ បើមិនដាក់
+       `min-width:0` ទេ តារាងនៅតែ ៧៦០px ដដែល ( វាស់បាន ) । */
+    #toi-embed #coverPanel table.ledger{
+      display:block !important; max-width:100% !important; min-width:0 !important;
+      overflow-x:auto !important; -webkit-overflow-scrolling:touch;
+    }
+    #toi-embed #coverPanel table.ledger > tbody,
+    #toi-embed #coverPanel table.ledger > thead{ min-width:0 !important; }
+    /* ⭐ រឹមដើរតាមគ្នាលើទូរស័ព្ទ ( វាស់បាន ៖ ៣៥៤ ⇒ ២៥៨px
+       គឺបាត់ ១៣២px ទៅនឹងរឹមដើរតាមគ្នា ) ⇒ បង្រួម ⇒ ផ្ទាំបានទំហំបន្ថែម । */
+    #toi-embed #content{ padding-left:10px !important; padding-right:10px !important; }
+    #toi-embed #coverPanel{
+      padding-left:8px !important; padding-right:8px !important;
+      margin-left:0 !important; margin-right:0 !important;
+    }
+    #toi-embed #coverPanel table.cv-grid{ table-layout:auto !important; }
+    /* ជួរនីមួយៗ ៖ ប្លុកមានខ្សែបែងចែក ⇒ ភ្នែកដឹងថាចប់វាលមួយ */
+    #toi-embed #coverPanel table.cv-grid > tbody > tr{
+      padding:8px 0 10px !important; border-bottom:1px solid var(--toi-line,#e3ded0);
+    }
+    #toi-embed #coverPanel table.cv-grid > tbody > tr:last-child{ border-bottom:0; }
+    /* ក្រឡា ៖ គ្មានរឹមតារាងទៀតទេ */
+    #toi-embed #coverPanel table.cv-grid > tbody > tr > td{
+      padding:0 !important; white-space:normal !important;
+      vertical-align:top !important; text-align:left !important;
+    }
+    /* ស្លាក ( ក្រឡាគ្មានប្រអប់ ) ៖ បន្ទាត់ខ្លួនឯងនៅលើវាល */
+    #toi-embed #coverPanel table.cv-grid > tbody > tr > td{
+      font-size:13.5px; line-height:1.6; color:var(--toi-slate,#5B6478);
+    }
+    #toi-embed #coverPanel table.cv-grid > tbody > tr > td + td{ margin-top:2px; }
+    /* ⭐ វាល ៖ ពេញទទឹងជានិច្ច ( inline style width:160px ត្រូវផ្តួល ) */
+    #toi-embed #coverPanel .cf-wrap{
+      display:block !important; width:100% !important; max-width:100% !important;
+      margin-bottom:6px;
+    }
+    #toi-embed #coverPanel .field-input,
+    #toi-embed #coverPanel textarea.cf-edit,
+    #toi-embed #coverPanel select{
+      width:100% !important; max-width:100% !important; min-width:0 !important;
+      box-sizing:border-box !important; font-size:15px !important;
+    }
+    #toi-embed #coverPanel textarea.cf-edit{ height:auto !important; min-height:40px; }
+    /* ⚠ iOS មិនគោរព width លើ input[type=date] បើគ្មាន appearance:none */
+    #toi-embed #coverPanel input[type="date"], #toi-embed #coverPanel input[type="month"]{
+      -webkit-appearance:none; appearance:none; text-align:left; font-family:inherit;
+    }
+    /* ផ្ទាំងទាំងមូល ៖ កុំលាតលើសអេក្រង់ */
+    /* ⭐ ក្រឡា Email ( `.cv-tight` ) រួមស្លាកនឹងប្រអប់ក្នុងមួយ
+       ⇒ នៅលើទូរស័ព្ទ វាមើលទៅខុសពីជួរដែលសេស ⇒ ធ្វើឲ្យដូចគេ । */
+    #toi-embed #coverPanel table.cv-grid td.cv-tight{ white-space:normal !important; }
+    #toi-embed #coverPanel table.cv-grid td.cv-tight .cf-wrap{
+      display:block !important; width:100% !important; min-width:0 !important;
+    }
+    /* ⭐ ចំណងជើងផ្ទាំង ៖ អនុញ្ញាតឲ្យចុះបន្ទាត់ ⇒ លែងត្រូវកាត់ដោយ overflow */
+    #toi-embed #coverPanel h1, #toi-embed #coverPanel h2,
+    #toi-embed #coverPanel h3, #toi-embed #coverPanel .cv-doc-title,
+    #toi-embed #coverPanel .cv-head, #toi-embed #coverPanel .cv-sub{
+      white-space:normal !important; overflow-wrap:anywhere;
+    }
+    #toi-embed #coverPanel{ max-width:100% !important; overflow-x:hidden !important; }
+  }
+
+  /* ══════════════════════════════════════════════════════════════════
      ⭐⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «ជួយកែសម្រួលផ្នែកនេះផង ឱ្យវាស្រួលមើល
        និងងាយពិនិត្យ» ( រូប DATA ENTRY លើ iPhone ) ។
      ⚠⚠ ការវាស់លើអេក្រង់ ៣៩០px បង្ហាញបញ្ហា ៣ ៖
@@ -4428,7 +4538,17 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
      រហូតជួរឈរជាន់គ្នា។ ជាជាងកម្ទេចប្លង់ ទុកវាដដែល ហើយអោយ **រំកិលផ្តេក**
      — អ្នកប្រើមើលឃើញរូបរាងពិត ដូចនឹងក្រដាស។
      ⚠ ជាការបង្ហាញលើអេក្រង់តែប៉ុណ្ណោះ ៖ ច្បាប់ព្រីនខាងក្រោមសរសេរជាន់វា។ */
-  @media (max-width: 860px){
+  /* ⭐⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «ជួយកែផ្នែក COVER ឲ្យងាយមើល
+     និងងាយបញ្ចូលព័ត៌មាន» ।
+     ⚠⚠ ច្បាប់ខាងក្រោមមកពីការសម្រេចចាស់ ( ២០២៦-០៨-១៦ ) ៖ រក្សា
+       ទទឹងក្រដាស ៧៦០px រួចឲ្យរំកិលផ្តេក । លើថេប្លែតវាបានការ ; លើ
+       ទូរស័ព្ទ ៣៩០px វាមានន័យថា **មើលធ្វើមួយភាគនៃទម្រងម្តងៗ**
+       ⇒ បំពេញពិបាក । ម្យ៉ាងវិញ `min-width:760px` នោះផ្ទាល់អ្វីៗ
+       ខាងក្នុង ( រួមទាំងចំណងជើង h1 — វាស់បាន ៧៦០px ក្នុង
+       ផ្ទាំង ២៨៨px ) ⇒ ចំណងជើងកាត់ដាច់ ।
+     ⇒ ទុកច្បាប់នេះសម្រាប់ **ថេប្លែតប៉ុណ្ណោះ** ( ៧៦១–៨៦០px ) ;
+       ទូរស័ព្ទ ( ≤៧៦០px ) ប្តូរជាទម្រងបញ្ឈរ ១ វាល ១ ជួរ । */
+  @media (min-width: 761px) and (max-width: 860px){
     #toi-embed #coverPanel{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
     #toi-embed #coverPanel > *{ min-width:760px; }
     #toi-embed #coverPanel input, #toi-embed #coverPanel textarea,
@@ -46206,9 +46326,12 @@ const RPT_CSS = `
        ⇒ សល់តែ ២ ច្បាប់ ជំនួស ៤ ច្បាប់លៃដោយដៃពីមុន ។
        ⚠ :not(.nr-page) ជាចាំបាច់ ៖ ឯកសារបរិយាយកាន់ថ្នាក់ទាំងពីរ ហើយវា
          មាន zoom ០,៩០ ផ្ទាល់ខ្លួនរួចហើយ — បើជាន់គ្នា zoom នឹងគុណទ្វេ ។ */
-    html.rsc-mobile-print .rpt-page.cv-cover-page{ zoom:0.85 !important; }
+    /* ⭐ គោលដៅ ២៤៨mm ( មើលកំណត់សម្គាល់ក្នុង NARR_CSS ) ៖
+         · សន្លឹកធម្មតា ..... ២៦៩mm × ០,៩២២ = ២៤៨mm
+         · សន្លឹកមុខការងារ .. ២៨០mm × ០,៨៨៥ = ២៤៨mm */
+    html.rsc-mobile-print .rpt-page.cv-cover-page{ zoom:var(--cv-zoomp, 0.885) !important; }
     html.rsc-mobile-print .rpt-page:not(.nr-page):not(.cv-cover-page){
-      zoom:0.89 !important;
+      zoom:var(--rpt-zoomp, 0.922) !important;
     }
     /* ⭐ [stated] ២០២៦-១១-១៣ ៖ «របាយការណ៍សវនកម្ម ទំព័រទី១ និងទី២ វាស្ថិតនៅ
        ជាមួយគ្នា ដោយវាធ្លាក់ទំព័រ» ⇒ បង្ខំការបំបែកសន្លឹកម្តងទៀតឱ្យច្បាស់
@@ -49406,9 +49529,20 @@ const NARR_CSS = `
   /* ⭐ ទូរស័ព្ទ ៖ សន្លឹកនៅ ២៦៦mm ដូច PC ( ការកាត់ទំព័រដូចគ្នា ) រួច
      បង្រួមទាំងមូល ០,៩០ ⇒ ២៣៩,៤mm ⇒ សមផ្ទៃបោះពុម្ព iOS ។
      ⚠ គ្មាន backtick ក្នុងកំណត់សម្គាល់នេះ ៖ NARR_CSS ជា template literal ។ */
+  /* ⭐⭐⭐ [stated] ២០២៦-១១-១៣ ( ជុំទី ៤ ) ៖ «នៅសល់ footer ខាងក្រោមសល់ធំ
+     មិនស្អាតដូចចុចព្រីននៅ PC» ។
+     ⚠⚠ នោះជាផលនៃការកែជុំមុនរបស់ខ្ញុំ ៖ ខ្ញុំបង្រួមសន្លឹក ២៦៦ × ០,៩០ =
+       ២៣៩,៤mm ។ តាមការវាស់ផ្ទាល់របស់អ្នកប្រើពីមុន ( ២៥២mm ដើរ · ២៥៦mm
+       ទ្វេសន្លឹក ) ផ្ទៃបោះពុម្ពពិតរបស់ទូរស័ព្ទនេះនៅចន្លោះ ២៥២–២៥៥mm
+       ⇒ សល់ទំនេរ ~១៣–១៦mm នៅបាតសន្លឹកនីមួយៗ ។
+     ⇒ លើកគោលដៅទៅ **២៤៨mm** ( សុវត្ថិភាព ៤–៧mm ) ⇒ ចន្លោះតូចជាង ៣ ដង ។
+     ⚠ ឥឡូវ zoom មកពីអថេរ ⇒ ប្រអប់ «កម្ពស់ទំព័រ (mm)» ក្នុងរបារឯកសារ
+       ក្លាយជាកន្លែងលៃតែមួយ ៖ ដាក់លេខផ្ទៃបោះពុម្ពពិតរបស់ឧបករណ៍ ។
+       តូចជាង = ចន្លោះធំជាង តែមិនហៀរ ; ធំជាង = ពេញជាង តែប្រថុយហៀរ ។
+     ⚠ គ្មាន backtick ក្នុងកំណត់សម្គាល់នេះ ៖ NARR_CSS ជា template literal ។ */
   html.rsc-mobile-print .nr-page{
     height:var(--nr-ph, 266mm) !important; max-height:var(--nr-ph, 266mm) !important;
-    zoom:0.90 !important; }
+    zoom:var(--nr-zoomp, 0.932) !important; }
   html.rsc-mobile-print .nr-page > .nr-foot{ bottom:0 !important; margin:0 !important; }
   /* ══ ទូរស័ព្ទ/ថេប្លេត ៖ កម្ពស់ស្វ័យប្រវត្តិ + ជើងទំព័រហូរតាមមាតិកា ══
      ⚠⚠ កុំដាក់ backtick ក្នុងកំណត់សម្គាល់នេះ ៖ NARR_CSS ជា template literal
@@ -51510,6 +51644,27 @@ function applyRptPageMm(v){
   const root = document.documentElement;
   const ok = (n >= 150 && n <= 320);
   /* គ្មានតម្លៃ ⇒ ប្រើលំនាំដើមរបស់ឧបករណ៍ (មិនមែនលេខថេររួមក្នុង CSS ទេ) */
+  /* ⭐⭐⭐ [stated] ២០២៦-១១-១៣ ( ជុំទី ៤ ) ៖ លើទូរស័ព្ទ លេខដែលគេដាក់
+     **មិនមែនជាកម្ពស់ប្រអប់**ទៀតទេ — វាជា **ផ្ទៃបោះពុម្ពពិតរបស់ឧបករណ៍** ។
+     ⚠ ហេតុអ្វី ៖ ប្រអប់ត្រូវនៅ ២៦៦/២៦៩mm ជានិច្ច ដើម្បីឱ្យ**ការកាត់ទំព័រ
+       ដូច PC បេះបិទ** ; អ្វីដែលត្រូវលៃគឺ **កម្រិតបង្រួម** ប៉ុណ្ណោះ ។
+     ⇒ zoom = គោលដៅ ÷ កម្ពស់ប្រអប់ ⇒ សន្លឹកពេញក្រដាសល្មម ⇒ ជើងទំព័រ
+       អង្គុយជិតបាតដូច PC ។ */
+  var MOB = false;
+  try{ MOB = (typeof RSC_MOBILE_PRINT !== 'undefined' && RSC_MOBILE_PRINT); }catch(e){}
+  if(MOB){
+    var tgt = ok ? n : 248;
+    root.style.setProperty('--nr-ph', '266mm');
+    root.style.setProperty('--rpt-ph', '269mm');
+    root.style.setProperty('--nr-zoomp',  String(Math.round(tgt / 266 * 1000) / 1000));
+    root.style.setProperty('--rpt-zoomp', String(Math.round(tgt / 269 * 1000) / 1000));
+    root.style.setProperty('--cv-zoomp',  String(Math.round(tgt / 280 * 1000) / 1000));
+    try{ window.__nrPageMm = 266; }catch(e){}
+    try{ if(typeof renderNarr === 'function') renderNarr(); }catch(e){}
+    try{ if(typeof renderAudit === 'function') renderAudit(); }catch(e){}
+    try{ if(typeof renderSummary === 'function') renderSummary(); }catch(e){}
+    return;
+  }
   root.style.setProperty('--rpt-ph', (ok ? n : RPT_PH_DEFAULT) + 'mm');
   if(ok){
     root.style.setProperty('--nr-ph', n + 'mm');
