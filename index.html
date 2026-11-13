@@ -2259,6 +2259,53 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
 #view-tracking .rpt-empty, #docs-modal .rpt-empty{font-size:12px; color:#777; padding:8px 0;}
 #view-tracking .rpt-foot, #docs-modal .rpt-foot{display:flex; justify-content:space-between; gap:12px; font-size:9px;
     border-top:1px solid #999; margin-top:6px; padding-top:2px; line-height:1.4; color:#333;}
+/* ══════════════════════════════════════════════════════════════════════
+   📝 សេចក្ដីសង្ខេបការងារចុះធ្វើសវនកម្មពន្ធដារ — ច្បាប់រូបរាងលើ **អេក្រង់**
+   ⚠⚠ ច្បាប់ទាំងនេះត្រូវដូច `SMW_CSS` ( ច្បាប់ព្រីន ) បេះបិទ ៖ ការមើល
+     ជាមុនត្រូវតែស្មើនឹងក្រដាស ។ កែមួយ ⇒ កែទាំងពីរ ។
+   ⚠ រាល់ផ្នែកនៃ selector ត្រូវកាន់ **ទាំងពីរបុព្វបទ** ( #view-tracking
+     និង #docs-modal ) — បើភ្លេចមួយ វាដើរតែកន្លែងមួយ ( មេរៀនចាស់ ) ។
+   ══════════════════════════════════════════════════════════════════════ */
+#view-tracking .smw-page, #docs-modal .smw-page{
+  font-family:'Khmer OS Siemreap','Noto Sans Khmer',sans-serif; font-size:12.5px;
+  line-height:1.85; color:#111; }
+#view-tracking .smw-title, #docs-modal .smw-title{
+  font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif; font-size:15px;
+  text-align:center; line-height:1.7; margin:0 0 14px; }
+#view-tracking .smw-head, #docs-modal .smw-head{ margin:0 0 10px; }
+#view-tracking .smw-hr, #docs-modal .smw-hr{
+  display:flex; flex-wrap:wrap; align-items:baseline; gap:0 6px; }
+#view-tracking .smw-hr .k, #docs-modal .smw-hr .k{ min-width:106px; }
+#view-tracking .smw-hr .c, #docs-modal .smw-hr .c{ width:10px; }
+#view-tracking .smw-b, #docs-modal .smw-b{ margin:0 0 8px; }
+#view-tracking .smw-r, #docs-modal .smw-r{
+  display:flex; flex-wrap:wrap; align-items:baseline; gap:0 6px; margin:0 0 2px; }
+#view-tracking .smw-h, #docs-modal .smw-h{
+  font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif; font-size:12.5px;
+  margin:12px 0 4px; }
+#view-tracking .smw-hr .v, #docs-modal .smw-hr .v,
+#view-tracking .smw-r .v2, #docs-modal .smw-r .v2{ font-weight:600; }
+#view-tracking .smw-r .k2, #docs-modal .smw-r .k2,
+#view-tracking .smw-hr .k2, #docs-modal .smw-hr .k2{ font-weight:400; }
+#view-tracking .smw-fill, #docs-modal .smw-fill{
+  border-bottom:1px dotted #777; outline:none; padding:1px 2px;
+  background:transparent; white-space:pre-wrap; }
+#view-tracking .smw-fill:empty::before, #docs-modal .smw-fill:empty::before{
+  content:attr(data-ph); color:#9a9a9a; }
+#view-tracking .smw-inline, #docs-modal .smw-inline{
+  display:inline-block; min-width:150px; border-bottom:1px dotted #777; }
+#view-tracking .smw-amt, #docs-modal .smw-amt{ margin-top:4px; }
+#view-tracking .smw-attach, #docs-modal .smw-attach{ margin-top:8px; }
+#view-tracking .smw-sign, #docs-modal .smw-sign{ margin-top:18px; text-align:center; }
+#view-tracking .smw-date, #docs-modal .smw-date{ margin-bottom:4px; }
+#view-tracking .smw-sh, #docs-modal .smw-sh{
+  font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif; margin-bottom:4px; }
+#view-tracking .smw-stbl, #docs-modal .smw-stbl{ width:100%; border-collapse:collapse; }
+#view-tracking .smw-stbl td, #docs-modal .smw-stbl td{
+  width:33.33%; text-align:center; vertical-align:top; border:0; padding:0 6px; }
+#view-tracking .smw-gap, #docs-modal .smw-gap{ height:56px; }
+#view-tracking .smw-role, #docs-modal .smw-role{ font-weight:600; }
+#view-tracking .smw-nm, #docs-modal .smw-nm{ margin-top:2px; }
 #view-tracking .ind-title, #docs-modal .ind-title{font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif; text-align:center;
     font-size:14.5px; margin:14px 0 12px;}
 #view-tracking .ind-head, #docs-modal .ind-head{width:100%; border-collapse:collapse; font-size:12px; margin-bottom:12px;}
@@ -3421,6 +3468,34 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
 }
 #mtr-embed .mtr-form-meta{font-size:13px; line-height:2;}
 #mtr-embed .mtr-form-meta .row{display:flex; justify-content:space-between; gap:24px;}
+/* ══ ⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «អក្សរសម្រង់តួលេខ · សហគ្រាស ·
+   លេខអតប  ជួរនីមួយៗកុំឲ្យចុះបន្ទាត់» ( សន្លឹក MTR/VAT លើអេក្រង ) ।
+   ⚠ ចំណងជើងមានរឹម ៩៦px × ២ ក្នុងកូដ ( ទុកកន្លែងឲ្យប្រអប់ «សន្លឹកទី» )
+     ⇒ លើទូរស័ព្ទ សល់ទីកន្លែងតិចណាស់ ⇒ ចំណងជើងបែក ៣ បន្ទាត់ ।
+   ⚠ ជួរព័ត៌មានជា flex ២ ក្រឡាក្នុងជួរតែមួយ ⇒ នៅទទឹង ៣៩០px
+     ក្រឡានីមួយៗសល់តិចពេក ⇒ ស្លាកនិងតម្លៃបែកពីគ្នា ।
+   ⇒ លើទូរស័ព្ទ ៖ ចំណងជើងតូច · រឹមតូច · ១ ផ្នែក ១ បន្ទាត់ពេញទ្រូង
+     ⇒ ស្លាកនិងតម្លៃនៅជួរតែមួយ । ══ */
+@media screen and (max-width: 760px){
+  #mtr-embed .mtr-form-title{
+    margin-left:0 !important; margin-right:88px !important;
+    font-size:12px !important; line-height:1.5 !important;
+  }
+  #mtr-embed .mtr-sheet-no{ font-size:11px !important; padding:2px 6px !important; }
+  /* ១ វាល ១ បន្ទាត់ពេញទ្រូង ⇒ ស្លាក និងតម្លៃ នៅជាប់គ្នា */
+  #mtr-embed .mtr-form-meta{ font-size:12px !important; line-height:1.8 !important; }
+  #mtr-embed .mtr-form-meta .row{
+    display:block !important; gap:0 !important;
+  }
+  #mtr-embed .mtr-form-meta .row > div{
+    display:flex !important; align-items:baseline; gap:6px;
+    white-space:nowrap !important; min-width:0;
+  }
+  #mtr-embed .mtr-form-meta .val{
+    flex:1 1 auto; min-width:0; white-space:nowrap !important;
+    overflow:hidden; text-overflow:ellipsis;
+  }
+}
 #mtr-embed .mtr-form-meta .val{
   border-bottom:1px dotted #9a9a9a; padding:0 8px;
   min-width:170px; display:inline-block; font-weight:600; color:var(--mtr-navy);
@@ -3814,8 +3889,23 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
        បើសល់ចន្លោះទំនេរច្រើន បង្កើន (0.86) ។
      ⚠ ប្រអប់រុំ `overflow:hidden` ដោយចេតនា ៖ ធានាថាមួយសន្លឹក = មួយទំព័រ
        ទោះការវាស់ខុសបន្តិច (WebKit បំបែកមាតិកាដែលលើសទៅសន្លឹកបន្ថែម)។ */
+  /* ⭐⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «ផ្នែក VAT និង MTR ពេល Print
+     ចេញ ២ ទំព័រ ដោយទំព័រទី ២ blank» ।
+     ⚠⚠ ប្រអប់បង្វិល ( .mtr-rot ) មានកម្ពស់ថេរ ២៤៤mm । ផ្ទៃបោះពុម្ព
+       ឃើង = ២៩៧ − រឹម ៨ × ២ = ២៨១mm ⇒ គួរតែសម । តែ**រឹមខាងក្នុង
+       របស់មេធាតុ** ( #mtr-embed · .card · #mtr-print-host ) បន្ថែមកម្ពស់
+       ⇒ សរុបលើស ២៨១mm ⇒ ផ្នែកខាងក្រោមហូរទៅសន្លឹកទី ២ — ហើយព្រោះ
+       ប្រអប់មាន overflow:hidden សន្លឹកទី ២ ចេញជា **ទទេ** ।
+     ⇒ អូសរឹមនិងគម្លាតមេទាំងអស់ចេញ និងបន្ថយកម្ពស់មក ២៣៦mm
+       ( មាតិកាពិតត្រូវការតែ ២៣៤mm ⇒ នៅមានចន្លោះ ) ⇒ សុវត្ថិភាព ៤៤mm । */
+  body.mtr-print-single #mtr-embed,
+  body.mtr-print-single #mtr-embed .card,
+  body.mtr-print-single #mtr-print-host{
+    padding:0 !important; margin:0 !important; border:0 !important;
+    box-shadow:none !important; background:#fff !important;
+  }
   body.mtr-print-single #mtr-embed .mtr-rot{
-    position:relative; width:160mm; height:244mm; overflow:hidden; margin:0;
+    position:relative; width:160mm; height:236mm; overflow:hidden; margin:0;
     page-break-after:always; break-after:page;
   }
   body.mtr-print-single #mtr-embed .mtr-rot:last-child{
@@ -4289,11 +4379,26 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
          វាមានលើ iOS 16.4+ · Chrome 105+ ។ បើឧបករណ៍ចាស់មិនស្គាល់ វា
          ត្រឡប់ទៅរបៀបស្លាកនៅលើវិញ — នៅតែអានបាន មិនខូច ។
        ⚠ ទំហំអក្សរ ៖ ស្លាក និងប្រអប់ **១៤px ដូចគ្នា** ( មុននេះ ១៣ និង ១៥ ) ។ */
+    /* ⭐⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «វាកាន់តែអាក្រក់ជាងមុន» ।
+       ⚠⚠ កំហុសរបស់ខ្ញុំ ៖ ខ្ញុំទុកឲ្យក្រឡាមានទំហំស្រេរវាំង
+       ⇒ ស្លាកអាចសមនៅចុងបន្ទាត់ តែប្រអប់របស់វាមិនសម ⇒ **ប្រអប់ធ្លាក់
+         ទៅបន្ទាត់ក្រោម ដាច់ពីស្លាករបស់វា** ( អតប · ការិយសវនកម្ម ) ।
+       ⇒ ដំណោះស្រាយជាក់លាក់ ៖ ស្លាក **៣៨%** · ប្រអប់ **៦២%** ⇒ គូមួយ
+         បំពេញបន្ទាត់ពេញទំហំ ១០០% ពិតប្រាកដ ⇒ **ស្លាកនិងប្រអប់របស់វា
+         នៅជាប់គ្នាជានិច្ច** ⇒ មិនអាចច្រឡំគូបានឡើយ ।
+       ⚠ ចន្លោះជួរឈរ ( column-gap ) ត្រូវជា 0 ៖ បើមិនដូច្នោះទេ
+         ៣៨% + ៦២% + ចន្លោះ > ១០០% ⇒ បែកជួរវិញ । */
     #toi-embed #coverPanel table.cv-grid tr{
-      display:flex !important; flex-wrap:wrap; align-items:center; gap:4px 8px;
+      display:flex !important; flex-wrap:wrap; align-items:center;
+      row-gap:6px; column-gap:0;
     }
-    #toi-embed #coverPanel table.cv-grid td{
-      width:auto !important; flex:0 0 auto;
+    #toi-embed #coverPanel table.cv-grid tr > td{
+      width:auto !important; flex:0 0 42%; box-sizing:border-box;
+      /* ⚠ ស្លាកមាន `white-space:nowrap` ជា inline style ⇒ វែងជាងក្រឡា
+         ⇒ ហៀរជាន់ប្រអប់ ( វាស់បាន ៖ ត្រូវការ ១៣០px មានតែ ១០៧px )
+         ⇒ អនុញ្ញាតឲ្យរុំ ⇒ ២ បន្ទាត់ តែអានគ្រប់ । */
+      white-space:normal !important; overflow-wrap:anywhere;
+      padding-right:8px !important;
       font-size:14px !important; line-height:1.6; color:var(--toi-slate,#5B6478);
     }
     #toi-embed #coverPanel table.cv-grid td > span{ font-size:14px !important; }
@@ -4302,8 +4407,8 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
        ជាប់នឹងប្រអប់ណា ( កើតឡើងពិតក្នុងរូបថត ) ।
        ⇒ ប្រអប់យ៉ាងតិច ៥៥% នៃជួរ ⇒ គូទី២ មិនអាចសម ⇒
          **១ គូ ១ ជួរ** ជានិច្ច ⇒ ស្លាកនិងប្រអប់នៅជាប់គ្នាជានិច្ច । */
-    #toi-embed #coverPanel table.cv-grid td:has(.cf-wrap){
-      flex:1 1 55%; min-width:55%;
+    #toi-embed #coverPanel table.cv-grid tr > td:has(.cf-wrap){
+      flex:0 0 58%; min-width:0; padding-right:0 !important;
     }
     /* ⭐ វាល ៖ ពេញទទឹងជានិច្ច ( inline style width:160px ត្រូវផ្តួល ) */
     #toi-embed #coverPanel .cf-wrap{
@@ -4317,7 +4422,11 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
       width:100% !important; max-width:100% !important; min-width:0 !important;
       box-sizing:border-box !important; font-size:14px !important;
     }
-    #toi-embed #coverPanel textarea.cf-edit{ height:auto !important; min-height:40px; }
+    /* ⚠⚠ កុំដាក់ `height:auto !important` ៖ កម្ពស់ប្រអប់ត្រូវបាន
+       កំណត់ដោយ `coverAutoGrow()` តាម scrollHeight ⇒ ការសរសេរជាន់វា
+       ធ្វើឲ្យប្រអប់ត្រឡប់ទៅ ១ បន្ទាត់ ⇒ **ឈ្មោះវែងត្រូវកាត់** ( រូបបញ្ជាក់ ) ।
+       ⇒ ទុកកម្ពស់ឲ្យ JS គ្រប់គ្រង ; ត្រឹមតែកម្ពស់អប្បបរមាសម្រាប់ចុច । */
+    #toi-embed #coverPanel textarea.cf-edit{ min-height:40px; }
     /* ⚠ iOS មិនគោរព width លើ input[type=date] បើគ្មាន appearance:none */
     #toi-embed #coverPanel input[type="date"], #toi-embed #coverPanel input[type="month"]{
       -webkit-appearance:none; appearance:none; text-align:left; font-family:inherit;
@@ -43658,6 +43767,11 @@ function blankState(){
     arDocs: {},
     /* ⭐ ប្រភេទសហគ្រាសដែលកំណត់បញ្ជីឯកសារត្រូវស្នើសុំបន្ថែម */
     sector: '',
+    /* ⭐ [stated] ២០២៦-១១-១៣ ៖ «សេចក្ដីសង្ខេបការងារចុះធ្វើសវនកម្មពន្ធដារ»
+       — ផ្នែក II និង III ជាវាលដែលសវនករបំពេញដោយដៃ ។
+       ⚠ វាលថ្មីត្រូវបន្ថែម **ពីរកន្លែង** ៖ ទីនេះ និងបញ្ជីចម្លងក្នុង
+         `trkLoad` — បើភ្លេច វាបាត់ក្រោយផ្ទុកទំព័រឡើងវិញ ។ */
+    smw: { meet:'', docs:'', basis:'', amount:'', agree:'' },
     letters: TRK_LETTERS.map(()=>({ days:'', date:'', rep:'', recvDate:'', note:'' })),
     rounds: TRK_ROUND_LABELS.map((_, i)=> blankRound(i)),
     meetings: Array.from({length: TRK_MEETING_START}, (_, i)=>({
@@ -43743,6 +43857,7 @@ function trkLoad(){
     /* ⚠ វាលថ្មីត្រូវបន្ថែមពីរកន្លែង — `blankState()` និងបញ្ជីចម្លងនេះ ។
        ខ្ញុំធ្លាប់ភ្លេចម្តងរួចមកហើយជាមួយ `arDocs` ។ */
     if(saved.sector != null) base.sector = saved.sector;
+    if(saved.smw) base.smw = Object.assign({}, base.smw, saved.smw);
     if(saved.docKind) base.docKind = saved.docKind;
     if(saved.letterDoc) base.letterDoc = Object.assign({}, base.letterDoc, saved.letterDoc);
     if(saved.strategy) base.strategy = Object.assign({}, base.strategy, saved.strategy);
@@ -51215,6 +51330,184 @@ function printWorkPapers(){
      ${WP_CSS}`);
 }
 
+
+/* =========================================================================
+   📝 សេចក្ដីសង្ខេបការងារចុះធ្វើសវនកម្មពន្ធដារ
+   [stated] ២០២៦-១១-១៣ ៖ «ជួយបង្កើតទម្រង់លិខិតនេះ និងបញ្ចូលព័ត៌មានដែលមាន
+     ស្រាប់ក្នុងនោះឱ្យហើយផង ។ ផ្នែកដែលត្រូវបំពេញគឺ ផ្នែក II និង III
+     ចុះចន្លោះដើម្បីបំពេញអត្ថន័យចូល» ។
+   ⚠ រចនាសម្ព័ន្ធតាមឯកសារ Word ដែលគេផ្ញើមកបេះបិទ ៖ ចំណងជើង ២ បន្ទាត់ ·
+     ក្បាល ៣ បន្ទាត់ · I ព័ត៌មានសហគ្រាស ( បំពេញស្វ័យប្រវត្តិ ) ·
+     II កិច្ចសហការ ( បំពេញដោយដៃ ) · III មូលដ្ឋាននៃការកំណត់ពន្ធ
+     ( បំពេញដោយដៃ + ទឹកប្រាក់ស្វ័យប្រវត្តិ ) · ហត្ថលេខា ៣ ជួរ ។
+   ⚠ អត្ថបទគំរូក្នុងឯកសារដើម ( «ឧ. បានជួបម្ចាស់សហគ្រាស ៣ ដង …» ) ដាក់ជា
+     `placeholder` ⇒ ឃើញពេលទទេ តែ**មិនព្រីនចេញ** ⇒ អ្នកប្រើដឹងថាត្រូវ
+     សរសេរអ្វី ដោយក្រដាសមិនមានអត្ថបទគំរូជាប់ ។
+   ========================================================================= */
+function smwDay(v){
+  var s = String(v == null ? '' : v).trim();
+  if(!s) return '';
+  var m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if(m) return m[3] + '-' + m[2] + '-' + m[1];
+  return s;
+}
+function smwCtx(){
+  var ci = {}, pi = {};
+  try{ ci = coverInfo() || {}; }catch(e){}
+  try{ pi = personInfo() || {}; }catch(e){}
+  var grand = 0;
+  try{ grand = arGrand() || 0; }catch(e){ grand = 0; }
+  return {
+    name: ci.companyName || '',
+    tin: ci.tin || '',
+    code: ci.progPCode || ci.programCode || '',
+    atype: ci.auditType || ci.auditTypeChoice || '',
+    from: smwDay(ci.periodFrom || ci.auditStartDate || ''),
+    to:   smwDay(ci.periodTo   || ci.auditEndDate   || ''),
+    period: ci.auditPeriod || '',
+    a1: pi.auditorName || '', a2: pi.partnerAuditorName || '',
+    deputy: pi.subOfficeName || '',
+    reg: smwDay(ci.taxRegDate || ''),
+    owner: ci.owner || '', acc: ci.accountant || '',
+    act: ci.businessActivity || '',
+    phone: ci.phone || '', addr: ci.address || '',
+    grand: grand
+  };
+}
+function smwState(){
+  if(!trkState.smw) trkState.smw = { meet:'', docs:'', basis:'', amount:'', agree:'' };
+  return trkState.smw;
+}
+/* វាលបំពេញដោយដៃ ៖ បន្ទាត់ចុចៗ ⇒ ដឹងថាត្រូវសរសេរត្រង់ណា ទោះទទេ */
+function smwFill(key, lines, ph){
+  var v = String(smwState()[key] || '');
+  return '<div class="smw-fill" contenteditable="true" data-smw="' + key + '"'
+    + ' data-ph="' + esc(ph || '') + '" style="min-height:' + (lines * 18) + 'px;">'
+    + esc(v) + '</div>';
+}
+function smwHtml(forPrint){
+  var c = smwCtx();
+  var auditors = [c.a1, c.a2].filter(function(x){ return String(x || '').trim(); });
+  var amount = String(smwState().amount || '');
+  if(!amount && c.grand) { try{ amount = fmt(c.grand); }catch(e){ amount = String(c.grand); } }
+  return '' +
+  '<div class="rpt-page smw-page">' +
+    '<div class="smw-title">សេចក្ដីសង្ខេប<br>ការងារចុះធ្វើសវនកម្មពន្ធដារ</div>' +
+    '<div class="smw-head">' +
+      '<div class="smw-hr"><span class="k">សហគ្រាស</span><span class="c">៖</span>' +
+        '<span class="v">' + esc(c.name) + '</span></div>' +
+      '<div class="smw-hr"><span class="k">អតប</span><span class="c">៖</span>' +
+        '<span class="v">' + esc(c.tin) + '</span>' +
+        '<span class="k2">កូដកម្មវិធី៖</span><span class="v2">' + esc(c.code) + '</span>' +
+        '<span class="k2">កម្មវិធីសវនកម្ម៖</span><span class="v2">' + esc(c.atype) + '</span></div>' +
+      '<div class="smw-hr"><span class="k">ការិយសវនកម្ម</span><span class="c">៖</span>' +
+        '<span class="v">' + esc(c.from) + (c.to ? ' ដល់ ' + esc(c.to) : '') + '</span>' +
+        '<span class="k2">សវនករ៖</span><span class="v2">' + esc(auditors.join(' និង ')) + '</span>' +
+        '<span class="k2">អនុការិ.៖</span><span class="v2">' + esc(c.deputy) + '</span></div>' +
+    '</div>' +
+    '<div class="smw-h">I. ព័ត៌មានសហគ្រាស</div>' +
+    '<div class="smw-b">' +
+      '<div class="smw-r"><span class="k2">ចុះបញ្ជីសារពើពន្ធ៖</span><span class="v2">' + esc(c.reg) + '</span>' +
+        '<span class="k2">ម្ចាស់ភាគហ៊ុន៖</span><span class="v2">' + esc(c.owner) + '</span>' +
+        '<span class="k2">បណ្ណាធិការ៖</span><span class="v2">' + esc(c.acc) + '</span></div>' +
+      '<div class="smw-r"><span class="k2">សកម្មភាពអាជីវកម្ម៖</span><span class="v2">' + esc(c.act) + '</span></div>' +
+      '<div class="smw-r"><span class="k2">ទូរសព្ទ៖</span><span class="v2">' + esc(c.phone) + '</span>' +
+        '<span class="k2">អាសយដ្ឋាន៖</span><span class="v2">' + esc(c.addr) + '</span></div>' +
+    '</div>' +
+    '<div class="smw-h">II. កិច្ចសហការរបស់អ្នកជាប់ពន្ធ៖</div>' +
+    '<div class="smw-b">' +
+      '<div class="smw-r"><span class="k2">ការជួបពិភាក្សា៖</span></div>' +
+      smwFill('meet', 3, 'ឧ. បានជួបម្ចាស់សហគ្រាស ៣ ដង ; បានជួបម្ចាស់សហគ្រាស និងភ្នាក់ងារ ៤ ដង ; មិនបានជួបម្ចាស់ ឬតំណាងសហគ្រាសទេ …') +
+      '<div class="smw-r"><span class="k2">ការផ្ដល់ឯកសារ៖</span></div>' +
+      smwFill('docs', 3, 'ឧ. សហគ្រាសបានផ្តល់ឯកសារតាមការស្នើសុំ ; ស្នើសុំឯកសារចំនួន ១០ ប៉ុន្តែសហគ្រាសឱ្យបានតែ ១ គឺ … ; ស្នើសុំ ១០ មិនបានឱ្យ ៣ គឺ GL, TB, របាយការណ៍ធនាគារ …') +
+    '</div>' +
+    '<div class="smw-h">III. មូលដ្ឋាននៃការកំណត់ពន្ធ៖</div>' +
+    '<div class="smw-b">' +
+      '<div class="smw-r"><span class="k2">មូលដ្ឋាន៖</span></div>' +
+      smwFill('basis', 3, 'ឧ. របាយការណ៍ធនាគារ, ទិន្នន័យ Cross-Check, លម្អៀងទិន្នន័យនាំចូល, លម្អៀងចំនួនបុគ្គលិកបានប្រកាស និងជាក់ស្ដែង, លម្អៀងចំណូលប្រចាំខែ និងប្រចាំឆ្នាំ, ចំណាយសេវាទៅរូបវន្តបុគ្គល …') +
+      '<div class="smw-r smw-amt"><span class="k2">ទឹកប្រាក់កំណត់ពន្ធ៖</span>' +
+        '<span class="smw-fill smw-inline" contenteditable="true" data-smw="amount" data-ph="X,XXX,XXX,XXX">' +
+        esc(amount) + '</span><span class="v2">រៀល</span></div>' +
+      '<div class="smw-r"><span class="k2">សម្គាល់៖</span>' +
+        '<span class="v2">បើសហគ្រាសឯកភាព សវនករត្រូវបំពេញថា «សហគ្រាសឯកភាពលើការកំណត់ពន្ធនេះ» ' +
+        'បើសហគ្រាសមិនឯកភាព សវនករពុំចាំបាច់បំពេញទេ</span></div>' +
+      smwFill('agree', 1, '') +
+      '<div class="smw-r smw-attach">យើងខ្ញុំសូមភ្ជាប់មកជាមួយនូវលិខិតស្នើសុំឯកសារ លិខិតអញ្ជើញ និងកំណត់ហេតុ។</div>' +
+    '</div>' +
+    '<div class="smw-sign">' +
+      '<div class="smw-date">' + esc(khSignDate()) + '</div>' +
+      '<div class="smw-sh">ហត្ថលេខាសវនករ</div>' +
+      '<table class="smw-stbl"><tr>' +
+        '<td><div class="smw-gap"></div><div class="smw-role">អនុការិ.</div>' +
+          '<div class="smw-nm">' + esc(c.deputy) + '</div></td>' +
+        '<td><div class="smw-gap"></div><div class="smw-role">សវនករ</div>' +
+          '<div class="smw-nm">' + esc(auditors[0] || '') + '</div></td>' +
+        '<td><div class="smw-gap"></div><div class="smw-role">សវនករ</div>' +
+          '<div class="smw-nm">' + esc(auditors[1] || '') + '</div></td>' +
+      '</tr></table>' +
+    '</div>' +
+  '</div>';
+}
+const SMW_CSS = `
+  .smw-page{ font-family:'Khmer OS Siemreap','Noto Sans Khmer',sans-serif; font-size:12.5px;
+    line-height:1.85; color:#111; }
+  .smw-title{ font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif; font-size:15px;
+    text-align:center; line-height:1.7; margin:0 0 14px; }
+  .smw-head{ margin:0 0 10px; }
+  .smw-hr{ display:flex; flex-wrap:wrap; align-items:baseline; gap:0 6px; }
+  .smw-hr .k{ min-width:106px; }
+  .smw-hr .c{ width:10px; }
+  .smw-b{ margin:0 0 8px; }
+  .smw-r{ display:flex; flex-wrap:wrap; align-items:baseline; gap:0 6px; margin:0 0 2px; }
+  .smw-h{ font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif; font-size:12.5px;
+    margin:12px 0 4px; }
+  .smw-hr .v, .smw-r .v2{ font-weight:600; }
+  .smw-r .k2, .smw-hr .k2{ font-weight:400; }
+  /* វាលបំពេញដោយដៃ ៖ បន្ទាត់ចុចៗ ⇒ ឃើញកន្លែងសរសេរ ទោះទទេ */
+  .smw-fill{ border-bottom:1px dotted #777; outline:none; padding:1px 2px;
+    background:transparent; white-space:pre-wrap; }
+  .smw-fill:empty::before{ content:attr(data-ph); color:#9a9a9a; }
+  .smw-inline{ display:inline-block; min-width:150px; border-bottom:1px dotted #777; }
+  .smw-amt{ margin-top:4px; }
+  .smw-attach{ margin-top:8px; }
+  .smw-sign{ margin-top:18px; text-align:center; }
+  .smw-date{ margin-bottom:4px; }
+  .smw-sh{ font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif; margin-bottom:4px; }
+  .smw-stbl{ width:100%; border-collapse:collapse; }
+  .smw-stbl td{ width:33.33%; text-align:center; vertical-align:top; border:0; padding:0 6px; }
+  .smw-gap{ height:56px; }
+  .smw-role{ font-weight:600; }
+  .smw-nm{ margin-top:2px; }
+  @media print{
+    /* អត្ថបទគំរូមិនព្រីន ⇒ ក្រដាសស្អាត */
+    .smw-fill:empty::before{ content:'' !important; }
+  }
+`;
+function renderSmw(){
+  var host = document.getElementById('trkSmw');
+  if(!host) return;
+  host.innerHTML = smwHtml(false);
+  host.querySelectorAll('[data-smw]').forEach(function(el){
+    el.addEventListener('input', function(){
+      smwState()[el.getAttribute('data-smw')] = el.textContent;
+      trkSave();
+    });
+  });
+  try{ setTimeout(function(){ try{ window.__nrFit && window.__nrFit(); }catch(e){} }, 40); }catch(e){}
+}
+function printSmw(){
+  /* ⚠ យកតួពីអេក្រង់ ⇒ អ្វីដែលគេវាយចូលចេញលើក្រដាសដដែល */
+  var host = document.getElementById('trkSmw');
+  var html = (host && host.innerHTML.trim()) ? host.innerHTML : smwHtml(true);
+  printInPage(html,
+    `.smw-page{page-break-inside:auto;}
+     .smw-sign,.smw-stbl{page-break-inside:avoid; break-inside:avoid;}
+     ${LETTERHEAD_CSS}
+     ${RPT_CSS}
+     ${SMW_CSS}`,
+    '@page{ size:A4; margin:14mm 14mm; }', true);
+}
+
 function printIndep(){
   printInPage(indepHtml(true),
     `.ind-tbl tr,.ind-sign tr{page-break-inside:avoid; break-inside:avoid;}
@@ -51493,6 +51786,7 @@ function docsHtml(){
             <option value="narr">📑 បរិយាយការកំណត់ពន្ធ</option>
             <option value="audit">📘 របាយការណ៍សវនកម្ម</option>
             <option value="sum2">📗 របាយការណ៍សង្ខេប</option>
+            <option value="smw">📝 សង្ខេបការងារ</option>
           </select>
         </label>
         <label class="hub-smto">អ្នកទទួល
@@ -51548,6 +51842,12 @@ function docsHtml(){
     <div class="doc-pane" data-doc="strategy">
     <div class="trk-card">
       <div id="trkRpt" class="trk-minutes trk-letter"></div>
+    </div>
+    </div>
+
+    <div class="doc-pane" data-doc="smw">
+    <div class="trk-card">
+      <div id="trkSmw" class="trk-minutes trk-letter"></div>
     </div>
     </div>
 
@@ -51673,13 +51973,15 @@ function wireDocs(host){
   if(dpBtn) dpBtn.onclick = ()=>{
     const k = (trkState.docKind || 'letter');
     const fn = { letter:printLetter, strategy:printStrategyReport, indep:printIndep,
-                 wp:printWorkPapers, basis:printBasis, narr:printNarr, audit:printAudit, sum2:printSummary }[k];
+                 wp:printWorkPapers, basis:printBasis, narr:printNarr, audit:printAudit,
+                 sum2:printSummary, smw:printSmw }[k];
     if(fn) fn();
   };
   renderLetter();
   renderNarr();
   renderAudit();
   renderSummary();
+  renderSmw();
 
   /* ---- យុទ្ធសាស្ត្រ និង ផែនការសវនកម្ម ----
      ជួរបញ្ចូលទាំងអស់ដកចេញ ៖ ពាណិជ្ជនាម មុខទំនិញ/សេវា និងទ្រង់ទ្រាយ
