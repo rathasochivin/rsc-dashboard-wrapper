@@ -2288,14 +2288,16 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
 #view-tracking .smw-r .k2, #docs-modal .smw-r .k2,
 #view-tracking .smw-hr .k2, #docs-modal .smw-hr .k2{ font-weight:400; }
 #view-tracking .smw-fill, #docs-modal .smw-fill{
-  border-bottom:1px dotted #777; outline:none; padding:1px 2px;
+  outline:none; padding:1px 2px;
   background:transparent; white-space:pre-wrap; }
 #view-tracking .smw-fill:empty::before, #docs-modal .smw-fill:empty::before{
   content:attr(data-ph); color:#9a9a9a; }
 #view-tracking .smw-inline, #docs-modal .smw-inline{
-  display:inline-block; min-width:150px; border-bottom:1px dotted #777; }
+  display:inline-block; min-width:40px; }
 #view-tracking .smw-amt, #docs-modal .smw-amt{ margin-top:4px; }
-#view-tracking .smw-attach, #docs-modal .smw-attach{ margin-top:8px; }
+#view-tracking .smw-attach, #docs-modal .smw-attach{ margin-top:2px; }
+#view-tracking .smw-b > .smw-r:last-child,
+#docs-modal .smw-b > .smw-r:last-child{ margin-bottom:0; }
 #view-tracking .smw-sign, #docs-modal .smw-sign{ margin-top:18px; text-align:center; }
 #view-tracking .smw-date, #docs-modal .smw-date{ margin-bottom:4px; }
 #view-tracking .smw-sh, #docs-modal .smw-sh{
@@ -2304,8 +2306,22 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
 #view-tracking .smw-stbl td, #docs-modal .smw-stbl td{
   width:33.33%; text-align:center; vertical-align:top; border:0; padding:0 6px; }
 #view-tracking .smw-gap, #docs-modal .smw-gap{ height:56px; }
-#view-tracking .smw-role, #docs-modal .smw-role{ font-weight:600; }
+#view-tracking .smw-role, #docs-modal .smw-role{
+  font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif;
+  font-weight:600; font-size:11.5px; }
 #view-tracking .smw-nm, #docs-modal .smw-nm{ margin-top:2px; }
+#view-tracking .smw-page, #docs-modal .smw-page{ position:relative; }
+#view-tracking .smw-foot, #docs-modal .smw-foot{
+  position:absolute; left:0; right:0; bottom:0;
+  text-align:center; font-size:11px; color:#666; }
+/* ⭐ សញ្ញា ▪ · វាលហូរតត្រង់ · ប្រអប់ហត្ថលេខាខាងស្តាំ ( ត្រូវដូច SMW_CSS ) */
+#view-tracking .smw-r .bq, #docs-modal .smw-r .bq{
+  flex:0 0 auto; color:#111; margin-right:4px; font-size:9px; line-height:1.9; }
+#view-tracking .smw-r:has(.smw-flow), #docs-modal .smw-r:has(.smw-flow){ display:block; }
+#view-tracking .smw-flow, #docs-modal .smw-flow{ display:inline; }
+#view-tracking .smw-sign, #docs-modal .smw-sign{
+  width:58%; margin-left:auto; margin-right:0; }
+#view-tracking .smw-stbl td, #docs-modal .smw-stbl td{ padding:0 2px; }
 #view-tracking .ind-title, #docs-modal .ind-title{font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif; text-align:center;
     font-size:14.5px; margin:14px 0 12px;}
 #view-tracking .ind-head, #docs-modal .ind-head{width:100%; border-collapse:collapse; font-size:12px; margin-bottom:12px;}
@@ -31738,6 +31754,15 @@ window.__getTOICoverInfo = function(){
     /* ម្ចាស់/នាយក និងគណនេយ្យករ ៖ ដូចខាងលើ — ការវាយដោយដៃត្រូវឈ្នះ */
     owner: getCV('companyOwnerOverride') || info.owner || '',
     accountant: getCV('companyAccountantOverride') || info.accountant || '',
+    /* ⭐ [stated] ២០២៦-១១-១៣ ៖ «ម្ចាស់ភាគហ៊ុន យកពីជំហានទី២» ។
+       ⚠ `rawStepShareholders('Step2')` អានផ្នែក «ក. មូលធន/មូលធនភាគហ៊ុន
+         ចុះបញ្ជី» រួចរាយឈ្មោះក្នុងជួរដេកបន្ទាប់ — មានស្រាប់ក្នុង COVER
+         ⇒ គ្រាន់តែបញ្ជូនវាតាមស្ពាននេះ ទៅដល់ឯកសារព្រីនប៉ុណ្ណោះ ។
+       ⚠ «បណ្ណាធិការ» = `owner` ដែលអានពីជំហានទី១ «ឈ្មោះអភិបាល /
+         បណ្ណាធិការ / កម្មសិទ្ធិករ» រួចស្រាប់ ⇒ មិនត្រូវការវាលថ្មីទេ ។ */
+    shareholders: (function(){
+      try{ return (rawStepShareholders('Step2') || []).join(', '); }catch(e){ return ''; }
+    })(),
     latinName: ex.latinName || '',
     phone: ex.phone || '',
     email: ex.email || '',
@@ -51425,7 +51450,10 @@ function smwCtx(){
     a1: pi.auditorName || '', a2: pi.partnerAuditorName || '',
     deputy: pi.subOfficeName || '',
     reg: smwDay(ci.taxRegDate || ''),
-    owner: ci.owner || '', acc: ci.accountant || '',
+    /* ⭐ [stated] ២០២៦-១១-១៣ ៖ «បណ្ណាធិការ៖ យកពីជំហានទី១ កន្លែង ឈ្មោះ
+       អភិបាល/បណ្ណាធិការ/កម្មសិទ្ធិករ · ម្ចាស់ភាគហ៊ុន យកពីជំហានទី២» ។
+       ⚠ មុននេះខ្ញុំដាក់ `accountant` ( គណនេយ្យករ ) ជាបណ្ណាធិការ — ខុស ។ */
+    owner: ci.shareholders || '', acc: ci.owner || '',
     act: ci.businessActivity || '',
     phone: ci.phone || '', addr: ci.address || '',
     grand: grand
@@ -51436,17 +51464,26 @@ function smwState(){
   return trkState.smw;
 }
 /* វាលបំពេញដោយដៃ ៖ បន្ទាត់ចុចៗ ⇒ ដឹងថាត្រូវសរសេរត្រង់ណា ទោះទទេ */
+/* ⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «ការពិភាក្សា រហូតដល់ សម្គាល់ ពេលសរសេរ គឺ
+   សរសេរតតែម្តង មិនបាច់ចុះបន្ទាត់ទេ ដូចក្នុង Word គំរូ» ។
+   ⇒ វាលក្លាយជា **inline** ⇒ អត្ថបទបន្តភ្លាមក្រោយស្លាក ហើយរុំដោយខ្លួនឯង
+     ពេលដល់គែម ( ដូច Word ) ជំនួសការចាប់ផ្តើមបន្ទាត់ថ្មី ។ */
 function smwFill(key, lines, ph){
   var v = String(smwState()[key] || '');
-  return '<div class="smw-fill" contenteditable="true" data-smw="' + key + '"'
-    + ' data-ph="' + esc(ph || '') + '" style="min-height:' + (lines * 18) + 'px;">'
-    + esc(v) + '</div>';
+  return '<span class="smw-fill smw-flow" contenteditable="true" data-smw="' + key + '"'
+    + ' data-ph="' + esc(ph || '') + '">' + esc(v) + '</span></div>';
 }
 function smwHtml(forPrint){
   var c = smwCtx();
   var auditors = [c.a1, c.a2].filter(function(x){ return String(x || '').trim(); });
   var amount = String(smwState().amount || '');
-  if(!amount && c.grand) { try{ amount = fmt(c.grand); }catch(e){ amount = String(c.grand); } }
+  /* ⚠⚠ `fmt()` មិនមានក្នុងវិសាលភាពនេះទេ ( វាជាមុខងារក្នុង IIFE
+     ផ្សេង ) ⇒ ការហៅបោះកំហុស ⇒ catch រត់ ⇒ លេខចេញជាប្រភាគឃិប
+     ( វាស់បាន ៖ 348478010.5641987 ) । ⇒ ធ្វើទ្រង់ទ្រាយផ្ទាល់ । */
+  if(!amount && c.grand){
+    try{ amount = Math.round(c.grand).toLocaleString('en-US'); }
+    catch(e){ amount = String(Math.round(c.grand)); }
+  }
   return '' +
   '<div class="rpt-page smw-page">' +
     '<div class="smw-title">សេចក្ដីសង្ខេប<br>ការងារចុះធ្វើសវនកម្មពន្ធដារ</div>' +
@@ -51464,31 +51501,36 @@ function smwHtml(forPrint){
     '</div>' +
     '<div class="smw-h">I. ព័ត៌មានសហគ្រាស</div>' +
     '<div class="smw-b">' +
-      '<div class="smw-r"><span class="k2">ចុះបញ្ជីសារពើពន្ធ៖</span><span class="v2">' + esc(c.reg) + '</span>' +
+      /* ⭐ [stated] ២០២៦-១១-១៣ ៖ «នៅក្នុងប្រព័ន្ធបាត់សញ្ញាដាក់នៅពីមុខ
+         ចុះបញ្ជី · សកម្មភាព · ទូរសព្ទ ដល់សម្គាល់ ដូចក្នុង Word» ។ */
+      '<div class="smw-r"><span class="bq">▪</span><span class="k2">ចុះបញ្ជីសារពើពន្ធ៖</span><span class="v2">' + esc(c.reg) + '</span>' +
         '<span class="k2">ម្ចាស់ភាគហ៊ុន៖</span><span class="v2">' + esc(c.owner) + '</span>' +
         '<span class="k2">បណ្ណាធិការ៖</span><span class="v2">' + esc(c.acc) + '</span></div>' +
-      '<div class="smw-r"><span class="k2">សកម្មភាពអាជីវកម្ម៖</span><span class="v2">' + esc(c.act) + '</span></div>' +
-      '<div class="smw-r"><span class="k2">ទូរសព្ទ៖</span><span class="v2">' + esc(c.phone) + '</span>' +
+      '<div class="smw-r"><span class="bq">▪</span><span class="k2">សកម្មភាពអាជីវកម្ម៖</span><span class="v2">' + esc(c.act) + '</span></div>' +
+      '<div class="smw-r"><span class="bq">▪</span><span class="k2">ទូរសព្ទ៖</span><span class="v2">' + esc(c.phone) + '</span>' +
         '<span class="k2">អាសយដ្ឋាន៖</span><span class="v2">' + esc(c.addr) + '</span></div>' +
     '</div>' +
     '<div class="smw-h">II. កិច្ចសហការរបស់អ្នកជាប់ពន្ធ៖</div>' +
     '<div class="smw-b">' +
-      '<div class="smw-r"><span class="k2">ការជួបពិភាក្សា៖</span></div>' +
+      '<div class="smw-r"><span class="bq">▪</span><span class="k2">ការជួបពិភាក្សា៖</span>' +
       smwFill('meet', 3, 'ឧ. បានជួបម្ចាស់សហគ្រាស ៣ ដង ; បានជួបម្ចាស់សហគ្រាស និងភ្នាក់ងារ ៤ ដង ; មិនបានជួបម្ចាស់ ឬតំណាងសហគ្រាសទេ …') +
-      '<div class="smw-r"><span class="k2">ការផ្ដល់ឯកសារ៖</span></div>' +
+      '<div class="smw-r"><span class="bq">▪</span><span class="k2">ការផ្ដល់ឯកសារ៖</span>' +
       smwFill('docs', 3, 'ឧ. សហគ្រាសបានផ្តល់ឯកសារតាមការស្នើសុំ ; ស្នើសុំឯកសារចំនួន ១០ ប៉ុន្តែសហគ្រាសឱ្យបានតែ ១ គឺ … ; ស្នើសុំ ១០ មិនបានឱ្យ ៣ គឺ GL, TB, របាយការណ៍ធនាគារ …') +
     '</div>' +
     '<div class="smw-h">III. មូលដ្ឋាននៃការកំណត់ពន្ធ៖</div>' +
     '<div class="smw-b">' +
-      '<div class="smw-r"><span class="k2">មូលដ្ឋាន៖</span></div>' +
+      '<div class="smw-r"><span class="bq">▪</span><span class="k2">មូលដ្ឋាន៖</span>' +
       smwFill('basis', 3, 'ឧ. របាយការណ៍ធនាគារ, ទិន្នន័យ Cross-Check, លម្អៀងទិន្នន័យនាំចូល, លម្អៀងចំនួនបុគ្គលិកបានប្រកាស និងជាក់ស្ដែង, លម្អៀងចំណូលប្រចាំខែ និងប្រចាំឆ្នាំ, ចំណាយសេវាទៅរូបវន្តបុគ្គល …') +
-      '<div class="smw-r smw-amt"><span class="k2">ទឹកប្រាក់កំណត់ពន្ធ៖</span>' +
+      '<div class="smw-r smw-amt"><span class="bq">▪</span><span class="k2">ទឹកប្រាក់កំណត់ពន្ធ៖</span>' +
         '<span class="smw-fill smw-inline" contenteditable="true" data-smw="amount" data-ph="X,XXX,XXX,XXX">' +
         esc(amount) + '</span><span class="v2">រៀល</span></div>' +
-      '<div class="smw-r"><span class="k2">សម្គាល់៖</span>' +
+      '<div class="smw-r"><span class="bq">▪</span><span class="k2">សម្គាល់៖</span>' +
         '<span class="v2">បើសហគ្រាសឯកភាព សវនករត្រូវបំពេញថា «សហគ្រាសឯកភាពលើការកំណត់ពន្ធនេះ» ' +
         'បើសហគ្រាសមិនឯកភាព សវនករពុំចាំបាច់បំពេញទេ</span></div>' +
-      smwFill('agree', 1, '') +
+      /* ⚠ `smwFill` បិទជួរដោយ `</div>` ⇒ ការហៅវាដោយឯកទើងនឹង
+         បិទ `.smw-b` មុនពេល ⇒ ប្លុកហត្ថលេខាធ្លាក់ចេញក្រៅក្រដាស ( កំហុសវាស់បាន )
+         ⇒ ត្រូវបើកជួរជាមុនជានិច្ច । */
+      '<div class="smw-r">' + smwFill('agree', 1, '') +
       '<div class="smw-r smw-attach">យើងខ្ញុំសូមភ្ជាប់មកជាមួយនូវលិខិតស្នើសុំឯកសារ លិខិតអញ្ជើញ និងកំណត់ហេតុ។</div>' +
     '</div>' +
     '<div class="smw-sign">' +
@@ -51503,6 +51545,10 @@ function smwHtml(forPrint){
           '<div class="smw-nm">' + esc(auditors[1] || '') + '</div></td>' +
       '</tr></table>' +
     '</div>' +
+    /* ⭐ [stated] ២០២៦-១១-១៣ ៖ «បន្ថែមលេខទំព័រនៅខាងក្រោមផង»
+       ⇒ ជើងទំព័រខ្ទាស់បាតសន្លឹក ដូចឯកសារដែលមានជើងទំព័រដដែល ।
+       ⚠ ឯកសារនេះមាន ១ សន្លឹកជានិច្ច ⇒ «ទំព័រ ១ នៃ ១» । */
+    '<div class="smw-foot">ទំព័រ ១ នៃ ១</div>' +
   '</div>';
 }
 const SMW_CSS = `
@@ -51521,20 +51567,43 @@ const SMW_CSS = `
   .smw-hr .v, .smw-r .v2{ font-weight:600; }
   .smw-r .k2, .smw-hr .k2{ font-weight:400; }
   /* វាលបំពេញដោយដៃ ៖ បន្ទាត់ចុចៗ ⇒ ឃើញកន្លែងសរសេរ ទោះទទេ */
-  .smw-fill{ border-bottom:1px dotted #777; outline:none; padding:1px 2px;
+  /* ⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «លុបផ្នែកគូសបន្ទាត់ចេញ» ⇒ វាល
+     បំពេញគ្មានបន្ទាត់ចុចៗទៀត ⇒ ស្អាតដូច Word ।
+     ⚠ អត្ថបទគំរូព៣ៀសនៅបង្ហាញលើអេក្រង ⇒ នៅដឹងកន្លែងសរសេរ । */
+  .smw-fill{ outline:none; padding:1px 2px;
     background:transparent; white-space:pre-wrap; }
   .smw-fill:empty::before{ content:attr(data-ph); color:#9a9a9a; }
-  .smw-inline{ display:inline-block; min-width:150px; border-bottom:1px dotted #777; }
+  /* ⭐ [stated] «អក្សរ រៀល រត់ពីក្រោយលេខ មិនត្រូវដាក់ fix ទេ»
+     ⇒ ដក min-width:150px ⇒ ប្រអប់រួមខ្លួនតាមលេខ ⇒ «រៀល» ជាប់នឹងលេខ । */
+  .smw-inline{ display:inline-block; min-width:40px; }
   .smw-amt{ margin-top:4px; }
-  .smw-attach{ margin-top:8px; }
+  /* [stated] 2026-11-13 : chan loh pi lue tauch jang - spacing khang lue "yeung khnhom som phjoab..." */
+  .smw-attach{ margin-top:2px; }
+  .smw-b > .smw-r:last-child{ margin-bottom:0; }
   .smw-sign{ margin-top:18px; text-align:center; }
   .smw-date{ margin-bottom:4px; }
   .smw-sh{ font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif; margin-bottom:4px; }
   .smw-stbl{ width:100%; border-collapse:collapse; }
   .smw-stbl td{ width:33.33%; text-align:center; vertical-align:top; border:0; padding:0 6px; }
   .smw-gap{ height:56px; }
-  .smw-role{ font-weight:600; }
+  /* [stated] 2026-11-13 : signature roles use Khmer OS Muol Light */
+  .smw-role{ font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif;
+    font-weight:600; font-size:11.5px; }
   .smw-nm{ margin-top:2px; }
+  /* ⭐ ជើងទំព័រ ៖ ខ្ទាស់បាតសន្លឹក ចំកណ្តាល */
+  .smw-page{ position:relative; }
+  .smw-foot{ position:absolute; left:0; right:0; bottom:0;
+    text-align:center; font-size:11px; color:#666; }
+  /* ⭐ [stated] ២០២៦-១១-១៣ ៖ សញ្ញា ▪ នៅមុខជួរនីមួយៗ ដូចក្នុង Word */
+  .smw-r .bq{ flex:0 0 auto; color:#111; margin-right:4px; font-size:9px; line-height:1.9; }
+  /* ⭐ វាលបំពេញហូរតត្រង់ក្រោយស្លាក ⇒ ជួរក្លាយជាប្លុកធម្មតា ( មិនមែន flex )
+     ⚠ :has() មានលើ iOS 16.4+ · Chrome 105+ ; បើគ្មាន វាត្រឡប់ទៅរបៀបចាស់ */
+  .smw-r:has(.smw-flow){ display:block; }
+  .smw-flow{ display:inline; }
+  /* ⭐⭐ [stated] «ផ្នែកចុះហត្ថលេខាខាងក្រោមដាក់ដូច Word នេះ» ⇒ ប្លុកហត្ថលេខា
+     ឈរនៅ **ពាក់កណ្តាលខាងស្តាំ** នៃក្រដាស មិនលាតពេញទទឹង ។ */
+  .smw-sign{ width:58%; margin-left:auto; margin-right:0; }
+  .smw-stbl td{ padding:0 2px; }
   @media print{
     /* អត្ថបទគំរូមិនព្រីន ⇒ ក្រដាសស្អាត */
     .smw-fill:empty::before{ content:'' !important; }
