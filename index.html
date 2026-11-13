@@ -1561,11 +1561,18 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
     border-bottom:1px solid var(--line) !important;
   }
   #view-tracking .trk-tbl.trk-stack td[data-lbl=""]::before{ display:none; }
-  #view-tracking .trk-tbl.trk-stack td.trk-no{
-    font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif;
-    color:var(--primary); font-size:12.5px; border-bottom:0 !important;
-    padding-bottom:0 !important; margin-bottom:0;
+  /* លេខ ល.រ បានចូលទៅក្នុងស្លាកបរិយាយរួចហើយ ⇒ លែងត្រូវការជួរដាច់ */
+  #view-tracking .trk-tbl.trk-stack td.trk-no{ display:none !important; }
+  /* ⭐ [stated] ២០២៦-១១-១៣ ៖ «បានទទួល និងមិនមាន ដាក់ជាជួរជាមួយគ្នា»
+     ⇒ ក្រឡាទាំងពីរក្លាយជា inline ⇒ ឈរក្បែរគ្នាក្នុងបន្ទាត់តែមួយ ។ */
+  #view-tracking .trk-tbl.trk-stack td[data-lbl="បានទទួល"],
+  #view-tracking .trk-tbl.trk-stack td[data-lbl="មិនមាន"]{
+    display:inline-grid !important; grid-template-columns:auto auto !important;
+    width:auto !important; gap:8px; margin-right:26px; vertical-align:middle;
   }
+  /* ⭐ [stated] ២០២៦-១១-១៣ ៖ «អក្សរនៅផ្នែកបរិយាយឯកសារ បន្ថែមទំហំអក្សរ
+     ឱ្យស្មើដូចបរិយាយឯកសារ» ⇒ ស្លាក និងតម្លៃ ទំហំ ១៤px ដូចគ្នា ។ */
+  #view-tracking .trk-tbl.trk-stack td::before{ font-size:14px !important; }
   /* ⭐ [stated] ២០២៦-១១-១៣ ៖ «ទំហំអក្សរនៅផ្នែកទទួលនៅកំណត់ហេតុ កុំឱ្យធំ
      ជាងគេពេក» ⇒ វាលទាំងអស់ក្នុងប្លុក ( រួមទាំងប្រអប់ជ្រើស «លើកទី…» )
      ប្រើទំហំ **១៣.៥px ដូចគ្នាទាំងអស់** ⇒ គ្មានវាលណាធំលេចជាងគេ ។
@@ -1574,13 +1581,20 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
   #view-tracking .trk-tbl.trk-stack td > select,
   #view-tracking .trk-tbl.trk-stack td > textarea{
     width:100% !important; min-width:0 !important; max-width:100% !important;
-    box-sizing:border-box !important; height:42px !important; font-size:13.5px !important;
+    box-sizing:border-box !important; height:42px !important; font-size:14px !important;
   }
   #view-tracking .trk-tbl.trk-stack td > textarea{ height:auto !important; min-height:46px; }
   #view-tracking .trk-tbl.trk-stack td > input[type="checkbox"]{
     width:24px !important; height:24px !important; justify-self:start;
   }
-  #view-tracking .trk-tbl.trk-stack td.trk-lbl{ min-width:0 !important; }
+  /* ⭐ [stated] ២០២៦-១១-១៣ ៖ ឈ្មោះឯកសារវែង ⇒ បើស្លាកនៅឆ្វេង ( ១៣៦px )
+     វាលសល់ត្រឹម ~១៧០px ⇒ ចុះបន្ទាត់ ។ ⇒ ជួរបរិយាយដាក់ស្លាកនៅ**លើ**
+     ហើយវាលពេញទទឹង ( ~២៩០px ) ⇒ ឈ្មោះភាគច្រើននៅ ១ បន្ទាត់ ។ */
+  #view-tracking .trk-tbl.trk-stack td.trk-lbl{
+    min-width:0 !important; grid-template-columns:minmax(0,1fr) !important;
+    padding-bottom:8px !important; margin-bottom:4px;
+    border-bottom:1px solid var(--line) !important;
+  }
 }
 
 @media (max-width: 900px){
@@ -1664,7 +1678,19 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
   font-size:17px; line-height:1; flex:0 0 auto; margin:0 !important;
 }
 @media screen and (max-width: 760px){
-  #view-tracking .trk-unlock-ic{ width:44px !important; min-width:44px; height:40px; }
+  /* ⭐ [stated] ២០២៦-១១-១៣ ៖ «រូបខ្មៅដៃកុំឲ្យវាធំពេក · កន្លែងនេះ
+     កុំឲ្យចុះបន្ទាត់ រក្សាមួយជួរ» ।
+     ⚠⚠ ការវាស់ ៖ អត្ថបទត្រូវការ ២៤៨px   មានតែ ២៣៤px ⇒ ខ្វះ ១៤px
+       ⇒ ចុះបន្ទាត់ ២ । ⇒ រកឲ្យបាន ១៦px ដោយ ៣ យ៉ាង ៖
+         · រូបខ្មៅដៃ ៤៤×៤០ ⇒ ៣៨×៣៤ ( ដូចកុំព្យូទ័រ ) ... +៦px
+         · រឹមខាងក្នុង ១៤ ⇒ ១០px ............ +៨px
+         · ទំហំអក្សរ ១២,៥ ⇒ ១២px .......... −១០px
+       ⇒ ត្រូវការ ២៣៨px · មាន ២៥០px ⇒ ១ បន្ទាត់ । */
+  #view-tracking .trk-unlock-ic{ width:38px !important; min-width:38px; height:34px; }
+  #view-tracking .trk-locked{
+    padding-left:10px !important; padding-right:10px !important;
+    font-size:12px !important; gap:8px !important; white-space:nowrap;
+  }
 }
 #view-tracking .trk-revbox{
   margin-top:12px; padding:12px 14px; border:1px solid var(--line);
@@ -4088,6 +4114,58 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
   #toi-embed table.de-fit-table thead th{font-size:11.5px; font-family:'Khmer OS Siemreap',sans-serif; font-weight:700; white-space:nowrap; line-height:1.3;}
   #toi-embed table.de-fit-table tbody td{font-size:12.5px; white-space:nowrap;}
   #toi-embed table.de-fit-table tbody td input{font-size:12.5px !important; white-space:nowrap;}
+
+  /* ══════════════════════════════════════════════════════════════════
+     ⭐⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «ជួយកែសម្រួលផ្នែកនេះផង ឱ្យវាស្រួលមើល
+       និងងាយពិនិត្យ» ( រូប DATA ENTRY លើ iPhone ) ។
+     ⚠⚠ ការវាស់លើអេក្រង់ ៣៩០px បង្ហាញបញ្ហា ៣ ៖
+       ១. ប្រអប់ «ឈ្មោះឡាតាំង» ទទឹង ៣៥៤px ចាប់ពី x=១៥៤ ⇒ គែមស្តាំ ៥០៨
+          ⇒ **ហៀរចេញក្រៅអេក្រង់** ( វាលហៀរសរុប ៩ ) ហើយទំព័ររំកិលផ្តេក ។
+       ២. ទទឹងប្រអប់មាន ១៦ ទំហំផ្សេងៗគ្នា ( ៣៧ · ៤៩ · ៧០ · ៩១ · ៩៨ …
+          ៣៣០ · ៣៥៤ ) ⇒ គែមឆ្វេង/ស្តាំមិនត្រង់ជួរ ⇒ មើលមិនដាច់ ។
+       ៣. ស្លាកខ្លះឈរមុខប្រអប់ ខ្លះឈរលើ ⇒ ភ្នែកត្រូវរកថាស្លាកណាជាប់
+          ប្រអប់ណា ។
+     ⚠ ទទឹងទាំងនោះសរសេរជា **inline style** ក្នុងកូដ ( style="width:354px" )
+       ⇒ ត្រូវប្រើ !important ទើបផ្តួលបាន ។
+     ⇒ លើទូរស័ព្ទ ៖ ជួរវាលក្លាយជា **ប្លុក** ⇒ ស្លាកនៅលើ ប្រអប់នៅក្រោម
+       ពេញទទឹង ⇒ ១ វាល ១ ជួរ គែមត្រង់គ្នាទាំងអស់ ។
+     ⚠ កុំព្យូទ័រមិនរងផលទាល់តែសោះ ( ច្បាប់ទាំងអស់ក្នុង max-width:760px ) ។
+     ══════════════════════════════════════════════════════════════════ */
+  @media screen and (max-width: 760px){
+    /* ⚠ ជួរវាលជា div គ្មាន class ដែលមាន display:flex ជា inline style ។
+       :not([class]) បង្អត់របារឧបករណ៍ ( .toolbar-row ) និងប្រអប់ដែលមាន
+       class ផ្ទាល់ខ្លួន ⇒ ប៉ះតែជួរវាលពិតៗ ។ */
+    #toi-embed div[style*="display:flex"]:not([class]){
+      display:block !important; width:100% !important; max-width:100% !important;
+    }
+    /* ស្លាកអត្ថបទក្នុងជួរវាល ⇒ បន្ទាត់ផ្ទាល់ខ្លួននៅលើប្រអប់ */
+    #toi-embed div[style*="display:flex"]:not([class]) > span{
+      display:block !important; white-space:normal !important;
+      font-size:13.5px !important; line-height:1.6 !important;
+      margin:10px 0 4px !important; color:var(--toi-slate,#5B6478) !important;
+    }
+    /* ⭐ ប្រអប់ទាំងអស់ ៖ ទទឹងតែមួយ ⇒ គែមត្រង់ជួរ */
+    #toi-embed .field-input{
+      width:100% !important; min-width:0 !important; max-width:100% !important;
+      box-sizing:border-box !important; font-size:15px !important;
+      display:block !important; margin:0 0 2px !important;
+    }
+    #toi-embed input.field-input, #toi-embed select.field-input{ height:42px !important; }
+    #toi-embed textarea.field-input{ height:auto !important; }
+    /* ⚠ iOS មិនគោរព width លើ input[type=date] បើគ្មាន appearance:none ⇒
+       ប្រអប់ថ្ងៃខែវែងជាងគេជានិច្ច ( បញ្ហាដដែលនឹងផ្ទាំងតាមដាន ) ។ */
+    #toi-embed input[type="date"], #toi-embed input[type="month"]{
+      -webkit-appearance:none; appearance:none;
+      text-align:left; font-family:inherit;
+    }
+    /* តារាងទិន្នន័យ ៖ រំកិលក្នុងប្រអប់ខ្លួនឯង មិនមែនរំកិលទាំងទំព័រ */
+    #toi-embed .table-wrap{
+      max-width:100% !important; overflow-x:auto !important;
+      -webkit-overflow-scrolling:touch;
+    }
+    /* ⚠ ផ្ទាំងទាំងមូលមិនត្រូវលាតលើសអេក្រង់ ⇒ កាត់ការរំកិលផ្តេករបស់ទំព័រ */
+    #toi-embed{ max-width:100% !important; overflow-x:hidden !important; }
+  }
   #toi-embed td.num, #toi-embed th.num{text-align:right; font-family:'JetBrains Mono','Khmer OS Siemreap',monospace; font-variant-numeric:tabular-nums; white-space:nowrap; word-break:normal;}
   #toi-embed thead th.num{text-align:center;}
   #toi-embed td.label, #toi-embed th.label{white-space:nowrap; min-width:60px;}
@@ -13123,7 +13201,21 @@ try{
    ⇒ ត្រឡប់ទូរស័ព្ទ/ថេប្លេតមក **២៤០mm សម្រាប់គ្រួសារទាំងពីរ** ។
    ⚠ កុំព្យូទ័រមិនប្តូរ ៖ nr 266 · rpt 269 ដដែល ។
    ⚠ ច្បាប់មាស ៖ ចន្លោះតូចនៅបាតសន្លឹក ល្អជាងសន្លឹកទទេមួយ ។ */
-window.__nrPageMm = RSC_MOBILE_PRINT ? 240 : 266;
+/* ⭐⭐⭐ [stated] ២០២៦-១១-១៣ ( ជុំទី ៣ ) ៖ «ផ្នែករបាយការណ៍សវនកម្មនៅតែ
+   ធ្លាក់តារាងទៅទំព័រទី២» និង «សន្លឹកតាមដានឯកសារនៅសល់ផ្នែកខាងក្រោមច្រើន
+   អត់ស្អាតដូចពេលចុចព្រីនតាម PC» ។
+   ⚠⚠ ឫសគល់ ( វាស់បាន ) ៖ ការកាត់ទំព័រធ្វើឡើងដោយ **ការវាស់ក្នុង JS**
+     តាម `__nrPageMm` ។ ទូរស័ព្ទវាស់ ២៤០mm ឯ PC វាស់ ២៦៦mm ⇒ **ការកាត់
+     ទំព័រខុសគ្នា** ⇒ សវនកម្ម ៤ សន្លឹកលើទូរស័ព្ទ ធៀបនឹង ៣ លើ PC ( ទំព័រ ១
+     មានតែក្បាល តារាងរុញទៅទំព័រ ២ ) ហើយឯកសារការងារ ៧ ធៀបនឹង ៥ ។
+     ការបន្ថយកម្ពស់ជួយកុំឱ្យហៀរ តែវាកាត់ទំព័រខុសជានិច្ច ។
+   ⇒ ដំណោះស្រាយ ៖ **វាស់ ២៦៦mm គ្រប់ឧបករណ៍** ⇒ ការកាត់ទំព័រ ដូច PC
+     បេះបិទ ; រួច **បង្រួមសន្លឹកទាំងមូលដោយ zoom** នៅពេលព្រីនលើទូរស័ព្ទ
+     ( មើល NARR_CSS · html.rsc-mobile-print .nr-page ) ⇒ ២៦៦ × ០,៩០ =
+     ២៣៩,៤mm ⇒ សមនឹងផ្ទៃបោះពុម្ពរបស់ iOS ( ~២៤០mm ) ដោយមិនហៀរ ។
+   ⚠ អក្សរតូចជាង PC ១០% លើក្រដាសទូរស័ព្ទ — នោះជាថ្លៃនៃការបាន
+     **រូបរាងដូច PC បេះបិទ** ដែលជាអ្វីដែលគេស្នើ ។ */
+window.__nrPageMm = 266;
 try{
   document.documentElement.style.setProperty('--nr-ph', window.__nrPageMm + 'mm');
 }catch(e){}
@@ -43044,8 +43136,10 @@ const TRK_MEETING_TYPES = [
   { v:1, label:'ជួបពិភាក្សាដំបូង' },
   { v:2, label:'ចុះពិនិត្យទីតាំង' },
   { v:3, label:'ពិនិត្យឯកសារ' },
-  { v:4, label:'បង្ហាញពង្រាងកំណត់ពន្ធឡើងវិញ' },
-  { v:5, label:'លទ្ធផលពង្រាង (ព្រម/មិនព្រម)' },
+  /* [stated] ២០២៦-១១-១៣ ៖ «អក្សរដែលរើសនៅកន្លែងប្រភេទ ផ្នែកនីមួយៗសរសេរ
+     តែមួយជួរបានហើយ កុំឱ្យចុះបន្ទាត់» ⇒ បង្រួមឈ្មោះ ២ ដែលវែងជាងគេ ។ */
+  { v:4, label:'បង្ហាញពង្រាងកំណត់ពន្ធ' },
+  { v:5, label:'លទ្ធផលពង្រាង' },
 ];
 const TRK_TYPE_DEFAULT = [1, 2, 3, 4, 5, 3];   // 6th onward defaults to ពិនិត្យឯកសារ
 const TRK_ADDR   = ['ត្រូវនឹងអាសយដ្ឋានចុះបញ្ជី','មិនត្រូវនឹងអាសយដ្ឋានចុះបញ្ជី'];
@@ -43422,7 +43516,10 @@ function renderTrackingView(){
              ឈ្មោះឯកសាររស់នៅក្នុង rd.items[ii].label ជាស្ថានភាពស្រាប់
              ( blankRound បង្កាប់វាពី TRK_DOCS ) ⇒ ការប្តូរទៅជាប្រអប់វាយ
              រក្សាទុក និងផ្ទុកឡើងវិញដោយស្វ័យប្រវត្តិ គ្មានផ្លូវថ្មីត្រូវតម្រង់ ។ -->
-        <td class="trk-lbl" data-lbl="បរិយាយឯកសារ">${txt('rounds.'+ri+'.items.'+ii+'.label', primary ? 1 : 2)}</td>
+        <!-- [stated] ២០២៦-១១-១៣ ៖ «លេខ ១ ដល់ ១០ លេខនីមួយៗដាក់នៅជួរជាមួយ
+             នឹងបរិយាយឯកសារ» ⇒ លេខចូលទៅក្នុងស្លាក ⇒ លើទូរស័ព្ទឃើញ
+             «១ · បរិយាយឯកសារ» ជួរតែមួយ ។ លើកុំព្យូទ័រជួរឈរ ល.រ នៅដដែល ។ -->
+        <td class="trk-lbl" data-lbl="${kh(ii+1)} · បរិយាយឯកសារ">${txt('rounds.'+ri+'.items.'+ii+'.label', primary ? 1 : 2)}</td>
         ${primary ? '' : `<td style="text-align:center;" data-lbl="ស្នើសុំនៅកំណត់ហេតុ">${sel('rounds.'+ri+'.items.'+ii+'.reqMtg', meetingOptionsOpen(), '110px')}</td>`}
         <td style="text-align:center;" data-lbl="បានទទួល">${chk('rounds.'+ri+'.items.'+ii+'.received')}</td>
         <td style="text-align:center;" data-lbl="មិនមាន">${it.received
@@ -43475,12 +43572,10 @@ function renderTrackingView(){
           ${primary ? '' : '<th></th>'}</tr></thead>
         <tbody>${rows}</tbody></table></div>`
         : '<div class="trk-empty">មិនទាន់មានឯកសារស្នើសុំក្នុងលើកនេះទេ។</div>'}
-      ${primary ? `<div class="trk-revbox">
-        <div class="trk-revhead">ឯកសារបានពិនិត្យ</div>
-        <div class="trk-revlist">${TRK_REVIEW.map((rv, ii)=>
-          `<label class="trk-revit">${chk('rounds.0.review.'+ii+'.checked')}`
-          + `<span>${esc(rv.label || '')}</span></label>`).join('')}</div>
-      </div>` : ''}
+      <!-- ⚠⚠ [stated] ២០២៦-១១-១៣ ៖ «ផ្នែកបានពិនិត្យឯកសារលុបចេញ» ⇒ ដក
+           បញ្ជីចេញពីអេក្រង់ទាំងស្រុង ។
+           ⚠ ទិន្នន័យ rounds.0.review[].checked នៅរក្សាទុកដដែល ហើយ COVER
+             នៅអានវាដដែល — គ្រាន់តែលែងមានកន្លែងធីកក្នុងផ្ទាំងនេះទេ ។ -->
       ${primary ? '' : `<div class="trk-grid" style="margin-top:8px;">
         <button class="btn btn-outline trk-add" data-add="${ri}" style="width:auto;">➕ បន្ថែមឯកសារ</button>
       </div>`}
@@ -44965,7 +45060,8 @@ function renderMinutes(idx){
   if(!box) return;
   const banner = snap
     /* [stated] ២០២៦-១១-១៣ ៖ «លុបអក្សរនេះចេញ — ការកែតារាងខាងលើមិនប៉ះពាល់វាទេ។» */
-    ? `<div class="trk-locked">🔒 កំណត់ហេតុនេះបានរក្សាទុករួច (${esc(savedStamp(snap.at))})
+    /* [stated] ២០២៦-១១-១៣ ៖ «លុបពាក្យ នេះ និង រួច» ⇒ សល់ខ្លីល្មម ១ បន្ទាត់ */
+    ? `<div class="trk-locked">🔒 កំណត់ហេតុបានរក្សាទុក (${esc(savedStamp(snap.at))})
          <button class="btn btn-outline trk-unlock-ic" id="trkUnlock" title="កែឡើងវិញ"
                  aria-label="កែឡើងវិញ">✏️</button>
        </div>`
@@ -44981,11 +45077,13 @@ function renderMinutes(idx){
 }
 
 function savedStamp(iso){
+  /* [stated] ២០២៦-១១-១៣ ៖ «ថ្ងៃខែឆ្នាំ និងម៉ោង អាចដាក់ជាលេខឡាតាំងបាន»
+     ⇒ ខ្លីជាង ⇒ បន្ទាត់មិនបាក់ ។ */
   const d = new Date(iso);
   if(isNaN(d)) return '';
-  return kh(String(d.getDate()).padStart(2,'0')) + '/' + kh(String(d.getMonth()+1).padStart(2,'0'))
-    + '/' + kh(d.getFullYear()) + ' ' + kh(String(d.getHours()).padStart(2,'0'))
-    + ':' + kh(String(d.getMinutes()).padStart(2,'0'));
+  const p = n => String(n).padStart(2, '0');
+  return p(d.getDate()) + '/' + p(d.getMonth() + 1) + '/' + d.getFullYear()
+    + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
 }
 function copyMinutes(){
   const txt = minutesToText(lastMinutes);
@@ -45973,7 +46071,13 @@ const RPT_CSS = `
     /* ⭐ សុវត្ថិភាពទ្វេ ៖ បើ --rpt-ph មិនទាន់ត្រូវបានកំណត់ ( JS មិនទាន់រត់ )
        ទូរស័ព្ទនៅតែទទួលលេខតូចជាង ⇒ មិនហៀរ ។
        ⚠ គ្មាន backtick ក្នុងកំណត់សម្គាល់នេះ ៖ RPT_CSS ជា template literal ។ */
-    html.rsc-mobile-print .rpt-page:not(.nr-page){ min-height:var(--rpt-ph, 240mm) !important; }
+    /* ⭐⭐⭐ [stated] ២០២៦-១១-១៣ ( ជុំទី ៣ ) ៖ «វានៅសល់ផ្នែកខាងក្រោមច្រើន» ।
+       ⚠⚠ ឥសគល់ ( វាស់បាន ) ៖ សន្លឹកខ្លីរបស់ឯកសារការងារ ( ៦១,៤mm នៅ PC )
+         មានច្បាប់ min-height:0 ផ្ទាល់ខ្លួន ।
+         ច្បាប់ទូរស័ព្ទខាងក្រោមមាន specificity ខ្ពស់ ( html.rsc-mobile-print … )
+         ⇒ វា**ពន្លាតសន្លឹកខ្លីនោះទៅ ២៤០mm** ⇒ ក្លាយជាសន្លឹកស្ទើរទទេ ।
+       ⇒ បងអត់ .cv-page   ⇒ សន្លឹកខ្លីនៅខ្លីដដែលដូច PC । */
+    html.rsc-mobile-print .rpt-page:not(.nr-page):not(.cv-page){ min-height:var(--rpt-ph, 269mm) !important; }
     /* ⭐⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «ផ្នែកឯករាជ្យភាព ពេលចុចព្រីន វានៅលោត
        blank ទៅទំព័រទី២» ។
        ⚠⚠ ការវាស់ពិត ( ព្រីន · ទូរស័ព្ទ · --rpt-ph ២៤០mm ) បង្ហាញថាសន្លឹក
@@ -45989,11 +46093,15 @@ const RPT_CSS = `
          នឹងកុំព្យូទ័រ គ្រាន់តែតូចជាង ⇒ សមក្នុងសន្លឹកតែមួយ ។
        ⚠ លេខនីមួយៗគិតពីការវាស់ ៖ កម្ពស់ × zoom ≤ ២៤០mm ។
        ⚠ កុំព្យូទ័រមិនរងផល ( ព្យួរលើ html.rsc-mobile-print ) ។ */
-    html.rsc-mobile-print .rpt-page.ind-page{ zoom:0.93 !important; }
+    /* ⭐ ការវាស់ថ្មី ( ប្រអប់ ២៦៩mm ដូច PC ) ៖
+         · សន្លឹកគ្រប់ប្រភេទ ........ ២៦៩mm × ០,៨៩ = ២៣៩,៤mm ✓
+         · សន្លឹកមុខឯកសារការងារ ... ២៨០mm × ០,៨៥ = ២៣៨,០mm ✓
+       ⇒ សល់តែ ២ ច្បាប់ ជំនួស ៤ ច្បាប់លៃដោយដៃពីមុន ។
+       ⚠ :not(.nr-page) ជាចាំបាច់ ៖ ឯកសារបរិយាយកាន់ថ្នាក់ទាំងពីរ ហើយវា
+         មាន zoom ០,៩០ ផ្ទាល់ខ្លួនរួចហើយ — បើជាន់គ្នា zoom នឹងគុណទ្វេ ។ */
     html.rsc-mobile-print .rpt-page.cv-cover-page{ zoom:0.85 !important; }
-    html.rsc-mobile-print .rpt-page.cv-page:not(.cv-cover-page){ zoom:0.95 !important; }
-    html.rsc-mobile-print .rpt-page:not(.nr-page):not(.cv-page):not(.ind-page){
-      zoom:0.97 !important;
+    html.rsc-mobile-print .rpt-page:not(.nr-page):not(.cv-cover-page){
+      zoom:0.89 !important;
     }
     /* ⭐ [stated] ២០២៦-១១-១៣ ៖ «របាយការណ៍សវនកម្ម ទំព័រទី១ និងទី២ វាស្ថិតនៅ
        ជាមួយគ្នា ដោយវាធ្លាក់ទំព័រ» ⇒ បង្ខំការបំបែកសន្លឹកម្តងទៀតឱ្យច្បាស់
@@ -48827,7 +48935,20 @@ function nrFitPaper(){
           pw = lt.getBoundingClientRect().width; host = lt; }
       }
       if(pw > 0){
-        const par = (host && host.parentElement) ? host.parentElement.clientWidth : 0;
+        /* ⭐⭐⭐ [stated] ២០២៦-១១-១៣ ( ជុំទី ៣ ) ៖ «ផ្ទាំងលិខិតស្នើសុំឯកសារ
+           វាមិនស្មើនឹងផ្ទាំងសខាងក្រោយវា» ។
+           ⚠⚠ ឫសគល់ ( វាស់បាន ៖ probe_card ) ៖ `clientWidth` **រាប់បញ្ចូល
+             រឹមខាងក្នុង** ( padding ) ។ កាតមាន padding ១៨px សងខាង ⇒
+               កាត ៖ clientWidth ៣៣៨ · ផ្ទៃក្នុងពិត ៣០២
+             ⇒ សន្លឹកត្រូវបានគណនា ៣៣៨ រួចដាក់ក្នុងផ្ទៃ ៣០២ ⇒ **ហៀរ ៣៦px**
+               ( វាស់បាន ៖ កាត ២៦→៣៦៤ · សន្លឹក ៤៥→៣៨១ ) ។
+           ⇒ ដករឹមខាងក្នុងរបស់មេចេញ ⇒ សន្លឹកស្មើនឹងផ្ទាំងសពីក្រោយបេះបិទ ។ */
+        let par = 0;
+        if(host && host.parentElement){
+          const pe = host.parentElement, cs = getComputedStyle(pe);
+          par = pe.clientWidth - (parseFloat(cs.paddingLeft) || 0)
+                               - (parseFloat(cs.paddingRight) || 0);
+        }
         const av = Math.min(dm.clientWidth - 16, par > 0 ? par : 1e9);
         const z = (pw > 0 && av > 0 && av < pw) ? Math.max(0.35, av / pw) : 1;
         if(z === 1) dm.style.removeProperty('--nr-zoom');
@@ -49175,9 +49296,12 @@ const NARR_CSS = `
   /* ⭐ សុវត្ថិភាពទ្វេ ៖ បើ --nr-ph មិនទាន់ត្រូវបានកំណត់ ( JS មិនទាន់រត់ )
      ទូរស័ព្ទនៅតែទទួល ២៤០mm ⇒ មិនហៀរ ។
      ⚠ គ្មាន backtick ក្នុងកំណត់សម្គាល់នេះ ៖ NARR_CSS ជា template literal ។ */
+  /* ⭐ ទូរស័ព្ទ ៖ សន្លឹកនៅ ២៦៦mm ដូច PC ( ការកាត់ទំព័រដូចគ្នា ) រួច
+     បង្រួមទាំងមូល ០,៩០ ⇒ ២៣៩,៤mm ⇒ សមផ្ទៃបោះពុម្ព iOS ។
+     ⚠ គ្មាន backtick ក្នុងកំណត់សម្គាល់នេះ ៖ NARR_CSS ជា template literal ។ */
   html.rsc-mobile-print .nr-page{
-    height:var(--nr-ph, 240mm) !important; max-height:var(--nr-ph, 240mm) !important;
-    padding-bottom:8mm !important; }
+    height:var(--nr-ph, 266mm) !important; max-height:var(--nr-ph, 266mm) !important;
+    zoom:0.90 !important; }
   html.rsc-mobile-print .nr-page > .nr-foot{ bottom:0 !important; margin:0 !important; }
   /* ══ ទូរស័ព្ទ/ថេប្លេត ៖ កម្ពស់ស្វ័យប្រវត្តិ + ជើងទំព័រហូរតាមមាតិកា ══
      ⚠⚠ កុំដាក់ backtick ក្នុងកំណត់សម្គាល់នេះ ៖ NARR_CSS ជា template literal
@@ -49225,12 +49349,19 @@ function printNarr(){
       html = narrPrintHtml(narrRunHead(), c, grand, narrCleanBody(cell));
     }
   }catch(e){ html = ''; }
+  /* ⭐⭐ [stated] ២០២៦-១១-១៣ ( ជុំទី ៣ ) ៖ «ផ្នែកបរិយាយមិនចាំបាច់រើស
+     ថ្ងៃខែឆ្នាំទេ» ។
+     ⚠ ឯកសារបរិយាយកំណត់ពន្ធឡើងវិញ មិនបោះពុម្ពថ្ងៃបញ្ចប់សវនកម្មនៅកន្លែង
+       ណាមួយឡើយ ⇒ ប្រអប់សួរថ្ងៃគ្មានប្រយោជន៍ ហើយបន្ថែមការចុចមួយទៀត ។
+     ⇒ បញ្ជូន `__dateAsked = true` ដូចលិខិតដែរ ⇒ រំលងប្រអប់ ។
+     ⚠ ឯកសារដែល**ប្រើ**ថ្ងៃនោះពិតៗ ( យុទ្ធសាស្ត្រ · ឯករាជ្យភាព · ឯកសារ
+       ការងារ · មូលដ្ឋាន · សវនកម្ម · សង្ខេប ) នៅសួរដដែល ។ */
   printInPage(html || narrHtml(true),
     `${LETTERHEAD_CSS}
      ${RPT_CSS}
      ${WP_CSS}
      ${BASIS_CSS}
-     ${NARR_CSS}`);
+     ${NARR_CSS}`, undefined, true);
 }
 
 
@@ -51247,8 +51378,16 @@ const RPT_PH_KEY = (typeof RSC_MOBILE_PRINT !== 'undefined' && RSC_MOBILE_PRINT)
      កុំព្យូទ័រ ២៦៩ ( **PC មិនប្តូរអ្វីសោះ** ) ។
    ⚠ ប្រអប់ «កម្ពស់ទំព័រ mm» នៅដដែល ហើយរក្សាទុកដាច់ដោយឡែកតាមឧបករណ៍
      ( `rptPageMmMobileV1` / `rptPageMmV1` ) ⇒ លៃលើទូរស័ព្ទមិនប៉ះ PC ។ */
-const RPT_PH_DEFAULT = (typeof RSC_MOBILE_PRINT !== 'undefined' && RSC_MOBILE_PRINT)
-  ? 240 : 269;   /* [stated] ២០២៦-១១-១៣ ជុំទី២ ៖ ២៥២ នៅតែហៀរលើ iPhone */
+/* ⭐⭐⭐ [stated] ២០២៦-១១-១៣ ( ជុំទី ៣ ) ៖ «ផ្នែកលិខិតតាមដានឯកសារ វានៅសល់
+   ផ្នែកខាងក្រោមច្រើន អត់ស្អាតដូចពេលចុចព្រីនតាម PC» ។
+   ⚠⚠ ឫសគល់ ( វាស់បាន ៖ probe_rpt ) ៖ ប្រអប់សន្លឹកលើទូរស័ព្ទជា ២៤០mm ឯ
+     PC ជា ២៦៩mm ⇒ **រូបរាងខុសគ្នាតាំងពីដើម** ។ អាក្រក់ជាងនេះ ៖ សន្លឹក
+     ខ្លីរបស់ឯកសារការងារ ( វាស់បាន ៦១,៤mm នៅ PC ) ត្រូវ `min-height`
+     របស់ទូរស័ព្ទ**ពន្លាតទៅ ២៤០mm** ⇒ ក្លាយជាសន្លឹកស្ទើរទទេមួយសន្លឹក ។
+   ⇒ ដំណោះស្រាយដូចគ្រួសារ .nr-page ដែរ ៖ **ប្រអប់ ២៦៩mm ដូច PC បេះបិទ**
+     រួច **បង្រួមទាំងសន្លឹក** តាម zoom ⇒ ២៦៩ × ០,៨៩ = ២៣៩,៤mm ⇒ សម
+     ផ្ទៃបោះពុម្ព iOS ហើយសន្លឹកខ្លីនៅខ្លីដដែល ។ */
+const RPT_PH_DEFAULT = 269;
 function applyRptPageMm(v){
   /* ⚠⚠ [stated] ២០២៦-០៨-២២ ៖ «តែវាប៉ះពាល់ដល់របាយការណ៍ផ្សេងទៀត ដូច
      បរិយាយកំណត់ពន្ធ · របាយការណ៍សវនកម្ម · របាយការណ៍សង្ខេប» ។
@@ -51270,7 +51409,9 @@ function applyRptPageMm(v){
     try{ window.__nrPageMm = n; }catch(e){}
   }else{
     root.style.removeProperty('--nr-ph');
-    try{ window.__nrPageMm = (typeof RSC_MOBILE_PRINT !== 'undefined' && RSC_MOBILE_PRINT) ? 240 : 266; }catch(e){}
+    /* ⚠⚠ កន្លែងនេះរត់ **ក្រោយ** ការកំណត់ដំបូង ⇒ បើភ្លេចប្តូរទីនេះ
+       តម្លៃចាស់ ( ២៤០ ) នឹងត្រឡប់មកវិញស្ងាត្រ । */
+    try{ window.__nrPageMm = 266; }catch(e){}
   }
   /* គូរឡើងវិញ ៖ បរិយាយ · សវនកម្ម · សង្ខេប (បើផ្ទាំងនោះមានលើអេក្រង់) */
   /* ⚠ មុខងារទាំងនេះមិននៅលើ `window` ទេ (ប្លុកនេះជា IIFE) ⇒ ត្រូវហៅតាម
