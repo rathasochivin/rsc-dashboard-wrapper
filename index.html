@@ -280,6 +280,26 @@ input, select, option, textarea, button{
   --radius:10px;
 }
 *{box-sizing:border-box;}
+/* ⭐⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «សម្រាប់ការមើលតាមទូរស័ព្ទនៅតែមិនស្អាត
+   ដូចនៅពេលចុចព្រីន វាលោតអក្សរ ខុសទំហំ font ឬខុស font» ។
+
+   ⚠⚠ មូលហេតុ ៖ **Text Autosizing** ( WebKit/Blink ហៅថា «font boosting» ) ។
+     លើទូរស័ព្ទ កាលណាប្លុកអត្ថបទធំជាងទទឹងអេក្រង់ច្រើន កម្មវិធីរុករក
+     **ពង្រីកទំហំអក្សរខ្លួនឯង** ដើម្បី «ជួយឱ្យអាន» ។ សន្លឹក A4 របស់យើង
+     ទទឹង ២១០mm ( ៧៩៤px ) លើអេក្រង់ ៣៧៤px ⇒ លក្ខខណ្ឌត្រូវបេះបិទ ។
+     វាពង្រីក**តែកថាខណ្ឌសេរី** ( `.lt-p` · `.ind-lead` · អត្ថបទវែង ) ឯក្រឡា
+     តារាងតូចចង្អៀតវាទុកដដែល ⇒ ទំហំអក្សរ**លោតធំតូចឆ្លាស់គ្នា** ហើយអក្សរធំ
+     មើលទៅដូចជា font ផ្សេងទៀតផង — ត្រង់នឹងហើយដែលលោកឃើញ ។
+     ( probe បញ្ជាក់ ៖ `text-size-adjust` = **auto** គ្រប់ធាតុក្នុងផ្ទាំង
+       មើលជាមុន ⇒ ការពង្រីកត្រូវបានអនុញ្ញាត ។ )
+     ⚠ កុំព្យូទ័រមិនធ្វើវាទេ ⇒ នេះជាមូលហេតុដែល PC ស្អាត ឯទូរស័ព្ទលោត ។
+     ⚠ ការព្រីនក៏មិនធ្វើវាដែរ ⇒ នេះជាមូលហេតុដែលក្រដាសចេញស្អាត ។
+
+   ⇒ `text-size-adjust:100%` ៖ រក្សាទំហំអក្សរ**ត្រឹម ១០០% នៃអ្វីដែល CSS
+     ចែង** ⇒ ទូរស័ព្ទ = កុំព្យូទ័រ = ក្រដាស ។
+   ⚠ វា**មិនរារាំង**ការពង្រីកដោយម្រាមដៃ ( pinch zoom ) របស់អ្នកប្រើទេ ⇒
+     នៅតែពង្រីកមើលបានធម្មតា ។ */
+html{ -webkit-text-size-adjust:100%; -moz-text-size-adjust:100%; text-size-adjust:100%; }
 html,body{margin:0;padding:0;}
 body{
   background:var(--bg);
@@ -1458,17 +1478,42 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
    លើអេក្រង់ ខណៈព្រីនចេញស្អាត។ ឯកសារព្រីនជា host ដាច់ដោយឡែក គ្មានច្បាប់
    ទាំងនោះទេ។ សម្អាតវាចោលនៅទីនេះ រួចទុកអោយ class .lt-* កំណត់ដោយខ្លួនឯង។
    ច្បាប់នេះត្រូវនៅ *មុន* ច្បាប់ .lt-* ព្រោះ specificity ស្មើគ្នា។ */
-#view-tracking .trk-letter table, #docs-modal .trk-letter table{
+/* ⭐⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «នៅផ្នែកសវនកម្មឯកសារ នៅលើអេក្រង់ អត់ស្អាត
+   ដូចពេលចុចព្រីន ទាំង PC និង phone» ។
+
+   ⚠⚠ មូលហេតុពិត ( វាស់បាន ) ៖ ច្បាប់សម្អាតខាងលើសរសេរដោយ **#id** ⇒
+     `#docs-modal .trk-letter tbody td` = ( ១ id · ១ class · ២ element ) ។
+     វាខ្លាំងជាងច្បាប់ឯកសារផ្ទាល់ដូច `.ind-tbl td` ( ០ · ១ · ១ ) ⇒ ច្បាប់
+     សម្អាត **លុបស៊ុម និងចន្លោះ**របស់តារាងឯករាជ្យភាពចោលអស់ ។
+     វាស់លើអេក្រង់មុនកែ ៖ ក្រឡា `padding:0px` · `border:0px` ខណៈ INDEP_CSS
+     ចែង `padding:4px 6px` · `border:1px solid #333` ⇒ តារាងលើអេក្រង់គ្មាន
+     បន្ទាត់ខណ្ឌជួរ ឯពេលព្រីនមានគ្រប់ ។ ( `.trk-letter` ជាប្រអប់ក្រៅដែល
+     ស្រោបឯកសារ `.rpt-page` ទាំងអស់ ⇒ ប៉ះគ្រប់ឯកសារ មិនមែនតែលិខិតទេ ។ )
+
+   ⇒ ដំណោះស្រាយដូច**ទំព័រព្រីន**បេះបិទ ៖ ទុកផ្នែកកំណត់ទីតាំងក្នុង
+     `:where()` ដែល**មិនបូកតម្លៃ specificity** ⇒ ច្បាប់សម្អាតនៅសល់ត្រឹម
+     ( ០ · ០ · ២ ) គឺ **ស្មើនឹងច្បាប់ទូទៅ** `tbody td` ⇒ ឈ្នះព្រោះមកក្រោយ ;
+     ឯច្បាប់ឯកសារ `.ind-* / .lt-* / .rpt-* / .wp-*` ( មាន class ) ឈ្នះលើវាវិញ
+     ⇒ **អ្វីដែលឃើញលើអេក្រង់ = អ្វីដែលចេញលើក្រដាស** ។
+   ⚠ `:where()` មិនប្តូរអ្វីដែល**ត្រូវ**ជាប់ទេ ៖ វានៅតែប៉ះតែក្នុង
+     `#docs-modal` និង `#view-tracking` ប៉ុណ្ណោះ ⇒ តារាងដទៃក្នុងកម្មវិធី
+     មិនរងផលសោះ ។ */
+:where(#view-tracking, #docs-modal) :where(.trk-letter) table{
   border-collapse:collapse; min-width:0; background:transparent;
 }
-#view-tracking .trk-letter thead th, #docs-modal .trk-letter thead th,
-#view-tracking .trk-letter tbody td, #docs-modal .trk-letter tbody td,
-#view-tracking .trk-letter th, #docs-modal .trk-letter th,
-#view-tracking .trk-letter td, #docs-modal .trk-letter td{
+:where(#view-tracking, #docs-modal) :where(.trk-letter) thead th,
+:where(#view-tracking, #docs-modal) :where(.trk-letter) tbody td{
   position:static; background:transparent; color:inherit; font-weight:inherit;
   border:0; padding:0; text-align:left; white-space:normal; font-size:inherit;
 }
-#view-tracking .trk-letter tbody tr:nth-child(even), #docs-modal .trk-letter tbody tr:nth-child(even){background:transparent;}
+/* ⚠⚠ កុំសម្អាត `th` / `td` ទទេ ៖ ទំព័រព្រីនសម្អាត**តែ** `thead th` និង
+   `tbody td` ប៉ុណ្ណោះ ។ ក្រឡា `th` ដែលឋិតនៅ**ក្រៅ** `<thead>` ( ឧ.
+   `.rpt-sign th` ក្នុងយុទ្ធសាស្ត្រ ) គ្មានច្បាប់ណារបស់កម្មវិធីប៉ះទេ ⇒ វា
+   រក្សាតម្លៃដើមរបស់កម្មវិធីរុករក `font-weight:bold` ។ បើយើងសម្អាតវាដែរ
+   ⇒ អេក្រង់ ៤០០ ឯក្រដាស ៧០០ ⇒ ក្បាលតារាងលើអេក្រង់ស្តើងជាងក្រដាស ។
+   ⇒ ដកច្បាប់នោះចេញ ⇒ អេក្រង់ = ក្រដាសបេះបិទ ។ */
+:where(#view-tracking, #docs-modal) :where(.trk-letter) tbody tr:nth-child(even){background:transparent;}
+:where(#view-tracking, #docs-modal) :where(.trk-letter) tbody tr:hover{background:transparent;}
 
 #view-tracking .lt-title, #docs-modal .lt-title{font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif; text-align:center; font-size:14.5px; margin:14px 0 12px; line-height:1.7;}
 #docs-modal #trkSum2 .sm-tk{cursor:pointer;}
@@ -1696,7 +1741,7 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
 #view-tracking .rpt-info td.s, #docs-modal .rpt-info td.s{width:16px; text-align:center;}
 #view-tracking .rpt-info tr:last-child td, #docs-modal .rpt-info tr:last-child td{border-bottom:0;}
 #view-tracking .rpt-sign, #docs-modal .rpt-sign{width:100%; border-collapse:collapse; font-size:11.5px; margin-top:4px;}
-#view-tracking .rpt-sign th,.rpt-sign td{border:1px solid #1a237e; padding:5px 6px; text-align:center;}
+#view-tracking .rpt-sign th, #docs-modal .rpt-sign th, #view-tracking .rpt-sign td, #docs-modal .rpt-sign td{border:1px solid #1a237e; padding:5px 6px; text-align:center;}
 #view-tracking .rpt-sign th.lead, #docs-modal .rpt-sign th.lead{width:26%; font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif;}
 #view-tracking .rpt-sign tr.tall td, #docs-modal .rpt-sign tr.tall td{height:70px;}
 #view-tracking .rpt-h1, #docs-modal .rpt-h1{font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif; font-size:14px;
@@ -1707,9 +1752,9 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
   /* តារាង ក.១ ជាប្រអប់ពេញ ៖ ស៊ុមក្រៅក្រាស់ ហើយជួរ យោង រហូតដល់ គំលាត %
      ស្ថិតក្នុងស៊ុមតែមួយ ដូចទម្រង់ដែលអ្នកផ្ញើ។ */
 #view-tracking .rpt-fin, #docs-modal .rpt-fin{border:1.5px solid #333;}
-#view-tracking .rpt-fin th,.rpt-fin td, #docs-modal .rpt-fin th,.rpt-fin td{border:1px solid #666;}
+#view-tracking .rpt-fin th, #docs-modal .rpt-fin th, #view-tracking .rpt-fin td, #docs-modal .rpt-fin td{border:1px solid #666;}
 #view-tracking .rpt-fin, #docs-modal .rpt-fin{width:100%; border-collapse:collapse; font-size:10.5px;}
-#view-tracking .rpt-fin th,.rpt-fin td{border:1px solid #555; padding:2px 4px;}
+#view-tracking .rpt-fin th, #docs-modal .rpt-fin th, #view-tracking .rpt-fin td, #docs-modal .rpt-fin td{border:1px solid #555; padding:2px 4px;}
 #view-tracking .rpt-fin th, #docs-modal .rpt-fin th{background:#eef1f8; text-align:center;}
 #view-tracking .rpt-fin th.u, #docs-modal .rpt-fin th.u{font-weight:400; font-size:10px;}
 #view-tracking .rpt-fin td.key, #docs-modal .rpt-fin td.key{background:#fff8c4;}
@@ -1724,8 +1769,8 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
 #view-tracking .rpt-btbl, #docs-modal .rpt-btbl{table-layout:fixed;}
 #view-tracking .rpt-fin td.ref, #view-tracking .rpt-fin th.ref, #docs-modal .rpt-fin td.ref, #docs-modal .rpt-fin th.ref{text-align:left; white-space:nowrap; padding-left:8px;}
 #view-tracking .rpt-fin th.unit, #docs-modal .rpt-fin th.unit{text-align:right; font-weight:400; background:#fff; border:0; padding-top:3px;}
-#view-tracking .rpt-fin td.l,.rpt-fin th.l{text-align:left;}
-#view-tracking .rpt-fin td.c,.rpt-fin th.c{text-align:center;}
+#view-tracking .rpt-fin td.l, #docs-modal .rpt-fin td.l, #view-tracking .rpt-fin th.l, #docs-modal .rpt-fin th.l{text-align:left;}
+#view-tracking .rpt-fin td.c, #docs-modal .rpt-fin td.c, #view-tracking .rpt-fin th.c, #docs-modal .rpt-fin th.c{text-align:center;}
 #view-tracking .rpt-fin td.n, #docs-modal .rpt-fin td.n{text-align:right; white-space:nowrap;}
   /* តារាងផ្នែក ខ ៖ ស៊ុមក្រៅខៀវក្រាស់ ក្បាលមានបន្ទាត់ខៀវពីក្រោម
      ជួរដេកបំបែកដោយបន្ទាត់ចុចៗ និងបន្ទាត់បញ្ឈរខៀវរវាងជួរឈរទាំងពីរ។ */
@@ -1741,10 +1786,10 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
 #view-tracking .rpt-b3row, #docs-modal .rpt-b3row{display:flex; align-items:center; gap:14px; margin:16px 0 8px;}
 #view-tracking .rpt-b3box, #docs-modal .rpt-b3box{border:1.5px solid #1a237e; padding:5px 16px; display:inline-flex; gap:22px;}
 #view-tracking .rpt-b3box label, #docs-modal .rpt-b3box label{display:inline-flex; align-items:center; gap:6px; margin:0;}
-#view-tracking .rpt-plan,.rpt-team{width:100%; border-collapse:collapse; font-size:12px; margin:4px 0 10px;}
-#view-tracking .rpt-plan th,.rpt-plan td{border:1px solid #555; padding:4px 6px;}
-#view-tracking .rpt-plan td.l,.rpt-plan th.l{text-align:left;}
-#view-tracking .rpt-plan td.c,.rpt-plan th.c{text-align:center;}
+#view-tracking .rpt-plan, #docs-modal .rpt-plan, #view-tracking .rpt-team, #docs-modal .rpt-team{width:100%; border-collapse:collapse; font-size:12px; margin:4px 0 10px;}
+#view-tracking .rpt-plan th, #docs-modal .rpt-plan th, #view-tracking .rpt-plan td, #docs-modal .rpt-plan td{border:1px solid #555; padding:4px 6px;}
+#view-tracking .rpt-plan td.l, #docs-modal .rpt-plan td.l, #view-tracking .rpt-plan th.l, #docs-modal .rpt-plan th.l{text-align:left;}
+#view-tracking .rpt-plan td.c, #docs-modal .rpt-plan td.c, #view-tracking .rpt-plan th.c, #docs-modal .rpt-plan th.c{text-align:center;}
 #view-tracking .rpt-team td, #docs-modal .rpt-team td{padding:3px 6px;}
 #view-tracking .rpt-team td.r, #docs-modal .rpt-team td.r{text-align:right;}
 #view-tracking .rpt-sec, #docs-modal .rpt-sec{margin:10px 0 14px;}
@@ -1765,7 +1810,7 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
 #view-tracking .ind-tbl, #docs-modal .ind-tbl{width:100%; border-collapse:collapse; font-size:11.5px;}
 #view-tracking .ind-tbl th,#view-tracking .ind-tbl td,#docs-modal .ind-tbl th,#docs-modal .ind-tbl td{border:1px solid #333; padding:4px 6px; vertical-align:top;}
 #view-tracking .ind-tbl th, #docs-modal .ind-tbl th{text-align:center;}
-#view-tracking .ind-tbl td.l,.ind-tbl th.l{text-align:left;}
+#view-tracking .ind-tbl td.l, #docs-modal .ind-tbl td.l, #view-tracking .ind-tbl th.l, #docs-modal .ind-tbl th.l{text-align:left;}
   #view-tracking .ind-page .ind-tbl td.l, #docs-modal .ind-page .ind-tbl td.l{text-align:justify; text-justify:inter-word;}
   #view-tracking .ind-page .ind-tbl td.l.item, #docs-modal .ind-page .ind-tbl td.l.item{padding-left:22px; text-indent:-14px;}
 #view-tracking .ind-tbl td.c, #docs-modal .ind-tbl td.c{text-align:center; vertical-align:middle; font-size:14px;}
@@ -1834,9 +1879,9 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
 #view-tracking .wp-toc td.c, #docs-modal .wp-toc td.c{width:1%; white-space:nowrap; text-align:right;
     padding-right:22px; font-family:'Noto Sans',Arial,sans-serif; font-size:22px; line-height:1.2;}
 #view-tracking .wp-tbl, #docs-modal .wp-tbl{width:100%; border-collapse:collapse; font-size:11.5px; border:1.5px solid #333;}
-#view-tracking .wp-tbl th,.wp-tbl td{border:1px dotted #333; padding:4px 7px;}
+#view-tracking .wp-tbl th, #docs-modal .wp-tbl th, #view-tracking .wp-tbl td, #docs-modal .wp-tbl td{border:1px dotted #333; padding:4px 7px;}
 #view-tracking .wp-tbl th, #docs-modal .wp-tbl th{text-align:center; border-bottom:1.5px solid #333; font-size:12px;}
-#view-tracking .wp-tbl td.l,.wp-tbl th.l{text-align:left;}
+#view-tracking .wp-tbl td.l, #docs-modal .wp-tbl td.l, #view-tracking .wp-tbl th.l, #docs-modal .wp-tbl th.l{text-align:left;}
   #view-tracking .wp-tbl thead th, #docs-modal .wp-tbl thead th,
   #view-tracking .wp-tbl thead th.l, #docs-modal .wp-tbl thead th.l{text-align:center;
     font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif; font-weight:400;}
@@ -6290,31 +6335,12 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
            ⚠ `renderYoY` នៅទុកក្នុងកូដ ( មានការពារ null ស្រាប់ ) ប៉ុន្តែការ
              ហៅរបស់វាត្រូវដកចេញ ⇒ គ្មានការគណនាឥតប្រយោជន៍ពេលបើកទំព័រ ។ -->
 
-      <div class="section-title">🤝 សង្ខេបតាមក្រុមហ៊ុនដៃគូ<div class="rule"></div></div>
-      <div class="chart-row" style="align-items:start;">
-        <div class="chart-card" style="padding:14px;">
-          <h3>ដៃគូ — SALE (អតិថិជន)</h3>
-          <div class="table-scroll" style="max-height:320px;"><table id="partner-summary-sale"></table></div>
-        </div>
-        <div class="chart-card" style="padding:14px;">
-          <h3>ដៃគូ — PURCHASE (អ្នកផ្គត់ផ្គង់)</h3>
-          <div class="table-scroll" style="max-height:320px;"><table id="partner-summary-purchase"></table></div>
-        </div>
-      </div>
-
-      <div class="section-title">🏆 ១០ សហគ្រាសកំពូល (Top 10)<div class="rule"></div></div>
-      <!-- តារាងនេះវែង ដូច្នេះទុកតែមួយ ហើយប្តូររវាង អតិថិជន / អ្នកផ្គត់ផ្គង់
-           ដោយចុចប៊ូតុង — កាតលែងខុសកម្ពស់គ្នាទៀត។ -->
-      <div class="chart-card" style="padding:14px;">
-        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:10px;">
-          <h3 style="margin:0;">🏆 <span id="top10-title">អតិថិជន</span> TOP 10</h3>
-          <div id="top10-switch" style="margin-left:auto; display:inline-flex; border:1px solid var(--line); border-radius:8px; overflow:hidden;">
-            <button type="button" class="top10-tab is-on" data-side="sale">អតិថិជន</button>
-            <button type="button" class="top10-tab" data-side="purchase">អ្នកផ្គត់ផ្គង់</button>
-          </div>
-        </div>
-        <div class="table-scroll" style="max-height:420px;"><table id="top-companies"></table></div>
-      </div>
+      <!-- ⭐ [stated] ២០២៦-១១-១៣ ៖ «លុបចេញ 🏆 ១០ សហគ្រាសកំពូល ( Top 10 )»
+           និង «លុបចេញ 🤝 សង្ខេបតាមក្រុមហ៊ុនដៃគូ» ⇒ ដកទាំងចំណងជើង ទាំង
+           តារាង និងប៊ូតុងប្តូរ អតិថិជន / អ្នកផ្គត់ផ្គង់ ។
+           ⚠ មុខងារគណនា ( `computePartnerSummary` · `computeTopCompanies` )
+             នៅទុកក្នុងកូដ ព្រោះផ្នែកដទៃយោងវា ; ដកតែ**ការហៅ**ចេញ ⇒ គ្មាន
+             ការគណនាឥតប្រយោជន៍ពេលផ្ទុកឯកសារ ។ -->
 
       <div class="section-title">🛒 ទំនិញ/សេវាលក់ដាច់ (Top 5)<div class="rule"></div></div>
       <div class="chart-card" id="top-products-card"></div>
@@ -20454,10 +20480,11 @@ function runCrosscheck(){
   renderKPI("kpi-sale", crossSaleResult, hasCpPurchase);
   renderKPI("kpi-purchase", crossPurchaseResult, hasCpSale);
 
-  renderPartnerSummary("partner-summary-sale", crossSaleResult, "crossSale");
-  renderPartnerSummary("partner-summary-purchase", crossPurchaseResult, "crossPurchase");
-
-  renderTopPartners();
+  /* [stated] ២០២៦-១១-១៣ ៖ ផ្នែក «សង្ខេបតាមក្រុមហ៊ុនដៃគូ» និង «Top 10»
+     ត្រូវដកចេញពីទិដ្ឋភាពទូទៅ ។
+     ⚠⚠ ចាំបាច់ត្រូវដកការហៅ ៖ `renderPartnerSummary` សរសេរ
+       `table.innerHTML` ដោយ**គ្មានការពារ null** ⇒ បើទុកការហៅទាំងដកតារាង
+       នឹងបោះកំហុសពេលផ្ទុកឯកសារ ។ */
 }
 
 /* =========================================================
