@@ -45958,6 +45958,34 @@ const RPT_CSS = `
        ទូរស័ព្ទនៅតែទទួលលេខតូចជាង ⇒ មិនហៀរ ។
        ⚠ គ្មាន backtick ក្នុងកំណត់សម្គាល់នេះ ៖ RPT_CSS ជា template literal ។ */
     html.rsc-mobile-print .rpt-page:not(.nr-page){ min-height:var(--rpt-ph, 240mm) !important; }
+    /* ⭐⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «ផ្នែកឯករាជ្យភាព ពេលចុចព្រីន វានៅលោត
+       blank ទៅទំព័រទី២» ។
+       ⚠⚠ ការវាស់ពិត ( ព្រីន · ទូរស័ព្ទ · --rpt-ph ២៤០mm ) បង្ហាញថាសន្លឹក
+         មួយចំនួន **ខ្ពស់ជាងប្រអប់** ព្រោះមាតិកាខ្លួនឯងធំជាង ៖
+           · ឯករាជ្យភាព ទំព័រ ១ ......... ២៥៥.៥mm
+           · យុទ្ធសាស្ត្រ ទំព័រ ១ ........ ២៤៥.៥mm
+           · ក្រដាសធ្វើការ សន្លឹកមុខ .... ២៨០mm
+           · ក្រដាសធ្វើការ សន្លឹកចុង .... ២៥១.៩mm
+         ⇒ ផ្នែកលើសហៀរទៅសន្លឹកបន្ទាប់ ⇒ សន្លឹក«ទទេ»ដែលមានតែកន្ទុយ ។
+         min-height កាត់បន្ថយមិនបានទេ ៖ វាជា**តម្រូវការអប្បបរមា** ឯមាតិកា
+         ពិតធំជាងនោះ ។
+       ⇒ បង្រួមតាមមាត្រដ្ឋាន ( zoom ) តែសន្លឹកដែលលើស ⇒ រូបរាងដូចគ្នាបេះបិទ
+         នឹងកុំព្យូទ័រ គ្រាន់តែតូចជាង ⇒ សមក្នុងសន្លឹកតែមួយ ។
+       ⚠ លេខនីមួយៗគិតពីការវាស់ ៖ កម្ពស់ × zoom ≤ ២៤០mm ។
+       ⚠ កុំព្យូទ័រមិនរងផល ( ព្យួរលើ html.rsc-mobile-print ) ។ */
+    html.rsc-mobile-print .rpt-page.ind-page{ zoom:0.93 !important; }
+    html.rsc-mobile-print .rpt-page.cv-cover-page{ zoom:0.85 !important; }
+    html.rsc-mobile-print .rpt-page.cv-page:not(.cv-cover-page){ zoom:0.95 !important; }
+    html.rsc-mobile-print .rpt-page:not(.nr-page):not(.cv-page):not(.ind-page){
+      zoom:0.97 !important;
+    }
+    /* ⭐ [stated] ២០២៦-១១-១៣ ៖ «របាយការណ៍សវនកម្ម ទំព័រទី១ និងទី២ វាស្ថិតនៅ
+       ជាមួយគ្នា ដោយវាធ្លាក់ទំព័រ» ⇒ បង្ខំការបំបែកសន្លឹកម្តងទៀតឱ្យច្បាស់
+       ( WebKit ពេលខ្លះមិនគោរព page-break-after លើប្រអប់ដែលខ្លីជាងក្រដាស ) ។ */
+    /* ⚠ គ្មាន backtick ក្នុងកំណត់សម្គាល់ទាំងនេះ ៖ RPT_CSS ជា template literal */
+    html.rsc-mobile-print .nr-page:not(:last-child){
+      page-break-after:always !important; break-after:page !important;
+    }
     .rpt-page:not(.nr-page) > .rpt-foot{ margin-bottom:0 !important; padding-bottom:0 !important; }
     .rpt-page:last-child{ page-break-after:auto !important; break-after:auto !important; }
   }
@@ -50910,11 +50938,18 @@ function docsHtml(){
       <div class="hub-row">
         <label>ជ្រើសឯកសារ
           <select id="trkDocKind" class="trk-in" style="width:300px;">
+            <!-- ⭐ [stated] ២០២៦-១១-១៣ ៖ «ពាក្យលិខិត យុទ្ធសាស្ត្រ ជួរកុំឱ្យវា
+                 លោតទៅពីរបន្ទាត់ មួយលិខិត ១ ជួរទើបស្អាត» ។
+                 ⚠ បញ្ជីជ្រើសលើ iOS ជារបស់ប្រព័ន្ធ ⇒ ទទឹងរបស់វាកំណត់ដោយ
+                   ប្រព័ន្ធ មិនអាចបញ្ជាដោយ CSS បានទេ ⇒ មធ្យោបាយតែមួយគត់គឺ
+                   **បង្រួមឈ្មោះ**ឱ្យខ្លីល្មមក្នុង ១ បន្ទាត់ ។
+                 ⚠ ប្តូរតែ**ឈ្មោះក្នុងបញ្ជីជ្រើស** ; ចំណងជើងក្នុងឯកសារព្រីន
+                   នៅដដែលទាំងស្រុង ។ -->
             <option value="letter">📄 លិខិតផ្លូវការ</option>
-            <option value="strategy">📑 យុទ្ធសាស្ត្រ និង ផែនការសវនកម្ម</option>
-            <option value="indep">✅ លិខិតបញ្ជាក់ពីឯករាជ្យភាព</option>
-            <option value="wp">📚 ឯកសារការងារសវនកម្មសារពើពន្ធ</option>
-            <option value="basis">🧾 សេចក្តីបរិយាយអំពីមូលដ្ឋាន</option>
+            <option value="strategy">📑 យុទ្ធសាស្ត្រសវនកម្ម</option>
+            <option value="indep">✅ លិខិតឯករាជ្យភាព</option>
+            <option value="wp">📚 ឯកសារការងារសវនកម្ម</option>
+            <option value="basis">🧾 បរិយាយអំពីមូលដ្ឋាន</option>
             <option value="narr">📑 បរិយាយការកំណត់ពន្ធ</option>
             <option value="audit">📘 របាយការណ៍សវនកម្ម</option>
             <option value="sum2">📗 របាយការណ៍សង្ខេប</option>
