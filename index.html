@@ -1361,6 +1361,28 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
     font-size:13.5px;
   }
   /* ២ · វាលនីមួយៗ ៖ ស្លាកឆ្វេងទទឹងថេរ · ប្រអប់ស្តាំពេញទំហំសល់ */
+  /* ⭐⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «ផ្នែករើសឯកសារត្រូវវ័យឆ្លាត នៅពេលណាគួរចេញ
+     ឱ្យរើសអ្នកទទួល ឬមិនត្រូវមានអ្នកទទួល … កុំឱ្យមិនចាំបាច់យើងចុចរើសដែរ» ។
+     ⚠⚠ តក្កវិជ្ជាលាក់/បង្ហាញមានស្រាប់ហើយ និងត្រឹមត្រូវ ( `showDoc` ៖
+       «ប្រភេទលិខិត» តែ letter · «អ្នកទទួល» តែ sum2 · «↻ ទាញពីតារាង» តែ
+       basis ) ។ វាដាក់ `style="display:none"` ។
+       ⭐ ឫសគល់ ៖ ច្បាប់ខាងក្រោមប្រើ `display:grid !important` ⇒ វា**សរសេរ
+         ជាន់ `display:none` ក្នុង inline style** ( !important ឈ្នះ inline
+         ធម្មតា ) ⇒ វាលដែលត្រូវលាក់ ចេញមកវិញទាំងអស់លើទូរស័ព្ទ — រួមទាំង
+         «កម្ពស់ទំព័រ mm» ដែលគួរលាក់ជានិច្ច ។ នេះជាផលរំខានដែលខ្ញុំបង្កើត
+         ពេលរៀបជួរក្រឡាចត្រង្គ ។
+     ⇒ ច្បាប់ខាងក្រោមបង្អត់អ្វីដែលមាន `display:none` ក្នុង inline style ។
+     ⚠ ត្រូវសរសេរ**ទាំងពីររូបមន្ត** ៖ HTML សរសេរ `display:none` ( គ្មាន
+       ដកឃ្លា ) ឯ JS ( `el.style.display='none'` ) បង្កើត `display: none`
+       ( មានដកឃ្លា ) ។ */
+  #view-tracking .trk-grid > label[style*="display:none"], #docs-modal .trk-grid > label[style*="display:none"],
+  #view-tracking .trk-when > label[style*="display:none"], #docs-modal .trk-when > label[style*="display:none"],
+  #view-tracking .hub-row > label[style*="display:none"], #docs-modal .hub-row > label[style*="display:none"],
+  #view-tracking .trk-grid > label[style*="display: none"], #docs-modal .trk-grid > label[style*="display: none"],
+  #view-tracking .trk-when > label[style*="display: none"], #docs-modal .trk-when > label[style*="display: none"],
+  #view-tracking .hub-row > label[style*="display: none"], #docs-modal .hub-row > label[style*="display: none"]{
+    display:none !important;
+  }
   #view-tracking .trk-grid > label, #docs-modal .trk-grid > label,
   #view-tracking .trk-when > label, #docs-modal .trk-when > label,
   #view-tracking .hub-row > label, #docs-modal .hub-row > label{
@@ -1459,6 +1481,43 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
   }
   #view-tracking .trk-ic, #docs-modal .trk-ic{
     width:46px !important; height:42px !important; font-size:19px;
+  }
+  /* ══════════════════════════════════════════════════════════════
+     ⭐⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «ជួយកែទំហំអក្សរ និងទំហំតារាង កុំឱ្យ
+     តារាងទំហំខុសគ្នា» ។
+
+     ⚠⚠ វាស់ឃើញលើទូរស័ព្ទ ( ទទឹងផ្ទាំង ៣១៦px ) ៖
+       ១ តារាងនីមួយៗទទឹង **៧៨៥ · ៨៧៤ · ៧៦០px** — ខុសគ្នាទាំងអស់ ព្រោះ
+         `table-layout:auto` ចែកទទឹងតាមមាតិកា ហើយ `min-width:760px`
+         ជាត្រឹមកម្រិតអប្បបរមា ⇒ ការរំកិលផ្តេកខុសគ្នារាល់តារាង ។
+       ២ ជួរឈរ «បរិយាយឯកសារ» ( មាន textarea ) ទទួលបានត្រឹម **១២៤px**
+         ខណៈជួរ «ឯកសារបានពិនិត្យ» បាន ២១៨px ⇒ អក្សរខ្មែរចុះបន្ទាត់
+         **ម្តងមួយពាក្យ** ⇒ ជួរដេកខ្ពស់ហួសហេតុ ( មើលរូប ) ។
+     ⇒ ដាក់ទទឹងអប្បបរមារួមមួយ ហើយកំណត់ទទឹងអប្បបរមាឱ្យជួរឈរអត្ថបទ ⇒
+       តារាងទាំងអស់មានទំហំ និងចង្វាក់ការរំកិលដូចគ្នា ។
+     ⚠ កុំព្យូទ័រមិនរងផល ( ច្បាប់ក្នុង max-width:760px ) ។
+     ══════════════════════════════════════════════════════════════ */
+  #view-tracking .trk-tbl, #view-tracking table.ledger{
+    min-width:900px !important; table-layout:auto;
+  }
+  #view-tracking .trk-tbl th, #view-tracking .trk-tbl td,
+  #view-tracking table.ledger th, #view-tracking table.ledger td{
+    font-size:13px !important; line-height:1.6;
+  }
+  /* ជួរឈរបរិយាយ ៖ ធាតុ textarea ⇒ ត្រូវការទំហំអាន */
+  #view-tracking .trk-tbl td:has(> textarea),
+  #view-tracking table.ledger td:has(> textarea){ min-width:250px; }
+  /* ជួរឈរអត្ថបទធម្មតា ⇒ កុំឱ្យចង្អៀតពេក */
+  #view-tracking .trk-tbl td:has(> input[type="text"]),
+  #view-tracking table.ledger td:has(> input[type="text"]){ min-width:170px; }
+  #view-tracking .trk-tbl td > textarea, #view-tracking .trk-tbl td > input,
+  #view-tracking table.ledger td > textarea, #view-tracking table.ledger td > input{
+    width:100% !important; min-width:0 !important; font-size:13px !important;
+    box-sizing:border-box !important;
+  }
+  /* ផ្ទាំងរំកិល ៖ អូសរលូនលើម្រាមដៃ */
+  #view-tracking .table-wrap, #view-tracking .table-scroll{
+    overflow-x:auto; -webkit-overflow-scrolling:touch; overscroll-behavior-x:contain;
   }
 }
 
@@ -12916,7 +12975,20 @@ try{
    ⚠ ការហៀរនៅថេប្លេតដែលខ្ញុំព្យាយាមដោះស្រាយដោយ 240 មិនមែនមកពី .nr-page
      ទេ — វាមកពី .rpt-page (100vh) នៃឯកសារយុទ្ធសាស្ត្រ ដែលបានកែដោយឡែក។
    ⇒ ត្រឡប់ .nr-page មក **252mm** ដែលបានវាស់ថាដើរលើ iOS ។ */
-window.__nrPageMm = RSC_MOBILE_PRINT ? 252 : 266;
+/* ⭐⭐⭐ [stated] ២០២៦-១១-១៣ ( ជុំទី ២ ) ៖ «បរិយាយកំណត់ពន្ធឡើងវិញ វាលោត
+   ចេញទំព័រទទេ … របាយការណ៍សង្ខេប និងរបាយការណ៍សវនកម្មដូចគ្នា … សន្លឹក
+   តាមដានឯកសារនៅតែលោតដាច់ទៅទំព័រទី២» ។
+   ⚠⚠ រូបបញ្ជាក់យ៉ាងច្បាស់ ៖ សន្លឹកទទេមាន**តែបន្ទាត់ជើងទំព័រនៅកំពូល** ។
+     ជើងទំព័រឋិតនៅ `bottom:0` នៃប្រអប់ទំព័រ ⇒ បើវាទៅដល់សន្លឹកបន្ទាប់
+     មានន័យថា **ប្រអប់ទំព័រខ្ពស់ជាងផ្ទៃបោះពុម្ពពិត** ⇒ ប្រអប់ត្រូវបែកជាពីរ ។
+     ⇒ ២៥២mm នៅតែធំពេកសម្រាប់ iPhone នេះ ។
+   ⚠ ២៤០mm ជាតម្លៃដែល**ធ្លាប់វាស់ថាដើរលើ iOS និង Android** ( មើលកំណត់
+     សម្គាល់ ២០២៦-០៨-២០ ) ។ ការឡើងទៅ ២៥២ កាលនោះគឺដោយសារការហៀរនៅថេប្លេត
+     ដែលក្រោយមករកឃើញថាមកពី `.rpt-page` ( 100vh ) មិនមែន `.nr-page` ទេ ។
+   ⇒ ត្រឡប់ទូរស័ព្ទ/ថេប្លេតមក **២៤០mm សម្រាប់គ្រួសារទាំងពីរ** ។
+   ⚠ កុំព្យូទ័រមិនប្តូរ ៖ nr 266 · rpt 269 ដដែល ។
+   ⚠ ច្បាប់មាស ៖ ចន្លោះតូចនៅបាតសន្លឹក ល្អជាងសន្លឹកទទេមួយ ។ */
+window.__nrPageMm = RSC_MOBILE_PRINT ? 240 : 266;
 try{
   document.documentElement.style.setProperty('--nr-ph', window.__nrPageMm + 'mm');
 }catch(e){}
@@ -26165,11 +26237,10 @@ function mtrAskDocDate(onReady){
   h.textContent = 'ថ្ងៃខែឆ្នាំលើឯកសារ';
   h.style.cssText = 'font-weight:700; font-size:16px; margin-bottom:6px;';
 
+  /* [stated] ២០២៦-១១-១៣ ៖ អក្សរពន្យល់ត្រូវដកចេញ ( ដូចប្រអប់មួយទៀត ) ។
+     ⚠ ឥរិយាបថនៅដដែល ៖ ប្រអប់នៅតែលោតមករាល់ដងមុនព្រីន ។ */
   var p = document.createElement('div');
-  /* [stated] ២០២៦-០៨-២៨ ៖ «ទោះបីមានថ្ងៃខែឆ្នាំស្រាប់ក៏ដោយ គួរតែលោតមក …
-     បើមិនមែនថ្ងៃនឹងអាចដូរបាន» ⇒ ប្រអប់លោតរាល់ដង មិនមែនតែពេលទទេទេ ។ */
-  p.textContent = 'សូមពិនិត្យ ឬប្តូរថ្ងៃខែឆ្នាំ មុនព្រីន។ ទុកទទេ = សរសេរដោយដៃ។';
-  p.style.cssText = 'color:#4a5250; margin-bottom:14px;';
+  p.style.cssText = 'margin-bottom:4px;';
 
   var inp = document.createElement('input');
   inp.type = 'date';
@@ -36842,8 +36913,9 @@ window.__rscAskAuditDate = function(keys, onReady){
      អ្នកអាចផ្ទៀងផ្ទាត់ ឬប្តូរថ្ងៃមុនព្រីនជានិច្ច។ */
   var miss = keys.slice();
 
-  var LABEL = { auditStartDate:'ថ្ងៃចាប់ផ្តើមធ្វើសវនកម្ម (សន្លឹក COVER)',
-                auditEndDate:'ថ្ងៃបញ្ចប់ធ្វើសវនកម្ម (លិខិតផ្លូវការ)' };
+  /* [stated] ២០២៦-១១-១៣ ៖ ដកអក្សរពន្យល់ក្នុងវង់ក្រចកចេញ ⇒ សល់តែឈ្មោះវាល */
+  var LABEL = { auditStartDate:'ថ្ងៃចាប់ផ្តើមធ្វើសវនកម្ម',
+                auditEndDate:'ថ្ងៃបញ្ចប់ធ្វើសវនកម្ម' };
 
   var old = document.getElementById('rscDateAsk'); if(old) old.remove();
   var wrap = document.createElement('div');
@@ -36857,10 +36929,9 @@ window.__rscAskAuditDate = function(keys, onReady){
   var h = document.createElement('div');
   h.textContent = 'ថ្ងៃខែឆ្នាំលើឯកសារ';
   h.style.cssText = 'font-weight:700; font-size:16px; margin-bottom:6px;';
-  var p = document.createElement('div');
-  p.textContent = 'សូមពិនិត្យ ឬប្តូរថ្ងៃខែឆ្នាំ មុនព្រីន។ ទុកទទេ = សរសេរដោយដៃ។';
-  p.style.cssText = 'color:#4a5250; margin-bottom:14px;';
-  card.appendChild(h); card.appendChild(p);
+  /* [stated] ២០២៦-១១-១៣ ៖ «លុបអក្សរចេញ ៖ សូមពិនិត្យ ឬប្តូរថ្ងៃខែឆ្នាំ
+     មុនព្រីន។ ទុកទទេ = សរសេរដោយដៃ។» ⇒ សល់តែចំណងជើង និងវាលបំពេញ ។ */
+  card.appendChild(h);
 
   var inputs = {};
   miss.forEach(function(k){
@@ -44738,8 +44809,8 @@ function renderMinutes(idx){
   const box = document.getElementById('trkMinutes');
   if(!box) return;
   const banner = snap
-    ? `<div class="trk-locked">🔒 កំណត់ហេតុនេះបានរក្សាទុករួច (${esc(savedStamp(snap.at))}) —
-         ការកែតារាងខាងលើមិនប៉ះពាល់វាទេ។
+    /* [stated] ២០២៦-១១-១៣ ៖ «លុបអក្សរនេះចេញ — ការកែតារាងខាងលើមិនប៉ះពាល់វាទេ។» */
+    ? `<div class="trk-locked">🔒 កំណត់ហេតុនេះបានរក្សាទុករួច (${esc(savedStamp(snap.at))})
          <button class="btn btn-outline" id="trkUnlock" style="width:auto; margin-left:8px;">✏️ កែឡើងវិញ</button>
        </div>`
     : '';
@@ -45746,7 +45817,7 @@ const RPT_CSS = `
     /* ⭐ សុវត្ថិភាពទ្វេ ៖ បើ --rpt-ph មិនទាន់ត្រូវបានកំណត់ ( JS មិនទាន់រត់ )
        ទូរស័ព្ទនៅតែទទួលលេខតូចជាង ⇒ មិនហៀរ ។
        ⚠ គ្មាន backtick ក្នុងកំណត់សម្គាល់នេះ ៖ RPT_CSS ជា template literal ។ */
-    html.rsc-mobile-print .rpt-page:not(.nr-page){ min-height:var(--rpt-ph, 252mm) !important; }
+    html.rsc-mobile-print .rpt-page:not(.nr-page){ min-height:var(--rpt-ph, 240mm) !important; }
     .rpt-page:not(.nr-page) > .rpt-foot{ margin-bottom:0 !important; padding-bottom:0 !important; }
     .rpt-page:last-child{ page-break-after:auto !important; break-after:auto !important; }
   }
@@ -48917,7 +48988,12 @@ const NARR_CSS = `
      ជើងទំព័រនៅ bottom:0 រួចហើយ ⇒ អ្វីដែលបង្កើតចន្លោះគឺ padding ក្រោមនៃ
      ប្រអប់ទំព័រ ។ ⚠ កុំដកវាចេញលើកុំព្យូទ័រ ៖ 266mm × រឹម @page ធ្លាប់
      ត្រូវវាស់រួច ហើយការប្តូរនឹងរុញមាតិកាហៀរ។ ទូរស័ព្ទ/ថេប្លេតប៉ុណ្ណោះ។ */
-  html.rsc-mobile-print .nr-page{ padding-bottom:8mm !important; }
+  /* ⭐ សុវត្ថិភាពទ្វេ ៖ បើ --nr-ph មិនទាន់ត្រូវបានកំណត់ ( JS មិនទាន់រត់ )
+     ទូរស័ព្ទនៅតែទទួល ២៤០mm ⇒ មិនហៀរ ។
+     ⚠ គ្មាន backtick ក្នុងកំណត់សម្គាល់នេះ ៖ NARR_CSS ជា template literal ។ */
+  html.rsc-mobile-print .nr-page{
+    height:var(--nr-ph, 240mm) !important; max-height:var(--nr-ph, 240mm) !important;
+    padding-bottom:8mm !important; }
   html.rsc-mobile-print .nr-page > .nr-foot{ bottom:0 !important; margin:0 !important; }
   /* ══ ទូរស័ព្ទ/ថេប្លេត ៖ កម្ពស់ស្វ័យប្រវត្តិ + ជើងទំព័រហូរតាមមាតិកា ══
      ⚠⚠ កុំដាក់ backtick ក្នុងកំណត់សម្គាល់នេះ ៖ NARR_CSS ជា template literal
@@ -50971,7 +51047,7 @@ const RPT_PH_KEY = (typeof RSC_MOBILE_PRINT !== 'undefined' && RSC_MOBILE_PRINT)
    ⚠ ប្រអប់ «កម្ពស់ទំព័រ mm» នៅដដែល ហើយរក្សាទុកដាច់ដោយឡែកតាមឧបករណ៍
      ( `rptPageMmMobileV1` / `rptPageMmV1` ) ⇒ លៃលើទូរស័ព្ទមិនប៉ះ PC ។ */
 const RPT_PH_DEFAULT = (typeof RSC_MOBILE_PRINT !== 'undefined' && RSC_MOBILE_PRINT)
-  ? 252 : 269;
+  ? 240 : 269;   /* [stated] ២០២៦-១១-១៣ ជុំទី២ ៖ ២៥២ នៅតែហៀរលើ iPhone */
 function applyRptPageMm(v){
   /* ⚠⚠ [stated] ២០២៦-០៨-២២ ៖ «តែវាប៉ះពាល់ដល់របាយការណ៍ផ្សេងទៀត ដូច
      បរិយាយកំណត់ពន្ធ · របាយការណ៍សវនកម្ម · របាយការណ៍សង្ខេប» ។
@@ -50993,7 +51069,7 @@ function applyRptPageMm(v){
     try{ window.__nrPageMm = n; }catch(e){}
   }else{
     root.style.removeProperty('--nr-ph');
-    try{ window.__nrPageMm = (typeof RSC_MOBILE_PRINT !== 'undefined' && RSC_MOBILE_PRINT) ? 252 : 266; }catch(e){}
+    try{ window.__nrPageMm = (typeof RSC_MOBILE_PRINT !== 'undefined' && RSC_MOBILE_PRINT) ? 240 : 266; }catch(e){}
   }
   /* គូរឡើងវិញ ៖ បរិយាយ · សវនកម្ម · សង្ខេប (បើផ្ទាំងនោះមានលើអេក្រង់) */
   /* ⚠ មុខងារទាំងនេះមិននៅលើ `window` ទេ (ប្លុកនេះជា IIFE) ⇒ ត្រូវហៅតាម
