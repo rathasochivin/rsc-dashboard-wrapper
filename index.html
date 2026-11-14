@@ -43,7 +43,7 @@
 })();
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SYSTEM · 14/11-B72</title>
+<title>SYSTEM · 14/11-B76</title>
 <!-- ដាក់លើអេក្រង់ដើមទូរស័ព្ទ ៖ រូបតំណាង ឈ្មោះ និងបើកពេញអេក្រង់
      manifest ដាក់ជា data URL ព្រោះ Apps Script បម្រើឯកសារតែមួយ។ -->
 <meta name="mobile-web-app-capable" content="yes">
@@ -2606,7 +2606,7 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
    ⇒ វាអង្គុយទាប ។ `align-self:center` ដាក់វាចំកណ្តាលកម្ពស់ជួរវិញ ។ */
 #view-tracking .smw-r .bq, #docs-modal .smw-r .bq{
   flex:0 0 auto; align-self:start; color:#111; margin-right:5px;
-  font-size:.88em; line-height:2.102; }
+  font-size:1.04em; line-height:1.779; }
 /* ⚠ ទូរស័ព្ទរក្សាទំហំចាស់ ( .44em ) — មើលក្បាល fix_bq3.py */
 html.rsc-mobile-print #view-tracking .smw-r .bq,
 html.rsc-mobile-print #docs-modal .smw-r .bq{ font-size:.44em; line-height:4.2; }
@@ -3088,8 +3088,10 @@ html.rsc-mobile-print #docs-modal .smw-r .bq{ font-size:.44em; line-height:4.2; 
    ខាងចុងខាងស្តាំ ដើម្បីងាយស្រួលមើលនៅពេលកែប្រែកម្រិតចំណេញ … ដោយមិនចាំបាច់
    ចូលទៅចុចលើកាតសង្ខេប ។ មួយវិញទៀតអាចចុចមើលទឹកប្រាក់ឆ្នាំណា … ឬតែមួយឆ្នាំបាន» ។
    ⇒ ស្លាកសរុបឋិតនៅក្បាលកាត ⇒ ឃើញគ្រប់ផ្ទាំង ហើយកែប៉ុន្មានដងក៏ឃើញភ្លាម ។ */
+/* [stated] ២០២៦-១១-១៤ ៖ «គ្រប់ឆ្នាំ ដល់ សរុបប្រាក់ពន្ធ គួរផ្លាស់ទីទៅ
+   ខាងឆ្វេងវិញ» ⇒ ដក `margin-left:auto` ដែលជាអ្នករុញវាទៅស្តាំ ។ */
 #calcCard .cc-grand{
-  margin-left:auto; display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+  display:flex; align-items:center; gap:12px; flex-wrap:wrap;
   background:var(--accent-light,#f3efe2); border:1px solid rgba(0,0,0,.08);
   border-radius:10px; padding:6px 12px;
 }
@@ -3999,6 +4001,35 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
 #calcCard .cc-wkbtn:active{background:rgba(0,0,0,.12);}
 #calcCard .cc-wknote{font-size:12px; color:var(--muted,#777); margin:6px 0 8px;}
 #calcCard .cc-work-wrap{overflow:auto; max-height:70vh; border:1px solid #d8d2c2; border-radius:8px;}
+/* ⭐ របារសន្លឹក + របាររចនា ⇒ ជួរតែមួយ លើកុំព្យូទ័រ ( មើល fix_wkrow.py ) */
+@media screen and (min-width: 821px){
+  #calcCard .cc-barrow{
+    display:flex; flex-wrap:nowrap; align-items:center; gap:10px;
+    overflow-x:auto; overflow-y:hidden; overscroll-behavior-x:contain;
+    scrollbar-width:thin; padding-bottom:2px;
+  }
+  #calcCard .cc-barrow > .cc-bar,
+  #calcCard .cc-barrow > .cc-fmtbar{
+    flex:0 0 auto; margin:0 !important; flex-wrap:nowrap !important;
+  }
+}
+/* ⭐⭐ ប៊ូតុងលោតទៅក្រឡា + ការបន្លិចក្រឡាគោលដៅ — មើលក្បាល fix_fxgo.py */
+#calcCard .cc-fxgo{
+  border:0; background:transparent; cursor:pointer; padding:0 2px; margin-left:2px;
+  font-size:11px; line-height:1; color:#17457A; opacity:.75; vertical-align:middle;
+}
+/* ⚠⚠ ក្រឡាតារាង ៖ ប៊ូតុងឋិតក្នុងក្រឡា មិនហូរចេញក្រៅ ( fix_fxgo2.py ) ។
+   កុំប្រើ flex លើ <td> — វាដកក្រឡាចេញពីប្លង់តារាង ហើយ rowspan ខូច ។ */
+#calcCard td.cc-fxcell{ position:relative; }
+#calcCard td.cc-fxcell > .cc-fxgo{
+  position:absolute; left:3px; top:50%; transform:translateY(-50%);
+  margin:0; padding:1px 3px; z-index:2; font-size:12px; opacity:.6;
+  border-radius:4px;
+}
+#calcCard td.cc-fxcell > .cc-fxgo:hover{ opacity:1; background:rgba(23,69,122,.10); }
+#calcCard .cc-fxgo:hover{ opacity:1; }
+#calcCard td.cc-fxhit{ outline:2px solid #17457A; outline-offset:-2px; background:#E8F1FB !important; }
+@media print{ #calcCard .cc-fxgo{ display:none !important; } }
 #calcCard .cc-work-tbl{border-collapse:collapse; font-size:12.5px;}
 #calcCard .cc-work-tbl th{background:#f3efe4; border:1px solid #d8d2c2; padding:2px 6px;
     position:sticky; top:0; z-index:1; font-weight:700; min-width:28px;}
@@ -6694,6 +6725,19 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
 }
 #toi-embed .btn.toi-xls-btn:hover:not(:disabled){ background:rgba(0,0,0,.05); }
 /* [stated] «ទាញយកជំហានទាំង១៧» ៖ រូបទាញយក + ពាក្យ EXCEL */
+/* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ អូសផ្តេកកុំឱ្យញាក់ — មើលក្បាល fix_toichain.py */
+#toi-embed .table-wrap,
+#toi-embed .table-scroll,
+#toi-embed #coverPanel .table-wrap{
+  overscroll-behavior-x:contain; overscroll-behavior-y:auto;
+  /* ⚠⚠ លើកុំព្យូទ័រ `toiAutoFit` ចេញមុនដល់ការកំណត់ overflow ( វាត្រឡប់
+     ភ្លាមនៅទទឹងធំ ) ⇒ ប្រអប់នៅ `auto` **ទាំងពីរអ័ក្ស** ( វាស់បាន ៖
+     ox auto · oy auto នៅ ១៤៤០px ) ⇒ ការអូសផ្តេកទាញអ័ក្សបញ្ឈរជាប់
+     ⇒ ញាក់ ។ កម្ពស់ប្រអប់ជា auto ស្រាប់ ⇒ `hidden` មិនកាត់អ្វីឡើយ ។
+     ⚠ លើទូរស័ព្ទ `toiAutoFit` សរសេរ inline `!important` ⇒ វាឈ្នះច្បាប់នេះ
+       ( clip/visible ពេលមិនត្រូវការអូស ) ⇒ តក្កវិជ្ជា COVER នៅដដែល ។ */
+  overflow-y:hidden;
+}
 #toi-embed .btn.toi-xls-btn{
   display:inline-flex; align-items:center; gap:6px;
   font-weight:700; letter-spacing:.4px;
@@ -14332,15 +14376,24 @@ function rawSyncScroll(store){
     top.style.display = (tbl.scrollWidth > box.clientWidth + 2) ? "" : "none";
   };
   setW();
+  /* ⚠⚠ មើលក្បាល fix_rawsync.py ៖ `scroll` បាញ់យឺត ⇒ សោត្រូវដោះនៅ
+     frame បន្ទាប់ មិនមែនភ្លាមៗ ; ហើយសរសេរតែពេលខុសគ្នាពិត ។ */
   let syncing = false;
-  top.onscroll = function(){
+  const mirror = function(src, dst){
     if(syncing) return;
-    syncing = true; box.scrollLeft = top.scrollLeft; syncing = false;
+    const a = Math.round(src.scrollLeft), bb = Math.round(dst.scrollLeft);
+    if(a === bb) return;                 /* ដូចគ្នាហើយ ⇒ កុំសរសេរ */
+    syncing = true;
+    dst.scrollLeft = src.scrollLeft;
+    if(window.requestAnimationFrame){
+      requestAnimationFrame(function(){
+        requestAnimationFrame(function(){ syncing = false; });
+      });
+    } else { setTimeout(function(){ syncing = false; }, 32); }
   };
-  box.onscroll = function(){
-    if(syncing) return;
-    syncing = true; top.scrollLeft = box.scrollLeft; syncing = false;
-  };
+  top.onscroll = function(){ mirror(top, box); };
+  box.onscroll = function(){ mirror(box, top); };
+  try{ top.style.overscrollBehaviorX = 'contain'; }catch(e){}
   if(window.ResizeObserver && !top.__ro){
     top.__ro = new ResizeObserver(setW);
     top.__ro.observe(box);
@@ -53894,7 +53947,7 @@ const SMW_CSS = `
      ធំពេក ដាក់វាដូចទំហំក្នុងរូប» ⇒ ខ្ញុំលើកពី ៩px ទៅ ១៥px ហួសទៅ
      ⇒ ចុះមក ១១px ( ចន្លោះកណ្តាល ដូចក្នុងរូប Word ) ។ */
   .smw-r .bq{ flex:0 0 auto; align-self:start; color:#111; margin-right:5px;
-    font-size:.88em; line-height:2.102; }
+    font-size:1.04em; line-height:1.779; }
   html.rsc-mobile-print .smw-r .bq{ font-size:.44em; line-height:4.2; }
   /* ⭐ វាលបំពេញហូរតត្រង់ក្រោយស្លាក ⇒ ជួរក្លាយជាប្លុកធម្មតា ( មិនមែន flex )
      ⚠ :has() មានលើ iOS 16.4+ · Chrome 105+ ; បើគ្មាន វាត្រឡប់ទៅរបៀបចាស់ */
@@ -59153,6 +59206,65 @@ function ccFxRefresh(){
     });
   });
 }
+/* ⭐⭐⭐ លោតទៅក្រឡាដែលរូបមន្តយោង — មើលក្បាល fix_fxgo.py */
+CC.fxRef = function(fx){
+  var m = String(fx || '').match(/(?:([^=+\-*\/()!,;:\s]+)\s*!\s*)?\$?([A-Za-z]{1,3})\$?(\d{1,5})/);
+  if(!m) return null;
+  return { sheet: m[1] ? String(m[1]).trim() : '',
+           ref: (m[2] + m[3]).toUpperCase() };
+};
+CC.fxGoto = function(fx){
+  try{
+    var s = CC.state; if(!s) return;
+    var t = CC.fxRef(fx); if(!t) return;
+    if(t.sheet){
+      try{
+        var w = workState(), i;
+        for(i = 0; i < w.sheets.length; i++){
+          if(String(w.sheets[i].name || '').trim().toLowerCase() === t.sheet.toLowerCase()){ w.cur = i; break; }
+        }
+      }catch(e){}
+    }
+    s.tab = 'work';
+    CC.persist(); CC.render();
+    var tryFocus = function(n){
+      var host = document.getElementById('calcCard');
+      var inp = host && host.querySelector('[data-wk="' + t.ref + '"]');
+      if(!inp){ if(n > 0) return setTimeout(function(){ tryFocus(n - 1); }, 80); return; }
+      try{ inp.scrollIntoView({ block:'center', inline:'center' }); }catch(e){}
+      try{ inp.focus(); inp.select(); }catch(e){}
+      var td = inp.closest ? inp.closest('td') : null;
+      if(td){ td.classList.add('cc-fxhit');
+        setTimeout(function(){ try{ td.classList.remove('cc-fxhit'); }catch(e){} }, 2000); }
+    };
+    setTimeout(function(){ tryFocus(6); }, 60);
+  }catch(e){}
+};
+/* បន្ថែមប៊ូតុង «↗» ក្រោយរាល់ក្រឡាដែលមានរូបមន្ត */
+CC.fxMarks = function(el){
+  try{
+    var list = el.querySelectorAll('[data-ccfx]'), i, inp, fx, t, b;
+    for(i = 0; i < list.length; i++){
+      inp = list[i];
+      if(inp.nextElementSibling && inp.nextElementSibling.classList
+         && inp.nextElementSibling.classList.contains('cc-fxgo')) continue;
+      fx = inp.getAttribute('data-ccfx') || '';
+      t = CC.fxRef(fx);
+      if(!t) continue;
+      b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'cc-fxgo';
+      b.setAttribute('data-fx', fx);
+      b.title = 'ទៅកាន់ក្រឡា ' + (t.sheet ? (t.sheet + '!') : '') + t.ref + ' ក្នុង 📐 តារាងគណនា';
+      b.textContent = '↗';
+      if(inp.parentNode) inp.parentNode.insertBefore(b, inp.nextSibling);
+      /* ⚠ ក្រឡាតារាង ៖ ប្រអប់ទទឹង ១០០% ⇒ ប៊ូតុងត្រូវដាក់ក្នុងក្រឡា
+         ដោយ absolute បើមិនដូច្នេះវាហូរចេញក្រៅគែម ( មើល fix_fxgo2.py ) */
+      var __c = inp.closest ? inp.closest('td') : null;
+      if(__c) __c.classList.add('cc-fxcell');
+    }
+  }catch(e){}
+};
 CC.render=function(){
   var el=document.getElementById("calcCard"); if(!el) return;
   try{ ccFxRefresh(); }catch(e){ console.error('ccFx', e); }
@@ -59238,6 +59350,7 @@ CC.render=function(){
   try{ CC.markAssessed(); }catch(e){}
   try{ CC.fxBindAsk(); }catch(e){}
   try{ CC.vatManBind(el); }catch(e){}
+  try{ CC.fxMarks(el); }catch(e){}
   /* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «តារាងគណនានេះ ទាល់តែចុចលើវាទើបមើលឃើញស្អាត
      ខ្ញុំចង់ឱ្យវាមើលឃើញស្អាតពេលចុចបើកតែម្តង» ។
      ⚠ `workAutoFit()` ដើរតែក្នុង `workRefresh()` ( ពេលវាយ/ចុច ) ⇒ ការគូរ
@@ -60617,6 +60730,8 @@ function paneWork(){
   var w = workState(), sh = workSheet();
   var rows = sh.rows || 30, cols = sh.cols || 8;
   var h = ['<div class="cc-work">'];
+  /* ⭐ រុំរបារទាំងពីរ ⇒ ជួរតែមួយលើកុំព្យូទ័រ ( មើល fix_wkrow.py ) */
+  h.push('<div class="cc-barrow">');
   h.push('<div class="cc-bar">');
   h.push('<select data-act="wkPick">' + w.sheets.map(function(x, i){
     return '<option value="' + i + '"' + (i === w.cur ? ' selected' : '') + '>' +
@@ -60702,6 +60817,7 @@ function paneWork(){
   h.push('<button class="cc-wkbtn" data-act="wkFx" title="បញ្ជីរូបមន្តដែលប្រើបាន"'
     + ' style="' + (wkFxOpen ? 'background:#0F3D3E;color:#fff;' : '') + '">ƒ រូបមន្ត</button>');
   h.push('</div>');
+  h.push('</div>');          /* ចុង .cc-barrow */
   if(wkFxOpen){
     h.push('<div class="cc-fxhelp">');
     h.push('<div style="font-weight:700;margin-bottom:5px;">វាយ = ជាមុន រួចរូបមន្ត ៖</div>');
@@ -62926,9 +63042,16 @@ function bind(el){
   /* កុំចាប់ CC.state ទុកនៅទីនេះ ៖ listener ភ្ជាប់តែម្តង តែ CC.state ត្រូវជំនួស
      ដោយវត្ថុថ្មីរាល់ពេលបើកឯកសារ ឬសម្អាត។ ដូច្នេះត្រូវអានវាថ្មីរាល់ព្រឹត្តិការណ៍។ */
   var re=function(){CC.persist();CC.render();};
+  /* ចុចពីរដងលើក្រឡារូបមន្ត ⇒ ទៅកាន់ក្រឡាដែលវាយោង ( មើល fix_fxgo.py ) */
+  el.addEventListener("dblclick",function(e){
+    var f=e.target.closest("[data-ccfx]");
+    if(f){ e.preventDefault(); CC.fxGoto(f.getAttribute("data-ccfx")); }
+  });
 
   el.addEventListener("click",function(e){
     var s=CC.state;
+    var fg=e.target.closest(".cc-fxgo");
+    if(fg){ CC.fxGoto(fg.getAttribute("data-fx")); return; }
     var bs=e.target.closest("[data-basis]");
     if(bs){ CC.showBasis(bs.dataset.basis); return; }
     var wk=e.target.closest("[data-act^='wk']");
@@ -64811,7 +64934,7 @@ else CC.init();
      ការរក្សាទុកឥឡូវ **រាយលេខជំហាន** លើផ្ទាំង ហើយផ្អាកអោយផ្ទាំងគូររួច
      មុននឹងចាប់ការងារធ្ងន់នីមួយៗ។ សារចុងក្រោយដែលឃើញ = ជំហានដែលគាំង។
      លេខ build ក៏បង្ហាញផង ដើម្បីដឹងច្បាស់ថាកំពុងប្រើឯកសារណា។ */
-  var RSC_BUILD = '14/11 · B72';
+  var RSC_BUILD = '14/11 · B76';
   try{ window.__RSC_BUILD = RSC_BUILD; }catch(e){}
 
   /* ⚠⚠ [stated] ២០២៦-០៨-១៣ ៖ រូបថតបង្ហាញ **«Page Unresponsive» របស់ Chrome**
