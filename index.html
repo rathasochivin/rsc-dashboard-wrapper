@@ -43,7 +43,7 @@
 })();
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SYSTEM · 14/11-B69</title>
+<title>SYSTEM · 14/11-B71</title>
 <!-- ដាក់លើអេក្រង់ដើមទូរស័ព្ទ ៖ រូបតំណាង ឈ្មោះ និងបើកពេញអេក្រង់
      manifest ដាក់ជា data URL ព្រោះ Apps Script បម្រើឯកសារតែមួយ។ -->
 <meta name="mobile-web-app-capable" content="yes">
@@ -740,8 +740,6 @@ body:not(.has-data) .data-gated{ display:none !important; }
 @media (prefers-reduced-motion: reduce){
   #app-topbar .atb-ticker-in{animation:none;}
 }
-
-
 .chart-row{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px;}
 .chart-card{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:18px 20px;}
 .chart-card h3{font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif; font-size:14.5px; margin:0 0 12px; color:var(--primary-dark); font-weight:600;}
@@ -1444,8 +1442,6 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
   .modal-box{ width:100% !important; max-width:100% !important; max-height:92vh;
               border-radius:12px 12px 0 0; margin-top:auto; }
   .modal-overlay{ align-items:flex-end; padding:0; }
-
-
   /* ⚠ របារខាងលើ (.atb) ៖ លើទូរស័ព្ទវាបែកជា ៣ ជួរ ព្រោះ flex-wrap ។
      ដាក់មួយជួររំកិលបាន — ក្រុមប៊ូតុងនៅជាប់គ្នា អក្សររត់នៅកណ្តាល។ */
   /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «វានៅតែឃើញ៣ជួរ» ។ មូលហេតុ ៖ ច្បាប់ទាំងនេះ
@@ -2610,7 +2606,10 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
    ⇒ វាអង្គុយទាប ។ `align-self:center` ដាក់វាចំកណ្តាលកម្ពស់ជួរវិញ ។ */
 #view-tracking .smw-r .bq, #docs-modal .smw-r .bq{
   flex:0 0 auto; align-self:start; color:#111; margin-right:5px;
-  font-size:.44em; line-height:4.2; }
+  font-size:.64em; line-height:2.89; }
+/* ⚠ ទូរស័ព្ទរក្សាទំហំចាស់ ( .44em ) — មើលក្បាល fix_bq3.py */
+html.rsc-mobile-print #view-tracking .smw-r .bq,
+html.rsc-mobile-print #docs-modal .smw-r .bq{ font-size:.44em; line-height:4.2; }
 /* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «ទំហំអក្សរពីសរសេរ វាអត់ស្មើនឹង ការជួបពិភាក្សា» ។
    ⚠ ច្បាប់ទូរស័ព្ទ `input,select,textarea{font-size:16px !important}`
      ( ដាក់ដើម្បីកុំឱ្យ iOS ពង្រីកអេក្រង់ ) ឈ្នះលើ ១២,៥px របស់ជួរ
@@ -3012,8 +3011,6 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
 #view-tracking .trk-tbl td, #docs-modal .trk-tbl td{vertical-align:top; padding-top:8px;}
 #view-tracking .trk-delrow, #docs-modal .trk-delrow{border:none; background:none; color:var(--red); cursor:pointer; font-size:13px; padding:2px 6px;}
 #view-tracking .trk-delrow:hover, #docs-modal .trk-delrow:hover{background:var(--red-bg); border-radius:5px;}
-
-
 /* ===== ជំហាន ៖ ប៊ូតុងទាំងអស់រៀបជាជួរតែមួយក្រោមចំណងជើង ===== */
 .step-actions{display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:10px 0 14px;}
 .step-actions .btn{margin-bottom:0 !important;}
@@ -6355,8 +6352,6 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     /* [ដកចេញ ២០២៦-០៨-១៧] ដូចគ្នា ៖ បើកំណត់ចំណងជើងដោយឡែក វាលែងស្មើ
        សមាមាត្រនឹងតួអក្សរ ពេលទំព័រទាំងមូលត្រូវបង្រួម។ */
   }
-
-
   
   /* ទម្រង់រដ្ឋបាល ៖ បន្ទាត់រងក្រោមចំណងជើង · ចន្លោះបំពេញ · ជួរឈរ ល.រ */
   #toi-embed .risk-form-subtitle{
@@ -6597,8 +6592,6 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     #toi-embed .print-landscape{ page:print-landscape-page; page-break-after:always; }
     #toi-embed .print-landscape .table-wrap{border:1px solid #999; page-break-inside:avoid;}
     #toi-embed .print-landscape thead th{white-space:normal; word-break:break-word; line-height:1.2;}
-
-
 
 
     /* ⭐ [stated] ២០២៦-០៩-០២ ៖ «លុបបន្ទាត់ពីក្រោមអក្សរជំហាននីមួយៗ ព្រោះវា
@@ -7893,6 +7886,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 </head>
 <body>
+
 <!-- ==================================================================
      [stated] ប្រអប់ alert ដើមរបស់ browser បង្ហាញបន្ទាត់អង់គ្លេស
      «An embedded page at …googleusercontent.com says» ខាងលើសារ។
@@ -9172,8 +9166,6 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     <div class="stub gold"><div class="label">FB (កំណត់ឡើងវិញ)</div><div class="value tabular" id="statReassessFringeTax">0 KHR</div></div>
   </div>
 
-
-
   <section class="card missing-card" style="margin-top:16px;">
     <div class="missing-head">
       <h3 class="missing-title" style="display:none;"><span id="matrixTitle">ប្រាក់បៀវត្សប្រកាស</span></h3>
@@ -9401,8 +9393,6 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
         #docs-modal .docs-body .nr-tools{ justify-content:center; }
       }
       @media print{ #docs-modal{ display:none !important; } }
-
-
 
       .btn-print-ico{width:44px; padding:0; font-size:19px; line-height:34px; text-align:center;}
       .vat-man-bar{display:flex; flex-wrap:wrap; gap:14px; align-items:center; margin:6px 0 10px;}
@@ -10447,8 +10437,6 @@ document.addEventListener('change', function(e){
   el.value = conv;
   el.dispatchEvent(new Event('input', { bubbles:true }));
 }, true);
-
-
 /* =========================================================================
    ថ្ងៃចន្ទ្រគតិខ្មែរ (ចន្ទ្រគតិ/សុរិយាត្រ)
    ផ្ទៀងផ្ទាត់នឹងគូកាលបរិច្ឆេទ ១៨ គូដែលអ្នកប្រើផ្តល់ (មេសា–ឧសភា ២០២៧
@@ -10603,8 +10591,6 @@ function rawLunar(jd){
   while(rest >= mons[mi].len){ rest -= mons[mi].len; mi++; }
   return { mIdx: mons[mi].m, dayNo: rest + 1 };
 }
-
-
 
   window.__khmerLunar = function(iso){
     try{
@@ -11118,8 +11104,6 @@ function rscUploadReport(){
 
   /* [stated] ២០២៦-០៩-០២ ៖ ការព្រមានអំពីខែខ្វះត្រូវដកចេញ ។ ការសម្គាល់
      ក្នុងតារាង ( ក្រហម / 📝 បៃតង ) នៅដដែល ⇒ ព័ត៌មានមិនបាត់ ។ */
-
-
   /* ⭐⭐ [stated] ២០២៦-០៩-០១ ៖ «ចង់បានកន្លែងចុចពិនិត្យមើលឯកសារដែលបាន upload
      រួចរាល់» និង «កន្លែងដើម្បីអាច upload បន្ថែម ករណីខ្វះឯកសារ ឬត្រូវ upload
      ឡើងវិញ» ។
@@ -11139,8 +11123,6 @@ function rscUploadReport(){
     + 'background:#fff; font:inherit; font-weight:700; font-size:13px; cursor:pointer;">⧉ ចម្លង</button>'
     + '<button id="urOk" style="padding:8px 20px; border:0; border-radius:7px; background:#0F3D3E;'
     + 'color:#fff; font:inherit; font-weight:700; font-size:13px; cursor:pointer;">យល់ព្រម</button></div>';
-
-
   card.innerHTML = h;
   document.body.appendChild(ov);
 
@@ -11818,8 +11800,6 @@ window.__rscRefreshTINs = function(){
     })
     .catch(function(e){ console.warn('myAssignedTINs:', e); return false; });
 };
-
-
 /* ══════════════════════════════════════════════════════════════════════
    🔔 សារជូនដំណឹងក្នុងកម្មវិធី — [stated] ២០២៦-០៨-២៣ ៖ រាល់សំណើដែលម្ចាស់
    ប្រព័ន្ធសម្រេច (អនុញ្ញាត ឬបដិសេធ) ត្រូវប្រាប់អ្នកប្រើក្នុងកម្មវិធីផង។
@@ -12798,8 +12778,6 @@ function computeWHTPaidCompanies(storeName){
   });
   return result;
 }
-
-
 /* ═══════════════════════════════════════════════════════════════════════
    VAT REVERSE CHARGE — ការបញ្ចូលគ្នា ការគូរ និងការបញ្ចូលដោយដៃ
    ⚠ ជួរបញ្ចូលដោយដៃមាន manual:true ⇒ ការផ្ទុកឯកសារឡើងវិញមិនលុបវាទេ ។
@@ -14789,8 +14767,6 @@ function toggleRaw(storeName){
   const suffix = (storeName==="cpPurchase"||storeName==="cpSale") ? " (កែសម្រួល / បិទភ្ជាប់)" : " (កែសម្រួល)";
   if(btn) btn.textContent = (nowActive ? "▴ លាក់ទិន្នន័យលម្អិត" : "▾ បង្ហាញទិន្នន័យលម្អិត") + suffix;
 }
-
-
 /* =========================================================
    COMPANY SUMMARY (VIEW-ONLY) + DETAIL MODAL
    ========================================================= */
@@ -21082,8 +21058,6 @@ function vatRvcMonthly(rows, year){
   });
   return sum.map(function(v, i){ return hasSum[i] ? v : det[i]; });
 }
-
-
 function detectIsOtherExpenses(fileNameLower, aoa){
   if(hasFilenameToken(fileNameLower, ['expense','expenses','otherexpenses'])) return true;
   const scanRows = Math.min(aoa.length, 5);
@@ -24660,8 +24634,6 @@ sessionFileInput.addEventListener('change', async (e) => {
   }
   sessionFileInput.value = '';
 });
-
-
 /* =========================================================================
    ការបង់ពន្ធយឺតយ៉ាវ — ការបង់ដែលធ្វើក្រោយកាលកំណត់ ហើយមិនមែនជាការបង់
    ក្នុងអំឡុងសវនកម្មទេ។ បញ្ចូលដោយដៃនៅទីនេះ រួចកាតុគណនាទាញយកទៅ
@@ -30014,8 +29986,6 @@ function buildVATFormSheet(year, opts){
     </div>
   </div>`;
 }
-
-
 /* =========================================================================
    ពិនិត្យប្រភពតួលេខ VAT — ចុចលើលេខក្នុងតារាង ដើម្បីឃើញថាតួលេខនោះ
    មកពីវិក្កយបត្រណាខ្លះ និងគណនាដោយរូបមន្តអ្វី។
@@ -30935,8 +30905,6 @@ function isAuditFullyDated(code) {
     return !!effectivePayMY(code, s);
   });
 }
-
-
 /* =========================================================================
    ផ្ទាំងសវនកម្មបញ្ចូលដោយដៃ — ពីរផ្នែក
      ១. ការបង់ប្រាក់ លើកម្មវិធីដែលមានស្រាប់ ឬកម្មវិធីទើបបញ្ចូលថ្មី
@@ -30956,8 +30924,6 @@ function auditManualPanel(codeFilter){
   let taxes = [];
   try{ taxes = latePayTaxList(); }catch(e){ taxes = ['អាករលើតម្លៃបន្ថែម','ពន្ធកាត់ទុក','ពន្ធលើប្រាក់បៀវត្ស']; }
   const codes = auditCodeList();
-
-
   const codeSel = (r, i)=> codes.length
     ? `<select class="am" data-i="${i}" data-k="code" style="width:100%;"${dis}>
          <option value="">— ជ្រើសលេខកូដ —</option>
@@ -30965,8 +30931,6 @@ function auditManualPanel(codeFilter){
        </select>`
     : `<input class="am" data-i="${i}" data-k="code" value="${esc(r.code||'')}"
          placeholder="បន្ថែមកម្មវិធីខាងក្រោមជាមុនសិន" style="width:100%;"${dis}>`;
-
-
 
   /* [stated] ផ្ទាំងទាំងពីរបិទជាមុន — ចុចចំណងជើងទើបបើក ដើម្បីកុំអោយ
      អេក្រង់រញ៉េរញ៉ៃ។ ស្ថានភាពរក្សាទុកក្នុង localStorage។ */
@@ -31518,8 +31482,6 @@ function renderAuditView_() {
         renderAuditView();
       });
     });
-
-
     document.querySelectorAll('[id^="btnClearStages_"]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const code = e.target.getAttribute('data-code');
@@ -32428,8 +32390,6 @@ btnSave.addEventListener('click', () => {
 });
 
 btnDownload.addEventListener('click', () => { btnSave.click(); });
-
-
 // ---- Bridges for the dashboard's unified "save everything as one JSON"
 // feature (see exportAllDataToFile/importAllDataFromFile in the outer,
 // non-IIFE script). MTR's own data is a set of loaded Excel workbooks, not
@@ -39570,10 +39530,6 @@ function rscGLOpen(){
 window.__rscGL = rscGLOpen;
 
 
-
-
-
-
 /* ⚠⚠ [stated] ២០២៦-០៨-២៨ ៖ «File ថ្មីហើយ តែពេលចុច Upload រួច អត់ចេញ
    ព័ត៌មានពិនិត្យ និងបញ្ចូលនោះទេ» — ការបើកតាម handleAutoFileImport មិនបាន
    បាញ់ ។ ខ្ញុំមិនដឹងច្បាស់ថាហេតុអ្វី ( មានផ្លូវនាំចូលច្រើន ៖ ផ្ទុកតាមថត ·
@@ -40100,8 +40056,6 @@ function rawStepRelatedPersons(stepKey){
   }
   return [];
 }
-
-
 /* ---------- Overview ---------- */
 /* The financial summary (KPI tiles + the two charts) is built here rather
    than inline in the TOI overview, because the dashboard's own home page
@@ -41819,8 +41773,6 @@ async function exportRiskFormsExcel(){
   document.body.appendChild(a); a.click(); document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
-
-
 function renderRiskAnalysisPanel(){
   const wrap = el('div');
 
@@ -42597,8 +42549,6 @@ window.__toiManualRemove = function(y){
     return { ok:true };
   }catch(e){ return { ok:false, msg:(e && e.message) || String(e) }; }
 };
-
-
 /* ⭐⭐⭐ [stated] ២០២៦-០៨-២៨ ៖ «ខ្ញុំត្រូវបំពេញទាំងតារាងតុល្យការ និងតារាង
    គណនីលទ្ធផល ព្រោះត្រូវព្រីនយុទ្ធសាស្រ្តផែនការ» ។
    ⚠ របាយការណ៍យុទ្ធសាស្ត្រព្រីនតារាង ក.១ ពី __getTOIStepTable('Step4')
@@ -44158,34 +44108,50 @@ window.__toiImport = function(data){
   });
 
   /* ⭐⭐ យុថ្កាស្វែងរក — មើលក្បាល fix_mxjump.py */
-  function mxScroller(el){
-    var n = el && el.parentElement;
-    while(n && n !== document.body && n !== document.documentElement){
-      var c = window.getComputedStyle(n);
-      if(/(auto|scroll)/.test(c.overflowY) && n.scrollHeight > n.clientHeight + 1) return n;
-      n = n.parentElement;
+  /* រំកិលចុះ/ឡើង d ភីកសែល ៖ សាកអ្នករំកិលម្តងមួយៗ រហូតមានមួយកម្រើក ។
+     ⚠ រាប់បញ្ចូល `document.body` និង `scrollingElement` ៖ នៅលើ
+       teamsmos.com ទំព័ររុំក្នុងប្រអប់ ⇒ window មិនមែនអ្នករំកិល ។ */
+  function mxScrollBy(d){
+    var el = els.matrixSearch, cands = [], n = el && el.parentElement;
+    while(n && n !== document.documentElement){ cands.push(n); n = n.parentElement; }
+    cands.push(document.scrollingElement || null);
+    cands.push(document.documentElement);
+    cands.push(document.body);
+    var i, c, b;
+    for(i = 0; i < cands.length; i++){
+      c = cands[i];
+      if(!c) continue;
+      try{
+        if(c.scrollHeight <= c.clientHeight + 1) continue;
+        b = c.scrollTop;
+        c.scrollTop = b + d;
+        if(c.scrollTop !== b) return true;
+      }catch(e){}
     }
-    return null;   /* null = window */
+    try{
+      var y = window.scrollY || window.pageYOffset || 0;
+      window.scrollTo(0, y + d);
+      if((window.scrollY || window.pageYOffset || 0) !== y) return true;
+    }catch(e){}
+    return false;
   }
   function mxRenderKeep(){
     var inp = els.matrixSearch;
     var wrap = document.getElementById('employeeMatrixWrap');
     if(!inp || !wrap){ renderEmployeeMatrix(); return; }
-    var before = inp.getBoundingClientRect().top;
+    var want = inp.getBoundingClientRect().top;
     /* ដោះកន្លែងទទេចាស់ជាមុន ⇒ វាមិនកកកុញពីការស្វែងរកមុន */
     wrap.style.minHeight = '';
     renderEmployeeMatrix();
-    var d = inp.getBoundingClientRect().top - before;
-    if(Math.abs(d) < 1) return;
-    var sc = mxScroller(inp);
-    var cur = sc ? sc.scrollTop : (window.scrollY || window.pageYOffset || 0);
-    var box = sc ? sc.clientHeight : window.innerHeight;
-    var tot = sc ? sc.scrollHeight : document.documentElement.scrollHeight;
-    /* ត្រូវការទំព័រវែងប៉ុនណា ដើម្បីរំកិលត្រឡប់ទៅទីតាំងចាស់ */
-    var need = (cur + d) + box - tot;
-    if(need > 0) wrap.style.minHeight = (wrap.offsetHeight + Math.ceil(need)) + 'px';
-    if(sc) sc.scrollTop = cur + d;
-    else window.scrollTo(0, cur + d);
+    var pass, d;
+    for(pass = 0; pass < 3; pass++){
+      d = inp.getBoundingClientRect().top - want;
+      if(Math.abs(d) < 1) break;
+      /* d > 0 ⇒ ប្រអប់ធ្លាក់ចុះ ⇒ ត្រូវរំកិលចុះបន្ថែម ⇒ ទំនងខ្វះទំហំ
+         ⇒ បន្ថែមកន្លែងទទេនៅខាងក្រោមតារាងត្រឹមតម្រូវការ */
+      if(d > 0) wrap.style.minHeight = (wrap.offsetHeight + Math.ceil(d) + 4) + 'px';
+      if(!mxScrollBy(d)) break;
+    }
   }
   if (els.matrixSearch){
     els.matrixSearch.addEventListener('input', () => {
@@ -46472,8 +46438,6 @@ function renderTrackingView(){
      បន្តគ្នាដោយស្វ័យប្រវត្តិពីផ្នែកកំណត់ហេតុខាងលើ (មើល trkOpenMeetings)។
      ⚠ បញ្ជី `trkState.meetings` នៅមាន ៦ ធាតុត្រៀមទុកដដែល — គ្រាន់តែ
        បង្ហាញតាមលំដាប់ ; គ្មានអ្វីត្រូវបន្ថែមទេ។ */
-
-
   host.querySelectorAll('.trk-delrow').forEach(b=> b.onclick = ()=>{
     trkState.rows.splice(Number(b.getAttribute('data-delrow')), 1);
     trkSave(); renderTrackingView();
@@ -46661,8 +46625,6 @@ function renderTrackingView(){
   if(mtCopyBtn) mtCopyBtn.onclick = ()=> meetingDataCopy(mtIdx());
   const mtPasteBtn = document.getElementById('trkMtPaste');
   if(mtPasteBtn) mtPasteBtn.onclick = ()=> meetingDataPaste(mtIdx());
-
-
   regen();
 }
 
@@ -47108,8 +47070,6 @@ function docSummary(beforeMtg, atMtg){
 function buildMinutes(idx){
   const ci = coverInfo(), pi = personInfo();
   const mt = trkState.meetings[idx] || {};
-
-
   /* Everything asked for BEFORE this meeting, so the minutes can report what
      is still owing; and separately what is being asked for AT this meeting. */
   const mtgNo = idx + 1;
@@ -48094,8 +48054,6 @@ function renderLetter(){
   box.innerHTML = (letterUsesLetterhead() ? letterheadHtml() : '') + letterBodyHtml();
   bindLetterRowDelete(box);
 }
-
-
 /* ប៊ូតុង ✕ លើជួរឯកសារ ៖ លេចតែលើអេក្រង់ ព្រោះ CSS នេះមាន #view-tracking
    នៅខាងមុខ ហើយឯកសារព្រីនជាឯកសារដាច់ដោយឡែកគ្មានធាតុនោះទេ។ */
 function bindLetterRowDelete(box){
@@ -49137,8 +49095,6 @@ function renderIndep(){
     };
   });
 }
-
-
 const INDEP_CSS = `
   .ind-title{font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif; text-align:center;
     font-size:14.5px; margin:14px 0 12px;}
@@ -50613,8 +50569,6 @@ const BASIS_CSS = `
   .bs-signh{font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif; margin-top:4px;}
   .bs-signn{font-weight:600;}
 `;
-
-
 /* =========================================================================
    បរិយាយការកំណត់ពន្ធ — របាយការណ៍បរិយាយនៃការកំណត់ពន្ធឡើងវិញ
    ទិន្នន័យទាំងអស់មកពី 🧮 កាតុការគណនា (CC.compute) ; ការយោងច្បាប់មកពី
@@ -52150,8 +52104,6 @@ function printNarr(){
      ${BASIS_CSS}
      ${NARR_CSS}`, undefined, true);
 }
-
-
 /* =========================================================================
    របាយការណ៍សវនកម្ម — ទម្រង់ផ្លូវការ ៤ ទំព័រ (I–VI)
    គំរូ ៖ រូបថតរបស់អ្នកប្រើ។ ទិន្នន័យភាគច្រើនមកពី coverInfo() · basisCtx()
@@ -52993,8 +52945,6 @@ function printAudit(){
      ${NARR_CSS}
      ${AR_CSS}`);
 }
-
-
 /* =========================================================================
    របាយការណ៍សង្ខេប — លិខិតរាយការណ៍ជូនថ្នាក់ដឹកនាំ (I សាវតា · II លទ្ធផល ·
    III សន្និដ្ឋាន + តារាងសរុប)។ គំរូ ៖ រូបថតរបស់អ្នកប្រើ។
@@ -53446,8 +53396,6 @@ function renderSummary(){
   if(cell){ cell.setAttribute('contenteditable','true'); cell.style.outline='none';
             narrBindEditKeys(cell); }
   try{ narrRenderTools(cell, box.querySelector('.nr-tools'), ''); }catch(e){}
-
-
   /* [stated] ចុច «មាន» / «គ្មាន» ដោយផ្ទាល់លើឯកសារ។ ⚠ ធាតុទាំងនេះមាន
      contenteditable="false" ដូច្នេះការចុចមិនត្រូវកែអត្ថបទទេ។ */
   box.querySelectorAll('.sm-rw').forEach(function(el){
@@ -53640,8 +53588,6 @@ function printWorkPapers(){
      ${RPT_CSS}
      ${WP_CSS}`);
 }
-
-
 /* =========================================================================
    📝 សេចក្ដីសង្ខេបការងារចុះធ្វើសវនកម្មពន្ធដារ
    [stated] ២០២៦-១១-១៣ ៖ «ជួយបង្កើតទម្រង់លិខិតនេះ និងបញ្ចូលព័ត៌មានដែលមាន
@@ -53900,7 +53846,8 @@ const SMW_CSS = `
      ធំពេក ដាក់វាដូចទំហំក្នុងរូប» ⇒ ខ្ញុំលើកពី ៩px ទៅ ១៥px ហួសទៅ
      ⇒ ចុះមក ១១px ( ចន្លោះកណ្តាល ដូចក្នុងរូប Word ) ។ */
   .smw-r .bq{ flex:0 0 auto; align-self:start; color:#111; margin-right:5px;
-    font-size:.44em; line-height:4.2; }
+    font-size:.64em; line-height:2.89; }
+  html.rsc-mobile-print .smw-r .bq{ font-size:.44em; line-height:4.2; }
   /* ⭐ វាលបំពេញហូរតត្រង់ក្រោយស្លាក ⇒ ជួរក្លាយជាប្លុកធម្មតា ( មិនមែន flex )
      ⚠ :has() មានលើ iOS 16.4+ · Chrome 105+ ; បើគ្មាន វាត្រឡប់ទៅរបៀបចាស់ */
   .smw-r:has(.smw-flow){ display:block; }
@@ -54218,8 +54165,6 @@ function printMinutes(){
   printInPage(pagesHtml,
     TRK_MIN_CSS + LETTERHEAD_CSS + RPT_CSS + WP_CSS + BASIS_CSS + NARR_CSS);
 }
-
-
 /* =========================================================================
    ឯកសារព្រីន ៥ ប្រភេទ — ផ្លាស់ចេញពីផ្ទាំង ការតាមដាន និង ប្រជុំ
    ឥឡូវបើកជាផ្ទាំងលោតពីប៊ូតុងនៅរបារខាងលើ ជិតប៊ូតុងរក្សាទុក។
@@ -57131,8 +57076,6 @@ CC.summary=function(res){
 
   return {cols:cols,lines:lines,foot:foot,grand:grand,grandUsd:grandUsd};
 };
-
-
 /* ================= កំណត់ពន្ធពីជំហានទី៤–៧ ================= */
 /* ជម្រើសកន្លែងដាក់ចំនួនដែលបានចុច */
 CC.assessTargets=function(){
@@ -57144,8 +57087,6 @@ CC.assessTargetName=function(v){
   var hit=CC.assessTargets().filter(function(o){return o.v===v;})[0];
   return hit?hit.n:"—";
 };
-
-
 /* ══ 🏠 ម៉ាស៊ីនគណនាការលក់អចលនទ្រព្យ ══════════════════════════════════
    [stated] ២០២៦-០៨-១២ ៖ ចុចលើប្រភេទ «លក់អចលនទ្រព្យ» → ចេញតារាងដើម្បី
    បំពេញ **ផលរកឃើញ** និង **ថ្លៃដើម**។
@@ -57763,8 +57704,6 @@ CC.openFuel=function(i){
   w.querySelector(".cc-as-bg").onclick=CC.closeFuel;
 };
 
-
-
 /* ══ 🧮 ជម្រើសទឹកប្រាក់ពន្ធប៉ាតង់ ═══════════════════════════════════
    [stated] ២០២៦-០៨-១៣ ៖ ពន្ធប៉ាតង់មិនមានអត្រាទេ — មានតម្លៃកំណត់តាម
    កម្រិតអ្នកជាប់ពន្ធ (៣,០០០,០០០ ឬ ១,២០០,០០០) ។ ជ្រើសរួច សួរបន្តថា ៖
@@ -58042,8 +57981,6 @@ if(window.MutationObserver){
     _mt=setTimeout(function(){ try{ CC.markAssessed(); }catch(e){} },120);
   }).observe(document.body,{childList:true,subtree:true});
 }
-
-
 /* ================= មូលដ្ឋាននៃការគណនា (ចុចលើជួរណាមួយ) ================= */
 var Bn=function(l,v){ return {l:l,v:v}; };
 
@@ -58590,8 +58527,6 @@ CC.showBasis=function(key){
     if(e.target===w||e.target.closest("[data-basis-close]")) w.remove();
   });
 };
-
-
 /* ================= ជំនាន់នៃការកំណត់ពន្ធ ================= */
 CC.snapshot=function(){
   var s=CC.state, keep=s.versions;
@@ -64300,8 +64235,6 @@ else CC.init();
   window.__rscFsForget = function(){
     return fsHandleSet(null).then(fsRefresh).then(function(){ alert('ថតរក្សាទុកត្រូវបានដោះរួច'); });
   };
-
-
   /* ---------- gzip / base64 (មានក្នុង Chrome · Edge · Safari 16.4+) ---------- */
   function canGzip(){   return typeof CompressionStream   !== 'undefined'; }
   function canUngzip(){ return typeof DecompressionStream !== 'undefined'; }
@@ -64830,7 +64763,7 @@ else CC.init();
      ការរក្សាទុកឥឡូវ **រាយលេខជំហាន** លើផ្ទាំង ហើយផ្អាកអោយផ្ទាំងគូររួច
      មុននឹងចាប់ការងារធ្ងន់នីមួយៗ។ សារចុងក្រោយដែលឃើញ = ជំហានដែលគាំង។
      លេខ build ក៏បង្ហាញផង ដើម្បីដឹងច្បាស់ថាកំពុងប្រើឯកសារណា។ */
-  var RSC_BUILD = '14/11 · B69';
+  var RSC_BUILD = '14/11 · B71';
   try{ window.__RSC_BUILD = RSC_BUILD; }catch(e){}
 
   /* ⚠⚠ [stated] ២០២៦-០៨-១៣ ៖ រូបថតបង្ហាញ **«Page Unresponsive» របស់ Chrome**
@@ -64994,8 +64927,6 @@ else CC.init();
     buildPicker();
     loadList();
   };
-
-
 
   function el(tag, css, txt){
     var e = document.createElement(tag);
@@ -67402,8 +67333,6 @@ function rscToiManualOpen(){
     p[0] = p[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     return p.join('.');
   }
-
-
   /* ⭐ ផ្ទាំងបីជា ៖ តួលេខគណនា · តារាងតុល្យការ · តារាងគណនីលទ្ធផល */
   var tab = 'calc';
   var stepRows = [];
@@ -70771,8 +70700,6 @@ function mgWire(){
     });
   });
 }
-
-
 /* ══ ⚠ ផ្ទាំងបញ្ហាស្តុក ══════════════════════════════════════════════
    ⭐⭐⭐ [stated] ២០២៦-១១-០៦ ៖ «គួរមានកន្លែងចុចមើលផ្នែកមានបញ្ហា ខុសស្តុក
    ជាដើម ដើម្បីផ្ទៀងផ្ទាត់ ក្រែងលោមានការកត់ត្រាខុសឈ្មោះស្តុក ហើយយើងអាច
