@@ -2669,9 +2669,11 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
      អេក្រង់គ្មានការកាត់ទំព័រ ⇒ `zoom` ល្អជាង ។ */
   #view-tracking .cv-cover-page .cv-sheet, #docs-modal .cv-cover-page .cv-sheet{
     zoom:var(--cv-sc, 0.824); transform:none; width:auto;
-    min-height:calc((var(--rpt-ph, 252mm) - var(--cv-gap, 2mm)) / var(--cv-sc, 0.824)); }
+    min-height:calc((var(--rpt-ph, 252mm) - var(--cv-pad, 7mm) - var(--cv-gap, 0mm))
+      / var(--cv-sc, 0.824)); }
   #view-tracking .cv-cover-page .cv-in, #docs-modal .cv-cover-page .cv-in{
-    min-height:calc((var(--rpt-ph, 252mm) - var(--cv-gap2, 5mm)) / var(--cv-sc, 0.824)); }
+    min-height:calc((var(--rpt-ph, 252mm) - var(--cv-pad, 7mm) - var(--cv-gap2, 3mm))
+      / var(--cv-sc, 0.824)); }
   /* ⚠⚠ [stated] ២០២៦-១១-១៤ ៖ «លិខិតតាមដានឯកសារ … នៅបាត់ជើងតារាង» ។
      ⚠ វាស់បាន ( អេក្រង់ ) ៖ .cv-in = ២៥៤,៣mm តែ .cv-sheet = ២៤៦mm
        ⇒ ខាងក្នុងហៀរចេញក្រៅស៊ុម ⇒ បន្ទាត់បាតស៊ុមលែងឃើញ ។
@@ -3640,7 +3642,18 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     line-height:1.05 !important;
     min-height:0 !important; height:auto !important; padding:0 !important;
   }
-  #calcCard .cc-gchip .y{ line-height:1.1 !important; padding:0 !important; }
+  /* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «នៅ PC មិនមានចន្លោះទេ ហេតុអ្វីនៅ phone
+     វាមានគម្លាត ដូចចុះបន្ទាត់» ។
+     ⚠⚠ វាស់បាន ( ៣៩០px ) ៖ ប៊ូតុងឆ្នាំ `.y` មាន line-height ១៣,៧៥px
+       តែ **កម្ពស់ពិត ៤០px** ⇒ ចន្លោះទទេ ~២៦px ក្នុងចិប ; វាល `.m`
+       កម្ពស់ ២២px ធៀបនឹង ១២,៦px ⇒ ទទេ ~៩px ទៀត ។
+       ប្រភព ៖ ច្បាប់ទំហំចុច ( min-height ) សម្រាប់ប៊ូតុង/វាលលើទូរស័ព្ទ
+       — មិនសមនឹងចិបបីបន្ទាត់នេះទេ ។ ( លើ PC ៖ ១៦,៥px ⇒ គ្មានចន្លោះ ។ )
+     ⇒ ដោះ min-height/height សម្រាប់ចិបនេះតែប៉ុណ្ណោះ ។ */
+  #calcCard .cc-gchip .y{
+    line-height:1.1 !important; padding:0 !important;
+    height:auto !important; min-height:0 !important; }
+  #calcCard .cc-gchip .m{ height:auto !important; min-height:0 !important; }
   #calcCard .cc-gchip .t{ font-size:10px !important; margin-top:1px !important; }
   #calcCard .cc-grand-amt{ flex:0 0 auto; margin-left:auto; }
   #calcCard .cc-grand-amt .r, #calcCard .cc-grand-amt .u{ font-size:13px !important; }
@@ -15151,6 +15164,7 @@ try{
   if(typeof RSC_MOBILE_PRINT !== 'undefined' && RSC_MOBILE_PRINT){
     var __r = document.documentElement;
     __r.style.setProperty('--cv-sc',   '0.810');
+    __r.style.setProperty('--cv-pad',  '0mm');
     __r.style.setProperty('--cv-gap',  '16mm');
     __r.style.setProperty('--cv-gap2', '19mm');
   }
@@ -33014,6 +33028,17 @@ window.__toiPrevRefs = function(refs, stepKey){
   return out;
 };
 
+/* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ បង្រួមកន្សោមយោងក្នុងស្លាកជួរ
+   ( មើលក្បាល fix_reflbl.py ) ។ បង្ហាញតែប៉ុណ្ណោះ — ទិន្នន័យដើមនៅដដែល ។ */
+window.__toiShortRef = function(t){
+  var s = String(t == null ? '' : t);
+  if(s.indexOf('TOI') < 0) return s;
+  /* «TOI 01/IV-» · «TOI 01/V,» · «TOI 01/VI, » ⇒ ដកចោល */
+  s = s.replace(/TOI\s*0?1\s*\/\s*[IVXivx]+\s*[-–,:]?\s*/g, '');
+  /* «C9, C12» ⇒ «C9 + C12» ( តែរវាងលេខយោងពីរ ) */
+  s = s.replace(/\b([A-Za-z]\d+)\s*,\s*(?=[A-Za-z]\d+)/g, '$1 + ');
+  return s.replace(/\(\s+/g, '(').replace(/\s+\)/g, ')');
+};
 window.__toiStep8Blocks = function(){
   const out = [];
   try{
@@ -40013,7 +40038,8 @@ function buildStepSheetAOA(stepKey, years){
   if(rs && rs.order && rs.order.length){
     const aoa = [[rs.title || stepKey, ...years]];
     rs.order.forEach(ref=>{
-      const label = rs.labels[ref] || ref;
+      /* [stated] ២០២៦-១១-១៤ ៖ ស្លាកក្នុង Excel ត្រូវដូចអេក្រង់ */
+      const label = (window.__toiShortRef ? window.__toiShortRef(rs.labels[ref] || ref) : (rs.labels[ref] || ref));
       const row = [label, ...years.map(y=> (rs.values[ref] && typeof rs.values[ref][y]==='number') ? rs.values[ref][y] : '')];
       aoa.push(row);
     });
@@ -41716,7 +41742,8 @@ function renderRefStepPanel(stepKey){
   const canCheckRisk = filterable && yrs.length>=2;
   let anyRisk = false;
   rs.order.forEach(ref=>{
-    const label = rs.labels[ref];
+    /* [stated] ២០២៦-១១-១៤ ៖ បង្រួមកន្សោមយោងពេលបង្ហាញ */
+    const label = (window.__toiShortRef ? window.__toiShortRef(rs.labels[ref]) : rs.labels[ref]);
     const values = yrs.map(y=> rs.values[ref] ? rs.values[ref][y] : null);
     const prevVal = showPrev ? (rs.prevValues[ref] ? rs.prevValues[ref][yrs[0]] : null) : null;
     const hasMoney = values.some(v=> typeof v==='number' && v!==0) || (typeof prevVal==='number' && prevVal!==0);
@@ -49560,6 +49587,9 @@ const WP_CSS = `
     .cv-cover-page{
       height:var(--rpt-ph, 252mm) !important;
       max-height:var(--rpt-ph, 252mm) !important;
+      /* [stated] ២០២៦-១១-១៤ ៖ ចន្លោះលើ⇄ក្រោមស្មើគ្នា ( fix_cvmid.py ) */
+      box-sizing:border-box !important;
+      padding-top:var(--cv-pad, 7mm) !important;
       overflow:hidden !important; }
     /* ⚠ ផ្ទៃដែលមាន = 297 − 6.3 − 10.2 = **280.5mm** ។ min-height ជាកម្ពស់មុន
        zoom ⇒ 280.5 ÷ 0.87 ≈ 322mm (ស៊ុមក្នុងដក 3mm)។ */
@@ -49597,9 +49627,11 @@ const WP_CSS = `
        នៅដដែលបេះបិទនឹងមុនពេលកែ ។ */
     /* ⚠ −16mm ត្រូវទៅតាម ០,៧៩០ ៖ បើទុក −6mm សន្លឹកនឹងពេញ ២៤៦mm វិញ ។ */
     .cv-cover-page .cv-sheet{
-      min-height:calc((var(--rpt-ph, 252mm) - var(--cv-gap, 2mm)) / var(--cv-sc, 0.824)) !important; }
+      min-height:calc((var(--rpt-ph, 252mm) - var(--cv-pad, 7mm) - var(--cv-gap, 0mm))
+        / var(--cv-sc, 0.824)) !important; }
     .cv-cover-page .cv-in{
-      min-height:calc((var(--rpt-ph, 252mm) - var(--cv-gap2, 5mm)) / var(--cv-sc, 0.824)) !important; }
+      min-height:calc((var(--rpt-ph, 252mm) - var(--cv-pad, 7mm) - var(--cv-gap2, 3mm))
+        / var(--cv-sc, 0.824)) !important; }
   }
   /* ⚠ zoom:0.82 នៅទីនេះបង្រួម**ស្ទួន**លើការបង្រួមរបស់ .cv-sheet ហើយវាជា
      ប្រភពដដែលនៃការកាត់ទំព័រខុស ⇒ ដកចេញ ។ */
@@ -52533,17 +52565,11 @@ var AR_CSS = `
   .ar-info td.eq{height:4.3em;}   /* [stated] ៣ ជួរ */
   .ar-info td.eq2{height:4.3em;}  /* [stated] ៣ ជួរ */
   .ar-info td.nw{white-space:nowrap;}
-  /* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «នៅផ្នែករបាយការណ៍សវនកម្ម ជួយ spacing
-     ដើម្បីឱ្យតារាងវានៅជិតនឹង footer កុំឱ្យជិតពេក នៅលើបន្ទាត់» ។
-     ⚠ វាស់បាន ៖ បាតតារាង ២១៣,៨mm · footer ២៥៤,៧mm ⇒ ចន្លោះ **៤០,៩mm**
-       ( កុំព្យូទ័រ ) និង ៣០,៩mm ( ទូរស័ព្ទ ) — ខុសគ្នា ព្រោះកម្ពស់ទំព័រ
-       ខុសគ្នា ( ២៦២ ធៀប ២៥២ ) ។
-     ⇒ កម្ពស់ថេរណាមួយ**មិនអាចត្រូវទាំងពីរ**បានឡើយ ⇒ ចងទៅនឹងអថេរ --nr-ph ៖
-       តារាងចាប់ផ្តើម ៨៧,៥mm · footer នៅ ( ទំព័រ − ៧,៣mm ) · ចង់បានចន្លោះ
-       ១០mm ⇒ កម្ពស់ = ទំព័រ − ១០៥mm ⇒ ចន្លោះ ១០,២mm ដូចគ្នាទាំងពីរ ។
-     ⚠ តារាងមានមាតិកា ១២៦mm ⇒ តូចជាងកម្ពស់ថ្មី ⇒ ជួរលាតចេញស្មើៗ
-       គ្មានការហៀរ ។ AR_CSS ប្រើរួមទាំងព្រីន និងអេក្រង់ ⇒ parity រក្សាបាន ។ */
-  .ar-info{ height:calc(var(--nr-ph, 252mm) - 105mm); }
+  /* ⚠⚠ [stated] ២០២៦-១១-១៤ ៖ ការកំណត់កម្ពស់តារាងនេះ ( ដើម្បីបិតឱ្យជិត
+     footer ) ត្រូវបានដកចេញវិញ ៖ កម្មវិធីបំបែកទំព័រវាស់កម្ពស់ធាតុដើម្បី
+     សម្រេចការបំបែកទំព័រ ⇒ តារាងធំជាងមុនធ្វើឱ្យវាធ្លាក់ទៅទំព័រទី ២
+     ហើយទំព័រទី ១ នៅទទេ ( ឃើញទាំង PC ទាំងទូរស័ព្ទ ) ។
+     មើលក្បាលឯកសារ fix_arrev.py ។ */
   .ar-r{display:flex; align-items:flex-start; gap:6px; margin-bottom:3px;}
   .ar-r .ar-rk{flex:0 0 auto; white-space:nowrap;}
   .ar-r .ar-rv{flex:1 1 auto; min-width:0;}
