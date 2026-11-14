@@ -3233,6 +3233,10 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
 #calcCard tr[data-basis]{cursor:pointer;}
 #calcCard tr[data-basis]:hover td{background:var(--accent-light) !important;}
 #calcCard .cc-drill{font-size:11px; opacity:.45;}
+/* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ 🔍 ទៅគែមស្តាំនៃក្រឡាស្លាក ⇒ ត្រង់ជួរគ្នា
+   គ្រប់ផ្ទាំង ( មើលក្បាល fix_drill.py ) ។ */
+#calcCard .cc-pane table td > .cc-drill{
+  float:right; margin-left:10px; margin-top:1px;}
 #calcCard tr[data-basis]:hover .cc-drill{opacity:1;}
 #calcCard td.cc-rate{text-align:left;}
 #calcCard td.cc-rate .cc-grid-in{width:58px; text-align:left;}
@@ -3261,6 +3265,28 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
 #calcCard .cc-lbl{font-size:12.5px; font-weight:700; color:var(--ink);}
 #calcCard .cc-x{border:0; background:var(--red-bg); color:var(--red); border-radius:7px; width:24px; height:24px; cursor:pointer; font-size:14px; line-height:1;}
 #calcCard .cc-chk{display:inline-flex; align-items:center; justify-content:center; width:100%;}
+/* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «ទំហំលេខ និងជួរនៅកន្លែងអាករលើតម្លៃបន្ថែម
+   មិនត្រូវគ្នា» ។ ⚠ ឫសគល់ទី ២ ( លើកុំព្យូទ័រ ) ៖ ច្បាប់ខាងលើដាក់
+   `width:100%` ⇒ ក្នុងក្រឡាដែលមាន **ធីក + លេខ** ប្រអប់ធីកស៊ីទទឹងពេញ
+   ក្រឡា ⇒ លេខត្រូវរុញ ⇒ គែមស្តាំខុសគេ ៧px ( វាស់បាន 1382 ធៀប 1375 ) ។
+   ⇒ ក្នុងតារាងផ្ទាំង ៖ ទទឹងតាមមាតិកា + គម្លាត ៧px ⇒ ត្រង់ជួរនឹងគេ ។
+   ( ច្បាប់ទូរស័ព្ទធ្វើរឿងនេះរួចហើយ — នេះជាគូរបស់វាសម្រាប់កុំព្យូទ័រ ។ ) */
+#calcCard .cc-pane table td .cc-chk{
+  width:auto; justify-content:flex-end; vertical-align:middle; margin-right:7px;}
+/* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «រៀបប្រអប់ធីកឱ្យស្មើគ្នា ដាក់វានៅខាងឆ្វេង» ។
+   ⚠ ក្នុងជួរហានិភ័យ ធីក និងលេខរួមក្នុង label តែមួយ ហើយក្រឡាតម្រឹមស្តាំ
+     ⇒ ទីតាំងធីកអាស្រ័យលើប្រវែងលេខ ⇒ មិនត្រង់ជួរ ។
+   ⇒ label ពេញទទឹងក្រឡា ៖ ធីកឆ្វេង លេខស្តាំ ⇒ ត្រង់ទាំងពីរ ។
+   ⚠ ត្រូវ `!important` ៖ ច្បាប់ខាងលើ និងច្បាប់ទូរស័ព្ទមានជាក់លាក់ភាព
+     ប្រហាក់ប្រហែល ⇒ បើគ្មាន វាឈ្នះវិញ ។ */
+#calcCard .cc-cutrow td.n .cc-chk{
+  display:flex !important; width:100% !important; margin-right:0 !important;
+  justify-content:space-between !important; align-items:center !important;
+  gap:8px; text-align:right;}
+#calcCard .cc-cutrow td.n .cc-chk > input[type="checkbox"]{ flex:0 0 auto; }
+/* ភាគរយក្នុងក្រឡាស្លាក ៖ តូចជាងស្លាក កុំឱ្យលេចជាងគេ */
+#calcCard .cc-dpct{ font-size:11px; opacity:.75; margin-left:2px; white-space:nowrap; }
+#calcCard .cc-pane table td .cc-chk > input[type="checkbox"]{ margin:0; }
 #calcCard .cc-chk input{accent-color:var(--primary); width:15px; height:15px;}
 #calcCard .cc-empty{padding:26px; text-align:center; color:var(--muted); font-size:13px;}
 #calcCard .cc-drafttag{font-size:11px; font-weight:800; letter-spacing:.08em; color:var(--yellow);
@@ -57689,7 +57715,9 @@ CC.BASIS={
             /* ជួរទាំងពីរនេះចេញជានិច្ច (មិនធីក = «—») ដូច្នេះបញ្ជីស្លាក
                ដដែលគ្រប់ឆ្នាំ ហើយ showBasis បង្រួមបានត្រឹមត្រូវ។ */
             Bn("＋ ចំណាយបៀវត្សប្រចាំខែ (ធីក)", CC.riskAddOn("sal",y)?o.expAddSal:null),
-            Bn("＋ ចំណាយពន្ធកាត់ទុក ៖ ទឹកប្រាក់ត្រូវបើក (ធីក)", CC.riskAddOn("wht",y)?o.expAddWht:null),
+            /* [stated] ២០២៦-១១-១៤ ៖ លុបអក្សរ «ទឹកប្រាក់ត្រូវបើក» ទីនេះដែរ
+               ( ប្រអប់ 🔍 ) ⇒ ស្លាកដូចគ្នានឹងក្នុងតារាង ។ */
+            Bn("＋ ចំណាយពន្ធកាត់ទុក (ធីក)", CC.riskAddOn("wht",y)?o.expAddWht:null),
             Bn("= សរុប",o.expM)]; }],
   /* [stated] ២០២៦-០៨-១៨ ៖ ចង់ចុចមើលថាចំណាយនោះចាយលើក្រុមហ៊ុនណា និងមាន
      CN/DN ឬអត់ — ជួររងទាំង ៤ បើកបញ្ជីអ្នកផ្គត់ផ្គង់ពីទិន្នានុប្បវត្តិទិញ។
@@ -60362,13 +60390,23 @@ function paneRisk(){
 
   /* ជួរគំលាត ៖ ពណ៌ក្រហមពេលខុសគ្នា ព្រោះនោះជាសញ្ញាហានិភ័យ */
   var diff=function(label,key,pctOf){
-    h.push('<tr class="cc-sum" data-basis="'+esc(key)+'"><td>'+esc(label)+' <span class="cc-drill">🔍</span></td>');
+    /* ⭐ [stated] ២០២៦-១១-១៤ ៖ ភាគរយផ្លាស់ពីជួរទី ២ ក្នុងក្រឡាលេខ
+       មកក្រឡាស្លាក បន្ទាប់ពី 🔍 ( មើលក្បាល fix_risk2.py ) ។ */
+    var pcs=[];
+    yrs.forEach(function(y){
+      var o=D[y]||{}, v=+o[key]||0, base=Math.abs(+o[pctOf]||0);
+      if(!base) return;
+      var p=v/base;
+      pcs.push('<span class="cc-dpct'+(Math.abs(p)>=0.05?" cc-riskbad":"")+'">'+
+        ((p>0?"+":"")+(p*100).toFixed(1)+'%')+'</span>');
+    });
+    h.push('<tr class="cc-sum" data-basis="'+esc(key)+'"><td>'+esc(label)+
+      ' <span class="cc-drill">🔍</span>'+(pcs.length?' '+pcs.join(' · '):'')+'</td>');
     yrs.forEach(function(y){
       var o=D[y]||{}, v=+o[key]||0, base=Math.abs(+o[pctOf]||0);
       var p=base?(v/base):0;
       var bad=Math.abs(p)>=0.05;
-      h.push('<td class="n cc-calc'+(bad?" cc-riskbad":"")+'">'+
-        (v?fmt(v):"0")+(base?'<div style="font-size:11px;opacity:.75">'+((p>0?"+":"")+(p*100).toFixed(1)+'%')+'</div>':'')+'</td>');
+      h.push('<td class="n cc-calc'+(bad?" cc-riskbad":"")+'">'+(v?fmt(v):"0")+'</td>');
     });
     h.push('</tr></tbody></table></div>');
   };
@@ -60401,7 +60439,8 @@ function paneRisk(){
   row('ការទិញមិនជាប់អាករ','expMN',null,1,'rExpMN');
   row('ចំណាយផ្សេងៗ','expMO',null,1,'rExpMO');
   addRow('sal','ចំណាយបៀវត្សប្រចាំខែ (ធីកដើម្បីបូកជាចំណាយ)','expAddSal');
-  addRow('wht','ចំណាយពន្ធកាត់ទុក ៖ ទឹកប្រាក់ត្រូវបើក (ធីកដើម្បីបូកជាចំណាយ)','expAddWht');
+  /* [stated] ២០២៦-១១-១៤ ៖ លុបអក្សរ «ទឹកប្រាក់ត្រូវបើក» */
+  addRow('wht','ចំណាយពន្ធកាត់ទុក (ធីកដើម្បីបូកជាចំណាយ)','expAddWht');
   cutRow('expCut');
   diff('គំលាត (ឆ្នាំ − ខែ)','expD','expY');
 
@@ -61983,9 +62022,11 @@ function result(rows,res){
           '</td>');
         return;
       }
+      /* ⭐ [stated] ២០២៦-១១-១៤ ៖ រុំក្នុង `.cc-chk` ដូចជួរធីកដទៃ
+         ( មើលក្បាល fix_vatchk.py ) ⇒ គម្លាត និងការតម្រឹមដូចគ្នា ។ */
       var tick = (r[1]==="vatCarryIn")
-        ? '<input type="checkbox" data-vcarry="'+y+'" title="ធីកបើត្រូវដក"'+
-          (CC.vatCarryOn(y)?' checked':'')+' style="margin-right:6px;vertical-align:middle">'
+        ? '<span class="cc-chk"><input type="checkbox" data-vcarry="'+y+'" title="ធីកបើត្រូវដក"'+
+          (CC.vatCarryOn(y)?' checked':'')+'></span>'
         : '';
       h.push('<td class="n'+(v<0?" neg":"")+'">'+tick+(r[2]==="%"?pct(v):fmt(v))+'</td>');});
     h.push('</tr>');
