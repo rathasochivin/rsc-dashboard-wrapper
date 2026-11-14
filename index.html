@@ -9126,6 +9126,21 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
          ⇒ តម្រៀបឡើងវិញ ៖ ចំណងជើង + ប៊ូតុង នៅបន្ទាត់ទី ១ ជានិច្ច ;
            ស្លាកដោះសោធ្លាក់ទៅបន្ទាត់ទី ២ ពេញទទឹង ។ */
       @media screen and (max-width: 760px){
+  /* ── ផ្ទាំងពន្ធកាត់ទុក ៖ របារតម្រង ⇒ ទំហំស្មើផ្ទាំងដទៃ ──────────
+     [stated] ២០២៦-១១-១៤ — មើលក្បាល fix_whtfs.py ។ */
+  #view-wht > .toolbar .import-group{ font-size:12px !important; }
+  #view-wht > .toolbar .import-group > span{ font-size:12px !important; }
+  #view-wht > .toolbar select.partner-select{
+    font-size:12px !important; height:30px !important; min-height:0 !important;
+    padding:2px 6px !important; }
+  /* ⚠ ប្រអប់វាយ ៖ ១៦px ជាការចាំបាច់ ( កុំឱ្យ iOS ពង្រីក ) ⇒ បន្ថយកម្ពស់ */
+  #view-wht > .toolbar input.partner-select{
+    height:30px !important; min-height:0 !important; padding:2px 6px !important; }
+  #view-wht > .toolbar .btn, #view-wht .xls-btn{
+    font-size:12px !important; height:30px !important; min-height:30px !important;
+    padding:0 10px !important; }
+  #view-wht .import-status{ font-size:10.5px !important; line-height:1.55 !important; }
+
         .vm-head{ gap:8px 10px; }
         .vm-head > b{ order:1; flex:1 1 auto; min-width:0; }
         .vm-head .btn{ order:2; margin-left:auto !important; flex:0 0 auto; white-space:nowrap; }
