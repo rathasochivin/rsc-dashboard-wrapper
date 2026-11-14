@@ -43,7 +43,7 @@
 })();
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SYSTEM · 14/11-B71</title>
+<title>SYSTEM · 14/11-B72</title>
 <!-- ដាក់លើអេក្រង់ដើមទូរស័ព្ទ ៖ រូបតំណាង ឈ្មោះ និងបើកពេញអេក្រង់
      manifest ដាក់ជា data URL ព្រោះ Apps Script បម្រើឯកសារតែមួយ។ -->
 <meta name="mobile-web-app-capable" content="yes">
@@ -985,109 +985,109 @@ td[contenteditable="true"]:focus{outline:2px solid var(--accent); outline-offset
 }
 
 /* ══════════════════════════════════════════════════════════════════
-   ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ របារតម្រង SR / PR — មើលក្បាល fix_srbar.py
+   ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ របារតម្រង SR / PR — មើលក្បាល fix_srcss.py
    ══════════════════════════════════════════════════════════════════ */
-#view-sale > .toolbar > *{ order:50; },
-#view-purchase > .toolbar > *{ order:50; },
-#view-cp-purchase > .toolbar > *{ order:50; },
-#view-cp-sale > .toolbar > *{ order:50; },
-#view-sale-cd > .toolbar > *{ order:50; },
-#view-purchase-cd > .toolbar > *{ order:50; },
-#view-vat-rvc > .toolbar > *{ order:50; },
-#view-other-expenses > .toolbar > *{ order:50; },
+#view-sale > .toolbar > *,
+#view-purchase > .toolbar > *,
+#view-cp-purchase > .toolbar > *,
+#view-cp-sale > .toolbar > *,
+#view-sale-cd > .toolbar > *,
+#view-purchase-cd > .toolbar > *,
+#view-vat-rvc > .toolbar > *,
+#view-other-expenses > .toolbar > *,
 #view-wht > .toolbar > *{ order:50; }
-#view-sale > .toolbar > .import-group:has([id^="ministry-"]){ order:10; },
-#view-purchase > .toolbar > .import-group:has([id^="ministry-"]){ order:10; },
-#view-cp-purchase > .toolbar > .import-group:has([id^="ministry-"]){ order:10; },
-#view-cp-sale > .toolbar > .import-group:has([id^="ministry-"]){ order:10; },
-#view-sale-cd > .toolbar > .import-group:has([id^="ministry-"]){ order:10; },
-#view-purchase-cd > .toolbar > .import-group:has([id^="ministry-"]){ order:10; },
-#view-vat-rvc > .toolbar > .import-group:has([id^="ministry-"]){ order:10; },
-#view-other-expenses > .toolbar > .import-group:has([id^="ministry-"]){ order:10; },
+#view-sale > .toolbar > .import-group:has([id^="ministry-"]),
+#view-purchase > .toolbar > .import-group:has([id^="ministry-"]),
+#view-cp-purchase > .toolbar > .import-group:has([id^="ministry-"]),
+#view-cp-sale > .toolbar > .import-group:has([id^="ministry-"]),
+#view-sale-cd > .toolbar > .import-group:has([id^="ministry-"]),
+#view-purchase-cd > .toolbar > .import-group:has([id^="ministry-"]),
+#view-vat-rvc > .toolbar > .import-group:has([id^="ministry-"]),
+#view-other-expenses > .toolbar > .import-group:has([id^="ministry-"]),
 #view-wht > .toolbar > .import-group:has([id^="ministry-"]){ order:10; }
-#view-sale > .toolbar > .import-group:has([id^="search-"]):not(:has([id^="search-invoice-"])):not(:has([id^="search-product-"])){ order:20; },
-#view-purchase > .toolbar > .import-group:has([id^="search-"]):not(:has([id^="search-invoice-"])):not(:has([id^="search-product-"])){ order:20; },
-#view-cp-purchase > .toolbar > .import-group:has([id^="search-"]):not(:has([id^="search-invoice-"])):not(:has([id^="search-product-"])){ order:20; },
-#view-cp-sale > .toolbar > .import-group:has([id^="search-"]):not(:has([id^="search-invoice-"])):not(:has([id^="search-product-"])){ order:20; },
-#view-sale-cd > .toolbar > .import-group:has([id^="search-"]):not(:has([id^="search-invoice-"])):not(:has([id^="search-product-"])){ order:20; },
-#view-purchase-cd > .toolbar > .import-group:has([id^="search-"]):not(:has([id^="search-invoice-"])):not(:has([id^="search-product-"])){ order:20; },
-#view-vat-rvc > .toolbar > .import-group:has([id^="search-"]):not(:has([id^="search-invoice-"])):not(:has([id^="search-product-"])){ order:20; },
-#view-other-expenses > .toolbar > .import-group:has([id^="search-"]):not(:has([id^="search-invoice-"])):not(:has([id^="search-product-"])){ order:20; },
+#view-sale > .toolbar > .import-group:has([id^="search-"]):not(:has([id^="search-invoice-"])):not(:has([id^="search-product-"])),
+#view-purchase > .toolbar > .import-group:has([id^="search-"]):not(:has([id^="search-invoice-"])):not(:has([id^="search-product-"])),
+#view-cp-purchase > .toolbar > .import-group:has([id^="search-"]):not(:has([id^="search-invoice-"])):not(:has([id^="search-product-"])),
+#view-cp-sale > .toolbar > .import-group:has([id^="search-"]):not(:has([id^="search-invoice-"])):not(:has([id^="search-product-"])),
+#view-sale-cd > .toolbar > .import-group:has([id^="search-"]):not(:has([id^="search-invoice-"])):not(:has([id^="search-product-"])),
+#view-purchase-cd > .toolbar > .import-group:has([id^="search-"]):not(:has([id^="search-invoice-"])):not(:has([id^="search-product-"])),
+#view-vat-rvc > .toolbar > .import-group:has([id^="search-"]):not(:has([id^="search-invoice-"])):not(:has([id^="search-product-"])),
+#view-other-expenses > .toolbar > .import-group:has([id^="search-"]):not(:has([id^="search-invoice-"])):not(:has([id^="search-product-"])),
 #view-wht > .toolbar > .import-group:has([id^="search-"]):not(:has([id^="search-invoice-"])):not(:has([id^="search-product-"])){ order:20; }
-#view-sale > .toolbar > .import-group:has([id^="search-invoice-"]){ order:30; },
-#view-purchase > .toolbar > .import-group:has([id^="search-invoice-"]){ order:30; },
-#view-cp-purchase > .toolbar > .import-group:has([id^="search-invoice-"]){ order:30; },
-#view-cp-sale > .toolbar > .import-group:has([id^="search-invoice-"]){ order:30; },
-#view-sale-cd > .toolbar > .import-group:has([id^="search-invoice-"]){ order:30; },
-#view-purchase-cd > .toolbar > .import-group:has([id^="search-invoice-"]){ order:30; },
-#view-vat-rvc > .toolbar > .import-group:has([id^="search-invoice-"]){ order:30; },
-#view-other-expenses > .toolbar > .import-group:has([id^="search-invoice-"]){ order:30; },
+#view-sale > .toolbar > .import-group:has([id^="search-invoice-"]),
+#view-purchase > .toolbar > .import-group:has([id^="search-invoice-"]),
+#view-cp-purchase > .toolbar > .import-group:has([id^="search-invoice-"]),
+#view-cp-sale > .toolbar > .import-group:has([id^="search-invoice-"]),
+#view-sale-cd > .toolbar > .import-group:has([id^="search-invoice-"]),
+#view-purchase-cd > .toolbar > .import-group:has([id^="search-invoice-"]),
+#view-vat-rvc > .toolbar > .import-group:has([id^="search-invoice-"]),
+#view-other-expenses > .toolbar > .import-group:has([id^="search-invoice-"]),
 #view-wht > .toolbar > .import-group:has([id^="search-invoice-"]){ order:30; }
-#view-sale > .toolbar > .import-group:has(select[id^="cat"]){ order:40; },
-#view-purchase > .toolbar > .import-group:has(select[id^="cat"]){ order:40; },
-#view-cp-purchase > .toolbar > .import-group:has(select[id^="cat"]){ order:40; },
-#view-cp-sale > .toolbar > .import-group:has(select[id^="cat"]){ order:40; },
-#view-sale-cd > .toolbar > .import-group:has(select[id^="cat"]){ order:40; },
-#view-purchase-cd > .toolbar > .import-group:has(select[id^="cat"]){ order:40; },
-#view-vat-rvc > .toolbar > .import-group:has(select[id^="cat"]){ order:40; },
-#view-other-expenses > .toolbar > .import-group:has(select[id^="cat"]){ order:40; },
+#view-sale > .toolbar > .import-group:has(select[id^="cat"]),
+#view-purchase > .toolbar > .import-group:has(select[id^="cat"]),
+#view-cp-purchase > .toolbar > .import-group:has(select[id^="cat"]),
+#view-cp-sale > .toolbar > .import-group:has(select[id^="cat"]),
+#view-sale-cd > .toolbar > .import-group:has(select[id^="cat"]),
+#view-purchase-cd > .toolbar > .import-group:has(select[id^="cat"]),
+#view-vat-rvc > .toolbar > .import-group:has(select[id^="cat"]),
+#view-other-expenses > .toolbar > .import-group:has(select[id^="cat"]),
 #view-wht > .toolbar > .import-group:has(select[id^="cat"]){ order:40; }
 /* ⚠ ច្បាប់ខាងលើ ( order:90 · margin-left:auto ) ត្រូវសរសេរជាន់ត្រង់នេះ */
-#view-sale > .toolbar > .btn.ghost{ order:41; margin-left:0; },
-#view-purchase > .toolbar > .btn.ghost{ order:41; margin-left:0; },
-#view-cp-purchase > .toolbar > .btn.ghost{ order:41; margin-left:0; },
-#view-cp-sale > .toolbar > .btn.ghost{ order:41; margin-left:0; },
-#view-sale-cd > .toolbar > .btn.ghost{ order:41; margin-left:0; },
-#view-purchase-cd > .toolbar > .btn.ghost{ order:41; margin-left:0; },
-#view-vat-rvc > .toolbar > .btn.ghost{ order:41; margin-left:0; },
-#view-other-expenses > .toolbar > .btn.ghost{ order:41; margin-left:0; },
+#view-sale > .toolbar > .btn.ghost,
+#view-purchase > .toolbar > .btn.ghost,
+#view-cp-purchase > .toolbar > .btn.ghost,
+#view-cp-sale > .toolbar > .btn.ghost,
+#view-sale-cd > .toolbar > .btn.ghost,
+#view-purchase-cd > .toolbar > .btn.ghost,
+#view-vat-rvc > .toolbar > .btn.ghost,
+#view-other-expenses > .toolbar > .btn.ghost,
 #view-wht > .toolbar > .btn.ghost{ order:41; margin-left:0; }
-#view-sale > .toolbar > span[id^="ccy-"]{ order:42; },
-#view-purchase > .toolbar > span[id^="ccy-"]{ order:42; },
-#view-cp-purchase > .toolbar > span[id^="ccy-"]{ order:42; },
-#view-cp-sale > .toolbar > span[id^="ccy-"]{ order:42; },
-#view-sale-cd > .toolbar > span[id^="ccy-"]{ order:42; },
-#view-purchase-cd > .toolbar > span[id^="ccy-"]{ order:42; },
-#view-vat-rvc > .toolbar > span[id^="ccy-"]{ order:42; },
-#view-other-expenses > .toolbar > span[id^="ccy-"]{ order:42; },
+#view-sale > .toolbar > span[id^="ccy-"],
+#view-purchase > .toolbar > span[id^="ccy-"],
+#view-cp-purchase > .toolbar > span[id^="ccy-"],
+#view-cp-sale > .toolbar > span[id^="ccy-"],
+#view-sale-cd > .toolbar > span[id^="ccy-"],
+#view-purchase-cd > .toolbar > span[id^="ccy-"],
+#view-vat-rvc > .toolbar > span[id^="ccy-"],
+#view-other-expenses > .toolbar > span[id^="ccy-"],
 #view-wht > .toolbar > span[id^="ccy-"]{ order:42; }
-#view-sale > .toolbar > .xls-btn{ order:43; margin-left:0 !important; },
-#view-purchase > .toolbar > .xls-btn{ order:43; margin-left:0 !important; },
-#view-cp-purchase > .toolbar > .xls-btn{ order:43; margin-left:0 !important; },
-#view-cp-sale > .toolbar > .xls-btn{ order:43; margin-left:0 !important; },
-#view-sale-cd > .toolbar > .xls-btn{ order:43; margin-left:0 !important; },
-#view-purchase-cd > .toolbar > .xls-btn{ order:43; margin-left:0 !important; },
-#view-vat-rvc > .toolbar > .xls-btn{ order:43; margin-left:0 !important; },
-#view-other-expenses > .toolbar > .xls-btn{ order:43; margin-left:0 !important; },
+#view-sale > .toolbar > .xls-btn,
+#view-purchase > .toolbar > .xls-btn,
+#view-cp-purchase > .toolbar > .xls-btn,
+#view-cp-sale > .toolbar > .xls-btn,
+#view-sale-cd > .toolbar > .xls-btn,
+#view-purchase-cd > .toolbar > .xls-btn,
+#view-vat-rvc > .toolbar > .xls-btn,
+#view-other-expenses > .toolbar > .xls-btn,
 #view-wht > .toolbar > .xls-btn{ order:43; margin-left:0 !important; }
 /* ទុកតែរូប ៖ ពាក្យពេញនៅក្នុង title */
-#view-sale > .toolbar > .xls-btn > span{ display:none; },
-#view-purchase > .toolbar > .xls-btn > span{ display:none; },
-#view-cp-purchase > .toolbar > .xls-btn > span{ display:none; },
-#view-cp-sale > .toolbar > .xls-btn > span{ display:none; },
-#view-sale-cd > .toolbar > .xls-btn > span{ display:none; },
-#view-purchase-cd > .toolbar > .xls-btn > span{ display:none; },
-#view-vat-rvc > .toolbar > .xls-btn > span{ display:none; },
-#view-other-expenses > .toolbar > .xls-btn > span{ display:none; },
-#view-wht > .toolbar > .xls-btn > span{ display:none; }
-#view-sale > .toolbar > span[id^="ccy-"] .ccy-t{ display:none; },
-#view-purchase > .toolbar > span[id^="ccy-"] .ccy-t{ display:none; },
-#view-cp-purchase > .toolbar > span[id^="ccy-"] .ccy-t{ display:none; },
-#view-cp-sale > .toolbar > span[id^="ccy-"] .ccy-t{ display:none; },
-#view-sale-cd > .toolbar > span[id^="ccy-"] .ccy-t{ display:none; },
-#view-purchase-cd > .toolbar > span[id^="ccy-"] .ccy-t{ display:none; },
-#view-vat-rvc > .toolbar > span[id^="ccy-"] .ccy-t{ display:none; },
-#view-other-expenses > .toolbar > span[id^="ccy-"] .ccy-t{ display:none; },
-#view-wht > .toolbar > span[id^="ccy-"] .ccy-t{ display:none; }
+#view-sale .xls-btn > span,
+#view-purchase .xls-btn > span,
+#view-cp-purchase .xls-btn > span,
+#view-cp-sale .xls-btn > span,
+#view-sale-cd .xls-btn > span,
+#view-purchase-cd .xls-btn > span,
+#view-vat-rvc .xls-btn > span,
+#view-other-expenses .xls-btn > span,
+#view-wht .xls-btn > span{ display:none; }
+#view-sale span[id^="ccy-"] .ccy-t,
+#view-purchase span[id^="ccy-"] .ccy-t,
+#view-cp-purchase span[id^="ccy-"] .ccy-t,
+#view-cp-sale span[id^="ccy-"] .ccy-t,
+#view-sale-cd span[id^="ccy-"] .ccy-t,
+#view-purchase-cd span[id^="ccy-"] .ccy-t,
+#view-vat-rvc span[id^="ccy-"] .ccy-t,
+#view-other-expenses span[id^="ccy-"] .ccy-t,
+#view-wht span[id^="ccy-"] .ccy-t{ display:none; }
 /* អូសផ្តេកកុំឱ្យញ័រ */
-#view-sale .table-scroll{ overflow-x:auto; overflow-y:hidden; overscroll-behavior-x:contain; },
-#view-purchase .table-scroll{ overflow-x:auto; overflow-y:hidden; overscroll-behavior-x:contain; },
-#view-cp-purchase .table-scroll{ overflow-x:auto; overflow-y:hidden; overscroll-behavior-x:contain; },
-#view-cp-sale .table-scroll{ overflow-x:auto; overflow-y:hidden; overscroll-behavior-x:contain; },
-#view-sale-cd .table-scroll{ overflow-x:auto; overflow-y:hidden; overscroll-behavior-x:contain; },
-#view-purchase-cd .table-scroll{ overflow-x:auto; overflow-y:hidden; overscroll-behavior-x:contain; },
-#view-vat-rvc .table-scroll{ overflow-x:auto; overflow-y:hidden; overscroll-behavior-x:contain; },
-#view-other-expenses .table-scroll{ overflow-x:auto; overflow-y:hidden; overscroll-behavior-x:contain; },
+#view-sale .table-scroll,
+#view-purchase .table-scroll,
+#view-cp-purchase .table-scroll,
+#view-cp-sale .table-scroll,
+#view-sale-cd .table-scroll,
+#view-purchase-cd .table-scroll,
+#view-vat-rvc .table-scroll,
+#view-other-expenses .table-scroll,
 #view-wht .table-scroll{ overflow-x:auto; overflow-y:hidden; overscroll-behavior-x:contain; }
 /* ជួរស្ថានភាពក្រោមតារាង ៖ ក្លាយជាបន្ទះស្តើង អានស្រួលជាងអក្សរអណ្តែត */
 #view-sale .raw-note, #view-purchase .raw-note,
@@ -2606,7 +2606,7 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
    ⇒ វាអង្គុយទាប ។ `align-self:center` ដាក់វាចំកណ្តាលកម្ពស់ជួរវិញ ។ */
 #view-tracking .smw-r .bq, #docs-modal .smw-r .bq{
   flex:0 0 auto; align-self:start; color:#111; margin-right:5px;
-  font-size:.64em; line-height:2.89; }
+  font-size:.88em; line-height:2.102; }
 /* ⚠ ទូរស័ព្ទរក្សាទំហំចាស់ ( .44em ) — មើលក្បាល fix_bq3.py */
 html.rsc-mobile-print #view-tracking .smw-r .bq,
 html.rsc-mobile-print #docs-modal .smw-r .bq{ font-size:.44em; line-height:4.2; }
@@ -5839,10 +5839,33 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     #toi-embed .de-dates > *{ min-width:0 !important; }
     /* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ ស្លាក និងតម្លៃនៅជួរតែមួយ ហើយចំកណ្តាល
        ⇒ ចំណងជើង និងលទ្ធផលឈរត្រង់គ្នា មិនឡើងលើចុះក្រោម ។ */
-    #toi-embed .de-head > *, #toi-embed .de-head-f > *,
-    #toi-embed .de-book > *, #toi-embed .de-dates > *{
-      flex-direction:row !important; align-items:center !important;
-      justify-content:center !important; gap:8px !important; }
+    /* ⚠⚠⚠ ទម្ងន់ត្រូវខ្លាំងជាងច្បាប់ចាស់ `div[style*="display:flex"]
+       :not([class])` ដែលបង្ខំ `display:block !important` — មើលក្បាល
+       fix_deflex2.py ។ `div[style]:not([hidden])` ⇒ (1,3,1) ⇒ ឈ្នះ ។ */
+    #toi-embed .de-head > div[style]:not([hidden]),
+    #toi-embed .de-book > div[style]:not([hidden]),
+    #toi-embed .de-dates > div[style]:not([hidden]){
+      display:flex !important; flex-direction:row !important;
+      flex-wrap:nowrap !important; align-items:center !important;
+      justify-content:center !important; gap:8px !important;
+      width:100% !important; max-width:100% !important; }
+    /* ស្លាក ៖ ច្បាប់ចាស់ដាក់ `display:block` លើ span (1,2,2) ⇒ ត្រូវខ្លាំងជាង */
+    #toi-embed .de-head > div[style]:not([hidden]) > span,
+    #toi-embed .de-head > div[style]:not([hidden]) > label,
+    #toi-embed .de-book > div[style]:not([hidden]) > span,
+    #toi-embed .de-book > div[style]:not([hidden]) > label,
+    #toi-embed .de-dates > div[style]:not([hidden]) > span,
+    #toi-embed .de-dates > div[style]:not([hidden]) > label{
+      display:inline-block !important; white-space:nowrap !important;
+      flex:0 0 auto !important; margin:0 !important;
+      font-size:12px !important; line-height:1.4 !important; }
+    /* វាល ៖ យកចន្លោះដែលនៅសល់ ( ច្បាប់ចាស់ `.field-input{width:100%}` (1,1,0) ) */
+    #toi-embed .de-head > div[style]:not([hidden]) > .field-input,
+    #toi-embed .de-book > div[style]:not([hidden]) > .field-input,
+    #toi-embed .de-dates > div[style]:not([hidden]) > .field-input{
+      flex:1 1 auto !important; width:auto !important;
+      min-width:0 !important; margin:0 !important; }
+    #toi-embed .de-head-f > *{ align-self:center !important; }
     #toi-embed .de-head label, #toi-embed .de-head-f label,
     #toi-embed .de-book label, #toi-embed .de-dates label{
       flex:0 0 auto !important; white-space:nowrap !important; margin:0 !important; }
@@ -34886,12 +34909,38 @@ function renderDataEntryPanel(){
      ប្រវែងតម្លៃ **តែពេលគូរ ឬពេលបង្រួមស្វ័យប្រវត្តិ** ។ ពេលអ្នកប្រើ
      វាយបន្ថែម គ្មានអ្វីធ្វើឱ្យវាគណនាឡើងវិញទេ ⇒ តម្លៃវែងជាងទទឹងចាស់
      ⇒ ដាច់ ។ ⇒ ធ្វើបច្ចុប្បន្នភាពទទឹងភ្លាមៗពេលវាយ ។ */
-  var __deFit = function(inp){
+  /* ⭐⭐⭐ វាស់អត្ថបទពិត — មើលក្បាល fix_demeas.py */
+  var __deMeas = null;
+  var __deFitPx = function(inp){
     try{
+      var host = inp.parentElement || inp;
+      if(!__deMeas || !__deMeas.parentElement){
+        __deMeas = document.createElement('span');
+        __deMeas.setAttribute('aria-hidden', 'true');
+        __deMeas.style.cssText = 'position:absolute; left:-9999px; top:0;' +
+          ' white-space:pre; visibility:hidden; pointer-events:none;';
+      }
+      if(__deMeas.parentElement !== host) host.appendChild(__deMeas);
+      var cs = window.getComputedStyle(inp);
+      __deMeas.style.fontSize = cs.fontSize;
+      __deMeas.style.fontFamily = cs.fontFamily;
+      __deMeas.style.fontWeight = cs.fontWeight;
+      __deMeas.style.fontStyle = cs.fontStyle;
+      __deMeas.style.letterSpacing = cs.letterSpacing;
+      __deMeas.textContent = String(inp.value || inp.getAttribute('placeholder') || '');
+      /* +14 ៖ padding ឆ្វេង/ស្តាំ + ស៊ុម + ចន្លោះសុវត្ថិភាព ១ តួ */
+      var w = Math.ceil(__deMeas.offsetWidth) + 18;
+      if(w < 44) w = 44;
+      if(w > 260) w = 260;
+      inp.style.setProperty('width', w + 'px', 'important');
+      inp.style.setProperty('min-width', w + 'px', 'important');
+      /* `size` ទុកជាបម្រុង បើការវាស់បរាជ័យនៅកន្លែងណាមួយ */
       var t = String(inp.value || inp.placeholder || '');
       inp.setAttribute('size', String(Math.max(5, Math.min(26, t.length + 1))));
     }catch(e){}
   };
+  var __deFit = __deFitPx;
+  try{ window.__deFitPx = __deFitPx; }catch(e){}
   progTableEl.querySelectorAll('.de-cell').forEach(inp=>{
     __deFit(inp);
     inp.addEventListener('input', ()=>{ setDE(inp.dataset.key, inp.value); __deFit(inp); });
@@ -36141,10 +36190,9 @@ function toiAutoFit(force){
        ពីប្រវែងអក្សរ ⇒ កំណត់ `size` តាមប្រវែង ទើបតារាងយល់ ។
        ⚠ ត្រូវធ្វើ **មុនការវាស់** ⇒ ការបង្រួមគិតលើទទឹងថ្មី ។ */
     try{
-      var __dIn = host.querySelectorAll('table.de-fit-table input'), __k, __t;
+      var __dIn = host.querySelectorAll('table.de-fit-table input'), __k;
       for(__k = 0; __k < __dIn.length; __k++){
-        __t = String(__dIn[__k].value || __dIn[__k].placeholder || '');
-        __dIn[__k].setAttribute('size', String(Math.max(5, Math.min(26, __t.length + 1))));
+        if(window.__deFitPx) window.__deFitPx(__dIn[__k]);
       }
     }catch(e3){}
     try{ if(window.__cvLabelFit) window.__cvLabelFit(); }catch(e4){}
@@ -53846,7 +53894,7 @@ const SMW_CSS = `
      ធំពេក ដាក់វាដូចទំហំក្នុងរូប» ⇒ ខ្ញុំលើកពី ៩px ទៅ ១៥px ហួសទៅ
      ⇒ ចុះមក ១១px ( ចន្លោះកណ្តាល ដូចក្នុងរូប Word ) ។ */
   .smw-r .bq{ flex:0 0 auto; align-self:start; color:#111; margin-right:5px;
-    font-size:.64em; line-height:2.89; }
+    font-size:.88em; line-height:2.102; }
   html.rsc-mobile-print .smw-r .bq{ font-size:.44em; line-height:4.2; }
   /* ⭐ វាលបំពេញហូរតត្រង់ក្រោយស្លាក ⇒ ជួរក្លាយជាប្លុកធម្មតា ( មិនមែន flex )
      ⚠ :has() មានលើ iOS 16.4+ · Chrome 105+ ; បើគ្មាន វាត្រឡប់ទៅរបៀបចាស់ */
@@ -64763,7 +64811,7 @@ else CC.init();
      ការរក្សាទុកឥឡូវ **រាយលេខជំហាន** លើផ្ទាំង ហើយផ្អាកអោយផ្ទាំងគូររួច
      មុននឹងចាប់ការងារធ្ងន់នីមួយៗ។ សារចុងក្រោយដែលឃើញ = ជំហានដែលគាំង។
      លេខ build ក៏បង្ហាញផង ដើម្បីដឹងច្បាស់ថាកំពុងប្រើឯកសារណា។ */
-  var RSC_BUILD = '14/11 · B71';
+  var RSC_BUILD = '14/11 · B72';
   try{ window.__RSC_BUILD = RSC_BUILD; }catch(e){}
 
   /* ⚠⚠ [stated] ២០២៦-០៨-១៣ ៖ រូបថតបង្ហាញ **«Page Unresponsive» របស់ Chrome**
