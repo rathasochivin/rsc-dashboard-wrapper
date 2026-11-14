@@ -632,6 +632,22 @@ body.view-mtr-active main{align-self:flex-start; min-height:0;}
    ⚠ កុំព្យូទ័រមិនប្តូរអ្វីទាំងអស់ ( ច្បាប់ក្នុង max-width:760px ) ។
    ══════════════════════════════════════════════════════════════════════ */
 @media screen and (max-width: 760px){
+  /* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ ផ្ទាំង «ព័ត៌មានផ្ទាល់ខ្លួន» សមក្នុងអេក្រង់
+     ⚠ `!important` ចាំបាច់ ៖ ផ្ទាំងនេះសរសេរដោយ inline style ទាំងស្រុង ។ */
+  .pi-wrap{ margin:10px auto !important; padding:12px !important; }
+  .pi-wrap label{ font-size:10.5px !important; margin-bottom:2px !important;
+    line-height:1.4 !important; }
+  .pi-wrap input:not([type="checkbox"]){
+    padding:5px 9px !important; font-size:12.5px !important;
+    height:32px !important; min-height:32px !important; border-radius:7px !important; }
+  .pi-wrap input[type="checkbox"]{ width:16px !important; height:16px !important; }
+  .pi-wrap .pi-h{ font-size:12px !important; margin:10px 0 5px !important; }
+  .pi-wrap .pi-row{ gap:6px !important; margin-bottom:6px !important; }
+  /* វាលផ្សេងៗ ៖ ១ ជួរឈរ ⇒ ២ ជួរឈរ ⇒ កម្ពស់ចុះជិតពាក់កណ្តាល */
+  .pi-wrap .pi-g1{ gap:8px !important; }
+  .pi-wrap .pi-g2{
+    grid-template-columns:repeat(2, minmax(0,1fr)) !important;
+    gap:8px !important; margin-top:8px !important; }
   /* ១ · កម្ពស់តាមមាតិកា ⇒ លែងមានចន្លោះទទេក្រោមកាតខ្លី */
   .module-grid{
     grid-template-columns:minmax(0,1fr) !important;
@@ -1912,11 +1928,17 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
      ដូចគ្នា គ្មានស៊ុម ⇒ ចន្លោះ ១០px មើលទៅដូចជាបន្ទះតែមួយ ។
    ⇒ ដាក់ស៊ុមច្បាស់ ផ្ទៃស ចន្លោះ ១៤px និងស្លាកតូចជាងបន្តិច
      ⇒ អានឃើញថាជា **ពីរវាលដាច់ពីគ្នា** ។ */
-.trk-ask-row{display:grid; grid-template-columns:1fr 1fr; gap:12px; align-items:end;}
-/* ស្លាកអាចចុះ ២ បន្ទាត់ក៏បាន — វាលទាំងពីរនៅតែតម្រឹមបាតដូចគ្នា */
-.trk-ask-row > label{display:flex; flex-direction:column; justify-content:flex-end;
-  min-width:0; margin-bottom:10px; height:100%;
-  font-size:11.5px; line-height:1.4; color:#555;}
+.trk-ask-row{display:grid; grid-template-columns:1fr 1fr; gap:10px; align-items:stretch;}
+/* ⚠ ស្លាកត្រូវ **រុំបាន** ៖ បើវា nowrap វាហៀរចេញក្រៅជួរឈរ ហើយជាន់លើវាល
+   ម្ខាងទៀត ( នេះជាអ្វីដែលឃើញលើឧបករណ៍ពិត ) ។
+   ⚠ ស្លាកនិងវាលបំបែកជា ២ ជួរថេរ ⇒ ទោះស្លាកម្ខាងចុះ ២ បន្ទាត់ វាលទាំងពីរ
+     នៅតែចាប់ផ្តើមត្រង់កម្ពស់តែមួយ ⇒ «ស្មើគ្នា» ពិតប្រាកដ ។ */
+.trk-ask-row > label{display:grid; grid-template-rows:auto auto; align-content:end;
+  min-width:0; margin-bottom:10px;
+  font-size:11.5px !important; line-height:1.35 !important; color:#555;}
+.trk-ask-row > label > .l{
+  display:block; min-height:2.7em;
+  white-space:normal !important; overflow-wrap:anywhere; word-break:break-word;}
 .trk-ask-row input,.trk-ask-row select{
   min-width:0 !important; width:100% !important; box-sizing:border-box;
   background:#fff !important; border:1px solid #c9c2ab !important;
@@ -2269,8 +2291,15 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
 #view-tracking .rpt-fin th.u, #docs-modal .rpt-fin th.u{font-weight:400; font-size:10px;}
 #view-tracking .rpt-fin td.key, #docs-modal .rpt-fin td.key{background:#fff8c4;}
 #view-tracking .rpt-fin, #docs-modal .rpt-fin{table-layout:fixed;}
-#view-tracking .rpt-fin th.l, #view-tracking .rpt-fin td.l, #docs-modal .rpt-fin th.l, #docs-modal .rpt-fin td.l{width:32%;}
-#view-tracking .rpt-fin th.yo, #docs-modal .rpt-fin th.yo{width:6%;}
+/* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «យុទ្ធសាស្ត្រផែនការ កន្លែងតារាងតុល្យការ និង
+   គណនីលទ្ធផល គួរតែដាក់បរិយាយឱ្យ fit កុំឱ្យវាចុះបន្ទាត់» ។
+   ⚠ តារាងនេះ `table-layout:fixed` ហើយជួរបរិយាយជាប់ត្រឹម **៣២%**
+     ⇒ អត្ថបទវែង ( ឧ. «ទ្រព្យសកម្មរយៈពេលវែង [A1=សរុប(A2:A12)]» ) ចុះ ២ បន្ទាត់
+     ខណៈជួរឆ្នាំស៊ី ៦២% ហើយទុកចន្លោះទទេធំនៅកណ្តាល ។
+   ⇒ ផ្លាស់ទទឹង ៖ បរិយាយ ៣២% ⇒ ៤៨% · យោង ៦% ⇒ ៧% ⇒ ជួរឆ្នាំនៅសល់ ៤៥%
+     ( ១ ឆ្នាំ = ធំល្មមណាស់ ; ច្រើនឆ្នាំ ក៏នៅចែកបានដដែល ) ។ */
+#view-tracking .rpt-fin th.l, #view-tracking .rpt-fin td.l, #docs-modal .rpt-fin th.l, #docs-modal .rpt-fin td.l{width:48%;}
+#view-tracking .rpt-fin th.yo, #docs-modal .rpt-fin th.yo{width:7%;}
 #view-tracking .rpt-fin.rpt-ratio, #docs-modal .rpt-fin.rpt-ratio{table-layout:auto;}
 #view-tracking .rpt-fin.rpt-ratio th.l, #view-tracking .rpt-fin.rpt-ratio td.l, #docs-modal .rpt-fin.rpt-ratio th.l, #docs-modal .rpt-fin.rpt-ratio td.l{width:auto; white-space:nowrap;}
 #view-tracking .rpt-fin.rpt-ratio th.ref, #view-tracking .rpt-fin.rpt-ratio td.ref, #docs-modal .rpt-fin.rpt-ratio th.ref, #docs-modal .rpt-fin.rpt-ratio td.ref{width:auto; white-space:nowrap;}
@@ -2383,8 +2412,12 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
 /* ⭐ សញ្ញា ▪ · វាលហូរតត្រង់ · ប្រអប់ហត្ថលេខាខាងស្តាំ ( ត្រូវដូច SMW_CSS ) */
 /* [stated] ២០២៦-១១-១៤ ៖ «សញ្ញាចុច នៅពីមុខ ចុះបញ្ជី ដល់ សម្គាល់ ជួយធ្វើ
    ឱ្យតូចជាងនេះពាក់កណ្តាល» ⇒ ១១px ⇒ ៥,៥px ( ពាក់កណ្តាលពិត ) ។ */
+/* [stated] ២០២៦-១១-១៤ ៖ «សញ្ញាចុចពីមុខនោះ ដាក់វាចំកណ្តាលនៃអក្សរ មិនមែន
+   នៅខាងក្រោមទេ» ។ ⚠ ប្រអប់ inline តូច តម្រឹមតាម **បន្ទាត់គោល** របស់អក្សរ
+   ⇒ វាអង្គុយទាប ។ `align-self:center` ដាក់វាចំកណ្តាលកម្ពស់ជួរវិញ ។ */
 #view-tracking .smw-r .bq, #docs-modal .smw-r .bq{
-  flex:0 0 auto; color:#111; margin-right:5px; font-size:5.5px; line-height:1.5; }
+  flex:0 0 auto; align-self:center; color:#111; margin-right:5px;
+  font-size:5.5px; line-height:1; }
 /* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «ទំហំអក្សរពីសរសេរ វាអត់ស្មើនឹង ការជួបពិភាក្សា» ។
    ⚠ ច្បាប់ទូរស័ព្ទ `input,select,textarea{font-size:16px !important}`
      ( ដាក់ដើម្បីកុំឱ្យ iOS ពង្រីកអេក្រង់ ) ឈ្នះលើ ១២,៥px របស់ជួរ
@@ -2560,15 +2593,25 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
      ⭐ ច្បាប់ ៖ រាល់ពេលប្តូរលេខមួយសម្រាប់សន្លឹកនេះ ត្រូវប្តូរ **ទាំងពីរ**
        ច្បាប់ព្រមគ្នា បើមិនដូច្នេះទេ ការមើលជាមុនក្លាយជាកុហក។ */
   /* ⚠ ត្រូវតែដូចច្បាប់ព្រីន ( [stated] ២០២៦-១១-១៤ ) */
-  /* [stated] ២០២៦-១១-១៤ ៖ អេក្រង់ត្រូវដូចព្រីនបេះបិទ ( zoom ⇒ transform ) */
+  /* ⚠⚠ [stated] ២០២៦-១១-១៤ ( ជុំទី ៤ ) ៖ លើ **អេក្រង់** ត្រូវប្រើ `zoom`
+     ដដែល មិនមែន `transform` ទេ ៖ `transform` មិនបង្រួមប្រអប់ប្លង់
+     ⇒ សន្លឹកមុខលាតដល់ ៣៣៦,៨mm ( វាស់បាន ) ⇒ ចន្លោះទទេធំក្រោមស៊ុម ។
+     `transform` ត្រូវការតែ **ពេលព្រីន** ដើម្បីឱ្យការកាត់ទំព័រត្រឹមត្រូវ ;
+     អេក្រង់គ្មានការកាត់ទំព័រ ⇒ `zoom` ល្អជាង ។ */
   #view-tracking .cv-cover-page .cv-sheet, #docs-modal .cv-cover-page .cv-sheet{
-    zoom:1; transform:scale(0.824); transform-origin:top left;
-    width:calc(100% / 0.824);
+    zoom:0.824; transform:none; width:auto;
     min-height:calc((var(--rpt-ph, 252mm) - 6mm) / 0.824); }
   #view-tracking .cv-cover-page .cv-in, #docs-modal .cv-cover-page .cv-in{
     min-height:calc((var(--rpt-ph, 252mm) - 9mm) / 0.824); }
+  /* ⚠⚠ [stated] ២០២៦-១១-១៤ ៖ «លិខិតតាមដានឯកសារ … នៅបាត់ជើងតារាង» ។
+     ⚠ វាស់បាន ( អេក្រង់ ) ៖ .cv-in = ២៥៤,៣mm តែ .cv-sheet = ២៤៦mm
+       ⇒ ខាងក្នុងហៀរចេញក្រៅស៊ុម ⇒ បន្ទាត់បាតស៊ុមលែងឃើញ ។
+     ⚠ មូលហេតុ ៖ លើអេក្រង់ ក្រឡាតារាងមាន `<input>` ដែលខ្ពស់ជាងអក្សរ
+       ធម្មតាពេលព្រីន ⇒ មាតិកាអេក្រង់ខ្ពស់ជាង ~១០mm ។
+     ⇒ កម្ពស់ថេរ + overflow:hidden ត្រូវការតែ **ពេលព្រីន** ( សម្រាប់ការ
+       កាត់ទំព័រ ) ⇒ លើអេក្រង់ ទុកឱ្យវារីកតាមមាតិកា ⇒ ស៊ុមបិទជិតជានិច្ច ។ */
   #view-tracking .cv-cover-page, #docs-modal .cv-cover-page{
-    height:var(--rpt-ph, 252mm); max-height:var(--rpt-ph, 252mm); overflow:hidden; }
+    min-height:var(--rpt-ph, 252mm); height:auto; max-height:none; overflow:visible; }
   #view-tracking .cv-lh-sr, #docs-modal .cv-lh-sr{font-family:'Khmer OS Siemreap','Noto Sans Khmer',sans-serif; font-weight:400;}
   #view-tracking .cv-cover-page .cv-lh-sr, #docs-modal .cv-cover-page .cv-lh-sr{font-size:16px;}
   #view-tracking .cv-rule, #docs-modal .cv-rule{border-top:1.2px solid #1a237e; width:62%; margin:1px auto 2px;}
@@ -2908,6 +2951,11 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
 #calcCard .cc-actions .btn.primary{background:#3d7a6d; border-color:#3d7a6d;}
 #calcCard .cc-actions .btn.primary:hover{background:#346b60; border-color:#346b60;}
 #calcCard .cc-sep{width:1px; height:22px; background:var(--line,#d8d2c2); margin:0 4px;}
+/* [stated] ២០២៦-១១-១៤ ៖ ប្រអប់រុំ STEP1–8 ( បិទ/បើកដោយប៊ូតុង «ជំហាន ១–៨ ▾» )
+   ⚠ ច្បាប់មូលដ្ឋាននេះសម្រាប់កុំព្យូទ័រ ; ទូរស័ព្ទមានច្បាប់ក្រឡាចត្រង្គផ្ទាល់ខ្លួន ។ */
+#calcCard .cc-steps{ flex:1 0 100%; display:flex; flex-wrap:wrap; gap:6px; margin-top:4px; }
+#calcCard .cc-steps[hidden]{ display:none !important; }
+#calcCard .btn.ghost.cc-steptog{ font-weight:700; white-space:nowrap; }
 #calcCard .btn.ghost.cc-step{padding:5px 9px; font-size:11.5px; font-weight:700;
     letter-spacing:.02em; white-space:nowrap;}
 #calcCard .cc-grand-amt{display:flex; flex-direction:column; line-height:1.25; text-align:right;}
@@ -3159,9 +3207,12 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
   /* ⚠ ឱ្យ select ស្រូបទទឹងនៅសល់ទាំងអស់ ⇒ បន្ទាត់ទី ១ ពេញ
      ⇒ ប៊ូតុងបន្ទាប់ **ត្រូវតែ**ចុះបន្ទាត់ថ្មី ( គ្មានវិធីដាក់ break ក្នុង flex
        ដោយគ្មានធាតុរុំ ⇒ នេះជាផ្លូវតែមួយដោយ CSS សុទ្ធ ) ។ */
+  /* ⚠ ច្បាប់ចាស់បង្ខំប្រអប់រើសឱ្យស៊ី **ពេញបន្ទាត់** ( 100% − 72px )
+     ⇒ ប៊ូតុងត្រូវចុះបន្ទាត់ថ្មី ។ ឥឡូវប៊ូតុងជារូបតូចៗ ( ~៤០px នីមួយៗ )
+       ⇒ ឱ្យប្រអប់រើសស្រូបតែអ្វីដែលនៅសល់ ⇒ ទាំងអស់ក្នុងជួរតែមួយ ។ */
   #calcCard .cc-actions > select[data-set="mode"]{
-    flex:1 1 calc(100% - 72px) !important; min-width:0 !important;
-    height:38px; font-size:12.5px !important;
+    flex:1 1 110px !important; min-width:0 !important;
+    height:34px; font-size:12.5px !important;
   }
   /* ប៊ូតុងសកម្មភាព ៤ ៖ បន្ទាត់តែមួយ ( វាស់បាន ៖ ៣០៤px + ចន្លោះ ១៨ = ៣២២
      ក្នុង ៣៥៤ ⇒ សម ) */
@@ -3175,12 +3226,39 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     flex:1 0 100% !important; width:100% !important; height:0 !important;
     margin:0 !important; border:0 !important; background:none !important;
   }
-  /* STEP1…STEP8 ៖ ៤ ក្នុងមួយបន្ទាត់ ⇒ ក្រឡាចត្រង្គស្មើគ្នា ២ បន្ទាត់ */
-  #calcCard .cc-actions > .btn.cc-step{
-    flex:0 0 calc(25% - 4.5px) !important; min-width:0 !important;
+  /* STEP1…STEP8 ៖ ឥឡូវនៅក្នុង `.cc-steps` ( លាក់/បង្ហាញ ) ⇒ ច្បាប់ត្រូវ
+     ប្តូរពី `>` ( កូនផ្ទាល់ ) ទៅជាកូនចៅ បើមិនដូច្នេះវាលែងដំណើរការ ។ */
+  #calcCard .cc-steps{
+    flex:1 0 100% !important; width:100% !important;
+    display:grid !important; grid-template-columns:repeat(4, minmax(0,1fr));
+    gap:6px !important; margin-top:2px;
+  }
+  #calcCard .cc-steps[hidden]{ display:none !important; }
+  #calcCard .cc-steps .btn.cc-step{
+    width:100% !important; min-width:0 !important;
     font-size:10.5px !important; padding:0 2px !important;
     height:32px !important; min-height:32px !important; white-space:nowrap;
   }
+  #calcCard .cc-actions > .btn.cc-steptog{
+    flex:0 0 auto !important; font-size:11.5px !important;
+    height:32px !important; min-height:32px !important; padding:0 12px !important;
+  }
+  #calcCard .cc-actions > .btn.cc-steptog.on{ background:var(--accent-light,#f3efe2); }
+
+  /* ── ៣ង · ជួរលើគេពេញទទឹង តម្រឹមឆ្វេងនឹងតារាង ───────────────────
+     [stated] ២០២៦-១១-១៤ ៖ «ជួរលើគេ គ្រប់ឆ្នាំ ដល់ សរុបទឹកប្រាក់ គួរដាក់
+       វាឱ្យពេញ … ខិតតារាងទៅឆ្វេងនឹងជួរតារាង draft» ។
+     ⚠ `.cc-grand{margin-left:auto}` ជាអ្នករុញវាទៅស្តាំ ⇒ ដោះវាចេញ ។ */
+  #calcCard .cc-head{ margin-bottom:10px !important; }
+  #calcCard .cc-grand{
+    margin-left:0 !important; width:100% !important; flex:1 1 100% !important;
+  }
+
+  /* ── ៣ច · របារសកម្មភាព ៖ រូបតែប៉ុណ្ណោះ + ប្រអប់រើសនៅជួរតែមួយ ──────
+     [stated] «ជួរបោះពុម្ព ដល់ រក្សាទុក ទុកតែរូប អក្សរលុបចេញ ; អក្សរ
+       បង្ហាញ ក៏លុបចេញដែរ ទុកតែកន្លែងរើស សរុប/ប្រាក់ពន្ធ/ការប្រាក់» ។ */
+  #calcCard .cc-actions .cc-btxt{ display:none !important; }
+  #calcCard .cc-actions .cc-lbl.cc-lbl-show{ display:none !important; }
 
   /* ── ២ · របារផ្ទាំង ៖ ១០ ផ្ទាំង ⇒ ជួរតែមួយ អូសបាន ──────────────── */
   #calcCard .cc-tabs{
@@ -3237,7 +3315,18 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     font-size:12px !important; padding:4px 6px !important; min-height:0 !important;
   }
   #calcCard .cc-scroll table th:first-child,
-  #calcCard .cc-scroll table td:first-child{ min-width:148px !important; }
+  #calcCard .cc-scroll table td:first-child{ min-width:120px !important; }
+  /* ── ៣ឆ · [stated] ២០២៦-១១-១៤ ៖ «ទំហំអក្សរនៅក្រោម DRAFT ពី សរុបប្រាក់
+     ពន្ធនិងទោសទណ្ឌ រហូតដល់ក្រោម ជួយបន្ថយទំហំអក្សរ និងលេខក៏ដូចគ្នា» ។ */
+  #calcCard .cc-pane table{ font-size:10.5px !important; }
+  /* ⚠ ច្បាប់សកល `tbody td{font-size:13px}` ឈ្នះលើ `table{font-size}`
+     ⇒ ត្រូវសរសេរទំហំអក្សរលើ th/td ផ្ទាល់ បើមិនដូច្នេះលេខនៅធំដដែល
+     ( វាស់បាន ៖ table 10,5px តែ td នៅ 13px ) ។ */
+  #calcCard .cc-pane table th, #calcCard .cc-pane table td{
+    font-size:10.5px !important;
+    padding:4px 5px !important; line-height:1.5 !important; }
+  #calcCard .cc-pane table td.n, #calcCard .cc-pane table td.tabular{
+    font-size:10.5px !important; }
 
   /* ── ៣គ · ចិបឆ្នាំ និងសរុបប្រាក់ពន្ធ ⇒ ជួរតែមួយ ───────────────────
      ⚠ [stated] ២០២៦-១១-១៤ ៖ «ម៉េចទំហំវែង … បើមួយឆ្នាំគួរឱ្យវា fit នឹងគ្នា
@@ -3274,6 +3363,31 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
   #calcCard .cc-grand-amt{ flex:0 0 auto; margin-left:auto; }
   #calcCard .cc-grand-amt .r, #calcCard .cc-grand-amt .u{ font-size:13px !important; }
   #calcCard .cc-grand-amt .k{ font-size:9.5px !important; }
+
+  /* ── ៣ជ · តារាងជំហាន TOI ៖ សមទទឹង ( មើលក្បាល fix_toitbl.py ) ───── */
+  #toi-embed table{ min-width:0 !important; table-layout:auto; }
+  #toi-embed .table-wrap{ max-width:100% !important; overflow-x:auto !important;
+    -webkit-overflow-scrolling:touch; }
+  #toi-embed .table-wrap > table{ width:100% !important; }
+  #toi-embed table th, #toi-embed table td{
+    font-size:11px !important; padding:4px 5px !important; line-height:1.5 !important; }
+  /* ជួរបរិយាយ ៖ រុំបាន តែមិនច្របាច់ទៅជាខ្សែស្តើង */
+  #toi-embed table td:first-child, #toi-embed table th:first-child{
+    white-space:normal !important; overflow-wrap:anywhere;
+    min-width:96px !important; width:auto !important; }
+  /* ⭐ ជួរ «យោង» ៖ ទទឹងថេរតូច ⇒ ខិតមកឆ្វេង តែនៅមានចន្លោះពីបរិយាយ */
+  #toi-embed table td.ref, #toi-embed table th.ref{
+    width:46px !important; min-width:46px !important; max-width:46px !important;
+    padding-left:4px !important; padding-right:4px !important;
+    font-size:10px !important; text-align:center !important; }
+  /* ជួរតួលេខ ៖ កុំចុះបន្ទាត់ តែក៏កុំស៊ីទទឹងលើស */
+  #toi-embed table td.n, #toi-embed table th.n{
+    white-space:nowrap !important; font-size:11px !important;
+    padding-left:4px !important; padding-right:6px !important; }
+
+  /* ── ៣ឈ · ចន្លោះលើកាតជំហាន ⇒ តូចជាង ( កុំសល់ទំហំធំ ) ───────────── */
+  #toi-embed .content{ padding-top:4px !important; }
+  #toi-embed .content > h2.panel-title:first-child{ margin-top:4px !important; }
 
   /* ── ៣ឃ · «+ បន្ថែមផលរកឃើញ» ⇒ ជួរជាមួយស្លាក គ្មានប្រអប់ ──────────
      [stated] ២០២៦-១១-១៤ ៖ «រុញបន្ថែមផលរកឃើញមកជួរតែមួយនឹង កំណត់ចំណូល
@@ -6562,9 +6676,17 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
      ⇒ រុំបន្ទាត់ + ហាមច្របាច់ឈ្នាប់ ( flex:0 0 auto ) + ហាមបាក់ពាក្យ ។ */
   #tos-embed .matrix-toggle{ display:flex; flex-wrap:wrap; gap:8px; margin:2px 0 14px; }
   #tos-embed .matrix-toggle-row{ display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px 16px; margin:2px 0 14px; }
+  /* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «នៅទើសភ្នែកកន្លែង បៀវត្ស ដល់ មិនទាន់ ឬមួយ
+     ដោយសារយើងប្រើប្រអប់មូល» ។ ⚠ គេនិយាយត្រូវ ៖ `border-radius:999px`
+     ធ្វើឱ្យឈ្នាប់ពាក្យខ្លី ( «ខ្មែរ» · «ចិន» ) ក្លាយជា **រង្វង់** ខណៈពាក្យវែង
+     នៅជាបន្ទះវែង ⇒ រូបរាងមិនដូចគ្នា ⇒ មើលទៅរាយប៉ាយ ។
+     ⇒ កាំកោង ៩px ដូចគ្នាទាំងអស់ · កម្ពស់ថេរ · ទទឹងអប្បបរមា
+       ⇒ ឈ្នាប់គ្រប់ជួរក្លាយជា **គ្រួសារតែមួយ** មើលទៅស្អាតស្មើគ្នា ។ */
   #tos-embed .matrix-toggle-btn{
     border:1px solid var(--tos-line); background:#fff; color:var(--tos-slate);
-    padding:7px 16px; border-radius:999px; font-family:inherit; font-size:12.5px;
+    display:inline-flex; align-items:center; justify-content:center;
+    height:34px; min-height:34px; min-width:68px;
+    padding:0 14px; border-radius:9px; font-family:inherit; font-size:12.5px;
     font-weight:600; cursor:pointer;
     /* ⭐ ឈ្នាប់រក្សាទំហំពាក្យខ្លួនឯង ⇒ រុំជាជាងច្របាច់ */
     flex:0 0 auto; white-space:nowrap;
@@ -6579,7 +6701,10 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
        ⚠ វាស់បាន ៖ ឈីបជួរ ១-២ ១២px ឯជួរស្ថានភាព ១១px ⇒ មើលទៅមិនស្មើ ។
          ដាក់ទាំងអស់ ១២px នឹងធ្វើឱ្យជួរស្ថានភាព ( ៣១៥px នៅ ១១px ) ត្រូវការ
          ៣៤៤px ក្នុង ៣៤០px ⇒ បាក់ជួរ ⇒ ជ្រើស **១១,៥px ទាំងអស់** ។ */
-    #tos-embed .matrix-toggle-btn{ padding:7px 11px; font-size:11.5px !important; }
+    #tos-embed .matrix-toggle-btn{
+      padding:0 10px !important; font-size:11.5px !important;
+      height:32px !important; min-height:32px !important; min-width:56px !important;
+      border-radius:8px !important; }
     /* ⭐ [stated] ២០២៦-១១-១៣ ៖ «កំណត់ពន្ធឡើងវិញ · មិនទាន់កំណត់ ដាក់វាតែ
        មួយជួរ ជាមួយនឹងគ្រប់ស្ថានភាព» ⇒ ឈ្នាប់ក្រុមនេះតូចជាងគេបន្តិច
        ⇒ ៣ ឈ្នាប់សមក្នុងទទឹង ៣៥៤px ។ */
@@ -10598,6 +10723,7 @@ function renderPersonalInfoView(){
   if(!container) return;
   container.innerHTML = '';
   const wrap = document.createElement('div');
+  wrap.className = 'pi-wrap';   /* [stated] ២០២៦-១១-១៤ ៖ ដើម្បីឱ្យ CSS ប៉ះបាន */
   wrap.style.cssText = 'max-width:640px; margin:24px auto; padding:18px; background:var(--surface); border-radius:var(--radius); box-shadow:0 1px 3px rgba(0,0,0,.08); box-sizing:border-box; overflow:hidden;';
   /* ⚠ [stated] ២០២៦-០៨-១៧ ៖ «លុបចេញ 👤 ព័ត៌មានផ្ទាល់ខ្លួន ព្រោះមាននៅ
      កន្លែងចុចចូល» — ធាតុជំហានក្នុងជួរ TOI មានឈ្មោះនេះរួចហើយ។
@@ -10618,6 +10744,7 @@ function renderPersonalInfoView(){
        ២ ជួរឈរត្រូវការ ៤៩៦px ⇒ auto-fit សម្រេចយកតែ ១ ជួរឈរ ⇒ ធ្លាក់ ២ ជួរ ។
      ⇒ ចាក់ ២ ជួរឈរថេរ ( ឈ្មោះធំជាង ID ) ហើយ `minmax(0,…)` ការពារការហៀរ
        ព្រោះធាតុ grid មាន `min-width:auto` ជាលំនាំដើម ។ */
+  grid.className = 'pi-g1';
   grid.style.cssText = 'display:grid; grid-template-columns:minmax(0,1.6fr) minmax(0,1fr); gap:10px;';
   fields.forEach(([key,label])=>{
     const item = document.createElement('div');
@@ -10644,10 +10771,12 @@ function renderPersonalInfoView(){
   const selected = getPI('selectedPartnerAuditor') || '1';
   const paTitle = document.createElement('h3');
   paTitle.textContent = 'សវនករដៃគូ';
+  paTitle.className = 'pi-h';
   paTitle.style.cssText = 'margin:24px 0 10px; font-size:14px; color:var(--primary);';
   wrap.appendChild(paTitle);
   [1,2].forEach(slot=>{
     const row = document.createElement('div');
+    row.className = 'pi-row';
     row.style.cssText = 'display:flex; align-items:center; gap:8px; margin-bottom:12px; min-width:0;';
     const cb = document.createElement('input');
     cb.type = 'checkbox';
@@ -10683,6 +10812,7 @@ function renderPersonalInfoView(){
     ['deputyDeptHeadName', 'អនុប្រធាននាយកដ្ឋាន'],
   ];
   const grid2 = document.createElement('div');
+  grid2.className = 'pi-g2';
   grid2.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr)); gap:12px; margin-top:12px;';
   fields2.forEach(([key,label])=>{
     const item = document.createElement('div');
@@ -45896,9 +46026,13 @@ function askReceived(base){
       /* ⭐ [stated] ២០២៦-១១-១៤ ៖ «ទទួលនៅថ្ងៃ និងកំណត់ហេតុ ជួយដាក់មកតែ ១ ជួរ»
          ⇒ រុំវាលទាំងពីរក្នុង `.trk-ask-row` ( flex ) ⇒ ឈរក្បែរគ្នា ។ */
       '<div class="trk-ask-row">' +
-        '<label>ទទួលនៅថ្ងៃខែឆ្នាំ<input type="date" id="askDate" value="' + iso + '"></label>' +
+        /* ⭐ [stated] ២០២៦-១១-១៤ ( ជុំទី ៣ ) ៖ «អក្សរមិនស្មើគ្នា ប្រអប់រើស
+           ជាន់គ្នា» ។ ⚠ ស្លាកវែង ( ១៦–១៧ តួ ) ហួសទទឹងជួរឈររបស់វា ហើយលើ
+           ឧបករណ៍ពិត ពុម្ពអក្សរខ្មែរធំជាងក្នុងការសាកល្បង ⇒ វាហៀរទៅលើវាល
+           ម្ខាងទៀត ។ ⇒ បង្រួញស្លាក + បង្ខំឱ្យរុំបាន ⇒ លែងជាន់គ្នា ។ */
+        '<label><span class="l">ថ្ងៃទទួល</span><input type="date" id="askDate" value="' + iso + '"></label>' +
         /* ⚠ meetingOptions() ត្រឡប់ **អារេ** នៃ {v,label} មិនមែន html ទេ */
-        '<label>ទទួលនៅកំណត់ហេតុទី<select id="askMtg">' +
+        '<label><span class="l">កំណត់ហេតុទី</span><select id="askMtg">' +
           meetingOptionsOpen().map(function(o){
             return '<option value="' + o.v + '">' + esc(o.label) + '</option>';
           }).join('') +
@@ -47729,8 +47863,9 @@ const RPT_CSS = `
   /* តារាងតុល្យការ និងគណនីលទ្ធផលត្រូវមានទទឹងជួរឈរដូចគ្នា ដូច្នេះ
      ចាក់សោ table-layout ហើយកំណត់ទទឹងជួរដំបូង។ ដូចគ្នាសម្រាប់ ខ.១ / ខ.២។ */
   .rpt-fin{table-layout:fixed;}
-  .rpt-fin th.l,.rpt-fin td.l{width:32%;}
-  .rpt-fin th.yo{width:6%;}
+  /* [stated] ២០២៦-១១-១៤ ៖ បរិយាយ ៣២% ⇒ ៤៨% ( មើលច្បាប់អេក្រង់ ) */
+  .rpt-fin th.l,.rpt-fin td.l{width:48%;}
+  .rpt-fin th.yo{width:7%;}
   /* ១) ជួរដេកមិនត្រូវដាច់ពាក់កណ្តាលពេលតារាងឆ្លងទំព័រ ហើយក្បាលតារាង
      ចេញឡើងវិញនៅទំព័របន្ត។ ចំណាំ ៖ ធាតុ flex បំបែកទំព័រមិនល្អ ដូច្នេះ
      .rpt-page ជា flex តែពេលវាពិតជាមានបាតទំព័រ (ត្រូវការ margin-top:auto)។ */
@@ -52761,7 +52896,8 @@ const SMW_CSS = `
   /* ⚠ [stated] ២០២៦-១១-១៤ ៖ «សញ្ញាចុចពីមុខ ចុះបញ្ជី ដល់ សម្គាល់ មានទំហំ
      ធំពេក ដាក់វាដូចទំហំក្នុងរូប» ⇒ ខ្ញុំលើកពី ៩px ទៅ ១៥px ហួសទៅ
      ⇒ ចុះមក ១១px ( ចន្លោះកណ្តាល ដូចក្នុងរូប Word ) ។ */
-  .smw-r .bq{ flex:0 0 auto; color:#111; margin-right:5px; font-size:5.5px; line-height:1.5; }
+  .smw-r .bq{ flex:0 0 auto; align-self:center; color:#111; margin-right:5px;
+    font-size:5.5px; line-height:1; }
   /* ⭐ វាលបំពេញហូរតត្រង់ក្រោយស្លាក ⇒ ជួរក្លាយជាប្លុកធម្មតា ( មិនមែន flex )
      ⚠ :has() មានលើ iOS 16.4+ · Chrome 105+ ; បើគ្មាន វាត្រឡប់ទៅរបៀបចាស់ */
   .smw-r:has(.smw-flow){ display:block; }
@@ -58042,19 +58178,38 @@ CC.render=function(){
     + ccGrandHtml(res) + '</div>');
   /* ⚠ ស៊ុមរុំនេះធ្លាប់បាត់ ⇒ ប៊ូតុងអណ្តែតជាកូនផ្ទាល់របស់កាត ។ */
   h.push('<div class="cc-bar cc-actions">');
-  h.push('<span class="cc-lbl">បង្ហាញ</span><select data-set="mode">'+MODES.map(function(m){
+  /* ⭐ [stated] ២០២៦-១១-១៤ ៖ អក្សររុំក្នុង `.cc-btxt` ⇒ លាក់បានតែលើ
+     ទូរស័ព្ទ ( កុំព្យូទ័រនៅឃើញអក្សរដដែល ) ; `title` ធានាថាអ្នកប្រើនៅដឹង
+     ប៊ូតុងណាជាអ្វី ទោះឃើញតែរូប ។ */
+  h.push('<span class="cc-lbl cc-lbl-show">បង្ហាញ</span><select data-set="mode">'+MODES.map(function(m){
     return '<option value="'+m[0]+'"'+(s.mode===m[0]?" selected":"")+'>'+m[1]+'</option>';}).join("")+'</select>');
-  h.push('<button class="btn ghost" data-act="print">🖨️ បោះពុម្ព</button>');
-  h.push('<button class="btn danger" data-act="reset">🗑 សម្អាតតួលេខ</button>');
-  h.push('<button class="btn ghost" data-act="xls">⬇ Excel</button>');
-  h.push('<button class="btn primary" data-act="save">💾 រក្សាទុក</button>');
+  h.push('<button class="btn ghost" data-act="print" title="បោះពុម្ព" aria-label="បោះពុម្ព">🖨️ <span class="cc-btxt">បោះពុម្ព</span></button>');
+  h.push('<button class="btn danger" data-act="reset" title="សម្អាតតួលេខ" aria-label="សម្អាតតួលេខ">🗑 <span class="cc-btxt">សម្អាតតួលេខ</span></button>');
+  h.push('<button class="btn ghost" data-act="xls" title="ទាញយកជា Excel" aria-label="ទាញយកជា Excel">⬇ <span class="cc-btxt">Excel</span></button>');
+  h.push('<button class="btn primary" data-act="save" title="រក្សាទុក" aria-label="រក្សាទុក">💾 <span class="cc-btxt">រក្សាទុក</span></button>');
   /* ⭐ [stated] ២០២៦-១១-០៥ ៖ «ជំហានទី៤ ដល់ទី៧ រុញវាទៅនៅជួរជាមួយនឹង
      រក្សាទុក ហើយបន្ថែមមើលដល់ពី ១ ដល់ ៨ ប៉ុន្តែដាក់គេ អក្សរ STEP1…STEP8»
      ⇒ ចេញពីរបារ `cc-jump` ដាច់ដោយឡែក មកនៅជួរដដែលនឹងសកម្មភាព ។ */
+  /* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «ផ្នែក STEP1 ដល់ STEP8 ចុចលើប៊ូតុង
+     បង្ហាញជំហាន ១ ដល់ ៨ ចាំទម្លាក់ជួរ» ⇒ ប៊ូតុងទាំង ៨ រុំក្នុង `.cc-steps`
+     ដែលលាក់ជាលំនាំដើម ⇒ របារខ្លីជាង ២ ជួរ ។
+     ⚠ មុខងារបិទ/បើកដាក់លើ `window` ដោយចេតនា ៖ ប្លុកនេះជា IIFE ដូច្នេះ
+       `onclick` ក្នុង HTML មើលមិនឃើញឈ្មោះខាងក្នុងទេ ។ */
+  try{ window.__ccStepsToggle = function(b){
+    var d = document.getElementById('ccSteps'); if(!d) return;
+    var open = d.hasAttribute('hidden');
+    if(open) d.removeAttribute('hidden'); else d.setAttribute('hidden','');
+    if(b && b.classList) b.classList.toggle('on', open);
+  }; }catch(e){}
   h.push('<span class="cc-sep"></span>');
+  h.push('<button type="button" class="btn ghost cc-steptog"'
+    + ' onclick="window.__ccStepsToggle &amp;&amp; window.__ccStepsToggle(this)"'
+    + ' title="បើកផ្ទាំង TOI ត្រង់ជំហាននីមួយៗ">ជំហាន ១–៨ ▾</button>');
+  h.push('<div class="cc-steps" id="ccSteps" hidden>');
   for(var __st = 1; __st <= 8; __st++)
     h.push('<button class="btn ghost cc-step" data-goto="Step' + __st + '"'
       + ' title="បើកផ្ទាំង TOI ត្រង់ជំហានទី' + __st + '">STEP' + __st + '</button>');
+  h.push('</div>');
   h.push('</div>');
 
   h.push('<div class="cc-tabs">'+TABS.map(function(t){
