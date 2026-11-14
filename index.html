@@ -2612,8 +2612,9 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
   #view-tracking .cv-cover-page .cv-wl, #docs-modal .cv-cover-page .cv-wl{font-size:14px;}
   #view-tracking .cv-cover-page .cv-nl, #docs-modal .cv-cover-page .cv-nl{font-size:14px; min-height:34px; line-height:34px; padding-top:0; padding-bottom:0;}
   #view-tracking .cv-cover-page .cv-tbl, #docs-modal .cv-cover-page .cv-tbl{font-size:13px;}
-  #view-tracking .cv-cover-page .cv-tbl th, #docs-modal .cv-cover-page .cv-tbl th{font-size:16px; height:34px; line-height:34px;}
-  #view-tracking .cv-cover-page .cv-tbl td, #docs-modal .cv-cover-page .cv-tbl td{height:34px; line-height:34px; padding:4px 8px; font-size:14px; font-weight:400;}
+  /* [stated] ២០២៦-១១-១៤ ៖ ៣៤px ⇒ ២៧px ( មើលក្បាល fix_wpcov.py ) */
+  #view-tracking .cv-cover-page .cv-tbl th, #docs-modal .cv-cover-page .cv-tbl th{font-size:16px; height:27px; line-height:27px;}
+  #view-tracking .cv-cover-page .cv-tbl td, #docs-modal .cv-cover-page .cv-tbl td{height:27px; line-height:27px; padding:3px 8px; font-size:14px; font-weight:400;}
   #view-tracking .cv-cover-page .cv-in, #docs-modal .cv-cover-page .cv-in{display:flex; flex-direction:column;}
   #view-tracking .cv-cover-page .cv-tbl td:empty::after, #docs-modal .cv-cover-page .cv-tbl td:empty::after{content:" "; display:inline-block;}
   #view-tracking .cv-cover-page .cv-tbl, #docs-modal .cv-cover-page .cv-tbl{flex:9 1 0;}
@@ -2642,6 +2643,9 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
   #view-tracking .cv-page:not(.cv-cover-page) .cv-plain, #docs-modal .cv-page:not(.cv-cover-page) .cv-plain{display:flex; flex-direction:column;}
   #view-tracking .cv-page:not(.cv-cover-page) .cv-plain .cv-wl, #docs-modal .cv-page:not(.cv-cover-page) .cv-plain .cv-wl{flex:1 1 0; display:flex; align-items:flex-end;}
   #view-tracking .cv-page:not(.cv-cover-page) .cv-wh, #docs-modal .cv-page:not(.cv-cover-page) .cv-wh{font-weight:400;}
+  /* [stated] ២០២៦-១១-១៤ ៖ ដាននៃកម្ពស់ ( ដូចច្បាប់ព្រីន ) */
+  #view-tracking .rpt-page.cv-page, #docs-modal .rpt-page.cv-page{
+    max-height:var(--rpt-ph, 252mm) !important; overflow:hidden !important; }
 /* វាលវាយអក្សរនៅលើអេក្រង់ ៖ គ្មានស៊ុម អង្គុយលើបន្ទាត់ប្រាល់ដដែលនឹងការព្រីន */
 #view-tracking .cv-nl.edit, #docs-modal .cv-nl.edit{padding:0 4px 0 26px;}
 #view-tracking .cv-wl.edit, #docs-modal .cv-wl.edit{padding:0 4px;}
@@ -2775,6 +2779,11 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
 .xls-btn:hover{opacity:1; background:var(--accent-light); border-color:var(--accent);}
 @media print{ .xls-bar{display:none;} }
 #calcCard .cc-head{display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-bottom:12px;}
+/* ⭐ [stated] ២០២៦-១១-១៤ ៖ «អក្សរនៅផ្នែកខាងលើ ការគណនាពន្ធឡើងវិញ បើអាច
+   លុបចោលបានល្អ» ⇒ លាក់ចំណងជើងលើ **អេក្រង់** ⇒ ប្រអប់ឆ្នាំ/សរុបរើកធំឡើង ។
+   ⚠ រក្សាទុកពេល **ព្រីន** ៖ សន្លឹកគណនាដែលព្រីនចេញត្រូវមានចំណងជើង
+     បើមិនដូច្នេះក្រដាសចេញមកគ្មានឈ្មោះ ។ */
+@media screen{ #calcCard .cc-title{ display:none !important; } }
 /* ⭐ [stated] ២០២៦-១១-០៤ ៖ របារសកម្មភាព — កម្ពស់តែមួយ គ្មានស៊ុម គ្មានស្រមោល */
 #calcCard .cc-actions{display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:0 0 14px;}
 #calcCard .cc-actions .cc-lbl{margin:0 2px 0 0;}
@@ -48669,7 +48678,12 @@ const WP_CSS = `
        ប្រើបន្ទាត់ដែលលាតបាន (flex) ⇒ វាសមនឹងកម្ពស់ណាក៏បាន។ ការទុក 0.84
        លើវាគ្រាន់តែធ្វើអោយសន្លឹកតូច ២៦mm ដោយឥតប្រយោជន៍។
        ⇒ សន្លឹកមិនមែនមុខ ៖ គ្មានការបង្រួម ហើយកម្ពស់តាម --rpt-ph។ */
-    .cv-page{ zoom:1; }
+    /* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «ឯកសារការងារ … វានៅតែមានទំព័រទទេ» ។
+     ⚠ សន្លឹក wp រីកបាន ( height:auto ) ⇒ ទិន្នន័យវែង = ហៀរ = ទំព័រទទេ ។
+     ⇒ ដាក់ដាននៃកម្ពស់ដូចគ្រួសារ .nr-page ⇒ មិនអាចហៀរបានទៀតឡើយ ។
+     ⚠ ព្យួរលើ .cv-page ( សន្លឹក wp ប៉ុណ្ណោះ ) ⇒ ឯកសារដទៃមិនប៉ះពាល់ ។ */
+  .cv-page{ zoom:1; }
+  .rpt-page.cv-page{ max-height:var(--rpt-ph, 252mm) !important; overflow:hidden !important; }
     .cv-page:not(.cv-cover-page){ min-height:0 !important; }
     /* ⚠ លេខទាំងនេះមកពីការវាស់ ៖ មាតិកាធម្មជាតិ ≈315mm ⇒ zoom 0.89 អោយ
        កម្ពស់ចេញ ≈281mm ដូចទម្រង់ពិត ; min-height ត្រូវជាកម្ពស់ **មុន** zoom។ */
@@ -48877,10 +48891,10 @@ const WP_CSS = `
   /* ⚠ [stated] ២០២៦-០៨-២៣ ៖ «អក្សរតារាងតាមដានវាធំជាង HEADER ខាងលើវា» ។
      ក្បាលតារាងតូចជាងតួ (12.5 ធៀប 13) — ការបញ្ច្រាសនោះមានតាំងពីដើម (11.5
      ធៀប 12) តែពេលពង្រីកឡើងវាលេចឲ្យឃើញ។ ⇒ ក្បាល 14px ធំជាងតួមួយកម្រិត។ */
-  .cv-cover-page .cv-tbl th{font-size:16px; height:34px; line-height:34px;}
+  .cv-cover-page .cv-tbl th{font-size:16px; height:27px; line-height:27px;}
   /* ⚠ [stated] ២០២៦-០៨-២៣ ៖ «បន្ថែម FONT 1 លេខពីសវនករ ដល់ប្រធាននាយកដ្ឋាន
      · កុំប្រើ BOLD» — ជួរឈ្មោះក្នុងតារាងតាមដាន។ */
-  .cv-cover-page .cv-tbl td{height:34px; line-height:34px; padding:4px 8px;
+  .cv-cover-page .cv-tbl td{height:27px; line-height:27px; padding:3px 8px;
     font-size:14px; font-weight:400;}
   .cv-cover-page .cv-in{display:flex; flex-direction:column;}
   /* ⚠⚠ [stated] ២០២៦-០៨-២៣ ៖ «ប្រហោង ៣ ទៀតពីក្រោមប្រធាននាយកដ្ឋាន … ជួយធ្វើ
