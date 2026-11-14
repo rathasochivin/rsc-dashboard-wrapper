@@ -985,6 +985,112 @@ td[contenteditable="true"]:focus{outline:2px solid var(--accent); outline-offset
 #view-wht > .toolbar > .xls-btn{
   order:92; margin-left:8px !important; height:34px;
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ របារតម្រង SR / PR — មើលក្បាល fix_srbar.py
+   ══════════════════════════════════════════════════════════════════ */
+#view-sale > .toolbar > *{ order:50; },
+#view-purchase > .toolbar > *{ order:50; },
+#view-cp-purchase > .toolbar > *{ order:50; },
+#view-cp-sale > .toolbar > *{ order:50; },
+#view-sale-cd > .toolbar > *{ order:50; },
+#view-purchase-cd > .toolbar > *{ order:50; },
+#view-vat-rvc > .toolbar > *{ order:50; },
+#view-other-expenses > .toolbar > *{ order:50; },
+#view-wht > .toolbar > *{ order:50; }
+#view-sale > .toolbar > .import-group:has([id^="ministry-"]){ order:10; },
+#view-purchase > .toolbar > .import-group:has([id^="ministry-"]){ order:10; },
+#view-cp-purchase > .toolbar > .import-group:has([id^="ministry-"]){ order:10; },
+#view-cp-sale > .toolbar > .import-group:has([id^="ministry-"]){ order:10; },
+#view-sale-cd > .toolbar > .import-group:has([id^="ministry-"]){ order:10; },
+#view-purchase-cd > .toolbar > .import-group:has([id^="ministry-"]){ order:10; },
+#view-vat-rvc > .toolbar > .import-group:has([id^="ministry-"]){ order:10; },
+#view-other-expenses > .toolbar > .import-group:has([id^="ministry-"]){ order:10; },
+#view-wht > .toolbar > .import-group:has([id^="ministry-"]){ order:10; }
+#view-sale > .toolbar > .import-group:has([id^="search-"]):not(:has([id^="search-invoice-"])):not(:has([id^="search-product-"])){ order:20; },
+#view-purchase > .toolbar > .import-group:has([id^="search-"]):not(:has([id^="search-invoice-"])):not(:has([id^="search-product-"])){ order:20; },
+#view-cp-purchase > .toolbar > .import-group:has([id^="search-"]):not(:has([id^="search-invoice-"])):not(:has([id^="search-product-"])){ order:20; },
+#view-cp-sale > .toolbar > .import-group:has([id^="search-"]):not(:has([id^="search-invoice-"])):not(:has([id^="search-product-"])){ order:20; },
+#view-sale-cd > .toolbar > .import-group:has([id^="search-"]):not(:has([id^="search-invoice-"])):not(:has([id^="search-product-"])){ order:20; },
+#view-purchase-cd > .toolbar > .import-group:has([id^="search-"]):not(:has([id^="search-invoice-"])):not(:has([id^="search-product-"])){ order:20; },
+#view-vat-rvc > .toolbar > .import-group:has([id^="search-"]):not(:has([id^="search-invoice-"])):not(:has([id^="search-product-"])){ order:20; },
+#view-other-expenses > .toolbar > .import-group:has([id^="search-"]):not(:has([id^="search-invoice-"])):not(:has([id^="search-product-"])){ order:20; },
+#view-wht > .toolbar > .import-group:has([id^="search-"]):not(:has([id^="search-invoice-"])):not(:has([id^="search-product-"])){ order:20; }
+#view-sale > .toolbar > .import-group:has([id^="search-invoice-"]){ order:30; },
+#view-purchase > .toolbar > .import-group:has([id^="search-invoice-"]){ order:30; },
+#view-cp-purchase > .toolbar > .import-group:has([id^="search-invoice-"]){ order:30; },
+#view-cp-sale > .toolbar > .import-group:has([id^="search-invoice-"]){ order:30; },
+#view-sale-cd > .toolbar > .import-group:has([id^="search-invoice-"]){ order:30; },
+#view-purchase-cd > .toolbar > .import-group:has([id^="search-invoice-"]){ order:30; },
+#view-vat-rvc > .toolbar > .import-group:has([id^="search-invoice-"]){ order:30; },
+#view-other-expenses > .toolbar > .import-group:has([id^="search-invoice-"]){ order:30; },
+#view-wht > .toolbar > .import-group:has([id^="search-invoice-"]){ order:30; }
+#view-sale > .toolbar > .import-group:has(select[id^="cat"]){ order:40; },
+#view-purchase > .toolbar > .import-group:has(select[id^="cat"]){ order:40; },
+#view-cp-purchase > .toolbar > .import-group:has(select[id^="cat"]){ order:40; },
+#view-cp-sale > .toolbar > .import-group:has(select[id^="cat"]){ order:40; },
+#view-sale-cd > .toolbar > .import-group:has(select[id^="cat"]){ order:40; },
+#view-purchase-cd > .toolbar > .import-group:has(select[id^="cat"]){ order:40; },
+#view-vat-rvc > .toolbar > .import-group:has(select[id^="cat"]){ order:40; },
+#view-other-expenses > .toolbar > .import-group:has(select[id^="cat"]){ order:40; },
+#view-wht > .toolbar > .import-group:has(select[id^="cat"]){ order:40; }
+/* ⚠ ច្បាប់ខាងលើ ( order:90 · margin-left:auto ) ត្រូវសរសេរជាន់ត្រង់នេះ */
+#view-sale > .toolbar > .btn.ghost{ order:41; margin-left:0; },
+#view-purchase > .toolbar > .btn.ghost{ order:41; margin-left:0; },
+#view-cp-purchase > .toolbar > .btn.ghost{ order:41; margin-left:0; },
+#view-cp-sale > .toolbar > .btn.ghost{ order:41; margin-left:0; },
+#view-sale-cd > .toolbar > .btn.ghost{ order:41; margin-left:0; },
+#view-purchase-cd > .toolbar > .btn.ghost{ order:41; margin-left:0; },
+#view-vat-rvc > .toolbar > .btn.ghost{ order:41; margin-left:0; },
+#view-other-expenses > .toolbar > .btn.ghost{ order:41; margin-left:0; },
+#view-wht > .toolbar > .btn.ghost{ order:41; margin-left:0; }
+#view-sale > .toolbar > span[id^="ccy-"]{ order:42; },
+#view-purchase > .toolbar > span[id^="ccy-"]{ order:42; },
+#view-cp-purchase > .toolbar > span[id^="ccy-"]{ order:42; },
+#view-cp-sale > .toolbar > span[id^="ccy-"]{ order:42; },
+#view-sale-cd > .toolbar > span[id^="ccy-"]{ order:42; },
+#view-purchase-cd > .toolbar > span[id^="ccy-"]{ order:42; },
+#view-vat-rvc > .toolbar > span[id^="ccy-"]{ order:42; },
+#view-other-expenses > .toolbar > span[id^="ccy-"]{ order:42; },
+#view-wht > .toolbar > span[id^="ccy-"]{ order:42; }
+#view-sale > .toolbar > .xls-btn{ order:43; margin-left:0 !important; },
+#view-purchase > .toolbar > .xls-btn{ order:43; margin-left:0 !important; },
+#view-cp-purchase > .toolbar > .xls-btn{ order:43; margin-left:0 !important; },
+#view-cp-sale > .toolbar > .xls-btn{ order:43; margin-left:0 !important; },
+#view-sale-cd > .toolbar > .xls-btn{ order:43; margin-left:0 !important; },
+#view-purchase-cd > .toolbar > .xls-btn{ order:43; margin-left:0 !important; },
+#view-vat-rvc > .toolbar > .xls-btn{ order:43; margin-left:0 !important; },
+#view-other-expenses > .toolbar > .xls-btn{ order:43; margin-left:0 !important; },
+#view-wht > .toolbar > .xls-btn{ order:43; margin-left:0 !important; }
+/* ទុកតែរូប ៖ ពាក្យពេញនៅក្នុង title */
+#view-sale > .toolbar > .xls-btn > span{ display:none; },
+#view-purchase > .toolbar > .xls-btn > span{ display:none; },
+#view-cp-purchase > .toolbar > .xls-btn > span{ display:none; },
+#view-cp-sale > .toolbar > .xls-btn > span{ display:none; },
+#view-sale-cd > .toolbar > .xls-btn > span{ display:none; },
+#view-purchase-cd > .toolbar > .xls-btn > span{ display:none; },
+#view-vat-rvc > .toolbar > .xls-btn > span{ display:none; },
+#view-other-expenses > .toolbar > .xls-btn > span{ display:none; },
+#view-wht > .toolbar > .xls-btn > span{ display:none; }
+#view-sale > .toolbar > span[id^="ccy-"] .ccy-t{ display:none; },
+#view-purchase > .toolbar > span[id^="ccy-"] .ccy-t{ display:none; },
+#view-cp-purchase > .toolbar > span[id^="ccy-"] .ccy-t{ display:none; },
+#view-cp-sale > .toolbar > span[id^="ccy-"] .ccy-t{ display:none; },
+#view-sale-cd > .toolbar > span[id^="ccy-"] .ccy-t{ display:none; },
+#view-purchase-cd > .toolbar > span[id^="ccy-"] .ccy-t{ display:none; },
+#view-vat-rvc > .toolbar > span[id^="ccy-"] .ccy-t{ display:none; },
+#view-other-expenses > .toolbar > span[id^="ccy-"] .ccy-t{ display:none; },
+#view-wht > .toolbar > span[id^="ccy-"] .ccy-t{ display:none; }
+/* អូសផ្តេកកុំឱ្យញ័រ */
+#view-sale .table-scroll{ overflow-x:auto; overflow-y:hidden; overscroll-behavior-x:contain; },
+#view-purchase .table-scroll{ overflow-x:auto; overflow-y:hidden; overscroll-behavior-x:contain; },
+#view-cp-purchase .table-scroll{ overflow-x:auto; overflow-y:hidden; overscroll-behavior-x:contain; },
+#view-cp-sale .table-scroll{ overflow-x:auto; overflow-y:hidden; overscroll-behavior-x:contain; },
+#view-sale-cd .table-scroll{ overflow-x:auto; overflow-y:hidden; overscroll-behavior-x:contain; },
+#view-purchase-cd .table-scroll{ overflow-x:auto; overflow-y:hidden; overscroll-behavior-x:contain; },
+#view-vat-rvc .table-scroll{ overflow-x:auto; overflow-y:hidden; overscroll-behavior-x:contain; },
+#view-other-expenses .table-scroll{ overflow-x:auto; overflow-y:hidden; overscroll-behavior-x:contain; },
+#view-wht .table-scroll{ overflow-x:auto; overflow-y:hidden; overscroll-behavior-x:contain; }
 /* ជួរស្ថានភាពក្រោមតារាង ៖ ក្លាយជាបន្ទះស្តើង អានស្រួលជាងអក្សរអណ្តែត */
 #view-sale .raw-note, #view-purchase .raw-note,
 #view-cp-purchase .raw-note, #view-cp-sale .raw-note,
@@ -9759,7 +9865,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
             <option value="sum">📊 សង្ខេបតាមក្រុមហ៊ុន</option>
           </select>
         </div>
-        <button class="btn ghost" onclick="resetDataFilters('sale')">✕ សម្អាតតម្រង</button>
+        <button class="btn ghost" onclick="resetDataFilters('sale')" title="សម្អាតតម្រងទាំងអស់">✕</button>
         <!-- ⭐ [stated] ២០២៦-១១-០៣ ៖ ចុចប្តូររវាងរៀល និងដុល្លារ -->
         <span id="ccy-sale"></span>
       </div>
@@ -9822,7 +9928,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
             <option value="sum">📊 សង្ខេបតាមក្រុមហ៊ុន</option>
           </select>
         </div>
-        <button class="btn ghost" onclick="resetDataFilters('purchase')">✕ សម្អាតតម្រង</button>
+        <button class="btn ghost" onclick="resetDataFilters('purchase')" title="សម្អាតតម្រងទាំងអស់">✕</button>
         <!-- ⭐ [stated] ២០២៦-១១-០៣ ៖ ចុចប្តូររវាងរៀល និងដុល្លារ -->
         <span id="ccy-purchase"></span>
       </div>
@@ -9860,7 +9966,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
           <span>📅 ឆ្នាំ:</span>
           <select id="year-cpPurchase" class="partner-select" style="min-width:110px;" onchange="refreshDataViewReset('cpPurchase')"></select>
         </div>
-        <button class="btn ghost" onclick="resetDataFilters('cpPurchase')">✕ សម្អាតតម្រង</button>
+        <button class="btn ghost" onclick="resetDataFilters('cpPurchase')" title="សម្អាតតម្រងទាំងអស់">✕</button>
       </div>
       <div id="summary-back-cpPurchase"></div>
       <div class="table-scroll"><table id="summary-cpPurchase"></table></div>
@@ -9901,7 +10007,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
           <span>📅 ឆ្នាំ:</span>
           <select id="year-cpSale" class="partner-select" style="min-width:110px;" onchange="refreshDataViewReset('cpSale')"></select>
         </div>
-        <button class="btn ghost" onclick="resetDataFilters('cpSale')">✕ សម្អាតតម្រង</button>
+        <button class="btn ghost" onclick="resetDataFilters('cpSale')" title="សម្អាតតម្រងទាំងអស់">✕</button>
       </div>
       <div id="summary-back-cpSale"></div>
       <div class="table-scroll"><table id="summary-cpSale"></table></div>
@@ -9938,7 +10044,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
           <span>📅 ឆ្នាំ:</span>
           <select id="year-saleCD" class="partner-select" style="min-width:110px;" onchange="refreshDataViewReset('saleCD')"></select>
         </div>
-        <button class="btn ghost" onclick="resetDataFilters('saleCD')">✕ សម្អាតតម្រង</button>
+        <button class="btn ghost" onclick="resetDataFilters('saleCD')" title="សម្អាតតម្រងទាំងអស់">✕</button>
       </div>
       <div id="cdman-saleCD"></div>
       <div id="quick-invoice-saleCD"></div>
@@ -9996,7 +10102,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
           <span>📅 ឆ្នាំ:</span>
           <select id="year-purchaseCD" class="partner-select" style="min-width:110px;" onchange="refreshDataViewReset('purchaseCD')"></select>
         </div>
-        <button class="btn ghost" onclick="resetDataFilters('purchaseCD')">✕ សម្អាតតម្រង</button>
+        <button class="btn ghost" onclick="resetDataFilters('purchaseCD')" title="សម្អាតតម្រងទាំងអស់">✕</button>
       </div>
       <div id="cdman-purchaseCD"></div>
       <div id="quick-invoice-purchaseCD"></div>
@@ -10036,7 +10142,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
           <span>📅 ឆ្នាំ:</span>
           <select id="year-otherExpenses" class="partner-select" style="min-width:110px;" onchange="refreshOtherExpenses()"></select>
         </div>
-        <button class="btn ghost" onclick="resetOtherExpensesFilters()">✕ សម្អាតតម្រង</button>
+        <button class="btn ghost" onclick="resetOtherExpensesFilters()" title="សម្អាតតម្រងទាំងអស់">✕</button>
       </div>
       <div class="oe-total-inline"><span>សរុបទឹកប្រាក់ (KHR):</span> <b id="oe-total-amount">0</b></div>
       <div class="table-scroll"><table id="table-otherExpenses"></table></div>
@@ -10084,7 +10190,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
             <option value="amount-asc">ទឹកប្រាក់ ទាប → ខ្ពស់</option>
           </select>
         </div>
-        <button class="btn ghost" onclick="resetWHTFilters()">✕ សម្អាតតម្រង</button>
+        <button class="btn ghost" onclick="resetWHTFilters()" title="សម្អាតតម្រងទាំងអស់">✕</button>
       </div>
       <div class="import-status" id="wht-result-count" style="margin:0 0 8px 12px;"></div>
       <div class="table-scroll"><table id="wht-table"></table></div>
@@ -12510,7 +12616,9 @@ function rscCcyBtnHtml(what){
   return '<button class="btn' + (on ? '' : ' ghost') + '" style="width:auto;padding:5px 12px;"'
     + ' onclick="rscCcyToggle(' + (what ? "'" + what + "'" : '') + ')"'
     + ' title="ប្តូររវាងរៀល និងដុល្លារ — ការបង្ហាញប៉ុណ្ណោះ ទិន្នន័យនៅជារៀល">'
-    + (on ? '💵 ដុល្លារ' : '៛ រៀល') + '</button>';
+    /* ⚠ ពាក្យរុំក្នុង span ⇒ របារតម្រង SR/PR លាក់វាបាន ( ទុកតែរូប )
+       ឯកន្លែងដទៃនៅបង្ហាញពាក្យពេញដដែល ។ */
+    + (on ? '💵 <span class="ccy-t">ដុល្លារ</span>' : '៛ <span class="ccy-t">រៀល</span>') + '</button>';
 }
 /* ទឹកប្រាក់តាមរូបិយប័ណ្ណដែលកំពុងមើល ⇒ រៀលគ្មានទសភាគ · ដុល្លារ ២ ខ្ទង់ */
 function rscCcyAmt(v, y){
@@ -14936,7 +15044,9 @@ function populateCategoryOptions(storeName){
   const tot = Number(data.totalRow.total) || 0;
   const pct = (v)=> tot ? ' · ' + ((v / tot) * 100).toFixed(1) + '%' : '';
   const cur = state.selectedCategory[storeName];
-  let html = '<option value="">📊 ប្រភេទ ៖ គ្រប់ប្រភេទ (ទម្រង់ដើម)</option>';
+  /* [stated] ២០២៦-១១-១៤ ៖ «រូបនេះមាន ២ 📊» ⇒ ដករូបចេញពីអក្សរជម្រើស
+     ( រូបនាំមុខជា span នៅខាងក្រៅប្រអប់នៅដដែល ) */
+  let html = '<option value="">ប្រភេទ ៖ គ្រប់ប្រភេទ (ទម្រង់ដើម)</option>';
   html += '<option value="' + ALL_CATEGORIES_MARKER + '"' + (cur === ALL_CATEGORIES_MARKER ? ' selected' : '') + '>'
         + 'តម្លៃសរុបលើវិក្កយបត្រ — ' + fmtAmt(tot) + ' ៛</option>';
   (data.categories || []).forEach(c=>{
