@@ -1672,6 +1672,30 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
   /* ⭐ [stated] ២០២៦-១១-១៣ ៖ ឈ្មោះឯកសារវែង ⇒ បើស្លាកនៅឆ្វេង ( ១៣៦px )
      វាលសល់ត្រឹម ~១៧០px ⇒ ចុះបន្ទាត់ ។ ⇒ ជួរបរិយាយដាក់ស្លាកនៅ**លើ**
      ហើយវាលពេញទទឹង ( ~២៩០px ) ⇒ ឈ្មោះភាគច្រើននៅ ១ បន្ទាត់ ។ */
+  /* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «នៅផ្នែកកំណត់ហេតុនេះ ពេលអូស វាលោតញាក់ៗ» ។
+     ⚠ មូលហេតុដែលទំនងបំផុត ៖ តារាងរុំដោយ `.table-wrap` ដែលមាន
+       `overflow-x:auto` + `-webkit-overflow-scrolling:touch` ។ នៅលើ iOS
+       **ប្រអប់រំកិលជាន់គ្នា** ( ទំព័រ ⊃ តារាង ) ធ្វើឱ្យការអូសញាក់ ៖
+       ម្រាមដៃប៉ះលើប្រអប់ក្នុង វាចាប់យកការអូសមួយភ្លែត រួចប្រគល់ទៅទំព័រវិញ ។
+     ⚠ នៅលើទូរស័ព្ទ តារាង `.trk-stack` ក្លាយជា **ប្លុកឈរ** រួចទៅហើយ
+       ⇒ គ្មានអ្វីត្រូវរំកិលផ្តេកទេ ⇒ ប្រអប់រំកិលនោះឥតប្រយោជន៍ ។
+     ⇒ បិទវាចោល ⇒ នៅសល់ប្រអប់រំកិលតែមួយ ( ទំព័រ ) ⇒ អូសរលូន ។
+     ⚠ `:has()` ⇒ ប៉ះតែ wrap ដែលខ្លួនរុំតារាង trk-stack ប៉ុណ្ណោះ
+       ⇒ តារាងដទៃដែលពិតជាត្រូវការរំកិល មិនរងផលទេ ។ */
+  #view-tracking .table-wrap:has(> table.trk-stack),
+  #docs-modal .table-wrap:has(> table.trk-stack){
+    overflow:visible !important; -webkit-overflow-scrolling:auto !important;
+  }
+  /* ⭐ ក្រឡា ✕ ៖ inline ⇒ នៅជួរជាមួយ «បានទទួល» និង «មិនមាន» */
+  #view-tracking .trk-tbl.trk-stack td.trk-delcell{
+    display:inline-grid !important; grid-template-columns:auto !important;
+    width:auto !important; vertical-align:middle; padding:5px 0 !important;
+  }
+  #view-tracking .trk-tbl.trk-stack td.trk-delcell::before{ display:none !important; }
+  #view-tracking .trk-tbl.trk-stack td.trk-delcell .trk-del{
+    min-height:28px !important; height:28px; width:28px; padding:0 !important;
+    display:inline-flex; align-items:center; justify-content:center;
+  }
   #view-tracking .trk-tbl.trk-stack td.trk-lbl{
     min-width:0 !important; grid-template-columns:minmax(0,1fr) !important;
     padding-bottom:8px !important; margin-bottom:4px;
@@ -1877,6 +1901,13 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
 .trk-ask label{display:block; font-size:12.5px; margin-bottom:10px;}
 .trk-ask input,.trk-ask select{display:block; width:auto; min-width:210px; margin-top:4px; padding:7px 8px;
   border:1px solid #d8d2bd; border-radius:8px; font-family:inherit; font-size:13px;}
+/* ⭐ [stated] ២០២៦-១១-១៤ ៖ «ទទួលនៅថ្ងៃ និងកំណត់ហេតុ ដាក់មកតែ ១ ជួរ» ។
+   ⚠ វាលមាន `min-width:210px` ⇒ ពីរវាល = ៤២០px ឯប្រអប់ត្រឹម ៩២vw
+     ( ៣៥៩px លើ ៣៩០px ) ⇒ ត្រូវដោះ min-width ក្នុងជួរនេះ ទើបវាចែកគ្នាបាន ។ */
+.trk-ask-row{display:flex; gap:10px; align-items:flex-end;}
+.trk-ask-row > label{flex:1 1 0; min-width:0; margin-bottom:10px;}
+.trk-ask-row input,.trk-ask-row select{
+  min-width:0 !important; width:100% !important; box-sizing:border-box;}
 .trk-ask-b{display:flex; gap:8px; justify-content:flex-end; margin-top:14px;}
 .trk-ask-b button{padding:8px 18px; border-radius:9px; cursor:pointer; font-family:inherit; font-size:13px;}
 .trk-ask-cancel{border:1px solid #ccc; background:#f7f7f5;}
@@ -2311,10 +2342,10 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
   font-weight:600; font-size:11.5px; }
 #view-tracking .smw-nm, #docs-modal .smw-nm{ margin-top:2px; }
 #view-tracking .smw-r:has(.smw-fill), #docs-modal .smw-r:has(.smw-fill){
-  display:grid; grid-template-columns:19px 126px minmax(0,1fr);
+  display:grid; grid-template-columns:16px 126px minmax(0,1fr);
   align-items:start; column-gap:4px; }
 #view-tracking .smw-r.smw-amt, #docs-modal .smw-r.smw-amt{
-  grid-template-columns:19px 126px max-content auto; align-items:baseline; }
+  grid-template-columns:16px 126px max-content auto; align-items:baseline; }
 #view-tracking .smw-r.smw-amt > .v2, #docs-modal .smw-r.smw-amt > .v2{ margin-left:6px; }
 #view-tracking .smw-fill, #docs-modal .smw-fill{
   font:inherit; color:inherit; border:0; outline:none; background:transparent;
@@ -2332,7 +2363,18 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
   text-align:center; font-size:11px; color:#666; }
 /* ⭐ សញ្ញា ▪ · វាលហូរតត្រង់ · ប្រអប់ហត្ថលេខាខាងស្តាំ ( ត្រូវដូច SMW_CSS ) */
 #view-tracking .smw-r .bq, #docs-modal .smw-r .bq{
-  flex:0 0 auto; color:#111; margin-right:5px; font-size:15px; line-height:1.15; }
+  flex:0 0 auto; color:#111; margin-right:5px; font-size:11px; line-height:1.5; }
+/* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «ទំហំអក្សរពីសរសេរ វាអត់ស្មើនឹង ការជួបពិភាក្សា» ។
+   ⚠ ច្បាប់ទូរស័ព្ទ `input,select,textarea{font-size:16px !important}`
+     ( ដាក់ដើម្បីកុំឱ្យ iOS ពង្រីកអេក្រង់ ) ឈ្នះលើ ១២,៥px របស់ជួរ
+     ⇒ អក្សរដែលវាយធំជាងស្លាក ។ ⇒ នៅក្នុងឯកសារនេះ បង្ខំឱ្យទទួលមរតកវិញ
+     ⇒ អ្វីដែលវាយ និងស្លាក ទំហំដូចគ្នាបេះបិទ ដូចនឹងលើក្រដាស ។ */
+#view-tracking textarea.smw-fill, #docs-modal textarea.smw-fill,
+#view-tracking input.smw-fill, #docs-modal input.smw-fill{
+  font:inherit !important; font-size:inherit !important; color:inherit !important; }
+/* អត្ថបទព្រីន ៖ ទទួលមរតកទាំងស្រុងពីជួរ ⇒ ស្មើស្លាកជានិច្ច */
+#view-tracking .smw-txt, #docs-modal .smw-txt{
+  font:inherit; color:inherit; white-space:pre-wrap; }
 #view-tracking .smw-r:has(.smw-flow), #docs-modal .smw-r:has(.smw-flow){ display:block; }
 #view-tracking .smw-flow, #docs-modal .smw-flow{ display:inline; }
 #view-tracking .smw-sign, #docs-modal .smw-sign{
@@ -3358,8 +3400,61 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
   #mtr-embed .ah-bar{ gap:6px; flex-wrap:nowrap; overflow-x:auto;
     -webkit-overflow-scrolling:touch; scrollbar-width:none; }
   #mtr-embed .ah-bar::-webkit-scrollbar{ display:none; }
-  #mtr-embed .ah-bar .btn{ padding:9px 10px; font-size:13px; }
+  #mtr-embed .ah-bar .btn{ padding:7px 10px; font-size:12.5px; }
   #mtr-embed .ah-bar .ah-sep{ margin:0 2px; }
+  /* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «ជួយកែសម្រួល autofit ករណីមានតែ ១ ឆ្នាំនៃ
+     សាលកបត្រ ឱ្យងាយមើល ហើយបើមានបន្ថែមឆ្នាំ អូសទៅស្តាំតាមជាក់ស្តែង» ។
+     ⚠ មូលហេតុ ៖ ច្បាប់សកល `table{min-width:760px}` ⇒ ទោះមានតែ ១ ឆ្នាំ
+       តារាងនៅតែ ៧៦០px ⇒ ជួរឈរ «ប្រភេទពន្ធ» ( `white-space:nowrap`
+       `width:1%` ) រុញលេខឆ្នាំចេញក្រៅអេក្រង់ ⇒ ឃើញតែក្រឡាទទេ ។
+     ⇒ ដោះ min-width ហើយឱ្យឈ្មោះប្រភេទពន្ធរុំបាន ៖
+       ១ ឆ្នាំ ⇒ សមទាំងស្រុង ( autofit ) ;
+       ច្រើនឆ្នាំ ⇒ លេខ ( nowrap ) រុញតារាងធំជាង ១០០% ⇒ `.table-wrap`
+       ( `overflow:auto` ) អូសទៅស្តាំតាមធម្មជាតិ ។ */
+  #mtr-embed table.annual-ledger{ min-width:0 !important; width:100% !important; }
+  /* ⚠⚠ វាស់បាន ៖ `min-width:0` លើជួរឈរឈ្មោះធ្វើឱ្យវាត្រូវបានច្របាច់
+     រហូតដល់ ~៦០px ពេលមាន ៤ ឆ្នាំ ⇒ តារាង «សម» ៣៤០px តែឈ្មោះប្រភេទពន្ធ
+     ក្លាយជាខ្សែស្តើងអានមិនបាន ហើយ **មិនអូស** ដូចដែលគេសុំ ។
+     ⇒ ដាក់ទទឹងអប្បបរមា ១២០px ៖
+       ១ ឆ្នាំ ⇒ ១២០ + ~៧០ = ១៩០ < ៣៤០ ⇒ សម ( autofit ) ;
+       ៤ ឆ្នាំ ⇒ ១២០ + ៤×~៧៥ = ៤២០ > ៣៤០ ⇒ អូសទៅស្តាំតាមជាក់ស្តែង ។ */
+  #mtr-embed table.annual-ledger tbody td:nth-child(1),
+  #mtr-embed table.annual-ledger thead th:nth-child(1){
+    white-space:normal !important; width:auto !important;
+    overflow-wrap:anywhere; word-break:break-word; min-width:120px !important;
+  }
+  #mtr-embed table.annual-ledger thead th,
+  #mtr-embed table.annual-ledger tbody td{
+    padding:7px 6px !important; font-size:11.5px !important; line-height:1.45;
+  }
+  #mtr-embed table.annual-ledger thead th:not(:nth-child(1)),
+  #mtr-embed table.annual-ledger tbody td:not(:nth-child(1)){ white-space:nowrap; }
+}
+
+/* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «ប៊ូតុងផ្នែក NP ដល់សញ្ញា + ជួយលុបប្រអប់ឬ
+   border ចេញ ដើម្បីកុំឱ្យមើលទៅខ្មៅ ហើយវែង មិនស្អាត» ។
+   ⚠ មូលហេតុ ៖ `.btn-outline` មាន `border:2px solid var(--mtr-navy)`
+     ⇒ ស៊ុមក្រាស់ពណ៌ខៀវចាស់ជិតខ្មៅ ហើយ `padding:9px 14px` ⇒ វែង ។
+   ⇒ នៅ **របារនេះប៉ុណ្ណោះ** ៖ ស៊ុម ១px ស្រាល · ជ្រុងមូល · តូចល្មម ·
+     ហើយប៊ូតុងសញ្ញា ( ↻ − ＋ ) ជាការ៉េស្មើគ្នា ។ របារដទៃមិនរងផល ។ */
+#mtr-embed .ah-bar .btn-outline{
+  border:1px solid var(--mtr-paper-line) !important;
+  background:#fff; color:var(--mtr-navy); font-weight:600;
+  box-shadow:0 1px 2px rgba(0,0,0,.04);
+}
+#mtr-embed .ah-bar .btn-outline:hover{ border-color:var(--mtr-brass,#B8863B) !important; }
+/* ⚠ វាស់បាន ៖ កម្ពស់ប៊ូតុង ៣៩ · ៤១ · ៣៤ ( ខុសគ្នាដោយសារ padding និង
+   ស៊ុម ) ⇒ មើលទៅមិនស្មើ ⇒ ចាក់កម្ពស់ថេរ ៣៤px ឱ្យទាំងអស់ ។ */
+#mtr-embed .ah-bar .btn{
+  border-radius:8px; height:34px; min-height:34px; padding:0 11px;
+  box-sizing:border-box; line-height:1;
+}
+#mtr-embed .ah-bar .btn-brass{ box-shadow:0 1px 2px rgba(0,0,0,.06); }
+#mtr-embed .ah-bar #ahPull,
+#mtr-embed .ah-bar #ahYearPrev,
+#mtr-embed .ah-bar #ahYearNext{
+  width:34px; min-width:34px; max-width:34px; height:34px;
+  padding:0 !important; font-size:15px; line-height:1;
 }
 #mtr-embed .ah-bar .ah-sep{
   width:1px; align-self:stretch; background:var(--mtr-paper-line); margin:0 4px;
@@ -4435,23 +4530,54 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
       row-gap:6px; column-gap:0;
     }
     #toi-embed #coverPanel table.cv-grid tr > td{
-      width:auto !important; flex:0 0 42%; box-sizing:border-box;
+      width:auto !important; flex:0 0 48%; box-sizing:border-box;
       /* ⚠ ស្លាកមាន `white-space:nowrap` ជា inline style ⇒ វែងជាងក្រឡា
          ⇒ ហៀរជាន់ប្រអប់ ( វាស់បាន ៖ ត្រូវការ ១៣០px មានតែ ១០៧px )
          ⇒ អនុញ្ញាតឲ្យរុំ ⇒ ២ បន្ទាត់ តែអានគ្រប់ । */
-      white-space:normal !important; overflow-wrap:anywhere;
-      padding-right:8px !important;
-      font-size:14px !important; line-height:1.6; color:var(--toi-slate,#5B6478);
+      /* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «ជួយឱ្យសញ្ញាណ ៖ តម្រឹមឱ្យស្មើគ្នា
+         និងកុំឱ្យចុះបន្ទាត់» ។
+         ⚠ វាស់បាន ( ៣៩០px ) ៖ ជួរឈរស្លាក ១១៨px តែស្លាកវែងបំផុត
+           ( «ប្រភេទកម្មវិធីសវនកម្ម ៖» ) ត្រូវការ ១៣០px ⇒ ១៣ ក្នុងចំណោម ២១
+           ស្លាករុំ ២-៣ បន្ទាត់ ហើយ «៖» ធ្លាក់ទៅបន្ទាត់ក្រោម ។
+         ⇒ ដំណោះស្រាយពីរផ្នែក ៖
+           ( ក ) ជួរឈរ ៤២% → ៤៨% និងអក្សរ ១៤ → ១២,៥px
+                 ⇒ ត្រូវការ ១១៦px មានទទឹង ១២៧px ⇒ សល់ ១១px ⇒ មិនរុំ ;
+           ( ខ ) `text-align:right` ⇒ «៖» គ្រប់ស្លាកបញ្ចប់ត្រង់ **x ដូចគ្នា**
+                 ទោះស្លាកវែងខ្លីខុសគ្នា ⇒ តម្រឹមពិតប្រាកដ ។ */
+      white-space:nowrap !important; overflow-wrap:normal;
+      text-align:right !important; padding-right:8px !important;
+      font-size:12.5px !important; line-height:1.6; color:var(--toi-slate,#5B6478);
     }
-    #toi-embed #coverPanel table.cv-grid td > span{ font-size:14px !important; }
+    /* ⚠ ជួរឈរវាល ៖ តម្រឹមឆ្វេងវិញ ( កុំឱ្យស្រូប text-align:right ពីក្រឡា ) */
+    #toi-embed #coverPanel table.cv-grid tr > td:has(.cf-wrap){ text-align:left !important; }
+    #toi-embed #coverPanel table.cv-grid td > span{ font-size:12.5px !important; }
     /* ⚠ មិនត្រឹមតែឲ្យប្រអប់ស្រូបទំហំនៅសល់ទេ ៖ បើប្រអប់តូច
        គូស្លាក/ប្រអប់ទី២ នឹងឡើងមករួមជួរដែល ⇒ មើលមិនដឹងថាស្លាកណា
        ជាប់នឹងប្រអប់ណា ( កើតឡើងពិតក្នុងរូបថត ) ।
        ⇒ ប្រអប់យ៉ាងតិច ៥៥% នៃជួរ ⇒ គូទី២ មិនអាចសម ⇒
          **១ គូ ១ ជួរ** ជានិច្ច ⇒ ស្លាកនិងប្រអប់នៅជាប់គ្នាជានិច្ច । */
     #toi-embed #coverPanel table.cv-grid tr > td:has(.cf-wrap){
-      flex:0 0 58%; min-width:0; padding-right:0 !important;
+      flex:0 0 52%; min-width:0; padding-right:0 !important;
     }
+    /* ⭐⭐ ក្រឡារួម ( Email ) ៖ ពេញទទឹងជួរ រួចបែងចែក ៤៨/៥២% ខាងក្នុង
+       ⇒ ស្លាក «Email ៖» តម្រឹមត្រង់នឹង «៖» ជួរដទៃ ហើយវាលចាប់ផ្តើមត្រង់
+         គែមដូចវាលដទៃ ⇒ លែងលោតខុសជួរ ។ */
+    #toi-embed #coverPanel table.cv-grid tr > td.cv-tight{
+      flex:0 0 100% !important; display:flex !important; align-items:center;
+      padding-right:0 !important; text-align:left !important;
+    }
+    #toi-embed #coverPanel table.cv-grid td.cv-tight > .cv-mlbl{
+      flex:0 0 48%; box-sizing:border-box; text-align:right !important;
+      padding-right:8px; white-space:nowrap; font-size:12.5px !important;
+      line-height:1.6; color:var(--toi-slate,#5B6478);
+    }
+    #toi-embed #coverPanel table.cv-grid td.cv-tight > .cf-wrap{
+      flex:0 0 52% !important; min-width:0; width:auto !important;
+      margin-bottom:0 !important;
+    }
+    /* ⚠ ស្លាក ១ បន្ទាត់ហើយ ⇒ តម្រឹមកណ្តាលបញ្ឈរ មិនមែនខាងលើ */
+    #toi-embed #coverPanel table.cv-grid td.cv-lbl-top:not(.cv-tight){
+      padding-top:0 !important; }
     /* ⭐ វាល ៖ ពេញទទឹងជានិច្ច ( inline style width:160px ត្រូវផ្តួល ) */
     #toi-embed #coverPanel .cf-wrap{
       display:block !important; width:100% !important; max-width:100% !important;
@@ -4562,6 +4688,52 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
       max-width:100% !important; overflow-x:auto !important;
       -webkit-overflow-scrolling:touch;
     }
+    /* ⭐⭐ តារាង `tbl-fit` ៖ ស្លាករុំបាន ⇒ សមទទឹងអេក្រង់ដោយមិនបាច់អូស
+       ⚠ មិនប្រើ `table-layout:fixed` ៖ ជាមួយឆ្នាំច្រើន ជួរឈរស្មើៗគ្នា
+         នឹងកាត់លេខ ។ ជាមួយ `auto` + `width:100%` កម្មវិធីរុករកផ្តល់ទទឹង
+         ឱ្យលេខពេញតម្រូវការជាមុន រួចបង្រួមស្លាក ( ដែលឥឡូវរុំបាន ) ។
+         ⇒ ករណីឆ្នាំតិច ៖ សមទាំងស្រុង មិនបាច់អូស ។
+         ⇒ ករណីឆ្នាំច្រើនពេក ៖ នៅអូសបាន ប៉ុន្តែអូសតិចជាងមុនច្រើន ។ */
+    /* ⚠⚠ ចាំបាច់ ៖ ច្បាប់សកល `table{min-width:760px}` ( បន្ទាត់ ~៧៣១ ·
+       មានដើម្បីកុំឱ្យតារាងទម្រង់ក្រដាសបាក់ ) ។ **min-width ផ្តួល width**
+       ⇒ `width:100%` តែម្យ៉ាងគ្មានប្រសិទ្ធភាពទេ ( វាស់បាន ៖ តារាងនៅ ៧៦០px
+       ក្នុងប្រអប់ ៣៥២px ⇒ នៅតែអូស ៤០៨px ) ⇒ ត្រូវដោះ min-width ជាមុន ។ */
+    #toi-embed .tbl-fit table{ min-width:0 !important; width:100% !important; }
+    #toi-embed .tbl-fit td.label, #toi-embed .tbl-fit th.label{
+      white-space:normal !important; overflow-wrap:anywhere !important;
+      word-break:break-word; min-width:0 !important; }
+    #toi-embed .tbl-fit td, #toi-embed .tbl-fit th{
+      padding:6px 6px !important; font-size:11.5px !important; line-height:1.45; }
+    #toi-embed .tbl-fit td.num, #toi-embed .tbl-fit th.num{
+      white-space:nowrap !important; font-size:11.5px !important; }
+
+    /* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «ជួយកែសម្រួលផ្នែកវិភាគហានិភ័យ» ។
+       ⚠ វាស់បាន ៖ ( ក ) `.risk-head-t{margin-right:auto}` ជាចន្លោះបត់បែន
+         ដែលរុញប៊ូតុងទីមួយទៅស្តាំ ខណៈពីរទៀតធ្លាក់ទៅបន្ទាត់ក្រោមខាងឆ្វេង
+         ⇒ ប៊ូតុង ៣ នៅ ៣ ទីតាំងមិនត្រង់គ្នា ( ឃើញក្នុងរូបថត ) ;
+         ( ខ ) `.info-grid` ប្រើ `minmax(360px,1fr)` តែទទឹងប្រើបានត្រឹម
+         ~៣៤២px ⇒ ជួរឈរធំជាងកាត ១៨px ⇒ ហៀរចេញក្រៅ ។ */
+    #toi-embed .risk-head{ gap:8px !important; }
+    #toi-embed .risk-head .risk-head-t{ margin-right:0 !important; display:none !important; }
+    #toi-embed .risk-head .btn{
+      flex:0 1 auto; white-space:nowrap; font-size:11.5px !important;
+      padding:7px 9px !important; min-height:34px !important; }
+    #toi-embed .info-grid{
+      grid-template-columns:repeat(auto-fit,minmax(min(360px,100%),1fr)) !important;
+      gap:4px 10px !important; }
+    #toi-embed .info-item{ min-width:0 !important; }
+    #toi-embed .risk-meta-box{ padding:12px !important; }
+    /* ⚠ ជួរ «ឆ្នាំសវនកម្មដែលប្រើ» ជា flex-wrap ⇒ ពេលបញ្ជីឆ្នាំវែង ប៊ូតុង
+       «↻ គណនាការិយបរិច្ឆេទឡើងវិញ» ធ្លាក់ទៅកណ្តាលបន្ទាត់ក្រោម មើលទៅចូលក្នុង
+       ⇒ ដាក់ឱ្យវាកាន់បន្ទាត់ពេញមួយ ⇒ ត្រង់គ្នា និងងាយចុចលើទូរស័ព្ទ ។ */
+    #toi-embed .risk-auto-note{ line-height:1.7 !important; }
+    #toi-embed .risk-auto-note .risk-auto-row{ gap:4px 8px !important; }
+    #toi-embed .risk-auto-note .risk-auto-row > .btn{
+      flex:0 0 100% !important; margin-top:6px; justify-content:center;
+      font-size:11.5px !important; padding:8px 9px !important;
+      min-height:36px !important; }
+    #toi-embed .risk-input{ width:100% !important; box-sizing:border-box;
+      min-width:0 !important; font-size:12.5px !important; }
     /* ⚠ ផ្ទាំងទាំងមូលមិនត្រូវលាតលើសអេក្រង់ ⇒ កាត់ការរំកិលផ្តេករបស់ទំព័រ */
     #toi-embed{ max-width:100% !important; overflow-x:hidden !important; }
   }
@@ -5631,9 +5803,29 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     /* ⭐ ក្បាលផ្ទាំងបុគ្គលិក ៖ ឈ្មោះ · សញ្ជាតិ · ស្ថានភាព ក្នុងជួរតែមួយ
        ⇒ បង្ខំលេខអត្តសញ្ញាណឱ្យចុះជួរទី ២ ( flex-basis ១០០% ) ។ */
     #tos-embed .modal-title-row{ row-gap:4px !important; gap:6px !important; }
-    #tos-embed .modal-head h3{ font-size:15px !important; }
-    #tos-embed .meta-inline{ font-size:11.5px !important; }
-    #tos-embed .inline-select{ font-size:11.5px !important; padding:2px 4px !important; }
+    /* ⚠ ទំហំអក្សរទាំងអស់ក្នុងប្រអប់ឈ្មោះ ៖ ១២,៥px ស្មើគ្នា ( [stated] ) */
+    #tos-embed .emp-id-box h3, #tos-embed .emp-id-box .meta-inline,
+    #tos-embed .emp-id-box .meta-sep, #tos-embed .emp-id-box .inline-input,
+    #tos-embed .emp-id-box .inline-select,
+    #tos-embed .emp-id-box .meta-save-btn{ font-size:12.5px !important; }
+    #tos-embed .emp-id-box{ gap:6px 7px !important; padding:8px 10px !important; }
+    /* ⚠⚠ វាស់បាន ៖ ទទឹងប្រអប់ ៣១២px · ចំណងជើង ៩២ · សញ្ជាតិ ៦២ ·
+       ស្ថានភាព ១០៨ · សញ្ញា ៨ · ចន្លោះ ៣២ = ៣០២ ⇒ គួរសម តែវានៅតែបាក់
+       ⇒ បង្រួមបន្ថែម ( ៥៦ និង ១០០ · ចន្លោះ ៧ ) = ២៨៤ ⇒ សល់ ២៨px ។ */
+    #tos-embed .emp-id-box .meta-sep{ margin:0 !important; }
+    /* ⭐⭐ [stated] «លេខពីខែមករា ដល់ធ្នូ និងសរុប ដាក់ទំហំលេខឱ្យស្មើគ្នា» ។
+       ⚠ លើទូរស័ព្ទ ច្បាប់ `input,select,textarea{font-size:16px !important}`
+         ( មានដើម្បីកុំឱ្យ iOS ពង្រីកអេក្រង់ពេលចុចវាល ) ធ្វើឱ្យក្រឡាខែ
+         ១៦px ខណៈជួរសរុបនៅ ១២px ⇒ មិនស្មើ ។
+       ⇒ លើកជួរសរុបមក ១៦px ដូចគ្នា ( មិនបន្ថយក្រឡាខែ ព្រោះនឹងវិលត្រឡប់
+         ទៅបញ្ហាពង្រីកអេក្រង់របស់ iOS វិញ ) ។ */
+    /* ⚠ ច្បាប់គោល ( ១២px ) ស្ថិតនៅ **ក្រោយ** ប្លុកនេះក្នុងឯកសារ ហើយមាន
+       specificity ស្មើគ្នា ⇒ វាឈ្នះ ។ បន្ថែម `tr.emp-totals-row`
+       ⇒ specificity ខ្ពស់ជាង ⇒ ច្បាប់ទូរស័ព្ទនេះឈ្នះវិញ ។ */
+    #tos-embed table.emp-grid tfoot tr.emp-totals-row td.tabular{
+      font-size:16px !important; }
+    #tos-embed .meta-inline{ font-size:12.5px !important; }
+    #tos-embed .inline-select{ font-size:12.5px !important; padding:2px 4px !important; }
     #tos-embed .meta-sep-id{ display:none !important; }
     #tos-embed .meta-id{ flex:1 0 100% !important; }
     #tos-embed .id-input{ min-width:130px !important; }
@@ -5642,10 +5834,18 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
        ⇒ នៅតែបាក់ ៣ ជួរ ។ មូលហេតុ ៖ `all:unset` លើវាលសញ្ជាតិដក width ចេញ
          ⇒ វាលរីកតាម `size` ( ៧ តួ ⇒ ១០១px ) ធំជាងអ្វីដែលត្រូវការ ។
        ⇒ ចាក់ទទឹងផ្ទាល់ ៖ ៧១ + ៥២ + ៩៨ + ៨ + ២៤ = ២៥៣px ⇒ សម ១ ជួរ ។ */
+    /* ⚠ `all:unset` ដកទទឹងចេញ ⇒ ត្រូវចាក់ផ្ទាល់ ។ ៥៨px ផ្ទុក «វៀតណាម» បាន */
     #tos-embed #empModalNationality{
-      width:52px !important; min-width:0 !important; font-size:11.5px !important; }
+      width:56px !important; min-width:0 !important; font-size:12.5px !important; }
     #tos-embed #empModalResidency{
-      max-width:100px !important; font-size:11px !important; padding:2px 3px !important; }
+      max-width:100px !important; width:100px !important;
+      font-size:12.5px !important; padding:2px 3px !important; }
+    /* ⭐ [stated] «ប្រអប់សម្អាតកុំឱ្យវែង ដាក់មួយល្មមចុច» ⇒ ការ៉េ ៣៦px */
+    #tos-embed .period-box #empWorkClear{
+      width:36px !important; min-width:36px !important; max-width:36px !important;
+      height:36px !important; min-height:36px !important; padding:0 !important;
+      display:inline-flex !important; align-items:center; justify-content:center;
+      flex:0 0 auto !important; font-size:14px !important; }
     #tos-embed .meta-save-btn{
       height:26px !important; min-height:26px !important; padding:0 10px !important;
       font-size:11px !important; }
@@ -5918,7 +6118,41 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
   #tos-embed .amend-detail-box .close-x{
     float:right; border:none; background:none; color:var(--tos-slate); cursor:pointer; font-size:13px;
   }
+  /* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «លេខពីខែមករា ដល់ធ្នូ និងសរុប ជួយដាក់ទំហំ
+     លេខឱ្យស្មើគ្នា» ។
+     ⚠ ក្រឡាខែជា <input class="emp-cell"> ⇒ JetBrains Mono ១២px ។
+       ជួរសរុបជា <td class="tabular"> ⇒ ទទួលមរតក ១២,៥px និង **ពុម្ពផ្សេង**
+       ( មិនមែន mono ) ⇒ ទទឹងតួលេខមិនស្មើគ្នា ។
+     ⇒ ដាក់ពុម្ព និងទំហំដូចគ្នាបេះបិទ ។ */
+  #tos-embed table.emp-grid tfoot td.tabular{
+    font-family:'JetBrains Mono','Khmer OS Siemreap',monospace !important;
+    font-size:12px !important;
+  }
   #tos-embed table.emp-grid tfoot tr.emp-totals-row{ background:var(--tos-gold-100); font-weight:700; }
+  /* ⭐⭐ ប្រអប់ឈ្មោះបុគ្គលិកក្នុងតួផ្ទាំង ៖ ភ្លឺដូច .period-box ·
+     អក្សរ **១២,៥px ស្មើគ្នាទាំងអស់** */
+  #tos-embed .emp-head-bare{ justify-content:flex-end !important; padding:10px 14px !important; }
+  #tos-embed .emp-id-box{
+    display:flex; flex-wrap:wrap; align-items:center; gap:7px 10px;
+    background:#F7F5EC; border:1px solid var(--tos-line); border-radius:8px;
+    padding:9px 12px; margin:0 0 10px; color:var(--tos-navy-800);
+  }
+  #tos-embed .emp-id-box h3{
+    margin:0; font-family:var(--tos-font-header);
+    font-size:12.5px !important; color:var(--tos-navy-800) !important; white-space:nowrap;
+  }
+  #tos-embed .emp-id-box .meta-inline,
+  #tos-embed .emp-id-box .meta-sep{ font-size:12.5px !important; color:var(--tos-slate); }
+  #tos-embed .emp-id-box .inline-input{
+    border-bottom:1px dotted var(--tos-line) !important; color:var(--tos-navy-800) !important;
+    font-size:12.5px !important;
+  }
+  #tos-embed .emp-id-box .inline-input::placeholder{ color:var(--tos-slate); }
+  #tos-embed .emp-id-box .inline-select{
+    background:#fff !important; color:var(--tos-navy-800) !important;
+    border:1px solid var(--tos-line) !important; font-size:12.5px !important;
+  }
+  #tos-embed .emp-id-box .meta-save-btn{ font-size:12.5px !important; }
   #tos-embed table.emp-grid tfoot td{ border-top:1.5px solid var(--tos-gold-500); }
 
   #tos-embed .val-high{ background:var(--tos-success-bg) !important; color:var(--tos-success) !important; font-weight:700; }
@@ -5949,13 +6183,19 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
   @media screen and (max-width: 760px){
     /* ⚠ លើទូរស័ព្ទ ឈ្នាប់ច្រើន ⇒ បង្រួមរឹម និងអក្សរបន្តិច ⇒ ១ ជួរផ្ទុក
        បាន ២–៣ ឈ្នាប់ ជំនួស ១ ⇒ បញ្ជីខ្លីជាង មើលឃើញទាំងអស់ក្នុងពេលតែមួយ ។ */
-    #tos-embed .matrix-toggle-btn{ padding:7px 12px; font-size:12px; }
+    /* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «ទំហំអក្សរបៀវត្ស ដល់វៀតណាម កែទំហំឱ្យស្មើ
+       កំណត់ពន្ធឡើងវិញរួច ៦ នាក់» ។
+       ⚠ វាស់បាន ៖ ឈីបជួរ ១-២ ១២px ឯជួរស្ថានភាព ១១px ⇒ មើលទៅមិនស្មើ ។
+         ដាក់ទាំងអស់ ១២px នឹងធ្វើឱ្យជួរស្ថានភាព ( ៣១៥px នៅ ១១px ) ត្រូវការ
+         ៣៤៤px ក្នុង ៣៤០px ⇒ បាក់ជួរ ⇒ ជ្រើស **១១,៥px ទាំងអស់** ។ */
+    #tos-embed .matrix-toggle-btn{ padding:7px 11px; font-size:11.5px !important; }
     /* ⭐ [stated] ២០២៦-១១-១៣ ៖ «កំណត់ពន្ធឡើងវិញ · មិនទាន់កំណត់ ដាក់វាតែ
        មួយជួរ ជាមួយនឹងគ្រប់ស្ថានភាព» ⇒ ឈ្នាប់ក្រុមនេះតូចជាងគេបន្តិច
        ⇒ ៣ ឈ្នាប់សមក្នុងទទឹង ៣៥៤px ។ */
     /* ⚠ ការវាស់ ៖ ៣ អ្នកស្ថានភាព ត្រូវការ ៣១៥px ខណៈពេលជួរមាន ៣០៦px
        ⇒ បង្រួមអក្សរ និងរឹម ⇒ ~៣០២px ⇒ សម ១ ជួរ । */
-    #tos-embed .amd-filter-btn{ padding:6px 7px !important; font-size:11px !important; }
+    #tos-embed .amd-filter-btn{ padding:6px 8px !important; font-size:11.5px !important; }
+    #tos-embed .mx-hit{ font-size:11.5px !important; }
     /* ⭐ បង្ខំឲ្យក្រុមស្ថានភាពចាប់ផ្តើមបន្ទាត់ថ្មី ⇒ សន្សំជាមួយគ្នា
        ( ស្ការបែងចែកបញ្ឈរក្លាយជាបន្ទាត់នៅលើទូរស័ព្ទ ) । */
     #tos-embed .mx-sep{
@@ -7747,8 +7987,16 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
 
 <div class="modal-overlay" id="empModalOverlay" hidden>
   <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="empModalTitle">
-    <div class="modal-head">
-      <div class="modal-title-row">
+    <!-- ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «ជួយកែសម្រួលក្បាលឈ្មោះបុគ្គលិក មកក្រោម
+         ចូលផ្នែកនៅពីលើថ្ងៃចូលធ្វើការ និងរៀបចំទំហំអក្សរឱ្យស្មើគ្នា» ។
+         ⚠ ជួរក្បាលធ្លាប់នៅក្នុងរបារពណ៌ខៀវចាស់ ⇒ វាលបញ្ចូល ( សញ្ជាតិ ·
+           អត្តសញ្ញាណ ) ពណ៌ភ្លឺលើផ្ទៃងងឹត ⇒ មើលពិបាក ហើយទំហំអក្សរខុសៗគ្នា
+           ( ឈ្មោះ ១៥px · សញ្ជាតិ ១១,៥px · ស្ថានភាព ១១px ) ។
+         ⇒ ផ្លាស់ប្លុកទាំងមូលចុះមកក្នុងតួផ្ទាំង ត្រង់ពីលើ «ថ្ងៃចូលធ្វើការ»
+           ក្នុងប្រអប់ភ្លឺដូច `.period-box` ហើយកំណត់អក្សរ **១២,៥px ស្មើគ្នា
+           ទាំងអស់** ។ របារខាងលើនៅសល់តែប៊ូតុងបិទ ✕ ។ -->
+    <div class="modal-head emp-head-bare">
+      <div class="modal-title-row" id="empIdBoxSrc" style="display:none;">
         <h3 id="empModalTitle">-</h3>
         <span class="meta-sep">·</span>
         <!-- ⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «លុបអក្សរ សញ្ជាតិ រក្សាទុក ខ្មែរ ឬ
@@ -7773,6 +8021,10 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
       <button type="button" class="modal-close" id="empModalClose" aria-label="បិទ">✕</button>
     </div>
     <div class="modal-body">
+      <!-- ⚠ ប្លុកឈ្មោះ/សញ្ជាតិ/ស្ថានភាព/អត្តសញ្ញាណ ត្រូវបានផ្លាស់មកទីនេះ
+           ដោយ JS ( កាត់ចេញពី .modal-head រួចបញ្ចូលក្នុង #empIdBox ) ⇒
+           លេខសម្គាល់ធាតុនីមួយៗនៅដដែល ⇒ កូដដែលហៅវាមិនត្រូវកែទេ ។ -->
+      <div id="empIdBox" class="emp-id-box"></div>
       <!-- ⭐ [stated] ២០២៦-១១-១៣ ៖ «លុប 📅 រយៈពេលធ្វើការ · លុបអក្សរ ទុកទទេ
            = មិនកំណត់ … · ថ្ងៃចូលធ្វើការ និងថ្ងៃឈប់ និងសញ្ញាសម្អាត ដាក់វា
            មួយជួរ ( សម្អាត ទុកតែសញ្ញា )» ។
@@ -9932,7 +10184,7 @@ function renderPersonalInfoView(){
   if(!container) return;
   container.innerHTML = '';
   const wrap = document.createElement('div');
-  wrap.style.cssText = 'max-width:640px; margin:24px auto; padding:24px; background:var(--surface); border-radius:var(--radius); box-shadow:0 1px 3px rgba(0,0,0,.08);';
+  wrap.style.cssText = 'max-width:640px; margin:24px auto; padding:18px; background:var(--surface); border-radius:var(--radius); box-shadow:0 1px 3px rgba(0,0,0,.08); box-sizing:border-box; overflow:hidden;';
   /* ⚠ [stated] ២០២៦-០៨-១៧ ៖ «លុបចេញ 👤 ព័ត៌មានផ្ទាល់ខ្លួន ព្រោះមាននៅ
      កន្លែងចុចចូល» — ធាតុជំហានក្នុងជួរ TOI មានឈ្មោះនេះរួចហើយ។
      ⚠ ធាតុ <h2> នៅដដែល តែទទេ ៖ បន្ទាត់ខាងក្រោមភ្ជាប់ថ្នាំង និងកំណត់
@@ -9946,7 +10198,13 @@ function renderPersonalInfoView(){
     ['auditorName', 'ឈ្មោះសវនករ'], ['auditorID', 'ID សវនករ'],
   ];
   const grid = document.createElement('div');
-  grid.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px;';
+  /* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «ប្រអប់ឈ្មោះ ID គួរដាក់នៅជួរជាមួយគ្នា
+     និងកុំឱ្យហៀរប្រអប់ទៅក្រៅ» ។
+     ⚠ មូលហេតុចាស់ ៖ `minmax(240px,1fr)` ⇒ លើទូរស័ព្ទ ( ទទឹងប្រើបាន ~៣៤២px )
+       ២ ជួរឈរត្រូវការ ៤៩៦px ⇒ auto-fit សម្រេចយកតែ ១ ជួរឈរ ⇒ ធ្លាក់ ២ ជួរ ។
+     ⇒ ចាក់ ២ ជួរឈរថេរ ( ឈ្មោះធំជាង ID ) ហើយ `minmax(0,…)` ការពារការហៀរ
+       ព្រោះធាតុ grid មាន `min-width:auto` ជាលំនាំដើម ។ */
+  grid.style.cssText = 'display:grid; grid-template-columns:minmax(0,1.6fr) minmax(0,1fr); gap:10px;';
   fields.forEach(([key,label])=>{
     const item = document.createElement('div');
     const lab = document.createElement('label');
@@ -9976,7 +10234,7 @@ function renderPersonalInfoView(){
   wrap.appendChild(paTitle);
   [1,2].forEach(slot=>{
     const row = document.createElement('div');
-    row.style.cssText = 'display:flex; align-items:center; gap:12px; margin-bottom:12px;';
+    row.style.cssText = 'display:flex; align-items:center; gap:8px; margin-bottom:12px; min-width:0;';
     const cb = document.createElement('input');
     cb.type = 'checkbox';
     cb.checked = (selected === String(slot));
@@ -9991,14 +10249,16 @@ function renderPersonalInfoView(){
     nameInput.type = 'text';
     nameInput.placeholder = 'ឈ្មោះសវនករដៃគូ';
     nameInput.value = getPI('partnerAuditorName'+slot);
-    nameInput.style.cssText = "flex:1; box-sizing:border-box; padding:9px 12px; border:1px solid var(--line); border-radius:8px; font-size:14px; font-family:'Khmer OS Siemreap',sans-serif;";
+    /* ⚠ ធាតុ flex មាន `min-width:auto` ⇒ មិនរួញតូចជាងអត្ថបទខាងក្នុង
+       ⇒ ប្រអប់ ID ហៀរចេញក្រៅកាត ( ឃើញក្នុងរូបថត ) ⇒ ត្រូវ `min-width:0` ។ */
+    nameInput.style.cssText = "flex:1.6 1 0; min-width:0; box-sizing:border-box; padding:9px 10px; border:1px solid var(--line); border-radius:8px; font-size:14px; font-family:'Khmer OS Siemreap',sans-serif;";
     nameInput.addEventListener('input', ()=> setPI('partnerAuditorName'+slot, nameInput.value));
     row.appendChild(nameInput);
     const idInput = document.createElement('input');
     idInput.type = 'text';
     idInput.placeholder = 'ID';
     idInput.value = getPI('partnerAuditorID'+slot);
-    idInput.style.cssText = "flex:1; box-sizing:border-box; padding:9px 12px; border:1px solid var(--line); border-radius:8px; font-size:14px; font-family:'Khmer OS Siemreap',sans-serif;";
+    idInput.style.cssText = "flex:1 1 0; min-width:0; box-sizing:border-box; padding:9px 10px; border:1px solid var(--line); border-radius:8px; font-size:14px; font-family:'Khmer OS Siemreap',sans-serif;";
     idInput.addEventListener('input', ()=> setPI('partnerAuditorID'+slot, idInput.value));
     row.appendChild(idInput);
     wrap.appendChild(row);
@@ -10009,7 +10269,7 @@ function renderPersonalInfoView(){
     ['deputyDeptHeadName', 'អនុប្រធាននាយកដ្ឋាន'],
   ];
   const grid2 = document.createElement('div');
-  grid2.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; margin-top:12px;';
+  grid2.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr)); gap:12px; margin-top:12px;';
   fields2.forEach(([key,label])=>{
     const item = document.createElement('div');
     const lab = document.createElement('label');
@@ -13818,8 +14078,23 @@ try{
      ( មើល NARR_CSS · html.rsc-mobile-print .nr-page ) ⇒ ២៦៦ × ០,៩០ =
      ២៣៩,៤mm ⇒ សមនឹងផ្ទៃបោះពុម្ពរបស់ iOS ( ~២៤០mm ) ដោយមិនហៀរ ។
    ⚠ អក្សរតូចជាង PC ១០% លើក្រដាសទូរស័ព្ទ — នោះជាថ្លៃនៃការបាន
-     **រូបរាងដូច PC បេះបិទ** ដែលជាអ្វីដែលគេស្នើ ។ */
-window.__nrPageMm = 266;
+     /* ⭐⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «ព្រីនឯកសារការងារសវនកម្ម · ឯករាជ្យភាព
+   នៅសល់ទំព័រទទេ · បរិយាយកំណត់ · របាយការណ៍សវនកម្ម · របាយការណ៍សង្ខេប
+   វាដាច់ footer» ។
+   ⚠⚠⚠ កំហុសរបស់ខ្ញុំ ( ២០២៦-១១-១៣ ) ៖ ខ្ញុំលើកប្រអប់ទៅ ២៦៦/២៦៩mm រួច
+     «បង្រួម» ដោយ `zoom` ដោយសន្មតថា Safari គិត zoom ពេលកាត់ទំព័រ ។
+     **វាមិនគិតទេ** ៖ WebKit កាត់ទំព័រតាមប្រអប់ **មុនពេល zoom** ⇒ zoom
+     គ្រាន់តែធ្វើឱ្យមើលទៅតូច មិនបានកាត់បន្ថយកម្ពស់ពិតឡើយ ។
+   ⚠ ភស្តុតាងពីអ្នកប្រើ ៖ ឯកសារ ~៧ សន្លឹកចេញជា ១៣ ទំព័រ ដោយទំព័រគូៗទទេ
+     ហើយមានតែបន្ទាត់ជើងទំព័រនៅខាងលើ — នោះគឺសន្លឹកនីមួយៗហៀរបន្តិច
+     ⇒ ជើងទំព័រ ( position:absolute; bottom:0 ) ធ្លាក់ទៅទំព័របន្ទាប់ ។
+     នេះជារោគសញ្ញាដដែលដែលបានកត់ត្រាទុកតាំងពី ២០២៦-០៨ ៖ «ប្រអប់ ២៦៦mm
+     ហៀរទៅសន្លឹកទីពីរ ( ១២ ទំព័រ → ២២ សន្លឹក )» ។
+   ⇒ ត្រឡប់ទៅការសម្រេចដែលបានផ្ទៀងផ្ទាត់រួច ៖ **២៥២mm ជាតម្លៃតែមួយ
+     សម្រាប់គ្រប់ឧបករណ៍** ( iOS សមនៅ ២៥២ · ហៀរនៅ ២៥៦ ) ហើយ **គ្មាន zoom** ។
+     ⇒ គ្មានទំព័រទទេ · ជើងទំព័រជាប់នឹងសន្លឹករបស់វា · ហើយចំនួនទំព័រ
+       ទូរស័ព្ទ = កុំព្យូទ័រ ព្រោះលេខតែមួយ ។ */
+window.__nrPageMm = 252;
 try{
   document.documentElement.style.setProperty('--nr-ph', window.__nrPageMm + 'mm');
 }catch(e){}
@@ -31983,7 +32258,11 @@ function renderCoverPanel(){
      it in both places meant two controls for one setting. */
   const coverHead = el('div',{class:'panel-title no-print',
     style:'display:flex; align-items:center; gap:10px; flex-wrap:wrap;'},
-    el('span',{}, '📋 COVER — សន្លឹកកិច្ចការ'));
+    /* ⭐ [stated] ២០២៦-១១-១៤ ៖ «លុបអក្សរ 📋 COVER — សន្លឹកកិច្ចការ
+       (កម្មវិធីទី១) ចេញ» ។
+       ⚠ ទុក <span> ទទេ និងប្រអប់ជ្រើសកម្មវិធីខាងក្រោម ៖ ប្រអប់នោះជា
+         ឧបករណ៍ប្តូរកម្មវិធីទី១/ទី២/… បើដកចេញ លែងប្តូរកម្មវិធីបាន ។ */
+    el('span',{}, ''));
   const progCount = Math.max(1, Math.min(6, Number(de.programCount || 1)));
   const coverOpts = ['កម្មវិធីទី១','កម្មវិធីទី២','កម្មវិធីទី៣','កម្មវិធីទី៤','កម្មវិធីទី៥','កម្មវិធីទី៦'].slice(0, progCount);
   const coverSel = el('select',{class:'field-input', style:'width:140px;'});
@@ -31993,9 +32272,16 @@ function renderCoverPanel(){
     coverSel.appendChild(opt);
   });
   coverSel.addEventListener('change', ()=>{ setDE('coverProgram', coverSel.value); renderAll(); });
-  if(coverOpts.length > 1) coverHead.appendChild(coverSel);
-  else coverHead.appendChild(el('span',{style:'font-weight:400;'}, '(' + coverProgram + ')'));
-  wrap.appendChild(coverHead);
+  /* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «លុបអក្សរ 📋 COVER — សន្លឹកកិច្ចការ
+     (កម្មវិធីទី១) ចេញ» ។
+     ⚠ វាស់បាន ៖ ពេលមានកម្មវិធីតែ **មួយ** ជួរនេះមិនមែនជាប្រអប់ជ្រើសទេ —
+       វាជា <span> អក្សរស្ថិតិ «(កម្មវិធីទី១)» ⇒ គ្មានមុខងារ ⇒ ដកចេញ ។
+     ⚠ ពេលមានកម្មវិធី ២ ឬច្រើន ជួរនេះជាប្រអប់ជ្រើសពិត ⇒ ត្រូវរក្សាទុក
+       បើមិនដូច្នេះទេ លែងប្តូរកម្មវិធីបាន ។ */
+  if(coverOpts.length > 1){
+    coverHead.appendChild(coverSel);
+    wrap.appendChild(coverHead);
+  }
 
   // ---- Header — a real bordered table (matches the Excel layout: two
   // label/value pairs per row, values on one line, editable where there's
@@ -32210,6 +32496,20 @@ function renderCoverPanel(){
          ទាំងពីរជាមួយគ្នា** ៖ ស្លាក សញ្ញា និងតម្លៃ ក្នុងក្រឡាតែមួយ
          ដូច្នេះអក្សរហូរជាប់គ្នាតាមធម្មជាតិ។ ធ្វើតែជួរ Email ប៉ុណ្ណោះ។ */
       if(td1.classList && td1.classList.contains('cv-tight')){
+        /* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «ផ្នែកប្រអប់ Email លោតខុសជួរ» ។
+           ⚠ វាស់បាន ៖ ក្រឡានេះជា `colspan=2` ដែលរួម **ស្លាក + វាល** ក្នុង
+             ក្រឡាតែមួយ ( ដើម្បីឱ្យតម្លៃជាប់ «៖» លើកុំព្យូទ័រ ) ។ លើទូរស័ព្ទ
+             ជួរក្លាយជា flex ២ ជួរឈរ ៤៨/៥២% ⇒ ក្រឡារួមនេះទៅជាប់ច្បាប់
+             `:has(.cf-wrap)` ⇒ វាទទួលតែ ៥២% ហើយអង្គុយខាងឆ្វេង
+             ⇒ មើលទៅ «លោតខុសជួរ» ពីជួរដទៃ ។
+           ⇒ រុំអត្ថបទស្លាកក្នុង <span class="cv-mlbl"> ⇒ CSS ទូរស័ព្ទអាច
+             ចាប់វាបាន ហើយបែងចែក ៤៨/៥២% ដូចជួរដទៃទាំងអស់ ។ */
+        try{
+          var mlbl = document.createElement('span');
+          mlbl.className = 'cv-mlbl';
+          while(td1.firstChild) mlbl.appendChild(td1.firstChild);
+          td1.appendChild(mlbl);
+        }catch(e){}
         while(td2.firstChild) td1.appendChild(td2.firstChild);
         td1.colSpan = (td1.colSpan || 1) + (td2.colSpan || 1);
         td1.style.whiteSpace = 'normal';
@@ -38557,7 +38857,14 @@ function exportAllStepsToExcel(){
 
 function renderRatiosPanel(){
   const yrs = visibleYears();
-  const wrap = el('div');
+  /* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «ជួយខិតវាឱ្យជិតគ្នា ដើម្បីកុំឱ្យពិបាកអូស
+     ខិតទៅស្តាំដើម្បីមើល នៃ ratio ម្ចាស់ភាគហ៊ុន តារាងរំលស់» ។
+     ⚠ មូលហេតុ ៖ `td.label{white-space:nowrap}` ⇒ ឈ្មោះអនុបាតវែងជាខ្មែរ
+       មិនរុំ ⇒ ជួរឈរស្លាកលាតដល់ ~៥០០px ⇒ ជួរឈរឆ្នាំត្រូវរុញចេញក្រៅអេក្រង់
+       ⇒ ត្រូវអូសទៅស្តាំទើបឃើញលេខ ។
+     ⇒ សម្គាល់តារាងទាំងនេះដោយ `tbl-fit` រួច CSS ទូរស័ព្ទអនុញ្ញាតឱ្យស្លាករុំ
+       ⇒ កម្មវិធីរុករកបង្រួមជួរឈរស្លាកឱ្យលេខមានកន្លែងគ្រប់គ្រាន់ ។ */
+  const wrap = el('div',{class:'tbl-fit'});
   wrap.appendChild(el('h2',{class:'panel-title'}, 'អនុបាតហិរញ្ញវត្ថុសំខាន់ៗ'));
 
   const tableWrap = el('div',{class:'table-wrap'});
@@ -38931,7 +39238,7 @@ function renderChangesPanel(){
     wrap.appendChild(el('h3',{class:'sub-h'}, 'ម្ចាស់ភាគហ៊ុន / អ្នកចូលហ៊ុន (% កាន់កាប់ចុងគ្រា)'));
     const names = [];
     shYears.forEach(y=> state.shareholders[y].forEach(s=>{ if(!names.includes(s.name)) names.push(s.name); }));
-    const tw2 = el('div',{class:'table-wrap'});
+    const tw2 = el('div',{class:'table-wrap tbl-fit'});
     const t2 = el('table');
     const th2 = el('thead');
     const hr2 = el('tr');
@@ -38984,7 +39291,7 @@ function renderChangesPanel(){
 }
 function renderAssetsPanel(){
   const yrs = visibleYears().filter(y=> state.assets.byYear[y]);
-  const wrap = el('div');
+  const wrap = el('div',{class:'tbl-fit'});
   wrap.appendChild(el('h2',{class:'panel-title'}, 'ការវិភាគទ្រព្យសកម្មរយៈពេលវែង & រំលស់ (ជំហានទី១០)'));
   if(yrs.length===0){
     wrap.appendChild(el('p',{class:'panel-sub'}, 'គ្មានទិន្នន័យជំហានទី១០ ក្នុងឯកសារដែលបានផ្ទុកទេ។'));
@@ -43021,13 +43328,29 @@ window.__toiImport = function(data){
     render();
   });
 
+  /* ⭐ ផ្លាស់ជួរក្បាល ( ឈ្មោះ · សញ្ជាតិ · ស្ថានភាព · អត្តសញ្ញាណ ) ចុះមក
+     ក្នុងតួផ្ទាំង ។ ធ្វើដោយ **ផ្លាស់ថ្នាំងដើម** មិនមែនសាងថ្មី ⇒ គ្រប់
+     `els.*` និង event ដែលចងរួចនៅដដែលទាំងអស់ ។ */
+  (function mountEmpIdBox(){
+    try{
+      var src = document.getElementById('empIdBoxSrc');
+      var box = document.getElementById('empIdBox');
+      if(src && box && src.parentElement !== box){
+        src.style.display = '';
+        box.appendChild(src);
+      }
+    }catch(e){}
+  })();
+
   function commitWorkPeriod(){
     if (!modalEmpName) return;
     const s = els.empWorkStart.value || '';
     const e = els.empWorkEnd.value || '';
     empPeriodSet(modalEmpName, s, e);
     if (!s && !e){
-      els.empModalStatus.textContent = 'បានសម្អាតរយៈពេលធ្វើការ — ខែបាត់គិតតាមការប្រកាសវិញ';
+      /* ⭐ [stated] ២០២៦-១១-១៤ ៖ «លុបអក្សរចេញ បានសម្អាតរយៈពេលធ្វើការ —
+         ខែបាត់គិតតាមការប្រកាសវិញ» ។ ⚠ ការសម្អាតនៅដំណើរការដដែល ។ */
+      els.empModalStatus.textContent = '';
       els.empModalStatus.style.color = 'var(--muted)';
     } else {
       els.empModalStatus.textContent = 'បានរក្សាទុករយៈពេលធ្វើការ';
@@ -44184,7 +44507,11 @@ function renderTrackingView(){
                ⇒ ការដាក់វាជាជួរឈរក្នុងតារាងតែមួយ ជាអ្វីដែលធ្វើឱ្យតារាង
                ធំហួស និងជួរបរិយាយចង្អៀត ។ */
           ? ''
-          : `<td style="text-align:center;"><button class="trk-del" data-del="${ri}.${ii}" title="លុប">✕</button></td>`}
+          /* ⭐ [stated] ២០២៦-១១-១៤ ៖ «សញ្ញា ✕ គួរដាក់នៅជួរ បានទទួល · មិនមាន» ។
+             ⚠ ក្រឡានេះគ្មាន `data-lbl` ⇒ លើទូរស័ព្ទវាធ្លាក់ជាជួរពេញទទឹង
+               ដាច់ដោយឡែក ។ ថ្នាក់ `trk-delcell` ឱ្យ CSS ធ្វើវាជា inline
+               ⇒ ឈរបន្តពី «មិនមាន» ក្នុងបន្ទាត់តែមួយ ។ */
+          : `<td class="trk-delcell" style="text-align:center;"><button class="trk-del" data-del="${ri}.${ii}" title="លុប">✕</button></td>`}
       </tr>`).join('');
 
     return `
@@ -44979,6 +45306,46 @@ function renderTypeFields(idx){
      ការចុច «យល់ព្រម» ភ្លាមក៏បានតម្លៃត្រឹមត្រូវដែរ។
    ⚠ បើគេបោះបង់ ៖ ដោះធីកវិញ — កុំទុកឯកសារ «ទទួលរួច» ដោយគ្មានថ្ងៃ និង
      គ្មានកំណត់ហេតុ ព្រោះវានឹងលេចនៅកំណត់ហេតុទី ១ ដោយស្វ័យប្រវត្តិ។ */
+/* ⭐⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «ពេលចុចបោះបង់ ឬយល់ព្រម វាគួរតែនៅផ្នែកនេះ
+   ដដែល មិនមែនដូរទៅផ្នែកផ្សេងនៃកំណត់ហេតុនោះឡើយ» និង «យើងកែផ្នែកណា
+   នៅផ្នែកនឹង កុំឱ្យវាលោតទៅលើវិញ» ។
+   ⚠ មូលហេតុ ៖ រាល់ការកែ ( ធីក · ប្តូរថ្ងៃ · ចុចយល់ព្រម/បោះបង់ ) ហៅ
+     `renderTrackingView()` ដែល **គូរផ្ទាំងទាំងមូលឡើងវិញ** ⇒ កម្ពស់ឯកសារ
+     ត្រូវកសាងថ្មី ⇒ កម្មវិធីរុករកទម្លាក់ការរំកិលមកលើវិញ ⇒ មើលទៅដូចជា
+     «លោតទៅផ្នែកផ្សេង» ។
+   ⇒ រុំមុខងារគូរ ៖ ចាំទីតាំងរំកិលមុនគូរ រួចដាក់ត្រឡប់វិញក្រោយគូរ
+     ( ក្នុង rAF ពីរជាន់ ដើម្បីឱ្យក្រោយពេលប្លង់ត្រូវបានគណនារួច ) ។
+   ⚠ រុំតែម្តងគត់ ៖ ទង់ `__keepScroll` ការពារការរុំស្ទួន ។ */
+(function(){
+  try{
+    if(typeof renderTrackingView !== 'function' || renderTrackingView.__keepScroll) return;
+    var orig = renderTrackingView;
+    var scroller = function(){
+      var el = document.getElementById('tracking-container');
+      for(var a = el && el.parentElement; a; a = a.parentElement){
+        var ox = getComputedStyle(a).overflowY;
+        if((ox === 'auto' || ox === 'scroll') && a.scrollHeight > a.clientHeight) return a;
+      }
+      return null;
+    };
+    renderTrackingView = function(){
+      var sc = scroller();
+      var y  = window.pageYOffset || document.documentElement.scrollTop || 0;
+      var sy = sc ? sc.scrollTop : 0;
+      var r  = orig.apply(this, arguments);
+      var put = function(){
+        try{ if(sc) sc.scrollTop = sy; }catch(e){}
+        try{ window.scrollTo(0, y); }catch(e){}
+      };
+      put();
+      try{ requestAnimationFrame(function(){ put();
+        requestAnimationFrame(put); }); }catch(e){ }
+      return r;
+    };
+    renderTrackingView.__keepScroll = true;
+  }catch(e){}
+})();
+
 function askReceived(base){
   /* ⚠⚠ [stated] ២០២៦-០៨-១៣ ៖ «ប្តូរថ្ងៃរួច ចុចយល់ព្រម វាលោតមកថ្ងៃនេះវិញ
      ហើយត្រូវប្តូរម្តងទៀត» — មូលហេតុ ៖ ប្រអប់ធីកបញ្ចេញ **ទាំង `input`
@@ -45006,13 +45373,17 @@ function askReceived(base){
     '<div class="trk-ask">' +
       '<h4>បានទទួលឯកសារ</h4>' +
       '<div class="trk-ask-l">' + esc(String(it.label || '')) + '</div>' +
-      '<label>ទទួលនៅថ្ងៃខែឆ្នាំ<input type="date" id="askDate" value="' + iso + '"></label>' +
-      /* ⚠ meetingOptions() ត្រឡប់ **អារេ** នៃ {v,label} មិនមែន html ទេ */
-      '<label>ទទួលនៅកំណត់ហេតុទី<select id="askMtg">' +
-        meetingOptionsOpen().map(function(o){
-          return '<option value="' + o.v + '">' + esc(o.label) + '</option>';
-        }).join('') +
-      '</select></label>' +
+      /* ⭐ [stated] ២០២៦-១១-១៤ ៖ «ទទួលនៅថ្ងៃ និងកំណត់ហេតុ ជួយដាក់មកតែ ១ ជួរ»
+         ⇒ រុំវាលទាំងពីរក្នុង `.trk-ask-row` ( flex ) ⇒ ឈរក្បែរគ្នា ។ */
+      '<div class="trk-ask-row">' +
+        '<label>ទទួលនៅថ្ងៃខែឆ្នាំ<input type="date" id="askDate" value="' + iso + '"></label>' +
+        /* ⚠ meetingOptions() ត្រឡប់ **អារេ** នៃ {v,label} មិនមែន html ទេ */
+        '<label>ទទួលនៅកំណត់ហេតុទី<select id="askMtg">' +
+          meetingOptionsOpen().map(function(o){
+            return '<option value="' + o.v + '">' + esc(o.label) + '</option>';
+          }).join('') +
+        '</select></label>' +
+      '</div>' +
       '<div class="trk-ask-b">' +
         '<button id="askNo" class="trk-ask-cancel">បោះបង់</button>' +
         '<button id="askOk" class="trk-ask-ok">យល់ព្រម</button>' +
@@ -46711,7 +47082,7 @@ const RPT_CSS = `
        ខ្លះកាន់ថ្នាក់នោះ **រួមជាមួយថ្នាក់ដទៃ** — ជាន់ដោយចៃដន្យបែបនេះ
        មើលមិនឃើញលើអេក្រង់ ព្រោះវាកើតតែក្នុង @media print។ */
   @media print{
-    .rpt-page:not(.nr-page){ min-height:var(--rpt-ph, 269mm) !important; height:auto !important;
+    .rpt-page:not(.nr-page){ min-height:var(--rpt-ph, 252mm) !important; height:auto !important;
                padding-bottom:6mm !important; }
     /* ⭐ សុវត្ថិភាពទ្វេ ៖ បើ --rpt-ph មិនទាន់ត្រូវបានកំណត់ ( JS មិនទាន់រត់ )
        ទូរស័ព្ទនៅតែទទួលលេខតូចជាង ⇒ មិនហៀរ ។
@@ -46722,7 +47093,7 @@ const RPT_CSS = `
          ច្បាប់ទូរស័ព្ទខាងក្រោមមាន specificity ខ្ពស់ ( html.rsc-mobile-print … )
          ⇒ វា**ពន្លាតសន្លឹកខ្លីនោះទៅ ២៤០mm** ⇒ ក្លាយជាសន្លឹកស្ទើរទទេ ।
        ⇒ បងអត់ .cv-page   ⇒ សន្លឹកខ្លីនៅខ្លីដដែលដូច PC । */
-    html.rsc-mobile-print .rpt-page:not(.nr-page):not(.cv-page){ min-height:var(--rpt-ph, 269mm) !important; }
+    html.rsc-mobile-print .rpt-page:not(.nr-page):not(.cv-page){ min-height:var(--rpt-ph, 252mm) !important; }
     /* ⭐⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «ផ្នែកឯករាជ្យភាព ពេលចុចព្រីន វានៅលោត
        blank ទៅទំព័រទី២» ។
        ⚠⚠ ការវាស់ពិត ( ព្រីន · ទូរស័ព្ទ · --rpt-ph ២៤០mm ) បង្ហាញថាសន្លឹក
@@ -46747,9 +47118,9 @@ const RPT_CSS = `
     /* ⭐ គោលដៅ ២៤៨mm ( មើលកំណត់សម្គាល់ក្នុង NARR_CSS ) ៖
          · សន្លឹកធម្មតា ..... ២៦៩mm × ០,៩២២ = ២៤៨mm
          · សន្លឹកមុខការងារ .. ២៨០mm × ០,៨៨៥ = ២៤៨mm */
-    html.rsc-mobile-print .rpt-page.cv-cover-page{ zoom:var(--cv-zoomp, 0.936) !important; }
+    html.rsc-mobile-print .rpt-page.cv-cover-page{ zoom:var(--cv-zoomp, 1) !important; }
     html.rsc-mobile-print .rpt-page:not(.nr-page):not(.cv-cover-page){
-      zoom:var(--rpt-zoomp, 0.974) !important;
+      zoom:var(--rpt-zoomp, 1) !important;
     }
     /* ⭐ [stated] ២០២៦-១១-១៣ ៖ «របាយការណ៍សវនកម្ម ទំព័រទី១ និងទី២ វាស្ថិតនៅ
        ជាមួយគ្នា ដោយវាធ្លាក់ទំព័រ» ⇒ បង្ខំការបំបែកសន្លឹកម្តងទៀតឱ្យច្បាស់
@@ -47786,9 +48157,9 @@ const WP_CSS = `
   /* ⚠ ដូច .cv-plain ៖ ចងទៅនឹង --rpt-ph ជំនួស 100vh ។ ច្បាប់ខាងក្រោមសម្រាប់
      .cv-cover-page សរសេរជាន់តម្លៃទាំងនេះម្តងទៀត ដែលជាការចង់បាន។ */
   .cv-sheet{border:1px solid #333; padding:4px; box-sizing:border-box;
-    min-height:var(--rpt-ph, 269mm);}
+    min-height:var(--rpt-ph, 252mm);}
   .cv-in{border:2px solid #333; padding:14px 20px 16px; box-sizing:border-box;
-    min-height:calc(var(--rpt-ph, 269mm) - 10mm);
+    min-height:calc(var(--rpt-ph, 252mm) - 10mm);
     display:flex; flex-direction:column;}
   /* ⚠⚠ [stated] ២០២៦-០៨-១៨ ៖ «ព្រីនតាមទូរស័ព្ទ វាធ្លាក់ទៅទំព័រទី ២ ;
      តាមកុំព្យូទ័រត្រូវហើយ កុំកែ — កែតែតាមទូរស័ព្ទ ហើយតែផ្នែកនេះទេ» ។
@@ -47912,8 +48283,8 @@ const WP_CSS = `
      ឯករាជ្យភាព ក៏ 269MM ដែរ» ⇒ គម្លាតបន្ថែម −10/−13mm ដែលខ្ញុំដាក់ពេល
      លំនាំដើមជា 282 លែងត្រូវការទៀត ហើយវាធ្វើអោយស៊ុមខ្លីជាងក្រដាស។
      ⇒ ត្រឡប់មកជាប់នឹង --rpt-ph ដដែល (ស៊ុមក្នុងដក 3mm សម្រាប់ស៊ុម+padding)។ */
-  .cv-cover-page .cv-sheet{ min-height:var(--rpt-ph, 269mm); }
-  .cv-cover-page .cv-in{ min-height:calc(var(--rpt-ph, 269mm) - 3mm); }
+  .cv-cover-page .cv-sheet{ min-height:var(--rpt-ph, 252mm); }
+  .cv-cover-page .cv-in{ min-height:calc(var(--rpt-ph, 252mm) - 3mm); }
   .cv-lh{display:flex; align-items:flex-start; justify-content:space-between; gap:16px;}
   .cv-lh-l,.cv-lh-r{text-align:center; color:#1a237e;
     font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif;}
@@ -48118,7 +48489,7 @@ const WP_CSS = `
      ហើយចំណងជើងទាំងពីរ (.cv-wh) ទម្ងន់ 400 ។ ⚠ padding នៅដដែល ដើម្បីកុំអោយ
      បន្ទាត់ជាប់គែមក្រដាស។ */
   .cv-plain{border:0; padding:22px 26px; box-sizing:border-box;
-    min-height:calc(var(--rpt-ph, 269mm) - 7mm);}
+    min-height:calc(var(--rpt-ph, 252mm) - 7mm);}
   /* ⚠ [stated] ២០២៦-០៨-២៣ ៖ «ផ្នែកនេះមួយទៀតវានៅសល់ច្រើនផ្នែកខាងក្រោម» —
      សន្លឹកសេចក្តីសន្និដ្ឋាន (E) និងអនុសាសន៍ (F) ។ បន្ទាត់សរសេរមានកម្ពស់ថេរ
      30px ⇒ ២៦ បន្ទាត់មិនគ្រប់កម្ពស់សន្លឹក ⇒ ចន្លោះធំនៅបាត។
@@ -48452,8 +48823,18 @@ const BASIS_CSS = `
        ជាប់ជាប់អេក្រង់ពេលរមូរ។ */
   @media print{
     .bs-page{ padding-bottom:16mm; }
+    /* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «ព្រីនបរិយាយមូលដ្ឋាន footer បែបជានៅពីលើ
+       ថ្ងៃខែ ឈ្មោះទៅវិញ វាត្រូវនៅផ្នែកខាងក្រោម» ។
+       ⚠ មូលហេតុ ៖ ជើងទំព័រនេះជា position:fixed; bottom:0 — តែមួយគត់
+         ក្នុងចំណោមឯកសារទាំងអស់ ។ fixed ក្នុងការព្រីនលើ WebTab/iOS
+         ចងនឹង viewport មិនមែនសន្លឹក ⇒ វាចុះមិនដល់បាតក្រដាស ហើយដោយសារ
+         ប្លុកហត្ថលេខាមកក្រោយវាក្នុងលំហូរ វាមើលទៅ «នៅពីលើថ្ងៃខែ ឈ្មោះ» ។
+       ⇒ ប្តូរទៅ position:absolute; bottom:0 ក្នុងសន្លឹកកម្ពស់ថេរ
+         ដូចឯកសារដទៃទាំងអស់ ⇒ ចុះដល់បាតសន្លឹកពិតប្រាកដ ក្រោមហត្ថលេខា ។
+       ⚠ ឥឡូវធ្វើបានហើយ ព្រោះកម្ពស់សន្លឹកចុះមក ២៥២mm ⇒ សមក្នុង ១ ទំព័រ
+         ( មុននេះ ២៦៩mm ហៀរ ⇒ ទើបត្រូវប្រើ fixed និងកម្ពស់ auto ) ។ */
     .bs-page > .rpt-foot{
-      position:fixed; left:0; right:0; bottom:0;
+      position:absolute; left:0; right:0; bottom:0;
       margin:0; padding-top:3px;
     }
     /* ⚠⚠ [stated] ២០២៦-០៨-២២ ៖ «សេចក្តីបរិយាយអំពីមូលដ្ឋាន ៖ ប្រើ 269mm វា
@@ -48466,7 +48847,11 @@ const BASIS_CSS = `
     /* ⚠ ជម្រើសត្រូវខ្លាំងជាង .rpt-page:not(.nr-page) (0,2,0) ⇒ ប្រើ
        .rpt-page.bs-page (0,2,0 ដូចគ្នា តែមកក្រោយ) ។ ការសរសេរតែ
        .bs-page (0,1,0) ចាញ់ ហើយឯកសារនេះទទួលកម្ពស់ 269mm វិញ។ */
-    .rpt-page.bs-page, .bs-page{ min-height:0 !important; height:auto !important;
+    /* ⚠ សន្លឹកត្រូវមានកម្ពស់ និង position:relative ទើបជើងទំព័រ absolute
+       មានអ្វីដើម្បីចង ។ */
+    .rpt-page.bs-page, .bs-page{
+      position:relative !important;
+      min-height:var(--rpt-ph, 252mm) !important; height:auto !important;
       padding-bottom:14mm !important; }
   }
 
@@ -49932,7 +50317,7 @@ const NARR_CSS = `
   /* ⚠ ត្រូវមានកម្ពស់ថេរ ៖ ជើងទំព័រប្រើ position:absolute; bottom:0 ដូច្នេះ
      បើគ្មានកម្ពស់ វាធ្លាក់ទៅលើកំពូលទំព័រវិញ (អ្វីដែលទើបកើតឡើង)។
      min-height:0 នៅដដែល ដើម្បីផ្តួល .rpt-page{min-height:calc(100vh)}។ */
-  .nr-page{position:relative; box-sizing:border-box; height:var(--nr-ph,266mm); max-height:var(--nr-ph,266mm);
+  .nr-page{position:relative; box-sizing:border-box; height:var(--nr-ph,252mm); max-height:var(--nr-ph,252mm);
     min-height:0 !important; overflow:hidden;
     padding-bottom:15mm; page-break-after:always; break-after:page;}
   .nr-page:last-child{page-break-after:auto; break-after:auto;}
@@ -49959,8 +50344,8 @@ const NARR_CSS = `
        តូចជាង = ចន្លោះធំជាង តែមិនហៀរ ; ធំជាង = ពេញជាង តែប្រថុយហៀរ ។
      ⚠ គ្មាន backtick ក្នុងកំណត់សម្គាល់នេះ ៖ NARR_CSS ជា template literal ។ */
   html.rsc-mobile-print .nr-page{
-    height:var(--nr-ph, 266mm) !important; max-height:var(--nr-ph, 266mm) !important;
-    zoom:var(--nr-zoomp, 0.985) !important; }
+    height:var(--nr-ph, 252mm) !important; max-height:var(--nr-ph, 252mm) !important;
+    zoom:var(--nr-zoomp, 1) !important; }
   html.rsc-mobile-print .nr-page > .nr-foot{ bottom:0 !important; margin:0 !important; }
   /* ══ ទូរស័ព្ទ/ថេប្លេត ៖ កម្ពស់ស្វ័យប្រវត្តិ + ជើងទំព័រហូរតាមមាតិកា ══
      ⚠⚠ កុំដាក់ backtick ក្នុងកំណត់សម្គាល់នេះ ៖ NARR_CSS ជា template literal
@@ -51556,15 +51941,44 @@ function smwState(){
      ហើយក្តារចុចលេចឡើងធម្មតា ។
    ⭐ តម្រឹមជួរដូច Word ៖ ជួរក្លាយជា grid ៣ ជួរឈរ ( ▪ · ស្លាក · អត្ថបទ )
      ⇒ អត្ថបទរុំត្រឡប់មក**គែមឆ្វេងរបស់ខ្លួន** មិនមែនគែមទំព័រ ។ */
+/* ⭐⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «អក្សរខ្ញុំសាកចុចសរសេរ វាមិនដើរពីចុចព្រីន ·
+   ទំហំអក្សរពីសរសេរ វាអត់ស្មើនឹង ការជួបពិភាក្សា · កុំឱ្យវាចុះបន្ទាត់ ទុកចន្លោះ
+   បែបនេះ · គំរូគេគឺគ្រាន់តែមើលប៉ុណ្ណោះ … ចុចព្រីនយើងមិនបានសរសេរ ចេញអក្សរ
+   នោះមកទេ · អាចលុបជួរដែលមិនប្រើ កុំឱ្យពេលព្រីនមានរំលោងបន្ទាត់» ។
+   ⚠⚠ មូលហេតុទី ១ ( វាយចូលតែមិនចេញ ) ៖ `printSmw` យក `host.innerHTML` ។
+     តម្លៃដែលវាយក្នុង <textarea> រស់នៅក្នុង **property `value`** ប៉ុណ្ណោះ —
+     វាមិនត្រូវបានសរសេរត្រឡប់ចូល innerHTML ទេ ⇒ អ្វីដែលព្រីនជាខ្លឹមសារ
+     ចាស់ពេលគូរលើកដំបូង ។
+   ⚠⚠ មូលហេតុទី ២ ( អក្សរគំរូចេញលើក្រដាស ) ៖ textarea ទទេបង្ហាញ
+     `placeholder` ហើយកម្មវិធីរុករក**គូរ placeholder នោះលើក្រដាសដែរ** ។
+   ⚠⚠ មូលហេតុទី ៣ ( ទំហំអក្សរមិនស្មើ ) ៖ ច្បាប់ទូរស័ព្ទ
+     `input,select,textarea{font-size:16px !important}` ឈ្នះលើ ១២,៥px
+     របស់ជួរ ⇒ អ្វីដែលវាយធំជាងស្លាក ។
+   ⇒ ដំណោះស្រាយតែមួយដោះទាំងបី ៖ **ពេលព្រីន មិនប្រើវាលបញ្ចូលទាល់តែសោះ** —
+     បង្កើត HTML ឡើងវិញពីស្ថានភាពដែលរក្សាទុក ជាអត្ថបទធម្មតា ។
+     ⇒ អ្វីដែលវាយចេញពិតប្រាកដ · គ្មានអក្សរគំរូ · អក្សរស្មើស្លាក
+       ( ព្រោះ span ទទួលមរតកពុម្ពពីជួរ ) · គ្មានកម្ពស់ថេររបស់ textarea
+       ⇒ គ្មានចន្លោះទទេធំ ។ */
+var SMW_PRINT = false;
+function smwVal(key){ return String(smwState()[key] || '').trim(); }
 function smwFill(key, lines, ph){
   var v = String(smwState()[key] || '');
+  if(SMW_PRINT) return '<span class="smw-fill smw-txt">' + esc(v) + '</span>';
   /* WARNING : do NOT close the row here. It used to emit </div>, which
      closed .smw-col early and threw .smw-note into its own grid cell
      ( measured : note rendered one character per line ). */
   return '<textarea class="smw-fill" rows="' + (lines || 1) + '" data-smw="' + key + '"'
     + ' placeholder="' + esc(ph || '') + '">' + esc(v) + '</textarea>';
 }
+/* ជួរដែលមានវាលបំពេញ ៖ ពេលព្រីន បើវាលទទេ ⇒ **មិនបោះពុម្ពជួរនោះទាល់តែសោះ**
+   ⇒ គ្មានបន្ទាត់ទទេ ឬចន្លោះរំលោងនៅលើក្រដាស ។ */
+function smwRow(label, key, lines, ph){
+  if(SMW_PRINT && !smwVal(key)) return '';
+  return '<div class="smw-r"><span class="bq">▪</span><span class="k2">' + label + '</span>'
+    + smwFill(key, lines, ph) + '</div>';
+}
 function smwHtml(forPrint){
+  SMW_PRINT = !!forPrint;
   var c = smwCtx();
   var auditors = [c.a1, c.a2].filter(function(x){ return String(x || '').trim(); });
   var amount = String(smwState().amount || '');
@@ -51575,7 +51989,7 @@ function smwHtml(forPrint){
     try{ amount = Math.round(c.grand).toLocaleString('en-US'); }
     catch(e){ amount = String(Math.round(c.grand)); }
   }
-  return '' +
+  var out = '' +
   '<div class="rpt-page smw-page">' +
     '<div class="smw-title">សេចក្ដីសង្ខេប<br>ការងារចុះធ្វើសវនកម្មពន្ធដារ</div>' +
     '<div class="smw-head">' +
@@ -51603,28 +52017,32 @@ function smwHtml(forPrint){
     '</div>' +
     '<div class="smw-h">II. កិច្ចសហការរបស់អ្នកជាប់ពន្ធ៖</div>' +
     '<div class="smw-b">' +
-      '<div class="smw-r"><span class="bq">▪</span><span class="k2">ការជួបពិភាក្សា៖</span>' +
-      smwFill('meet', 3, 'ឧ. បានជួបម្ចាស់សហគ្រាស ៣ ដង ; បានជួបម្ចាស់សហគ្រាស និងភ្នាក់ងារ ៤ ដង ; មិនបានជួបម្ចាស់ ឬតំណាងសហគ្រាសទេ …') + '</div>' +
-      '<div class="smw-r"><span class="bq">▪</span><span class="k2">ការផ្ដល់ឯកសារ៖</span>' +
-      smwFill('docs', 3, 'ឧ. សហគ្រាសបានផ្តល់ឯកសារតាមការស្នើសុំ ; ស្នើសុំឯកសារចំនួន ១០ ប៉ុន្តែសហគ្រាសឱ្យបានតែ ១ គឺ … ; ស្នើសុំ ១០ មិនបានឱ្យ ៣ គឺ GL, TB, របាយការណ៍ធនាគារ …') + '</div>' +
+      smwRow('ការជួបពិភាក្សា៖', 'meet', 3, 'ឧ. បានជួបម្ចាស់សហគ្រាស ៣ ដង ; បានជួបម្ចាស់សហគ្រាស និងភ្នាក់ងារ ៤ ដង ; មិនបានជួបម្ចាស់ ឬតំណាងសហគ្រាសទេ …') +
+      smwRow('ការផ្ដល់ឯកសារ៖', 'docs', 3, 'ឧ. សហគ្រាសបានផ្តល់ឯកសារតាមការស្នើសុំ ; ស្នើសុំឯកសារចំនួន ១០ ប៉ុន្តែសហគ្រាសឱ្យបានតែ ១ គឺ … ; ស្នើសុំ ១០ មិនបានឱ្យ ៣ គឺ GL, TB, របាយការណ៍ធនាគារ …') +
     '</div>' +
     '<div class="smw-h">III. មូលដ្ឋាននៃការកំណត់ពន្ធ៖</div>' +
     '<div class="smw-b">' +
-      '<div class="smw-r"><span class="bq">▪</span><span class="k2">មូលដ្ឋាន៖</span>' +
-      smwFill('basis', 3, 'ឧ. របាយការណ៍ធនាគារ, ទិន្នន័យ Cross-Check, លម្អៀងទិន្នន័យនាំចូល, លម្អៀងចំនួនបុគ្គលិកបានប្រកាស និងជាក់ស្ដែង, លម្អៀងចំណូលប្រចាំខែ និងប្រចាំឆ្នាំ, ចំណាយសេវាទៅរូបវន្តបុគ្គល …') + '</div>' +
-      '<div class="smw-r smw-amt"><span class="bq">▪</span><span class="k2">ទឹកប្រាក់កំណត់ពន្ធ៖</span>' +
-        '<input class="smw-fill smw-inline" type="text" data-smw="amount" ' +
-        'placeholder="X,XXX,XXX,XXX" value="' + esc(amount) + '">' +
-        '<span class="v2">រៀល</span></div>' +
+      smwRow('មូលដ្ឋាន៖', 'basis', 3, 'ឧ. របាយការណ៍ធនាគារ, ទិន្នន័យ Cross-Check, លម្អៀងទិន្នន័យនាំចូល, លម្អៀងចំនួនបុគ្គលិកបានប្រកាស និងជាក់ស្ដែង, លម្អៀងចំណូលប្រចាំខែ និងប្រចាំឆ្នាំ, ចំណាយសេវាទៅរូបវន្តបុគ្គល …') +
+      ((SMW_PRINT && !String(amount).trim()) ? '' :
+        '<div class="smw-r smw-amt"><span class="bq">▪</span><span class="k2">ទឹកប្រាក់កំណត់ពន្ធ៖</span>' +
+        (SMW_PRINT
+          ? '<span class="smw-fill smw-txt">' + esc(amount) + '</span>'
+          : '<input class="smw-fill smw-inline" type="text" data-smw="amount" ' +
+            'placeholder="X,XXX,XXX,XXX" value="' + esc(amount) + '">') +
+        '<span class="v2">រៀល</span></div>') +
       /* ⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «ផ្នែក យើងខ្ញុំសូមភ្ជាប់ … នៅតែមាន
          spacing ឆ្ងាយពីជួរសម្គាល់» ។
          ⚠ ចន្លោះនោះគឺ **ជួរវាល «ឯកភាព» ទទេមួយដាច់ដោយឡែក** ដែលខ្ញុំបន្ថែម ។
          ⇒ ផ្លាស់វាចូលក្នុងជួរ «សម្គាល់៖» ផ្ទាល់ ⇒ សល់ជួរតែមួយ ⇒ ចន្លោះបាត់ ។
          ⚠ អត្ថបទណែនាំ ( បើសហគ្រាសឯកភាព … ) ចុះទៅបន្ទាត់ក្រោមក្នុងជួរដដែល ។ */
-      '<div class="smw-r"><span class="bq">▪</span><span class="k2">សម្គាល់៖</span>' +
+      ((SMW_PRINT && !smwVal('agree')) ? '' :
+        '<div class="smw-r"><span class="bq">▪</span><span class="k2">សម្គាល់៖</span>' +
         '<div class="smw-col">' + smwFill('agree', 1, 'បើឯកភាព សរសេរ ៖ សហគ្រាសឯកភាពលើការកំណត់ពន្ធនេះ') +
-        '<div class="smw-note">បើសហគ្រាសឯកភាព សវនករត្រូវបំពេញថា «សហគ្រាសឯកភាពលើការកំណត់ពន្ធនេះ» ' +
-        'បើសហគ្រាសមិនឯកភាព សវនករពុំចាំបាច់បំពេញទេ</div></div></div>' +
+        /* ⚠ អត្ថបទណែនាំជាជំនួយសម្រាប់**មើលលើអេក្រង់**ប៉ុណ្ណោះ ⇒ មិនព្រីន */
+        (SMW_PRINT ? '' :
+          '<div class="smw-note">បើសហគ្រាសឯកភាព សវនករត្រូវបំពេញថា «សហគ្រាសឯកភាពលើការកំណត់ពន្ធនេះ» ' +
+          'បើសហគ្រាសមិនឯកភាព សវនករពុំចាំបាច់បំពេញទេ</div>') +
+        '</div></div>') +
       '<div class="smw-r smw-attach">យើងខ្ញុំសូមភ្ជាប់មកជាមួយនូវលិខិតស្នើសុំឯកសារ លិខិតអញ្ជើញ និងកំណត់ហេតុ។</div>' +
     '</div>' +
     '<div class="smw-sign">' +
@@ -51644,6 +52062,8 @@ function smwHtml(forPrint){
        ⚠ ឯកសារនេះមាន ១ សន្លឹកជានិច្ច ⇒ «ទំព័រ ១ នៃ ១» । */
     '<div class="smw-foot">ទំព័រ ១ នៃ ១</div>' +
   '</div>';
+  SMW_PRINT = false;
+  return out;
 }
 const SMW_CSS = `
   .smw-page{ font-family:'Khmer OS Siemreap','Noto Sans Khmer',sans-serif; font-size:12.5px;
@@ -51689,9 +52109,9 @@ const SMW_CSS = `
      Row = grid of 3 columns : bullet | label | value-block. The value block
      wraps back to ITS OWN left edge, not the page margin. */
   .smw-r:has(.smw-fill){
-    display:grid; grid-template-columns:19px 126px minmax(0,1fr);
+    display:grid; grid-template-columns:16px 126px minmax(0,1fr);
     align-items:start; column-gap:4px; }
-  .smw-r.smw-amt{ grid-template-columns:19px 126px max-content auto; align-items:baseline; }
+  .smw-r.smw-amt{ grid-template-columns:16px 126px max-content auto; align-items:baseline; }
   .smw-r.smw-amt > .v2{ margin-left:6px; }
   .smw-fill{
     font:inherit; color:inherit; border:0; outline:none; background:transparent;
@@ -51699,6 +52119,8 @@ const SMW_CSS = `
     line-height:1.85; display:block; }
   textarea.smw-fill{ min-height:20px; }
   .smw-fill::placeholder{ color:#9a9a9a; }
+  /* អត្ថបទព្រីន ( ជំនួស textarea ) ៖ ពុម្ព និងទំហំដូចជួរបេះបិទ */
+  .smw-txt{ font:inherit; color:inherit; white-space:pre-wrap; }
   /* ⚠ min-width:120px បង្ខំវាលឱ្យធំជាងលេខ ⇒ ត្រូវដោះចេញ ដើម្បីឱ្យ
      size ( កំណត់ក្នុង renderSmw ) សម្រេចទទឹងពិតប្រាកដ ។ */
   .smw-inline{ width:auto !important; min-width:0; max-width:none; display:inline-block; }
@@ -51708,7 +52130,10 @@ const SMW_CSS = `
   .smw-foot{ position:absolute; left:0; right:0; bottom:0;
     text-align:center; font-size:11px; color:#666; }
   /* ⭐ [stated] ២០២៦-១១-១៣ ៖ សញ្ញា ▪ នៅមុខជួរនីមួយៗ ដូចក្នុង Word */
-  .smw-r .bq{ flex:0 0 auto; color:#111; margin-right:5px; font-size:15px; line-height:1.15; }
+  /* ⚠ [stated] ២០២៦-១១-១៤ ៖ «សញ្ញាចុចពីមុខ ចុះបញ្ជី ដល់ សម្គាល់ មានទំហំ
+     ធំពេក ដាក់វាដូចទំហំក្នុងរូប» ⇒ ខ្ញុំលើកពី ៩px ទៅ ១៥px ហួសទៅ
+     ⇒ ចុះមក ១១px ( ចន្លោះកណ្តាល ដូចក្នុងរូប Word ) ។ */
+  .smw-r .bq{ flex:0 0 auto; color:#111; margin-right:5px; font-size:11px; line-height:1.5; }
   /* ⭐ វាលបំពេញហូរតត្រង់ក្រោយស្លាក ⇒ ជួរក្លាយជាប្លុកធម្មតា ( មិនមែន flex )
      ⚠ :has() មានលើ iOS 16.4+ · Chrome 105+ ; បើគ្មាន វាត្រឡប់ទៅរបៀបចាស់ */
   .smw-r:has(.smw-flow){ display:block; }
@@ -51762,9 +52187,10 @@ function renderSmw(){
   try{ setTimeout(function(){ try{ window.__nrFit && window.__nrFit(); }catch(e){} }, 40); }catch(e){}
 }
 function printSmw(){
-  /* ⚠ យកតួពីអេក្រង់ ⇒ អ្វីដែលគេវាយចូលចេញលើក្រដាសដដែល */
-  var host = document.getElementById('trkSmw');
-  var html = (host && host.innerHTML.trim()) ? host.innerHTML : smwHtml(true);
+  /* ⚠⚠ កុំយក `host.innerHTML` ៖ តម្លៃដែលវាយក្នុង textarea/input មិនស្ថិត
+     ក្នុង innerHTML ទេ ( វារស់នៅក្នុង property `value` ) ⇒ ព្រីនចេញខ្លឹមសារ
+     ចាស់ និងអក្សរគំរូ ។ ⇒ កសាងឡើងវិញពីស្ថានភាពដែលរក្សាទុកជានិច្ច ។ */
+  var html = smwHtml(true);
   printInPage(html,
     `.smw-page{page-break-inside:auto;}
      .smw-sign,.smw-stbl{page-break-inside:avoid; break-inside:avoid;}
@@ -52339,7 +52765,9 @@ const RPT_PH_KEY = (typeof RSC_MOBILE_PRINT !== 'undefined' && RSC_MOBILE_PRINT)
    ⇒ ដំណោះស្រាយដូចគ្រួសារ .nr-page ដែរ ៖ **ប្រអប់ ២៦៩mm ដូច PC បេះបិទ**
      រួច **បង្រួមទាំងសន្លឹក** តាម zoom ⇒ ២៦៩ × ០,៨៩ = ២៣៩,៤mm ⇒ សម
      ផ្ទៃបោះពុម្ព iOS ហើយសន្លឹកខ្លីនៅខ្លីដដែល ។ */
-const RPT_PH_DEFAULT = 269;
+/* ⚠ ត្រូវតែស្មើនឹង `window.__nrPageMm` ៖ ក្រុម rpt និងក្រុម nr បោះពុម្ព
+   លើក្រដាសតែមួយ ⇒ ប្រអប់ត្រូវតែកម្ពស់តែមួយ បើមិនដូច្នេះទេ ក្រុមមួយហៀរ ។ */
+const RPT_PH_DEFAULT = 252;
 function applyRptPageMm(v){
   /* ⚠⚠ [stated] ២០២៦-០៨-២២ ៖ «តែវាប៉ះពាល់ដល់របាយការណ៍ផ្សេងទៀត ដូច
      បរិយាយកំណត់ពន្ធ · របាយការណ៍សវនកម្ម · របាយការណ៍សង្ខេប» ។
@@ -52377,19 +52805,28 @@ function applyRptPageMm(v){
        ⇒ ចន្លោះក្រោមជើងទំព័រចុះពី ~២១mm មកនៅ ~៧mm ।
      ⚠ បើសន្លឹកទទេត្រឡប់មកវិញ ៖ បន្ថយលេខក្នុងប្រអប់ «កម្ពស់ទំព័រ (mm)»
        ម្តង ៤mm ⇒ វាបន្ថយការបង្រួមតាមសាច់ដំណើរ। */
-    var tgt = ok ? n : 262;
-    root.style.setProperty('--nr-ph', '266mm');
-    root.style.setProperty('--rpt-ph', '269mm');
-    root.style.setProperty('--nr-zoomp',  String(Math.round(tgt / 266 * 1000) / 1000));
-    root.style.setProperty('--rpt-zoomp', String(Math.round(tgt / 269 * 1000) / 1000));
-    root.style.setProperty('--cv-zoomp',  String(Math.round(tgt / 280 * 1000) / 1000));
-    try{ window.__nrPageMm = 266; }catch(e){}
+    /* ⚠⚠ គ្មាន zoom ទៀតទេ ៖ Safari កាត់ទំព័រតាមប្រអប់មុន zoom ⇒ ការបង្រួម
+       មិនបានជួយអ្វីឡើយ វាគ្រាន់តែលាក់ការហៀរ ។ កម្ពស់ប្រអប់ត្រូវតែជា
+       កម្ពស់ពិតដែលសមនឹងក្រដាស ⇒ ដាក់ `tgt` ចូលប្រអប់ផ្ទាល់ ។
+       ⚠ ប្រអប់ «កម្ពស់ទំព័រ (mm)» នៅដំណើរការដដែល ៖ បើឧបករណ៍ណាមួយនៅហៀរ
+         បន្ថយលេខម្តង ៤mm ( ២៥២ → ២៤៨ → ២៤៤ … ) ។ */
+    var tgt = ok ? n : 252;
+    root.style.setProperty('--nr-ph',  tgt + 'mm');
+    root.style.setProperty('--rpt-ph', tgt + 'mm');
+    root.style.setProperty('--nr-zoomp',  '1');
+    root.style.setProperty('--rpt-zoomp', '1');
+    root.style.setProperty('--cv-zoomp',  '1');
+    try{ window.__nrPageMm = tgt; }catch(e){}
     try{ if(typeof renderNarr === 'function') renderNarr(); }catch(e){}
     try{ if(typeof renderAudit === 'function') renderAudit(); }catch(e){}
     try{ if(typeof renderSummary === 'function') renderSummary(); }catch(e){}
     return;
   }
   root.style.setProperty('--rpt-ph', (ok ? n : RPT_PH_DEFAULT) + 'mm');
+  /* ⚠ zoom ត្រូវតែ ១ លើកុំព្យូទ័រដែរ ( អថេរអាចនៅសល់ពីការរត់មុន ) */
+  root.style.setProperty('--nr-zoomp',  '1');
+  root.style.setProperty('--rpt-zoomp', '1');
+  root.style.setProperty('--cv-zoomp',  '1');
   if(ok){
     root.style.setProperty('--nr-ph', n + 'mm');
     try{ window.__nrPageMm = n; }catch(e){}
@@ -52397,7 +52834,9 @@ function applyRptPageMm(v){
     root.style.removeProperty('--nr-ph');
     /* ⚠⚠ កន្លែងនេះរត់ **ក្រោយ** ការកំណត់ដំបូង ⇒ បើភ្លេចប្តូរទីនេះ
        តម្លៃចាស់ ( ២៤០ ) នឹងត្រឡប់មកវិញស្ងាត្រ । */
-    try{ window.__nrPageMm = 266; }catch(e){}
+    /* ⚠ កន្លែងនេះរត់ក្រោយការកំណត់ដំបូង ⇒ បើភ្លេចប្តូរទីនេះ តម្លៃចាស់
+       នឹងត្រឡប់មកវិញស្ងាត់ៗ ។ */
+    try{ window.__nrPageMm = 252; }catch(e){}
   }
   /* គូរឡើងវិញ ៖ បរិយាយ · សវនកម្ម · សង្ខេប (បើផ្ទាំងនោះមានលើអេក្រង់) */
   /* ⚠ មុខងារទាំងនេះមិននៅលើ `window` ទេ (ប្លុកនេះជា IIFE) ⇒ ត្រូវហៅតាម
