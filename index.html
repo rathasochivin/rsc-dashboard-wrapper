@@ -2612,9 +2612,13 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
   #view-tracking .cv-cover-page .cv-wl, #docs-modal .cv-cover-page .cv-wl{font-size:14px;}
   #view-tracking .cv-cover-page .cv-nl, #docs-modal .cv-cover-page .cv-nl{font-size:14px; min-height:34px; line-height:34px; padding-top:0; padding-bottom:0;}
   #view-tracking .cv-cover-page .cv-tbl, #docs-modal .cv-cover-page .cv-tbl{font-size:13px;}
-  /* [stated] ២០២៦-១១-១៤ ៖ ៣៤px ⇒ ២៧px ( មើលក្បាល fix_wpcov.py ) */
-  #view-tracking .cv-cover-page .cv-tbl th, #docs-modal .cv-cover-page .cv-tbl th{font-size:16px; height:27px; line-height:27px;}
-  #view-tracking .cv-cover-page .cv-tbl td, #docs-modal .cv-cover-page .cv-tbl td{height:27px; line-height:27px; padding:3px 8px; font-size:14px; font-weight:400;}
+  /* ⭐ [stated] ២០២៦-១១-១៤ ( ជុំទី ២ ) ៖ «តារាងតាមដាន ខ្ញុំចង់បានតារាងនោះ
+     ឱ្យដូចពេលចុចព្រីននៅ PC លើកមុន ត្រូវហើយ គ្រាន់តែវាមានទំព័រទទេនៅពីក្រោយ» ។
+     ⇒ ត្រឡប់ជួរមក ៣៤px ដូចដើមបេះបិទ ។ ទំព័រទទេត្រូវបានការពារដោយ
+       `.rpt-page.cv-page{max-height:var(--rpt-ph)}` វិញ — មិនមែនដោយការ
+       បង្រួមតារាងទេ ។ */
+  #view-tracking .cv-cover-page .cv-tbl th, #docs-modal .cv-cover-page .cv-tbl th{font-size:16px; height:34px; line-height:34px;}
+  #view-tracking .cv-cover-page .cv-tbl td, #docs-modal .cv-cover-page .cv-tbl td{height:34px; line-height:34px; padding:4px 8px; font-size:14px; font-weight:400;}
   #view-tracking .cv-cover-page .cv-in, #docs-modal .cv-cover-page .cv-in{display:flex; flex-direction:column;}
   #view-tracking .cv-cover-page .cv-tbl td:empty::after, #docs-modal .cv-cover-page .cv-tbl td:empty::after{content:" "; display:inline-block;}
   #view-tracking .cv-cover-page .cv-tbl, #docs-modal .cv-cover-page .cv-tbl{flex:9 1 0;}
@@ -2768,6 +2772,28 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
 /* ===== ជំហាន ៖ ប៊ូតុងទាំងអស់រៀបជាជួរតែមួយក្រោមចំណងជើង ===== */
 .step-actions{display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:10px 0 14px;}
 .step-actions .btn{margin-bottom:0 !important;}
+/* ⭐ [stated] ២០២៦-១១-១៤ ៖ ប៊ូតុងទាញយក = រូបតែប៉ុណ្ណោះ ⇒ ការ៉េតូច */
+.step-actions .btn.step-dl{
+  flex:0 0 auto; width:38px; min-width:38px; padding:0 !important;
+  text-align:center; font-size:15px; line-height:1;}
+@media screen and (max-width: 760px){
+  /* ⇒ ជួរតែមួយ ៖ រូបទាញយក + «ការគណនាពន្ធឡើងវិញ» + អ្វីដែលនៅសល់
+     ⚠ បើជំហានណាមានប៊ូតុងច្រើន ( ជំហាន ៤ · ៥ ) ⇒ អូសក្នុងរបារខ្លួនឯង
+       ជំនួសការចុះបន្ទាត់ ⇒ កម្ពស់នៅថេរ ។ */
+  .step-actions{
+    flex-wrap:nowrap !important; overflow-x:auto; scrollbar-width:none;
+    gap:6px !important; margin:8px 0 10px !important;}
+  .step-actions::-webkit-scrollbar{ display:none; }
+  .step-actions .btn{
+    flex:0 0 auto; white-space:nowrap;
+    font-size:12px !important; padding:0 10px !important;
+    height:34px !important; min-height:34px !important;}
+  .step-actions .btn.step-dl{
+    width:34px; min-width:34px; height:34px !important; font-size:14px;}
+  .step-actions .hint{ flex:0 0 auto; white-space:nowrap; }
+  /* ចំណងជើងជំហាន ៖ តូចល្មម កុំស៊ីកន្លែងពេក */
+  .panel-title{ font-size:15px !important; line-height:1.55 !important; }
+}
 @media print{ .step-actions{display:none !important;} }
 
 /* ===== 🧮 Calculation Card ===== */
@@ -40832,7 +40858,8 @@ function renderRefStepPanel(stepKey){
   // Every action for a step sits on one line under the title — stacked
   // buttons were eating a whole row of vertical space above each table.
   const stepActions = el('div',{class:'step-actions no-print'});
-  const exportBtn = el('button',{class:'btn no-print'}, '📊 ទាញយកទិន្នន័យជំហាននេះ');
+  const exportBtn = el('button',{class:'btn no-print step-dl',
+    title:'ទាញយកទិន្នន័យជំហាននេះ (Excel)', 'aria-label':'ទាញយកទិន្នន័យជំហាននេះ'}, '⬇');
   exportBtn.onclick = ()=> exportStepToExcel(stepKey);
   stepActions.appendChild(exportBtn);
   const backBtn = makeBackToCalcBtn(); if(backBtn) stepActions.appendChild(backBtn);
@@ -40973,7 +41000,8 @@ function renderRawStepPanel(stepKey){
   /* ⭐⭐ [stated] ២០២៦-០៩-០២ ៖ «បង្កើតប៊ូតុង Print ថ្មី ១ សម្រាប់តែជំហានទី១០
      ជំហានមុនរក្សាធម្មតា» ។ ⇒ ការព្រីនធម្មតា **មិនប៉ះ** ; ប៊ូតុងនេះសង់
      ផ្ទាំងបណ្ដោះអាសន្នផ្ទាល់ខ្លួន ⇒ ច្បាប់របស់វាឯករាជ្យទាំងស្រុង ។ */
-  const exportBtnRaw = el('button',{class:'btn no-print'}, '📊 ទាញយកទិន្នន័យជំហាននេះ');
+  const exportBtnRaw = el('button',{class:'btn no-print step-dl',
+    title:'ទាញយកទិន្នន័យជំហាននេះ (Excel)', 'aria-label':'ទាញយកទិន្នន័យជំហាននេះ'}, '⬇');
   exportBtnRaw.onclick = ()=> exportStepToExcel(stepKey);
   stepActionsRaw.appendChild(exportBtnRaw);
   const backBtnRaw = makeBackToCalcBtn(); if(backBtnRaw) stepActionsRaw.appendChild(backBtnRaw);
@@ -48891,10 +48919,10 @@ const WP_CSS = `
   /* ⚠ [stated] ២០២៦-០៨-២៣ ៖ «អក្សរតារាងតាមដានវាធំជាង HEADER ខាងលើវា» ។
      ក្បាលតារាងតូចជាងតួ (12.5 ធៀប 13) — ការបញ្ច្រាសនោះមានតាំងពីដើម (11.5
      ធៀប 12) តែពេលពង្រីកឡើងវាលេចឲ្យឃើញ។ ⇒ ក្បាល 14px ធំជាងតួមួយកម្រិត។ */
-  .cv-cover-page .cv-tbl th{font-size:16px; height:27px; line-height:27px;}
+  .cv-cover-page .cv-tbl th{font-size:16px; height:34px; line-height:34px;}
   /* ⚠ [stated] ២០២៦-០៨-២៣ ៖ «បន្ថែម FONT 1 លេខពីសវនករ ដល់ប្រធាននាយកដ្ឋាន
      · កុំប្រើ BOLD» — ជួរឈ្មោះក្នុងតារាងតាមដាន។ */
-  .cv-cover-page .cv-tbl td{height:27px; line-height:27px; padding:3px 8px;
+  .cv-cover-page .cv-tbl td{height:34px; line-height:34px; padding:4px 8px;
     font-size:14px; font-weight:400;}
   .cv-cover-page .cv-in{display:flex; flex-direction:column;}
   /* ⚠⚠ [stated] ២០២៦-០៨-២៣ ៖ «ប្រហោង ៣ ទៀតពីក្រោមប្រធាននាយកដ្ឋាន … ជួយធ្វើ
@@ -51659,9 +51687,20 @@ var AR_CSS = `
   /* [stated] ការបង្រួមខ្លាំងធ្វើអោយខុសខ្នាត ហើយទំព័រទី១ នៅសល់ចន្លោះច្រើន។
      ត្រលប់មកខ្នាតធម្មតាវិញ — វាស់បាន ៧០៨px ក្នុង ៩៥៧px ដូច្នេះមានកន្លែង។ */
   .ar-info{font-size:12px;}
-  .ar-info td{vertical-align:top; line-height:2.05; padding:6px 9px;}
-  .ar-info td.eq{height:5.6em;}   /* [stated] ៣ ជួរ */
-  .ar-info td.eq2{height:5.6em;}  /* [stated] ៣ ជួរ */
+  /* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «របាយការណ៍សវនកម្ម នៅតែមិនទាន់ខិតតារាង
+     ចូលក្នុងទំព័រទី ១» ។
+     ⚠ វាស់បាន ( ទិន្នន័យតេស្តទទេ ) ៖ ទំព័រ ១ មានកន្លែងទំនេរ ១៦២,៩mm
+       ក្រោយក្បាល/ចំណងជើង ហើយតារាងនេះខ្ពស់ **១៤២,៥mm** ⇒ សមល្មម ។
+       ជាមួយទិន្នន័យពិត ( អាសយដ្ឋានវែង · សកម្មភាពអាជីវកម្មចុះបន្ទាត់ )
+       វាឡើងលើស ១៦២,៩mm ⇒ កម្មវិធីបំបែកទំព័ររុញ**ទាំងដុំ**ទៅទំព័រ ២
+       ⇒ ទំព័រ ១ សល់ទទេធំ ។
+     ⚠ តារាងនេះមាន rowspan ⇒ **មិនត្រូវកាត់ឆ្លងទំព័រឡើយ** ( វានឹងខូច
+       ប្លង់ ) ⇒ ផ្លូវតែមួយគឺធ្វើឱ្យវាទាបល្មមសមជានិច្ច ។
+     ⇒ បង្រួម ៖ line-height ២,០៥ ⇒ ១,៧ · padding ៦ ⇒ ៤ · ក្រឡាកម្ពស់ថេរ
+       ៥,៦em ⇒ ៤,៣em ⇒ ទុកកន្លែងបម្រុង ~២៥mm សម្រាប់ទិន្នន័យវែង ។ */
+  .ar-info td{vertical-align:top; line-height:1.7; padding:4px 9px;}
+  .ar-info td.eq{height:4.3em;}   /* [stated] ៣ ជួរ */
+  .ar-info td.eq2{height:4.3em;}  /* [stated] ៣ ជួរ */
   .ar-info td.nw{white-space:nowrap;}
   .ar-r{display:flex; align-items:flex-start; gap:6px; margin-bottom:3px;}
   .ar-r .ar-rk{flex:0 0 auto; white-space:nowrap;}
