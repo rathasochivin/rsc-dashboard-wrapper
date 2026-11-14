@@ -3312,6 +3312,12 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
 /* ⭐ [stated] ២០២៦-១១-១៤ ៖ «ប្រអប់ធីករៀបនៅខាងឆ្វេង» ។
    ⚠ ក្រឡាដែលមាន **តែប្រអប់ធីក** ( គ្មានលេខ ) ឈរនៅស្តាំ ព្រោះជួរលេខ
      តម្រឹមស្តាំ ⇒ មើលទៅដាច់ពីគេ ។ ⇒ ក្រឡាបែបនោះ ⇒ ធីកនៅឆ្វេង ។ */
+/* ⚠ [stated] ២០២៦-១១-១៤ ៖ ប្រអប់រង `.de-head-f` ត្រូវមានលំនាំដើមជា flex
+   ដូច `headingRow` ដើម ⇒ **កុំព្យូទ័រនៅដដែល** ( បើទុកជា block វាបែក
+   filter ជា ២ ជួរដេក — វាស់ឃើញ ) ។ ច្បាប់ទូរស័ព្ទសរសេរជាន់វាវិញ ។ */
+#toi-embed .de-head-f{
+  display:flex; flex-wrap:wrap; align-items:center; gap:16px 20px;
+}
 #calcCard .cc-pane table td.n:has(> .cc-chk:only-child) .cc-chk{
   width:100% !important; justify-content:flex-start !important; margin-right:0 !important; }
 /* ភាគរយក្នុងក្រឡាស្លាក ៖ តូចជាងស្លាក កុំឱ្យលេចជាងគេ */
@@ -5671,9 +5677,57 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     #toi-embed table.de-fit-table{ table-layout:auto !important; }
     #toi-embed table.de-fit-table th,
     #toi-embed table.de-fit-table td{ white-space:nowrap !important; }
-    #toi-embed table.de-fit-table td input{ min-width:68px !important; width:100% !important; }
+    /* [stated] ២០២៦-១១-១៤ ៖ «ជួរខាងក្រោមត្រូវបំពេញ ជួយដាក់ center» ។
+       ⚠ `width:100%` ត្រូវដកចេញ ៖ វាបង្ខំប្រអប់តាមក្រឡា ⇒ `size`
+         លែងមានឥទ្ធិពល ⇒ ជួរឈរមិនធំតាមតម្លៃ ។ */
+    #toi-embed table.de-fit-table td input{
+      width:auto !important; min-width:0 !important; max-width:none !important;
+      text-align:center !important; }
+    #toi-embed table.de-fit-table th,
+    #toi-embed table.de-fit-table td{ text-align:center !important; }
+    /* ── រៀបវាលក្នុង DATA ENTRY ( មើលក្បាល fix_derows.py ) ─────────── */
+    /* ១ · ចំនួនកម្មវិធី + filter · ២ · ការកាន់កាប់ ដល់ ប្រភេទកំណត់ពន្ធ
+       ⇒ ជួរតែមួយ ( អូសទៅស្តាំបាន បើវែងជាងអេក្រង់ ) */
+    /* ឈ្មោះឡាតាំងនៅជួរផ្ទាល់ ; filter ទាំងអស់ក្នុង .de-head-f ជួរតែមួយ */
+    #toi-embed .de-head{ flex-wrap:wrap !important; gap:8px 10px !important; }
+    #toi-embed .de-head > *{ flex:0 0 100% !important; min-width:0 !important; }
+    #toi-embed .de-head-f{
+      display:flex !important; flex-wrap:nowrap !important;
+      overflow-x:auto; overflow-y:hidden; scrollbar-width:none;
+      gap:10px !important; align-items:flex-end !important; }
+    #toi-embed .de-head-f::-webkit-scrollbar{ display:none; }
+    #toi-embed .de-head-f > *{ flex:0 0 auto !important; white-space:nowrap; }
+    #toi-embed .de-head-f select, #toi-embed .de-head-f input{
+      width:auto !important; min-width:88px !important; max-width:150px !important; }
+    /* ការកាន់កាប់ ដល់ ប្រភេទកំណត់ពន្ធ ⇒ ៣ ជួរឈរ ( ឃើញអស់ មិនបាច់អូស ) */
+    #toi-embed .de-book{
+      display:grid !important; grid-template-columns:repeat(3, minmax(0,1fr)) !important;
+      gap:8px 10px !important; align-items:end !important; }
+    #toi-embed .de-book > *{ min-width:0 !important; }
+    #toi-embed .de-book label{ white-space:normal !important; }
+    #toi-embed .de-book select, #toi-embed .de-book input{
+      width:100% !important; min-width:0 !important; max-width:none !important; }
+    /* ៣ · កាលបរិច្ឆេទ ៖ ២ ជួរឈរ ⇒ ចាប់ផ្តើម·បញ្ចប់ ជួរដេកទី ១
+       ហើយ ការិយបរិច្ឆេទ·ចុះបញ្ជី ជួរដេកទី ២ */
+    #toi-embed .de-dates{
+      display:grid !important; grid-template-columns:repeat(2, minmax(0,1fr)) !important;
+      gap:10px 12px !important; align-items:end !important; }
+    #toi-embed .de-dates > *{ min-width:0 !important; }
+    /* ⚠ កូនទី ៣ = «ថ្ងៃចន្ទ្រគតិ» ( វាលវែង ) ⇒ កាន់បន្ទាត់ពេញ
+       ទើបការិយបរិច្ឆេទ និងចុះបញ្ជីនៅជួរជាមួយគ្នា ។ */
+    #toi-embed .de-dates > *:nth-child(3){ grid-column:1 / -1 !important; }
+    #toi-embed .de-dates input{ width:100% !important; min-width:0 !important; }
     /* ⚠ ផ្ទាំងទាំងមូលមិនត្រូវលាតលើសអេក្រង់ ⇒ កាត់ការរំកិលផ្តេករបស់ទំព័រ */
-    #toi-embed{ max-width:100% !important; overflow-x:hidden !important; }
+    /* ⭐⭐ [stated] ២០២៦-១១-១៤ ( ជុំទី ២ ) ៖ «ផ្នែក cover អូសនៅរៀងទាញៗ» ។
+       ⚠ វាស់បាន ៖ `#toi-embed` មាន overflow-y:auto តែ scrollHeight =
+         clientHeight ( ៣៤៩១ = ៣៤៩១ ) ⇒ **វាមិនត្រូវការរំកិលសោះ** ។
+         ទោះជាយ៉ាងណា វានៅតែជា **ប្រអប់រំកិល** ⇒ លើ iOS ការអូសត្រូវវា
+         ចាប់យកមួយភ្លែត រួចប្រគល់ទៅទំព័រវិញ ⇒ អារម្មណ៍ «ទាញៗ» ។
+       ⇒ ដកវាចេញ ⇒ ទំព័រតែមួយគត់ដែលរំកិល ⇒ អូសរលូន ។
+       ⚠ ប្រើ `clip` មិនមែន `hidden` ៖ `hidden` លើអ័ក្សមួយបង្ខំអ័ក្ស
+         ម្ខាងទៀតឱ្យក្លាយជា `auto` ⇒ ប្រអប់រំកិលត្រឡប់មកវិញ ។ */
+    #toi-embed{ max-width:100% !important;
+      overflow-x:clip !important; overflow-y:visible !important; }
   }
   #toi-embed td.num, #toi-embed th.num{text-align:right; font-family:'JetBrains Mono','Khmer OS Siemreap',monospace; font-variant-numeric:tabular-nums; white-space:nowrap; word-break:normal;}
   #toi-embed thead th.num{text-align:center;}
@@ -34331,7 +34385,8 @@ function renderDataEntryPanel(){
      inside the TOI page, so it needs a way to be reached directly. */
   const wrap = el('div',{id:'data-entry-panel', style:'margin-top:6px; padding-top:10px; border-top:1px dashed var(--toi-line, #e2dfd5);'});
   const ex0 = state.extraCompanyInfo || {};
-  const headingRow = el('div',{style:'display:flex; align-items:center; flex-wrap:wrap; gap:16px 20px; margin-bottom:6px;'});
+  /* [stated] ២០២៦-១១-១៤ ៖ ថ្នាក់សម្រាប់ CSS រៀបជួរលើទូរស័ព្ទ */
+  const headingRow = el('div',{class:'de-head', style:'display:flex; align-items:center; flex-wrap:wrap; gap:16px 20px; margin-bottom:6px;'});
   /* Always an input, never read-only text: when COMPANYINFO carries the Latin
      name it is pre-filled (with a ✅), and when it doesn't — or when what it
      carries is wrong — it can simply be typed over. The old version turned
@@ -34452,6 +34507,18 @@ function renderDataEntryPanel(){
     auditTypeSelect,
     auditTypeDateInput,
   ].forEach(c=>{ if(c) headingRow.appendChild(c); });
+  /* [stated] ២០២៦-១១-១៤ ៖ «ឈ្មោះឡាតាំង» ត្រូវនៅជួរផ្ទាល់ខ្លួន
+     ⇒ រុំ filter ទាំងអស់ក្នុងប្រអប់រង ទើប CSS ធ្វើវាជាជួរតែមួយបាន
+     ដោយមិនទាញឈ្មោះឡាតាំងចូល ( មើលក្បាល fix_derows2.py ) ។ */
+  try{
+    var __k0 = [].slice.call(headingRow.children);
+    if(__k0.length > 1){
+      var __sub = document.createElement('div');
+      __sub.className = 'de-head-f';
+      for(var __q = 1; __q < __k0.length; __q++) __sub.appendChild(__k0[__q]);
+      headingRow.appendChild(__sub);
+    }
+  }catch(e){}
 
   // ---- Shared auditor / date fields (+ commerce registration date,
   // moved here from Overview) — one set, not per-program ----
@@ -34627,6 +34694,7 @@ function renderDataEntryPanel(){
        ជ្រើសដោយដៃត្រង់នេះគ្មានឥទ្ធិពលទៀតទេ ហើយបំភាន់។ */
     labeled('ប្រភេទកំណត់ពន្ធ', assessAllSelect),
   );
+  try{ bookRow.classList.add('de-book'); }catch(e){}
   wrap.appendChild(bookRow);
   if(assessYearRow) wrap.appendChild(assessYearRow);
 
@@ -34636,6 +34704,7 @@ function renderDataEntryPanel(){
     labeled('ការិយបរិច្ឆេទសវនកម្ម', deInput('auditPeriod', '2022-2026', '150px')),
     labeled('ថ្ងៃខែចុះបញ្ជីពាណិជ្ជកម្ម' + (ex_.commerceRegDate ? ' ✅' : ''), commerceRegDateInput),
   );
+  try{ datesRow.classList.add('de-dates'); }catch(e){}
   wrap.appendChild(datesRow);
   /* [stated] ថ្ងៃចន្ទ្រគតិវាយនៅទីនេះ ; ផ្ទាំងឯកសារព្រីនត្រូវជាកន្លែង
      មើល ធីក និងព្រីនតែប៉ុណ្ណោះ។ ឯកសារការងារ និងសេចក្តីបរិយាយអានវាពី
@@ -35946,6 +36015,17 @@ function toiAutoFit(force){
     }
     /* វាស់លើទំហំពិត ( zoom = 1 ) ⇒ លេខមិនប្រឡាក់ដោយការបង្រួមមុន */
     host.style.setProperty('--toi-zoom', '1');
+    /* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ ជួរឈរក្នុងតារាង DATA ENTRY ត្រូវធំល្មម
+       គ្រប់តម្លៃ ( មើលក្បាល fix_decols.py ) ៖ ប្រអប់វាយមិនប្រាប់តារាង
+       ពីប្រវែងអក្សរ ⇒ កំណត់ `size` តាមប្រវែង ទើបតារាងយល់ ។
+       ⚠ ត្រូវធ្វើ **មុនការវាស់** ⇒ ការបង្រួមគិតលើទទឹងថ្មី ។ */
+    try{
+      var __dIn = host.querySelectorAll('table.de-fit-table input'), __k, __t;
+      for(__k = 0; __k < __dIn.length; __k++){
+        __t = String(__dIn[__k].value || __dIn[__k].placeholder || '');
+        __dIn[__k].setAttribute('size', String(Math.max(5, Math.min(26, __t.length + 1))));
+      }
+    }catch(e3){}
     var avail = content.clientWidth;
     var need = 0, els = content.querySelectorAll('table'), i, w;
     for(i = 0; i < els.length; i++){
@@ -35957,6 +36037,20 @@ function toiAutoFit(force){
       z = Math.max(TOI_FIT_MIN, Math.floor((avail / need) * 100) / 100);
     toiZoom = z;
     applyToiZoom();
+    /* ⭐ [stated] ២០២៦-១១-១៤ ៖ «cover អូសនៅរៀងទាញៗ» ⇒ ប្រអប់រំកិល
+       ដែល**មិនត្រូវការរំកិល** ត្រូវដកចេញ ( CSS មិនអាចដឹងថាត្រូវការ
+       ឬអត់ ⇒ សម្រេចដោយការវាស់ ) ។ ធាតុដែលពិតជាត្រូវការ នៅអូសបានដដែល ។ */
+    try{
+      var wraps = host.querySelectorAll('.table-wrap'), k, w2, need;
+      for(k = 0; k < wraps.length; k++){
+        w2 = wraps[k];
+        need = (w2.scrollWidth > w2.clientWidth + 1);
+        /* ⚠ ច្បាប់ CSS ប្រើ `!important` ⇒ រចនាបទក្នុងធាតុធម្មតាចាញ់
+           ⇒ ត្រូវប្រើ setProperty(..., 'important') ទើបឈ្នះ ។ */
+        w2.style.setProperty('overflow-x', need ? 'auto' : 'clip', 'important');
+        w2.style.setProperty('overflow-y', need ? 'hidden' : 'visible', 'important');
+      }
+    }catch(e2){}
   }catch(e){}
 }
 /* ⚠ មុខងារនេះនៅក្នុង IIFE ⇒ ត្រូវដាក់លើ window ទើប showView() ហៅបាន */
