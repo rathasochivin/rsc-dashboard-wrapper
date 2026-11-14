@@ -2485,8 +2485,8 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
    នៅខាងក្រោមទេ» ។ ⚠ ប្រអប់ inline តូច តម្រឹមតាម **បន្ទាត់គោល** របស់អក្សរ
    ⇒ វាអង្គុយទាប ។ `align-self:center` ដាក់វាចំកណ្តាលកម្ពស់ជួរវិញ ។ */
 #view-tracking .smw-r .bq, #docs-modal .smw-r .bq{
-  flex:0 0 auto; align-self:center; color:#111; margin-right:5px;
-  font-size:5.5px; line-height:1; }
+  flex:0 0 auto; align-self:start; color:#111; margin-right:5px;
+  font-size:.44em; line-height:4.2; }
 /* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «ទំហំអក្សរពីសរសេរ វាអត់ស្មើនឹង ការជួបពិភាក្សា» ។
    ⚠ ច្បាប់ទូរស័ព្ទ `input,select,textarea{font-size:16px !important}`
      ( ដាក់ដើម្បីកុំឱ្យ iOS ពង្រីកអេក្រង់ ) ឈ្នះលើ ១២,៥px របស់ជួរ
@@ -5352,7 +5352,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
        ⇒ វាលបានទទឹងបន្ថែម ១៤px ។ ( ស្លាកវែងបំផុតត្រូវការ ១១៦px ·
          ៤៤% នៃ ២៨២ = ១២៤ − ៨ padding = ១១៦ ⇒ នៅតែមិនរុំ ) */
     #toi-embed #coverPanel table.cv-grid tr > td{
-      width:auto !important; flex:0 0 46%; box-sizing:border-box;
+      width:auto !important; flex:0 0 var(--cvlbl, 46%); box-sizing:border-box;
       /* ⚠ ស្លាកមាន `white-space:nowrap` ជា inline style ⇒ វែងជាងក្រឡា
          ⇒ ហៀរជាន់ប្រអប់ ( វាស់បាន ៖ ត្រូវការ ១៣០px មានតែ ១០៧px )
          ⇒ អនុញ្ញាតឲ្យរុំ ⇒ ២ បន្ទាត់ តែអានគ្រប់ । */
@@ -5408,7 +5408,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     #toi-embed #coverPanel table.cv-grid tr > td:has(input),
     #toi-embed #coverPanel table.cv-grid tr > td:has(select),
     #toi-embed #coverPanel table.cv-grid tr > td:has(textarea){
-      flex:0 0 54%; min-width:0; padding-right:0 !important;
+      flex:0 0 var(--cvfld, 54%); min-width:0; padding-right:0 !important;
     }
     /* ⭐⭐ [stated] «អក្សរក្នុងប្រអប់ត្រូវស្មើនឹងអក្សរខាងដើម · ទំហំប្រអប់
        ដាក់វាស្មើគ្នា» ។
@@ -5674,7 +5674,10 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
       font-size:11px !important; height:auto !important; padding:1px 3px !important; }
     /* ⚠ ជួរឈរតូចៗត្រូវបានបង្រួមរហូតកាត់លេខ ( Pcode ២១px ) ។
        ⇒ ទំហំតាមមាតិកា ហើយទុកឱ្យការបង្រួមស្វ័យប្រវត្តិដោះ ។ */
-    #toi-embed table.de-fit-table{ table-layout:auto !important; }
+    /* ⚠ `width:100%` ជាឫសគល់នៃការកាត់លេខ ( មើលក្បាល fix_deinline.py ) */
+    #toi-embed table.de-fit-table{
+      table-layout:auto !important;
+      width:max-content !important; min-width:100% !important; }
     #toi-embed table.de-fit-table th,
     #toi-embed table.de-fit-table td{ white-space:nowrap !important; }
     /* [stated] ២០២៦-១១-១៤ ៖ «ជួរខាងក្រោមត្រូវបំពេញ ជួយដាក់ center» ។
@@ -5713,6 +5716,18 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
       display:grid !important; grid-template-columns:repeat(2, minmax(0,1fr)) !important;
       gap:10px 12px !important; align-items:end !important; }
     #toi-embed .de-dates > *{ min-width:0 !important; }
+    /* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ ស្លាក និងតម្លៃនៅជួរតែមួយ ហើយចំកណ្តាល
+       ⇒ ចំណងជើង និងលទ្ធផលឈរត្រង់គ្នា មិនឡើងលើចុះក្រោម ។ */
+    #toi-embed .de-head > *, #toi-embed .de-head-f > *,
+    #toi-embed .de-book > *, #toi-embed .de-dates > *{
+      flex-direction:row !important; align-items:center !important;
+      justify-content:center !important; gap:8px !important; }
+    #toi-embed .de-head label, #toi-embed .de-head-f label,
+    #toi-embed .de-book label, #toi-embed .de-dates label{
+      flex:0 0 auto !important; white-space:nowrap !important; margin:0 !important; }
+    #toi-embed .de-book select, #toi-embed .de-book input,
+    #toi-embed .de-dates input, #toi-embed .de-head input{
+      flex:1 1 auto !important; min-width:0 !important; }
     /* ⚠ កូនទី ៣ = «ថ្ងៃចន្ទ្រគតិ» ( វាលវែង ) ⇒ កាន់បន្ទាត់ពេញ
        ទើបការិយបរិច្ឆេទ និងចុះបញ្ជីនៅជួរជាមួយគ្នា ។ */
     #toi-embed .de-dates > *:nth-child(3){ grid-column:1 / -1 !important; }
@@ -34773,8 +34788,19 @@ function renderDataEntryPanel(){
   progTable += '</tbody></table></div>';
   const progTableEl = el('div'); progTableEl.innerHTML = progTable;
   wrap.appendChild(progTableEl);
+  /* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «ហេតុអ្វីវាដាច់» ⇒ ទទឹងប្រអប់កំណត់ពី
+     ប្រវែងតម្លៃ **តែពេលគូរ ឬពេលបង្រួមស្វ័យប្រវត្តិ** ។ ពេលអ្នកប្រើ
+     វាយបន្ថែម គ្មានអ្វីធ្វើឱ្យវាគណនាឡើងវិញទេ ⇒ តម្លៃវែងជាងទទឹងចាស់
+     ⇒ ដាច់ ។ ⇒ ធ្វើបច្ចុប្បន្នភាពទទឹងភ្លាមៗពេលវាយ ។ */
+  var __deFit = function(inp){
+    try{
+      var t = String(inp.value || inp.placeholder || '');
+      inp.setAttribute('size', String(Math.max(5, Math.min(26, t.length + 1))));
+    }catch(e){}
+  };
   progTableEl.querySelectorAll('.de-cell').forEach(inp=>{
-    inp.addEventListener('input', ()=> setDE(inp.dataset.key, inp.value));
+    __deFit(inp);
+    inp.addEventListener('input', ()=>{ setDE(inp.dataset.key, inp.value); __deFit(inp); });
   });
   progTableEl.querySelectorAll('.de-kind').forEach(sel=>{
     setDE(sel.dataset.key, sel.value);                 /* រក្សាតម្លៃលំនាំដើមទុក */
@@ -36027,6 +36053,7 @@ function toiAutoFit(force){
         __dIn[__k].setAttribute('size', String(Math.max(5, Math.min(26, __t.length + 1))));
       }
     }catch(e3){}
+    try{ if(window.__cvLabelFit) window.__cvLabelFit(); }catch(e4){}
     var avail = content.clientWidth;
     var need = 0, els = content.querySelectorAll('table'), i, w;
     for(i = 0; i < els.length; i++){
@@ -36056,6 +36083,55 @@ function toiAutoFit(force){
 }
 /* ⚠ មុខងារនេះនៅក្នុង IIFE ⇒ ត្រូវដាក់លើ window ទើប showView() ហៅបាន */
 try{ window.__toiAutoFit = toiAutoFit; }catch(e){}
+/* ⭐⭐ ជួរឈរស្លាក COVER លើទូរស័ព្ទ ៖ វាស់ស្លាកវែងបំផុតនៅនឹងកន្លែង
+   ( ដោយពុម្ពអក្សរពិតរបស់ឧបករណ៍ ) រួចកំណត់ `--cvlbl` ⇒ «៖» ខិតមកឆ្វេង
+   អស់ចន្លោះទទេ ហើយប្រអប់ទទួលទទឹងដែលនៅសល់ទាំងអស់ ។ */
+window.__cvLabelFit = function(){
+  try{
+    var p = document.getElementById('coverPanel');
+    if(!p) return;
+    /* លើកុំព្យូទ័រ ( > 760px ) តារាងនៅជាតារាងពិត ⇒ គ្មានអ្វីត្រូវកែ */
+    if(!(window.matchMedia && window.matchMedia('(max-width: 760px)').matches)){
+      p.style.removeProperty('--cvlbl'); p.style.removeProperty('--cvfld'); return;
+    }
+    var tds = p.querySelectorAll('table.cv-grid tr > td');
+    var m = document.createElement('span');
+    m.style.cssText = 'position:absolute; left:-9999px; top:0; white-space:nowrap; visibility:hidden;';
+    p.appendChild(m);
+    var max = 0, i, t, cs, w;
+    for(i = 0; i < tds.length; i++){
+      t = tds[i];
+      if(!t.querySelector('.cv-cl')) continue;
+      /* ក្រឡា Email រួមស្លាក + ប្រអប់ ⇒ មិនមែនជាស្លាកដាច់ដោយឡែក */
+      if(t.classList.contains('cv-tight')) continue;
+      if(t.querySelector('input, select, textarea, .cf-wrap')) continue;
+      cs = window.getComputedStyle(t);
+      m.style.fontSize = cs.fontSize;
+      m.style.fontFamily = cs.fontFamily;
+      m.style.fontWeight = cs.fontWeight;
+      m.style.letterSpacing = cs.letterSpacing;
+      m.textContent = String(t.textContent || '').replace(/\s+/g, ' ').trim();
+      w = m.getBoundingClientRect().width;
+      if(w > max) max = w;
+    }
+    p.removeChild(m);
+    if(!(max > 0)) return;
+    /* +14 ៖ padding-right ៨px នៃក្រឡាស្លាក + ដកឃ្លាសុវត្ថិភាព ៦px */
+    var px = Math.ceil(max) + 14;
+    /* ⚠⚠ ភាគរយ មិនមែន px ៖ ផ្ទាំងនេះប្រើ `zoom` ⇒ px របស់ CSS និង
+       px ដែលវាស់បាន មិនស្ថិតក្នុងលំហតែមួយ ⇒ px ធ្វើឱ្យគូទី២ ឡើងជួរដដែល ។
+       ភាគរយមិនអាស្រ័យលើ `zoom` ⇒ សមាមាត្រត្រឹមត្រូវជានិច្ច ។ */
+    var tr = p.querySelector('table.cv-grid tr');
+    var rowW = tr ? tr.getBoundingClientRect().width : 0;
+    if(!(rowW > 40)) return;
+    var pct = (px / rowW) * 100;
+    if(pct < 26) pct = 26;
+    if(pct > 58) pct = 58;
+    pct = Math.round(pct * 10) / 10;
+    p.style.setProperty('--cvlbl', pct + '%');
+    p.style.setProperty('--cvfld', (Math.round((100 - pct) * 10) / 10) + '%');
+  }catch(e){}
+};
 try{
   var __toiFitT = null;
   var __toiFitHost = document.getElementById('toi-embed');
@@ -53659,8 +53735,8 @@ const SMW_CSS = `
   /* ⚠ [stated] ២០២៦-១១-១៤ ៖ «សញ្ញាចុចពីមុខ ចុះបញ្ជី ដល់ សម្គាល់ មានទំហំ
      ធំពេក ដាក់វាដូចទំហំក្នុងរូប» ⇒ ខ្ញុំលើកពី ៩px ទៅ ១៥px ហួសទៅ
      ⇒ ចុះមក ១១px ( ចន្លោះកណ្តាល ដូចក្នុងរូប Word ) ។ */
-  .smw-r .bq{ flex:0 0 auto; align-self:center; color:#111; margin-right:5px;
-    font-size:5.5px; line-height:1; }
+  .smw-r .bq{ flex:0 0 auto; align-self:start; color:#111; margin-right:5px;
+    font-size:.44em; line-height:4.2; }
   /* ⭐ វាលបំពេញហូរតត្រង់ក្រោយស្លាក ⇒ ជួរក្លាយជាប្លុកធម្មតា ( មិនមែន flex )
      ⚠ :has() មានលើ iOS 16.4+ · Chrome 105+ ; បើគ្មាន វាត្រឡប់ទៅរបៀបចាស់ */
   .smw-r:has(.smw-flow){ display:block; }
