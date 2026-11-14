@@ -1894,7 +1894,9 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
 /* [stated] ២០២៦-០៨-១៣ ៖ ប្រអប់ត្រូវ FIT នឹងអក្សរ — កុំអោយវាលរើសថ្ងៃ
    លាតឆ្ងាយពីស្លាក។ ⚠ ការកែពីមុនរបស់ខ្ញុំសរសេរច្បាប់ថ្មីខាងក្រោម ដែល
    ច្បាប់នេះ (មកមុន តែ specificity ដូចគ្នា) នៅតែឈ្នះ — ត្រូវកែត្រង់នេះ។ */
-.trk-ask{background:#fff; border-radius:14px; padding:18px 20px; width:max-content; max-width:92vw; min-width:300px;
+/* ⭐ [stated] ២០២៦-១១-១៤ ៖ «ទម្រង់វាអាក្រក់ណាស់» ⇒ `max-content` ជាដើមហេតុ
+   ( មើលក្បាលឯកសារ fix_ask2.py ) ⇒ ទទឹងថេរ ។ */
+.trk-ask{background:#fff; border-radius:14px; padding:18px 20px; width:min(420px, 92vw); max-width:92vw; min-width:0;
   box-shadow:0 18px 50px rgba(15,23,42,.3); font-family:'Khmer OS Siemreap',sans-serif;}
 .trk-ask h4{margin:0 0 4px; font-family:'Khmer OS Muol Light',serif; font-size:14px; color:#0F3D3E;}
 .trk-ask .trk-ask-l{font-size:12.5px; color:#666; margin-bottom:12px;}
@@ -1910,9 +1912,11 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
      ដូចគ្នា គ្មានស៊ុម ⇒ ចន្លោះ ១០px មើលទៅដូចជាបន្ទះតែមួយ ។
    ⇒ ដាក់ស៊ុមច្បាស់ ផ្ទៃស ចន្លោះ ១៤px និងស្លាកតូចជាងបន្តិច
      ⇒ អានឃើញថាជា **ពីរវាលដាច់ពីគ្នា** ។ */
-.trk-ask-row{display:flex; gap:14px; align-items:flex-end;}
-.trk-ask-row > label{flex:1 1 0; min-width:0; margin-bottom:10px;
-  font-size:11.5px; color:#555;}
+.trk-ask-row{display:grid; grid-template-columns:1fr 1fr; gap:12px; align-items:end;}
+/* ស្លាកអាចចុះ ២ បន្ទាត់ក៏បាន — វាលទាំងពីរនៅតែតម្រឹមបាតដូចគ្នា */
+.trk-ask-row > label{display:flex; flex-direction:column; justify-content:flex-end;
+  min-width:0; margin-bottom:10px; height:100%;
+  font-size:11.5px; line-height:1.4; color:#555;}
 .trk-ask-row input,.trk-ask-row select{
   min-width:0 !important; width:100% !important; box-sizing:border-box;
   background:#fff !important; border:1px solid #c9c2ab !important;
@@ -1924,6 +1928,10 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
 .trk-ask-cancel{border:1px solid #ccc; background:#f7f7f5;}
 .trk-ask-ok{border:0; background:#C8A64B; color:#12251f; font-weight:700;}
 /* របារព័ត៌មានការប្រជុំក្នុងកំណត់ហេតុ + ស្លាកចំនួនលើកជួប */
+/* [stated] ២០២៦-១១-១៤ ៖ ប៊ូតុង «ព្រីនស្លាក» នៅជាប់នឹងដំបូន្មានកាត់ */
+#view-tracking .cv-hint .wp-lab-print, #docs-modal .cv-hint .wp-lab-print{
+  margin-left:8px; height:28px; min-height:28px; padding:0 10px;
+  font-size:11.5px; border-radius:7px; vertical-align:middle;}
 #view-tracking .trk-when{display:contents;}
 #view-tracking .trk-mbadge{display:inline-block; margin-left:8px; padding:2px 10px; border-radius:999px;
   background:#EFE6C8; color:#5b4a12; font-size:12px; font-family:'Khmer OS Siemreap',sans-serif; vertical-align:middle;}
@@ -3152,6 +3160,74 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
   #calcCard .table-wrap, #calcCard .cc-scroll{
     max-width:100% !important; overflow-x:auto !important;
     -webkit-overflow-scrolling:touch;
+  }
+
+  /* ── ៣ខ · តារាងជួរឈរច្រើន ៖ អូសបានវិញ ─────────────────────────────
+     ⚠⚠ [stated] ២០២៦-១១-១៤ ៖ «តារាងប្រភេទផលរកឃើញ ហេតុអ្វីទំហំតារាងធំជា
+       តារាងកាត់ចំណាយ … ផ្នែកនេះអូសនិងកែមិនបានឡើយ» ។
+     ⚠ មូលហេតុ ៖ ច្បាប់ `#calcCard table{width:100% !important}` ខាងលើ
+       បង្ខំ**គ្រប់**តារាងឱ្យសមទទឹងអេក្រង់ ។ តារាងកាត់ចំណាយមាន ៥ ជួរឈរ
+       ⇒ សមបាន ; តារាងផលរកឃើញមាន ប្រភេទ + ឆ្នាំនីមួយៗ + ជាប់អតប +
+       % ធាតុចូល + ប៊ូតុងលុប ⇒ សមមិនបាន ⇒ វាច្របាច់រហូតជួរឈរទី ១
+       កាន់ទាំងជួរ ហើយប្រអប់ជ្រើសរើសលាតពេញទទឹង ( អក្សរធំដូចគេរអ៊ូ )
+       ហើយគ្មានអ្វីហួសទទឹង ⇒ **គ្មានអ្វីឱ្យអូស** ។
+     ⇒ តារាងក្នុង .cc-scroll ៖ ទទឹងតាមមាតិកា តែយ៉ាងហោចណាស់ពេញប្រអប់
+       ⇒ ជួរឈរតិច = សមដដែល ; ជួរឈរច្រើន = អូសក្នុងប្រអប់ខ្លួនឯង ។ */
+  #calcCard .cc-scroll > table{ width:auto !important; min-width:100% !important; }
+  /* [stated] «អក្សរ លំអៀងរបាយការណ៍ស្តុក មានទំហំធំ» ⇒ ច្បាប់ប្រឆាំងការ
+     ពង្រីករបស់ iOS ( input,select{font-size:16px !important} ) ជាប់មកដល់
+     ប្រអប់ក្នុងតារាងដែរ ⇒ សរសេរជាន់ត្រង់នេះតែក្នុងតារាងកាតគណនា ។ */
+  #calcCard .cc-scroll table select,
+  #calcCard .cc-scroll table input{
+    font-size:12px !important; padding:4px 6px !important; min-height:0 !important;
+  }
+  #calcCard .cc-scroll table th:first-child,
+  #calcCard .cc-scroll table td:first-child{ min-width:148px !important; }
+
+  /* ── ៣គ · ចិបឆ្នាំ និងសរុបប្រាក់ពន្ធ ⇒ ជួរតែមួយ ───────────────────
+     ⚠ [stated] ២០២៦-១១-១៤ ៖ «ម៉េចទំហំវែង … បើមួយឆ្នាំគួរឱ្យវា fit នឹងគ្នា
+       ជាជាងប្រអប់សល់ធំ · អក្សរសរុបទឹកប្រាក់ធ្លាក់មកក្រោម · spacing ពី
+       2025 ដល់ $86,837.28 ឃ្លាតគ្នាពេក» ។
+     ⚠ មូលហេតុ ៖ `.cc-grand{flex-wrap:wrap}` ⇒ ប្លុកសរុបចុះបន្ទាត់ថ្មី ;
+       `.cc-gy{align-items:stretch}` ⇒ ប៊ូតុង «គ្រប់ឆ្នាំ» ( ១ បន្ទាត់ )
+       ត្រូវពន្លាតស្មើចិប ( ៣ បន្ទាត់ ) ⇒ ប្រអប់ទទេធំ ; ហើយប្រអប់កម្រិត
+       ចំណេញទទួលអក្សរ ១៦px ពីច្បាប់ទូរស័ព្ទ ⇒ ចិបកាន់តែខ្ពស់ ។
+     ⇒ បង្រួមចិប ⇒ ចិបទាប ⇒ ប៊ូតុងលែងទទេធំ ហើយទាំងអស់សមក្នុងជួរតែមួយ ។ */
+  #calcCard .cc-grand{
+    flex-wrap:nowrap !important; gap:8px !important;
+    padding:5px 8px !important; align-items:center !important;
+  }
+  #calcCard .cc-gy{
+    flex-wrap:nowrap !important; gap:4px !important; min-width:0;
+    overflow-x:auto; scrollbar-width:none;
+  }
+  #calcCard .cc-gy::-webkit-scrollbar{ display:none; }
+  #calcCard .cc-gy > button{
+    flex:0 0 auto; font-size:12.5px !important; padding:5px 9px !important;
+    border-radius:12px !important;
+  }
+  #calcCard .cc-gchip{
+    flex:0 0 auto; min-width:0 !important; border-radius:12px !important;
+    padding:3px 8px 4px !important; line-height:1.1 !important;
+  }
+  #calcCard .cc-gchip .y{ font-size:12.5px !important; }
+  #calcCard .cc-gchip .m{
+    font-size:12px !important; margin-top:0 !important;
+    min-height:0 !important; height:auto !important; padding:0 !important;
+  }
+  #calcCard .cc-gchip .t{ font-size:10px !important; margin-top:1px !important; }
+  #calcCard .cc-grand-amt{ flex:0 0 auto; margin-left:auto; }
+  #calcCard .cc-grand-amt .r, #calcCard .cc-grand-amt .u{ font-size:13px !important; }
+  #calcCard .cc-grand-amt .k{ font-size:9.5px !important; }
+
+  /* ── ៣ឃ · «+ បន្ថែមផលរកឃើញ» ⇒ ជួរជាមួយស្លាក គ្មានប្រអប់ ──────────
+     [stated] ២០២៦-១១-១៤ ៖ «រុញបន្ថែមផលរកឃើញមកជួរតែមួយនឹង កំណត់ចំណូល
+       ឡើងវិញ ហើយមិនបាច់ប្រើប្រអប់ទេ» ។ */
+  #calcCard .btn.ghost.cc-addfind{
+    border:0 !important; background:transparent !important;
+    padding:0 2px !important; height:auto !important; min-height:0 !important;
+    font-size:12.5px !important; font-weight:700 !important;
+    color:var(--primary) !important; white-space:nowrap;
   }
 
   /* ── ៤ · ខ្លឹមសារក្នុងផ្ទាំង ( ពន្ធលើប្រាក់ចំណូល … អត្រាប្តូរប្រាក់ ) ── */
@@ -6338,7 +6414,60 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
   #tos-embed table.emp-grid tfoot tr.emp-totals-row{ background:var(--tos-gold-100); font-weight:700; }
   /* ⭐⭐ ប្រអប់ឈ្មោះបុគ្គលិកក្នុងតួផ្ទាំង ៖ ភ្លឺដូច .period-box ·
      អក្សរ **១២,៥px ស្មើគ្នាទាំងអស់** */
-  #tos-embed .emp-head-bare{ justify-content:flex-end !important; padding:10px 14px !important; }
+  /* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «ផ្ទាំងខៀវចុចបិទ ប្តូរទៅពណ៌ស្រួលមើលជាងនេះ
+     ហើយកុំទុកចោលជួរទំនេរ» ។
+     ⇒ ពណ៌ ៖ ខៀវចាស់ ⇒ **ក្រដាសខ្ចី** ដូចប្រអប់ក្នុងតួ ⇒ ភ្នែកលែងលោត
+       ហើយអក្សរខៀវលើផ្ទៃភ្លឺ អានច្បាស់ជាង ។
+     ⇒ ជួរទំនេរ ៖ ដាក់សង្ខេប បៀវត្ស · អត្ថប្រយោជន៍ · ពន្ធត្រូវបង់បន្ថែម ។ */
+  /* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «រុញ សរុបពន្ធលើប្រាក់បៀវត្ស និង
+     សរុបពន្ធលើអត្ថប្រយោជន៍បន្ថែម នៅជួរជាមួយគ្នា» ។
+     ⚠ វាស់បាន ( ៣៩០px ) ៖ ប្រអប់ទាំង ៤ ឈរម្តងមួយជួរ ( top ៣៤៣ · ៤៣១ ·
+       ៥១៨ · ៦០៦ ) ព្រោះ `minmax(160px,1fr)` ⇒ ១៦០ × ២ + ១២ = ៣៣២px
+       ធំជាងទទឹងប្រើបាន ⇒ auto-fit យកតែ ១ ជួរឈរ ។
+     ⇒ ចាក់ ២ ជួរឈរថេរលើទូរស័ព្ទ ⇒ ពន្ធបៀវត្ស និងពន្ធអត្ថប្រយោជន៍
+       ឈរជាមួយគ្នា · TOS និង FB ឈរជាមួយគ្នា ។ */
+  #tos-embed .stats{
+    grid-template-columns:repeat(2, minmax(0,1fr)) !important;
+    gap:8px !important; margin:14px 0 !important;
+  }
+  #tos-embed .stats .stub{ padding:10px !important; }
+  #tos-embed .stats .stub .label{ font-size:11px !important; line-height:1.45; }
+  #tos-embed .emp-head-bare{
+    justify-content:space-between !important; align-items:center;
+    padding:10px 14px !important;
+    background:#F7F5EC !important; color:var(--tos-navy-800) !important;
+    border-bottom:1px solid var(--tos-line);
+  }
+  #tos-embed .emp-head-bare .modal-close{
+    color:var(--tos-navy-800) !important; background:rgba(27,42,74,.07) !important;
+  }
+  #tos-embed .emp-head-sum{
+    display:flex; flex-wrap:wrap; align-items:center; gap:4px 12px;
+    min-width:0; font-size:12.5px; color:var(--tos-slate);
+  }
+  #tos-embed .emp-head-sum .ehs-y{
+    font-weight:700; color:var(--tos-navy-800);
+    background:rgba(27,42,74,.07); border-radius:999px; padding:2px 9px;
+  }
+  #tos-embed .emp-head-sum .ehs-i b{
+    font-family:'JetBrains Mono','Khmer OS Siemreap',monospace;
+    color:var(--tos-navy-800); margin-left:3px;
+  }
+  #tos-embed .emp-head-sum .ehs-add b{ color:var(--tos-gold-600); }
+  /* ⭐ ប៊ូតុង ▶ ៖ លែងមានផ្ទៃលឿង ( [stated] ) */
+  #tos-embed .bf-go{ color:var(--tos-navy-800); }
+  /* ⭐ ប៊ូតុងរក្សាទុក ៖ ឥឡូវនៅក្នុងជួរលេខអត្តសញ្ញាណ ⇒ ចន្លោះតូច */
+  /* ⚠ វាស់បាន ៖ ប៊ូតុងរក្សាទុកហៀរគែមប្រអប់ ២៥px ( ID input ១៦២ +
+     ប៊ូតុង ៦០ + ស្លាក ) ⇒ ឱ្យជួរនេះជា flex ហើយវាលរួញបាន ។ */
+  #tos-embed .meta-id{
+    display:flex !important; align-items:center; gap:6px; min-width:0;
+    flex-wrap:wrap;
+  }
+  /* ⚠ ច្បាប់មុន `#toi…`/`#tos-embed .id-input{min-width:130px !important}`
+     រារាំងការរួញ ⇒ បន្ថយមក ៩០px ហើយអនុញ្ញាតឱ្យរុំ ⇒ គ្មានការហៀរ ។ */
+  #tos-embed .meta-id .id-input{
+    flex:1 1 90px; min-width:90px !important; width:auto !important; }
+  #tos-embed .meta-id .meta-save-btn{ flex:0 0 auto; margin-left:0; vertical-align:middle; }
   #tos-embed .emp-id-box{
     display:flex; flex-wrap:wrap; align-items:center; gap:7px 10px;
     background:#F7F5EC; border:1px solid var(--tos-line); border-radius:8px;
@@ -8131,11 +8260,20 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
 
   <div class="stats" id="statsGrid">
     <div class="stub" style="display:none;"><div class="label">ចំនួន File</div><div class="value tabular" id="statFiles">0</div></div>
-    <div class="stub"><div class="label">សរុបប្រាក់បៀវត្ស</div><div class="value tabular" id="statSalary">0 KHR</div></div>
+    <!-- ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «លុបប្រអប់ សរុបប្រាក់បៀវត្ស … ចេញ ដោយរុញ
+         សរុបពន្ធលើប្រាក់បៀវត្ស និង សរុបពន្ធលើអត្ថប្រយោជន៍បន្ថែម នៅជួរជាមួយគ្នា» ។
+         ⚠ ប្រអប់នោះត្រូវបានដកចេញទាំងស្រុង — តែ <div id="statSalary"> ត្រូវ
+           **រក្សាទុកជាលាក់** ព្រោះកូដគណនាសរសេរតម្លៃចូលវា ( els.statSalary )
+           ⇒ បើលុបធាតុចោល កូដនឹងបោះកំហុស ។
+         ⇒ ឥឡូវប្រអប់ទី ១ = ពន្ធលើប្រាក់បៀវត្ស · ទី ២ = ពន្ធអត្ថប្រយោជន៍
+           ⇒ ពីរនេះឈរជាប់គ្នាក្នុងជួរតែមួយ ។
+         ⭐ [stated] «ពន្ធបៀវត្សបន្ថែម (កំណត់ឡើងវិញ)» ⇒ «TOS (កំណត់ឡើងវិញ)»
+            និង «ពន្ធអត្ថប្រយោជន៍បន្ថែម» ⇒ «FB (កំណត់ឡើងវិញ)» ⇒ ១ ជួរ ។ -->
+    <div class="stub" style="display:none;"><div class="label">សរុបប្រាក់បៀវត្ស</div><div class="value tabular" id="statSalary">0 KHR</div></div>
     <div class="stub gold"><div class="label">សរុបពន្ធលើប្រាក់បៀវត្ស</div><div class="value tabular" id="statTax">0 KHR</div></div>
     <div class="stub"><div class="label">សរុបពន្ធអត្ថប្រយោជន៍ (20%)</div><div class="value tabular" id="statFringe">0 KHR</div></div>
-    <div class="stub gold"><div class="label">ពន្ធបៀវត្សបន្ថែម (កំណត់ឡើងវិញ)</div><div class="value tabular" id="statReassessSalaryTax">0 KHR</div></div>
-    <div class="stub gold"><div class="label">ពន្ធអត្ថប្រយោជន៍បន្ថែម (កំណត់ឡើងវិញ)</div><div class="value tabular" id="statReassessFringeTax">0 KHR</div></div>
+    <div class="stub gold"><div class="label">TOS (កំណត់ឡើងវិញ)</div><div class="value tabular" id="statReassessSalaryTax">0 KHR</div></div>
+    <div class="stub gold"><div class="label">FB (កំណត់ឡើងវិញ)</div><div class="value tabular" id="statReassessFringeTax">0 KHR</div></div>
   </div>
 
   <!-- ⭐ [stated] ២០២៦-១១-១៣ ៖ «ជួយកែសម្រួលផ្នែកសាលកបត្រ · បៀវត្ស ដើម្បី
@@ -8148,7 +8286,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     <button class="btn gold" id="exportBtn" type="button" disabled title="នាំចេញជា Excel">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
            stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
-      <span>EXCEL</span>
+      <!-- [stated] ២០២៦-១១-១៤ ៖ «Excel ប្តូរមកតែរូប download បានហើយ» -->
     </button>
     <button type="button" class="btn danger-ghost" id="revertAllReassessBtn" title="លុបការកំណត់ពន្ធឡើងវិញទាំងអស់">លុបការកំណត់</button>
     <!-- [stated] ២០២៦-១១-១៣ ៖ «ផ្នែក excel ដល់ការពិនិត្យ រៀបវាតែមួយជួរ» ។
@@ -8162,7 +8300,9 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
   <section class="card missing-card" style="margin-top:16px;">
     <div class="missing-head">
       <h3 class="missing-title" style="display:none;"><span id="matrixTitle">ប្រាក់បៀវត្សប្រកាស</span></h3>
-      <span class="legend-swatches"><span class="sw sw-high"></span>ខ្ពស់បំផុតក្នុងជួរឆ្នាំ<span class="sw sw-low"></span>ទាបបំផុតក្នុងជួរឆ្នាំ</span>
+      <!-- [stated] ២០២៦-១១-១៤ ៖ «លុបអក្សរនេះចេញ ខ្ពស់បំផុតក្នុងជួរឆ្នាំ ·
+           ទាបបំផុតក្នុងជួរឆ្នាំ» ⇒ ពណ៌ក្នុងតារាងនៅដដែល គ្រាន់តែដកអក្សរ ។ -->
+      <span class="legend-swatches" style="display:none;"></span>
     </div>
     <div class="matrix-toggle-row">
       <div class="matrix-toggle" style="margin:0;">
@@ -8222,9 +8362,18 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
           </select>
         </span>
         <span class="meta-sep meta-sep-id">·</span>
-        <span class="meta-inline meta-id">លេខអត្តសញ្ញាណ៖ <input type="text" id="empModalId" class="inline-input id-input" placeholder="—" size="22" /></span>
-        <button type="button" class="btn ghost meta-save-btn" id="empModalSaveMeta">រក្សាទុក</button>
+        <!-- ⭐ [stated] ២០២៦-១១-១៤ ៖ «ប្រអប់រក្សាទុកប្រើសម្រាប់ធ្វើអ្វី ?
+             បើត្រូវប្រើ រុញវាមកនៅជួរលេខអត្តសញ្ញាណ» ។
+             ⚠ វា **ត្រូវប្រើ** ៖ វារក្សាទុកសញ្ជាតិ · លេខអត្តសញ្ញាណ និង
+               ស្ថានភាពនិវាសនជន ដែលវាយដោយដៃ ( empModalSaveMeta ) ។
+             ⇒ រុញវាចូលក្នុងជួរលេខអត្តសញ្ញាណផ្ទាល់ ⇒ សល់ ២ ជួរជំនួស ៣ ។ -->
+        <span class="meta-inline meta-id">លេខអត្តសញ្ញាណ៖ <input type="text" id="empModalId" class="inline-input id-input" placeholder="—" size="22" /><button type="button" class="btn ghost meta-save-btn" id="empModalSaveMeta">រក្សាទុក</button></span>
       </div>
+      <!-- ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «ផ្ទាំងខៀវចុចបិទ អាចប្តូរទៅពណ៌ណា
+           ស្រួលមើលជាងនេះ ហើយនៅផ្ទាំងបិទនេះកុំទុកចោលជួរទំនេរ ជួយដាក់
+           បៀវត្ស = xxx អត្ថប្រយោជន៍បន្ថែម = xxx ក្រោយពីយើងកំណត់ចង់ដឹងវា
+           ត្រូវបង់បន្ថែមប៉ុន្មាន» ។ -->
+      <div class="emp-head-sum" id="empHeadSum"></div>
       <button type="button" class="modal-close" id="empModalClose" aria-label="បិទ">✕</button>
     </div>
     <div class="modal-body">
@@ -14310,7 +14459,7 @@ try{
      ផ្ទុយទៅវិញ ក្រុម rpt ប្រើ min-height + height:auto ⇒ វា **រីកបាន**
      ⇒ ត្រូវរក្សា ២៥២mm ជាសុវត្ថិភាព ។
    ⇒ ១០mm បន្ថែមនេះជាកន្លែងដែលតារាងសវនកម្មត្រូវការ ⇒ លែងធ្លាក់ទំព័រ ។ */
-window.__nrPageMm = 262;
+window.__nrPageMm = 252;   /* [stated] ២០២៦-១១-១៤ ៖ ២៦២ ⇒ ២៥២ ( ទំព័រទ្វេលើ iOS ) */
 try{
   document.documentElement.style.setProperty('--nr-ph', window.__nrPageMm + 'mm');
 }catch(e){}
@@ -42928,7 +43077,9 @@ window.__toiImport = function(data){
             <input type="text" id="bulkMonths" placeholder="ឧ. 10,11,12 ឬ 10-12"
                    title="វាយលេខខែ ញែកដោយក្បៀស ឬជាចន្លោះ — ឧ. 10,11,12 · 10-12 · 3,6,9-12">
           </label>
-          <button type="button" class="btn gold bf-go" id="bulkApplyBtn"
+          <!-- [stated] ២០២៦-១១-១៤ ៖ «រូបសញ្ញា play មិនបាច់ដាក់ background
+               លឿងឡើយ» ⇒ ប្តូរទៅ ghost ( ស៊ុមស្រាល ផ្ទៃស ) ។ -->
+          <button type="button" class="btn ghost bf-go" id="bulkApplyBtn"
                   title="កំណត់ឡើងវិញ" aria-label="កំណត់ឡើងវិញ">&#9654;</button>
         </div>
         ${amendedThisYear ? `<button type="button" class="btn danger-ghost" id="bulkRevertYearBtn">លុបការកំណត់ពន្ធ ${year} (${amendedThisYear})</button>` : ''}
@@ -43138,6 +43289,27 @@ window.__toiImport = function(data){
     const empId = normEmpId((empRows.map(r => r.empId).find(Boolean)) || '');
     const residency = (empRows.map(r => r.residency).find(Boolean)) || 'resident';
 
+    /* ⭐⭐ សង្ខេបលើក្បាលផ្ទាំង ៖ បៀវត្ស · អត្ថប្រយោជន៍ · ពន្ធត្រូវបង់បន្ថែម
+       ⚠ គិតតាម**ឆ្នាំដែលកំពុងបើក** ( profileYearFilter ) ⇒ ត្រូវនឹងតារាង
+         ខាងក្រោមបេះបិទ ; «ទាំងអស់» ⇒ បូកគ្រប់ឆ្នាំ ។ */
+    try{
+      var fy = profileYearFilter;
+      var sel = empRows.filter(function(r){ return (fy === 'all' || !fy) ? true : Number(r.year) === Number(fy); });
+      var sSum = sel.reduce(function(a,r){ return a + (Number(r.salary) || 0); }, 0);
+      var fSum = sel.reduce(function(a,r){ return a + (Number(r.fringe) || 0); }, 0);
+      var addT = sel.reduce(function(a,r){
+        return a + (Number(r.additionalSalaryTax) || 0) + (Number(r.additionalFringeTax) || 0); }, 0);
+      var yLbl = (fy === 'all' || !fy) ? 'គ្រប់ឆ្នាំ' : String(fy);
+      /* ⚠ `esc()` មិនមានក្នុង IIFE នេះទេ ( វាប្រើ `escapeHtml` ) ⇒ ការហៅ
+         បោះកំហុស ⇒ catch លេប ⇒ សង្ខេបចេញទទេ ( វាស់បាន ) ។
+         yLbl ជាលេខឆ្នាំ ឬអក្សរថេរ ⇒ មិនត្រូវការ escape ទាល់តែសោះ ។ */
+      var html = '<span class="ehs-y">' + yLbl + '</span>'
+        + '<span class="ehs-i">បៀវត្ស <b>' + fmt(sSum) + '</b></span>'
+        + '<span class="ehs-i">អត្ថប្រយោជន៍បន្ថែម <b>' + fmt(fSum) + '</b></span>';
+      if(addT) html += '<span class="ehs-i ehs-add">ពន្ធត្រូវបង់បន្ថែម <b>' + fmt(addT) + '</b></span>';
+      var hs = document.getElementById('empHeadSum');
+      if(hs) hs.innerHTML = html;
+    }catch(e){}
     els.empModalTitle.textContent = name;
     els.empModalNationality.value = nationality;
     els.empModalId.value = empId;
@@ -45620,15 +45792,45 @@ function askReceived(base){
     '</div>';
   document.body.appendChild(wrap);
   var close = function(){ if(wrap.parentNode) wrap.parentNode.removeChild(wrap); };
+  /* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «ចុចយល់ព្រម ឬបោះបង់ នៅតែលោតចេញពីកន្លែង
+     ដែលកំពុងរើស» ។ ⚠ ការស្តារ scrollTop ដើមបរាជ័យ ព្រោះការគូរឡើងវិញ
+     ប្តូរកម្ពស់ឯកសារ ⇒ លេខដដែលចង្អុលទៅទីតាំងផ្សេង ។
+     ⇒ យកជួរដែលគេចុចជា **យុថ្កា** ៖ ចាំចម្ងាយរបស់វាពីកំពូលអេក្រង់
+       រួចរុញការរំកិលឱ្យវាត្រឡប់ទៅចម្ងាយដដែល ក្រោយគូររួច ។ */
+  var __sel = '[data-path="' + base + '.received"]';
+  var __el0 = document.querySelector(__sel);
+  var __top0 = __el0 ? __el0.getBoundingClientRect().top : null;
+  var __scrollerOf = function(el){
+    for(var a = el && el.parentElement; a; a = a.parentElement){
+      var oy = getComputedStyle(a).overflowY;
+      if((oy === 'auto' || oy === 'scroll') && a.scrollHeight > a.clientHeight) return a;
+    }
+    return null;
+  };
+  var keepPlace = function(){
+    if(__top0 == null) return;
+    var put = function(){
+      try{
+        var e2 = document.querySelector(__sel);
+        if(!e2) return;
+        var d = e2.getBoundingClientRect().top - __top0;
+        if(Math.abs(d) < 0.5) return;
+        var sc = __scrollerOf(e2);
+        if(sc) sc.scrollTop += d; else window.scrollBy(0, d);
+      }catch(e){}
+    };
+    put();
+    try{ requestAnimationFrame(function(){ put(); requestAnimationFrame(put); }); }catch(e){}
+  };
   wrap.querySelector('#askMtg').value = String(cur);
   wrap.querySelector('#askNo').onclick = function(){
     setPath(base + '.received', false);
-    trkSave(); close(); renderTrackingView();
+    trkSave(); close(); renderTrackingView(); keepPlace();
   };
   wrap.querySelector('#askOk').onclick = function(){
     setPath(base + '.recvDate', wrap.querySelector('#askDate').value || '');
     setPath(base + '.mtgNo',    wrap.querySelector('#askMtg').value || '');
-    trkSave(); close(); renderTrackingView();
+    trkSave(); close(); renderTrackingView(); keepPlace();
   };
   wrap.addEventListener('mousedown', function(e){ if(e.target === wrap) wrap.querySelector('#askNo').click(); });
   setTimeout(function(){ try{ wrap.querySelector('#askDate').focus(); }catch(e){} }, 30);
@@ -48142,7 +48344,8 @@ function wpCoverSheet(c, forPrint){
 function wpLabelSheet(c, forPrint){
   const cn = (p)=> `<span class="cv-cn cv-cn-${p}">${KH_CORNER}</span>`;
   return `<div class="rpt-page cv-page">
-    ${forPrint ? '' : '<div class="cv-hint">✂️ ស្លាកសម្រាប់កាត់បិទលើក្របកិច្ចការ</div>'}
+    ${forPrint ? '' : '<div class="cv-hint">✂️ ស្លាកសម្រាប់កាត់បិទលើក្របកិច្ចការ'
+        + ' <button type="button" class="btn ghost wp-lab-print" id="wpLabPrint">🖨 ព្រីនស្លាក</button></div>'}
     <div class="cv-lab">
       ${cn('tl')}${cn('tr')}${cn('bl')}${cn('br')}
       <table class="cv-info cv-info-lab">${wpCvInfoRows(c)}</table>
@@ -48175,7 +48378,7 @@ function wpHtml(forPrint){
   const row = (k, v)=> `<tr><td class="k">${esc(k)}</td><td class="v">${v}</td></tr>`;
   return `
   ${wpCoverSheet(c, forPrint)}
-  ${wpLabelSheet(c, forPrint)}
+  ${forPrint ? '' : wpLabelSheet(c, forPrint)}
 
   <div class="rpt-page">
     ${letterheadHtml()}
@@ -48243,6 +48446,9 @@ function renderWorkPapers(){
   const box = document.getElementById('trkWp');
   if(!box) return;
   box.innerHTML = wpHtml(false);
+  /* [stated] ២០២៦-១១-១៤ ៖ ប៊ូតុងព្រីនស្លាកដោយឡែក */
+  const __lab = box.querySelector('#wpLabPrint');
+  if(__lab) __lab.onclick = ()=>{ try{ printWpLabel(); }catch(e){} };
   box.querySelectorAll('.wp-cb').forEach(cb=>{
     cb.onchange = ()=>{
       wpState().ans[cb.dataset.wp] = cb.checked ? cb.dataset.val : '';
@@ -49835,7 +50041,7 @@ function narrPaginate(bodyHtml, runHead, c, grand, docCls){
        សុវត្ថិភាពសម្រាប់រឹមឧបករណ៍ណាមួយ។
        ⚠ ថ្លៃដែលត្រូវបង់ ៖ ក្រដាសបន្ថែមប្រហែល ៥% លើកុំព្យូទ័រដែរ។
        ⚠ តម្លៃនេះត្រូវដូច `.nr-page{height}` បេះបិទ — កែមួយ កែទាំងពីរ។ */
-    const avail = narrMmPx((window.__nrPageMm || 266)) - headH - headMb - footH - 8;
+    const avail = narrMmPx((window.__nrPageMm || 252)) - headH - headMb - footH - 8;
     const hOf = function(el){
       const cs = getComputedStyle(el);
       return el.offsetHeight + (parseFloat(cs.marginTop) || 0) + (parseFloat(cs.marginBottom) || 0);
@@ -50583,7 +50789,7 @@ const NARR_CSS = `
   /* ⚠ ត្រូវមានកម្ពស់ថេរ ៖ ជើងទំព័រប្រើ position:absolute; bottom:0 ដូច្នេះ
      បើគ្មានកម្ពស់ វាធ្លាក់ទៅលើកំពូលទំព័រវិញ (អ្វីដែលទើបកើតឡើង)។
      min-height:0 នៅដដែល ដើម្បីផ្តួល .rpt-page{min-height:calc(100vh)}។ */
-  .nr-page{position:relative; box-sizing:border-box; height:var(--nr-ph,262mm); max-height:var(--nr-ph,262mm);
+  .nr-page{position:relative; box-sizing:border-box; height:var(--nr-ph,252mm); max-height:var(--nr-ph,252mm);
     min-height:0 !important; overflow:hidden;
     padding-bottom:15mm; page-break-after:always; break-after:page;}
   .nr-page:last-child{page-break-after:auto; break-after:auto;}
@@ -50610,7 +50816,7 @@ const NARR_CSS = `
        តូចជាង = ចន្លោះធំជាង តែមិនហៀរ ; ធំជាង = ពេញជាង តែប្រថុយហៀរ ។
      ⚠ គ្មាន backtick ក្នុងកំណត់សម្គាល់នេះ ៖ NARR_CSS ជា template literal ។ */
   html.rsc-mobile-print .nr-page{
-    height:var(--nr-ph, 262mm) !important; max-height:var(--nr-ph, 262mm) !important;
+    height:var(--nr-ph, 252mm) !important; max-height:var(--nr-ph, 252mm) !important;
     zoom:var(--nr-zoomp, 1) !important; }
   html.rsc-mobile-print .nr-page > .nr-foot{ bottom:0 !important; margin:0 !important; }
   /* ══ ទូរស័ព្ទ/ថេប្លេត ៖ កម្ពស់ស្វ័យប្រវត្តិ + ជើងទំព័រហូរតាមមាតិកា ══
@@ -52132,6 +52338,13 @@ function printBasis(){
      ${BASIS_CSS}`);
 }
 
+/* ព្រីនតែស្លាកក្រប ⇒ ក្រដាសតែ ១ សន្លឹក ហើយគ្មានទំព័រទទេភ្ជាប់ */
+function printWpLabel(){
+  printInPage(wpLabelSheet(wpCtx(), true),
+    `${LETTERHEAD_CSS}
+     ${RPT_CSS}
+     ${WP_CSS}`);
+}
 function printWorkPapers(){
   printInPage(wpHtml(true),
     `.wp-tbl tr,.wp-toc tr{page-break-inside:avoid; break-inside:avoid;}
@@ -53083,7 +53296,12 @@ function applyRptPageMm(v){
          rpt ( ឯកសារដទៃ )                  = tgt        — សន្លឹក height:auto
                                               ⇒ រីកបាន ⇒ ត្រូវការរឹមសុវត្ថិភាព */
     var tgt = ok ? n : 252;
-    var tgtNr = tgt + 10;
+    /* ⚠⚠ [stated] ២០២៦-១១-១៤ ៖ «បរិយាយ · សវនកម្ម · សង្ខេប នៅដាច់ footer» ។
+       ការបូក ១០mm ខាងលើជាកំហុសរបស់ខ្ញុំ ៖ ខ្ញុំសន្មត់ថាសន្លឹកកម្ពស់ថេរ
+       «មិនអាចហៀរ» ⇒ ខ្ពស់បានសុវត្ថិភាព ។ តាមពិតសន្លឹកកម្ពស់ថេរ **ក៏ហៀរដែរ**
+       បើវាធំជាងផ្ទៃក្រដាស — វាគ្រាន់តែហៀរទាំងសន្លឹក ជំនួសហៀរតាមមាតិកា ។
+       ⇒ ក្រុម nr ត្រូវស្មើនឹងក្រុម rpt បេះបិទ ។ */
+    var tgtNr = tgt;
     root.style.setProperty('--nr-ph',  tgtNr + 'mm');
     root.style.setProperty('--rpt-ph', tgt + 'mm');
     root.style.setProperty('--nr-zoomp',  '1');
@@ -53109,7 +53327,7 @@ function applyRptPageMm(v){
        តម្លៃចាស់ ( ២៤០ ) នឹងត្រឡប់មកវិញស្ងាត្រ । */
     /* ⚠ កន្លែងនេះរត់ក្រោយការកំណត់ដំបូង ⇒ បើភ្លេចប្តូរទីនេះ តម្លៃចាស់
        នឹងត្រឡប់មកវិញស្ងាត់ៗ ។ */
-    try{ window.__nrPageMm = 262; }catch(e){}
+    try{ window.__nrPageMm = 252; }catch(e){}
   }
   /* គូរឡើងវិញ ៖ បរិយាយ · សវនកម្ម · សង្ខេប (បើផ្ទាំងនោះមានលើអេក្រង់) */
   /* ⚠ មុខងារទាំងនេះមិននៅលើ `window` ទេ (ប្លុកនេះជា IIFE) ⇒ ត្រូវហៅតាម
@@ -59389,10 +59607,9 @@ function paneToi(res){
 
   /* ================= ១. ធាតុបញ្ចូលថ្មីដោយសវនករ ================= */
   h.push('<div class="cc-bar" style="margin-top:4px"><span class="cc-lbl">កំណត់ចំណូលឡើងវិញ</span>'+
-    '<button class="btn ghost" data-act="addFind">+ បន្ថែមផលរកឃើញ</button>'+
-    '<span class="cc-lbl" style="color:var(--muted);font-weight:400">'+
-    'ក្រឡាទឹកប្រាក់ទទួលរូបមន្តយោង 📐 តារាងគណនា ៖ វាយ <b>=C2-C1</b> ឬ '+
-    '<b>=SUM(C1:C9)</b> ⇒ កែក្នុងតារាងគណនា ⇒ ត្រង់នេះប្តូរតាមភ្លាម</span></div>');
+    /* [stated] ២០២៦-១១-១៤ ៖ លុបអក្សរពន្យល់រូបមន្ត ( មុខងារនៅដដែល ) */
+    '<button class="btn ghost cc-addfind" data-act="addFind">+ បន្ថែមផលរកឃើញ</button>'+
+    '</div>');
   h.push('<div class="cc-scroll"><table><thead><tr><th style="min-width:230px">ប្រភេទផលរកឃើញ</th>');
   yrs.forEach(function(y){h.push('<th class="n">'+y+'</th>');});
   h.push('<th>ជាប់អតប</th><th class="n" style="width:86px">% ធាតុចូល</th>'+
@@ -59441,14 +59658,15 @@ function paneToi(res){
      បានពីទីនេះតែម្តង។
      ⚠ សម្គាល់តាម `key` មិនមែនតាមលេខរៀងទេ ព្រោះលេខរៀងផ្លាស់ពេលលុប។ */
   var cuts=(s.assessments||[]).filter(function(a){ return a && a.cost && (+a.amount||0); });
+  /* [stated] ២០២៦-១១-១៤ ៖ លុបអក្សរពន្យល់ប្រភព */
   h.push('<div class="cc-bar" style="margin-top:14px"><span class="cc-lbl">កាត់ចំណាយចេញ</span>'+
-    '<span class="cc-lbl" style="color:var(--muted);font-weight:400">'+
-    'មកពីការចុចលើតួលេខក្នុងជំហានទី៥–៧ · បូកចូល «ចំណាយមិនអាចកាត់កងបាន»</span></div>');
+    '</div>');
   h.push('<div class="cc-scroll"><table><thead><tr>'+
     '<th style="min-width:230px">ប្រភព</th><th>ឆ្នាំ</th><th class="n">ទឹកប្រាក់កាត់ចេញ</th>'+
     '<th>កំណត់ពន្ធផង</th><th></th></tr></thead><tbody>');
   if(!cuts.length){
-    h.push('<tr><td colspan="5" class="cc-empty">មិនទាន់មានការកាត់ចំណាយទេ — ចុចលើតួលេខក្នុងជំហានទី៥–៧ ដើម្បីកាត់</td></tr>');
+    /* [stated] ២០២៦-១១-១៤ ៖ លុបអក្សរណែនាំ ⇒ ទុកជួរទទេស្ងាត់ៗ */
+    h.push('<tr><td colspan="5" class="cc-empty">—</td></tr>');
   }else{
     cuts.forEach(function(a){
       var k=esc(String(a.key||""));
@@ -59727,10 +59945,10 @@ function paneToi(res){
     line('និយតកម្មតាមកម្រិតចំណេញកំណត់',get('expCut'),'cc-add');
   line('បន្ទុកចំណាយកំណត់ឡើងវិញ',get('expNew'),'cc-sum');
   h.push('<tr class="cc-tot"><td colspan="'+(yrs.length+1)+'" style="text-align:left; padding-top:10px">'+
-    '<b>សង្ខេបផលកំណត់ឡើងវិញ</b> — លេខដដែលនឹងជួរខាងលើ យកមកដាក់ជាមួយគ្នា ដើម្បីឃើញផលសុទ្ធ</td></tr>');
-  line('ចំណូលដែលកំណត់ឡើងវិញ (= ជួរ «បូក ៖ កំណត់ចំណូលឡើងវិញ»)',get('findAll'),'cc-add',1);
-  line('បន្ទុកចំណាយអនុញ្ញាតលើវា (= ជួរ «ដក ៖ បន្ទុកចំណាយអនុញ្ញាតលើផលកំណត់ឡើងវិញ»)',get('findCost'),'cc-int',1);
-  line('ចំណេញជាប់ពន្ធពីផលកំណត់ (ចំណូល − បន្ទុក)',get('findNet'),'cc-sum',1);
+    '<b>សង្ខេបផលកំណត់ឡើងវិញ</b></td></tr>');
+  line('ចំណូលដែលកំណត់ឡើងវិញ',get('findAll'),'cc-add',1);
+  line('បន្ទុកចំណាយអនុញ្ញាតលើវា',get('findCost'),'cc-int',1);
+  line('ចំណេញជាប់ពន្ធពីផលកំណត់',get('findNet'),'cc-sum',1);
   line('E36 ប្រាក់ចំណូលសុទ្ធ/(ខាត) ក្រោយនិយតកម្ម',get('e36'),'cc-tot');
   h.push('<tr><td>កម្រិតចំណេញក្រោយនិយតកម្ម</td>');
   yrs.forEach(function(y){ h.push('<td class="n cc-calc">'+pct((res.y[y]||{}).marginFinal)+'</td>'); });
@@ -59748,8 +59966,8 @@ function paneToi(res){
   line('E49 ឥណទានពន្ធបង់មុនលើការបែងចែកភាគលាភ',get('dividend'));
   line('E50 បំណុលពន្ធលើប្រាក់ចំណូល',get('e50'));
   line('E51 ពន្ធអប្បបរមា បានប្រកាស',get('minDecl'));
-  line('E51 ពន្ធអប្បបរមា កំណត់ឡើងវិញ ('+(s.rate.min*100)+'% លើផលរកឃើញ)',get('minTax'),'cc-tot');
-  line('E52 បំណុលពន្ធលើប្រាក់ចំណូលត្រូវបង់ (ធំជាងគេរវាង E50 និង E51)',get('e52'),'cc-tot');
+  line('E51 ពន្ធអប្បបរមា កំណត់ឡើងវិញ',get('minTax'),'cc-tot');
+  line('E52 បំណុលពន្ធលើប្រាក់ចំណូលត្រូវបង់',get('e52'),'cc-tot');
   h.push('<tr><td>ប្រភេទដែលកំណត់</td>');
   yrs.forEach(function(y){
     var o=res.y[y]||{};
@@ -59816,8 +60034,10 @@ function paneToi(res){
   line('ប្រាក់រំដោះ ១% លើផលរកឃើញ',get('prep1'),'cc-tot');
   line('ពន្ធលើប្រាក់ចំណូល នៅសល់ត្រូវបង់',get('toiPay'),'cc-sum');
   line('កំណត់ដាច់ដោយឡែក ៖ មូលដ្ឋាន',get('directBase'));
-  line('កំណត់ដាច់ដោយឡែក ៖ ពន្ធលើប្រាក់ចំណូល '+(s.rate.toi*100)+'%',get('directToi'),'cc-tot');
-  line('កំណត់ដាច់ដោយឡែក ៖ អាករលើតម្លៃបន្ថែម '+(s.rate.vat*100)+'%',get('directVat'),'cc-tot');
+  /* [stated] ២០២៦-១១-១៤ ៖ លុបពាក្យ «កំណត់ដាច់ដោយឡែក ៖ » ពីជួរអត្រាទាំងពីរ
+     ⇒ ជួរ «កំណត់ដាច់ដោយឡែក ៖ មូលដ្ឋាន» ខាងលើនៅជាចំណងជើងក្រុមដដែល ។ */
+  line('ពន្ធលើប្រាក់ចំណូល '+(s.rate.toi*100)+'%',get('directToi'),'cc-tot');
+  line('អាករលើតម្លៃបន្ថែម '+(s.rate.vat*100)+'%',get('directVat'),'cc-tot');
   h.push('</tbody></table></div>');
   /* [stated] ការបង់ពន្ធលើប្រាក់ចំណូល រស់នៅទីនេះឥឡូវ មិនមែនផ្ទាំងដាច់ដោយឡែក។
      ⚠ ចំណាំ ៖ `CC.vatManPanel` អង្គុយចន្លោះ paneToi និង paneVat ដូច្នេះ
