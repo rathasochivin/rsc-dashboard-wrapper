@@ -3349,6 +3349,73 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
      ( ១០,៥px ) ហើយជួរកាន់តែខ្ពស់ ⇒ មើលទៅមិនស្មើ ។
      ⇒ ដាក់អក្សរក្នុង input ឱ្យស្មើនឹងអក្សរក្រឡា ហើយដកកម្ពស់អប្បបរមាចេញ ។ */
   #calcCard details.nr-dd > summary{ font-size:11px !important; }
+
+  /* ── ៣ត · ផ្ទាំង ជំនាន់ · ប៉ារ៉ាម៉ែត្រ · ច្បាប់យោង · អត្រាប្តូរប្រាក់ ──
+     [stated] ២០២៦-១១-១៤ ៖ រៀបឱ្យសមទូរស័ព្ទ ( ជួរតែមួយ · អក្សរតូចស្មើគ្នា ·
+       លែងមានប្រអប់ធំៗ ) ។
+     ⚠ ផ្ទាំងទាំងនេះសង់ដោយស្លាក + វាល/ប៊ូតុងទំហំលំនាំដើម ⇒ នីមួយៗស៊ីមួយ
+       ជួរពេញ ⇒ ត្រូវអូសចុះវែង ។ */
+  #calcCard .cc-verin{
+    flex:1 1 120px !important; min-width:0 !important;
+    font-size:11.5px !important; height:32px !important; }
+  #calcCard .btn.primary.cc-versave{
+    flex:0 0 auto !important; font-size:11.5px !important;
+    height:32px !important; min-height:32px !important; padding:0 10px !important; }
+  /* វាល និងប៊ូតុងក្នុងផ្ទាំងទាំងនេះ ៖ ទំហំតែមួយ */
+  #calcCard .cc-pane .cc-sec input:not([type="checkbox"]),
+  #calcCard .cc-pane .cc-sec select,
+  #calcCard .cc-pane .cc-grid input:not([type="checkbox"]),
+  #calcCard .cc-pane .cc-grid select{
+    font-size:11.5px !important; height:32px !important; min-height:0 !important;
+    padding:3px 7px !important; max-width:110px !important; }
+  /* ឈ្នាប់ និងប៊ូតុងតូចៗ ៖ គ្មានប្រអប់ធំ */
+  #calcCard .cc-pane .btn.ghost{
+    font-size:11px !important; padding:5px 9px !important;
+    height:30px !important; min-height:30px !important; }
+  #calcCard .cc-pane .cc-flag{
+    font-size:11px !important; padding:3px 8px !important; }
+  /* ស្លាកក្នុងផ្ទាំង ៖ តូចស្មើគ្នា */
+  #calcCard .cc-pane .cc-sec label, #calcCard .cc-pane .cc-grid label,
+  #calcCard .cc-pane .cc-h{ font-size:11.5px !important; }
+  #calcCard .cc-pane .cc-note, #calcCard .cc-pane .hint{
+    font-size:10.5px !important; line-height:1.55 !important; }
+  /* ⚠ វាស់បាន ៖ ប៉ារ៉ាម៉ែត្រនៅមានអក្សរ ១៤ និង ១៦px ( វាលដែលមិននៅក្នុង
+     .cc-sec/.cc-grid ) ⇒ ពង្រីកច្បាប់ទៅគ្រប់វាលក្នុងផ្ទាំង ។ */
+  #calcCard .cc-pane input:not([type="checkbox"]):not([type="radio"]),
+  #calcCard .cc-pane select, #calcCard .cc-pane textarea{
+    font-size:11.5px !important; }
+  #calcCard .cc-pane button{ font-size:11.5px !important; }
+  #calcCard .cc-pane .cc-tab{ font-size:12px !important; }
+  /* ⚠ វាស់បាន ៖ ច្បាប់យោង ១៦៥ ធាតុ · អត្រាប្តូរប្រាក់ ២៧៣ ធាតុ ហៀរក្រៅកាត
+     ⇒ តារាងទាំងនោះមិននៅក្នុង `.cc-scroll` ⇒ គ្មានអ្នករុំឱ្យអូស ។
+     ⇒ បង្ខំតារាងគ្រប់ផ្ទាំងឱ្យសមទទឹង ហើយឱ្យផ្ទាំងខ្លួនឯងអូសបាន ។ */
+  #calcCard .cc-pane table{ min-width:0 !important; max-width:100% !important; }
+  #calcCard .cc-pane > table{ width:100% !important; table-layout:auto; }
+  /* ── ៣ដ · ផ្ទាំង «ពន្ធផ្សេងៗ» ─────────────────────────────────────
+     [stated] ២០២៦-១១-១៤ ៖ «ទំហំអក្សរ ជ្រើសរើសប្រភេទពន្ធ និង បង្កើត
+       ប្រភេទពន្ធ មានទំហំធំជាងគេ» ⇒ បន្ថយឱ្យស្មើរបារដទៃ ។ */
+  #calcCard select.cc-pick{ font-size:11.5px !important; height:32px !important;
+    flex:1 1 140px !important; min-width:0 !important; }
+  #calcCard .btn.ghost.cc-addtax{
+    border:0 !important; background:transparent !important; box-shadow:none !important;
+    padding:0 4px !important; height:auto !important; min-height:0 !important;
+    font-size:11.5px !important; font-weight:700 !important;
+    color:var(--primary) !important; white-space:nowrap; flex:0 0 auto; }
+  /* ⚠ ក្រឡាឈ្មោះប្រភេទពន្ធប្រើ `.cc-flag` ដែលមានកាំកោង ៩៩៩px ⇒ ឈ្មោះវែង
+     រុំ ៤–៥ បន្ទាត់ ⇒ ក្លាយជា **រង្វង់យក្ស** ( ឃើញក្នុងរូប ) ។
+     ⇒ ក្នុងតារាងនេះ ៖ គ្មានស៊ុម គ្មានផ្ទៃ តម្រឹមឆ្វេង រុំធម្មតា ។ */
+  #calcCard .cc-pane table td > .cc-flag{
+    border:0 !important; background:transparent !important; border-radius:0 !important;
+    padding:0 !important; justify-content:flex-start !important;
+    text-align:left !important; font-size:10.5px !important;
+    line-height:1.4 !important; gap:5px; }
+  /* ⚠ «%» ជាអត្ថបទក្រោយប្រអប់ ⇒ ពេលប្រអប់ទូលាយ វាត្រូវរុញទៅឆ្ងាយ ។
+     ⇒ ក្រឡា cc-rate ៖ រៀបជាជួរដេកតែមួយ ប្រអប់តូច ⇒ «%» ជាប់លេខ ។ */
+  #calcCard .cc-pane table td.cc-rate{
+    white-space:nowrap !important; text-align:right !important; }
+  #calcCard .cc-pane table td.cc-rate .cc-grid-in{
+    width:52px !important; max-width:52px !important; display:inline-block !important;
+    text-align:right !important; margin-right:2px !important; }
   #calcCard .cc-pane table input:not([type="checkbox"]),
   #calcCard .cc-pane table select{
     font-size:10.5px !important; line-height:1.5 !important;
@@ -3518,7 +3585,9 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     font-size:11px !important; padding:3px 6px !important; }
   #calcCard .cc-note, #calcCard .hint{ font-size:11.5px !important; line-height:1.6 !important; }
   #calcCard .cc-work .cc-bar{ gap:5px !important; }
-  #calcCard .cc-wkbtn{ font-size:11px !important; padding:5px 8px !important; }
+  #calcCard .cc-wkbtn{ font-size:10.5px !important; padding:4px 6px !important;
+    border:0 !important; background:transparent !important; }
+  #calcCard .cc-wknote{ font-size:10.5px !important; margin:4px 0 6px !important; }
   #calcCard select, #calcCard input[type="text"], #calcCard input[type="number"]{
     max-width:100% !important; min-width:0 !important; box-sizing:border-box;
   }
@@ -3547,10 +3616,14 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
   }
 }
 #calcCard .cc-work .cc-bar{display:flex; flex-wrap:wrap; gap:6px; align-items:center;}
-#calcCard .cc-wkbtn{border:1px solid var(--line,#d8d2c2); background:var(--surface,#fff);
-  color:var(--ink,#222); border-radius:8px; padding:5px 10px; cursor:pointer;
-  font:inherit; font-size:12.5px; line-height:1.4; white-space:nowrap; width:auto;}
-#calcCard .cc-wkbtn:hover{background:#f3efe4;}
+/* ⭐ [stated] ២០២៦-១១-១៤ ៖ «ផ្នែកនីមួយៗបើអាចលុបប្រអប់ចេញ · ទំហំអក្សរ
+   sheet វាធំជាងគេ» ⇒ ប៊ូតុងរបារតារាងគណនា ៖ គ្មានស៊ុម គ្មានផ្ទៃ
+   ហើយអក្សរតូចស្មើគ្នា ( រូបភាពនៅដដែល ) ។ ផ្ទៃលេចតែពេលចុច/ដាក់ព្រួញ ។ */
+#calcCard .cc-wkbtn{border:0; background:transparent;
+  color:var(--ink,#222); border-radius:8px; padding:5px 8px; cursor:pointer;
+  font:inherit; font-size:11.5px; line-height:1.4; white-space:nowrap; width:auto;}
+#calcCard .cc-wkbtn:hover{background:rgba(0,0,0,.06);}
+#calcCard .cc-wkbtn:active{background:rgba(0,0,0,.12);}
 #calcCard .cc-wknote{font-size:12px; color:var(--muted,#777); margin:6px 0 8px;}
 #calcCard .cc-work-wrap{overflow:auto; max-height:70vh; border:1px solid #d8d2c2; border-radius:8px;}
 #calcCard .cc-work-tbl{border-collapse:collapse; font-size:12.5px;}
@@ -58690,7 +58763,10 @@ function wkSelStat(){
 }
 function wkStatText(){
   var st = wkSelStat();
-  if(!st) return 'ចុចក្បាល A · B … ជ្រើសជួរទាំងមូល · Shift+ចុច ឬអូសលើក្បាល ⇒ ច្រើនជួរ · Ctrl+Z ថយក្រោយ';
+  /* [stated] ២០២៦-១១-១៤ ៖ «លុប ចុចក្បាល A · B … Ctrl+Z ថយក្រោយ» ។
+     ⚠ ត្រឡប់អក្សរទទេ ( មិនមែនលុបមុខងារ ) ⇒ ពេលជ្រើសក្រឡា ស្ថិតិ
+       ( ចំនួនក្រឡា · សរុប · តូច/ធំបំផុត ) នៅបង្ហាញដដែល ។ */
+  if(!st) return '';
   var out = 'ជ្រើស ' + st.cells + ' ក្រឡា';
   if(st.nums){
     var f = function(n){
@@ -60572,8 +60648,10 @@ function paneVat(res){
 /* ---- other taxes ---- */
 function paneOth(res){
   var s=CC.state,yrs=s.years,h=[],am=CC.assessMaps();
-  h.push('<p class="cc-note" id="ccMtrStatus" style="margin:0 0 8px">'+
-    esc(CC._mtrMsg||'ចំនួន «បានបង់» បំពេញស្វ័យប្រវត្តិពីលិខិតប្រកាសពន្ធប្រចាំខែក្នុងសាលកបត្រ។')+'</p>');
+  /* [stated] ២០២៦-១១-១៤ ៖ លុបបន្ទាត់សារ «✓ បានទាញ … ពីសាលកបត្រ» ។
+     ⚠ ធាតុ #ccMtrStatus រក្សាទុកជា**លាក់** ព្រោះកូដទាញសរសេរចូលវា
+       ⇒ បើលុបធាតុចោល ការទាញនឹងបោះកំហុស ។ */
+  h.push('<p class="cc-note" id="ccMtrStatus" style="display:none"></p>');
   /* [stated] ២០២៦-០៨-១២ ៖ បង្ហាញតែប្រភេទពន្ធដែលកំពុងកំណត់ ; ប្រភេទឯទៀត
      ស្ថិតក្នុង dropdown ដើម្បីជ្រើសយក។ ⚠ ប្រភេទដែលមានការកំណត់ពីជំហាន
      (am.taxBase) ត្រូវបង្ហាញជានិច្ច ទោះមិនបានធីក — បើមិនដូច្នេះ តួលេខ
@@ -60607,14 +60685,12 @@ function paneOth(res){
 
   h.push('<div class="cc-bar">');
   if(hidden.length){
-    h.push('<span class="cc-lbl">បន្ថែមប្រភេទពន្ធដែលត្រូវកំណត់</span>' +
-      '<select data-act="pickTax"><option value="">— ជ្រើសប្រភេទពន្ធ —</option>' +
+    h.push('<select data-act="pickTax" class="cc-pick"><option value="">— ជ្រើសប្រភេទពន្ធ —</option>' +
       hidden.map(function(i){ return '<option value="' + i + '">' + esc(s.taxes[i].name) + '</option>'; }).join('') +
       '</select>');
   }
-  h.push('<button class="btn ghost" data-act="addTax">+ បង្កើតប្រភេទពន្ធថ្មី</button>');
-  h.push('<span class="cc-note" style="margin:0">បង្ហាញ ' + shown.length + ' / ' + s.taxes.length +
-    ' ប្រភេទ។ ដោះធីកមួយណា វាត្រឡប់ចូល dropdown វិញ។</span></div>');
+  h.push('<button class="btn ghost cc-addtax" data-act="addTax">+ បង្កើតប្រភេទពន្ធថ្មី</button>');
+  h.push('</div>');
 /* [stated] ២០២៦-០៨-១៦ ៖ បន្ទាត់ពន្យល់ត្រូវលុបចេញ (ជុំលុបកំណត់សម្គាល់) */
   h.push('<div class="cc-scroll"><table><thead><tr><th style="min-width:240px">ប្រភេទពន្ធ</th><th style="width:96px">អត្រា</th><th></th>');
   yrs.forEach(function(y){h.push('<th class="n">'+y+'</th>');});
@@ -60896,9 +60972,12 @@ function paneVer(){
   var s=CC.state,vs=s.versions||[],h=[];
 /* [stated] ២០២៦-០៨-១៦ ៖ បន្ទាត់ពន្យល់ត្រូវលុបចេញ (ជុំលុបកំណត់សម្គាល់) */
   h.push('<div class="cc-bar">'+
-    '<input type="text" id="ccVerName" placeholder="ឈ្មោះជំនាន់ ឧ. ពង្រាងទី១" style="min-width:200px">'+
-    '<input type="text" id="ccVerNote" placeholder="កំណត់សម្គាល់ (ស្រេចចិត្ត)" style="min-width:260px">'+
-    '<button class="btn primary" data-act="saveVer">💾 រក្សាទុកជំនាន់</button>'+
+    /* [stated] ២០២៦-១១-១៤ ៖ «ឈ្មោះជំនាន់ ដល់ រក្សាទុក ជួររៀបមួយជួរ» ⇒
+       ដក `min-width` ( ២០០ + ២៦០ = ៤៦០px លើសទទឹងទូរស័ព្ទ ⇒ បាក់ ៣ ជួរ )
+       ហើយទុកឱ្យ CSS ចែកទទឹង ; «រក្សាទុកជំនាន់» ⇒ «រក្សាទុក» ។ */
+    '<input type="text" id="ccVerName" class="cc-verin" placeholder="ឈ្មោះជំនាន់">'+
+    '<input type="text" id="ccVerNote" class="cc-verin" placeholder="កំណត់សម្គាល់">'+
+    '<button class="btn primary cc-versave" data-act="saveVer">💾 រក្សាទុក</button>'+
     '<span class="cc-lbl" style="color:var(--muted);font-weight:400">រក្សាទុករួច ៖ '+vs.length+' ជំនាន់</span></div>');
   if(!vs.length) return h.join("")+'<div class="cc-empty">មិនទាន់មានជំនាន់ណាត្រូវបានរក្សាទុកទេ</div>';
   h.push('<div class="cc-scroll"><table><thead><tr><th style="width:60px">ល.រ</th><th style="min-width:190px">ឈ្មោះ</th>'+
