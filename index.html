@@ -1684,6 +1684,8 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
   #view-tracking .trk-tbl.trk-stack td > textarea{ height:auto !important; min-height:46px; }
   #view-tracking .trk-tbl.trk-stack td > input[type="checkbox"]{
     width:24px !important; height:24px !important; justify-self:start;
+    /* ⚠ បង្អត់ `margin:0 auto` របស់ច្បាប់កុំព្យូទ័រ ⇒ ប្លង់ទូរស័ព្ទនៅដដែល */
+    margin:0 !important;
   }
   /* ⭐ [stated] ២០២៦-១១-១៣ ៖ ឈ្មោះឯកសារវែង ⇒ បើស្លាកនៅឆ្វេង ( ១៣៦px )
      វាលសល់ត្រឹម ~១៧០px ⇒ ចុះបន្ទាត់ ។ ⇒ ជួរបរិយាយដាក់ស្លាកនៅ**លើ**
@@ -2004,6 +2006,36 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
 #view-tracking .trk-grid > label.trk-wide{flex:1 1 100%; align-items:flex-start;}
 #view-tracking .trk-grid > label.trk-wide > span.trk-lb{flex:0 0 190px; padding-top:8px;}
 #view-tracking .trk-grid > label.trk-wide > textarea{flex:1 1 auto;}
+/* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «លុបប្រអប់ចេញ និងរៀបជួរអក្សរឱ្យស្មើគ្នា»
+   ( ជួរអ្នកតំណាង ) — មើលក្បាល fix_reps.py ។ */
+#view-tracking .trk-grid.trk-reps, #docs-modal .trk-grid.trk-reps{
+  display:grid; grid-template-columns:repeat(2, minmax(0,1fr));
+  gap:10px 22px; align-items:center; max-width:980px;}
+/* ជួរ «ចំនួនអ្នកតំណាង» កាន់បន្ទាត់ពេញ ⇒ គូឈ្មោះ/តួនាទីចាប់ផ្តើមជួរថ្មី */
+#view-tracking .trk-grid.trk-reps > label:first-child,
+#docs-modal .trk-grid.trk-reps > label:first-child{
+  grid-column:1 / -1; max-width:320px;}
+#view-tracking .trk-grid.trk-reps > label, #docs-modal .trk-grid.trk-reps > label{
+  display:grid; grid-template-columns:128px minmax(0,1fr);
+  align-items:center; gap:8px; white-space:nowrap; margin:0;}
+/* «លុបប្រអប់ចេញ» ⇒ គ្មានស៊ុម គ្មានផ្ទៃ ; ទុកបន្ទាត់ក្រោមស្តើង */
+#view-tracking .trk-grid.trk-reps > label > input,
+#view-tracking .trk-grid.trk-reps > label > select,
+#docs-modal .trk-grid.trk-reps > label > input,
+#docs-modal .trk-grid.trk-reps > label > select{
+  /* ⚠ `width` មានក្នុង inline style ( ១៩០px ) ⇒ ត្រូវ !important
+     ទើបវាលពេញក្រឡា ហើយគែមស្តាំត្រង់ជួរគ្នា ។ */
+  width:100% !important; min-width:0 !important; max-width:none !important;
+  border:0; border-bottom:1px solid var(--line); border-radius:0;
+  background:transparent; box-shadow:none; padding:4px 2px; height:30px;}
+#view-tracking .trk-grid.trk-reps > label > input:focus,
+#docs-modal .trk-grid.trk-reps > label > input:focus{
+  outline:none; border-bottom-color:var(--accent);}
+/* ⭐ [stated] «ប្រអប់ធីកគួរដាក់ចំកណ្តាល» ⇒ ចំកណ្តាលពិត ( មិនពឹង
+   text-align ដែលអាចរអិលតាមអក្សរជុំវិញ ) ។ */
+#view-tracking .trk-tbl td > input[type=checkbox].trk-in,
+#docs-modal .trk-tbl td > input[type=checkbox].trk-in{
+  display:block; margin:0 auto;}
 #view-tracking .trk-grid > label > input,
 #view-tracking .trk-grid > label > select,
 #view-tracking .trk-grid > label > textarea{white-space:normal;}
@@ -2992,12 +3024,14 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
    ⇒ ក្រឡាក្លាយជា flex តម្រឹមស្តាំ ៖ ប្រអប់បង្រួមបាន «%» ជាប់នឹងវាជានិច្ច
      ⇒ មិនអាចចេញក្រៅក្រឡាបានឡើយ ។
    ⚠ ច្បាប់នេះ **មិននៅក្នុង @media** ⇒ ដើរទាំងទូរស័ព្ទ និងកុំព្យូទ័រ ។ */
-#calcCard td.cc-rate,
-#calcCard .cc-pane table td.n:has(> input.cc-grid-in){
-  display:flex !important; align-items:center; justify-content:flex-end;
-  gap:3px; white-space:nowrap !important; overflow:hidden; }
-#calcCard td.cc-rate > input.cc-grid-in,
-#calcCard .cc-pane table td.n > input.cc-grid-in{
+#calcCard td.cc-rate, #calcCard .cc-pane table td.n:has(.cc-pct){
+  white-space:nowrap !important; text-align:right !important; }
+/* ⚠⚠ ក្រឡាត្រូវនៅជា `table-cell` ៖ ការប្តូរ display លើ <td> បំបែក
+   rowspan ( មើលក្បាល fix_pct2.py ) ។ ការតម្រឹមកើតក្នុង span នេះវិញ ។ */
+#calcCard .cc-pct{
+  display:inline-flex !important; align-items:center; justify-content:flex-end;
+  gap:3px; max-width:100%; vertical-align:middle; white-space:nowrap; }
+#calcCard .cc-pct > input.cc-grid-in{
   flex:0 1 auto !important; min-width:0 !important; max-width:100% !important;
   text-align:right !important; }
 
@@ -3505,7 +3539,10 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
      មានតែប្រអប់ធីកដែលអណ្តែតកណ្តាល ⇒ ជួរលេខមើលទៅរាយប៉ាយ ។
      ⇒ ក្រឡាលេខ ៖ តម្រឹមស្តាំជានិច្ច · ប្រអប់ធីកនៅឆ្វេងលេខ ហើយមានចន្លោះ
        ច្បាស់ ⇒ លេខទាំងអស់ឈរត្រង់គែមស្តាំតែមួយ ។ */
-  #calcCard .cc-pane table .cc-chk{
+  /* ⭐ [stated] ២០២៦-១១-១៤ ៖ «លេខនៅតារាងវិភាគហានិភ័យធំជាងគេ» ⇒
+     `.cc-chk` មាន `font-size:12.5px` ផ្ទាល់ខ្លួន ⇒ ច្បាប់ ១០,៥px ប៉ះតែ
+     `td` ⇒ ត្រូវឱ្យ label ទទួលមរតកពីក្រឡាវិញ ។ */
+  #calcCard .cc-pane table .cc-chk{ font-size:inherit !important;
     width:auto !important; display:inline-flex !important;
     align-items:center !important; vertical-align:middle !important;
     margin-right:7px !important; }
@@ -3716,8 +3753,18 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     flex:0 0 auto !important; width:78px !important; min-width:78px !important;
     font-size:11px !important; height:28px !important; }
   /* [stated] «កន្លែងពណ៌ កុំឱ្យវាវែងពេក» ⇒ ឈ្នាប់ពណ៌តូចជាង */
-  #calcCard .cc-sw{ width:20px !important; height:20px !important;
-    min-width:20px !important; flex:0 0 auto !important; border-radius:5px !important; }
+  /* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «អក្សរជាន់គ្នា» ⇒ ហាមបង្រួមធាតុ
+     ( មើលក្បាល fix_wk3.py ) ៖ ការបង្រួមកាត់ប៊ូតុងមកត្រឹម min-width
+     ២៨px ហើយអក្សរហូរចេញក្រៅ ⇒ ជាន់គ្នា ។ */
+  #calcCard .cc-work .cc-bar > *, #calcCard .cc-work .cc-fmtbar > *{
+    flex:0 0 auto !important; }
+  /* ⭐ «រូប color វែង» ⇒ ការ៉េ ២៤px ។ ⚠ min-height ឈ្នះ height
+     ⇒ វាស់បាន ២០×៤០ ⇒ ត្រូវកំណត់ min-height និង max-height ផង ។ */
+  #calcCard .cc-sw{ width:24px !important; height:24px !important;
+    min-width:24px !important; min-height:24px !important;
+    max-height:24px !important; padding:0 !important;
+    flex:0 0 auto !important; border-radius:5px !important;
+    align-self:center !important; }
   #calcCard .cc-fmtlbl{ font-size:10.5px !important; flex:0 0 auto; }
   #calcCard .cc-wknote{ font-size:10.5px !important; margin:4px 0 6px !important; }
   #calcCard select, #calcCard input[type="text"], #calcCard input[type="number"]{
@@ -45751,15 +45798,11 @@ function renderTrackingView(){
   host.innerHTML = `
     ${minutesCard}
 
-    <div class="trk-card">
-      <h3>១. លិខិត និងកាលបរិច្ឆេទសំខាន់ៗ</h3>
-      <div class="table-wrap"><table class="ledger trk-tbl trk-stack">
-        <thead><tr>
-          <th style="text-align:left;">ឈ្មោះលិខិត</th><th>ថ្ងៃខែឆ្នាំលើលិខិត</th>
-          <th>ថ្ងៃខែឆ្នាំទទួលឯកសារ</th><th>ឈ្មោះអ្នកតំណាង</th>
-        </tr></thead><tbody>${lettersRows}</tbody>
-      </table></div>
-    </div>
+    <!-- [stated] ២០២៦-១១-១៤ ៖ «ប្តូរ ១. លិខិត និងកាលបរិច្ឆេទសំខាន់ៗ
+         ដាក់នៅក្រោមគេវិញ» ⇒ ប្លុកនេះផ្លាស់ទៅក្រោមផ្នែកទី ៤ ។
+         ⚠ លេខផ្នែកដើរតាមទីតាំង ⇒ ប្តូរ «១.» ជា «៥.» ( រន្ធទី ៥ ទំនេរ
+           តាំងពីផ្នែកមូលដ្ឋានកំណត់ពន្ធត្រូវដកចេញ ) ។ បើចង់ទុក «១.»
+           ដដែល គ្រាន់តែប្តូរលេខក្នុង h3 នេះវិញ ។ -->
 
     ${roundCards}
 
@@ -45771,6 +45814,16 @@ function renderTrackingView(){
           <!-- ស្លាកជួរឈរនៅក្រឡា ⇒ ប្លុកលើទូរស័ព្ទ -->
           <th>រយៈពេល (នាទី)</th><th>ទីកន្លែង</th><th class="trk-nowrap">បន្ទប់លេខ</th><th>ស្ថានភាព</th>
         </tr></thead><tbody>${meetRows}</tbody>
+      </table></div>
+    </div>
+
+    <div class="trk-card">
+      <h3>៥. លិខិត និងកាលបរិច្ឆេទសំខាន់ៗ</h3>
+      <div class="table-wrap"><table class="ledger trk-tbl trk-stack">
+        <thead><tr>
+          <th style="text-align:left;">ឈ្មោះលិខិត</th><th>ថ្ងៃខែឆ្នាំលើលិខិត</th>
+          <th>ថ្ងៃខែឆ្នាំទទួលឯកសារ</th><th>ឈ្មោះអ្នកតំណាង</th>
+        </tr></thead><tbody>${lettersRows}</tbody>
       </table></div>
     </div>
 
@@ -60279,7 +60332,9 @@ function paneRisk(){
     var any=false;
     yrs.forEach(function(y){ if(Math.round(+(D[y]||{})[valKey]||0)) any=true; });
     if(!any) return;
-    h.push('<tr class="cc-cutrow"><td style="padding-left:26px">☑ '+esc(label)+'</td>');
+    /* ⚠ ដូច `cutRow` ៖ «☑» ឆៅចេញជា emoji លើ iOS ⇒ U+FE0E + span */
+    h.push('<tr class="cc-cutrow"><td style="padding-left:26px">'+
+      '<span class="cc-cutmk">\u2611\uFE0E</span> '+esc(label)+'</td>');
     yrs.forEach(function(y){
       var v=Math.round(+(D[y]||{})[valKey]||0);
       if(!v){ h.push('<td class="n cc-calc">—</td>'); return; }
@@ -61049,7 +61104,7 @@ function paneOth(res){
               (CC.stampOver3M()?'ហួស ៣ ខែ ✓':'មិនទាន់ហួស ៣ ខែ')+'</div>'
             : '')+'</td>');
         h.push('<td class="cc-rate" rowspan="'+span+'">'+((vcat||t.id==='light')?'<span class="cc-note">តាមឆ្នាំ ↓</span>':(t.amt?'<span class="cc-note">ចំនួនផ្ទាល់</span>':
-          '<input class="cc-grid-in" data-tax="'+i+'" data-k="rate" value="'+(t.rate*100).toFixed(2)+'"> %'))+'</td>');
+          '<span class="cc-pct"><input class="cc-grid-in" data-tax="'+i+'" data-k="rate" value="'+(t.rate*100).toFixed(2)+'"> %</span>'))+'</td>');
       }
       h.push('<td style="white-space:nowrap">'+esc(r[1])+'</td>');
       yrs.forEach(function(y){
@@ -61077,9 +61132,9 @@ function paneOth(res){
                             : 'វាយមូលដ្ឋានការប្រាក់សរុបត្រង់នេះ ⇒ បំណុល · ខែ · អត្រា ត្រូវរំលង')+'"></td>');
         }else if(r[0]==="__rate"){
           var ov=(t.irate||{})[y];
-          h.push('<td class="n"><input class="cc-grid-in" data-tax="'+i+'" data-k="irate" data-y="'+y+'" value="'+
+          h.push('<td class="n"><span class="cc-pct"><input class="cc-grid-in" data-tax="'+i+'" data-k="irate" data-y="'+y+'" value="'+
             (CC.taxLoanRate(t,y)*100).toFixed(2)+'" title="'+(ov!=null&&ov!==""?"កែដោយដៃ":"យោងតាមតារាង")+'"'+
-            (ov!=null&&ov!==""?' style="color:var(--red)"':'')+'> %</td>');
+            (ov!=null&&ov!==""?' style="color:var(--red)"':'')+'> %</span></td>');
         }else if(r[0]==="__vsel"){
           var cur = (t.vsel||{})[y] || '';
           h.push('<td class="n"><select class="cc-grid-in" data-tax="'+i+'" data-k="vsel" data-y="'+y+'">'+
@@ -61093,15 +61148,15 @@ function paneOth(res){
             : '<span class="cc-note" style="margin:0">—</span>')+'</td>');
         }else if(r[0]==="__bfac"){
           var bf = (t.bfac||{})[y];
-          h.push('<td class="n"><input class="cc-grid-in" data-tax="'+i+'" data-k="bfac" data-y="'+y+'" value="'+
+          h.push('<td class="n"><span class="cc-pct"><input class="cc-grid-in" data-tax="'+i+'" data-k="bfac" data-y="'+y+'" value="'+
             (CC.baseFactor(t,y)*100).toFixed(2)+'" title="'+(bf!=null&&bf!==""?"កែដោយដៃ":"លំនាំដើម")+
             ' — មូលដ្ឋានត្រូវគុណនឹងភាគរយនេះមុនគុណនឹងអត្រា"'+
-            (bf!=null&&bf!==""?' style="color:var(--red)"':'')+'> %</td>');
+            (bf!=null&&bf!==""?' style="color:var(--red)"':'')+'> %</span></td>');
         }else if(r[0]==="__yrate"){
           var ovr = (t.yrate||{})[y];
-          h.push('<td class="n"><input class="cc-grid-in" data-tax="'+i+'" data-k="yrate" data-y="'+y+'" value="'+
+          h.push('<td class="n"><span class="cc-pct"><input class="cc-grid-in" data-tax="'+i+'" data-k="yrate" data-y="'+y+'" value="'+
             (CC.rateOf(t,y)*100).toFixed(2)+'" title="'+(ovr!=null&&ovr!==""?"កែដោយដៃ":"តាមច្បាប់")+'"'+
-            (ovr!=null&&ovr!==""?' style="color:var(--red)"':'')+'> %</td>');
+            (ovr!=null&&ovr!==""?' style="color:var(--red)"':'')+'> %</span></td>');
         }else if(r[0]==="__msel"){
           h.push('<td class="n"><input class="cc-grid-in" style="text-align:center" data-tax="'+i+'" data-k="msel" data-y="'+y+'" value="'+
             esc(t.msel[y]||"1-12")+'" title="ឧ. 1-12 ឬ 3,6,9"></td>');
