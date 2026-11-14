@@ -1903,11 +1903,22 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
   border:1px solid #d8d2bd; border-radius:8px; font-family:inherit; font-size:13px;}
 /* ⭐ [stated] ២០២៦-១១-១៤ ៖ «ទទួលនៅថ្ងៃ និងកំណត់ហេតុ ដាក់មកតែ ១ ជួរ» ។
    ⚠ វាលមាន `min-width:210px` ⇒ ពីរវាល = ៤២០px ឯប្រអប់ត្រឹម ៩២vw
-     ( ៣៥៩px លើ ៣៩០px ) ⇒ ត្រូវដោះ min-width ក្នុងជួរនេះ ទើបវាចែកគ្នាបាន ។ */
-.trk-ask-row{display:flex; gap:10px; align-items:flex-end;}
-.trk-ask-row > label{flex:1 1 0; min-width:0; margin-bottom:10px;}
+     ( ៣៥៩px លើ ៣៩០px ) ⇒ ត្រូវដោះ min-width ក្នុងជួរនេះ ទើបវាចែកគ្នាបាន ។
+   ⭐⭐ [stated] ២០២៦-១១-១៤ ( ជុំទី ២ ) ៖ «ប្រអប់វាជាន់គ្នា» ។
+   ⚠ វាស់បាន ៖ ចន្លោះពិតរវាងវាលទាំងពីរ = **១០px** ហើយវាមិនជាន់គ្នា
+     តាមធរណីមាត្រទេ ។ បញ្ហាគឺ**ការមើលឃើញ** ៖ វាលទាំងពីរមានផ្ទៃប្រផេះ
+     ដូចគ្នា គ្មានស៊ុម ⇒ ចន្លោះ ១០px មើលទៅដូចជាបន្ទះតែមួយ ។
+   ⇒ ដាក់ស៊ុមច្បាស់ ផ្ទៃស ចន្លោះ ១៤px និងស្លាកតូចជាងបន្តិច
+     ⇒ អានឃើញថាជា **ពីរវាលដាច់ពីគ្នា** ។ */
+.trk-ask-row{display:flex; gap:14px; align-items:flex-end;}
+.trk-ask-row > label{flex:1 1 0; min-width:0; margin-bottom:10px;
+  font-size:11.5px; color:#555;}
 .trk-ask-row input,.trk-ask-row select{
-  min-width:0 !important; width:100% !important; box-sizing:border-box;}
+  min-width:0 !important; width:100% !important; box-sizing:border-box;
+  background:#fff !important; border:1px solid #c9c2ab !important;
+  border-radius:8px !important; height:40px; margin-top:5px !important;
+  padding:6px 8px !important;}
+.trk-ask-row select{appearance:auto;}
 .trk-ask-b{display:flex; gap:8px; justify-content:flex-end; margin-top:14px;}
 .trk-ask-b button{padding:8px 18px; border-radius:9px; cursor:pointer; font-family:inherit; font-size:13px;}
 .trk-ask-cancel{border:1px solid #ccc; background:#f7f7f5;}
@@ -3055,6 +3066,120 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
 #calcCard .cc-drafttag{font-size:11px; font-weight:800; letter-spacing:.08em; color:var(--yellow);
   background:var(--yellow-bg); border:1px solid var(--accent); border-radius:6px; padding:2px 8px;}
 @media(max-width:640px){ #calcCard .cc-title{width:100%;} }
+
+/* ═══════════════════════════════════════════════════════════════════
+   ⭐⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «ជួយកែសម្រួលផ្នែកការគណនាពន្ធឡើងវិញ
+   ជួយរៀបចំឱ្យវាបានស្អាតផង · ផ្នែក draft អូសទៅស្តាំ មើលអត់ឃើញ ·
+   ផ្នែកពន្ធលើប្រាក់ចំណូល ដល់ អត្រាប្តូរប្រាក់ ផ្នែកខាងក្នុងកែឱ្យស្អាត» ។
+   ⚠⚠ ការវាស់លើ ៣៩០px ( មុនកែ ) ៖
+       របារសកម្មភាព `.cc-actions` ៖ ១៥ ធាតុ បែកជា **៧ បន្ទាត់** កម្ពស់ ២២៨px
+       របារផ្ទាំង `.cc-tabs`     ៖ ១០ ផ្ទាំង បែកជា **៥ បន្ទាត់** កម្ពស់ ២២៨px
+       ⇒ ៤៥៦px នៃរបារ មុនឃើញខ្លឹមសារសោះ ⇒ នោះហើយជាភាពរាយប៉ាយ ។
+   ⇒ រៀបជា **៤ បន្ទាត់ច្បាស់លាស់** ៖ បង្ហាញ · សកម្មភាព ៤ · STEP ៤+៤
+     ហើយផ្ទាំងទាំង ១០ ចូល **ជួរតែមួយអូសបាន** ។
+   ═══════════════════════════════════════════════════════════════════ */
+@media screen and (max-width: 760px){
+
+  /* ── ១ · របារសកម្មភាព ────────────────────────────────────────── */
+  #calcCard .cc-bar.cc-actions{
+    display:flex !important; flex-wrap:wrap !important;
+    gap:6px !important; align-items:center; margin:0 0 10px !important;
+  }
+  #calcCard .cc-actions > .cc-lbl{ flex:0 0 auto; font-size:12px !important; }
+  /* ⚠ ឱ្យ select ស្រូបទទឹងនៅសល់ទាំងអស់ ⇒ បន្ទាត់ទី ១ ពេញ
+     ⇒ ប៊ូតុងបន្ទាប់ **ត្រូវតែ**ចុះបន្ទាត់ថ្មី ( គ្មានវិធីដាក់ break ក្នុង flex
+       ដោយគ្មានធាតុរុំ ⇒ នេះជាផ្លូវតែមួយដោយ CSS សុទ្ធ ) ។ */
+  #calcCard .cc-actions > select[data-set="mode"]{
+    flex:1 1 calc(100% - 72px) !important; min-width:0 !important;
+    height:38px; font-size:12.5px !important;
+  }
+  /* ប៊ូតុងសកម្មភាព ៤ ៖ បន្ទាត់តែមួយ ( វាស់បាន ៖ ៣០៤px + ចន្លោះ ១៨ = ៣២២
+     ក្នុង ៣៥៤ ⇒ សម ) */
+  #calcCard .cc-actions > .btn:not(.cc-step){
+    flex:0 1 auto !important; white-space:nowrap;
+    font-size:11px !important; padding:0 8px !important;
+    height:34px !important; min-height:34px !important;
+  }
+  /* ⭐ សញ្ញាបំបែក ⇒ ក្លាយជា **ការចុះបន្ទាត់** ⇒ STEP ចាប់ផ្តើមជួរថ្មី */
+  #calcCard .cc-actions > .cc-sep{
+    flex:1 0 100% !important; width:100% !important; height:0 !important;
+    margin:0 !important; border:0 !important; background:none !important;
+  }
+  /* STEP1…STEP8 ៖ ៤ ក្នុងមួយបន្ទាត់ ⇒ ក្រឡាចត្រង្គស្មើគ្នា ២ បន្ទាត់ */
+  #calcCard .cc-actions > .btn.cc-step{
+    flex:0 0 calc(25% - 4.5px) !important; min-width:0 !important;
+    font-size:10.5px !important; padding:0 2px !important;
+    height:32px !important; min-height:32px !important; white-space:nowrap;
+  }
+
+  /* ── ២ · របារផ្ទាំង ៖ ១០ ផ្ទាំង ⇒ ជួរតែមួយ អូសបាន ──────────────── */
+  #calcCard .cc-tabs{
+    flex-wrap:nowrap !important; overflow-x:auto; overflow-y:hidden;
+    -webkit-overflow-scrolling:touch; scrollbar-width:none;
+    gap:2px !important; margin-bottom:10px !important;
+  }
+  #calcCard .cc-tabs::-webkit-scrollbar{ display:none; }
+  #calcCard .cc-tab{
+    flex:0 0 auto !important; white-space:nowrap;
+    font-size:12px !important; padding:8px 9px !important;
+  }
+
+  /* ── ៣ · តារាង ៖ សមទទឹង បើអាច · អូស បើពិតជាត្រូវការ ───────────── */
+  /* ⚠⚠ ច្បាប់សកល `table{min-width:760px}` ធ្វើឱ្យ **គ្រប់តារាង** ក្នុងកាត
+     នេះធំជាងអេក្រង់ជានិច្ច ⇒ ផ្នែក Draft និងតារាងដទៃ «អូសទៅស្តាំ មើល
+     អត់ឃើញ» ។ ⇒ ដោះ min-width ហើយឱ្យជួរឈរឈ្មោះរុំបាន ៖
+       ជួរឈរតិច ⇒ សមទាំងស្រុង ; ជួរឈរច្រើន ⇒ អូស តែតិចជាងមុនច្រើន ។ */
+  #calcCard table{
+    min-width:0 !important; width:100% !important; font-size:11.5px !important;
+    table-layout:auto;
+  }
+  #calcCard th, #calcCard td{ padding:5px 5px !important; }
+  #calcCard thead th{ font-size:11px !important; white-space:normal !important; }
+  /* ជួរឈរទី ១ ( ឈ្មោះធាតុ ) ៖ រុំបាន តែមិនត្រូវច្របាច់ទៅជាខ្សែស្តើង */
+  #calcCard tbody td:first-child, #calcCard thead th:first-child{
+    white-space:normal !important; overflow-wrap:anywhere; word-break:break-word;
+    min-width:104px !important;
+  }
+  #calcCard td.n{ white-space:nowrap !important; }
+  /* ប្រអប់រុំតារាង ៖ អូសបានក្នុងខ្លួនវា មិនមែនអូសទាំងទំព័រ */
+  #calcCard .table-wrap, #calcCard .cc-scroll{
+    max-width:100% !important; overflow-x:auto !important;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  /* ── ៤ · ខ្លឹមសារក្នុងផ្ទាំង ( ពន្ធលើប្រាក់ចំណូល … អត្រាប្តូរប្រាក់ ) ── */
+  #calcCard .cc-bar:not(.cc-actions){ gap:6px !important; margin:0 0 8px !important; }
+  #calcCard .cc-bar:not(.cc-actions) > .cc-lbl{ flex:1 0 100%; font-size:12px !important; }
+  #calcCard .cc-note, #calcCard .hint{ font-size:11.5px !important; line-height:1.6 !important; }
+  #calcCard .cc-work .cc-bar{ gap:5px !important; }
+  #calcCard .cc-wkbtn{ font-size:11px !important; padding:5px 8px !important; }
+  #calcCard select, #calcCard input[type="text"], #calcCard input[type="number"]{
+    max-width:100% !important; min-width:0 !important; box-sizing:border-box;
+  }
+  /* ⚠ ធាតុ flex ទាំងអស់ក្នុងកាត ៖ `min-width:auto` ជាលំនាំដើម ⇒ ហៀរ */
+  #calcCard .cc-bar > *{ min-width:0; max-width:100%; }
+  #calcCard{ overflow-x:hidden; }
+
+  /* ⚠⚠ វាស់បាន ៖ ផ្ទាំង «ច្បាប់យោង» មានតារាង `.ledger` ដែល **គ្មានប្រអប់
+     រុំ** ⇒ វាហៀរចេញក្រៅកាត ១៤២px ( រុញខ្លឹមសារចេញក្រៅអេក្រង់ ) ។
+     ⇒ ធ្វើឱ្យផ្ទាំងខ្លួនឯងជាប្រអប់រំកិល ⇒ តារាងណាដែលគ្មានប្រអប់រុំ
+       ក៏ត្រូវបានចាប់ទុកក្នុងកាតដែរ ⇒ លែងបំបែកប្លង់ ។ */
+  #calcCard .cc-pane{
+    max-width:100% !important; overflow-x:auto; -webkit-overflow-scrolling:touch;
+  }
+
+  /* ⭐⭐ តារាងធំពិតប្រាកដ ( ឧ. អត្រាប្តូរប្រាក់ ១២ ខែ ៖ វាស់បាន ៩៨៩px
+     ក្នុង ៣២៨px ) មិនអាចបង្រួមឱ្យសមបានទេ ⇒ វាត្រូវអូស ។
+     ⇒ បង្កកជួរឈរទី ១ ⇒ ពេលអូសទៅស្តាំ **ឈ្មោះធាតុនៅជាប់នឹងភ្នែក**
+       ⇒ ដឹងជានិច្ចថាលេខនោះជាលេខអ្វី ⇒ «ងាយមើល» ពិតប្រាកដ ។ */
+  #calcCard table tbody td:first-child{
+    position:sticky; left:0; z-index:1; background:#fff;
+  }
+  #calcCard tbody tr:nth-child(even) td:first-child{ background:#FBFAF6; }
+  #calcCard table thead th:first-child{
+    position:sticky; left:0; z-index:2; background:var(--primary);
+  }
+}
 #calcCard .cc-work .cc-bar{display:flex; flex-wrap:wrap; gap:6px; align-items:center;}
 #calcCard .cc-wkbtn{border:1px solid var(--line,#d8d2c2); background:var(--surface,#fff);
   color:var(--ink,#222); border-radius:8px; padding:5px 10px; cursor:pointer;
@@ -4529,8 +4654,11 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
       display:flex !important; flex-wrap:wrap; align-items:center;
       row-gap:6px; column-gap:0;
     }
+    /* ⭐ [stated] «ប្រអប់អាចទាញមកឆ្វេងបានទៀត» ⇒ ជួរឈរស្លាក ៤៨% → ៤៤%
+       ⇒ វាលបានទទឹងបន្ថែម ១៤px ។ ( ស្លាកវែងបំផុតត្រូវការ ១១៦px ·
+         ៤៤% នៃ ២៨២ = ១២៤ − ៨ padding = ១១៦ ⇒ នៅតែមិនរុំ ) */
     #toi-embed #coverPanel table.cv-grid tr > td{
-      width:auto !important; flex:0 0 48%; box-sizing:border-box;
+      width:auto !important; flex:0 0 46%; box-sizing:border-box;
       /* ⚠ ស្លាកមាន `white-space:nowrap` ជា inline style ⇒ វែងជាងក្រឡា
          ⇒ ហៀរជាន់ប្រអប់ ( វាស់បាន ៖ ត្រូវការ ១៣០px មានតែ ១០៧px )
          ⇒ អនុញ្ញាតឲ្យរុំ ⇒ ២ បន្ទាត់ តែអានគ្រប់ । */
@@ -4545,8 +4673,34 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
            ( ខ ) `text-align:right` ⇒ «៖» គ្រប់ស្លាកបញ្ចប់ត្រង់ **x ដូចគ្នា**
                  ទោះស្លាកវែងខ្លីខុសគ្នា ⇒ តម្រឹមពិតប្រាកដ ។ */
       white-space:nowrap !important; overflow-wrap:normal;
-      text-align:right !important; padding-right:8px !important;
+      text-align:left !important; padding-right:8px !important;
       font-size:12.5px !important; line-height:1.6; color:var(--toi-slate,#5B6478);
+    }
+    /* ⭐⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «អក្សរមុនសញ្ញាភ្នែកមាន់ តម្រៀបវានៅខាងឆ្វេង
+       សញ្ញាភ្នែកមាន់នោះរក្សានៅខាងស្តាំ» ។
+       ⚠ មុននេះខ្ញុំតម្រឹមក្រឡាទាំងមូលទៅស្តាំ ⇒ «៖» ត្រង់គ្នាមែន តែអត្ថបទ
+         ក៏រត់តាមទៅស្តាំដែរ ⇒ ដើមអក្សរមិនត្រង់គ្នា ។
+       ⚠ ស្លាកមានពីរ span រួចស្រាប់ ៖ អត្ថបទ + `.cv-cl` ( សញ្ញា ៖ )
+         ⇒ ធ្វើក្រឡាជា flex `space-between` ⇒ អត្ថបទជាប់គែមឆ្វេង ·
+           «៖» ជាប់គែមស្តាំ ⇒ **ត្រង់គ្នាទាំងសងខាង** ។ */
+    /* ⚠⚠ វាស់បាន ៖ ក្រឡាខ្លះមាន <select>/<input> ជា**កូនផ្ទាល់** ដោយគ្មាន
+       `.cf-wrap` ⇒ ច្បាប់ `:not(:has(.cf-wrap))` ចាប់វាជា**ស្លាក**
+       ⇒ វាទទួលទទឹង ៤៤% ⇒ វាលត្រឹម ១១០px ខណៈវាលដទៃ ១៥២px ។
+       ⇒ លើកលែងក្រឡាដែលមានឧបករណ៍បញ្ចូលជាកូនផ្ទាល់ចេញពីច្បាប់ស្លាក ។ */
+    /* ⚠ វាស់បាន ៖ វាលមិនមែនជា**កូនផ្ទាល់**របស់ក្រឡាទេ ( មានប្រអប់រុំគ្មាន
+       ឈ្មោះថ្នាក់នៅចន្លោះ ) ⇒ `:has(> input)` មិនផ្គូផ្គង ⇒ ត្រូវប្រើ
+       ទម្រង់ **កូនចៅ** `:has(input)` វិញ ។ */
+    #toi-embed #coverPanel table.cv-grid tr > td:not(:has(.cf-wrap)):not(:has(input)):not(:has(select)):not(:has(textarea)){
+      display:flex !important; align-items:center;
+      justify-content:space-between !important; gap:6px;
+    }
+    #toi-embed #coverPanel table.cv-grid tr > td .cv-cl{
+      flex:0 0 auto; margin-left:auto;
+    }
+    /* ក្រឡារួម ( Email ) ៖ ធ្វើដូចគ្នាក្នុងស្លាករបស់វា */
+    #toi-embed #coverPanel table.cv-grid td.cv-tight > .cv-mlbl{
+      display:flex !important; align-items:center;
+      justify-content:space-between !important; text-align:left !important; gap:6px;
     }
     /* ⚠ ជួរឈរវាល ៖ តម្រឹមឆ្វេងវិញ ( កុំឱ្យស្រូប text-align:right ពីក្រឡា ) */
     #toi-embed #coverPanel table.cv-grid tr > td:has(.cf-wrap){ text-align:left !important; }
@@ -4556,8 +4710,26 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
        ជាប់នឹងប្រអប់ណា ( កើតឡើងពិតក្នុងរូបថត ) ।
        ⇒ ប្រអប់យ៉ាងតិច ៥៥% នៃជួរ ⇒ គូទី២ មិនអាចសម ⇒
          **១ គូ ១ ជួរ** ជានិច្ច ⇒ ស្លាកនិងប្រអប់នៅជាប់គ្នាជានិច្ច । */
-    #toi-embed #coverPanel table.cv-grid tr > td:has(.cf-wrap){
-      flex:0 0 52%; min-width:0; padding-right:0 !important;
+    #toi-embed #coverPanel table.cv-grid tr > td:has(.cf-wrap),
+    #toi-embed #coverPanel table.cv-grid tr > td:has(input),
+    #toi-embed #coverPanel table.cv-grid tr > td:has(select),
+    #toi-embed #coverPanel table.cv-grid tr > td:has(textarea){
+      flex:0 0 54%; min-width:0; padding-right:0 !important;
+    }
+    /* ⭐⭐ [stated] «អក្សរក្នុងប្រអប់ត្រូវស្មើនឹងអក្សរខាងដើម · ទំហំប្រអប់
+       ដាក់វាស្មើគ្នា» ។
+       ⚠ វាស់បាន ៖ វាល **១៤px** ឯស្លាក ១២,៥px ; កម្ពស់ ៤០ និង ៤២px ;
+         ទទឹង ១២១ · ១៤១ · ១៤៧px ⇒ មិនស្មើគ្នាសោះ ។
+       ⇒ ចាក់ឱ្យដូចគ្នាទាំងអស់ ៖ អក្សរ ១២,៥px · ទទឹង ១០០% · កម្ពស់អប្បបរមា
+         ៣៦px ( textarea នៅពង្រីកតាមអត្ថបទវែងដដែល ) ។ */
+    #toi-embed #coverPanel table.cv-grid .field-input,
+    #toi-embed #coverPanel table.cv-grid .cf-edit,
+    #toi-embed #coverPanel table.cv-grid select,
+    #toi-embed #coverPanel table.cv-grid input{
+      font-size:12.5px !important; line-height:1.6 !important;
+      width:100% !important; max-width:100% !important; min-width:0 !important;
+      box-sizing:border-box !important; min-height:36px !important;
+      padding:6px 8px !important;
     }
     /* ⭐⭐ ក្រឡារួម ( Email ) ៖ ពេញទទឹងជួរ រួចបែងចែក ៤៨/៥២% ខាងក្នុង
        ⇒ ស្លាក «Email ៖» តម្រឹមត្រង់នឹង «៖» ជួរដទៃ ហើយវាលចាប់ផ្តើមត្រង់
@@ -4566,13 +4738,15 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
       flex:0 0 100% !important; display:flex !important; align-items:center;
       padding-right:0 !important; text-align:left !important;
     }
+    /* ⚠ ត្រូវតែដូចសមាមាត្រជួរដទៃ ( ៤៤/៥៦ ) ៖ វាស់បាន ពេលវានៅ ៤៨/៥២
+       គែម «៖» របស់ជួរ Email ឈរនៅ ១៧៥ ខណៈជួរដទៃនៅ ១៧០ ⇒ មិនត្រង់គ្នា ។ */
     #toi-embed #coverPanel table.cv-grid td.cv-tight > .cv-mlbl{
-      flex:0 0 48%; box-sizing:border-box; text-align:right !important;
+      flex:0 0 46%; box-sizing:border-box; text-align:left !important;
       padding-right:8px; white-space:nowrap; font-size:12.5px !important;
       line-height:1.6; color:var(--toi-slate,#5B6478);
     }
     #toi-embed #coverPanel table.cv-grid td.cv-tight > .cf-wrap{
-      flex:0 0 52% !important; min-width:0; width:auto !important;
+      flex:0 0 54% !important; min-width:0; width:auto !important;
       margin-bottom:0 !important;
     }
     /* ⚠ ស្លាក ១ បន្ទាត់ហើយ ⇒ តម្រឹមកណ្តាលបញ្ឈរ មិនមែនខាងលើ */
@@ -4715,9 +4889,35 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
          ~៣៤២px ⇒ ជួរឈរធំជាងកាត ១៨px ⇒ ហៀរចេញក្រៅ ។ */
     #toi-embed .risk-head{ gap:8px !important; }
     #toi-embed .risk-head .risk-head-t{ margin-right:0 !important; display:none !important; }
+    /* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «ផ្នែកព្រីនទម្រង់ ដល់ នាំចេញជា Excel
+       ជួយរៀបមកជាមួយជួរ» ។
+       ⚠ វាស់បានមុននេះ ៖ ១១២ + ១៤៦ + ១៤២ = ៤០០px + ចន្លោះ ⇒ លើសកាត ៣៥៤px
+         ⇒ បាក់ ២ ជួរ ។ ក្រោយដក «នាំចេញជា» និងបន្ថយអក្សរមក ១០,៥px ៖
+         ~១០២ + ១៣៣ + ៧៣ = ៣០៨ + ចន្លោះ ១៦ = ៣២៤px ⇒ សម ១ ជួរ ។ */
+    #toi-embed .risk-head{ flex-wrap:nowrap !important; }
     #toi-embed .risk-head .btn{
-      flex:0 1 auto; white-space:nowrap; font-size:11.5px !important;
-      padding:7px 9px !important; min-height:34px !important; }
+      flex:0 1 auto; white-space:nowrap; font-size:10.5px !important;
+      padding:6px 7px !important; min-height:32px !important; min-width:0; }
+    /* ⭐ [stated] «ជួយបន្ថយ font ឬធ្វើកុំឱ្យចុះបន្ទាត់ ព័ត៌មានទម្រង់
+       (សម្រាប់បង្កើតរបាយការណ៍)» */
+    /* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «ជួយកែទំហំអក្សរនៅផ្នែកនេះផង ឱ្យដូចផ្នែក
+       ខាងលើដែរ» ⇒ បញ្ជីហានិភ័យប្រើអក្សរធំជាងប្រអប់ព័ត៌មានទម្រង់ខាងលើ
+       ⇒ ដាក់ទាំងអស់មកកម្រិតតែមួយ ( ចំណងជើង ១២px · អត្ថបទ ១២,៥px ) ។ */
+    #toi-embed .risk-cat-title, #toi-embed .risk-cat-title-input{
+      font-size:12px !important; line-height:1.5 !important; }
+    #toi-embed .risk-conclusion-text,
+    #toi-embed .risk-conclusion-item,
+    #toi-embed .risk-conclusion-list{ font-size:12.5px !important; line-height:1.6 !important; }
+    #toi-embed .risk-cat-title .chk, #toi-embed .risk-cat-title input[type="checkbox"]{
+      width:18px !important; height:18px !important; flex:0 0 18px !important; }
+    #toi-embed .risk-meta-box .sub-h{
+      font-size:12px !important; line-height:1.5 !important; white-space:nowrap;
+      overflow:hidden; text-overflow:ellipsis; }
+    /* ⭐ [stated] «បន្ថយទំហំអក្សរ ម្ចាស់ភាគហ៊ុន / អ្នកចូលហ៊ុន
+       (% កាន់កាប់ចុងគ្រា) កុំឱ្យវាចុះបន្ទាត់» ⇒ ប៉ះគ្រប់ចំណងជើងរង
+       ក្នុងផ្ទាំង TOI ⇒ ចំណងជើងតារាងរំលស់ក៏លែងចុះបន្ទាត់ដែរ ។ */
+    #toi-embed .sub-h{ font-size:12px !important; line-height:1.5 !important; }
+    #toi-embed h2.panel-title{ font-size:13px !important; line-height:1.5 !important; }
     #toi-embed .info-grid{
       grid-template-columns:repeat(auto-fit,minmax(min(360px,100%),1fr)) !important;
       gap:4px 10px !important; }
@@ -39292,7 +39492,8 @@ function renderChangesPanel(){
 function renderAssetsPanel(){
   const yrs = visibleYears().filter(y=> state.assets.byYear[y]);
   const wrap = el('div',{class:'tbl-fit'});
-  wrap.appendChild(el('h2',{class:'panel-title'}, 'ការវិភាគទ្រព្យសកម្មរយៈពេលវែង & រំលស់ (ជំហានទី១០)'));
+  /* [stated] ២០២៦-១១-១៤ ៖ «លុបអក្សរ (ជំហានទី១០)» */
+  wrap.appendChild(el('h2',{class:'panel-title'}, 'ការវិភាគទ្រព្យសកម្មរយៈពេលវែង & រំលស់'));
   if(yrs.length===0){
     wrap.appendChild(el('p',{class:'panel-sub'}, 'គ្មានទិន្នន័យជំហានទី១០ ក្នុងឯកសារដែលបានផ្ទុកទេ។'));
     return wrap;
@@ -39337,7 +39538,8 @@ function renderAssetsPanel(){
   wrap.appendChild(buildMetricTable('ប្រភេទទ្រព្យសកម្ម','acquisitions'));
   wrap.appendChild(el('h3',{class:'sub-h'}, 'លក់ចេញ / ដកចេញក្នុងឆ្នាំ (Disposals)'));
   wrap.appendChild(buildMetricTable('ប្រភេទទ្រព្យសកម្ម','disposals'));
-  wrap.appendChild(el('h3',{class:'sub-h'}, 'រំលស់សម្រាប់ការិយបរិច្ឆេទ (Depreciation Expense)'));
+  /* [stated] ២០២៦-១១-១៤ ៖ «លុបអក្សរ (Depreciation Expense)» */
+  wrap.appendChild(el('h3',{class:'sub-h'}, 'រំលស់សម្រាប់ការិយបរិច្ឆេទ'));
   wrap.appendChild(buildMetricTable('ប្រភេទទ្រព្យសកម្ម','depreciation'));
   wrap.appendChild(el('h3',{class:'sub-h'}, 'តម្លៃនៅសល់ចុងគ្រា (Closing Net Book Value)'));
   wrap.appendChild(buildMetricTable('ប្រភេទទ្រព្យសកម្ម','closeNBV'));
@@ -40267,7 +40469,8 @@ function renderRiskAnalysisPanel(){
   printBtn.onclick = function(){ printRiskForms(); };
   const adminBtn = el('button',{class:'btn'}, '🖨️ ព្រីនទម្រង់រដ្ឋបាល (☑)');
   adminBtn.onclick = function(){ printRiskForms({admin:true}); };
-  const excelBtn = el('button',{class:'btn'}, '📊 នាំចេញជា Excel (☑)');
+  /* [stated] ២០២៦-១១-១៤ ៖ «លុបពី នាំចេញជា ចេញ ទុកតែ excel» */
+  const excelBtn = el('button',{class:'btn'}, '📊 Excel (☑)');
   excelBtn.onclick = exportRiskFormsExcel;
   head.appendChild(printBtn);
   head.appendChild(adminBtn);
@@ -45009,6 +45212,16 @@ function renderTrackingView(){
   };
   if(pick && trkState.activeMtg != null) pick.value = String(trkState.activeMtg);
   syncScope();
+  /* ⭐⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «ពេលចុចយល់ព្រម ឬបោះបង់ វាលោតទៅកំណត់ហេតុ
+     ដើម មិនស្ថិតនៅកន្លែងដែលចុចនោះ» ។
+     ⚠⚠ មូលហេតុពិត ( មិនមែនការរំកិលទេ ) ៖ ការគូរឡើងវិញស្តារ **តម្លៃប្រអប់
+       ជ្រើស** ពី `activeMtg` ត្រឹមត្រូវហើយ — តែវា **មិនបានគូរផ្ទាំង
+       កំណត់ហេតុឡើងវិញ**តាមតម្លៃនោះទេ ⇒ ផ្ទាំងនៅសល់កំណត់ហេតុ **លើកទី១**
+       ( អ្វីដែលគូរពេលសាងសង់ដំបូង ) ខណៈប្រអប់ជ្រើសបង្ហាញលើកទី២
+       ⇒ មើលទៅដូច «លោតទៅកំណត់ហេតុដើម» ។
+     ⇒ ហៅ `regen()` ភ្លាមក្រោយស្តារតម្លៃ ⇒ ផ្ទាំងកំណត់ហេតុ និងប្រអប់ជ្រើស
+       ត្រូវគ្នាជានិច្ច ⇒ ត្រឡប់មកកន្លែងដដែលដែលគេកំពុងធ្វើការ ។ */
+  try{ regen(); }catch(e){}
   const genBtn = document.getElementById('trkGen');
   if(genBtn) genBtn.onclick = ()=>{
     const i = Number(pick ? pick.value : 0);
