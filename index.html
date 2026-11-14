@@ -43,7 +43,7 @@
 })();
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SYSTEM · 14/11-B76</title>
+<title>SYSTEM · 14/11-B77</title>
 <!-- ដាក់លើអេក្រង់ដើមទូរស័ព្ទ ៖ រូបតំណាង ឈ្មោះ និងបើកពេញអេក្រង់
      manifest ដាក់ជា data URL ព្រោះ Apps Script បម្រើឯកសារតែមួយ។ -->
 <meta name="mobile-web-app-capable" content="yes">
@@ -777,6 +777,25 @@ tbody td.name-cell{text-align:left; white-space:normal;}
      ដោយ ellipsis ទេ ព្រោះលេខ អតប និងឈ្មោះត្រូវអានអោយគ្រប់។ */
 /* របាររំកិលផ្តេកខាងលើតារាងទម្រង់ដើម */
 .raw-topbar{ overflow-x:auto; overflow-y:hidden; height:14px; margin:0 0 2px; }
+/* ⭐ ឧបករណ៍ពង្រីក/បង្រួមទម្រង់ VAT — មើលក្បាល fix_vatzoom.py */
+/* ⭐ ក្រឡាដែលចុចមើលការគណនាបាន — មើលក្បាល fix_vatdrill.py */
+.mtr-form td[data-col="cDue"], .mtr-form td[data-col="cDiff"],
+.mtr-form td[data-col="c10Calc"], .mtr-form td[data-col="c10Diff"],
+.mtr-form td[data-col="cDueCalc"]{
+  cursor:pointer; text-decoration:underline dotted rgba(23,69,122,.45);
+  text-underline-offset:3px;
+}
+.mtr-form td[data-col="cDue"]:hover, .mtr-form td[data-col="cDiff"]:hover,
+.mtr-form td[data-col="c10Calc"]:hover, .mtr-form td[data-col="c10Diff"]:hover,
+.mtr-form td[data-col="cDueCalc"]:hover{ background:rgba(23,69,122,.07); }
+@media print{
+  .mtr-form td[data-col]{ text-decoration:none !important; cursor:auto !important; }
+}
+.vat-zoom{ display:inline-flex; align-items:center; gap:4px; margin-left:6px; }
+.vat-zoom > .btn{ padding:4px 9px; }
+.vat-zoom > #vatZoomLabel{ font-size:12px; min-width:40px; text-align:center; color:var(--muted,#6B6A63); }
+#vatZoomWrap{ overscroll-behavior-x:contain; }
+@media print{ .vat-zoom{ display:none !important; } #vatZoomWrap{ zoom:1 !important; } }
 .raw-topbar > div{ height:1px; }
 @media print{ .raw-topbar{ display:none !important; } }
 table.raw-tbl{ font-size:11px; }
@@ -30378,7 +30397,10 @@ function bindVATInspect(){
     if(!td) return;
     /* ជួរ អាករត្រូវបង់ / គំលាត ចុចបានគ្រប់ពេល ; ជួរដទៃនៅតែត្រូវការ
        របៀបពិនិត្យ ព្រោះក្រៅពីនោះវាជាក្រឡាកែតួលេខ។ */
-    const always = (td.dataset.col === 'cDue' || td.dataset.col === 'cDiff');
+    /* [stated] ២០២៦-១១-១៤ ៖ ជួរ «គណនាដោយយើង» ក៏ត្រូវចុចមើលការគណនាបាន
+       ដោយមិនបាច់បើករបៀបពិនិត្យ 🔍 ( មើលក្បាល fix_vatdrill.py ) */
+    const DRILL_ALWAYS = ['cDue', 'cDiff', 'c10Calc', 'c10Diff', 'cDueCalc'];
+    const always = DRILL_ALWAYS.indexOf(td.dataset.col) >= 0;
     if(!always && !vatInspectOn) return;
     const year = (td.closest('.mtr-form') || {}).dataset ? td.closest('.mtr-form').dataset.vatYear : vatPrintYear;
     showVATCellDetail(year || vatPrintYear, Number(td.dataset.m), td.dataset.col);
@@ -30400,6 +30422,13 @@ function renderVATPrintView(){
       ${printYearChecks('vat', years)}
       <button class="btn btn-plainico" id="btnVATInspect" title="ពិនិត្យប្រភពតួលេខ" aria-label="ពិនិត្យប្រភពតួលេខ">🔍</button>
       <select id="vatPrintYearSelect" class="btn btn-yearsel" title="ឆ្នាំដែលបង្ហាញលើអេក្រង់">${yearOptions}</select>
+      <!-- ⭐ ពង្រីក/បង្រួម — មើលក្បាល fix_vatzoom.py -->
+      <span class="vat-zoom no-print" title="ពង្រីក/បង្រួមតារាងសម្រាប់មើល — មិនប៉ះការព្រីនទេ">
+        <button class="btn" id="btnVatZoomOut" aria-label="បង្រួម">🔍−</button>
+        <span id="vatZoomLabel">100%</span>
+        <button class="btn" id="btnVatZoomIn" aria-label="ពង្រីក">🔍+</button>
+        <button class="btn" id="btnVatZoomReset" title="ត្រលប់ទៅទំហំស្វ័យប្រវត្តិ">↺</button>
+      </span>
     </div>`;
 
   resultMeta.style.display = '';
@@ -30419,14 +30448,67 @@ function renderVATPrintView(){
     return;
   }
 
-  resultBody.innerHTML = `<div id="vatPrintArea">${toolbar}${sheet}
+  resultBody.innerHTML = `<div id="vatPrintArea">${toolbar}<div id="vatZoomWrap">${sheet}</div>
     ${false && vatSrcHasFile() ? `<div class="vat-man-bar no-print"><label class="vm-lock">
         <input type="checkbox" id="vatManUnlock"${vatManUnlocked ? ' checked' : ''}> 🔓 ដោះសោដើម្បីវាយដោយដៃ</label></div>` : ''}
   </div>`;
   bindVATPrintToolbar();
 }
 
+/* ⭐⭐ ការពង្រីក/បង្រួមទម្រង់ VAT — មើលក្បាល fix_vatzoom.py */
+var VAT_ZOOM = null, VAT_ZOOM_AUTO = true;
+try{
+  var __vz = localStorage.getItem('vatZoomV1');
+  if(__vz === 'auto' || __vz === null){ VAT_ZOOM_AUTO = true; }
+  else if(+__vz > 0){ VAT_ZOOM = +__vz; VAT_ZOOM_AUTO = false; }
+}catch(e){}
+function vatApplyZoom(z){
+  var w = document.getElementById('vatZoomWrap');
+  var l = document.getElementById('vatZoomLabel');
+  if(!w) return;
+  z = Math.max(0.3, Math.min(1.8, Math.round(z * 100) / 100));
+  VAT_ZOOM = z;
+  w.style.zoom = String(z);
+  if(l) l.textContent = Math.round(z * 100) + '%';
+}
+function vatAutoFitZoom(){
+  var w = document.getElementById('vatZoomWrap');
+  if(!w) return;
+  w.style.zoom = '1';
+  var box = w.parentElement ? w.parentElement.clientWidth : 0;
+  var need = 0, ts = w.querySelectorAll('table'), i, x;
+  for(i = 0; i < ts.length; i++){ x = ts[i].scrollWidth || 0; if(x > need) need = x; }
+  if(!need || !box){ vatApplyZoom(1); return; }
+  /* −4px ៖ ស៊ុម និងចន្លោះ ⇒ កុំឱ្យសល់ ១px ហើយនៅតែអូស */
+  var z = (box - 4) / need;
+  if(z > 1) z = 1;
+  vatApplyZoom(z);
+}
+function vatZoomRestore(){
+  if(VAT_ZOOM_AUTO) vatAutoFitZoom();
+  else vatApplyZoom(VAT_ZOOM || 1);
+}
+function vatZoomStep(d){
+  VAT_ZOOM_AUTO = false;
+  var cur = VAT_ZOOM || 1;
+  vatApplyZoom(cur + d);
+  try{ localStorage.setItem('vatZoomV1', String(VAT_ZOOM)); }catch(e){}
+}
 function bindVATPrintToolbar(){
+  var zo = document.getElementById('btnVatZoomOut');
+  if(zo){
+    zo.onclick = function(){ vatZoomStep(-0.1); };
+    document.getElementById('btnVatZoomIn').onclick = function(){ vatZoomStep(0.1); };
+    document.getElementById('btnVatZoomReset').onclick = function(){
+      VAT_ZOOM_AUTO = true;
+      try{ localStorage.setItem('vatZoomV1', 'auto'); }catch(e){}
+      vatAutoFitZoom();
+    };
+    /* ⚠ រង់ចាំ ២ frame ៖ ទទឹងតារាងអានបានតែក្រោយប្លង់គណនារួច */
+    try{
+      requestAnimationFrame(function(){ requestAnimationFrame(vatZoomRestore); });
+    }catch(e){ setTimeout(vatZoomRestore, 60); }
+  }
   const sel = document.getElementById('vatPrintYearSelect');
   if(sel) sel.onchange = (e)=>{ vatPrintYear = e.target.value; renderVATPrintView(); };
   /* ប៊ូតុងព្រីនតែមួយ ៖ វាព្រីនឆ្នាំដែលបានធីក */
@@ -54809,7 +54891,10 @@ var byY=function(v){var o={};CC.state.years.forEach(function(y){o[y]=v||0;});ret
 /* vat = ជាប់អតប by default · cost = ឱ្យបន្ទុកចំណាយ by default */
 var FIND_TYPES=[
  {t:"លំអៀងផលប្រកាសប្រចាំខែ/ឆ្នាំ",vat:false,cost:false},
- {t:"លំអៀងទិន្នន័យនាំចេញ",vat:true,cost:true},
+ /* [stated] ២០២៦-១១-១៤ ៖ ការនាំចេញជាប់អាករ **អត្រា ០%** ⇒ លំនាំដើម
+    មិនធីក «ជាប់អតប» ( មើលក្បាល fix_expvat.py ) ។ បើករណីណាដែលសហគ្រាស
+    បញ្ជាក់ការនាំចេញមិនបាន សវនករធីកវិញដោយដៃ ⇒ គិត ១០% ដូចមុន ។ */
+ {t:"លំអៀងទិន្នន័យនាំចេញ",vat:false,cost:true},
  {t:"លំអៀងទិន្នន័យនាំចូល",vat:true,cost:true},
  {t:"លំអៀងទិន្នន័យប្រថាប់ត្រា, ដេញថ្លៃ",vat:true,cost:false},
  {t:"លំអៀងរបាយការណ៍ធនាគារ",vat:true,cost:false},
@@ -64934,7 +65019,7 @@ else CC.init();
      ការរក្សាទុកឥឡូវ **រាយលេខជំហាន** លើផ្ទាំង ហើយផ្អាកអោយផ្ទាំងគូររួច
      មុននឹងចាប់ការងារធ្ងន់នីមួយៗ។ សារចុងក្រោយដែលឃើញ = ជំហានដែលគាំង។
      លេខ build ក៏បង្ហាញផង ដើម្បីដឹងច្បាស់ថាកំពុងប្រើឯកសារណា។ */
-  var RSC_BUILD = '14/11 · B76';
+  var RSC_BUILD = '14/11 · B77';
   try{ window.__RSC_BUILD = RSC_BUILD; }catch(e){}
 
   /* ⚠⚠ [stated] ២០២៦-០៨-១៣ ៖ រូបថតបង្ហាញ **«Page Unresponsive» របស់ Chrome**
