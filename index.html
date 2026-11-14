@@ -642,6 +642,15 @@ body.view-mtr-active main{align-self:flex-start; min-height:0;}
     height:32px !important; min-height:32px !important; border-radius:7px !important; }
   .pi-wrap input[type="checkbox"]{ width:16px !important; height:16px !important; }
   .pi-wrap .pi-h{ font-size:12px !important; margin:10px 0 5px !important; }
+  /* ⭐ [stated] ២០២៦-១១-១៤ ៖ «ព័ត៌មានផ្ទាល់ខ្លួន រៀបទំហំអក្សរឱ្យស្មើគ្នា» ។
+     ⚠ វាលខ្លះនៅក្រៅ `.pi-wrap` ⇒ ច្បាប់សកល ១៦px ឈ្នះ ⇒ ធំជាងគេ ។
+     ⇒ គ្របលើផ្ទាំងទាំងមូល ⇒ វាល ១២,៥px · ស្លាក ១០,៥px ស្មើគ្នាទាំងអស់ ។ */
+  #view-personalinfo input:not([type="checkbox"]),
+  #view-personalinfo select, #view-personalinfo textarea{
+    font-size:12.5px !important; }
+  #view-personalinfo label{ font-size:10.5px !important; }
+  #view-personalinfo h3, #view-personalinfo h4, #view-personalinfo .pi-h{
+    font-size:12px !important; }
   .pi-wrap .pi-row{ gap:6px !important; margin-bottom:6px !important; }
   /* វាលផ្សេងៗ ៖ ១ ជួរឈរ ⇒ ២ ជួរឈរ ⇒ កម្ពស់ចុះជិតពាក់កណ្តាល */
   .pi-wrap .pi-g1{ gap:8px !important; }
@@ -1682,6 +1691,20 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
     box-sizing:border-box !important; height:42px !important; font-size:14px !important;
   }
   #view-tracking .trk-tbl.trk-stack td > textarea{ height:auto !important; min-height:46px; }
+  /* ⭐ [stated] ២០២៦-១១-១៤ ៖ «ប្រអប់ធីក ដាក់តូចជាងនេះ» ។
+     ⚠ ច្បាប់ `height:42px !important` សរសេរសម្រាប់វាលវាយ តែវាប៉ះ
+       ប្រអប់ធីកដែរ ⇒ ការ៉េយក្ស ⇒ បង្អត់វាជាក់លាក់ទីនេះ ។ */
+  #view-tracking .trk-grid > label > input[type="checkbox"],
+  #docs-modal .trk-grid > label > input[type="checkbox"]{
+    width:18px !important; height:18px !important;
+    min-width:18px !important; min-height:0 !important;
+    flex:0 0 auto !important; margin:0 !important; }
+  /* ⭐ [stated] «រូបខ្មៅដៃ លុបប្រអប់ចេញ» */
+  #view-tracking .trk-unlock-ic, #docs-modal .trk-unlock-ic{
+    border:0 !important; background:transparent !important; box-shadow:none !important;
+    padding:0 !important; width:30px !important; min-width:30px !important;
+    height:30px !important; min-height:30px !important; border-radius:50% !important;
+    display:inline-flex !important; align-items:center; justify-content:center; }
   #view-tracking .trk-tbl.trk-stack td > input[type="checkbox"]{
     width:24px !important; height:24px !important; justify-self:start;
     /* ⚠ បង្អត់ `margin:0 auto` របស់ច្បាប់កុំព្យូទ័រ ⇒ ប្លង់ទូរស័ព្ទនៅដដែល */
@@ -2645,10 +2668,10 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
      `transform` ត្រូវការតែ **ពេលព្រីន** ដើម្បីឱ្យការកាត់ទំព័រត្រឹមត្រូវ ;
      អេក្រង់គ្មានការកាត់ទំព័រ ⇒ `zoom` ល្អជាង ។ */
   #view-tracking .cv-cover-page .cv-sheet, #docs-modal .cv-cover-page .cv-sheet{
-    zoom:0.810; transform:none; width:auto;
-    min-height:calc((var(--rpt-ph, 252mm) - 16mm) / 0.810); }
+    zoom:var(--cv-sc, 0.824); transform:none; width:auto;
+    min-height:calc((var(--rpt-ph, 252mm) - var(--cv-gap, 2mm)) / var(--cv-sc, 0.824)); }
   #view-tracking .cv-cover-page .cv-in, #docs-modal .cv-cover-page .cv-in{
-    min-height:calc((var(--rpt-ph, 252mm) - 19mm) / 0.810); }
+    min-height:calc((var(--rpt-ph, 252mm) - var(--cv-gap2, 5mm)) / var(--cv-sc, 0.824)); }
   /* ⚠⚠ [stated] ២០២៦-១១-១៤ ៖ «លិខិតតាមដានឯកសារ … នៅបាត់ជើងតារាង» ។
      ⚠ វាស់បាន ( អេក្រង់ ) ៖ .cv-in = ២៥៤,៣mm តែ .cv-sheet = ២៤៦mm
        ⇒ ខាងក្នុងហៀរចេញក្រៅស៊ុម ⇒ បន្ទាត់បាតស៊ុមលែងឃើញ ។
@@ -5458,7 +5481,14 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
       min-width:18px !important; min-height:18px !important;
       max-width:18px !important; flex:0 0 auto !important; margin:0 auto;
     }
-    #toi-embed #coverPanel{ max-width:100% !important; overflow-x:hidden !important; }
+    /* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ ការអូសលោតៗ ⇒ ដកប្រអប់រំកិលជាន់គ្នា
+       ( មើលក្បាល fix_cvscroll.py ) ។ */
+    #toi-embed #coverPanel{
+      max-width:100% !important;
+      overflow-x:clip !important; overflow-y:visible !important; }
+    #toi-embed #coverPanel .table-wrap{
+      overflow-x:auto !important; overflow-y:hidden !important;
+      -webkit-overflow-scrolling:auto !important; }
   }
 
   /* ══════════════════════════════════════════════════════════════════
@@ -5594,8 +5624,13 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
       font-size:16px !important; }
     /* ⚠ ច្បាប់ (1,2,3) នៅបន្ទាត់ ~៥១១៧ ឈ្នះច្បាប់ខាងលើ ⇒ ត្រូវសរសេរ
        ច្បាប់ដដែលឡើងវិញទីនេះ ( មកក្រោយ ⇒ ឈ្នះ ) — តែលើទូរស័ព្ទ ។ */
+    /* [stated] ២០២៦-១១-១៤ ( ជុំទី ២ ) ៖ សងត្រឡប់ទៅទំហំតូច ហើយឱ្យ
+       **ស្មើនឹងក្បាលតារាង ១១px** ។ ⚠ ការលើកទៅ ១៦px ជាការកែ«ជារួម»
+       របស់ខ្ញុំ ដែលគេមិនបានស្នើ ⇒ វាលធំជាងក្បាល ហើយ Pcode ដាច់លេខ ។ */
+    #toi-embed table.de-fit-table thead th,
+    #toi-embed table.de-fit-table tbody td{ font-size:11px !important; }
     #toi-embed table.de-fit-table tbody td input{
-      font-size:16px !important; padding:2px 4px !important; }
+      font-size:11px !important; padding:1px 3px !important; }
     /* ⚠ ផ្ទាំងទាំងមូលមិនត្រូវលាតលើសអេក្រង់ ⇒ កាត់ការរំកិលផ្តេករបស់ទំព័រ */
     #toi-embed{ max-width:100% !important; overflow-x:hidden !important; }
   }
@@ -15101,9 +15136,24 @@ try{
      ផ្ទុយទៅវិញ ក្រុម rpt ប្រើ min-height + height:auto ⇒ វា **រីកបាន**
      ⇒ ត្រូវរក្សា ២៥២mm ជាសុវត្ថិភាព ។
    ⇒ ១០mm បន្ថែមនេះជាកន្លែងដែលតារាងសវនកម្មត្រូវការ ⇒ លែងធ្លាក់ទំព័រ ។ */
-window.__nrPageMm = 252;   /* [stated] ២០២៦-១១-១៤ ៖ ២៦២ ⇒ ២៥២ ( ទំព័រទ្វេលើ iOS ) */
+/* [stated] ២០២៦-១១-១៤ ( ជុំទី ២ ) ៖ ២៥២mm សម្រាប់ **ទូរស័ព្ទតែប៉ុណ្ណោះ** ។
+   លើ PC ត្រឡប់ទៅ ២៦២mm ដូចដើម — បើមិនដូច្នេះ ទំព័រខ្លីពេក ⇒ ចន្លោះ
+   ទទេធំនៅពីលើ footer ( មើលក្បាល fix_pcback.py ) ។ */
+window.__nrPageMm = (typeof RSC_MOBILE_PRINT !== 'undefined' && RSC_MOBILE_PRINT) ? 252 : 262;
 try{
   document.documentElement.style.setProperty('--nr-ph', window.__nrPageMm + 'mm');
+}catch(e){}
+/* ⭐⭐ [stated] ២០២៦-១១-១៤ ( ជុំទី ២ ) ៖ មាត្រដ្ឋានសន្លឹកមុខ ៖
+   PC រក្សាតម្លៃដើម ( 0.824 · រឹម 6/9mm ) ; ទូរស័ព្ទប្រើ 0.810 · 16/19mm
+   ដែលជាតម្លៃទាបបំផុតដែលរក្សា parity អេក្រង់⇄ព្រីន ( fix_cvsafe3.py ) ។
+   ⚠ កំណត់ត្រឹមតែម្តង ⇒ ច្បាប់ CSS តែមួយឈុតដើរត្រូវទាំងពីរឧបករណ៍ ។ */
+try{
+  if(typeof RSC_MOBILE_PRINT !== 'undefined' && RSC_MOBILE_PRINT){
+    var __r = document.documentElement;
+    __r.style.setProperty('--cv-sc',   '0.810');
+    __r.style.setProperty('--cv-gap',  '16mm');
+    __r.style.setProperty('--cv-gap2', '19mm');
+  }
 }catch(e){}
 /* [stated] ២០២៦-០៨-១៧ ៖ «ជួយកែសម្រួលផ្នែក Print តាមទូរស័ព្ទសម្រាប់ cover
    និង TOI ឱ្យដូចតាមកុំព្យូទ័រ» ។
@@ -45691,7 +45741,8 @@ function renderTrackingView(){
           open ? ' · នៅខ្វះ ' + kh(open) : ''}${na ? ' · មិនមាន ' + kh(na) : ''}</span>
       </h3>
       <div class="trk-hint" style="margin-bottom:10px;">${primary
-        ? 'ថ្ងៃស្នើសុំ = ថ្ងៃខែលើលិខិតជូនដំណឹង · ថ្ងៃទទួល = តាមជួរនីមួយៗខាងក្រោម'
+        /* [stated] ២០២៦-១១-១៤ ៖ លុបបន្ទាត់ពន្យល់នេះ */
+        ? ''
         : ''}</div>
       ${primary ? '' : `<div class="trk-grid" style="margin-bottom:10px; align-items:center;">
         <label>ប្រភេទសហគ្រាស
@@ -45704,7 +45755,8 @@ function renderTrackingView(){
         </label>
         <span class="trk-hint">${(!trkState.sector && trkGuessSector())
           ? 'ស្មានតាមសកម្មភាពអាជីវកម្មក្នុង COVER — ចុចជ្រើសដើម្បីបញ្ជាក់ ឬប្តូរ'
-          : 'បញ្ជីឯកសារប្តូរតាមប្រភេទដែលជ្រើស'}</span>
+          /* [stated] ២០២៦-១១-១៤ ៖ លុបបន្ទាត់ពន្យល់នេះ */
+          : ''}</span>
       </div>`}
       ${rd.items.length ? `<div class="table-wrap"><table class="ledger trk-tbl trk-stack">
         <thead><tr><th>ល.រ</th><th style="text-align:left;">បរិយាយឯកសារ</th>
@@ -46361,8 +46413,8 @@ function renderTypeFields(idx){
        វាលទទេចេញបន្ទាត់ដោយស្វ័យប្រវត្តិស្រាប់ ។ ប៉ុន្តែពេលមានអត្ថបទខ្លះ
        ហើយនៅចង់ទុកកន្លែងសរសេរបន្ថែម ⇒ ត្រូវមានកន្លែងធីកច្បាស់លាស់ ។ */
     + `<label class="trk-wide" style="display:flex; align-items:center; gap:6px; font-size:12.5px;">`
-    + `${chk('meetings.'+idx+'.handLines')} ទុកបន្ទាត់ទទេសម្រាប់សរសេរដៃ `
-    + `( ទោះវាលមានអត្ថបទក៏ដោយ )</label>`;
+    /* [stated] ២០២៦-១១-១៤ ៖ លុប «( ទោះវាលមានអត្ថបទក៏ដោយ )» */
+    + `${chk('meetings.'+idx+'.handLines')} ទុកបន្ទាត់ទទេសម្រាប់សរសេរដៃ</label>`;
 
   if(t === 1){
     html = topicSel + bodyBox + abnBox;
@@ -49499,8 +49551,10 @@ const WP_CSS = `
       /* [stated] ២០២៦-១១-១៤ ៖ ០,៨២៤ ⇒ ០,៧៩០ ( មើល fix_cvsafe2.py ) ៖
          សន្លឹកឃើញ ២៤៦mm ⇒ ២៤១,៩mm ⇒ ទុកចន្លោះ ១០,១mm នៅបាតទំព័រ
          ⇒ ផ្ទៃបោះពុម្ពពិតរបស់ iOS កាត់មិនដល់ស៊ុម ។ */
-      transform:scale(0.810) !important; transform-origin:top left !important;
-      width:calc(100% / 0.810) !important; }
+      /* [stated] ២០២៦-១១-១៤ ( ជុំទី ២ ) ៖ មាត្រដ្ឋានមកពីអថេរ ៖
+         PC = 0.824 ( ដូចដើម ) · ទូរស័ព្ទ = 0.810 ( កែសម្រាប់ iOS ) ។ */
+      transform:scale(var(--cv-sc, 0.824)) !important; transform-origin:top left !important;
+      width:calc(100% / var(--cv-sc, 0.824)) !important; }
     /* ប្រអប់សន្លឹក ៖ កម្ពស់ពិតតែមួយគត់ ⇒ transform មិនចូលប្លង់
        ⇒ ទំព័រមិនអាចហៀរបានឡើយ ។ */
     .cv-cover-page{
@@ -49542,8 +49596,10 @@ const WP_CSS = `
     /* ⚠ ២៤៦,១ ÷ ០,៨២៤ = ២៩៨,៧mm ⇒ ( ២៥២ − ៦ ) ÷ ០,៨២៤ ⇒ កម្ពស់ដែលឃើញ
        នៅដដែលបេះបិទនឹងមុនពេលកែ ។ */
     /* ⚠ −16mm ត្រូវទៅតាម ០,៧៩០ ៖ បើទុក −6mm សន្លឹកនឹងពេញ ២៤៦mm វិញ ។ */
-    .cv-cover-page .cv-sheet{ min-height:calc((var(--rpt-ph, 252mm) - 16mm) / 0.810) !important; }
-    .cv-cover-page .cv-in{ min-height:calc((var(--rpt-ph, 252mm) - 19mm) / 0.810) !important; }
+    .cv-cover-page .cv-sheet{
+      min-height:calc((var(--rpt-ph, 252mm) - var(--cv-gap, 2mm)) / var(--cv-sc, 0.824)) !important; }
+    .cv-cover-page .cv-in{
+      min-height:calc((var(--rpt-ph, 252mm) - var(--cv-gap2, 5mm)) / var(--cv-sc, 0.824)) !important; }
   }
   /* ⚠ zoom:0.82 នៅទីនេះបង្រួម**ស្ទួន**លើការបង្រួមរបស់ .cv-sheet ហើយវាជា
      ប្រភពដដែលនៃការកាត់ទំព័រខុស ⇒ ដកចេញ ។ */
@@ -52477,6 +52533,17 @@ var AR_CSS = `
   .ar-info td.eq{height:4.3em;}   /* [stated] ៣ ជួរ */
   .ar-info td.eq2{height:4.3em;}  /* [stated] ៣ ជួរ */
   .ar-info td.nw{white-space:nowrap;}
+  /* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «នៅផ្នែករបាយការណ៍សវនកម្ម ជួយ spacing
+     ដើម្បីឱ្យតារាងវានៅជិតនឹង footer កុំឱ្យជិតពេក នៅលើបន្ទាត់» ។
+     ⚠ វាស់បាន ៖ បាតតារាង ២១៣,៨mm · footer ២៥៤,៧mm ⇒ ចន្លោះ **៤០,៩mm**
+       ( កុំព្យូទ័រ ) និង ៣០,៩mm ( ទូរស័ព្ទ ) — ខុសគ្នា ព្រោះកម្ពស់ទំព័រ
+       ខុសគ្នា ( ២៦២ ធៀប ២៥២ ) ។
+     ⇒ កម្ពស់ថេរណាមួយ**មិនអាចត្រូវទាំងពីរ**បានឡើយ ⇒ ចងទៅនឹងអថេរ --nr-ph ៖
+       តារាងចាប់ផ្តើម ៨៧,៥mm · footer នៅ ( ទំព័រ − ៧,៣mm ) · ចង់បានចន្លោះ
+       ១០mm ⇒ កម្ពស់ = ទំព័រ − ១០៥mm ⇒ ចន្លោះ ១០,២mm ដូចគ្នាទាំងពីរ ។
+     ⚠ តារាងមានមាតិកា ១២៦mm ⇒ តូចជាងកម្ពស់ថ្មី ⇒ ជួរលាតចេញស្មើៗ
+       គ្មានការហៀរ ។ AR_CSS ប្រើរួមទាំងព្រីន និងអេក្រង់ ⇒ parity រក្សាបាន ។ */
+  .ar-info{ height:calc(var(--nr-ph, 252mm) - 105mm); }
   .ar-r{display:flex; align-items:flex-start; gap:6px; margin-bottom:3px;}
   .ar-r .ar-rk{flex:0 0 auto; white-space:nowrap;}
   .ar-r .ar-rv{flex:1 1 auto; min-width:0;}
@@ -54075,7 +54142,10 @@ const RPT_PH_KEY = (typeof RSC_MOBILE_PRINT !== 'undefined' && RSC_MOBILE_PRINT)
      ផ្ទៃបោះពុម្ព iOS ហើយសន្លឹកខ្លីនៅខ្លីដដែល ។ */
 /* ⚠ ត្រូវតែស្មើនឹង `window.__nrPageMm` ៖ ក្រុម rpt និងក្រុម nr បោះពុម្ព
    លើក្រដាសតែមួយ ⇒ ប្រអប់ត្រូវតែកម្ពស់តែមួយ បើមិនដូច្នេះទេ ក្រុមមួយហៀរ ។ */
-const RPT_PH_DEFAULT = 252;
+/* [stated] ២០២៦-១១-១៤ ( ជុំទី ៣ ) ៖ PC = ២៦២mm ( ផ្ទៃពិត ២៦៩ − ៧ )
+   · ទូរស័ព្ទ = ២៥២mm ។ មើលក្បាល fix_rptph.py ។ */
+const RPT_PH_DEFAULT =
+  (typeof RSC_MOBILE_PRINT !== 'undefined' && RSC_MOBILE_PRINT) ? 252 : 262;
 function applyRptPageMm(v){
   /* ⚠⚠ [stated] ២០២៦-០៨-២២ ៖ «តែវាប៉ះពាល់ដល់របាយការណ៍ផ្សេងទៀត ដូច
      បរិយាយកំណត់ពន្ធ · របាយការណ៍សវនកម្ម · របាយការណ៍សង្ខេប» ។
@@ -54124,12 +54194,14 @@ function applyRptPageMm(v){
                                               ⇒ មិនអាចហៀរ ⇒ ខ្ពស់បានសុវត្ថិភាព
          rpt ( ឯកសារដទៃ )                  = tgt        — សន្លឹក height:auto
                                               ⇒ រីកបាន ⇒ ត្រូវការរឹមសុវត្ថិភាព */
-    var tgt = ok ? n : 252;
+    var tgt = ok ? n : ((typeof RSC_MOBILE_PRINT !== 'undefined' && RSC_MOBILE_PRINT) ? 252 : 262);
     /* ⚠⚠ [stated] ២០២៦-១១-១៤ ៖ «បរិយាយ · សវនកម្ម · សង្ខេប នៅដាច់ footer» ។
        ការបូក ១០mm ខាងលើជាកំហុសរបស់ខ្ញុំ ៖ ខ្ញុំសន្មត់ថាសន្លឹកកម្ពស់ថេរ
        «មិនអាចហៀរ» ⇒ ខ្ពស់បានសុវត្ថិភាព ។ តាមពិតសន្លឹកកម្ពស់ថេរ **ក៏ហៀរដែរ**
        បើវាធំជាងផ្ទៃក្រដាស — វាគ្រាន់តែហៀរទាំងសន្លឹក ជំនួសហៀរតាមមាតិកា ។
        ⇒ ក្រុម nr ត្រូវស្មើនឹងក្រុម rpt បេះបិទ ។ */
+    /* ⚠ nr ត្រូវស្មើនឹង rpt បេះបិទ ៖ «+10» ជាកំហុសដែលបានសរុបរួចពីជុំមុន
+       ( វានឹងឱ្យ ២៧២mm លើ PC ⇒ លើសផ្ទៃក្រដាស ២៦៩mm ⇒ សន្លឹកទទេ ) ។ */
     var tgtNr = tgt;
     root.style.setProperty('--nr-ph',  tgtNr + 'mm');
     root.style.setProperty('--rpt-ph', tgt + 'mm');
@@ -54156,7 +54228,12 @@ function applyRptPageMm(v){
        តម្លៃចាស់ ( ២៤០ ) នឹងត្រឡប់មកវិញស្ងាត្រ । */
     /* ⚠ កន្លែងនេះរត់ក្រោយការកំណត់ដំបូង ⇒ បើភ្លេចប្តូរទីនេះ តម្លៃចាស់
        នឹងត្រឡប់មកវិញស្ងាត់ៗ ។ */
-    try{ window.__nrPageMm = 252; }catch(e){}
+    /* [stated] ២០២៦-១១-១៤ ( ជុំទី ២ ) ៖ ២៥២ សម្រាប់ **ទូរស័ព្ទតែប៉ុណ្ណោះ** ;
+       PC ត្រឡប់ទៅ ២៦២ ដូចដើម ( មើលក្បាល fix_pcback.py ) ។ */
+    try{ window.__nrPageMm =
+      (typeof RSC_MOBILE_PRINT !== 'undefined' && RSC_MOBILE_PRINT) ? 252 : 262; }catch(e){}
+    try{ if(!(typeof RSC_MOBILE_PRINT !== 'undefined' && RSC_MOBILE_PRINT))
+      root.style.setProperty('--nr-ph', '262mm'); }catch(e){}
   }
   /* គូរឡើងវិញ ៖ បរិយាយ · សវនកម្ម · សង្ខេប (បើផ្ទាំងនោះមានលើអេក្រង់) */
   /* ⚠ មុខងារទាំងនេះមិននៅលើ `window` ទេ (ប្លុកនេះជា IIFE) ⇒ ត្រូវហៅតាម
