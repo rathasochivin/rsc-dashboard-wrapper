@@ -3593,8 +3593,25 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     font-size:11px !important; padding:3px 6px !important; }
   #calcCard .cc-note, #calcCard .hint{ font-size:11.5px !important; line-height:1.6 !important; }
   #calcCard .cc-work .cc-bar{ gap:5px !important; }
-  #calcCard .cc-wkbtn{ font-size:10.5px !important; padding:4px 6px !important;
-    border:0 !important; background:transparent !important; }
+  /* ⭐ [stated] ២០២៦-១១-១៤ ៖ «សញ្ញាដាក់ជា center ហេតុអ្វីតូចជាងគេ» ⇒
+     រូបសញ្ញាធំស្មើអក្សរ ហើយចំកណ្តាលពិតដោយ flex ។ */
+  #calcCard .cc-wkbtn{ font-size:11.5px !important; padding:0 6px !important;
+    border:0 !important; background:transparent !important;
+    min-width:28px !important; height:28px !important; min-height:28px !important;
+    display:inline-flex !important; align-items:center; justify-content:center; }
+  /* ⇒ របារទាំងពីរ ៖ ជួរតែមួយ ( អូសបាន បើវែងហួស ) */
+  #calcCard .cc-work .cc-bar, #calcCard .cc-work .cc-fmtbar{
+    flex-wrap:nowrap !important; overflow-x:auto; scrollbar-width:none;
+    gap:3px !important; }
+  #calcCard .cc-work .cc-bar::-webkit-scrollbar,
+  #calcCard .cc-work .cc-fmtbar::-webkit-scrollbar{ display:none; }
+  #calcCard .cc-work .cc-bar > select{
+    flex:0 0 auto !important; width:78px !important; min-width:78px !important;
+    font-size:11px !important; height:28px !important; }
+  /* [stated] «កន្លែងពណ៌ កុំឱ្យវាវែងពេក» ⇒ ឈ្នាប់ពណ៌តូចជាង */
+  #calcCard .cc-sw{ width:20px !important; height:20px !important;
+    min-width:20px !important; flex:0 0 auto !important; border-radius:5px !important; }
+  #calcCard .cc-fmtlbl{ font-size:10.5px !important; flex:0 0 auto; }
   #calcCard .cc-wknote{ font-size:10.5px !important; margin:4px 0 6px !important; }
   #calcCard select, #calcCard input[type="text"], #calcCard input[type="number"]{
     max-width:100% !important; min-width:0 !important; box-sizing:border-box;
@@ -58433,6 +58450,20 @@ CC.render=function(){
   try{ CC.markAssessed(); }catch(e){}
   try{ CC.fxBindAsk(); }catch(e){}
   try{ CC.vatManBind(el); }catch(e){}
+  /* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «តារាងគណនានេះ ទាល់តែចុចលើវាទើបមើលឃើញស្អាត
+     ខ្ញុំចង់ឱ្យវាមើលឃើញស្អាតពេលចុចបើកតែម្តង» ។
+     ⚠ `workAutoFit()` ដើរតែក្នុង `workRefresh()` ( ពេលវាយ/ចុច ) ⇒ ការគូរ
+       លើកដំបូងមិនដែលវាស់ទទឹងជួរឈរ ⇒ ជួរឈរចង្អៀត អក្សរកាត់ ។
+     ⇒ ហៅវាក្រោយ innerHTML រួច ( rAF ពីរជាន់ ដើម្បីឱ្យប្លង់គណនារួចសិន ) ។ */
+  try{
+    var __wkHost = el.querySelector('.cc-work');
+    if(__wkHost && typeof workAutoFit === 'function'){
+      requestAnimationFrame(function(){
+        try{ workAutoFit(__wkHost); }catch(e){}
+        requestAnimationFrame(function(){ try{ workAutoFit(__wkHost); }catch(e){} });
+      });
+    }
+  }catch(e){}
 };
 function pane(id,inner){return '<div class="cc-pane'+(CC.state.tab===id?" on":"")+'" data-pane="'+id+'">'+inner+'</div>';}
 
@@ -58775,7 +58806,8 @@ function wkStatText(){
      ⚠ ត្រឡប់អក្សរទទេ ( មិនមែនលុបមុខងារ ) ⇒ ពេលជ្រើសក្រឡា ស្ថិតិ
        ( ចំនួនក្រឡា · សរុប · តូច/ធំបំផុត ) នៅបង្ហាញដដែល ។ */
   if(!st) return '';
-  var out = 'ជ្រើស ' + st.cells + ' ក្រឡា';
+  /* [stated] ២០២៦-១១-១៤ ៖ លុប «ជ្រើស 1 ក្រឡា» ⇒ ទុកតែស្ថិតិលេខ */
+  var out = '';
   if(st.nums){
     var f = function(n){
       var d = (String(Math.abs(n)).split('.')[1] || '').length;
@@ -59803,14 +59835,12 @@ function paneWork(){
   /* ⭐ [stated] ២០២៦-១១-០៣ ៖ លុបជួរដេក / ជួរឈរ ដែលបានជ្រើស */
   /* [stated] ២០២៦-១១-០៤ ៖ ប៊ូតុងលុបតែមួយ — វាដឹងឯងថាជាជួរដេក ឬជួរឈរ
      តាមអ្វីដែលជ្រើស ។ ហើយ «លុបទិន្នន័យ» ដកចេញ ព្រោះ Delete ធ្វើបានហើយ ។ */
-  h.push('<button class="cc-wkbtn" data-act="wkCutLine" title="លុបជួរដេក ឬជួរឈរដែលជ្រើស ( ចុចលេខជួរដេក ឬក្បាលជួរឈរជាមុន )">🗑 លុបជួរ</button>');
+  /* [stated] ២០២៦-១១-១៤ ៖ ប៊ូតុងទាំង ៣ នេះផ្លាស់ទៅរបារពណ៌ខាងក្រោម
+     ( មើលខាងក្រោម ) ⇒ របារទី ១ សល់តែ SHEET · RENAME · បញ្ចូលជួរ ។ */
   /* ⭐ [stated] ២០២៦-០៩-៣០ ៖ ប៊ូតុងសម្អាត ។
      ⚠ សម្អាតតែ **ក្រឡា** ប៉ុណ្ណោះ — សន្លឹក ឈ្មោះរបស់វា ចំនួនជួរដេក និង
        ជួរឈរ នៅដដែល ⇒ រចនាសម្ព័ន្ធដែលអ្នករៀបរួច មិនត្រូវបាត់ជាមួយទិន្នន័យ ។
      ⚠ សុំការបញ្ជាក់ជាមុន ព្រោះការសម្អាតត្រឡប់វិញមិនបាន ។ */
-  h.push('<button class="cc-wkbtn" data-act="wkClr" title="សម្អាតក្រឡាទាំងអស់ក្នុងសន្លឹកនេះ">🧹</button>');
-  h.push('<button class="cc-wkbtn" data-act="wkBrush" title="ទម្រង់ផាត់ ៖ ចុចក្រឡាដើម រួចចុចនេះ រួចចុច ឬអូសលើកន្លែងគោលដៅ"'
-    + ' style="' + (__wkBrush ? 'background:#0F3D3E;color:#fff;' : '') + '">🖌</button>');
   h.push('</div>');
   /* ⭐ [stated] ២០២៦-១១-០៣ ៖ របាររចនា — តម្រឹម · ដិត · ផាត់ពណ៌ ។
      ⚠ អនុវត្តលើ **ក្រឡាដែលជ្រើស** ៖ ចុចក្រឡាមួយ ⇒ ជ្រើសមួយ ;
@@ -59826,6 +59856,12 @@ function paneWork(){
   ['#FFF3B0','#D8F0D8','#D6E8FB','#FBD9D9','#EADCF8','#F0EDE2'].forEach(function(bg){
     h.push('<button class="cc-sw" data-act="wkBg" data-bg="' + bg + '" style="background:' + bg + '"></button>');
   });
+  /* [stated] ២០២៦-១១-១៤ ៖ «🗑 លុបជួរ · 🧹 · 🖌 ដាក់វាចូលជួរតែមួយជាមួយពណ៌
+     និងលុបពាក្យ លុបជួរចេញ ទុកតែរូប» ។ */
+  h.push('<button class="cc-wkbtn" data-act="wkCutLine" title="លុបជួរដេក ឬជួរឈរដែលជ្រើស ( ចុចលេខជួរដេក ឬក្បាលជួរឈរជាមុន )">🗑</button>');
+  h.push('<button class="cc-wkbtn" data-act="wkClr" title="សម្អាតក្រឡាទាំងអស់ក្នុងសន្លឹកនេះ">🧹</button>');
+  h.push('<button class="cc-wkbtn" data-act="wkBrush" title="ទម្រង់ផាត់ ៖ ចុចក្រឡាដើម រួចចុចនេះ រួចចុច ឬអូសលើកន្លែងគោលដៅ"'
+    + ' style="' + (__wkBrush ? 'background:#0F3D3E;color:#fff;' : '') + '">🖌</button>');
   /* ⭐ សញ្ញារូបិយវត្ថុ ⇒ ចុចម្តងដាក់ ចុចម្តងទៀតដក ( បិទ/បើក ) */
   h.push('<span style="width:1px;height:20px;background:#d8d2c2;"></span>');
   h.push('<button class="cc-wkbtn" data-act="wkN" data-n="khr"'
