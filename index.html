@@ -3331,8 +3331,11 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
   #calcCard .cc-scroll table input{
     font-size:12px !important; padding:4px 6px !important; min-height:0 !important;
   }
-  #calcCard .cc-scroll table th:first-child,
-  #calcCard .cc-scroll table td:first-child{ min-width:120px !important; }
+  /* តារាងដទៃ ( Draft · សង្ខេប … ) ៖ ជួរឈរទី ១ ទូលាយ ហើយតារាងពេញទទឹង */
+  #calcCard .cc-scroll table:not(.cc-findtbl) th:first-child,
+  #calcCard .cc-scroll table:not(.cc-findtbl) td:first-child{
+    min-width:132px !important; width:auto !important; max-width:none !important; }
+  #calcCard .cc-scroll > table:not(.cc-findtbl){ width:100% !important; }
   /* ── ៣ឆ · [stated] ២០២៦-១១-១៤ ៖ «ទំហំអក្សរនៅក្រោម DRAFT ពី សរុបប្រាក់
      ពន្ធនិងទោសទណ្ឌ រហូតដល់ក្រោម ជួយបន្ថយទំហំអក្សរ និងលេខក៏ដូចគ្នា» ។ */
   #calcCard .cc-pane table{ font-size:10.5px !important; }
@@ -3535,8 +3538,13 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
      ⚠ ជួរឈរទី ១ ទូលាយតាមទទឹងធម្មជាតិរបស់ប្រអប់ជ្រើស ⇒ ជួរឈរដទៃ
        ( ២០២៥ · ជាប់អតប · % ធាតុចូល · % បន្ថយ ) ត្រូវរុញចេញក្រៅអេក្រង់ ។
      ⇒ ចងទទឹងជួរទី ១ ⇒ ជួរឈរបញ្ចូលទាំងអស់ចូលមកក្នុងអេក្រង់ ។ */
-  #calcCard .cc-scroll table th:first-child,
-  #calcCard .cc-scroll table td:first-child{
+  /* ⚠⚠ កំហុសរបស់ខ្ញុំ ( ២០២៦-១១-១៤ ) ៖ ច្បាប់ទទឹង ១១៨px នេះត្រូវបានសរសេរ
+     សម្រាប់ **តារាងផលរកឃើញ** ( ដើម្បីងាយបញ្ចូល ) តែខ្ញុំដាក់វាលើ
+     `.cc-scroll table` ⇒ វាប៉ះ **គ្រប់តារាង** រួមទាំងតារាង Draft
+     ⇒ ជួរឈរទី ១ ចង្អៀត អក្សរបាក់ ២ បន្ទាត់ ហើយតារាងលែងពេញទទឹង ។
+     ⇒ ចងវាទៅ `.cc-findtbl` តែម្នាក់ឯង ។ */
+  #calcCard .cc-scroll table.cc-findtbl th:first-child,
+  #calcCard .cc-scroll table.cc-findtbl td:first-child{
     width:118px !important; min-width:118px !important; max-width:118px !important; }
   #calcCard .cc-scroll table select{
     width:100% !important; max-width:100% !important; min-width:0 !important;
@@ -60102,7 +60110,9 @@ function paneToi(res){
     /* [stated] ២០២៦-១១-១៤ ៖ លុបអក្សរពន្យល់រូបមន្ត ( មុខងារនៅដដែល ) */
     '<button class="btn ghost cc-addfind" data-act="addFind">+ បន្ថែមផលរកឃើញ</button>'+
     '</div>');
-  h.push('<div class="cc-scroll"><table><thead><tr><th style="min-width:230px">ប្រភេទផលរកឃើញ</th>');
+  /* [stated] ២០២៦-១១-១៤ ៖ ថ្នាក់ `cc-findtbl` ⇒ ច្បាប់ជួរឈរតូច ១១៨px
+     ប៉ះ **តែតារាងនេះ** មិនមែនគ្រប់តារាងទេ ។ */
+  h.push('<div class="cc-scroll"><table class="cc-findtbl"><thead><tr><th style="min-width:230px">ប្រភេទផលរកឃើញ</th>');
   yrs.forEach(function(y){h.push('<th class="n">'+y+'</th>');});
   h.push('<th>ជាប់អតប</th><th class="n" style="width:86px">% ធាតុចូល</th>'+
     '<th class="n" style="width:86px">% បន្ទុក</th>'+
