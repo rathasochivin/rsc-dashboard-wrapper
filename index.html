@@ -43,7 +43,7 @@
 })();
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SYSTEM · 14/11-B79</title>
+<title>SYSTEM · 14/11-B86</title>
 <!-- ដាក់លើអេក្រង់ដើមទូរស័ព្ទ ៖ រូបតំណាង ឈ្មោះ និងបើកពេញអេក្រង់
      manifest ដាក់ជា data URL ព្រោះ Apps Script បម្រើឯកសារតែមួយ។ -->
 <meta name="mobile-web-app-capable" content="yes">
@@ -792,6 +792,9 @@ tbody td.name-cell{text-align:left; white-space:normal;}
   .mtr-form td[data-col]{ text-decoration:none !important; cursor:auto !important; }
 }
 /* ⚠ រូបសុទ្ធ គ្មានប្រអប់ — មើលក្បាល fix_vatzoomui.py */
+/* ⭐ សញ្ញាសំណើសុំបង្វិលសង — មើលក្បាល fix_vatnote2.py */
+.vat-rfm{ font-size:11px; opacity:.85; cursor:help; margin-right:2px; }
+@media print{ .vat-rfm{ display:none !important; } }
 .vat-zoom{ display:inline-flex; align-items:center; gap:2px; margin-left:4px; }
 #mtr-embed #vatPrintArea .toolbar-row .vat-zoom > .btn.btn-plainico{
   background:transparent !important; border:0 !important; box-shadow:none !important;
@@ -28024,6 +28027,26 @@ function latePayNoteRows(year, taxNames){
    ⚠⚠ លំអៀង = បង្គត់(បានបង់) − បង្គត់(ត្រូវបង់) ⇒ បីបន្ទាត់ដកត្រូវគ្នា ។
    ⚠ ខែដដែលមានច្រើនជួរ ( យឺតយ៉ាវ + សវនកម្ម ) ⇒ បីបន្ទាត់ម្តង មូលហេតុភ្ជាប់គ្នា
      ហើយបន្ទាត់ផ្កាយមួយក្នុងមួយជួរ ។ */
+/* ⭐⭐ បន្ទាត់ «សំណើសុំបង្វិលសងជាសាច់ប្រាក់» សម្រាប់ប្លុកកំណត់សម្គាល់
+   នៃទម្រង់ VAT — មើលក្បាល fix_vatnote3.py ។
+   ⚠ ត្រឡប់តែ **បន្ទាត់** ( គ្មានស្រោម គ្មានចំណងជើង ) ⇒ បញ្ចូលចូលប្លុក
+     ដែលមានស្រាប់បាន ។ */
+function vatRefundNoteLines(year){
+  let rf = [];
+  try{ rf = getVATRefundByMonth(year) || []; }catch(e){ return ''; }
+  const esc = x => String(x == null ? '' : x)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const out = [];
+  for(let m = 1; m <= 12; m++){
+    const v = Math.round(Number(rf[m - 1]) || 0);
+    if(!v) continue;
+    out.push('<div class="mtr-late-li">* ខែ ' + m
+      + ' ៖ សហគ្រាសបានស្នើសុំបង្វិលសង ចំនួន '
+      + esc(v.toLocaleString('en-US'))
+      + ' ៛ ។ ឥណទាននេះមិនយោងទៅខែបន្តបន្ទាប់ទៀតទេ។</div>');
+  }
+  return out.join('');
+}
 function latePayNoteHtml(year, taxNames, showTaxName, figs){
   let list = [];
   try{ list = latePayNoteRows(year, taxNames); }catch(e){ return ''; }
@@ -29866,6 +29889,7 @@ function buildVATFormSheet(year, opts){
     if(typeof window.__vatRvcMonthly === 'function') rvcMonthly = window.__vatRvcMonthly(year) || [];
   }catch(e){ rvcMonthly = []; }
   const cfIn0 = getVATCreditBroughtForward(year) || 0;
+  const refundsRow = getVATRefundByMonth(year) || [];
   rows.forEach((r, i)=>{
     r.c10 = creditByMonth[i];
     r.c10Calc = creditCalc[i];
@@ -29876,7 +29900,12 @@ function buildVATFormSheet(year, opts){
          នោះរត់ទៅសន្លឹក MTR តាមច្បាប់ដែលអ្នកកំណត់ ។ ទីនេះគ្រាន់តែឱ្យឃើញ
          ក្បែរតួលេខដទៃ ដើម្បីផ្ទៀងផ្ទាត់ ។ */
     r.cRvc = (rvcMonthly && +rvcMonthly[i]) || 0;
-    r.c10Diff = (declaredCredit && declaredCredit[i]) ? (r.c10 - r.c10Calc) : 0;
+    /* ⭐ ខែដែលមានសំណើសុំបង្វិលសងជាសាច់ប្រាក់ — មើលក្បាល fix_vatnote2.py */
+    r.cRefund = (refundsRow && +refundsRow[i]) || 0;
+    /* ⚠ ខែដែលស្នើសុំបង្វិលសង ⇒ គម្លាតពេលវេលាប៉ុណ្ណោះ ⇒ ០
+       ( មើលក្បាល fix_vatnote5.py ) */
+    r.c10Diff = (r.cRefund) ? 0
+              : ((declaredCredit && declaredCredit[i]) ? (r.c10 - r.c10Calc) : 0);
     const inCalc = (i === 0) ? cfIn0 : (creditCalc[i-1] || 0);
     const netCalc = (r.c4 || 0) - (r.c9 || 0) - inCalc;
     r.cDueCalc = netCalc > 0 ? netCalc : 0;
@@ -30012,8 +30041,12 @@ function buildVATFormSheet(year, opts){
           if(b === 0) return true;
           return (v / b) > 0.01;
         };
+        /* [stated] ២០២៦-១១-១៤ ៖ ខែដែលមានសំណើសុំបង្វិលសង ⇒ គំលាតឥណទាន
+           ជារឿងធម្មតា ( សហគ្រាសមិនបានយោងវាទៅប្រើខែបន្ទាប់ទេ )
+           ⇒ មិនបន្លិចក្រហម ( មើលក្បាល fix_vatnote4.py ) ។
+           ⚠ តួលេខនៅដដែល ; សញ្ញា 📌 និងកំណត់សម្គាល់នៅបន្តពន្យល់មូលហេតុ ។ */
         const bad = (c.key === 'cDiff')   ? over1(r.cDiff,   r.cDue)
-                  : (c.key === 'c10Diff') ? over1(r.c10Diff, r.c10Calc || r.c10)
+                  : (c.key === 'c10Diff') ? (!r.cRefund && over1(r.c10Diff, r.c10Calc || r.c10))
                   : false;
         /* ជួរពីរនេះចុចបានជានិច្ច ដើម្បីបង្ហាញការគណនា — មិនចាំបាច់បើក
            របៀប «ពិនិត្យប្រភពតួលេខ» ជាមុនទេ ព្រោះវាជាជួរត្រួតពិនិត្យ។ */
@@ -30037,9 +30070,16 @@ function buildVATFormSheet(year, opts){
             value="${mv ? Number(mv).toLocaleString('en-US') : ''}"
             placeholder="${r[c.key] ? Number(r[c.key]).toLocaleString('en-US') : '0'}"></td>`;
         }
+        /* ⭐ សញ្ញា 📌 នៅខែដែលមានសំណើសុំបង្វិលសង ( fix_vatnote2.py ) */
+        const rfTip = (c.key === 'c10Calc' && r.cRefund)
+          ? `ខែ ${i+1} ៖ សហគ្រាសបានស្នើសុំបង្វិលសង `
+            + `${Math.round(r.cRefund).toLocaleString('en-US')} ៛ ( ផ្ទាំង VATCR ) `
+            + `⇒ ឥណទាននោះមិនយោងទៅមុខទៀតទេ`
+          : '';
+        const rfMark = rfTip ? `<span class="vat-rfm" title="${esc(rfTip)}">📌</span> ` : '';
         return `<td class="mtr-num vat-calc${bad ? ' vat-diff' : ''}${drill ? ' vat-why' : ''}"${
-          drill ? ` data-col="${c.key}" data-m="${i+1}" title="ចុចដើម្បីមើលការគណនា"` : ''
-        }>${dash(r[c.key])}</td>`;
+          drill ? ` data-col="${c.key}" data-m="${i+1}" title="${esc(rfTip || 'ចុចដើម្បីមើលការគណនា')}"` : ''
+        }>${rfMark}${dash(r[c.key])}</td>`;
       }).join('')}
     </tr>`).join('');
 
@@ -30084,10 +30124,19 @@ function buildVATFormSheet(year, opts){
     </table>
     <div class="mtr-form-foot">
       <div class="mtr-foot-row">
-        <div class="mtr-foot-left">${latePayNoteHtml(year, ['អាករលើតម្លៃបន្ថែម'], false, (m)=>{
-          const rr = rows[m - 1];
-          return rr ? { paid: rr.c12 || 0, due: rr.cDue || 0, diff: rr.cDiff || 0 } : null;
-        })}</div>
+        <div class="mtr-foot-left">${(function(){
+          /* ⭐ បញ្ចូលបន្ទាត់សំណើសុំបង្វិលសងចូលប្លុកកំណត់សម្គាល់ដដែល
+             ( មើលក្បាល fix_vatnote3.py ) */
+          const lpn = latePayNoteHtml(year, ['អាករលើតម្លៃបន្ថែម'], false, (m)=>{
+            const rr = rows[m - 1];
+            return rr ? { paid: rr.c12 || 0, due: rr.cDue || 0, diff: rr.cDiff || 0 } : null;
+          });
+          const rfn = vatRefundNoteLines(year);
+          if(!rfn) return lpn;
+          if(lpn) return lpn.replace(/<\/div>\s*$/, rfn + '</div>');
+          return '<div class="mtr-late-note"><div class="mtr-late-h">កំណត់សម្គាល់ ៖</div>'
+               + rfn + '</div>';
+        })()}</div>
         <div class="mtr-foot-right">
           ${mtrFormDateLine(mtrFormOverride.docDate)}
           <div class="mtr-signs">
@@ -30151,7 +30200,7 @@ function vatCellDetail(year, month, col){
     return t;
   };
 
-  let formula = '', total = 0;
+  let formula = '', total = 0, note = '';
 
   switch(col){
     case 'c1': {
@@ -30268,11 +30317,29 @@ function vatCellDetail(year, month, col){
       total = d.due; break;
     }
     case 'c10Calc': {
-      formula = 'ឥណទានដែលយើងគណនាដោយឯករាជ្យ ៖ សមតុល្យខែមុន + ជួរ ៩ (អាករលើធាតុចូល)'
-              + ' − ជួរ ៤ (អាករលើធាតុចេញ) − ការសងជាសាច់ប្រាក់  ·  មិនអើពើលេខដែលសហគ្រាសប្រកាស';
+      /* ⭐ បំបែកតាមរូបមន្តពិតក្នុង computeVATCreditChain — fix_c10parts.py */
+      formula = 'សមតុល្យឥណទានចុងខែមុន + ជួរ ៩ (អាករលើធាតុចូល) − ជួរ ៤ (អាករលើធាតុចេញ)'
+              + ' − ការបង្វិលសង  ·  អវិជ្ជមាន ⇒ ០  ·  មិនអើពើលេខដែលសហគ្រាសប្រកាស';
       const dc = vatDueParts(year, month);
-      parts.push({label:'ឥណទានតាមការគណនា ចុងខែនេះ', value:(dc.r.c10Calc || 0)});
-      parts.push({label:'ឥណទានតាមលិខិតប្រកាស (ជួរ ១០)', value:(dc.r.c10 || 0)});
+      let rfC = 0;
+      try{ rfC = (getVATRefundByMonth(year) || [])[month - 1] || 0; }catch(e){}
+      const inC = dc.inCalc || 0;
+      const c9C = dc.r.c9 || 0, c4C = dc.r.c4 || 0;
+      const afterIO = inC + c9C - c4C;
+      parts.push({label:(month === 1 ? 'ឥណទានយោងពីឆ្នាំមុន'
+                                     : 'សមតុល្យឥណទាន ចុងខែមុន (តាមការគណនា)'), value:inC});
+      parts.push({label:'បូក ជួរ ៩ អាករលើធាតុចូល', value:c9C});
+      parts.push({label:'ដក ជួរ ៤ អាករលើធាតុចេញ', value:-c4C});
+      parts.push({label:'= សមតុល្យ មុនការបង្វិលសង', value:afterIO});
+      if(afterIO < 0)
+        parts.push({label:'អវិជ្ជមាន ⇒ ត្រូវបង់ក្នុងខែនេះ ហើយឥណទានត្រឡប់ជា ០', value:0});
+      if(rfC){
+        parts.push({label:'ដក ការបង្វិលសង ( ពីផ្ទាំង VATCR )', value:-rfC});
+        if(Math.max(0, afterIO) - rfC < 0)
+          parts.push({label:'អវិជ្ជមាន ⇒ ឥណទានត្រឡប់ជា ០', value:0});
+      }
+      parts.push({label:'= ឥណទានតាមការគណនា ចុងខែនេះ', value:(dc.r.c10Calc || 0)});
+      parts.push({label:'( ប្រៀបធៀប ) ឥណទានតាមលិខិតប្រកាស ជួរ ១០', value:(dc.r.c10 || 0)});
       total = dc.r.c10Calc || 0; break;
     }
     case 'c10Diff': {
@@ -30280,6 +30347,10 @@ function vatCellDetail(year, month, col){
       formula = 'ឥណទានប្រកាស − ឥណទានគណនា  ·  ០ = ត្រូវគ្នា ; អវិជ្ជមាន = សហគ្រាសប្រកាសតិចជាង';
       parts.push({label:'ឥណទានតាមលិខិតប្រកាស', value:(dd.r.c10 || 0)});
       parts.push({label:'ដក ឥណទានតាមការគណនា', value:-(dd.r.c10Calc || 0)});
+      /* ⚠ ខែដែលស្នើសុំបង្វិលសង ៖ គម្លាតពេលវេលាប៉ុណ្ណោះ — មើល fix_vatnote6.py */
+      if(dd.r.cRefund){
+        parts.push({label:'ដោយសារខែនេះមានសំណើសុំបង្វិលសង ⇒ គម្លាតពេលវេលា មិនរាប់ជាគម្លាត', value:0});
+      }
       total = (dd.r.c10Diff || 0); break;
     }
     case 'cDueCalc': {
@@ -30307,7 +30378,19 @@ function vatCellDetail(year, month, col){
     cDueCalc:'អាករត្រូវបង់ (គណនាដោយយើង)',
     c5:'ការទិញក្នុងស្រុក', c6:'ការនាំចូល', c8:'ការទិញអាករជាបន្ទុករដ្ឋ',
     c10:'ឥណទានអាករ', c11:'ការទិញមិនជាប់អាករ', c12:'អាករបានបង់' };
-  return { title: TITLES[col] || col, formula, parts, docs, total };
+  /* ⭐ [stated] ២០២៦-១១-១៤ ៖ ប្រាប់ឱ្យដឹងថាខែនេះមានសំណើសុំបង្វិលសង
+     ( មើលក្បាល fix_vatnote.py ) */
+  if(!note && (col === 'c10Calc' || col === 'c10Diff' || col === 'cDueCalc')){
+    let rfN = 0;
+    try{ rfN = (getVATRefundByMonth(year) || [])[Number(month) - 1] || 0; }catch(e){}
+    if(rfN){
+      note = '📌 ខែ ' + month + ' ៖ សហគ្រាសបានស្នើសុំបង្វិលសង ចំនួន '
+           + Math.round(rfN).toLocaleString('en-US') + ' ៛ ( ប្រភព ៖ ផ្ទាំង VATCR ) ។ '
+           + 'ឥណទានដែលបានស្នើសុំសងរួច មិនអាចយោងទៅខែបន្តបន្ទាប់ម្តងទៀតបានទេ '
+           + '⇒ ការគណនារបស់យើងដកវាចេញ ឯលិខិតប្រកាសនៅតែយោងទៅមុខ ⇒ នេះជាប្រភពនៃគំលាត។';
+    }
+  }
+  return { title: TITLES[col] || col, formula, parts, docs, total, note };
 }
 
 /* ការគណនា «អាករត្រូវបង់» សម្រាប់ខែមួយ — ប្រើផ្លូវដដែលនឹងតារាង ដូច្នេះ
@@ -30332,7 +30415,14 @@ function vatDueParts(year, month){
   const inCalc = (i === 0) ? (getVATCreditBroughtForward(year) || 0) : (chainCalc[i-1] || 0);
   const netCalc = (r.c4 || 0) - (r.c9 || 0) - inCalc;
   r.c10Calc  = chainCalc[i] || 0;
-  r.c10Diff  = (dec && dec[i]) ? ((chain[i] || 0) - r.c10Calc) : 0;
+  /* ⚠ ជួរ ១០ ( តាមលេខប្រកាស ) ៖ ត្រូវកំណត់ត្រង់នេះដែរ បើមិនដូច្នេះ
+     ប្រអប់ពន្យល់អាន `r.c10` ជា undefined ⇒ បង្ហាញ ០ ខុស ( fix_c10decl.py ) */
+  r.c10      = chain[i] || 0;
+  /* ⚠ ដូចតារាងបេះបិទ ៖ ខែដែលស្នើសុំបង្វិលសង ⇒ គម្លាត ០ ( fix_vatnote5.py ) */
+  let rfD = 0;
+  try{ rfD = (getVATRefundByMonth(year) || [])[i] || 0; }catch(e){}
+  r.cRefund  = rfD;
+  r.c10Diff  = rfD ? 0 : ((dec && dec[i]) ? ((chain[i] || 0) - r.c10Calc) : 0);
   r.cDueCalc = netCalc > 0 ? netCalc : 0;
   return { r, rows, creditIn, net, due, paid: (r.c12 || 0), diff: (r.c12 || 0) - due,
            carry: net < 0 ? -net : 0,
@@ -30348,12 +30438,20 @@ function showVATCellDetail(year, month, col){
   w.id = 'vatDrill';
   w.style.cssText = 'position:fixed; inset:0; background:rgba(20,26,23,.45); display:flex; align-items:center;'
     + ' justify-content:center; z-index:9999; padding:20px;';
-  const rows = d.docs.slice(0, 500);
+  /* [stated] ២០២៦-១១-១៤ ៖ ទឹកប្រាក់ខ្ពស់នៅលើ — មើលក្បាល fix_drillsort.py */
+  const rows = d.docs.slice()
+    .sort(function(a, b){ return (Number(b.value) || 0) - (Number(a.value) || 0); })
+    .slice(0, 500);
   w.innerHTML =
     '<div style="background:#fbfaf6; border-radius:12px; max-width:min(940px,100%); width:100%;'
     + ' max-height:88vh; overflow:auto; padding:18px 20px; box-shadow:0 18px 50px rgba(0,0,0,.3);">'
     + '<h3 style="margin:0 0 4px; font-size:16px;">' + esc(d.title) + ' — ខែ ' + month + ' ឆ្នាំ ' + esc(year) + '</h3>'
     + '<p style="margin:0 0 12px; font-size:12.5px; color:#6b6a63;">' + esc(d.formula) + '</p>'
+    + (d.note
+        ? '<div style="margin:0 0 14px; padding:10px 12px; border-radius:8px;'
+          + ' background:#FBF3D9; border:1px solid #E6D9A8; color:#5B4A12;'
+          + ' font-size:12.5px; line-height:1.75;">' + esc(d.note) + '</div>'
+        : '')
     + '<table class="ledger" style="width:100%; margin-bottom:14px;"><tbody>'
     + d.parts.map(p=>'<tr><td style="text-align:left;">' + esc(p.label) + '</td>'
         + '<td style="text-align:right; white-space:nowrap;">' + (p.value==null?'—':num(p.value)) + '</td></tr>').join('')
@@ -65047,7 +65145,7 @@ else CC.init();
      ការរក្សាទុកឥឡូវ **រាយលេខជំហាន** លើផ្ទាំង ហើយផ្អាកអោយផ្ទាំងគូររួច
      មុននឹងចាប់ការងារធ្ងន់នីមួយៗ។ សារចុងក្រោយដែលឃើញ = ជំហានដែលគាំង។
      លេខ build ក៏បង្ហាញផង ដើម្បីដឹងច្បាស់ថាកំពុងប្រើឯកសារណា។ */
-  var RSC_BUILD = '14/11 · B79';
+  var RSC_BUILD = '14/11 · B86';
   try{ window.__RSC_BUILD = RSC_BUILD; }catch(e){}
 
   /* ⚠⚠ [stated] ២០២៦-០៨-១៣ ៖ រូបថតបង្ហាញ **«Page Unresponsive» របស់ Chrome**
