@@ -3309,6 +3309,11 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
   justify-content:space-between !important; align-items:center !important;
   gap:8px; text-align:right;}
 #calcCard .cc-cutrow td.n .cc-chk > input[type="checkbox"]{ flex:0 0 auto; }
+/* ⭐ [stated] ២០២៦-១១-១៤ ៖ «ប្រអប់ធីករៀបនៅខាងឆ្វេង» ។
+   ⚠ ក្រឡាដែលមាន **តែប្រអប់ធីក** ( គ្មានលេខ ) ឈរនៅស្តាំ ព្រោះជួរលេខ
+     តម្រឹមស្តាំ ⇒ មើលទៅដាច់ពីគេ ។ ⇒ ក្រឡាបែបនោះ ⇒ ធីកនៅឆ្វេង ។ */
+#calcCard .cc-pane table td.n:has(> .cc-chk:only-child) .cc-chk{
+  width:100% !important; justify-content:flex-start !important; margin-right:0 !important; }
 /* ភាគរយក្នុងក្រឡាស្លាក ៖ តូចជាងស្លាក កុំឱ្យលេចជាងគេ */
 #calcCard .cc-dpct{ font-size:11px; opacity:.75; margin-left:2px; white-space:nowrap; }
 #calcCard .cc-pane table td .cc-chk > input[type="checkbox"]{ margin:0; }
@@ -5644,6 +5649,29 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     #toi-embed table.de-fit-table tbody td{ font-size:11px !important; }
     #toi-embed table.de-fit-table tbody td input{
       font-size:11px !important; padding:1px 3px !important; }
+    /* ⭐⭐ [stated] ២០២៦-១១-១៤ ( ជុំទី ៣ ) ៖ ទំហំអក្សរក្នុងផ្ទាំង
+       DATA ENTRY និង ព័ត៌មានផ្ទាល់ខ្លួន ត្រូវស្មើគ្នា
+       ( មើលក្បាលឯកសារ fix_de3.py ) ។ */
+    #toi-embed .content label,
+    #toi-embed .content .k{ font-size:12px !important; line-height:1.45 !important; }
+    #toi-embed .content input:not([type="checkbox"]):not(.risk-input),
+    #toi-embed .content select:not(.risk-input){
+      font-size:13px !important; height:30px !important; min-height:0 !important;
+      padding:3px 8px !important; }
+    #toi-embed .content textarea:not(.risk-input){
+      font-size:13px !important; height:auto !important; min-height:52px !important; }
+    /* ⚠ តារាងឈ្នះវិញ ( ជាក់លាក់ជាង ) ⇒ នៅ ១១px ដដែល */
+    /* ⚠ ជាក់លាក់ភាព ៖ ច្បាប់ទូទៅខាងលើមាន (1,3,1) ព្រោះ `:not()` នីមួយៗ
+       រាប់ជាថ្នាក់ ⇒ ត្រូវមានថ្នាក់ ≥ ៣ ទើបឈ្នះ ។ */
+    #toi-embed .content table.de-fit-table tbody td input:not([type="checkbox"]),
+    #toi-embed .content table.ledger tbody td input:not([type="checkbox"]){
+      font-size:11px !important; height:auto !important; padding:1px 3px !important; }
+    /* ⚠ ជួរឈរតូចៗត្រូវបានបង្រួមរហូតកាត់លេខ ( Pcode ២១px ) ។
+       ⇒ ទំហំតាមមាតិកា ហើយទុកឱ្យការបង្រួមស្វ័យប្រវត្តិដោះ ។ */
+    #toi-embed table.de-fit-table{ table-layout:auto !important; }
+    #toi-embed table.de-fit-table th,
+    #toi-embed table.de-fit-table td{ white-space:nowrap !important; }
+    #toi-embed table.de-fit-table td input{ min-width:68px !important; width:100% !important; }
     /* ⚠ ផ្ទាំងទាំងមូលមិនត្រូវលាតលើសអេក្រង់ ⇒ កាត់ការរំកិលផ្តេករបស់ទំព័រ */
     #toi-embed{ max-width:100% !important; overflow-x:hidden !important; }
   }
@@ -58930,11 +58958,21 @@ CC.riskUsdBlock = function(kind, yrs){
   line('អត្រាចុងឆ្នាំ',    function(u){ return u.yrFx?fmt(u.yrFx):'—'; });
   line('ប្រកាសប្រចាំឆ្នាំ ($)', function(u){ return u.yrUsd?u2(u.yrUsd)+' $':'—'; }, 'cc-tot');
   /* គំលាតជាដុល្លារ ៖ អត្រាលែងជាកត្តា ដូច្នេះនេះជាគំលាតពិត */
-  h.push('<tr class="cc-sum"><td>គំលាតពិត ($) = ឆ្នាំ − ខែ</td>');
+  /* ⭐ [stated] ២០២៦-១១-១៤ ៖ ភាគរយទៅក្រឡាស្លាក ដូចជួរ «គំលាត (ឆ្នាំ − ខែ)»
+     ក្នុងតារាងខាងលើ ( មើលក្បាល fix_usdpct.py ) ។ */
+  var pcs=[];
+  yrs.forEach(function(y){
+    var u=CC.riskUsd(y,kind);
+    if(!u.yrUsd) return;
+    var p=u.diffUsd/u.yrUsd;
+    pcs.push('<span class="cc-dpct'+(Math.abs(p)>=0.05?' cc-riskbad':'')+'">'+
+      ((p>0?'+':'')+(p*100).toFixed(1))+'%</span>');
+  });
+  h.push('<tr class="cc-sum"><td>គំលាតពិត ($) = ឆ្នាំ − ខែ'+
+    (pcs.length?' '+pcs.join(' · '):'')+'</td>');
   yrs.forEach(function(y){
     var u=CC.riskUsd(y,kind), p=u.yrUsd?u.diffUsd/u.yrUsd:0, bad=Math.abs(p)>=0.05;
-    h.push('<td class="n cc-calc'+(bad?' cc-riskbad':'')+'">'+u2(u.diffUsd)+' $'+
-      (u.yrUsd?'<div style="font-size:11px;opacity:.75">'+((p>0?'+':'')+(p*100).toFixed(1))+'%</div>':'')+'</td>');
+    h.push('<td class="n cc-calc'+(bad?' cc-riskbad':'')+'">'+u2(u.diffUsd)+' $</td>');
   });
   h.push('</tr></tbody></table></div>');
   /* លម្អិត ១២ ខែ ក្នុងមួយឆ្នាំ */
@@ -61125,7 +61163,8 @@ function paneVat(res){
     ["មូលដ្ឋានជាប់អតប បានប្រកាស","vatDeclBase"],
     ["បូក ៖ ផលរកឃើញជាប់អតប","findVat"],
     ["មូលដ្ឋានជាប់អតប កំណត់ឡើងវិញ","vatBase"],
-    ["⚙ កំណត់លើផលរកឃើញតែប៉ុណ្ណោះ ( មិនកាត់ធាតុចូល · ឥណទាន · សាលកបត្រ )","vatFindOnlyChk"],
+    /* [stated] ២០២៦-១១-១៤ ៖ លុប «( មិនកាត់ធាតុចូល · ឥណទាន · សាលកបត្រ )» */
+    ["⚙ កំណត់លើផលរកឃើញតែប៉ុណ្ណោះ","vatFindOnlyChk"],
     ["អតប លើធាតុចេញ","outVat","b"],
     ["ក្នុងនោះ ៖ អតប លើផលរកឃើញ","vatFindOut"],
     ["ដក ៖ អតប លើធាតុចូល","inVat"],
