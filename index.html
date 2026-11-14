@@ -2549,8 +2549,9 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
      (313 នៅអេក្រង់ ធៀប 317 ពេលព្រីន)។
      ⭐ ច្បាប់ ៖ រាល់ពេលប្តូរលេខមួយសម្រាប់សន្លឹកនេះ ត្រូវប្តូរ **ទាំងពីរ**
        ច្បាប់ព្រមគ្នា បើមិនដូច្នេះទេ ការមើលជាមុនក្លាយជាកុហក។ */
-  #view-tracking .cv-cover-page .cv-sheet, #docs-modal .cv-cover-page .cv-sheet{ zoom:0.87; min-height:315mm; }
-  #view-tracking .cv-cover-page .cv-in, #docs-modal .cv-cover-page .cv-in{ min-height:312mm; }
+  /* ⚠ ត្រូវតែដូចច្បាប់ព្រីន ( [stated] ២០២៦-១១-១៤ ) */
+  #view-tracking .cv-cover-page .cv-sheet, #docs-modal .cv-cover-page .cv-sheet{ zoom:0.824; min-height:274mm; }
+  #view-tracking .cv-cover-page .cv-in, #docs-modal .cv-cover-page .cv-in{ min-height:271mm; }
   #view-tracking .cv-lh-sr, #docs-modal .cv-lh-sr{font-family:'Khmer OS Siemreap','Noto Sans Khmer',sans-serif; font-weight:400;}
   #view-tracking .cv-cover-page .cv-lh-sr, #docs-modal .cv-cover-page .cv-lh-sr{font-size:16px;}
   #view-tracking .cv-rule, #docs-modal .cv-rule{border-top:1.2px solid #1a237e; width:62%; margin:1px auto 2px;}
@@ -2727,8 +2728,14 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
   #view-tracking .ind-page .ind-tbl, #docs-modal .ind-page .ind-tbl{font-size:11.5px;}
   #view-tracking .ind-page.ind-fill .ind-tbl, #docs-modal .ind-page.ind-fill .ind-tbl{flex:1 1 auto;}
   #view-tracking .ind-page:not(.ind-fill) .ind-tbl, #docs-modal .ind-page:not(.ind-fill) .ind-tbl{flex:0 1 auto;}
+  /* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «ឯករាជ្យភាព មានទំព័រសល់ទទេ» ។
+     ⚠ វាស់បាន ៖ សន្លឹកទី ១ ( .ind-fill ) ខ្ពស់ **២៥៥,៥mm** លើសប្រអប់
+       ២៥២mm ត្រឹម ៣,៥mm ⇒ ហៀរ ⇒ ទំព័រទទេ ។
+     ⇒ បន្ថយ padding ជួរដេកពី ៥px មក ៣,៥px ⇒ សន្លឹកចូលក្នុង ២៥២mm ។
+     ⚠ ត្រូវកែ**ទាំងច្បាប់អេក្រង់ និងព្រីន** បើមិនដូច្នេះទេ អេក្រង់ និង
+       ក្រដាសលែងដូចគ្នា ( probe_cmpall នឹងចាប់បាន ) ។ */
   #view-tracking .ind-page .ind-tbl td, #docs-modal .ind-page .ind-tbl td,
-  #view-tracking .ind-page .ind-tbl th, #docs-modal .ind-page .ind-tbl th{padding-top:5px; padding-bottom:5px;}
+  #view-tracking .ind-page .ind-tbl th, #docs-modal .ind-page .ind-tbl th{padding-top:3.5px; padding-bottom:3.5px;}
 #view-tracking .lh-orn, #docs-modal .lh-orn{margin-top:3px; color:var(--primary); text-align:center;}
 #view-tracking .kh-orn-svg, #docs-modal .kh-orn-svg{width:100px; height:auto; display:inline-block; vertical-align:middle;}
 #view-tracking .lh-mid, #docs-modal .lh-mid{flex:0 0 132px;}
@@ -14293,8 +14300,17 @@ try{
    ⇒ ត្រឡប់ទៅការសម្រេចដែលបានផ្ទៀងផ្ទាត់រួច ៖ **២៥២mm ជាតម្លៃតែមួយ
      សម្រាប់គ្រប់ឧបករណ៍** ( iOS សមនៅ ២៥២ · ហៀរនៅ ២៥៦ ) ហើយ **គ្មាន zoom** ។
      ⇒ គ្មានទំព័រទទេ · ជើងទំព័រជាប់នឹងសន្លឹករបស់វា · ហើយចំនួនទំព័រ
-       ទូរស័ព្ទ = កុំព្យូទ័រ ព្រោះលេខតែមួយ ។ */
-window.__nrPageMm = 252;
+       ទូរស័ព្ទ = កុំព្យូទ័រ ព្រោះលេខតែមួយ ។
+   ⭐⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «របាយការណ៍សវនកម្ម ធ្លាក់តារាង» និង
+   «គួរតែកែផ្នែកដោយឡែកពីគ្នា គួរកុំកែជារួម» ។
+   ⚠ ហេតុអ្វីក្រុម nr ( បរិយាយ · សវនកម្ម · សង្ខេប ) អាចខ្ពស់ជាងក្រុម rpt ៖
+     .nr-page មាន **height + max-height ថេរ** ⇒ វា **មិនអាចរីក**
+     ហួសប្រអប់បានឡើយ ⇒ គ្មានហានិភ័យហៀរ ⇒ ដាក់បានដល់ ២៦២mm
+     ( ក្រោម ២៦៩mm នៃផ្ទៃបោះពុម្ព ) ។
+     ផ្ទុយទៅវិញ ក្រុម rpt ប្រើ min-height + height:auto ⇒ វា **រីកបាន**
+     ⇒ ត្រូវរក្សា ២៥២mm ជាសុវត្ថិភាព ។
+   ⇒ ១០mm បន្ថែមនេះជាកន្លែងដែលតារាងសវនកម្មត្រូវការ ⇒ លែងធ្លាក់ទំព័រ ។ */
+window.__nrPageMm = 262;
 try{
   document.documentElement.style.setProperty('--nr-ph', window.__nrPageMm + 'mm');
 }catch(e){}
@@ -46241,7 +46257,8 @@ const LETTERHEAD_CSS = `
   /* ⚠ [stated] ២០២៦-០៨-២៣ ៖ «spacing ជួយដាក់ឱ្យស្មើគ្នា» ⇒ គែមឯកសណ្ឋាន
      លើ-ក្រោមគ្រប់ក្រឡា (5px) ដូច្នេះចង្វាក់បន្ទាត់ស្មើគ្នា ។ ⚠ ជួរដែល
      អត្ថបទចុះ ២ បន្ទាត់នៅតែខ្ពស់ជាង — នោះជាធម្មតា មិនអាចជៀសបានទេ។ */
-  .ind-page .ind-tbl td,.ind-page .ind-tbl th{padding-top:5px; padding-bottom:5px;}
+  /* ⚠ ត្រូវតែដូចច្បាប់អេក្រង់បេះបិទ ( [stated] ២០២៦-១១-១៤ ) */
+  .ind-page .ind-tbl td,.ind-page .ind-tbl th{padding-top:3.5px; padding-bottom:3.5px;}
   .lh-orn{margin-top:3px; color:#0F3D3E; text-align:center;}
   .kh-orn-svg{width:100px; height:auto; display:inline-block; vertical-align:middle;}
   .lh-mid{flex:0 0 132px;}
@@ -47343,6 +47360,13 @@ const RPT_CSS = `
       page-break-after:always !important; break-after:page !important;
     }
     .rpt-page:not(.nr-page) > .rpt-foot{ margin-bottom:0 !important; padding-bottom:0 !important; }
+    /* ⭐ [stated] ២០២៦-១១-១៤ ៖ «ផ្នែកយុទ្ធសាស្ត្រផែនការ សល់ទំហំ footer ធំ» ។
+       ⚠ វាស់បាន ៖ ជើងទំព័រឈរ **៦mm ពីបាតសន្លឹក** — នោះជា padding-bottom
+         របស់សន្លឹកខ្លួនឯង ( ជើងទំព័រប្រើ margin-top:auto ⇒ វាចុះដល់គែម
+         ប្រអប់មាតិកា មិនមែនគែមសន្លឹក ) ។
+       ⇒ បន្ថយ padding-bottom ⇒ ជើងទំព័រជាប់បាតដូចឯកសារដទៃ ។
+       ⚠ មិនប៉ះ .nr-page ( ជើងទំព័រ absolute រួចហើយ ) និង .bs-page ។ */
+    .rpt-page:not(.nr-page):not(.bs-page){ padding-bottom:2mm !important; }
     .rpt-page:last-child{ page-break-after:auto !important; break-after:auto !important; }
   }
   /* ⚠ សន្លឹកទទេចុងក្រោយ ៖ page-break-after:always លើទំព័រចុងក្រោយបង្កើត
@@ -48458,7 +48482,13 @@ const WP_CSS = `
        ⇒ បង្ខំការបំបែកក្រោយសន្លឹកនេះ។ */
     .cv-cover-page{ page:cvpage; zoom:1 !important;
       break-after:page !important; page-break-after:always !important; }
-    .cv-cover-page .cv-sheet{ zoom:0.87 !important; }
+    /* ⚠⚠ វាស់បាន ៖ ក្រោយកែ min-height សន្លឹកនៅ ២៦៥,៨mm ដដែល ⇒ អ្វីដែល
+       កំណត់កម្ពស់គឺ **មាតិកាខ្លួនឯង** មិនមែន min-height ទេ ។
+       ⇒ ផ្លូវតែមួយដែលនៅសល់គឺបន្ថយកម្រិតបង្រួម ៖
+         ០,៨៧ × ( ២៥២ ÷ ២៦៥,៨ ) = **០,៨២៤** ⇒ សន្លឹកចូល ២៥២mm
+         ដូចសន្លឹកដទៃទាំងអស់ ⇒ សុវត្ថិភាពទោះ iOS មិនគោរព @page cvpage ។
+       ⚠ ត្រូវកែច្បាប់អេក្រង់ឱ្យដូចគ្នាដែរ ( parity អេក្រង់⇄ព្រីន ) ។ */
+    .cv-cover-page .cv-sheet{ zoom:0.824 !important; }
     /* ⚠ ផ្ទៃដែលមាន = 297 − 6.3 − 10.2 = **280.5mm** ។ min-height ជាកម្ពស់មុន
        zoom ⇒ 280.5 ÷ 0.87 ≈ 322mm (ស៊ុមក្នុងដក 3mm)។ */
     /* ⚠⚠ [stated] ២០២៦-០៨-២៣ ៖ «វាដាច់ផ្នែកខាងក្រោម ; អេក្រង់អត់ដាច់ទេ តែពេល
@@ -48480,8 +48510,19 @@ const WP_CSS = `
          របស់ការរចនាដើម (ស៊ុមតូចជាងក្រដាសបន្តិច) ហើយគេយល់ព្រមនឹងទទឹងនោះ។
        ⚠ បើត្រូវការទទឹងពេញ ត្រូវប្តូរទៅ transform:scaleY() ជំនួស zoom
          ដែលនឹងទាមទារការវាស់ឡើងវិញទាំងស្រុង។ */
-    .cv-cover-page .cv-sheet{ min-height:315mm !important; }
-    .cv-cover-page .cv-in{ min-height:312mm !important; }
+    /* ⭐⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «ឯកសារការងារសវនកម្ម នៅសល់ទំព័រទទេ» ។
+       ⚠⚠ វាស់បាន ( media=print ) ៖ សន្លឹកទី ១ របស់ wp = .cv-cover-page
+         ខ្ពស់ **២៨០,០mm** ខណៈសន្លឹកដទៃ ២៥២mm ⇒ វាតែមួយគត់ដែលហៀរ
+         ⇒ បង្កើតទំព័រទទេមួយក្រោយវា ។
+       ⚠ មូលហេតុ ៖ កម្ពស់ត្រង់នេះត្រូវបាន**ចាក់ជាលេខ ៣១៥mm** តាំងពីមុន
+         ⇒ វាមិនដើរតាម --rpt-ph ដូចសន្លឹកដទៃទេ ។
+       ⇒ គណនាពីអថេរវិញ ៖ សន្លឹកនេះមាន zoom:0.87 ⇒ ដើម្បីបាន ២៥២mm
+         ត្រូវការ ២៥២ ÷ ០,៨៧ = **២៩០mm** ( ស៊ុមក្នុងដក ៣mm ) ។ */
+    /* ⚠ វាស់ម្តងទៀត ៖ ដាក់ cv-sheet = ២៥២ ÷ ០,៨៧ = ២៨៩,៧ ⇒ សន្លឹកពិតចេញ
+       ២៦៥,៨mm មិនមែន ២៥២ ⇒ មានចន្លោះ/ស៊ុមរបស់សន្លឹកខ្លួនឯង ១៣,៨mm
+       បន្ថែមលើកម្ពស់នោះ ⇒ ត្រូវដកវាចេញជាមុន ៖ ( ២៥២ − ១៤ ) ÷ ០,៨៧ ។ */
+    .cv-cover-page .cv-sheet{ min-height:calc((var(--rpt-ph, 252mm) - 14mm) / 0.87) !important; }
+    .cv-cover-page .cv-in{ min-height:calc((var(--rpt-ph, 252mm) - 17mm) / 0.87) !important; }
   }
   html.rsc-mobile-print .cv-cover-page{ zoom:0.82; min-height:0; }
   /* ⚠⚠ [stated] ២០២៦-០៨-២៣ ៖ «នៅលើ PC ព្រីន មានដាច់ទំព័រសម្រាប់ តាមដានការ
@@ -49062,9 +49103,21 @@ const BASIS_CSS = `
        .bs-page (0,1,0) ចាញ់ ហើយឯកសារនេះទទួលកម្ពស់ 269mm វិញ។ */
     /* ⚠ សន្លឹកត្រូវមានកម្ពស់ និង position:relative ទើបជើងទំព័រ absolute
        មានអ្វីដើម្បីចង ។ */
+    /* ⭐⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «បរិយាយមូលដ្ឋាន Footer ដាក់ខុសទីតាំង
+       វាត្រូវនៅផ្នែកខាងក្រោម មិនមែននៅពីក្រោមអក្សរចុងក្រោយទេ
+       ធ្វើវាដូចផ្នែកដទៃ» ។
+       ⚠ វាស់បាន ( Chromium ) ៖ ជើងទំព័រនៅបាត ( ០mm ពីគែមក្រោម ) ហើយ
+         ខ្លឹមសារបញ្ចប់ត្រឹម ១៦២,៨mm ⇒ ទំនេរ ៨៩mm ។ តែសន្លឹកនេះប្រើ
+         height:auto ⇒ បើមាតិកាធំជាងការរំពឹង ( ពុម្ពខ្មែរលើ iOS )
+         សន្លឹករីក ហើយជើងទំព័រ absolute រត់តាមចុះក្រោម ⇒ ចេញក្រៅទំព័រ ។
+       ⇒ ធ្វើដូច .nr-page ដែលដើរត្រូវ ៖ **កម្ពស់ថេរ + max-height**
+         ⇒ សន្លឹកមិនអាចរីក ⇒ ជើងទំព័រជាប់បាតជានិច្ច ។ */
     .rpt-page.bs-page, .bs-page{
       position:relative !important;
-      min-height:var(--rpt-ph, 252mm) !important; height:auto !important;
+      height:var(--rpt-ph, 252mm) !important;
+      min-height:var(--rpt-ph, 252mm) !important;
+      max-height:var(--rpt-ph, 252mm) !important;
+      overflow:hidden !important;
       padding-bottom:14mm !important; }
   }
 
@@ -50530,7 +50583,7 @@ const NARR_CSS = `
   /* ⚠ ត្រូវមានកម្ពស់ថេរ ៖ ជើងទំព័រប្រើ position:absolute; bottom:0 ដូច្នេះ
      បើគ្មានកម្ពស់ វាធ្លាក់ទៅលើកំពូលទំព័រវិញ (អ្វីដែលទើបកើតឡើង)។
      min-height:0 នៅដដែល ដើម្បីផ្តួល .rpt-page{min-height:calc(100vh)}។ */
-  .nr-page{position:relative; box-sizing:border-box; height:var(--nr-ph,252mm); max-height:var(--nr-ph,252mm);
+  .nr-page{position:relative; box-sizing:border-box; height:var(--nr-ph,262mm); max-height:var(--nr-ph,262mm);
     min-height:0 !important; overflow:hidden;
     padding-bottom:15mm; page-break-after:always; break-after:page;}
   .nr-page:last-child{page-break-after:auto; break-after:auto;}
@@ -50557,7 +50610,7 @@ const NARR_CSS = `
        តូចជាង = ចន្លោះធំជាង តែមិនហៀរ ; ធំជាង = ពេញជាង តែប្រថុយហៀរ ។
      ⚠ គ្មាន backtick ក្នុងកំណត់សម្គាល់នេះ ៖ NARR_CSS ជា template literal ។ */
   html.rsc-mobile-print .nr-page{
-    height:var(--nr-ph, 252mm) !important; max-height:var(--nr-ph, 252mm) !important;
+    height:var(--nr-ph, 262mm) !important; max-height:var(--nr-ph, 262mm) !important;
     zoom:var(--nr-zoomp, 1) !important; }
   html.rsc-mobile-print .nr-page > .nr-foot{ bottom:0 !important; margin:0 !important; }
   /* ══ ទូរស័ព្ទ/ថេប្លេត ៖ កម្ពស់ស្វ័យប្រវត្តិ + ជើងទំព័រហូរតាមមាតិកា ══
@@ -53023,13 +53076,20 @@ function applyRptPageMm(v){
        កម្ពស់ពិតដែលសមនឹងក្រដាស ⇒ ដាក់ `tgt` ចូលប្រអប់ផ្ទាល់ ។
        ⚠ ប្រអប់ «កម្ពស់ទំព័រ (mm)» នៅដំណើរការដដែល ៖ បើឧបករណ៍ណាមួយនៅហៀរ
          បន្ថយលេខម្តង ៤mm ( ២៥២ → ២៤៨ → ២៤៤ … ) ។ */
+    /* ⭐⭐ [stated] ២០២៦-១១-១៤ ៖ «គួរតែកែផ្នែកដោយឡែកពីគ្នា
+       គួរកុំកែជារួម» ⇒ ក្រុមពីរមានកម្ពស់ផ្ទាល់ខ្លួន ៖
+         nr  ( បរិយាយ · សវនកម្ម · សង្ខេប ) = tgt + ១០mm — សន្លឹកកម្ពស់ថេរ
+                                              ⇒ មិនអាចហៀរ ⇒ ខ្ពស់បានសុវត្ថិភាព
+         rpt ( ឯកសារដទៃ )                  = tgt        — សន្លឹក height:auto
+                                              ⇒ រីកបាន ⇒ ត្រូវការរឹមសុវត្ថិភាព */
     var tgt = ok ? n : 252;
-    root.style.setProperty('--nr-ph',  tgt + 'mm');
+    var tgtNr = tgt + 10;
+    root.style.setProperty('--nr-ph',  tgtNr + 'mm');
     root.style.setProperty('--rpt-ph', tgt + 'mm');
     root.style.setProperty('--nr-zoomp',  '1');
     root.style.setProperty('--rpt-zoomp', '1');
     root.style.setProperty('--cv-zoomp',  '1');
-    try{ window.__nrPageMm = tgt; }catch(e){}
+    try{ window.__nrPageMm = tgtNr; }catch(e){}
     try{ if(typeof renderNarr === 'function') renderNarr(); }catch(e){}
     try{ if(typeof renderAudit === 'function') renderAudit(); }catch(e){}
     try{ if(typeof renderSummary === 'function') renderSummary(); }catch(e){}
@@ -53049,7 +53109,7 @@ function applyRptPageMm(v){
        តម្លៃចាស់ ( ២៤០ ) នឹងត្រឡប់មកវិញស្ងាត្រ । */
     /* ⚠ កន្លែងនេះរត់ក្រោយការកំណត់ដំបូង ⇒ បើភ្លេចប្តូរទីនេះ តម្លៃចាស់
        នឹងត្រឡប់មកវិញស្ងាត់ៗ ។ */
-    try{ window.__nrPageMm = 252; }catch(e){}
+    try{ window.__nrPageMm = 262; }catch(e){}
   }
   /* គូរឡើងវិញ ៖ បរិយាយ · សវនកម្ម · សង្ខេប (បើផ្ទាំងនោះមានលើអេក្រង់) */
   /* ⚠ មុខងារទាំងនេះមិននៅលើ `window` ទេ (ប្លុកនេះជា IIFE) ⇒ ត្រូវហៅតាម
