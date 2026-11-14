@@ -2669,10 +2669,10 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
      អេក្រង់គ្មានការកាត់ទំព័រ ⇒ `zoom` ល្អជាង ។ */
   #view-tracking .cv-cover-page .cv-sheet, #docs-modal .cv-cover-page .cv-sheet{
     zoom:var(--cv-sc, 0.824); transform:none; width:auto;
-    min-height:calc((var(--rpt-ph, 252mm) - var(--cv-pad, 7mm) - var(--cv-gap, 0mm))
+    min-height:calc((var(--cv-box, 270.4mm) - var(--cv-pad, 14mm) - var(--cv-gap, 0mm))
       / var(--cv-sc, 0.824)); }
   #view-tracking .cv-cover-page .cv-in, #docs-modal .cv-cover-page .cv-in{
-    min-height:calc((var(--rpt-ph, 252mm) - var(--cv-pad, 7mm) - var(--cv-gap2, 3mm))
+    min-height:calc((var(--cv-box, 270.4mm) - var(--cv-pad, 14mm) - var(--cv-gap2, 3mm))
       / var(--cv-sc, 0.824)); }
   /* ⚠⚠ [stated] ២០២៦-១១-១៤ ៖ «លិខិតតាមដានឯកសារ … នៅបាត់ជើងតារាង» ។
      ⚠ វាស់បាន ( អេក្រង់ ) ៖ .cv-in = ២៥៤,៣mm តែ .cv-sheet = ២៤៦mm
@@ -15246,6 +15246,7 @@ try{
   if(typeof RSC_MOBILE_PRINT !== 'undefined' && RSC_MOBILE_PRINT){
     var __r = document.documentElement;
     __r.style.setProperty('--cv-sc',   '0.810');
+    __r.style.setProperty('--cv-box',  '252mm');
     __r.style.setProperty('--cv-pad',  '0mm');
     __r.style.setProperty('--cv-gap',  '16mm');
     __r.style.setProperty('--cv-gap2', '19mm');
@@ -49706,12 +49707,15 @@ const WP_CSS = `
       width:calc(100% / var(--cv-sc, 0.824)) !important; }
     /* ប្រអប់សន្លឹក ៖ កម្ពស់ពិតតែមួយគត់ ⇒ transform មិនចូលប្លង់
        ⇒ ទំព័រមិនអាចហៀរបានឡើយ ។ */
+    /* [stated] ២០២៦-១១-១៤ ( ជុំទី ២ ) ៖ ប្រអប់សន្លឹកមុខមានកម្ពស់
+       ផ្ទាល់ខ្លួន --cv-box ( មិនមែន --rpt-ph ) ព្រោះ @page cvpage មាន
+       រឹម ៦,៣mm ដាច់ដោយឡែក ⇒ ត្រូវ B + P = 284.4 ទើបចន្លោះស្មើគ្នា
+       ( មើលក្បាល fix_cvmid2.py ) ។ */
     .cv-cover-page{
-      height:var(--rpt-ph, 252mm) !important;
-      max-height:var(--rpt-ph, 252mm) !important;
-      /* [stated] ២០២៦-១១-១៤ ៖ ចន្លោះលើ⇄ក្រោមស្មើគ្នា ( fix_cvmid.py ) */
+      height:var(--cv-box, 270.4mm) !important;
+      max-height:var(--cv-box, 270.4mm) !important;
       box-sizing:border-box !important;
-      padding-top:var(--cv-pad, 7mm) !important;
+      padding-top:var(--cv-pad, 14mm) !important;
       overflow:hidden !important; }
     /* ⚠ ផ្ទៃដែលមាន = 297 − 6.3 − 10.2 = **280.5mm** ។ min-height ជាកម្ពស់មុន
        zoom ⇒ 280.5 ÷ 0.87 ≈ 322mm (ស៊ុមក្នុងដក 3mm)។ */
@@ -49749,10 +49753,10 @@ const WP_CSS = `
        នៅដដែលបេះបិទនឹងមុនពេលកែ ។ */
     /* ⚠ −16mm ត្រូវទៅតាម ០,៧៩០ ៖ បើទុក −6mm សន្លឹកនឹងពេញ ២៤៦mm វិញ ។ */
     .cv-cover-page .cv-sheet{
-      min-height:calc((var(--rpt-ph, 252mm) - var(--cv-pad, 7mm) - var(--cv-gap, 0mm))
+      min-height:calc((var(--cv-box, 270.4mm) - var(--cv-pad, 14mm) - var(--cv-gap, 0mm))
         / var(--cv-sc, 0.824)) !important; }
     .cv-cover-page .cv-in{
-      min-height:calc((var(--rpt-ph, 252mm) - var(--cv-pad, 7mm) - var(--cv-gap2, 3mm))
+      min-height:calc((var(--cv-box, 270.4mm) - var(--cv-pad, 14mm) - var(--cv-gap2, 3mm))
         / var(--cv-sc, 0.824)) !important; }
   }
   /* ⚠ zoom:0.82 នៅទីនេះបង្រួម**ស្ទួន**លើការបង្រួមរបស់ .cv-sheet ហើយវាជា
