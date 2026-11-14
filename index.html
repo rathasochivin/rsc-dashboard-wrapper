@@ -1214,6 +1214,24 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
     scrollbar-width:none; padding-bottom:4px;
   }
   .toolbar::-webkit-scrollbar, .tabs::-webkit-scrollbar{ display:none; }
+  /* ⭐⭐ CROSSCHECK គយ — មើលក្បាល fix_cus1.py */
+  #view-cross-customs > .toolbar #cus-year{
+    min-width:118px !important; max-width:150px !important; flex:0 0 auto;
+  }
+  #view-cross-customs > .toolbar #cus-q{
+    min-width:170px !important; max-width:200px !important; flex:0 0 auto;
+  }
+  /* បន្ទាត់បែងចែកឯកោពេលថេបរុំ ⇒ លាក់ */
+  #view-cross-customs #cus-tabs > span[style*="width:1px"]{ display:none !important; }
+  /* ថេប ៤ ⇒ ២ ជួរឈរស្មើគ្នា */
+  #view-cross-customs #cus-tabs{
+    display:grid !important; grid-template-columns:repeat(2, minmax(0,1fr)) !important;
+    gap:8px !important;
+  }
+  #view-cross-customs #cus-tabs > button{
+    width:100% !important; padding:6px 8px !important; white-space:nowrap;
+    overflow:hidden; text-overflow:ellipsis;
+  }
   .toolbar > *, .tabs > *{ flex:0 0 auto; }
   /* ⭐⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «ផ្នែកសាលកបត្រ … ឱ្យងាយមើល» ( រូប ៖ ជួរថេប
      កាត់ដាច់នៅគែមស្តាំ ហើយអេក្រង់ទាំងមូលតូចៗ ) ។
@@ -8929,6 +8947,25 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
 </header>
 
 <main>
+  <!-- ⭐ [stated] ២០២៦-១១-១៣ ៖ «ជួយកែសម្រួលផ្នែកសាលកបត្រ · បៀវត្ស ដើម្បី
+       ឱ្យងាយមើល និងប្រើប្រាស់» ។
+       ⚠ ជួរនេះជា flex **គ្មាន flex-wrap** ⇒ លើទូរស័ព្ទ ប៊ូតុងទាំង ៣ ត្រូវ
+         ច្របាច់ឱ្យតូចជាងអត្ថបទរបស់វា ⇒ អក្សរបាក់ ហើយលេខក្នុងវង់ក្រចក
+         ដាច់ចេញពីពាក្យ ( មើលរូបរបស់អ្នកប្រើ ) ។
+       ⇒ រុំបន្ទាត់ជំនួសការច្របាច់ ។ -->
+  <div style="display:flex; justify-content:flex-end; flex-wrap:wrap; gap:10px; margin:10px 4px 0;">
+    <button class="btn gold" id="exportBtn" type="button" disabled title="នាំចេញជា Excel">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+           stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+      <!-- [stated] ២០២៦-១១-១៤ ៖ «Excel ប្តូរមកតែរូប download បានហើយ» -->
+    </button>
+    <button type="button" class="btn danger-ghost" id="revertAllReassessBtn" title="លុបការកំណត់ពន្ធឡើងវិញទាំងអស់">លុបការកំណត់</button>
+    <!-- [stated] ២០២៦-១១-១៣ ៖ «ផ្នែក excel ដល់ការពិនិត្យ រៀបវាតែមួយជួរ» ។
+         ⚠ ទទឹងជួរវាស់បាន ៣០៦px តែប៊ូតុង ៣ ត្រូវការ ៤២៦px ⇒ បាក់ ២ ជួរ ។
+         ⇒ បង្រួមស្លាកវែងបំផុត ( ១៨០px ) ⇒ សមក្នុង ១ ជួរ ។ អត្ថន័យពេញ
+           នៅក្នុង title ដដែល ។ -->
+    <button type="button" class="btn gold" id="viewAllReassessBtn" title="ពិនិត្យការកំណត់ពន្ធឡើងវិញទាំងអស់">ពិនិត្យ (<span id="reassessCountBadge">0</span>)</button>
+  </div>
   <div id="statusLine" class="hint" style="margin:8px 4px 0;"></div>
 
   <!-- [stated] ចំនួនបុគ្គលិកតាមខែ — បិទជាមុន ចុចចំណងជើងទើបបើក -->
@@ -9029,25 +9066,6 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     <div class="stub gold"><div class="label">FB (កំណត់ឡើងវិញ)</div><div class="value tabular" id="statReassessFringeTax">0 KHR</div></div>
   </div>
 
-  <!-- ⭐ [stated] ២០២៦-១១-១៣ ៖ «ជួយកែសម្រួលផ្នែកសាលកបត្រ · បៀវត្ស ដើម្បី
-       ឱ្យងាយមើល និងប្រើប្រាស់» ។
-       ⚠ ជួរនេះជា flex **គ្មាន flex-wrap** ⇒ លើទូរស័ព្ទ ប៊ូតុងទាំង ៣ ត្រូវ
-         ច្របាច់ឱ្យតូចជាងអត្ថបទរបស់វា ⇒ អក្សរបាក់ ហើយលេខក្នុងវង់ក្រចក
-         ដាច់ចេញពីពាក្យ ( មើលរូបរបស់អ្នកប្រើ ) ។
-       ⇒ រុំបន្ទាត់ជំនួសការច្របាច់ ។ -->
-  <div style="display:flex; justify-content:flex-end; flex-wrap:wrap; gap:10px; margin:10px 4px 0;">
-    <button class="btn gold" id="exportBtn" type="button" disabled title="នាំចេញជា Excel">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
-           stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
-      <!-- [stated] ២០២៦-១១-១៤ ៖ «Excel ប្តូរមកតែរូប download បានហើយ» -->
-    </button>
-    <button type="button" class="btn danger-ghost" id="revertAllReassessBtn" title="លុបការកំណត់ពន្ធឡើងវិញទាំងអស់">លុបការកំណត់</button>
-    <!-- [stated] ២០២៦-១១-១៣ ៖ «ផ្នែក excel ដល់ការពិនិត្យ រៀបវាតែមួយជួរ» ។
-         ⚠ ទទឹងជួរវាស់បាន ៣០៦px តែប៊ូតុង ៣ ត្រូវការ ៤២៦px ⇒ បាក់ ២ ជួរ ។
-         ⇒ បង្រួមស្លាកវែងបំផុត ( ១៨០px ) ⇒ សមក្នុង ១ ជួរ ។ អត្ថន័យពេញ
-           នៅក្នុង title ដដែល ។ -->
-    <button type="button" class="btn gold" id="viewAllReassessBtn" title="ពិនិត្យការកំណត់ពន្ធឡើងវិញទាំងអស់">ពិនិត្យ (<span id="reassessCountBadge">0</span>)</button>
-  </div>
 
 
   <section class="card missing-card" style="margin-top:16px;">
@@ -13855,13 +13873,19 @@ function populateMinistryOptions(storeName){
            + (useCat ? ` · ${fmtAmt(grand)} ៛` : '') + `)</option>`;
   sortedKeys.forEach(norm=>{
     const label = displayFor(norm);
-    html += `<option value="${escAttr(label)}">${label} — ${fmtAmt(totals[norm])} ៛ · ${pctOf(totals[norm])}</option>`;
+    html += `<option value="${escAttr(label)}">${optShortName(label)} — ${fmtAmt(totals[norm])} ៛ · ${pctOf(totals[norm])}</option>`;
   });
   __optCache[ck] = html;
   sel.innerHTML = html;
   if(current) sel.value = current;
 }
 
+/* ⭐ បង្រួមឈ្មោះក្នុងបញ្ជីជ្រើស — មើលក្បាល fix_optlbl.py ។
+   ⚠ ប្រើសម្រាប់**អក្សរបង្ហាញ**ប៉ុណ្ណោះ ; `value` នៅជាឈ្មោះពេញ ។ */
+function optShortName(s){
+  s = String(s == null ? '' : s).trim();
+  return s.length > 20 ? (s.slice(0, 19) + '…') : s;
+}
 function populateProductOptions(storeName){
   const sel = document.getElementById('product-'+storeName);
   if(!sel) return;
@@ -14917,7 +14941,7 @@ function populateCategoryOptions(storeName){
         + 'តម្លៃសរុបលើវិក្កយបត្រ — ' + fmtAmt(tot) + ' ៛</option>';
   (data.categories || []).forEach(c=>{
     html += '<option value="' + escAttr(c.name) + '"' + (cur === c.name ? ' selected' : '') + '>'
-          + escAttr(c.name) + ' — ' + fmtAmt(c.total || 0) + ' ៛' + pct(c.total || 0) + '</option>';
+          + escAttr(optShortName(c.name)) + ' — ' + fmtAmt(c.total || 0) + ' ៛' + pct(c.total || 0) + '</option>';
   });
   sel.innerHTML = html;
 }
@@ -44023,12 +44047,42 @@ window.__toiImport = function(data){
     });
   });
 
+  /* ⭐⭐ យុថ្កាស្វែងរក — មើលក្បាល fix_mxjump.py */
+  function mxScroller(el){
+    var n = el && el.parentElement;
+    while(n && n !== document.body && n !== document.documentElement){
+      var c = window.getComputedStyle(n);
+      if(/(auto|scroll)/.test(c.overflowY) && n.scrollHeight > n.clientHeight + 1) return n;
+      n = n.parentElement;
+    }
+    return null;   /* null = window */
+  }
+  function mxRenderKeep(){
+    var inp = els.matrixSearch;
+    var wrap = document.getElementById('employeeMatrixWrap');
+    if(!inp || !wrap){ renderEmployeeMatrix(); return; }
+    var before = inp.getBoundingClientRect().top;
+    /* ដោះកន្លែងទទេចាស់ជាមុន ⇒ វាមិនកកកុញពីការស្វែងរកមុន */
+    wrap.style.minHeight = '';
+    renderEmployeeMatrix();
+    var d = inp.getBoundingClientRect().top - before;
+    if(Math.abs(d) < 1) return;
+    var sc = mxScroller(inp);
+    var cur = sc ? sc.scrollTop : (window.scrollY || window.pageYOffset || 0);
+    var box = sc ? sc.clientHeight : window.innerHeight;
+    var tot = sc ? sc.scrollHeight : document.documentElement.scrollHeight;
+    /* ត្រូវការទំព័រវែងប៉ុនណា ដើម្បីរំកិលត្រឡប់ទៅទីតាំងចាស់ */
+    var need = (cur + d) + box - tot;
+    if(need > 0) wrap.style.minHeight = (wrap.offsetHeight + Math.ceil(need)) + 'px';
+    if(sc) sc.scrollTop = cur + d;
+    else window.scrollTo(0, cur + d);
+  }
   if (els.matrixSearch){
     els.matrixSearch.addEventListener('input', () => {
       matrixQuery = els.matrixSearch.value || '';
       if (els.matrixSearchClear) els.matrixSearchClear.hidden = !matrixQuery;
       matrixPage = 0;               /* ការស្វែងរកថ្មី = ចាប់ពីទំព័រទី១ */
-      renderEmployeeMatrix();
+      mxRenderKeep();
     });
   }
   if (els.matrixSearchClear){
@@ -44037,7 +44091,7 @@ window.__toiImport = function(data){
       matrixQuery = '';
       els.matrixSearchClear.hidden = true;
       matrixPage = 0;
-      renderEmployeeMatrix();
+      mxRenderKeep();
       els.matrixSearch.focus();
     });
   }
@@ -61293,7 +61347,9 @@ CC.vatManPanel = function(){
   if(!ys.length) return '';
   /* [stated] គ្មានការព្រមានទេ ៖ ការប្រកាស MTR និង VAT បង្ហាញរឿងនេះរួចហើយ
      ហើយឥណទានឈប់មុនខែធ្នូ មានន័យត្រឹមតែថាវាត្រូវបានប្រើអស់។ */
-  var h = ['<div class="cc-sec"><div class="cc-h">✏️ ការកំណត់អាករលើតម្លៃបន្ថែម — បំពេញដោយដៃ</div>',
+  /* [stated] ២០២៦-១១-១៤ ៖ ចំណងជើង «✏️ ការកំណត់អាករលើតម្លៃបន្ថែម —
+     បំពេញដោយដៃ» ត្រូវលុបចេញ ; តារាងនៅដដែល ។ */
+  var h = ['<div class="cc-sec">',
     '<div class="cc-scroll"><table><thead><tr><th style="min-width:280px">បរិយាយ</th>'];
   ys.forEach(function(y){ h.push('<th class="n">' + y + '</th>'); });
   h.push('</tr></thead><tbody>');
