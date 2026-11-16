@@ -43,7 +43,7 @@
 })();
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SYSTEM · 16/11-C72</title>
+<title>SYSTEM · 16/11-C74</title>
 <!-- ដាក់លើអេក្រង់ដើមទូរស័ព្ទ ៖ រូបតំណាង ឈ្មោះ និងបើកពេញអេក្រង់
      manifest ដាក់ជា data URL ព្រោះ Apps Script បម្រើឯកសារតែមួយ។ -->
 <meta name="mobile-web-app-capable" content="yes">
@@ -672,7 +672,8 @@ body.view-mtr-active main{align-self:flex-start; min-height:0;}
   font-size:24px; line-height:1;
 }
 @media screen and (max-width: 760px){
-  #toi-embed .cover-actions{ position:static; margin:0 0 10px; }
+  /* [stated] ២២:២៨ ៖ ប៊ូតុងព្រីនត្រឡប់ជាអណ្តែត ⇒ ចំណងជើងឡើងជួរជាមួយវា */
+  #toi-embed .cover-actions{ position:absolute; left:0; top:0; margin:0; }
   #toi-embed .cv-print-btn{
     width:42px; min-width:42px; height:42px; min-height:42px; font-size:21px; }
 }
@@ -5817,13 +5818,15 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     }
     /* ⚠ ត្រូវតែដូចសមាមាត្រជួរដទៃ ( ៤៤/៥៦ ) ៖ វាស់បាន ពេលវានៅ ៤៨/៥២
        គែម «៖» របស់ជួរ Email ឈរនៅ ១៧៥ ខណៈជួរដទៃនៅ ១៧០ ⇒ មិនត្រង់គ្នា ។ */
+    /* ⚠⚠ [stated] ២២:២៨ ៖ ត្រូវប្រើ **អថេរដដែល** នឹងស្លាកដទៃ ៖ លេខថេរ
+       ៤៦% ខុសពី `--cvlbl` ដែល JS គណនា ( វាស់ ៖ ៤១,៣% ) ⇒ «៖» ខុសជួរ ១៨px ។ */
     #toi-embed #coverPanel table.cv-grid td.cv-tight > .cv-mlbl{
-      flex:0 0 46%; box-sizing:border-box; text-align:left !important;
+      flex:0 0 var(--cvlbl, 46%); box-sizing:border-box; text-align:left !important;
       padding-right:8px; white-space:nowrap; font-size:12.5px !important;
       line-height:1.6; color:var(--toi-slate,#5B6478);
     }
     #toi-embed #coverPanel table.cv-grid td.cv-tight > .cf-wrap{
-      flex:0 0 54% !important; min-width:0; width:auto !important;
+      flex:0 0 var(--cvfld, 54%) !important; min-width:0; width:auto !important;
       margin-bottom:0 !important;
     }
     /* ⚠ ស្លាក ១ បន្ទាត់ហើយ ⇒ តម្រឹមកណ្តាលបញ្ឈរ មិនមែនខាងលើ */
@@ -5862,9 +5865,15 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
        ពន្ធដារ កុំឱ្យចុះបន្ទាត់ ដាក់តែមួយជួរបានហើយ» ។
        ⚠ ការវាស់ ៖ ១ ជួរត្រូវការ ៣២៧px ឯទទឹងមានត្រឹម ២៨២px
          ⇒ ១៥ × ២៨២ ÷ ៣២៧ = ១២,៩px ⇒ ដាក់ ១២px ( មានចន្លោះសុវត្ថិភាព ) ។ */
+    /* ⚠⚠ [stated] ២២:២៨ ៖ «មិនគួរឱ្យដាច់ស្រះលើអក្សរ» ⇒ `overflow:hidden`
+       បូកកម្ពស់ជួរតូច ( វាស់ ៖ ៩px ) កាត់ស្រះខាងលើ ⇒ ដោះ overflow និងបង្កើន
+       line-height ។ «ខិតឡើងលើបានច្រើន» ⇒ ចំណងជើងឡើងជួរតែមួយនឹងប៊ូតុងព្រីន ។ */
     #toi-embed #coverPanel h1{
       white-space:nowrap !important; font-size:12px !important;
-      overflow:hidden; text-overflow:ellipsis; margin-bottom:10px !important;
+      overflow:visible !important; text-overflow:clip;
+      line-height:1.95 !important; min-height:42px;
+      display:flex !important; align-items:center; justify-content:center;
+      padding-left:50px; margin:0 0 6px !important;
     }
     /* ⭐⭐ [stated] «បន្ថយទំហំអក្សរ III. … ការប្តូរទំហំមិនមែនតែលេខ III ទេ
        គឺដាក់ស្មើៗគ្នា» ⇒ ចំណងជើងផ្នែកទាំងអស់ ១៣px ស្មើគ្នា ( មុននេះ ១៥px
@@ -7079,15 +7088,30 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
 /* [stated] ផ្នែកធំៗ ៦ ជាជួរដេកលើរបារឧបករណ៍ ; ទម្រង់ដូចប៊ូតុងតូចៗ */
 #toi-embed #toiMainNav{ flex-wrap:wrap; gap:6px; }
 /* ⭐ [stated] ២០២៦-១១-១៦ ២១:១៨ ៖ ប៊ូតុងព្រីនរបស់របៀបវិភាគ ( ជួរ TAB ) */
+/* [stated] ២២:២២ ៖ «រូប Print មិនបាច់ដាក់ប្រអប់ស» ⇒ រូបសុទ្ធ */
 #toi-embed .toi-riskprint{
   display:inline-flex; align-items:center; justify-content:center;
-  width:34px; height:30px; margin-left:6px; cursor:pointer;
-  border:1px solid var(--toi-line); border-radius:8px;
-  background:#fff; font-size:15px; line-height:1;
+  width:30px; height:28px; margin-left:4px; cursor:pointer;
+  border:none; background:transparent; box-shadow:none;
+  border-radius:8px; font-size:17px; line-height:1;
 }
 #toi-embed .toi-riskprint.alt{ border-style:dashed; margin-left:4px; }
 /* ⭐ [stated] ២២:០២ ៖ ជួរចំណងជើងទំព័រវិភាគ ៖ ចំណងជើង + ប៊ូតុងព្រីន */
 #toi-embed .toi-anl-head{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+/* ⭐ [stated] ២០២៦-១១-១៦ ២២:២២ ៖ របៀបវិភាគ ៖ ទុកតែអក្សរ TAB — គ្មានផ្ទាំងស
+   គ្មានស្រមោល ហើយ TAB ទាំង ៤ រុំបន្ទាត់ជំនួសការអូសទៅស្តាំ ។ */
+#toi-embed.toi-riskmode .toolbar{
+  background:transparent !important; box-shadow:none !important;
+  border:none !important; padding:6px 8px !important;
+}
+#toi-embed.toi-riskmode #toiMainNav{
+  flex-wrap:wrap !important; overflow:visible !important; row-gap:4px;
+}
+@media screen and (max-width: 760px){
+  #toi-embed.toi-riskmode .toi-topnav-item{
+    padding:5px 7px !important; font-size:12px !important;
+  }
+}
 #toi-embed .toi-anl-head .panel-title{ margin:0; }
 #toi-embed .toi-riskprint:hover{ background:rgba(0,0,0,.05); }
 /* [stated] គ្មានស៊ុម គ្មានផ្ទៃខាងក្រោយ ៖ ប្រអប់ដែលទទឹងខុសៗគ្នាមើលទៅ
@@ -37251,6 +37275,41 @@ function applyToiZoom(){
   if(host) host.style.setProperty('--toi-zoom', String(toiZoom));
   const lbl = document.getElementById('zoomLabel');
   if(lbl) lbl.textContent = Math.round(toiZoom*100) + '%';
+  try{ toiTrimZoomGap(); setTimeout(toiTrimZoomGap, 120); }catch(e){}
+}
+/* ⭐⭐ [stated] ២០២៦-១១-១៦ ២២:២២ ៖ «ហេតុអ្វីអូសចុះក្រោមបានឆ្ងាយម្លេះ
+   ទិន្នន័យមិនដល់ក្រោមផង» ។
+   ⚠ មូលហេតុ ៖ ម៉ាស៊ីនខ្លះ ( Safari/iOS ) បម្រុងទុកកម្ពស់ **មុនបង្រួម**
+     សម្រាប់ប្រអប់ដែលប្រើ `zoom` ⇒ សល់ចន្លោះទទេ ≈ កម្ពស់ × ( ១ − zoom ) ។
+   ⇒ វាស់ ៖ `offsetHeight` ធៀបនឹងកម្ពស់ពិត ។ បើលើស ⇒ ទូទាត់ ។
+   ⚠ លើម៉ាស៊ីនត្រឹមត្រូវ ( Chrome ) លេខពីរស្មើគ្នា ⇒ គ្មានអ្វីកើតឡើង ។
+   ⚠ ផ្លូវបម្រុងប្រើតែពេលគម្លាតត្រូវនឹងរូបមន្តខាងលើ ( ±៣៥% ) ⇒ មិនទាញ
+     ខ្លឹមសារឡើងដោយច្រឡំក្នុងករណីផ្សេង ។ */
+function toiTrimZoomGap(){
+  try{
+    const host = document.getElementById('toi-embed');
+    if(!host) return;
+    const c = host.querySelector('.content');
+    if(!c) return;
+    c.style.marginBottom = '';
+    if(toiZoom > 0.999 || !c.offsetParent) return;
+    const real = c.getBoundingClientRect().height;
+    const par = c.parentElement;
+    if(!real || !par) return;
+    /* ⚠⚠ កុំប្រើ `c.offsetHeight` ធៀបនឹងកម្ពស់ពិត ៖ Chrome ក៏ត្រឡប់លេខ
+       **មុនបង្រួម** ដែរ ⇒ ការប្រៀបនោះឆេះគ្រប់ម៉ាស៊ីន ( វាស់បាន ៖ −៣៥១px
+       លើ Chromium ដែលគ្មានបញ្ហា ) ។
+       ⇒ សួរឪពុកវិញ ៖ តើប្រអប់ឪពុក **ហៀរ** លើសអ្វីដែលខ្លឹមសារពិតត្រូវការឬទេ ?
+         Chrome ៖ scrollHeight = max( clientHeight , ខ្លឹមសារ ) ⇒ គម្លាត ០ ។
+         Safari ដែលមានបញ្ហា ៖ scrollHeight = កម្ពស់មុនបង្រួម ⇒ គម្លាត > ០ ។ */
+    const pcs = getComputedStyle(par);
+    let need = real + (parseFloat(pcs.paddingTop) || 0) + (parseFloat(pcs.paddingBottom) || 0);
+    Array.prototype.forEach.call(par.children, function(ch){
+      if(ch !== c) need += ch.getBoundingClientRect().height;
+    });
+    const extra = par.scrollHeight - Math.max(par.clientHeight, need);
+    if(extra > 24) c.style.marginBottom = (-Math.round(extra)) + 'px';
+  }catch(e){}
 }
 function stepToiZoom(d){
   toiZoom = Math.min(1.8, Math.max(0.5, Math.round((toiZoom + d)*100)/100));
@@ -37385,11 +37444,18 @@ try{
       }
     }).observe(__toiFitHost, { childList:true, subtree:true });
   }
+  /* ⚠⚠ [stated] ២០២៦-១១-១៦ ២២:២៨ ៖ «អូសញ័រញាក់ៗ» ⇒ លើ iOS ការអូស
+     បង្រួញរបារអាសយដ្ឋាន ⇒ `resize` ( កម្ពស់ប្រែ ទទឹងមិនប្រែ ) ⇒ បង្រួម
+     ឡើងវិញ ⇒ កម្ពស់ប្រែ ⇒ អូររអិល ⇒ រង្វិលជុំ ។
+     ⇒ ប្រតិកម្ម **តែពេលទទឹងប្រែ** ( ការបង្វិលអេក្រង់ · ការប្តូរទំហំផ្ទាំង ) ។ */
+  var __toiFitW = window.innerWidth;
   window.addEventListener('resize', function(){
+    if(window.innerWidth === __toiFitW) return;   /* កម្ពស់ប៉ុណ្ណោះ ⇒ រំលង */
+    __toiFitW = window.innerWidth;
     clearTimeout(__toiFitT); __toiFitT = setTimeout(toiAutoFit, 160);
   });
   window.addEventListener('orientationchange', function(){
-    setTimeout(toiAutoFit, 260);
+    setTimeout(function(){ __toiFitW = window.innerWidth; toiAutoFit(); }, 260);
   });
   setTimeout(toiAutoFit, 400);
 }catch(e){}
@@ -41089,6 +41155,8 @@ function renderNav(){
     const emb = document.getElementById('toi-embed');
     /* [stated] ២១:១៨ ៖ របារចំហៀង = ជំហានទី១–១៧ ប៉ុណ្ណោះ */
     const sideOn = toiInSteps;
+    /* [stated] ២២:២២ ៖ របៀបវិភាគ ⇒ របារឧបករណ៍គ្មានផ្ទាំងស ( CSS ) */
+    if(emb) emb.classList.toggle('toi-riskmode', toiInRisk);
     if(emb) emb.classList.toggle('toi-side', sideOn);
     if(sideOn && nav){
       nav.innerHTML = '';
@@ -67090,7 +67158,7 @@ else CC.init();
      ការរក្សាទុកឥឡូវ **រាយលេខជំហាន** លើផ្ទាំង ហើយផ្អាកអោយផ្ទាំងគូររួច
      មុននឹងចាប់ការងារធ្ងន់នីមួយៗ។ សារចុងក្រោយដែលឃើញ = ជំហានដែលគាំង។
      លេខ build ក៏បង្ហាញផង ដើម្បីដឹងច្បាស់ថាកំពុងប្រើឯកសារណា។ */
-  var RSC_BUILD = '16/11 · C72';
+  var RSC_BUILD = '16/11 · C74';
   try{ window.__RSC_BUILD = RSC_BUILD; }catch(e){}
 
   /* ⚠⚠ [stated] ២០២៦-០៨-១៣ ៖ រូបថតបង្ហាញ **«Page Unresponsive» របស់ Chrome**
