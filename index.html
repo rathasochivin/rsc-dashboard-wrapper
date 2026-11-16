@@ -43,7 +43,7 @@
 })();
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SYSTEM · 14/11-B86</title>
+<title>SYSTEM · 16/11-C64</title>
 <!-- ដាក់លើអេក្រង់ដើមទូរស័ព្ទ ៖ រូបតំណាង ឈ្មោះ និងបើកពេញអេក្រង់
      manifest ដាក់ជា data URL ព្រោះ Apps Script បម្រើឯកសារតែមួយ។ -->
 <meta name="mobile-web-app-capable" content="yes">
@@ -543,8 +543,159 @@ body.view-mtr-active main{align-self:flex-start; min-height:0;}
 .module-card .mc-body{padding:18px 20px 17px; flex:1; display:flex; flex-direction:column; gap:9px;}
 /* ⭐ លេខឈរជាមួយចំណងជើង ៖ ចំណងជើងស្រូបទំហំដែលនៅសល់ លេខនៅជ្រុងស្តាំ */
 .module-card .mc-head{display:flex; align-items:center; gap:11px;}
+/* ⚠⚠ កុំដាក់ `overflow:hidden` ត្រង់នេះ ៖ វាកាត់ស្រៈខ្មែរខាងលើអក្សរ
+   ( ិ ី ើ ័ ) ហើយ overflow-y:visible ជួសជុលមិនបាន ។ ការមិនឱ្យអក្សរ
+   ហៀរទៅជាន់លេខ ជាការងាររបស់ mcFitTitles ។ មើលក្បាល fix_mcclip.py */
 .module-card .mc-head .mc-title{ flex:1 1 auto; min-width:0; }
+/* ⭐⭐ [stated] ២០២៦-១១-១៦ ៖ ព័ត៌មានផ្ទាល់ខ្លួនជាជួរដេក មិនមែនប្រអប់កាត
+   ( មើលក្បាល fix_pirow.py ) */
+#personal-info-container .pi-wrap{
+  max-width:none !important; margin:4px 0 0 !important; padding:0 !important;
+  background:transparent !important; box-shadow:none !important;
+  border-radius:0 !important;
+}
+/* ក្រឡាចត្រង្គពីរឈុត ⇒ ជួរដេក ១ វាលក្នុង ១ ជួរ */
+/* [stated] ២០២៦-១១-១៦ ៖ របារផ្ទុកឯកសារស្ទួន ⇒ លាក់ ( មើលក្បាល fix_uprow.py ) */
+#toi-embed .toi-uprow{ display:none !important; }
+/* ⭐ [stated] ២០២៦-១១-១៦ ៖ ២ ជួរ ៖ សវនករទាំងពីរ / ការិយាល័យទាំងបី */
+#personal-info-container .pi-wrap{
+  display:grid !important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+  column-gap:30px !important; align-items:start !important;
+}
+#personal-info-container .pi-wrap > h2{ display:none !important; }
+/* ⚠⚠ `display:contents` ⇒ វាលក្លាយជាធាតុ grid ពិតៗ ទើបត្រង់ជាមួយ
+   ជួរខាងស្តាំបាន ។ មើលក្បាល fix_pialign.py */
+/* [stated] ២០២៦-១១-១៦ ៖ ឈ្មោះ + ID ជួរតែមួយ ⇒ flex ជួរដេក */
+#personal-info-container .pi-g1{
+  display:flex !important; gap:18px !important;
+  grid-column:1 !important; grid-row:1 !important;
+  align-items:center !important;
+}
+#personal-info-container .pi-g1 > div{ flex:1 1 0 !important; min-width:0 !important; }
+#personal-info-container .pi-h{ display:none !important; }
+#personal-info-container .pi-row{
+  grid-column:2 !important; margin-bottom:0 !important; padding:5px 0 !important;
+}
+/* ⚠⚠ ចាក់ជួរឱ្យច្បាស់ ៖ auto-placement មិនថយក្រោយ ⇒ ខុសមួយជួរ
+   ( មើលក្បាល fix_pialign2.py ) */
+#personal-info-container .pi-row1{ grid-row:1 !important; }
+#personal-info-container .pi-row2{ grid-row:2 !important; }
+#personal-info-container .pi-g2{ grid-row:3 !important; }
+#personal-info-container .pi-g2{
+  grid-column:1 / -1 !important; display:grid !important; margin-top:10px !important;
+  grid-template-columns:repeat(3, minmax(0,1fr)) !important;
+  gap:2px 24px !important;
+}
+#personal-info-container .pi-g1 > div,
+#personal-info-container .pi-g2 > div{
+  display:flex !important; align-items:center !important;
+  gap:12px !important; padding:5px 0 !important;
+  border-bottom:1px dotted var(--line, #DDD6C7);
+}
+#personal-info-container .pi-g1 > div > label,
+#personal-info-container .pi-g2 > div > label{
+  display:block !important; margin:0 !important;
+  /* ⚠ `អនុប្រធាននាយកដ្ឋាន` វែងជាង ១១០px ⇒ ចុះ ២ បន្ទាត់ ( ឃើញក្នុងរូប )
+     ⇒ មិនបំបែកបន្ទាត់ ហើយទុកឱ្យស្លាកស្រូបទទឹងតាមអក្សរពិត */
+  flex:0 0 auto !important; max-width:46% !important;
+  white-space:nowrap !important; margin-right:10px !important;
+  text-align:left !important;
+  font-size:13px !important; color:var(--text, #243B36) !important;
+}
+#personal-info-container .pi-g1 > div > input,
+#personal-info-container .pi-g2 > div > input{
+  flex:1 1 auto !important; width:auto !important; min-width:0 !important;
+}
+/* ⭐ [stated] ២០២៦-១១-១៦ ៖ បង្រួមប្រអប់ឈ្មោះ/ID ⇒ ជួរឆ្វេងខ្លី
+   ហើយប្លុកសវនករដៃគូទទួលកន្លែងបន្ថែម */
+#personal-info-container .pi-g1 > div > input{ flex:1 1 auto !important; }
+#personal-info-container .pi-h{ margin-top:0 !important; }
+#personal-info-container .pi-h{ margin:16px 0 6px !important; }
+#personal-info-container .pi-row{ padding:3px 0 !important; }
+@media screen and (max-width: 760px){
+  /* ⚠ ជួរដេកចង្អៀតពេកលើទូរស័ព្ទ ⇒ ត្រឡប់ទៅឈរលើក្រោមវិញ */
+  #personal-info-container .pi-wrap{ display:block !important; }
+  #personal-info-container .pi-g1,
+  #personal-info-container .pi-g2{ grid-template-columns:1fr !important; display:block !important; }
+  #personal-info-container .pi-g1{ display:block !important; }
+  #personal-info-container .pi-g1 > div,
+  #personal-info-container .pi-row{ grid-column:auto !important; grid-row:auto !important; }
+  #personal-info-container .pi-g2{ grid-row:auto !important; }
+  #personal-info-container .pi-palab{ flex:0 0 auto !important; }
+  #personal-info-container .pi-g1 > div,
+  #personal-info-container .pi-g2 > div{
+    display:block !important; border-bottom:0; padding:4px 0 !important;
+  }
+  #personal-info-container .pi-g1 > div > label,
+  #personal-info-container .pi-g2 > div > label{
+    text-align:left !important; margin-bottom:4px !important;
+  }
+  #personal-info-container .pi-g1 > div > input,
+  #personal-info-container .pi-g2 > div > input{ width:100% !important; }
+}
+/* ⭐ [stated] ២០២៦-១១-១៦ ៖ ចំណងជើងផ្នែកក្នុង DATA ENTRY ⇒ «មានរបៀបរាប់រយ»
+   ( មើលក្បាល fix_demerge.py ) */
+/* ⚠ ក្បាលផ្នែកទី ១ ⇒ គ្មាន margin ខាងលើ ( កុំទុកប្រហោងទទេ ) */
+#toi-embed #content > .de-sec-head:first-child{ margin-top:0 !important; }
+/* [stated] ២០២៦-១១-១៦ ៖ ប៊ូតុងព្រីនលើទំព័រ COVER — រូបតែមួយ អណ្តែត */
+/* ⭐ [stated] ២០២៦-១១-១៦ ៖ ចំណងជើងផ្នែក និងសម្គាល់ ក្នុងកន្ទុយជំហាន */
+#toi-embed table.toi-sec-table{ table-layout:fixed; width:100%; }
+#toi-embed table.toi-sec-table th,
+#toi-embed table.toi-sec-table td{
+  white-space:normal; overflow-wrap:anywhere; vertical-align:middle;
+}
+#toi-embed table.toi-sec-table tr.toi-sec-head th{ text-align:center; font-size:12.5px; }
+#toi-embed table.toi-sec-table tr.toi-sec-ref td{ text-align:center; font-weight:600; }
+#toi-embed .toi-sec{
+  margin:18px 0 8px; font-size:14.5px; font-weight:700;
+  font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif;
+  color:var(--primary-dark, #0F3D3E);
+}
+#toi-embed .toi-note{
+  margin:6px 0 10px; font-size:12.5px; line-height:1.85;
+  color:var(--text, #243B36);
+}
+@media print{
+  #toi-embed .toi-sec{ font-size:12.5px !important; margin:10px 0 5px !important; }
+  #toi-embed .toi-note{ font-size:10.5px !important; margin:4px 0 7px !important; }
+}
+#toi-embed .cover-wrap{ position:relative; }
+#toi-embed .cover-actions{
+  position:absolute; left:0; top:0; z-index:5;
+  display:flex; gap:10px; margin:0;
+}
+#toi-embed .cv-print-btn{
+  width:48px; min-width:48px; height:48px; min-height:48px;
+  padding:0 !important; border-radius:12px;
+  display:inline-flex; align-items:center; justify-content:center;
+  font-size:24px; line-height:1;
+}
+@media screen and (max-width: 760px){
+  #toi-embed .cover-actions{ position:static; margin:0 0 10px; }
+  #toi-embed .cv-print-btn{
+    width:42px; min-width:42px; height:42px; min-height:42px; font-size:21px; }
+}
+@media print{ #toi-embed .cover-actions{ display:none !important; } }
+#toi-embed .de-sec-head{
+  margin:26px 0 10px; padding:9px 14px; border-radius:10px;
+  background:var(--accent-light, #F3EFE4);
+  border-left:4px solid var(--primary, #0F3D3E);
+  /* ⚠ `Noto Sans` ពីមុខ ៖ Muol គ្មានអក្សរឡាតាំង ⇒ «DATA ENTRY» ធ្លាក់ទៅ
+     serif លំនាំដើម ។ ខ្មែរនៅតែទៅ Muol ដដែល ( ជំនួសតាមតួអក្សរ ) ។ */
+  font-family:'Noto Sans','Khmer OS Muol Light','Noto Serif Khmer',sans-serif;
+  font-size:16px; font-weight:700; letter-spacing:.02em;
+  color:var(--primary-dark, #0F3D3E);
+}
+@media screen and (max-width: 760px){
+  #toi-embed .de-sec-head{ font-size:14px; padding:8px 11px; margin:18px 0 8px; }
+}
 .module-card .mc-head .mc-stat{ flex:0 0 auto; margin-left:auto; text-align:right; }
+/* ⭐ [stated] ២០២៦-១១-១៦ ៖ ពេលចំណងជើង និងលេខមិនល្មមជួរតែមួយ ⇒ លេខចុះ
+   បន្ទាត់ក្រោម ដោយតម្រឹមនឹងចំណងជើង ។ មើលក្បាល fix_mcfit2.py */
+.module-card .mc-head.mc-stack{ flex-wrap:wrap; }
+.module-card .mc-head.mc-stack .mc-stat{
+  flex:0 0 100%; margin-left:0; padding-left:49px; text-align:left; }
 .module-card .mc-icon{
   width:38px; height:38px; border-radius:10px; flex:none;
   display:flex; align-items:center; justify-content:center; font-size:19px;
@@ -792,6 +943,42 @@ tbody td.name-cell{text-align:left; white-space:normal;}
   .mtr-form td[data-col]{ text-decoration:none !important; cursor:auto !important; }
 }
 /* ⚠ រូបសុទ្ធ គ្មានប្រអប់ — មើលក្បាល fix_vatzoomui.py */
+/* ⭐⭐ ម៉ឺនុយផ្លូវទិន្នន័យនៅរបារខាងលើ — មើលក្បាល fix_atbmenu.py */
+.atb-menu{ position:relative; display:inline-flex; }
+.atb-menu-pop{
+  position:absolute; top:calc(100% + 6px); left:0; z-index:4000;
+  /* ⚠⚠ column flex ⇒ ធាតុកូន blockified ទោះ .admin-only បង្ខំ
+     `display:revert !important` ( inline-block ) ក៏ដោយ ។ កុំដាក់
+     display !important លើ .atb-mi — មើលក្បាល fix_atbmenu2.py */
+  display:flex; flex-direction:column; align-items:stretch;
+  min-width:250px; padding:6px; border-radius:10px;
+  background:#102E2C; border:1px solid rgba(255,255,255,.14);
+  box-shadow:0 10px 28px rgba(0,0,0,.35);
+}
+.atb-menu-pop[hidden]{ display:none !important; }
+.atb-pop-right{ left:auto; right:0; }
+.atb-mi{
+  width:100%; padding:8px 10px; border:0; border-radius:8px; cursor:pointer;
+  background:transparent; color:#EFEFEA; font:inherit; font-size:13px;
+  text-align:left; white-space:nowrap;
+}
+.atb-mi:hover{ background:rgba(255,255,255,.10); }
+.atb-mi .mi-ic{ font-size:15px; margin-right:9px; }
+@media screen and (max-width: 760px){
+  .atb-menu-pop{ min-width:216px; }
+  .atb-mi{ white-space:normal; }
+}
+/* ⭐⭐ ប្រអប់ពន្យល់ការគណនា លើទូរស័ព្ទ — មើលក្បាល fix_drillmob.py */
+#vatDrill table{ min-width:0 !important; width:100% !important; table-layout:auto; }
+#vatDrill th, #vatDrill td{ white-space:normal; overflow-wrap:anywhere; }
+#vatDrill td:last-child, #vatDrill th:last-child{ white-space:nowrap; }
+@media screen and (max-width: 760px){
+  #vatDrill{ padding:8px !important; }
+  #vatDrill > div{ padding:12px 12px 14px !important; max-height:92vh !important; }
+  #vatDrill h3{ font-size:14.5px !important; }
+  #vatDrill table{ font-size:11.5px !important; }
+  #vatDrill th, #vatDrill td{ padding:5px 6px !important; }
+}
 /* ⭐ សញ្ញាសំណើសុំបង្វិលសង — មើលក្បាល fix_vatnote2.py */
 .vat-rfm{ font-size:11px; opacity:.85; cursor:help; margin-right:2px; }
 @media print{ .vat-rfm{ display:none !important; } }
@@ -3056,16 +3243,20 @@ html.rsc-mobile-print #docs-modal .smw-r .bq{ font-size:.44em; line-height:4.2; 
 /* ⭐ [stated] ២០២៦-១១-១៤ ៖ ប៊ូតុងទាញយក ៖ គ្មានប្រអប់ គ្មានស៊ុម រូបចំកណ្តាល
    ⚠ `display:inline-flex` + `place-items:center` ⇒ រូបនៅចំកណ្តាលពិត
      ( emoji ចាស់អង្គុយតាមបន្ទាត់គោលរបស់ពុម្ពអក្សរ ⇒ មិនចំកណ្តាល ) ។ */
-.step-actions .btn.step-dl{
+.step-actions .btn.step-dl,
+.step-head .btn.step-dl{
   flex:0 0 auto; width:34px; min-width:34px; height:34px; min-height:34px;
   padding:0 !important; border:0 !important; background:transparent !important;
   box-shadow:none !important; border-radius:50%;
   display:inline-flex !important; align-items:center; justify-content:center;
   color:var(--primary); line-height:1;
   transition:background .15s ease, color .15s ease;}
-.step-actions .btn.step-dl:hover{ background:rgba(0,0,0,.06) !important; }
-.step-actions .btn.step-dl:active{ background:rgba(0,0,0,.12) !important; }
-.step-actions .btn.step-dl svg{ display:block; }
+.step-actions .btn.step-dl:hover,
+.step-head .btn.step-dl:hover{ background:rgba(0,0,0,.06) !important; }
+.step-actions .btn.step-dl:active,
+.step-head .btn.step-dl:active{ background:rgba(0,0,0,.12) !important; }
+.step-actions .btn.step-dl svg,
+.step-head .btn.step-dl svg{ display:block; }
 @media screen and (max-width: 760px){
   /* ⇒ ជួរតែមួយ ៖ រូបទាញយក + «ការគណនាពន្ធឡើងវិញ» + អ្វីដែលនៅសល់
      ⚠ បើជំហានណាមានប៊ូតុងច្រើន ( ជំហាន ៤ · ៥ ) ⇒ អូសក្នុងរបារខ្លួនឯង
@@ -3080,7 +3271,8 @@ html.rsc-mobile-print #docs-modal .smw-r .bq{ font-size:.44em; line-height:4.2; 
     height:34px !important; min-height:34px !important;}
   /* ⚠ `min-height` ឈ្នះលើ `height` ⇒ ត្រូវកំណត់វាផង បើមិនដូច្នេះ
      ប្រអប់ក្លាយជា ៣២×៣៤ ( មិនមែនការ៉េ ) ។ */
-  .step-actions .btn.step-dl{
+  .step-actions .btn.step-dl,
+  .step-head .btn.step-dl{
     width:32px; min-width:32px; height:32px !important;
     min-height:32px !important; padding:0 !important;}
   .step-actions .btn.step-dl svg{ width:17px; height:17px; }
@@ -5999,6 +6191,70 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
   #toi-embed .neg{color:var(--toi-bad);}
 
   #toi-embed .year-tabs{display:flex; gap:6px; margin-bottom:12px; flex-wrap:wrap;}
+  /* ⭐ [stated] ២០២៦-១១-១៦ ៖ ចំណងជើង · ↩ · ឆ្នាំ ជួរដេកតែមួយ */
+  #toi-embed .step-head{
+    display:flex; align-items:center; flex-wrap:wrap;
+    gap:4px 14px; margin-bottom:8px;
+  }
+  #toi-embed .step-head .panel-title{ margin:0 !important; }
+  /* ⭐ [stated] ២០២៦-១១-១៦ ២០:៤៩ ៖ ប៊ូតុងសកម្មភាពនៅជួរចំណងជើងតែម្តង */
+  #toi-embed .step-head .step-actions{ margin:0 !important; gap:6px; }
+  #toi-embed .step-head .step-actions .btn{ padding:5px 10px; font-size:12.5px; }
+  /* ⭐ [stated] ២០២៦-១១-១៦ ៖ «ដាក់ CENTER នោះសម្រាប់តែពេលព្រីនបានហើយ
+     នៅលើអេក្រង់ អាចដាក់នៅខាងឆ្វេងដូចធម្មតា» ⇒ ច្បាប់នោះផ្លាស់ទៅប្លុកព្រីន ។ */
+  /* ⭐ ជំហានទី២ ៖ តារាងតាមទម្រង់ផ្លូវការ */
+  #toi-embed .s2-table{ border-collapse:collapse; width:100%; }
+  #toi-embed .s2-table th{
+    text-align:center !important; vertical-align:middle; position:static;
+    font-weight:700; background:#fff; color:var(--toi-ink);
+    white-space:normal; letter-spacing:0;
+    font-family:'Khmer OS Siemreap','Noto Serif Khmer',sans-serif;
+  }
+  #toi-embed .s2-table tbody tr{ background:#fff; }
+  #toi-embed .s2-table th, #toi-embed .s2-table td{
+    border:1px solid #c9bfa0; padding:6px 8px; vertical-align:middle;
+  }
+  #toi-embed .s2-table td.num{ text-align:right; }
+  #toi-embed .s2-table td.pct{ text-align:right; }
+  #toi-embed .s2-table td.s2-sec{ font-weight:700; text-align:left; background:#fbf9f3; }
+  #toi-embed .s2-table td.s2-total{ text-align:right; font-weight:700; }
+  /* ជួរយោង ៖ នៅក្រោមតារាង គ្មានស៊ុម ស្របខាងស្តាំ */
+  #toi-embed .s2-table tr.s2-refline td{
+    border:none !important; background:transparent !important;
+    text-align:right; font-size:.92em; padding-top:6px;
+  }
+  #toi-embed .s2-foot{ margin:10px 2px 0; font-size:.92em; line-height:1.6; }
+  #toi-embed .s14-head{ margin:18px 2px 8px; font-size:1.02em; font-weight:700; }
+  /* ⭐ ជំហានទី១ ៖ បន្ទាត់ «ស្លាក ៖ តម្លៃ» ២ ជួរឈរ គ្មានស៊ុម */
+  #toi-embed .s1-grid{
+    display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); width:100%;
+    column-gap:34px; row-gap:7px; padding:8px 4px 4px; align-items:start;
+    justify-content:start;
+  }
+  #toi-embed .s1-item{ display:flex; gap:7px; align-items:baseline; min-width:0; }
+  #toi-embed .s1-item.s1-wide{ grid-column:1 / -1; }
+  #toi-embed .s1-lab{ flex:0 0 auto; }
+  #toi-embed .s1-sep{ flex:0 0 auto; }
+  #toi-embed .s1-val{ flex:1 1 auto; min-width:0; overflow-wrap:anywhere; }
+  @media screen and (max-width: 760px){
+    #toi-embed .s1-grid{ grid-template-columns:minmax(0,1fr) !important; column-gap:0; }
+    #toi-embed .s1-item{ grid-column:1 / -1 !important; }
+  }
+  #toi-embed .s2-table tr.s2-grp{ background:#f6f3ea; }
+  #toi-embed .s2-table tr.s2-grp td{ font-weight:700; }
+  #toi-embed .step2-form .table-wrap + .s2-foot{ margin-top:8px; }
+  /* ⚠⚠ [stated] ២០២៦-១១-១៦ ២០:៤២ ៖ «លុបបន្ទាត់ពីក្រោមជំហាននីមួយៗចេញ»
+     ( ជំហានទី២ · ៣ · ១០–១៥ = ជំហានដែលប្រើម៉ាស៊ីនទម្រង់ ) ។
+     ⇒ គ្មានបន្ទាត់លើអេក្រង់ ; ពេលព្រីននៅមានដដែល ព្រោះទម្រង់ផ្លូវការ
+       មានបន្ទាត់ក្រោមចំណងជើង ( មើលប្លុកព្រីន ) ។ */
+  #toi-embed .step2-form .panel-title{
+    font-family:'Khmer OS Muol Light','Noto Serif Khmer','Noto Sans',sans-serif;
+    text-decoration:none;
+  }
+  #toi-embed .step-head .year-tabs{ margin-bottom:0; }
+  @media screen and (max-width: 760px){
+    #toi-embed .step-head{ gap:4px 10px; }
+  }
   /* [stated] ២០២៦-០៩-០១ ៖ គ្មានប្រអប់ជាផ្ទៃខាងក្រោយ ⇒ បន្ទាត់ក្រោមប៉ុណ្ណោះ */
   #toi-embed .year-tab{
     padding:6px 12px; border:0; border-bottom:3px solid transparent; border-radius:0;
@@ -6543,7 +6799,11 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     /* ស៊ុមរបស់ប្រអប់រុំឈរនៅទទឹង ១០០% ខណៈតារាងអាចទូលាយជាងនោះ —
        ស៊ុមខាងស្តាំរបស់វាក្លាយជាបន្ទាត់កាត់ឆ្លងកាត់ជួរឈរចុងក្រោយ។
        តារាងមានស៊ុមក្រឡាផ្ទាល់ខ្លួនរួចហើយ ដូច្នេះដកស៊ុមប្រអប់រុំចេញ។ */
-    #toi-embed .table-wrap{box-shadow:none; border:none; overflow:visible; margin-bottom:14px;}
+    /* ⚠⚠ `!important` និងអ័ក្សទាំងពីរ ៖ ច្បាប់អេក្រង់ក្រោយៗដាក់
+       `overflow-y:hidden` ⇒ តាមស្តង់ដារ x ប្រែទៅ auto ⇒ តារាងកាត់
+       លើក្រដាស ។ មើលក្បាល fix_printfix.py */
+    #toi-embed .table-wrap{box-shadow:none; border:none; margin-bottom:14px;
+      overflow:visible !important; overflow-x:visible !important; overflow-y:visible !important;}
     #toi-embed thead th{position:static; font-family:'Khmer OS Muol Light','Khmer OS Muol','Noto Serif Khmer',serif; white-space:normal;}
     /* អក្សរក្បាលតារាងជាពណ៌ស្រាលលើផ្ទៃខៀវ ហើយ browser មិនបោះពុម្ពផ្ទៃ
        ដូច្នេះវាក្លាយជាស្រមាលស្ទើរមើលមិនឃើញ។ ព្រីនជាពណ៌ខ្មៅវិញ។ */
@@ -6603,7 +6863,96 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     #toi-embed tr.risk-row td:first-child{border-left:1px solid #ccc2a4 !important;}
     #toi-embed tr.risk-row td.label::before{content:none !important;}
     #toi-embed td.cell-wrap{white-space:normal !important; word-break:break-word;}
+    /* ⭐⭐ [stated] ២០២៦-១១-១៦ ១៥:៣៨ ៖ «ជំហានទី១០ ឃើញមានដាច់ក្បាលអក្សរ
+       នៅពេលវាចុះទៅទំព័រថ្មី» ⇒ ក្បាលផ្នែកមិនត្រូវកាត់ពាក់កណ្តាល ហើយត្រូវ
+       នៅជាមួយតារាងរបស់វា ។ ⚠ ដាក់តែលើផ្ទាំងទម្រង់ ( ជំហានទី១០·១៤ ) ។ */
+    /* ⭐⭐ [stated] ២០២៦-១១-១៦ ១៩:៤២ ៖ ក្បាលផ្នែក + តារាងរបស់វា រំកិល
+       ទាំងប្លុក ⇒ លែងដាច់ក្បាលអក្សរនៅព្រំដែនទំព័រ ។
+       ⚠⚠ រកឃើញពេលវាស់ ៖ `break-inside:avoid` **មិនដំណើរការ** ពេលឪពុកម្តាយ
+         ជា `display:flex` ( Chrome មិនបំបែកទំព័រតាមក្បួនក្នុង flex ) ។
+         ⇒ ពេលព្រីន ប្តូរ `main` និង `.app` របស់ TOI ទៅជា block ។
+         ( ពេលព្រីន របារចំហៀងលាក់រួចហើយ ⇒ រូបរាងមិនប្រែ ) */
+    #toi-embed .app, #toi-embed .app > main, #toi-embed > .app > main{
+      display:block !important;
+    }
+    /* ⚠⚠ [stated] ២០២៦-១១-១៦ ២០:៤៧ ៖ របារចំហៀងចេញក្នុងទំព័រព្រីន ។
+       មូលហេតុ ៖ ច្បាប់អេក្រង់ `#toi-embed.toi-side .sidebar{display:flex}`
+       ស្ថិតនៅ **ក្រោយ** ប្លុកព្រីនក្នុងឯកសារ ហើយទម្ងន់ស្មើគ្នា ⇒ វាឈ្នះ
+       សូម្បីពេលព្រីន ។ ⇒ បន្ថែម `body` ដើម្បីឱ្យទម្ងន់ខ្ពស់ជាង ។ */
+    body #toi-embed .sidebar,
+    body #toi-embed.toi-side .sidebar,
+    body #toi-embed.toi-side nav.steps{ display:none !important; }
+    #toi-embed .s10-sec-block{
+      page-break-inside:avoid !important; break-inside:avoid !important;
+    }
+    /* ផ្នែកកម្រិតលើទី២ ឡើងទៅ ⇒ ចាប់ទំព័រថ្មី ( មើលកំណត់ត្រាក្នុង JS ) */
+    #toi-embed .s10-sec-block.s10-pbrk{
+      page-break-before:always !important; break-before:page !important;
+    }
+    #toi-embed .step2-form .toi-sec{
+      page-break-inside:avoid !important; break-inside:avoid !important;
+      page-break-after:avoid !important; break-after:avoid !important;
+    }
+    /* ⭐ [stated] ២០២៦-១១-១៦ ១៥:២៣ ៖ ផ្នែក «គ» នៃជំហានទី៩ ចាប់ទំព័រថ្មី */
+    #toi-embed .toi-sec.toi-sec-break{
+      page-break-before:always !important; break-before:page !important;
+    }
+    /* ⭐⭐ [stated] ២០២៦-១១-១៦ ១៩:៥២ ៖ «ជំហានទី៨ ជាខិតជួរចុងក្រោយទៅលើផង
+       ព្រោះវាធ្លាក់មួយជួរតែឯងចូលទំព័រថ្មី» ។
+       ⇒ បង្រួម **គម្លាតក្រឡា** ប៉ុណ្ណោះ ( **មិនប៉ះទំហំអក្សរ** ⇒ អក្សរនៅធំ
+         ដូចដើម ) ⇒ សន្សំកម្ពស់ជាង ១០px ក្នុងមួយជួរដេក ⇒ ជួរចុងក្រោយ
+         ឡើងមកទំព័រមុនវិញ ។ ⚠ ជំហានទី៨ ប៉ុណ្ណោះ ។ */
+    #toi-embed table[data-step-key="Step8"] th,
+    #toi-embed table[data-step-key="Step8"] td,
+    #toi-embed table[data-step-key="Step9"] th,
+    #toi-embed table[data-step-key="Step9"] td{
+      padding:2.5px 8px !important; line-height:1.35 !important;
+    }
+    /* ជំហានទី៩ ៖ បង្រួមគម្លាតក្បាលផ្នែក និងកំណត់សម្គាល់ផង ⇒ ១ ទំព័រ */
+    #toi-embed .toi-sec{ margin:8px 2px 4px !important; }
+    #toi-embed .toi-note{ margin:4px 2px !important; line-height:1.4 !important; }
+    /* ⭐⭐ [stated] ២០២៦-១១-១៦ ១៦:៤៧ ៖ «ផ្នែកការិយបរិច្ឆេទ កុំឱ្យចុះបន្ទាត់» ។
+       ⚠ វាស់រួច ៖ ជួរដេកនោះត្រូវការ ៩៥១px តែទំព័រឈរមានត្រឹម ៧៣០px ។
+         ⇒ បង្រួម **គម្លាតក្រឡា** ( មិនប៉ះទំហំអក្សរ ) សម្រាប់ជំហានទី១
+         ប៉ុណ្ណោះ ⇒ សន្សំបានជាង ២០០px ⇒ អក្សរនៅដដែល តែលែងចុះបន្ទាត់ ។ */
+    #toi-embed table[data-step-key="Step1"] th,
+    #toi-embed table[data-step-key="Step1"] td{
+      padding:2px 5px !important; line-height:1.45 !important;
+    }
+    /* ⭐ [stated] ២០២៦-១១-១៦ ១៥:២១ ៖ លេខមិនចុះបន្ទាត់ពាក់កណ្តាលឡើយ */
+    #toi-embed td.num, #toi-embed td.pct, #toi-embed td.num.cell-wrap{
+      white-space:nowrap !important; word-break:keep-all !important;
+      overflow-wrap:normal !important;
+    }
     #toi-embed td:first-child, #toi-embed th:first-child{text-align:left !important;}
+    /* ⭐⭐ [stated] ២០២៦-១១-១៦ ៖ ចំណងជើងជំហាន ( ១–១៧ ) នៅចំកណ្តាល
+       **តែពេលព្រីន** ; លើអេក្រង់នៅខាងឆ្វេងដូចធម្មតា ។ */
+    #toi-embed .step-head{ justify-content:center !important; text-align:center !important; }
+    /* ⭐ ពេលព្រីន ៖ ចំណងជើងទម្រង់មានបន្ទាត់ក្រោម ( ដូចទម្រង់ផ្លូវការ ) */
+    #toi-embed .step2-form .panel-title{
+      text-decoration:underline !important; text-underline-offset:5px;
+    }
+    /* ⭐⭐ [stated] ២០២៦-១១-១៦ ៖ «ដើមការិយបរិច្ឆេទ ដាក់ CENTER ដូច
+       ចុងការិយបរិច្ឆេទដែរ» ។ ⚠ ច្បាប់ `th:first-child` ខាងលើ ( ទម្ងន់ 1,0,1 )
+       រុញក្រឡាទីមួយនៃជួរដេកនីមួយៗទៅឆ្វេង ⇒ ត្រូវការទម្ងន់ខ្ពស់ជាង ( 1,1,2 ) ។ */
+    #toi-embed .s2-table thead th, #toi-embed .s2-table thead th:first-child{
+      text-align:center !important; vertical-align:middle !important;
+      white-space:normal !important;
+      /* ⚠ គ្មាន `word-break:break-word` ៖ ខ្មែរគ្មានដកឃ្លា ⇒ វាកាត់ពាក្យ
+         ពាក់កណ្តាល ( «ភាគរ / យ» ) ។ ទុកឱ្យកម្មវិធីរុករកកាត់តាមព្រំដែនពាក្យ ។ */
+    }
+    #toi-embed .s2-table td.num, #toi-embed .s2-table td.pct{ text-align:right !important; }
+    #toi-embed .s2-table td.s2-sec, #toi-embed .s2-table td.s2-sec:first-child{
+      text-align:left !important; font-weight:700;
+    }
+    #toi-embed .s2-table td.s2-total, #toi-embed .s2-table td.s2-total:first-child{
+      text-align:right !important; font-weight:700;
+    }
+    #toi-embed .s2-table tr.s2-refline td,
+    #toi-embed .s2-table tr.s2-refline td:first-child{
+      border:none !important; text-align:right !important;
+    }
+    #toi-embed .s2-table tr.s2-grp td{ font-weight:700; }
     /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ជួរ ល.រ ដាក់ជា CENTER ចំកណ្តាល» ។
        មូលហេតុពិត ៖ បន្ទាត់ខាងលើនេះឯង។ ជួរ «ល.រ» ជាក្រឡា **ទីមួយ** ដូច្នេះ
        វាត្រូវច្បាប់នេះចាប់ ហើយបង្ខំតម្រឹមឆ្វេងដោយ !important — ទោះបីជា
@@ -6720,6 +7069,15 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
 #toi-embed .btn.toi-ico-btn:hover:not(:disabled){ background:rgba(255,255,255,.10); }
 /* [stated] ផ្នែកធំៗ ៦ ជាជួរដេកលើរបារឧបករណ៍ ; ទម្រង់ដូចប៊ូតុងតូចៗ */
 #toi-embed #toiMainNav{ flex-wrap:wrap; gap:6px; }
+/* ⭐ [stated] ២០២៦-១១-១៦ ២១:១៨ ៖ ប៊ូតុងព្រីនរបស់របៀបវិភាគ ( ជួរ TAB ) */
+#toi-embed .toi-riskprint{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:34px; height:30px; margin-left:6px; cursor:pointer;
+  border:1px solid var(--toi-line); border-radius:8px;
+  background:#fff; font-size:15px; line-height:1;
+}
+#toi-embed .toi-riskprint.alt{ border-style:dashed; margin-left:4px; }
+#toi-embed .toi-riskprint:hover{ background:rgba(0,0,0,.05); }
 /* [stated] គ្មានស៊ុម គ្មានផ្ទៃខាងក្រោយ ៖ ប្រអប់ដែលទទឹងខុសៗគ្នាមើលទៅ
    មិនស្មើ។ ធាតុសកម្មសម្គាល់ដោយពណ៌ និងបន្ទាត់ក្រោម មិនមែនប្រអប់ទេ។ */
 #toi-embed .toi-topnav-item{
@@ -6740,6 +7098,108 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
    ដើម្បីអោយផ្ទាំង TOI ប្រើទទឹងទាំងមូល។ លាក់ មិនលុប ៖ #stepNav នៅត្រូវ
    មានសម្រាប់ `nav.innerHTML = ''` និង fallback របស់ navItem។ */
 #toi-embed .sidebar{ display:none !important; }
+/* ⭐⭐ [stated] ២០២៦-១១-១៦ ២០:២៣ ៖ «ដាក់ជំហានទី១ ដល់ ១៧ នៅផ្នែកខាងឆ្វេង
+   ដោយរចនាឱ្យស្អាត និងជំនាញខ្ពស់» ⇒ របារចំហៀងត្រឡប់មកវិញ **តែក្នុងរបៀប
+   ជំហាន** ( ថ្នាក់ `toi-side` ដាក់ដោយ renderNav ) ។ */
+#toi-embed.toi-side .sidebar{
+  /* ⭐ [stated] ២០២៦-១១-១៦ ២០:៣៣ ៖ «កែពណ៌ទាំងស្អាត ភ្លឺជាងនេះ» */
+  display:flex !important; width:232px; flex:0 0 232px;
+  background:linear-gradient(180deg,#27566a 0%, #1d4356 58%, #19394a 100%);
+  box-shadow:inset -1px 0 0 rgba(255,255,255,.10);
+}
+#toi-embed .toi-side-head{
+  display:flex; align-items:center; gap:8px;
+  padding:9px 12px; border-bottom:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.06); margin:0 0 4px;
+}
+#toi-embed .toi-side-print{
+  flex:0 0 auto; width:34px; height:30px; border-radius:8px; cursor:pointer;
+  border:1px solid rgba(255,255,255,.22); background:rgba(255,255,255,.10);
+  color:#fff; font-size:15px; line-height:1; display:flex;
+  align-items:center; justify-content:center; transition:background .12s;
+}
+#toi-embed .toi-side-print:hover{ background:var(--toi-gold); border-color:var(--toi-gold); }
+/* ប៊ូតុងព្រីនទី២ ( ជំហានតែមួយ ) ៖ ម៉ូតខ្សែបន្ទាត់ ⇒ ញែកដាច់ពីប៊ូតុងទី១ */
+#toi-embed .toi-side-print.alt{
+  background:transparent; border-style:dashed; border-color:rgba(255,255,255,.45);
+  color:#ffe9c2; font-size:14px;
+}
+#toi-embed .toi-side-print.alt:hover{
+  background:rgba(255,255,255,.16); border-style:solid; border-color:#ffd89a; color:#fff;
+}
+#toi-embed .toi-side-year{
+  flex:1 1 auto; min-width:0; height:30px; border-radius:8px; cursor:pointer;
+  border:1px solid rgba(255,255,255,.22); background:rgba(255,255,255,.10);
+  color:#fff; font-size:13px; padding:0 8px; font-weight:600;
+  font-family:'JetBrains Mono','Khmer OS Siemreap',monospace;
+}
+#toi-embed .toi-side-year option{ color:#17313a; background:#fff; }
+#toi-embed .toi-step-item{
+  display:flex; align-items:center; gap:10px;
+  padding:5px 14px 5px 11px; cursor:pointer;
+  color:#e6f3f8; font-size:12.5px;
+  border-left:3px solid transparent; transition:background .12s, color .12s;
+}
+#toi-embed .toi-step-item .si-no{
+  flex:0 0 22px; width:22px; height:22px; border-radius:6px;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'JetBrains Mono','Khmer OS Siemreap',monospace; font-size:11px;
+  background:rgba(255,255,255,.14); color:#ffd89a;
+}
+/* ⚠⚠ ស្រះខ្មែរនៅ **ខាងលើ** អក្សរ ⇒ `overflow:hidden` + line-height តូច
+   កាត់ក្បាលស្រះចោល ។ ⇒ line-height ធំ និង padding បញ្ឈរក្នុង `.si-tx` ។ */
+#toi-embed .toi-step-item .si-tx{
+  flex:1 1 auto; min-width:0; overflow:hidden;
+  text-overflow:ellipsis; white-space:nowrap;
+  line-height:1.95; padding:2px 0;
+}
+#toi-embed .toi-step-item:hover{ background:rgba(255,255,255,.12); color:#fff; }
+#toi-embed .toi-step-item.active{
+  background:linear-gradient(90deg, rgba(232,195,122,.30), rgba(232,195,122,.12));
+  border-left-color:#e8c37a; color:#fff; font-weight:600;
+}
+#toi-embed .toi-step-item.active .si-no{ background:#e8c37a; color:#17313a; }
+#toi-embed .toi-step-item.disabled{ color:#9fc0cd; opacity:.55; cursor:default; }
+#toi-embed .toi-step-item.disabled .si-no{ background:rgba(255,255,255,.07); color:#9fc0cd; }
+#toi-embed .toi-step-item.disabled:hover{ background:transparent; color:#9fc0cd; }
+/* ⭐ បញ្ជីជំហានឡើងស្មើនឹងជួររូបព្រីន ⇒ គ្មានចន្លោះពីលើ */
+#toi-embed.toi-side nav.steps{ padding-top:0; }
+/* ⭐ [stated] ២០២៦-១១-១៦ ២០:៣៣ ៖ «មិនចាំបាច់សរសេរ 2021,2022,2023,2024 ទេ»
+   ⇒ បន្ទះឆ្នាំក្នុងក្បាលជំហានលែងត្រូវការ ( ប្រអប់ឆ្នាំនៅរបារចំហៀងជំនួស ) ។
+   ⚠ លាក់តែក្នុងរបៀបជំហាន ⇒ របៀបវិភាគនៅប្រើវាដដែល ។ */
+#toi-embed.toi-side .step-head .year-tabs{ display:none !important; }
+/* ⭐ [stated] ២០២៦-១១-១៦ ២១:០៥ ៖ ឧបករណ៍មើលលើអេក្រង់ក្នុងជួរចំណងជើង */
+#toi-embed .toi-sctools{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+#toi-embed .toi-sctools .years-chips{ display:flex; gap:5px; flex-wrap:wrap; }
+#toi-embed .toi-sczoom{ display:inline-flex; align-items:center; gap:4px; }
+#toi-embed .toi-sczoom .sz-btn{ padding:4px 9px; font-size:12px; margin:0 !important; }
+#toi-embed .toi-sczoom .sz-lab{
+  font-size:11.5px; color:var(--toi-ink-soft); min-width:42px; text-align:center;
+}
+/* ⭐ [stated] ២០២៦-១១-១៦ ២០:៤២ ៖ «ខិតវាទៅលើឱ្យស្មើនឹងជួរ PRINT និងឆ្នាំ» */
+#toi-embed.toi-side main{ padding-top:0 !important; }
+#toi-embed.toi-side .content{ padding-top:8px !important; }
+#toi-embed.toi-side .year-tabs{ display:none !important; }
+#toi-embed select.toi-step-sel-hidden{ display:none !important; }
+@media screen and (max-width: 860px){
+  /* ទូរស័ព្ទ ៖ របារចំហៀងក្លាយជាជួរដេកអូសបាននៅខាងលើ */
+  #toi-embed.toi-side .app{ flex-direction:column; }
+  #toi-embed.toi-side .sidebar{
+    width:100% !important; flex:0 0 auto !important; max-height:none;
+    position:relative; flex-direction:column;
+  }
+  #toi-embed.toi-side nav.steps{
+    display:flex; flex-direction:row; overflow-x:auto; gap:4px;
+    padding:8px 10px; flex:0 0 auto;
+  }
+  #toi-embed .toi-side-head{ display:none; }
+  #toi-embed .toi-step-item{
+    border-left:none; border-bottom:3px solid transparent;
+    padding:6px 10px; border-radius:8px;
+  }
+  #toi-embed .toi-step-item .si-tx{ max-width:120px; }
+  #toi-embed .toi-step-item.active{ border-bottom-color:var(--toi-gold); }
+}
 #toi-embed .toi-mainrow{ flex-wrap:wrap; gap:6px; }
 #toi-embed .toi-mainnav{ display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
 #toi-embed select.btn.toi-step-sel{
@@ -7970,14 +8430,19 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
   }
   window.__setCardView = setOn;
 
-  document.addEventListener('DOMContentLoaded', function(){
-    var v = remembered();
-    document.body.classList.toggle('card-view', v);
-    if(v){ apply(document); watch(true); }
-    var b = document.getElementById('cardViewBtn');
-    if(b){ b.textContent = v ? '▦' : '▤'; b.title = v ? 'ត្រលប់ទៅតារាង' : 'មើលជាកាត';
-           b.onclick = function(){ setOn(!on()); }; }
-  });
+  /* ⭐⭐ [stated] ២០២៦-១១-១៦ ៖ «កាត មើលជាកាត គួរលុបចោលបាន» ។
+     ⚠⚠ ជម្រើសរក្សាទុកក្នុង localStorage[KEY] ⇒ បើលុបតែប៊ូតុង
+       អ្នកដែលកំពុងនៅទម្រង់កាតនឹងជាប់នៅទីនោះអស់កល្ប ( គ្មានប៊ូតុងត្រឡប់ ) ។
+       ដូច្នេះត្រូវបង្ខំត្រឡប់ទៅតារាង ហើយលុបជម្រើសចោលតែម្តង ។ */
+  function forceTable(){
+    try{ localStorage.removeItem(KEY); }catch(e){}
+    try{ document.body.classList.remove('card-view'); }catch(e){}
+    try{ watch(false); }catch(e){}
+    var b = document.getElementById('cardViewMsg'); if(b) b.remove();
+  }
+
+  document.addEventListener('DOMContentLoaded', forceTable);
+  forceTable();
 })();
 </script>
 <!-- ⭐⭐ PWA ២០២៦-០៨-២៨ ៖ ធ្វើឱ្យកម្មវិធីដំឡើងបានលើទូរស័ព្ទ/កុំព្យូទ័រ។
@@ -8146,6 +8611,11 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
              ⇒ ផ្លាស់ទីពី `.atb-tail` ( ចុងរបារ ) មកជាប់នឹង 🏠 ។
              ⚠ ផ្លាស់ទី មិនមែនចម្លង ⇒ គ្មានប៊ូតុងស្ទួន ។ -->
         <button class="atb-btn atb-icon data-gated feat-docs" onclick="__openDocs()" title="ព្រីនឯកសារផ្លូវការ" aria-label="ព្រីនឯកសារផ្លូវការ">🖨️</button>
+        <button class="atb-btn atb-icon feat-calc" onclick="showView('calc')" title="ការគណនាពន្ធឡើងវិញ" aria-label="ការគណនាពន្ធឡើងវិញ">🧮</button>
+        <!-- ⭐⭐ [stated] ២០២៦-១១-១៦ ២០:៥២ ៖ «រុញកាត DATA ENTRY ទៅរបារខាងលើ
+             ក្រោយកាតការគណនាពន្ធឡើងវិញ» ⇒ ប៊ូតុងនៅទីនេះ ហើយកាតក្នុងក្រឡា
+             ចត្រង្គត្រូវដកចេញ ( កុំឱ្យស្ទួន ) ។ -->
+        <button class="atb-btn atb-icon data-gated" onclick="showView('toi'); window.__toiGoStep && window.__toiGoStep('overview')" title="DATA ENTRY" aria-label="DATA ENTRY">📝</button>
         <!-- ⭐ ត្រឡប់ទៅផ្ទាំងជ្រើសសហគ្រាស — សម្រាប់ user និង team ជំនួស
              ប៊ូតុង upload និងបើកឯកសារដែលដកចេញ -->
         <button class="atb-btn atb-icon user-only" onclick="window.__rscBackToCompanies && window.__rscBackToCompanies()" title="ប្តូរសហគ្រាស" aria-label="ប្តូរសហគ្រាស">🏢</button>
@@ -8153,21 +8623,23 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
              កន្លែង upload ឯកសារ និងបើកឯកសារទៀតហើយ … ចាកចេញទៅផ្ទាំងរើស
              ឯកសារឡើងវិញ» ⇒ ថ្នាក់ `admin-only` លាក់វាសម្រាប់ user និង team។
              ⚠ ប៊ូតុងនៅដដែលសម្រាប់ admin និងការប្រើផ្ទាល់ខ្លួន (គ្មាន token)។ -->
-        <button class="atb-btn atb-icon admin-only" onclick="openUploadAndPickFolder()" title="UPLOAD ថត" aria-label="UPLOAD ថត">📥</button>
-        <!-- ⭐⭐ [stated] ២០២៦-០៨-២៨ ៖ «សាកបើកឯកសារ offline នៅអត់ទាន់ឃើញ
-             មានកន្លែងរើស file zip ផង» ។ កំហុសរបស់ខ្ញុំ ៖ ខ្ញុំដាក់ប៊ូតុង
-             📦 តែក្នុង **ផ្ទាំងជ្រើសសហគ្រាស** ដែល **មិនលេចឡើងពេលប្រើ
-             offline** ( វារំលងពេលគ្មាន token ) ⇒ ការប្រើ offline មានតែ
-             ប្រអប់ជ្រើស **ថត** ⇒ ជ្រើស .zip មិនបានដដែល ។
-             ⇒ ដាក់ប៊ូតុងនៅរបារខាងលើ ⇒ មានគ្រប់ផ្លូវ ៖ offline · admin ·
-               និងក្នុងផ្ទាំងជ្រើសសហគ្រាស ។ -->
-        <!-- ⭐ [stated] ២០២៦-០៩-០១ ៖ កន្លែងចុចពិនិត្យឯកសារដែលបានផ្ទុករួច
-             ហើយផ្ទុកបន្ថែមពីទីនោះតែម្តង ។ មិនមែន admin-only ៖ ការពិនិត្យ
-             ជាការមើលសុទ្ធសាធ ហើយផ្លូវនាំចូលនៅតែមានឆ្មាំអតបដដែល ។ -->
-        <button class="atb-btn atb-icon" onclick="if(window.__rscUploadReport){window.__rscUploadReport();}" title="ឯកសារដែលបានផ្ទុក · ផ្ទុកបន្ថែម" aria-label="ឯកសារដែលបានផ្ទុក">🗂</button>
-        <button class="atb-btn atb-icon admin-only" onclick="(function(){var i=document.getElementById('auto-file-input'); if(i){ i.removeAttribute('data-add-mode'); i.click(); }})()" title="UPLOAD ឯកសារ ឬ ZIP ( ជំនួសទាំងស្រុង )" aria-label="UPLOAD ឯកសារ ឬ ZIP">📦</button>
-        <!-- [stated] «បើកឯកសារ» ជាប់នឹង UPLOAD ព្រោះទាំងពីរជាផ្លូវចូលទិន្នន័យ -->
-        <button type="button" class="atb-btn atb-icon atb-door admin-only" onclick="window.__rscOpenPicker ? window.__rscOpenPicker() : document.getElementById('saved-file-input').click()" title="បើកឯកសារ" aria-label="បើកឯកសារ"><span class="ic">🚪</span></button>
+        <!-- ⭐⭐ [stated] ២០២៦-១១-១៦ ៖ ៤ ប៊ូតុងផ្លូវទិន្នន័យ ⇒ ម៉ឺនុយតែមួយ
+             ( មើលក្បាល fix_atbmenu.py ) -->
+        <div class="atb-menu" id="atbDataMenu">
+          <button type="button" class="atb-btn atb-icon" id="atbDataBtn"
+                  title="ផ្លូវទិន្នន័យ ៖ UPLOAD · បើកឯកសារ" aria-label="ផ្លូវទិន្នន័យ"
+                  aria-haspopup="true" aria-expanded="false">🗃️</button>
+          <div class="atb-menu-pop" id="atbDataPop" hidden role="menu">
+            <button type="button" class="atb-mi admin-only" role="menuitem"
+                    onclick="openUploadAndPickFolder()"><span class="mi-ic">📥</span><span>UPLOAD ថត</span></button>
+            <button type="button" class="atb-mi" role="menuitem"
+                    onclick="if(window.__rscUploadReport){window.__rscUploadReport();}"><span class="mi-ic">🗂</span><span>ឯកសារដែលបានផ្ទុក · ផ្ទុកបន្ថែម</span></button>
+            <button type="button" class="atb-mi admin-only" role="menuitem"
+                    onclick="(function(){var i=document.getElementById('auto-file-input'); if(i){ i.removeAttribute('data-add-mode'); i.click(); }})()"><span class="mi-ic">📦</span><span>UPLOAD ឯកសារ ឬ ZIP ( ជំនួសទាំងស្រុង )</span></button>
+            <button type="button" class="atb-mi admin-only" role="menuitem"
+                    onclick="window.__rscOpenPicker ? window.__rscOpenPicker() : document.getElementById('saved-file-input').click()"><span class="mi-ic">🚪</span><span>បើកឯកសារ</span></button>
+          </div>
+        </div>
         <!-- ⚠⚠ [stated] ២០២៦-០៨-១៤ ៖ «នៅក្នុងម៉ាស៊ីនមាន file zip តែពេលបើកមិនឃើញ» ។
              មូលហេតុ ៖ `accept=".json,.js"` — ប្រអប់ជ្រើសឯកសាររបស់ Windows
              លាក់ `.json.gz` ចោល ព្រោះវាមិនត្រូវនឹងតម្រង។ បន្ថែម .gz -->
@@ -8180,7 +8652,6 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
         <button class="atb-btn atb-icon data-gated" onclick="window.__rscSave ? window.__rscSave() : exportAllDataToFile()" title="រក្សាទុកឯកសារ" aria-label="រក្សាទុកឯកសារ">💾</button>
         <!-- ⭐ [stated] ២០២៦-០៨-២៣ ៖ ចែករំលែកសហគ្រាសនេះទៅ user ផ្សេងតាម ID -->
         <button class="atb-btn atb-icon data-gated" onclick="window.__rscShareCase && window.__rscShareCase()" title="ចែករំលែកសហគ្រាសនេះ" aria-label="ចែករំលែក">🔗</button>
-        <button class="atb-btn atb-icon feat-calc" onclick="showView('calc')" title="ការគណនាពន្ធឡើងវិញ" aria-label="ការគណនាពន្ធឡើងវិញ">🧮</button>
         <button class="atb-btn atb-icon atb-plane data-gated feat-access" onclick="window.__exportToAccess && window.__exportToAccess()" title="ផ្ទេរទិន្នន័យទៅ Access" aria-label="ផ្ទេរទិន្នន័យទៅ Access"><span class="ic">✈️</span></button>
         <!-- [stated] ២០២៦-០៨-១៧ ៖ ផ្លាស់ទីទៅជួរ ពន្ធលើប្រាក់ចំណូល — មិនមែនចម្លងទេ ៖ ទុកទាំងពីរនឹងនាំឱ្យចូលពីរផ្លូវ។ -->
       </div>
@@ -8197,31 +8668,49 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
            ទៅឈប់នៅកណ្តាលរបារ មិនមែនចុងស្តាំ។ លំដាប់ក្នុង DOM ទើបជា
            ការសម្រេច មិនមែន CSS បន្ថែមទេ។ -->
       <div class="app-topbar-actions atb-tail">
-        <button class="atb-btn atb-icon admin-only" id="cardViewBtn" title="ប្តូររវាង តារាង និង កាត" aria-label="ប្តូរទម្រង់មើល">▤</button>
-        <!-- ⭐ [stated] ២០២៦-០៨-២៨ ៖ ទម្រង់ត្រួតពិនិត្យវិក្កយបត្រ ។
-             [stated] «ប្រើសម្រាប់តែ offline និងសម្រាប់ admin តែម្នាក់ប៉ុណ្ណោះ»
-             ⇒ ថ្នាក់ «admin-only» លាក់វាពី user និង team ; ការប្រើ offline
-               (គ្មាន token) មិនជាប់ច្រកណាមួយស្រាប់ហើយ។ -->
-        <button class="atb-btn atb-icon admin-only" onclick="window.__rscInvCheck && window.__rscInvCheck()" title="ត្រួតពិនិត្យវិក្កយបត្រ" aria-label="ត្រួតពិនិត្យវិក្កយបត្រ">🧾</button>
-        <!-- ⭐ ២០២៦-០៨-២៨ ៖ ស្វែងរកច្បាប់បើកឱ្យអ្នកប្រើទាំងអស់ ៖ អត្ថបទ
-     ច្បាប់ជាឯកសារសាធារណៈ គ្មានទិន្នន័យសហគ្រាសណាមួយក្នុងនោះទេ។
-     មូលដ្ឋានទិន្នន័យទាញតែពេលចុច ⇒ មិនធ្វើឱ្យការចូលដំបូងយឺត។ -->
-        <button class="atb-btn atb-icon" onclick="window.__rscLawClick && window.__rscLawClick(this)" title="ស្វែងរកច្បាប់ និងប្រកាស" aria-label="ស្វែងរកច្បាប់ និងប្រកាស">📖</button>
-        <!-- ⭐ ២០២៦-០៨-២៨ ៖ អ្នកអាន General Ledger ៖ បំប្លែង GL របស់សហគ្រាស
-             ( QuickBooks · តារាងរាបស្មើ · ក្បាលគណនី ) ជាតារាងតែមួយដែល filter បាន។
-             ⭐ [stated] ២០២៦-០៩-០១ ៖ «ជួយដាក់ផ្នែកអាន GL ឱ្យ user ផង» ⇒ ថ្នាក់
-                «admin-only» ត្រូវដកចេញ ⇒ user និង team ឃើញប៊ូតុងនេះដែរ ។
-             ⚠ គ្មានហានិភ័យទិន្នន័យ ៖ ម៉ូឌុលនេះអានតែឯកសារដែលអ្នកប្រើជ្រើស
-               ដោយខ្លួនឯង មិនប៉ះសំណុំរឿង មិនរក្សាទុក និងមិនហៅម៉ាស៊ីនមេទេ ។ -->
-        <button class="atb-btn atb-icon" onclick="window.__rscGL && window.__rscGL()" title="អាន General Ledger" aria-label="អាន General Ledger">📒</button>
-        <!-- ⭐ ២០២៦-០៨-២៨ ៖ របាយការណ៍ធនាគារ ៖ PDF ស្កេន ⇒ វាយដោយដៃ តែមាន
-             ការត្រួតពិនិត្យតុល្យភាពស្វ័យប្រវត្តិ ⇒ វាយខុសមិនអាចឆ្លងកាត់។
-             ⚠ ទិន្នន័យមិនចេញពីម៉ាស៊ីនអ្នកសោះ ( សំណើរបស់ម្ចាស់ប្រព័ន្ធ )។ -->
-        <button class="atb-btn atb-icon admin-only" onclick="if(window.__rscBank){window.__rscBank();}else{alert('ម៉ូឌុលរបាយការណ៍ធនាគារមិនបានផ្ទុក — សូមផ្ទុកទំព័រឡើងវិញ (Ctrl+Shift+R)');}" title="របាយការណ៍ធនាគារ" aria-label="របាយការណ៍ធនាគារ">🏦</button>
-        <!-- ⭐ ២០២៦-០៨-២៨ ៖ បំពេញ TOI ដោយដៃ ៖ សម្រាប់សហគ្រាសដែលប្រកាស
-             លើក្រដាស ⇒ គ្មានឯកសារ TOI ។ តួលេខសរសេរចូលរចនាសម្ព័ន្ធដដែល
-             នឹងឯកសារពិត ⇒ កាតគណនាដំណើរការដោយមិនកែអ្វី។ -->
-        <button class="atb-btn atb-icon admin-only" onclick="if(window.__rscToiManual){window.__rscToiManual();}else{alert('ម៉ូឌុលមិនបានផ្ទុក — សូមផ្ទុកទំព័រឡើងវិញ');}" title="បំពេញ TOI ដោយដៃ" aria-label="បំពេញ TOI ដោយដៃ">📝</button>
+        <!-- [stated] ២០២៦-១១-១៦ ៖ «កាត មើលជាកាត គួរលុបចោលបាន» ⇒ ប៊ូតុង ▤
+             ត្រូវដកចេញ ; ការបង្ខំត្រឡប់ទៅតារាងនៅក្នុងកូដ card-view
+             ( មើលក្បាល fix_atbmenu.py ) -->
+        <!-- ⭐⭐ [stated] ២០២៦-១១-១៦ ៖ «កាតទាំងគួរបញ្ជូលគ្នាផងដែរ»
+             ⇒ ៥ ប៊ូតុងម៉ូឌុល ចូលក្នុងម៉ឺនុយតែមួយ ( មើលក្បាល fix_atbmenu3.py )។
+             មតិដើមរបស់ប៊ូតុងនីមួយៗរក្សាទុកជាប់នឹងធាតុរបស់វាខាងក្រោម។ -->
+        <div class="atb-menu" id="atbToolMenu">
+          <button type="button" class="atb-btn atb-icon" id="atbToolBtn"
+                  title="ឧបករណ៍ ៖ វិក្កយបត្រ · ច្បាប់ · GL · ធនាគារ · TOI ដោយដៃ"
+                  aria-label="ឧបករណ៍" aria-haspopup="true" aria-expanded="false">🧰</button>
+          <div class="atb-menu-pop atb-pop-right" id="atbToolPop" hidden role="menu">
+            <!-- ⭐ [stated] ២០២៦-០៨-២៨ ៖ ទម្រង់ត្រួតពិនិត្យវិក្កយបត្រ ។
+                 [stated] «ប្រើសម្រាប់តែ offline និងសម្រាប់ admin តែម្នាក់ប៉ុណ្ណោះ»
+                 ⇒ ថ្នាក់ «admin-only» លាក់វាពី user និង team ; ការប្រើ offline
+                   (គ្មាន token) មិនជាប់ច្រកណាមួយស្រាប់ហើយ។ -->
+            <button type="button" class="atb-mi admin-only" role="menuitem"
+                    onclick="window.__rscInvCheck && window.__rscInvCheck()"><span class="mi-ic">🧾</span><span>ត្រួតពិនិត្យវិក្កយបត្រ</span></button>
+            <!-- ⭐ ២០២៦-០៨-២៨ ៖ ស្វែងរកច្បាប់បើកឱ្យអ្នកប្រើទាំងអស់ ៖ អត្ថបទ
+                 ច្បាប់ជាឯកសារសាធារណៈ គ្មានទិន្នន័យសហគ្រាសណាមួយក្នុងនោះទេ។
+                 មូលដ្ឋានទិន្នន័យទាញតែពេលចុច ⇒ មិនធ្វើឱ្យការចូលដំបូងយឺត។
+                 ⚠⚠ បញ្ជូន `.mi-ic` មិនមែន `this` — មើលក្បាល fix_atbmenu3.py -->
+            <button type="button" class="atb-mi" role="menuitem"
+                    onclick="window.__rscLawClick && window.__rscLawClick(this.querySelector('.mi-ic'))"><span class="mi-ic">📖</span><span>ស្វែងរកច្បាប់ និងប្រកាស</span></button>
+            <!-- ⭐ ២០២៦-០៨-២៨ ៖ អ្នកអាន General Ledger ៖ បំប្លែង GL របស់សហគ្រាស
+                 ( QuickBooks · តារាងរាបស្មើ · ក្បាលគណនី ) ជាតារាងតែមួយដែល filter បាន។
+                 ⭐ [stated] ២០២៦-០៩-០១ ៖ «ជួយដាក់ផ្នែកអាន GL ឱ្យ user ផង» ⇒ ថ្នាក់
+                    «admin-only» ត្រូវដកចេញ ⇒ user និង team ឃើញប៊ូតុងនេះដែរ ។
+                 ⚠ គ្មានហានិភ័យទិន្នន័យ ៖ ម៉ូឌុលនេះអានតែឯកសារដែលអ្នកប្រើជ្រើស
+                   ដោយខ្លួនឯង មិនប៉ះសំណុំរឿង មិនរក្សាទុក និងមិនហៅម៉ាស៊ីនមេទេ ។ -->
+            <button type="button" class="atb-mi" role="menuitem"
+                    onclick="window.__rscGL && window.__rscGL()"><span class="mi-ic">📒</span><span>អាន General Ledger</span></button>
+            <!-- ⭐ ២០២៦-០៨-២៨ ៖ របាយការណ៍ធនាគារ ៖ PDF ស្កេន ⇒ វាយដោយដៃ តែមាន
+                 ការត្រួតពិនិត្យតុល្យភាពស្វ័យប្រវត្តិ ⇒ វាយខុសមិនអាចឆ្លងកាត់។
+                 ⚠ ទិន្នន័យមិនចេញពីម៉ាស៊ីនអ្នកសោះ ( សំណើរបស់ម្ចាស់ប្រព័ន្ធ )។ -->
+            <button type="button" class="atb-mi admin-only" role="menuitem"
+                    onclick="if(window.__rscBank){window.__rscBank();}else{alert('ម៉ូឌុលរបាយការណ៍ធនាគារមិនបានផ្ទុក — សូមផ្ទុកទំព័រឡើងវិញ (Ctrl+Shift+R)');}"><span class="mi-ic">🏦</span><span>របាយការណ៍ធនាគារ</span></button>
+            <!-- ⭐ ២០២៦-០៨-២៨ ៖ បំពេញ TOI ដោយដៃ ៖ សម្រាប់សហគ្រាសដែលប្រកាស
+                 លើក្រដាស ⇒ គ្មានឯកសារ TOI ។ តួលេខសរសេរចូលរចនាសម្ព័ន្ធដដែល
+                 នឹងឯកសារពិត ⇒ កាតគណនាដំណើរការដោយមិនកែអ្វី។ -->
+            <button type="button" class="atb-mi admin-only" role="menuitem"
+                    onclick="if(window.__rscToiManual){window.__rscToiManual();}else{alert('ម៉ូឌុលមិនបានផ្ទុក — សូមផ្ទុកទំព័រឡើងវិញ');}"><span class="mi-ic">📝</span><span>បំពេញ TOI ដោយដៃ</span></button>
+          </div>
+        </div>
         <!-- ⭐ [stated] ២០២៦-០៩-០៣ ៖ «គួរមាន» ⇒ ដក admin-only ចេញ ⇒ អ្នកប្រើ
      សម្អាតទិន្នន័យសំណុំរឿងដោយខ្លួនឯងបាន ដើម្បីចាប់ផ្តើមសហគ្រាសថ្មី
      ឬផ្ទុកឯកសារឡើងវិញ ដោយមិនបាច់ចាកចេញ ។
@@ -11575,8 +12064,15 @@ function renderPersonalInfoView(){
   wrap.appendChild(paTitle);
   [1,2].forEach(slot=>{
     const row = document.createElement('div');
-    row.className = 'pi-row';
+    row.className = 'pi-row pi-row' + slot;   /* ⇒ ចាក់ grid-row បាន */
     row.style.cssText = 'display:flex; align-items:center; gap:8px; margin-bottom:12px; min-width:0;';
+    /* ⭐ [stated] ២០២៦-១១-១៦ ៖ ស្លាកក្នុងជួរ ⇒ ចំណងជើង h3 លែងត្រូវការ
+       ( វាកាន់បន្ទាត់មួយ ហើយធ្វើឱ្យជួរមិនត្រង់គ្នា ) ។ */
+    const paLab = document.createElement('label');
+    paLab.className = 'pi-palab';
+    paLab.textContent = (slot === 1) ? 'សវនករដៃគូ' : 'សវនករដៃគូ ២';
+    paLab.style.cssText = 'font-size:13px; color:var(--text,#243B36); flex:0 0 110px; text-align:left;';
+    row.appendChild(paLab);
     const cb = document.createElement('input');
     cb.type = 'checkbox';
     cb.checked = (selected === String(slot));
@@ -23805,6 +24301,66 @@ function trackingCardStat(){
   }catch(e){ return ''; }
 }
 
+/* ⭐⭐ [stated] ២០២៦-១១-១៦ ៖ «លេខជាន់នៅផ្នែកស្តុក» ⇒ បង្រួមចំណងជើង
+   តាមកន្លែងដែលនៅសល់ពិត មិនមែនតាមទទឹងអេក្រង់ ។ មើលក្បាល fix_mcfit.py */
+function mcFitTitles(){
+  var heads = document.querySelectorAll('.module-card .mc-head');
+  for(var i = 0; i < heads.length; i++){
+    var t = heads[i].querySelector('.mc-title');
+    if(!t) continue;
+    var s = heads[i].querySelector('.mc-stat');
+    /* លុបស្ថានភាពចាស់ចេញជាមុន ⇒ ពេលអេក្រង់ធំឡើងវិញ អ្វីៗត្រឡប់មកដើមវិញ */
+    heads[i].classList.remove('mc-stack');
+    t.style.removeProperty('font-size');
+    var base = parseFloat(window.getComputedStyle(t).fontSize) || 22;
+    /* ⚠ ១៦px ជាព្រំដែន ៖ ក្រោមនេះចំណងជើងតូចពេករហូតអានពិបាក ។ */
+    var MIN = 16;
+    mcShrink(t, base, MIN);
+    /* មិនល្មមទោះបង្រួមដល់ព្រំដែន ⇒ ប្រគល់ទទឹងពេញឱ្យចំណងជើង
+       ដោយរុញលេខចុះបន្ទាត់ក្រោម ( ប្រសើរជាងកាត់អក្សរចោល ) */
+    if(s && t.scrollWidth > t.clientWidth + 0.5){
+      heads[i].classList.add('mc-stack');
+      t.style.removeProperty('font-size');
+      mcShrink(t, base, MIN);
+    }
+  }
+}
+/* flex រៀបចំឡើងវិញរាល់ដងដែលទំហំអក្សរប្តូរ ⇒ ត្រូវវាស់ម្តងទៀតជារង្វិល */
+function mcShrink(t, base, MIN){
+  var size = base;
+  for(var n = 0; n < 24; n++){
+    if(t.scrollWidth <= t.clientWidth + 0.5) return;
+    size -= 0.5;
+    if(size < MIN){ size = MIN; t.style.setProperty('font-size', size + 'px'); return; }
+    t.style.setProperty('font-size', size + 'px');
+  }
+}
+try{ window.__mcFitTitles = mcFitTitles; }catch(e){}
+(function(){
+  var tmr = null;
+  function later(){ clearTimeout(tmr); tmr = setTimeout(mcFitTitles, 60); }
+  try{
+    window.addEventListener('resize', later);
+    document.addEventListener('DOMContentLoaded', later);
+    /* កាតសង់ឡើងវិញពេលប្តូរផ្ទាំង ⇒ ឃ្លាំមើល DOM ជាជាងដោតកូដគ្រប់កន្លែងហៅ */
+    if(window.MutationObserver){
+      var mo = new MutationObserver(function(ms){
+        for(var i = 0; i < ms.length; i++){
+          var a = ms[i].addedNodes;
+          for(var j = 0; j < a.length; j++){
+            var n = a[j];
+            if(n.nodeType === 1 && (n.classList && n.classList.contains('module-grid')
+                || (n.querySelector && n.querySelector('.module-card')))){ later(); return; }
+          }
+        }
+      });
+      document.addEventListener('DOMContentLoaded', function(){
+        try{ mo.observe(document.body, { childList:true, subtree:true }); }catch(e){}
+      });
+    }
+  }catch(e){}
+})();
+
 function moduleCardHtml(c){
   /* ⚠ `action` ៖ តំណរងខ្លះមិនមែនជាការប្តូរផ្ទាំងទេ ( ឧ. បើកប្រអប់ផ្ទុក
      ឯកសារ ) ⇒ អនុញ្ញាតកូដផ្ទាល់ ដោយរក្សាឥរិយាបថចាស់ជាលំនាំដើម ។ */
@@ -23812,7 +24368,7 @@ function moduleCardHtml(c){
     `<span class="mc-sublink" onclick="event.stopPropagation(); ${s.action ? s.action : `showView('${s.id}')`}">${s.label} →</span>`
   ).join("");
   return `
-    <button class="module-card" style="--mc-color:${c.color}; --mc-color-bg:${c.bg};" onclick="showView('${c.id}')">
+    <button class="module-card" style="--mc-color:${c.color}; --mc-color-bg:${c.bg};" onclick="${c.action ? c.action : `showView('${c.id}')`}">
       <div class="mc-bar"></div>
       <div class="mc-body">
         <!-- ⭐ [stated] ២០២៦-១១-១៣ ៖ «លេខពីក្រោមកាតនីមួយៗ ជួយដាក់វានៅតែមួយជួរ»
@@ -23928,8 +24484,14 @@ function renderModuleOverview(){
 
   const groups = [
     {label:"", cards:[
-      {id:"toi", icon:"📊", color:"var(--yellow)", bg:"var(--yellow-bg)",
-       title:"ពន្ធលើប្រាក់ចំណូល", stat:""},
+      /* ⭐⭐ [stated] ២០២៦-១១-១៦ ៖ បំបែកជា ២ កាត ៖ បញ្ចូលទិន្នន័យ
+         និង ពិនិត្យលិខិតប្រកាស ។ COVER → កាត១ · RISK → កាត២
+         ( ជម្រើសអ្នកប្រើ ) ។ មើលក្បាល fix_toicard.py */
+      /* ⚠ [stated] ២០២៦-១១-១៦ ២០:៥២ ៖ កាត DATA ENTRY ផ្លាស់ទៅរបារខាងលើ
+         ( ជាប់នឹង 🧮 ) ⇒ ដកចេញពីក្រឡាចត្រង្គ កុំឱ្យស្ទួន ។ */
+      {id:"toi", icon:"🔍", color:"var(--yellow)", bg:"var(--yellow-bg)",
+       title:"ពន្ធលើប្រាក់ចំណូល", stat:"",
+       action:"showView('toi'); window.__toiGoReview && window.__toiGoReview()"},
       {id:"mtr", icon:"🧾", color:"var(--primary-light)", bg:"var(--accent-light)",
        title:"សាលកបត្រអនុរក្ស", stat:""},
       {id:"tos", icon:"👥", color:"var(--primary-dark)", bg:"var(--accent-light)",
@@ -23958,6 +24520,12 @@ function renderModuleOverview(){
          return c && c.items.length
            ? fmtCount(c.items.length) + '<span class="mc-unit">មុខទំនិញ</span>' : '';
          }catch(e){ return ''; } })()},
+      /* ⭐⭐ [stated] ២០២៦-១១-១៦ ២០:២៣ ៖ កាតថ្មី «RISK ANALYSIS» ៖
+         Ratio · Change · Asset & Depre · RISK ចេញពីកាត ពន្ធលើប្រាក់ចំណូល
+         មករស់នៅទីនេះ ( ជួរតែមួយនឹង ថ្លៃដើម & ស្តុក ) ។ */
+      {id:"toi", icon:"⚠", color:"var(--red)", bg:"var(--red-bg)",
+       title:"RISK ANALYSIS", stat:"",
+       action:"showView('toi'); window.__toiGoRisk && window.__toiGoRisk()"},
       /* Partner data and the crosscheck results were four cards across two
          headed groups, which is a lot of surface for what is really one job:
          load the partner's books, then look at how they match ours. One card
@@ -26655,9 +27223,12 @@ loader,
 '    End Select',
 '  Next',
 '  If n = 1 Then',
-'    If MsgBox("Use this database?" & vbCrLf & vbCrLf & found(0).Path, 4 + 32) = 6 Then',
-'      PickDatabase = found(0).Path',
-'    End If',
+"    ' [stated] 2026-11-16: asking here fired up to three times per",
+"    ' transfer (empty DEFAULT_DB + the 32-bit relaunch). With exactly",
+"    ' one database beside the script there is nothing to choose, so",
+"    ' take it and record the choice in the log instead of asking.",
+'    WriteLog "DB auto-selected: " & found(0).Path',
+'    PickDatabase = found(0).Path',
 '    Exit Function',
 '  ElseIf n > 1 Then',
 '    msg = "Choose the Access file (type a number):" & vbCrLf & vbCrLf',
@@ -26922,9 +27493,10 @@ function utf16leBlob(text){
   return new Blob([buf], {type:'application/octet-stream'});
 }
 
-function downloadTextFile(name, text, mime, utf16){
+function downloadTextFile(name, text, mime, utf16, noBom){
+  /* ⚠⚠ noBom ៖ សម្រាប់ template VBScript តែប៉ុណ្ណោះ — មើលក្បាល fix_acsum.py */
   const blob = utf16 ? utf16leBlob(text)
-    : new Blob(['\ufeff' + text], {type: (mime || 'text/plain') + ';charset=utf-8'});
+    : new Blob([(noBom ? '' : '\ufeff') + text], {type: (mime || 'text/plain') + ';charset=utf-8'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = name;
@@ -26974,7 +27546,7 @@ function exportAccessRunner(){
   const runner = buildAccessVbs(
     [{ name:'TblVAT', header:['vatTIN'], rows:[['']] }],  // shape only; payload comes from the data file
     dbPath, false);
-  downloadTextFile('AccessImporter_TEMPLATE.txt', runner, 'text/plain');
+  downloadTextFile('AccessImporter_TEMPLATE.txt', runner, 'text/plain', false, true);
   alert('រៀបចំម្តងជារៀងរហូត — ៣ ជំហាន៖\n\n'
     + '១. បើកឯកសារ AccessImporter_TEMPLATE.txt ដែលទើបទាញយក\n'
     + '២. Copy អត្ថបទទាំងអស់ → បើក Notepad → Paste\n'
@@ -26984,6 +27556,79 @@ function exportAccessRunner(){
     + '៣. រៀងរាល់ដងក្រោយ គ្រាន់តែចុច "ទាញយកទិន្នន័យ" រួចដាក់\n'
     + '   access_data.txt ក្នុង folder នោះ ហើយចុចពីរដងលើ AccessImporter.vbs\n\n'
     + 'ព្រោះឯកសារនេះអ្នកបង្កើតដោយខ្លួនឯង Windows មិនទប់ស្កាត់ទេ។');
+}
+
+/* ⭐⭐ [stated] ២០២៦-១១-១៦ ៖ ឃ្លាំមើល folder ដើម្បីកុំឱ្យត្រូវចុចពីរដង
+   រាល់ដង — មើលក្បាល fix_acwatch.py សម្រាប់ហេតុផល និងព្រំដែន ។ */
+function buildAccessWatcherVbs(){
+  return [
+'Option Explicit',
+"' AccessWatcher - generated by the tax dashboard.",
+"' Watches this folder for access_data.txt and runs AccessImporter.vbs",
+"' the moment the dashboard writes one. Leave it running while you work.",
+"' Close it from Task Manager (wscript.exe) or just log off.",
+'',
+'Dim fso, sh, here, impPath, dataF, lastSig, sig, s1, s2, n',
+'Set fso = CreateObject("Scripting.FileSystemObject")',
+'Set sh  = CreateObject("WScript.Shell")',
+'here   = fso.GetParentFolderName(WScript.ScriptFullName)',
+'impPath    = here & "\\AccessImporter.vbs"',
+'dataF  = here & "\\access_data.txt"',
+'lastSig = ""',
+'',
+'If Not fso.FileExists(impPath) Then',
+'  MsgBox "AccessImporter.vbs was not found in:" & vbCrLf & "  " & here & vbCrLf & vbCrLf & _',
+'    "Save the importer here first (dashboard -> Transfer -> 2).", 16',
+'  WScript.Quit',
+'End If',
+'',
+'sh.Popup "Watching for data..." & vbCrLf & here & vbCrLf & vbCrLf & _',
+'  "Leave this running. Press Transfer -> 1 in the dashboard.", 5, "Access watcher", 64',
+'',
+'Do',
+'  If fso.FileExists(dataF) Then',
+"    ' The browser may still be writing. Wait until the size stops changing.",
+'    s1 = -1 : n = 0',
+'    Do',
+'      On Error Resume Next',
+'      s2 = fso.GetFile(dataF).Size',
+'      If Err.Number <> 0 Then s2 = -1 : Err.Clear',
+'      On Error GoTo 0',
+'      If s2 > 0 And s2 = s1 Then Exit Do',
+'      s1 = s2 : n = n + 1',
+'      If n > 40 Then Exit Do',
+'      WScript.Sleep 500',
+'    Loop',
+'    On Error Resume Next',
+'    sig = CStr(s1) & "|" & CStr(fso.GetFile(dataF).DateLastModified)',
+"    If Err.Number <> 0 Then sig = \"\" : Err.Clear",
+'    On Error GoTo 0',
+"    ' A file the importer could not take stays put. Without this guard the",
+"    ' watcher would retry it every two seconds forever.",
+'    If sig <> "" And sig <> lastSig Then',
+'      lastSig = sig',
+'      sh.Run """" & impPath & """", 1, True',
+'    End If',
+'  End If',
+'  WScript.Sleep 2000',
+'Loop'
+  ].join('\r\n');
+}
+
+function exportAccessWatcher(){
+  downloadTextFile('AccessWatcher_TEMPLATE.txt', buildAccessWatcherVbs(), 'text/plain', false, true);
+  alert('ឃ្លាំមើលស្វ័យប្រវត្តិ — រៀបចំម្តងជារៀងរហូត ៖\n\n'
+    + '១. បើក AccessWatcher_TEMPLATE.txt ដែលទើបទាញយក\n'
+    + '២. Copy ទាំងអស់ → Notepad → Save As "AccessWatcher.vbs"\n'
+    + '   ( Save as type ៖ All Files · Encoding ៖ ANSI )\n'
+    + '   ដាក់ក្នុង folder **តែមួយ**ជាមួយ AccessImporter.vbs និងឯកសារ Access\n'
+    + '៣. ចុចពីរដងលើ AccessWatcher.vbs ម្តង ពេលចាប់ផ្តើមធ្វើការ\n\n'
+    + 'ក្រោយពីនោះ ៖ ចុច «ផ្ទេរ ⇒ ១» ក្នុងកម្មវិធី រួចទិន្នន័យចូល Access\n'
+    + 'ដោយខ្លួនឯង — មិនបាច់ដើរទៅចុចពីរដងទៀតទេ ។\n\n'
+    + 'ចង់ឱ្យវាបើកជាមួយ Windows ៖ ចុច Win+R → វាយ shell:startup → ចម្លង\n'
+    + 'shortcut របស់ AccessWatcher.vbs ដាក់ក្នុងនោះ ។\n\n'
+    + '⚠ ត្រូវបើក Access ទុកក៏បាន តែបើឯកសារជាប់ចាក់សោ ការបញ្ចូលនឹងបរាជ័យ —\n'
+    + 'សារនឹងប្រាប់ ហើយឯកសារទិន្នន័យនៅដដែល ចុច «ផ្ទេរ ⇒ ១» ម្តងទៀតបាន ។');
 }
 
 /* Option B, step 2: just the data. Downloaded every time; never blocked. */
@@ -27014,6 +27659,41 @@ async function exportAccessDataFile(){
    always work beat one that sometimes doesn't. */
 function esc2(v){ return String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
 
+/* ⭐⭐ [stated] ២០២៦-១១-១៦ ៖ «សារនេះវែងពេក មើលមិនអស់» ⇒ ផ្ទាំងរំកិលបាន
+   ជំនួស alert ។ មើលក្បាល fix_acsum.py សម្រាប់ហេតុផល ។ */
+function showAccessSummary(text){
+  const old = document.getElementById('accessSumPanel');
+  if(old) old.remove();
+  const box = document.createElement('div');
+  box.id = 'accessSumPanel';
+  const narrow = window.matchMedia && window.matchMedia('(max-width: 760px)').matches;
+  box.style.cssText = 'position:fixed; z-index:10000; background:#fff;'
+    + 'border:1px solid var(--line); border-radius:12px;'
+    + 'box-shadow:0 12px 30px rgba(0,0,0,.22); display:flex; flex-direction:column;'
+    + (narrow
+        ? 'left:8px; right:8px; top:8px; bottom:8px;'
+        : 'left:20px; top:20px; bottom:20px; width:430px;');
+  const head = document.createElement('div');
+  head.style.cssText = 'flex:0 0 auto; display:flex; align-items:center; gap:8px;'
+    + 'padding:12px 14px; border-bottom:1px solid var(--line); font-weight:700;'
+    + 'color:var(--green);';
+  head.innerHTML = '<span style="flex:1 1 auto;">📋 សេចក្តីសង្ខេបមុនផ្ទេរ</span>';
+  const btn = document.createElement('button');
+  btn.className = 'btn btn-outline';
+  btn.style.cssText = 'flex:0 0 auto; padding:4px 12px;';
+  btn.textContent = 'បិទ';
+  btn.onclick = ()=> box.remove();
+  head.appendChild(btn);
+  const body = document.createElement('div');
+  /* ⚠ រំកិលបានតាមបញ្ឈរ ហើយបន្ទាត់វែងចុះបន្ទាត់ ⇒ មិនត្រូវរំកិលផ្តេក */
+  body.style.cssText = 'flex:1 1 auto; overflow-y:auto; overflow-x:hidden;'
+    + 'padding:12px 14px; white-space:pre-wrap; overflow-wrap:anywhere;'
+    + 'font-size:13px; line-height:1.85;';
+  body.textContent = text;
+  box.appendChild(head); box.appendChild(body);
+  document.body.appendChild(box);
+}
+
 function showRunPanel(folderName){
   const old = document.getElementById('accessRunPanel');
   if(old) old.remove();
@@ -27027,9 +27707,12 @@ function showRunPanel(folderName){
     + '<div style="color:var(--muted); font-size:12px; margin-bottom:12px;">'
     + (folderName ? esc2(folderName) + ' \\ ' : '') + 'access_data.txt</div>'
     + '<div style="background:var(--accent-light); border-radius:8px; padding:10px 12px;">'
-    + 'នៅសល់ជំហានចុងក្រោយ៖<br>ចុចពីរដងលើ <b>AccessImporter.vbs</b></div>'
+    + 'បើ <b>AccessWatcher.vbs</b> កំពុងដំណើរការ ៖ មិនបាច់ធ្វើអ្វីទៀតទេ<br>'
+    + 'ទិន្នន័យចូលដោយខ្លួនឯងក្នុងរយៈពេលពីរបីវិនាទី។<br><br>'
+    + 'បើមិនទាន់បើកឃ្លាំមើល ៖ ចុចពីរដងលើ <b>AccessImporter.vbs</b></div>'
     + '<div style="color:var(--muted); font-size:11.5px; margin-top:10px;">'
-    + 'រួចមើលសារ <b>Done!</b> ដែលប្រាប់ចំនួនជួរដេកដែលចូល។</div>'
+    + 'រួចមើលសារ <b>Done!</b> ដែលប្រាប់ចំនួនជួរដេកដែលចូល។<br>'
+    + 'ឃ្លាំមើលរៀបចំបាននៅ ✈️ ⇒ ៦។</div>'
     + '<button id="accessRunClose" class="btn btn-outline" style="width:100%; margin-top:10px;">បិទ</button>';
   document.body.appendChild(box);
   document.getElementById('accessRunClose').onclick = ()=> box.remove();
@@ -27055,7 +27738,10 @@ async function exportAndRunAccess(){
     /* The corner panel is easy to miss, and "did it work?" was the question
        being asked every time — so confirm it plainly as well. */
     alert('✅ ទិន្នន័យសរសេររួច' + (folder ? ' ក្នុង folder ' + folder : ' (ចូល Downloads)')
-      + '\n\nនៅសល់ជំហានចុងក្រោយ៖\nចុចពីរដងលើ AccessImporter.vbs'
+      + '\n\nបើ AccessWatcher.vbs កំពុងដំណើរការ ៖ មិនបាច់ធ្វើអ្វីទៀតទេ —'
+      + '\nទិន្នន័យចូលដោយខ្លួនឯងក្នុងរយៈពេលពីរបីវិនាទី។'
+      + '\n\nបើមិនទាន់បើកឃ្លាំមើល ៖ ចុចពីរដងលើ AccessImporter.vbs'
+      + '\n( រៀបចំឃ្លាំមើលបាននៅ ✈️ ⇒ ៦ )'
       + '\n\nរួចមើលសារ Done! ដែលប្រាប់ចំនួនជួរដេកដែលចូល។');
   }catch(err){
     console.error('transfer failed', err);
@@ -27078,11 +27764,15 @@ async function chooseAccessFolder(){
 function exportToAccessMenu(){
   const choice = prompt(
     'ជ្រើសរើសវិធី (វាយលេខ)៖\n\n'
-    + '1 = ផ្ទេរទៅ Access ⭐\n'
+    + '--- ការងារប្រចាំថ្ងៃ ---\n'
+    + '1 = ផ្ទេរទៅ Access ⭐\n\n'
+    + '--- រៀបចំម្តងគត់ ---\n'
     + '2 = រៀបចំ AccessImporter.vbs\n'
-    + '3 = ជ្រើស folder គោលដៅ\n'
-    + '4 = ភ្ជាប់កម្មវិធីនឹងជួរចាស់ក្នុង Access (កែពេលផ្ទេរខុស)\n'
-    + '5 = ជ្រើសតារាងដែលត្រូវផ្ទេរ', '1');
+    + '6 = រៀបចំ AccessWatcher.vbs ( បញ្ចូលស្វ័យប្រវត្តិ ⭐ )\n'
+    + '3 = ប្តូរ folder គោលដៅ ( លេខ ១ សួរឱ្យស្រាប់ )\n\n'
+    + '--- ពេលមានបញ្ហា ---\n'
+    + '4 = ភ្ជាប់កម្មវិធីនឹងជួរចាស់ក្នុង Access ( កែពេលផ្ទេរខុស )\n'
+    + '5 = ជ្រើសតារាងដែលត្រូវផ្ទេរ ( កុំឱ្យសរសេរជាន់ការងារដៃ )', '1');
   if(choice === null) return;
   const c = String(choice).trim();
   if(c === '1') exportAndRunAccess();
@@ -27090,6 +27780,7 @@ function exportToAccessMenu(){
   else if(c === '3') chooseAccessFolder();
   else if(c === '4') mapProgrammesToAccess();
   else if(c === '5') openAccessTablePicker();
+  else if(c === '6') exportAccessWatcher();
 }
 
 /* ការផ្ទេរផ្គូផ្គងជួរតាមសោរ TIN + ការិយបរិច្ឆេទ + PG។ បើការផ្ទេរមុនដាក់
@@ -27918,7 +28609,7 @@ function collectAccessSheets(){
     }
   }
 
-  alert('នឹងផ្ទេរទៅ Access៖\n\n' + summary
+  showAccessSummary('នឹងផ្ទេរទៅ Access៖\n\n' + summary
     + '\n\nTblCompanyInfo (វាលដែលត្រូវពិនិត្យ)៖\n' + check + paCheck
     + (warnings.length ? '\n\n' + warnings.join('\n\n') : ''));
   withRows.__prunes = pruneList;   /* ឆ្នាំលើសដែលត្រូវលុប */
@@ -29745,6 +30436,32 @@ function getVATCreditBroughtForward_(year, _depth){
 
 /* បង្វិលសង per month — feeds vat17 on the Access export and stops that
    amount being carried into the following month. */
+/* ⭐⭐ ស្ពានសម្រាប់បរិយាយការកំណត់ពន្ធ ៖ ប្រភេទផលបានប្រកាស
+   ( អត្រា ០% · មិនជាប់អាករ ) — មើលក្បាល fix_narrturn2.py ។
+   ⚠ ត្រូវរស់ក្នុងវិសាលភាពនេះ ព្រោះ `getVATMonthlyAggregates` និង
+     `computeVATRow` មិនជាសកលទេ ។ */
+try{
+  window.__vatTurnKind = function(year){
+    try{
+      const agg = (getVATMonthlyAggregates() || {})[year] || {};
+      let c1 = 0, c2 = 0, c3 = 0, m, r;
+      for(m = 1; m <= 12; m++){
+        r = computeVATRow(agg[m], 0, 0) || {};
+        c1 += +r.c1 || 0;
+        c2 += +r.c2 || 0;
+        c3 += +r.c3 || 0;
+      }
+      /* ⚠⚠ បើមានផលជាប់អាករ ១០% ផង ⇒ ផលបានប្រកាស**មិនមែន**ជា ០% ឬ
+         មិនជាប់អតប ទាំងស្រុងទេ ⇒ មិនបើករង្វង់ក្រចក បើមិនដូច្នេះ
+         ការសរសេរនឹងច្រឡំអ្នកអាន ( ឯកសារពន្ធ ត្រូវច្បាស់ ) ។ */
+      if(c3 > 0) return '';
+      const ps = [];
+      if(c2 > 0) ps.push('នាំចេញ អត្រា ០%');
+      if(c1 > 0) ps.push('លក់មិនជាប់ អតប');
+      return ps.length ? ' ( ' + ps.join(' · ') + ' )' : '';
+    }catch(e){ return ''; }
+  };
+}catch(e){}
 function getVATRefundByMonth(year){
   const out = new Array(12).fill(0);
   getAllVATCRRows().forEach(r=>{
@@ -35189,8 +35906,13 @@ function renderDataEntryPanel(){
       __deMeas.style.fontStyle = cs.fontStyle;
       __deMeas.style.letterSpacing = cs.letterSpacing;
       __deMeas.textContent = String(inp.value || inp.getAttribute('placeholder') || '');
-      /* +14 ៖ padding ឆ្វេង/ស្តាំ + ស៊ុម + ចន្លោះសុវត្ថិភាព ១ តួ */
-      var w = Math.ceil(__deMeas.offsetWidth) + 18;
+      /* ⚠⚠ ធាតុមិនទាន់គូរ ⇒ offsetWidth = 0 ⇒ ទទឹងជាប់អប្បបរមា 44px
+         ហើយនៅជាប់រហូត ។ ត្រូវរំលង **ទោះតម្លៃទទេ** ព្រោះក្រឡាទទេគឺជា
+         ផ្លូវដែលធ្វើឱ្យជាប់ 44px តាំងពីដំបូង ។ មើលក្បាល fix_devis2.py */
+      if(!inp.offsetParent) return;
+      var raw = Math.ceil(__deMeas.offsetWidth);
+      /* +18 ៖ padding ឆ្វេង/ស្តាំ + ស៊ុម + ចន្លោះសុវត្ថិភាព ១ តួ */
+      var w = raw + 18;
       if(w < 44) w = 44;
       if(w > 260) w = 260;
       inp.style.setProperty('width', w + 'px', 'important');
@@ -35202,10 +35924,36 @@ function renderDataEntryPanel(){
   };
   var __deFit = __deFitPx;
   try{ window.__deFitPx = __deFitPx; }catch(e){}
+  var __deFitAll = function(root){
+    try{
+      var list = (root || document).querySelectorAll('.de-cell');
+      for(var i = 0; i < list.length; i++) __deFitPx(list[i]);
+    }catch(e){}
+  };
+  try{ window.__deFitAll = __deFitAll; }catch(e){}
   progTableEl.querySelectorAll('.de-cell').forEach(inp=>{
     __deFit(inp);
     inp.addEventListener('input', ()=>{ setDE(inp.dataset.key, inp.value); __deFit(inp); });
   });
+  /* ⭐⭐ [stated] ២០២៦-១១-១៦ ៖ តារាងអាចត្រូវគូរខណៈ #view-toi នៅលាក់
+     ⇒ ការវាស់ខាងលើរំលង ⇒ ត្រូវវាស់ឡើងវិញពេលវាប្រែជាបង្ហាញ ។
+     មើលក្បាល fix_devis.py */
+  var __deT = null;
+  var __deLater = function(){
+    clearTimeout(__deT);
+    __deT = setTimeout(function(){ __deFitAll(progTableEl); }, 50);
+  };
+  try{
+    /* ⚠⚠ ResizeObserver មិនមែន IntersectionObserver ៖ តារាងអាចបង្ហាញ
+       ហើយតែនៅក្រោមអេក្រង់ ⇒ IO មិនបាញ់ ។ មើលក្បាល fix_devis2.py */
+    if(window.ResizeObserver){
+      var __deRO = new ResizeObserver(function(){
+        if(progTableEl.offsetWidth) __deLater();
+      });
+      __deRO.observe(progTableEl);
+    }
+  }catch(e){}
+  try{ window.addEventListener('resize', __deLater); }catch(e){}
   progTableEl.querySelectorAll('.de-kind').forEach(sel=>{
     setDE(sel.dataset.key, sel.value);                 /* រក្សាតម្លៃលំនាំដើមទុក */
     sel.addEventListener('change', ()=>{ setDE(sel.dataset.key, sel.value); renderAll(); });
@@ -35396,6 +36144,26 @@ function riskSumRefs(pairs, year){
   });
   return has ? total : null;
 }
+/* ⭐⭐ [stated] ២០២៦-១១-១៦ ៖ តើសន្លឹកនេះមានជួរឈរ «ការិយបរិច្ឆេទមុន» ឬអត់ ?
+   មើលក្បាល fix_prevcol.py — សញ្ញាពីក្បាលសន្លឹក មិនមែនពីតម្លៃ ។ */
+function aoaHasPrevCol(aoa){
+  const MAX = Math.min((aoa || []).length, 20);
+  for(let r = 0; r < MAX; r++){
+    const row = aoa[r];
+    if(!row) continue;
+    for(let i = 0; i < row.length; i++){
+      const c = row[i];
+      if(typeof c !== 'string') continue;
+      const t = c.replace(/\s+/g, '');
+      /* ⚠ ក្បាលជួរឈរខ្លី ៖ កំណត់ប្រវែង ⇒ អត្ថបទវែងដែលរំលឹកពាក្យនេះ
+         មិនត្រូវរាប់ជាក្បាលជួរទេ ( ចាប់បានដោយការសាក ) */
+      if(t.length <= 40 && t.indexOf('ការិយបរិច្ឆេទមុន') >= 0) return true;
+      if(/\(?N-1\)?/.test(t) && t.length <= 24) return true;
+    }
+  }
+  return false;
+}
+
 /* ជួរ «ការិយបរិច្ឆេទមុន» ក្នុងសន្លឹកឆ្នាំ N ដដែល — មិនត្រូវការឯកសារឆ្នាំ N-1 */
 function riskPrevSumRefs(pairs, year){
   let has = false, total = 0;
@@ -36253,13 +37021,18 @@ function mergeIntoState(perFileData){
       // even though its analytical view lives in the dedicated Assets & Depreciation panel.
       const aoa = sheets[stepKey];
       if(!aoa) return;
-      const title = getStepTitle(aoa) || stepKey;
+      /* [stated] ២១:១៥ ៖ លុបពាក្យ «គិតត្រឹមការិយបរិច្ឆេទ» តាំងពីពេលអាន
+         ⇒ របារចំហៀង · បញ្ជី · Excel · ក្បាលព្រីន ស្អាតទាំងអស់ក្នុងពេលតែមួយ */
+      let title = getStepTitle(aoa) || stepKey;
+      try{ if(window.toiStepTitle) title = window.toiStepTitle(title); }catch(e){}
       const refRows = extractRefRows(aoa);
       if(refRows.length > 0){
         if(!state.refSteps[stepKey]) state.refSteps[stepKey] = {title, order:[], labels:{}, values:{}, prevValues:{}};
         const rs = state.refSteps[stepKey];
         rs.title = title;
         if(!rs.prevValues) rs.prevValues = {};
+        /* [stated] ២០២៦-១១-១៦ ៖ កត់ទុកថាសន្លឹកមានជួរ «ការិយបរិច្ឆេទមុន» */
+        try{ if(aoaHasPrevCol(aoa)) rs.hasPrevCol = true; }catch(e){}
         refRows.forEach(({ref,label,value,prevValue})=>{
           if(!(ref in rs.labels)){ rs.labels[ref]=label; rs.order.push(ref); }
           if(!rs.values[ref]) rs.values[ref] = {};
@@ -36366,7 +37139,9 @@ function autoFitPrintArea(root, extraFontDelta){
   const BASELINE = 14;    // matches the screen table font-size — every row uses exactly this
   const CELL_PAD = 30;    // approx. left+right padding/border per cell at the screen's default padding
   const STEP_MIN_FONT = {Step10: 10, Step11: 12, Step12: 12, Step13: 12, Step14: 12, Step15: 10};  // these landscape schedules stay readable even if they need to shrink a lot
-  const STEP_FONT_DELTA = {Step8: -1, Step2: -3}; // Step8 one size smaller; Step2 stays portrait but needs a noticeably smaller font to fit its narrow name/address/role columns on one line
+  /* ⭐ [stated] ២០២៦-១១-១៦ ១៦:៤៧ ៖ ជំហានទី១ ត្រូវការ ≈១០px ដើម្បីកុំឱ្យ
+     ជួរ «ការិយបរិច្ឆេទសារពើពន្ធ …» ចុះបន្ទាត់ ( វាស់ ៖ ៨៨៧px ធៀប ៧៣០px ) */
+  const STEP_FONT_DELTA = {Step8: -1, Step2: -3, Step1: -3}; // Step8 one size smaller; Step2 and Step1 stay portrait but need a smaller font to keep their long value cells on one line
   const tables = root.querySelectorAll('.table-wrap table');
   tables.forEach(table=>{
     const isLandscape = !!table.closest('.print-landscape'); // Step10-15 — extra width via a landscape page
@@ -36399,13 +37174,20 @@ function autoFitPrintArea(root, extraFontDelta){
           const units = parseInt(td.getAttribute('colspan')) || 1;
           const budget = (PAGE_W_PX * units / totalUnits) - CELL_PAD;
           const isMono = td.classList.contains('num') || td.classList.contains('ref');
-          if(measurePrintTextWidth(td.textContent, baseline, isMono) > budget){
+          /* ⭐⭐ [stated] ២០២៦-១១-១៦ ១៥:២១ ៖ «ជួយកែលេខកុំឱ្យចុះបន្ទាត់» ។
+             ក្រឡាលេខមិនត្រូវទទួល `cell-wrap` ឡើយ ⇒ «13,514,466» លែងបាក់ជា
+             «13,514,46 / 6» ។ ក្រឡាអក្សរនៅរុំបន្ទាត់ដដែល ។ */
+          const isNumCell = td.classList.contains('num') || td.classList.contains('pct');
+          if(!isNumCell && measurePrintTextWidth(td.textContent, baseline, isMono) > budget){
             td.classList.add('cell-wrap');
           }
         });
       });
     }
   });
+  /* ⚠⚠ [stated] ២០២៦-១១-១៦ ១៥:៣៣ ៖ «វាអាក្រក់ណាស់កែទំហំ FONT ដូចនេះ
+     ជួយដាក់មកដូចដើមវិញ» ⇒ ការបង្រួមអក្សរស្វ័យប្រវត្តិ ( ជំហានទី៨·៩ )
+     ត្រូវដកចេញ ។ កុំបញ្ចូលវិញបើគ្មានការអនុញ្ញាត ។ */
 }
 
 /* ពង្រីក/បង្រួម ៖ ជំហានខ្លះមានជួរឈរច្រើន ដូច្នេះការបង្រួមអោយឃើញទាំងអស់
@@ -39244,20 +40026,42 @@ function rscGLOpen(){
   /* ⭐ អ្នកអាន ៖ ច្បាប់តែមួយសម្រាប់គ្រប់ទម្រង់ QuickBooks ។ */
   function parseSheet(aoa, fileName){
     var hdr = -1, H = null;
+    /* ការសាកទី ១ ៖ ទម្រង់ដើម ( Type + Date ) — មិនប៉ះ */
     for(var i = 0; i < Math.min(aoa.length, 30); i++){
       var v = (aoa[i] || []).map(function(c){ return String(c == null ? '' : c).trim(); });
       if(v.indexOf('Type') >= 0 && v.indexOf('Date') >= 0){ hdr = i; H = v; break; }
     }
-    if(hdr < 0) return { rows:[], err:'រកមិនឃើញក្បាលតារាង ( ត្រូវមាន Type និង Date )' };
+    /* ⭐⭐ [stated] ២០២៦-១១-១៦ ៖ ការសាកទី ២ — QuickBooks គ្មានជួរឈរ Type
+       ( Risco-GL 2022-2025.xlsx ) ។ រត់តែពេលទី ១ បរាជ័យ ⇒ ឯកសារចាស់
+       មិនអាចខូចបានទេ ។ មើលក្បាល fix_glnotype.py */
+    if(hdr < 0){
+      for(var i2 = 0; i2 < Math.min(aoa.length, 30); i2++){
+        var v2h = (aoa[i2] || []).map(function(c){ return String(c == null ? '' : c).trim(); });
+        if(v2h.indexOf('Date') >= 0
+           && (v2h.indexOf('Debit') >= 0 || v2h.indexOf('Credit') >= 0)){
+          hdr = i2; H = v2h; break;
+        }
+      }
+    }
+    if(hdr < 0) return { rows:[], err:'រកមិនឃើញក្បាលតារាង ( ត្រូវមាន Date ហើយមាន Type ឬ Debit/Credit )' };
     function col(n){ var k = H.indexOf(n); return k < 0 ? -1 : k; }
     var cType = col('Type'), cDate = col('Date'), cNum = col('Num'), cName = col('Name'),
         cMemo = col('Memo'), cSplit = col('Split'), cDeb = col('Debit'),
         cCred = col('Credit'), cBal = col('Balance');
+    /* ព្រំដែនឆ្វេងនៃជួរឈរទិន្នន័យ ៖ អ្វីដែលនៅឆ្វេងវា គឺឈ្មោះគណនី ។
+       ⚠ មាន Type ⇒ ប្រើ cType ដដែលបេះបិទ ( ឥរិយាបថចាស់មិនប្តូរ ) ។ */
+    var bound = cType;
+    if(bound < 0){
+      [cDate, cNum, cName, cMemo, cSplit, cDeb, cCred, cBal].forEach(function(k){
+        if(k >= 0 && (bound < 0 || k < bound)) bound = k;
+      });
+    }
+    if(bound < 0) bound = 0;
     var out = [], path = [];      /* path[depth] = {code, name} */
     for(var r = hdr + 1; r < aoa.length; r++){
       var row = aoa[r] || [];
       var v2 = row.map(function(c){ return String(c == null ? '' : c).trim(); });
-      var left = v2.slice(0, cType);
+      var left = v2.slice(0, bound);
       var txt = '', depth = -1;
       for(var k = 0; k < left.length; k++){ if(left[k]){ txt = left[k]; depth = k; break; } }
 
@@ -39268,7 +40072,7 @@ function rscGLOpen(){
         path[depth] = { code:ma[1], name:ma[2].trim() };
         continue;
       }
-      if(!v2[cType] && !(cDate >= 0 && row[cDate])) continue;   /* ជួរទទេ / សំណល់ */
+      if(!(cType >= 0 && v2[cType]) && !(cDate >= 0 && row[cDate])) continue;   /* ជួរទទេ / សំណល់ */
 
       var leaf = null;
       for(var q = path.length - 1; q >= 0; q--){ if(path[q]){ leaf = path[q]; break; } }
@@ -39955,27 +40759,20 @@ window.__rscAskAuditDate = function(keys, onReady){
 };
 
 document.getElementById('btnPrintCurrent').onclick = (ev, __dateAsked)=>{
-  if(!__dateAsked){
-    window.__rscAskAuditDate(['auditStartDate'], function(){
-      document.getElementById('btnPrintCurrent').onclick(null, true);
-    });
-    return;
-  }
+  /* ⭐ [stated] ២០២៦-១១-១៦ ៖ ព្រីនតែម្តង គ្មានប្រអប់សួរថ្ងៃទៀតទេ */
   autoFitPrintArea(document.getElementById('content'), -2);   // អក្សរតូចជាង ២px
   withCoverFooter(()=> window.print());
 };
 document.getElementById('btnPrintAll').onclick = (ev, __dateAsked)=>{
-  if(!__dateAsked){
-    window.__rscAskAuditDate(['auditStartDate'], function(){
-      document.getElementById('btnPrintAll').onclick(null, true);
-    });
-    return;
-  }
+  /* ⭐ [stated] ២០២៦-១១-១៦ ៖ ព្រីនតែម្តង គ្មានប្រអប់សួរថ្ងៃទៀតទេ */
   const overlay = document.createElement('div');
   overlay.id = 'printAllContainer';
   overlay.className = 'print-all-container';
   const savedShowAll4 = state.showAllRows['Step4'], savedShowAll5 = state.showAllRows['Step5'];
+  /* [stated] ២១:២៧ ៖ ជំហានទី៨ ត្រងដូចគ្នា ⇒ ព្រីនក៏បង្ហាញទាំងអស់ដូចគ្នា */
+  const savedShowAll8 = state.showAllRows['Step8'];
   state.showAllRows['Step4'] = true; state.showAllRows['Step5'] = true;
+  state.showAllRows['Step8'] = true;
 
   // Optional "print just one year" mode — Step4 through Step7 (the
   // schedules people actually compare year-over-year) automatically
@@ -40006,6 +40803,7 @@ document.getElementById('btnPrintAll').onclick = (ev, __dateAsked)=>{
     overlay.appendChild(pageDiv);
   }
   state.showAllRows['Step4'] = savedShowAll4; state.showAllRows['Step5'] = savedShowAll5;
+  state.showAllRows['Step8'] = savedShowAll8;
   Object.keys(yearVisibility).forEach(y=> delete yearVisibility[y]);
   Object.assign(yearVisibility, savedYearVisibility);
   printYearOrder = null;   /* ត្រលប់ទៅលំដាប់ធម្មតាវិញសម្រាប់អេក្រង់ */
@@ -40031,6 +40829,55 @@ document.getElementById('btnPrintAll').onclick = (ev, __dateAsked)=>{
   window.print();
   setTimeout(cleanup, 4000); // fallback in case afterprint doesn't fire
 };
+
+/* ⭐⭐ [stated] ២០២៦-១១-១៦ ២១:១៨ ៖ ព្រីនរបស់កាត RISK ANALYSIS ⇒ ទំព័រ
+   វិភាគ ( Ratio · Change · Asset & Depre · RISK ) មិនមែនជំហាន TOI ទេ ។
+   ⚠ វិធី ៖ ប្តូរ `state.activeStep` ទៅម្តងមួយទំព័រ គូរឡើងវិញ រួច **ចម្លង**
+     `#content` ⇒ មិនបាច់ដឹងឈ្មោះមុខងារគូររបស់ទំព័រនីមួយៗ ហើយអ្វីដែលព្រីន
+     ដូចអ្វីដែលឃើញលើអេក្រង់បេះបិទ ។
+   ⚠ ស្តារ `state.activeStep` ដើមវិញជានិច្ច ( រួមទាំងពេលមានកំហុស ) ។ */
+function toiPrintRiskPages(keys){
+  keys = (keys || []).filter(Boolean);
+  if(!keys.length) return;
+  const host = document.getElementById('toi-embed');
+  const content = document.getElementById('content');
+  if(!host || !content) return;
+  const overlay = document.createElement('div');
+  overlay.id = 'printAllContainer';
+  overlay.className = 'print-all-container';
+  const saved = state.activeStep;
+  try{
+    keys.forEach(function(k){
+      state.activeStep = k;
+      renderAll();
+      const clone = content.cloneNode(true);
+      clone.removeAttribute('id');
+      overlay.appendChild(el('div', {class:'print-page'}, clone));
+    });
+  }finally{
+    state.activeStep = saved;
+    renderAll();
+  }
+  overlay.style.position = 'fixed';
+  overlay.style.left = '-99999px';
+  overlay.style.top = '0';
+  overlay.style.display = 'block';
+  host.appendChild(overlay);
+  try{ autoFitPrintArea(overlay); }catch(e){}
+  overlay.style.position = '';
+  overlay.style.left = '';
+  overlay.style.top = '';
+  overlay.style.display = '';
+  document.body.classList.add('toi-embed-printing-all');
+  function cleanup(){
+    document.body.classList.remove('toi-embed-printing-all');
+    if(overlay.parentNode) overlay.parentNode.removeChild(overlay);
+    window.removeEventListener('afterprint', cleanup);
+  }
+  window.addEventListener('afterprint', cleanup);
+  window.print();
+  setTimeout(cleanup, 4000);
+}
 
 document.getElementById('btnOpen').onclick = ()=> document.getElementById('inputSnapshot').click();
 document.getElementById('btnExportAllSteps').onclick = exportAllStepsToExcel;
@@ -40093,16 +40940,181 @@ function renderNav(){
      ទាំងមូល ; ធាតុឯទៀតក្នុងជួរនេះគ្រាន់តែប្តូរ `state.activeStep` ខាងក្នុង
      TOI ប៉ុណ្ណោះ។ ឥឡូវវាជាជំហានពិតៗដូចគេ ⇒ ចូល/ចេញដូចគ្នា ហើយធាតុនេះ
      ក៏ភ្លឺជា active ដែរ។ */
-  navItem('personalinfo', 'ព័ត៌មានផ្ទាល់ខ្លួន', '👤');
-  navItem('overview', 'DATA ENTRY', '📝');
-  navItem('cover', 'COVER', '📋');
-  if(state.years.length){
-    navItem('ratios', 'Ratio', '%');
-    navItem('changes', 'Change', '∆');
-    navItem('assets', 'Asset & Depre', '⚙');
+  /* ⭐⭐ [stated] ២០២៦-១១-១៦ ៖ របារខាងលើបែងជា ២ របៀប តាមកាតដែលបើកចូល ។
+     របៀបទាញចេញពីជំហានសកម្ម មិនមែន state ថ្មី — មើលក្បាល fix_toimode.py */
+  const TOI_ENTRY_PAGES = { personalinfo:1, overview:1, cover:1 };
+  /* ⭐⭐ [stated] ២០២៦-១១-១៦ ២០:២៣ ៖ ទំព័រវិភាគ ⇒ កាត «RISK ANALYSIS» */
+  const TOI_RISK_PAGES = { ratios:1, changes:1, assets:1, risk:1 };
+  const toiInEntry = !!TOI_ENTRY_PAGES[state.activeStep];
+  const toiInRisk  = !!TOI_RISK_PAGES[state.activeStep];
+  const toiInSteps = !toiInEntry && !toiInRisk;
+  /* ⭐⭐ [stated] ២០២៦-១១-១៦ ២១:១៨ ៖ «TAB មានតែ ៤ … ប្តូរមកខាងលើវិញ»
+     ⇒ ៤ TAB ត្រឡប់ទៅរបារខាងលើ ( `#toiMainNav` ) ហើយរបារចំហៀងឆ្វេង
+     នៅសល់សម្រាប់តែជំហានទី១–១៧ ។ */
+  const riskTabs = [];
+  if(toiInRisk){
+    if(state.years.length){
+      riskTabs.push(['ratios', 'Ratio', '%']);
+      riskTabs.push(['changes', 'Change', '∆']);
+      riskTabs.push(['assets', 'Asset & Depre', '⚙']);
+    }
+    /* ការវិភាគហានិភ័យ ៖ សម្រាប់ Team និង admin ប៉ុណ្ណោះ */
+    if(!window.__featOn || window.__featOn('risk')) riskTabs.push(['risk', 'RISK', '⚠']);
+    riskTabs.forEach(function(t){ navItem(t[0], t[1], t[2]); });
+    /* ⭐⭐ ប៊ូតុងព្រីនរបស់របៀបវិភាគ ៖ ព្រីន **៤ ទំព័រនេះ** មិនមែន TOI */
+    if(topNav && riskTabs.length){
+      const rp = el('button', {class:'toi-riskprint', type:'button',
+                               title:'ព្រីនទំព័រវិភាគទាំង ' + riskTabs.length,
+                               'aria-label':'ព្រីនទំព័រវិភាគ'}, '🖨️');
+      rp.onclick = function(){ toiPrintRiskPages(riskTabs.map(function(t){ return t[0]; })); };
+      topNav.appendChild(rp);
+      /* [stated] ២០២៦-១១-១៦ ២១:២២ ៖ «លុបប៊ូតុងព្រីន ១ ចេញ» ⇒ សល់តែរូប
+         ព្រីនដែលចេញ **គ្រប់ទំព័រវិភាគ** ។ ( មុខងារ `toiPrintRiskPages`
+         នៅទទួលបញ្ជីទំព័រដដែល ⇒ បើថ្ងៃណាចង់បានវិញ បន្ថែមប៊ូតុងតែប៉ុណ្ណោះ ) */
+    }
   }
-  /* ការវិភាគហានិភ័យ ៖ សម្រាប់ Team និង admin ប៉ុណ្ណោះ */
-  if(!window.__featOn || window.__featOn('risk')) navItem('risk', 'RISK', '⚠');
+  /* ⭐⭐ របារចំហៀងឆ្វេង ៖ ជំហានទី១–១៧ ( របៀប steps ប៉ុណ្ណោះ ) */
+  try{
+    const emb = document.getElementById('toi-embed');
+    /* [stated] ២១:១៨ ៖ របារចំហៀង = ជំហានទី១–១៧ ប៉ុណ្ណោះ */
+    const sideOn = toiInSteps;
+    if(emb) emb.classList.toggle('toi-side', sideOn);
+    if(sideOn && nav){
+      nav.innerHTML = '';
+      /* ⭐⭐ [stated] ២០២៦-១១-១៦ ២០:៣៣ ៖ ក្បាលរបារចំហៀង = រូបព្រីន +
+         ប្រអប់ជ្រើសឆ្នាំ ( គ្មានអក្សរ ) ។ រើសឆ្នាំណា ⇒ បង្ហាញតែឆ្នាំនោះ
+         ហើយការព្រីនក៏ចេញឆ្នាំនោះដែរ ។ */
+      const sHead = el('div', {class:'toi-side-head'});
+      const sPrint = el('button', {class:'toi-side-print', type:'button',
+                                   title:'ព្រីនគ្រប់ជំហាន',
+                                   'aria-label':'ព្រីនគ្រប់ជំហាន'}, '🖨️');
+      /* ⭐⭐ [stated] ២០២៦-១១-១៦ ២០:៥៦ ៖ «PRINT TOI វាចេញតែ១ជំហាន ខ្ញុំចង់
+         ឱ្យវាចេញគ្រប់ជំហាន» ⇒ រូបព្រីននេះ = ព្រីន **គ្រប់ជំហាន** ( btnPrintAll ) ។
+         ⚠ បើវាមិនទាន់អាចប្រើ ( គ្មានទិន្នន័យ ) ⇒ ធ្លាក់ទៅព្រីនទំព័របច្ចុប្បន្ន ។ */
+      sPrint.onclick = function(){
+        var all = document.getElementById('btnPrintAll');
+        if(all && !all.disabled){ all.click(); return; }
+        var b = document.getElementById('btnPrintCurrent');
+        if(b) b.click();
+      };
+      sHead.appendChild(sPrint);
+      /* ⭐⭐ [stated] ២០២៦-១១-១៦ ២០:៥៩ ៖ «បន្ថែមប៊ូតុងព្រីន១ទៀត តែម៉ូតផ្សេង
+         ដាក់ជិតគ្នា សម្រាប់ព្រីនក្នុងជំហានណាមួយ» ⇒ ប៊ូតុងទី២ = ទំព័រ
+         **បច្ចុប្បន្ន** តែមួយ ។ */
+      const sPrint1 = el('button', {class:'toi-side-print alt', type:'button',
+                                    title:'ព្រីនតែជំហាននេះ',
+                                    'aria-label':'ព្រីនតែជំហាននេះ'}, '📄');
+      sPrint1.onclick = function(){
+        var b = document.getElementById('btnPrintCurrent');
+        if(b) b.click();
+      };
+      sHead.appendChild(sPrint1);
+      if(state.years && state.years.length){
+        const sYear = el('select', {class:'toi-side-year', title:'ជ្រើសឆ្នាំ'});
+        state.years.forEach(function(y){
+          const o = el('option', {value:y}, y);
+          sYear.appendChild(o);
+        });
+        /* ឆ្នាំដែលកំពុងបង្ហាញ ៖ បើមានតែមួយ ⇒ យកវា ; បើមិនដូច្នេះ ⇒ ឆ្នាំចុងក្រោយ */
+        const vis = state.years.filter(function(y){ return yearVisibility[y] !== false; });
+        sYear.value = (vis.length === 1 ? vis[0] : state.years[state.years.length - 1]);
+        /* ⚠⚠ [stated] ២០:៥៩ ៖ «ព្រីន TOI ត្រូវរើសឆ្នាំតាមឆ្នាំដែលបាន FILTER»
+           ⇒ ផ្សារភ្ជាប់នឹង `printYearSelect` ដែល `btnPrintAll` ពឹងលើ
+           ( ផ្លូវឆ្នាំតែមួយ ៖ ជំហានទី៤–៧ ភ្ជាប់ឆ្នាំ N-1 ដូចទម្រង់ ) ។ */
+        try{
+          const pys = document.getElementById('printYearSelect');
+          if(pys && [...pys.options].some(function(o){ return o.value === sYear.value; })){
+            pys.value = sYear.value;
+          }
+        }catch(e){}
+        sYear.onchange = function(){
+          const pick = sYear.value;
+          state.years.forEach(function(y){ yearVisibility[y] = (y === pick); });
+          try{
+            const pys2 = document.getElementById('printYearSelect');
+            if(pys2) pys2.value = pick;
+          }catch(e){}
+          renderAll();
+        };
+        sHead.appendChild(sYear);
+      }
+      nav.appendChild(sHead);
+      STEP_KEYS.forEach(function(key, i){
+        const rs = state.refSteps[key] || state.rawSteps[key];
+        const raw = String((rs || {}).title || '');
+        /* ចំណងជើងខ្លី ៖ ដកពាក្យ «ជំហានទីN -» ចេញ ⇒ សល់តែខ្លឹមសារ */
+        const short = raw.replace(/^\s*ជំហានទី\s*[\u17E0-\u17E9\d]+\s*[-\u2013:]*\s*/, '').trim();
+        const item = el('div', {class:'toi-step-item' + (rs ? '' : ' disabled') +
+                                       (state.activeStep === key ? ' active' : '')});
+        item.appendChild(el('span', {class:'si-no'}, String(i + 1)));
+        item.appendChild(el('span', {class:'si-tx'}, short || ('ជំហានទី' + (i + 1))));
+        if(rs){
+          item.title = raw || ('ជំហានទី' + (i + 1));
+          item.onclick = function(){ state.activeStep = key; renderAll(); };
+        }else{
+          item.title = 'ជំហានទី' + (i + 1) + ' — គ្មានទិន្នន័យ';
+        }
+        nav.appendChild(item);
+      });
+    }
+  }catch(e){ console.error('toi side nav:', e); }
+  /* ⭐⭐ [stated] ២០២៦-១១-១៦ ៖ «zoom in out back or print នៅផ្នែកនេះលែង
+     មានទៀតហើយ» ⇒ លាក់ក្នុងរបៀបបញ្ចូលទិន្នន័យ ។
+     ⚠ លាក់ មិនលុប ៖ របៀបពិនិត្យត្រូវការវា ហើយកូដផ្សេងកំណត់ `.disabled`
+       ដោយគ្មាន guard ។ មើលក្បាល fix_toibar.py */
+  try{
+    /* ⭐⭐ [stated] ២០២៦-១១-១៦ ២០:៣៣ ៖ «របារ PRINT TOI រហូតដល់ត្រឡប់
+       លុបចេញ» ⇒ ក្នុងរបៀបជំហាន របារឧបករណ៍ទាំងមូលលាក់ ( ព្រីនផ្លាស់ទៅ
+       របារចំហៀង ) ។ ⚠ លាក់ មិនលុប ៖ ប៊ូតុង `btnPrintCurrent` នៅត្រូវការ
+       ព្រោះរូបព្រីនក្នុងរបារចំហៀងចុចតាមវា ។ */
+    /* [stated] ២០:៤២ ៖ RISK ANALYSIS ក៏លុប «ព្រីន TOI» និងបន្ទះឆ្នាំដែរ */
+    var hideBar = toiInEntry || toiInSteps || toiInRisk;
+    ['btnPrintAll', 'btnPrintCurrent'].forEach(function(id){
+      var b = document.getElementById(id);
+      if(b) b.style.display = hideBar ? 'none' : '';
+    });
+    var zm = document.querySelector('#toi-embed .toi-zoom') || document.querySelector('.toi-zoom');
+    if(zm) zm.style.display = hideBar ? 'none' : '';
+    /* [stated] ២០២៦-១១-១៦ ៖ ឆ្នាំ និង EXCEL ចេញពីរបារបញ្ចូលទិន្នន័យ */
+    ['yearChips', 'btnExportAllSteps'].forEach(function(id){
+      var e = document.getElementById(id);
+      if(e) e.style.display = hideBar ? 'none' : '';
+    });
+    /* ⚠ របៀបបញ្ចូល ៖ ជួរនេះគ្មានធាតុណាមួយសល់ ⇒ លាក់ជួរទាំងមូល
+       បើមិនដូច្នេះវាសល់ជាបន្ទះសទទេ ។ */
+    /* [stated] ២០២៦-១១-១៦ ៖ របារ upload ស្ទួន ⇒ សម្គាល់ឱ្យ CSS លាក់ */
+    var bl = document.getElementById('btnLoad');
+    var upRow = bl && bl.closest ? bl.closest('.toolbar-row') : null;
+    if(upRow) upRow.classList.add('toi-uprow');
+    var mrow = document.querySelector('#toi-embed .toi-mainrow') || document.querySelector('.toi-mainrow');
+    /* ⚠ [stated] ២១:១៨ ៖ របៀបវិភាគត្រូវឃើញជួរ TAB ⇒ បើកជួរនេះវិញ ។
+       ធាតុឯទៀតក្នុងជួរ ( ព្រីន TOI · ឆ្នាំ · ZOOM · EXCEL ) នៅលាក់ដដែល
+       ព្រោះវាលាក់ម្តងមួយដោយ `hideBar` ខាងលើរួចហើយ ។ */
+    if(mrow) mrow.style.display = (hideBar && !toiInRisk) ? 'none' : '';
+    /* ⚠ ជួរឧបករណ៍ណាដែលគ្មានកូនមើលឃើញសោះ ⇒ លាក់ ។ បើទុក វាសល់ជា
+       បន្ទះសទទេនៅពីលើទំព័រ ( ឃើញក្នុងរូបថត ) ។ */
+    document.querySelectorAll('#toi-embed .toolbar-row').forEach(function(row){
+      /* ⚠⚠ រំលង .toi-mainrow ៖ វាគ្រប់គ្រងខាងលើរួចហើយ ហើយ
+         `removeProperty` នឹងលុបការលាក់នោះចោល ( ចាប់បានដោយការវាស់ ) ។ */
+      if(row.classList.contains('toi-mainrow')) return;
+      row.style.removeProperty('display');
+      var seen = false, kids = row.children, q;
+      for(q = 0; q < kids.length; q++){
+        if(kids[q].offsetParent !== null || kids[q].getClientRects().length){ seen = true; break; }
+      }
+      if(!seen) row.style.display = 'none';
+    });
+    /* ⚠ ប្រអប់ `.toolbar` ខ្លួនវាមាន padding ១៤px + ផ្ទៃស ⇒ ពេលជួរកូន
+       លាក់អស់ វាសល់ជាបន្ទះស ២៩px ( វាស់បាន ) ⇒ លាក់វាដែរ ។ */
+    document.querySelectorAll('#toi-embed .toolbar').forEach(function(tb){
+      tb.style.removeProperty('display');
+      var any = false, ch = tb.children, z;
+      for(z = 0; z < ch.length; z++){
+        if(ch[z].offsetParent !== null || ch[z].getClientRects().length){ any = true; break; }
+      }
+      if(!any) tb.style.display = 'none';
+    });
+  }catch(e){}
   /* [stated] STEP1–17 ជា dropdown ជាប់នឹង RISK ; របារចំហៀងលែងត្រូវការ
      ទៀតទេ ដូច្នេះផ្ទាំង TOI ទទួលបានទទឹងទាំងមូល។ ជំហានដែលគ្មានទិន្នន័យ
      នៅជា <option disabled> ដើម្បីអោយឃើញថាមានប៉ុន្មានជំហានទាំងអស់។ */
@@ -40118,6 +41130,10 @@ function renderNav(){
              ' title="' + String(title).replace(/"/g,'&quot;') + '">STEP' + (i+1) + '</option>';
     }).join('');
     stepSel.classList.toggle('active', stepKeys.includes(state.activeStep));
+    /* ⭐ [stated] ២០២៦-១១-១៦ ២០:២៣ ៖ របារចំហៀងជំនួស dropdown ⇒ លាក់វា */
+    stepSel.classList.add('toi-step-sel-hidden');
+    /* ⚠ STEP មិនទាក់ទងនឹងរបៀបបញ្ចូលទិន្នន័យ ⇒ លាក់ទាំងស្រុង */
+    try{ stepSel.style.display = toiInEntry ? 'none' : ''; }catch(e){}
     stepSel.onchange = ()=>{
       if(!stepSel.value) return;
       state.activeStep = stepSel.value;
@@ -40198,7 +41214,23 @@ function renderAll(){
     return;
   }
   if(state.activeStep === 'cover'){
-    content.appendChild(renderCoverPanel());
+    /* ⭐⭐ [stated] ២០២៦-១១-១៦ ៖ ប៊ូតុងព្រីននៅលើទំព័រនេះតែម្តង ។
+       ⚠ ហៅ `btnPrintCurrent` ដដែល ⇒ ផ្លូវព្រីនមិនប្តូរ ( ថ្ងៃខែ ·
+         autoFit · ជើងទំព័រ COVER ) ។ វាលាក់ តែ `.click()` នៅតែដើរ ។ */
+    const cvBar = el('div', {class:'cover-actions no-print'});
+    const cvPrint = el('button', {class:'btn cv-print-btn',
+      title:'ព្រីន COVER', 'aria-label':'ព្រីន COVER'}, '🖨️');
+    cvPrint.onclick = ()=>{
+      const b = document.getElementById('btnPrintCurrent');
+      if(b) b.click();
+    };
+    cvBar.appendChild(cvPrint);
+    /* ⚠ ប្រអប់រុំ ៖ ដើម្បីឱ្យរបារអណ្តែត ( absolute ) មិនកាន់កន្លែងបញ្ឈរ
+       ⇒ ចំណងជើងឡើងលើវិញ ។ មើលក្បាល fix_cvbtn.py */
+    const cvWrap = el('div', {class:'cover-wrap'});
+    cvWrap.appendChild(cvBar);
+    cvWrap.appendChild(renderCoverPanel());
+    content.appendChild(cvWrap);
     return;
   }
   if(state.activeStep === 'risk'){
@@ -40222,11 +41254,25 @@ function renderAll(){
      បើវាបោះកំហុស យើងបង្ហាញផ្ទាំងទទេវិញ ជាជាងទុកអេក្រង់ស ។ */
   if(state.activeStep === 'overview'){
     try{
+      /* [stated] ២០២៦-១១-១៦ ៖ ចំណងជើងផ្នែកទាំងពីរ ⇒ អានដាច់ពីគ្នាច្បាស់ */
+      content.appendChild(el('div', {class:'de-sec-head'}, '📝 DATA ENTRY'));
       content.appendChild(renderOverview());
     }catch(err){
       console.error('renderOverview:', err);
       content.appendChild(el('div', {class:'empty-state'}));
     }
+    /* ⭐⭐ [stated] ២០២៦-១១-១៦ ៖ ព័ត៌មានផ្ទាល់ខ្លួនចូលទំព័រដដែល
+       ( មើលក្បាល fix_demerge.py ) ។ ⚠ ធាតុនេះខ្ចីពីផ្ទះដើម ហើយកូដ
+       ខាងលើផ្ញើវាត្រឡប់មុន `innerHTML=''` រួចហើយ ។ */
+    try{
+      var pib2 = document.getElementById('personal-info-container');
+      if(pib2){
+        var sec = el('div', {class:'de-sec-head'}, '👤 ព័ត៌មានផ្ទាល់ខ្លួន');
+        content.appendChild(sec);
+        content.appendChild(pib2);
+        if(typeof window.renderPersonalInfoView === 'function') window.renderPersonalInfoView();
+      }
+    }catch(e){ console.error('merge personalinfo:', e); }
     autoFitKpiValues(content);
     return;
   }
@@ -42279,25 +43325,39 @@ function renderRefStepPanel(stepKey){
      មុខងារផ្សេង (សង្ខេបហិរញ្ញវត្ថុ · អនុបាត · ទ្រព្យសកម្ម) ពឹងលើលំដាប់
      ចាស់→ថ្មី ដូចជា `yrs[yrs.length-1]` ជាឆ្នាំថ្មីបំផុត។ */
   const yrsAsc = yrsWithData.length > 0 ? yrsWithData : allVisibleYrs;
-  const yrs = yrsAsc.slice().reverse();
+  /* ⚠⚠ [stated] ២០២៦-១១-១៦ ២១:០២ ៖ «អ្នកដាក់ឆ្នាំខុស វាត្រូវចេញឆ្នាំ N
+     2024 N-1 គឺ 2023» ។
+     មូលហេតុ ៖ កូដចាស់ **បញ្ច្រាស** ដោយសន្មតថា `visibleYears()` តម្រៀប
+       ចាស់→ថ្មីជានិច្ច ។ តែពេលព្រីនឆ្នាំតែមួយ វាត្រឡប់ `printYearOrder`
+       ដែលតម្រៀប **ថ្មី→ចាស់** រួចហើយ ⇒ បញ្ច្រាសម្តងទៀត ⇒ ២០២៣ មុន ២០២៤ ។
+     ⇒ តម្រៀបចុះពីធំទៅតូចដោយផ្ទាល់ ⇒ ថ្មីនៅឆ្វេងជានិច្ច ទោះលំដាប់ចូលបែបណា ។ */
+  const yrs = yrsAsc.slice().sort(function(a, b){
+    var na = Number(a), nb = Number(b);
+    if(isNaN(na) || isNaN(nb)) return 0;
+    return nb - na;
+  });
   const filterable = (stepKey==='Step4' || stepKey==='Step5');
+  /* [stated] ២១:២៧ ៖ ជំហានទី៨ ក៏ត្រងជួរគ្មានទឹកប្រាក់ដែរ */
+  const rowFilterable = filterable || stepKey === 'Step8';
   const showAll = state.showAllRows[stepKey] === true;
   const wrap = el('div');
-  wrap.appendChild(el('h2',{class:'panel-title'}, rs.title));
-  // Every action for a step sits on one line under the title — stacked
-  // buttons were eating a whole row of vertical space above each table.
+  /* ⭐⭐ [stated] ២០២៦-១១-១៦ ៖ ចំណងជើង · ↩ · ឆ្នាំ នៅជួរដេកតែមួយ ;
+     ⬇ ដកចេញ ( មានស្រាប់នៅរបារខាងលើ ) ។ មើលក្បាល fix_stephead.py */
+  const stepHead = el('div',{class:'step-head'});
+  stepHead.appendChild(el('h2',{class:'panel-title'}, toiStepTitle(rs.title)));
+  const backBtn = makeBackToCalcBtn(); if(backBtn) stepHead.appendChild(backBtn);
+  wrap.appendChild(stepHead);
+  /* ⭐⭐ [stated] ២០២៦-១១-១៦ ២០:៤៩ ៖ «បង្ហាញទាំងអស់ និង រៀល/ដុល្លារ …
+     រុញវាទៅជួរជំហានទី៤ ទី៥ នោះតែម្តង ដោយមិនបាច់ចុះបន្ទាត់ទេ»
+     ⇒ ជួរសកម្មភាពចូលទៅក្នុង `.step-head` ជាមួយចំណងជើង និង ↩ ។ */
   const stepActions = el('div',{class:'step-actions no-print'});
-  const exportBtn = el('button',{class:'btn no-print step-dl',
-    title:'ទាញយកទិន្នន័យជំហាននេះ (Excel)', 'aria-label':'ទាញយកទិន្នន័យជំហាននេះ',
-    html:'<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5v10"/><path d="m7.5 9.5 4.5 4.5 4.5-4.5"/><path d="M4.5 19h15"/></svg>'});
-  exportBtn.onclick = ()=> exportStepToExcel(stepKey);
-  stepActions.appendChild(exportBtn);
-  const backBtn = makeBackToCalcBtn(); if(backBtn) stepActions.appendChild(backBtn);
 
-  if(filterable){
+  if(rowFilterable){
     const toggleBtn = el('button',{class:'btn'}, showAll ? '🔎 បង្ហាញតែមុខមានទឹកប្រាក់' : '📋 បង្ហាញទាំងអស់');
     toggleBtn.onclick = ()=>{ state.showAllRows[stepKey] = !showAll; renderAll(); };
     stepActions.appendChild(toggleBtn);
+  }
+  if(filterable){
     /* ⭐ [stated] ២០២៦-១១-០៣ ៖ ប្តូរមើលជាដុល្លារ ( តារាងតុល្យការ និង
        របាយការណ៍លទ្ធផល ) ។ អត្រាតាមឆ្នាំនីមួយៗ ។ */
     const ccyBtn = el('button',{class:'btn' + (rscCcyIsUsd() ? '' : ' ghost'),
@@ -42311,12 +43371,18 @@ function renderRefStepPanel(stepKey){
         'អត្រា ៖ ' + yrs.map(y=> y + ' = ' + fmtAmt(rscFxOf(y))).join(' · ')));
     }
   }
-  wrap.appendChild(stepActions);
+  /* [stated] ២១:០៥ ៖ ឧបករណ៍អេក្រង់ ( ឆ្នាំ + ពង្រីក ) នៅជួរដេកតែមួយ */
+  stepActions.appendChild(toiStepScreenTools());
+  stepHead.appendChild(stepActions);
 
-  const showPrev = yrs.length === 1 && rs.prevValues && rs.order.some(ref=>{
-    const pv = rs.prevValues[ref] ? rs.prevValues[ref][yrs[0]] : null;
-    return typeof pv === 'number' && pv !== 0;
-  });
+  /* ⚠ សញ្ញាចម្បង ៖ សន្លឹកមានជួរឈរនោះឬអត់ ( fix_prevcol.py ) ;
+     លក្ខខណ្ឌចាស់រក្សាទុកជាជម្រើសបន្ថែម ⇒ អ្វីដែលធ្លាប់ចេញ នៅតែចេញ ។ */
+  const showPrev = yrs.length === 1 && rs.prevValues && (
+    rs.hasPrevCol === true || rs.order.some(ref=>{
+      const pv = rs.prevValues[ref] ? rs.prevValues[ref][yrs[0]] : null;
+      return typeof pv === 'number';
+    })
+  );
   const prevYearNum = showPrev ? parseInt(yrs[0],10) : null;
   const prevYearLabel = (prevYearNum && !isNaN(prevYearNum)) ? String(prevYearNum-1) : 'N-1';
 
@@ -42341,7 +43407,7 @@ function renderRefStepPanel(stepKey){
     const values = yrs.map(y=> rs.values[ref] ? rs.values[ref][y] : null);
     const prevVal = showPrev ? (rs.prevValues[ref] ? rs.prevValues[ref][yrs[0]] : null) : null;
     const hasMoney = values.some(v=> typeof v==='number' && v!==0) || (typeof prevVal==='number' && prevVal!==0);
-    if(filterable && !showAll && !hasMoney) return;
+    if(rowFilterable && !showAll && !hasMoney) return;
     const isTotal = isTotalRef(stepKey,ref);
     /* ⚠ isRiskyRow ប្រៀបធៀបឆ្នាំមុន→ឆ្នាំក្រោយ ហើយ (curr−prev)/prev មិន
        ស៊ីមេទ្រីទេ — ដូច្នេះត្រូវបញ្ជូនតម្លៃតាមលំដាប់ចាស់→ថ្មីដដែល។ */
@@ -42404,17 +43470,79 @@ function renderRefStepPanel(stepKey){
           tab.onclick = ()=>{ state.activeRawYear[stepKey] = y; renderAll(); };
           tabs.appendChild(tab);
         });
-        wrap.appendChild(tabs);
+        stepHead.appendChild(tabs);   /* ⇒ ជួរដេកជាមួយចំណងជើង */
       }
       /* ⚠ តារាងទាំងនេះមាន ៧ ជួរឈរ ហើយក្បាលជួរជាឃ្លាវែង ⇒ ក្នុងទទឹងធម្មតា
          វាហៀរទៅស្តាំ ។ `toi-tail` ចាក់សោទទឹង ( table-layout:fixed ) ហើយ
          អនុញ្ញាតឱ្យអក្សរចុះបន្ទាត់ ⇒ អានបានពេញអេក្រង់ដោយមិនអូសទៅស្តាំ ។ */
       const tailBox = el('div',{class:'toi-tail'});
-      tailBox.appendChild(renderAoaTable(rs.tail[ty], null, {stepKey}));
+      /* ⚠ មានចំណងជើងផ្នែក ⇒ ប្លុក ; គ្មាន ⇒ វិធីចាស់ ( ជំហានដទៃមិនប្រែ ) */
+      if(tailHasSections(rs.tail[ty])){
+        tailBox.appendChild(renderStepTailBlocks(rs.tail[ty], {stepKey}));
+      }else{
+        tailBox.appendChild(renderAoaTable(rs.tail[ty], null, {stepKey}));
+      }
       wrap.appendChild(tailBox);
     }
   }
   return wrap;
+}
+
+/* ⭐⭐ [stated] ២០២៦-១១-១៦ ២១:១២ ៖ សម្អាតចំណងជើងជំហាន ៖ លុបពាក្យ
+   «គិតត្រឹមការិយបរិច្ឆេទ» ចេញ ( គ្រប់ជំហាន ) ។ អ្វីដែលនៅសល់ទុកដដែល ។ */
+function toiStepTitle(t){
+  if(typeof t !== 'string') return t;
+  /* [stated] ២០២៦-១១-១៦ ២១:២៦ ៖ ជំហានទី៥ «លុបអក្សរ សំរាប់ការិយបរិច្ឆេទ
+     ចេញផង» ⇒ បន្ថែមឃ្លានេះ ( ទាំងអក្ខរាវិរុទ្ធ «សម្រាប់» និង «សំរាប់» ) ។
+     ⚠ លុបតែឃ្លាដែលភ្ជាប់នឹង «ការិយបរិច្ឆេទ» ប៉ុណ្ណោះ ⇒ ពាក្យផ្សេងមិនប៉ះ ។ */
+  var out = t.replace(/\s*(?:គិតត្រឹម|ស(?:ំ|ម្)រាប់)\s*ការិយបរិច្ឆេ\S*/g, ' ');
+  out = out.replace(/[ \t\u00a0]{2,}/g, ' ')
+           .replace(/\s*[-–—:៖]\s*$/, '')
+           .trim();
+  return out || t;
+}
+/* ⚠ បង្ហាញជាសកល ៖ ផ្លូវអានឯកសារ ( ingest ) អាចនៅក្រៅ IIFE នេះ */
+try{ window.toiStepTitle = toiStepTitle; }catch(e){}
+
+/* ⭐⭐ [stated] ២០២៦-១១-១៦ ២១:០៥ ៖ ឧបករណ៍មើលលើអេក្រង់ ( មិនព្រីន ) ៖
+   បន្ទះឆ្នាំ + ពង្រីក/បង្រួម ។ ដាក់ក្នុងជួរចំណងជើងជំហាន ។
+   ⚠ ប៊ូតុងពង្រីក **ចុចតាម** ប៊ូតុងដើម `btnZoomIn/Out/Reset` ក្នុងរបារដែល
+     លាក់ ⇒ គ្មានតក្កៈស្ទួន និងគ្មានបញ្ហាវិសាលភាពអថេរ ។ */
+function toiStepScreenTools(){
+  const box = el('div', {class:'toi-sctools no-print'});
+  if(state.years.length > 1){
+    const chips = el('div', {class:'years-chips'});
+    state.years.forEach(function(y){
+      if(!(y in yearVisibility)) yearVisibility[y] = true;
+      const chip = el('div', {class:'year-chip' + (yearVisibility[y] === false ? ' off' : ''),
+                              title:'បង្ហាញ / លាក់ឆ្នាំ ' + y + ' លើអេក្រង់ ( មិនប៉ះការព្រីន )'}, y);
+      chip.onclick = function(){
+        /* ⚠ ត្រូវនៅសល់យ៉ាងតិចមួយឆ្នាំ បើមិនដូច្នេះតារាងទទេ */
+        const on = state.years.filter(function(k){ return yearVisibility[k] !== false; });
+        if(yearVisibility[y] !== false && on.length <= 1) return;
+        yearVisibility[y] = (yearVisibility[y] === false);
+        renderAll();
+      };
+      chips.appendChild(chip);
+    });
+    box.appendChild(chips);
+  }
+  const zoom = el('div', {class:'toi-sczoom'});
+  const zEl = document.getElementById('zoomLabel');
+  const lbl = el('span', {class:'sz-lab'}, (zEl && zEl.textContent) || '100%');
+  const hit = function(id){
+    return function(){
+      const b = document.getElementById(id); if(b) b.click();
+      const z = document.getElementById('zoomLabel'); if(z) lbl.textContent = z.textContent;
+    };
+  };
+  const bOut = el('button', {class:'btn sz-btn', title:'បង្រួម'}, '🔍−');
+  const bIn  = el('button', {class:'btn sz-btn', title:'ពង្រីក'}, '🔍+');
+  const bRs  = el('button', {class:'btn sz-btn', title:'ត្រឡប់ទំហំដើម'}, '↺');
+  bOut.onclick = hit('btnZoomOut'); bIn.onclick = hit('btnZoomIn'); bRs.onclick = hit('btnZoomReset');
+  zoom.appendChild(bOut); zoom.appendChild(lbl); zoom.appendChild(bIn); zoom.appendChild(bRs);
+  box.appendChild(zoom);
+  return box;
 }
 
 /* ---------- Raw fallback panel (per-year original layout) ---------- */
@@ -42424,19 +43552,21 @@ function renderRawStepPanel(stepKey){
      ត្រង់ៗ ដូច្នេះការចុចឆ្នាំ (លើអេក្រង់) និងជម្រើស «ព្រីនតែ ២០២x»
      មិនប៉ះជំហានដែលប្រើទម្រង់ដើមនេះទេ។ */
   const yrs = visibleYears().filter(y=> rsRaw.byYear[y]);
-  const LANDSCAPE_STEPS = ['Step10'];
+  /* ⭐⭐ [stated] ២០២៦-១១-១៦ ១៥:១៦ ៖ «ចុះបើធ្វើវាជាជួរឈរដូចគេទៅបានទេ» ។
+     ⚠ មូលហេតុដែលជំហានទី១០ ប៉ះពាល់ជំហានដទៃ ៖ ស្លាក `print-landscape`
+       បង្ខំ **ប្តូរក្រដាស + ប្តូរទំព័រ** កណ្តាលឯកសារ ⇒ លំហូរទំព័ររបស់
+       ជំហានជិតខាងរអិល ។ ⇒ ឥឡូវជំហានទី១០ ព្រីន **ឈរ** ដូចជំហានដទៃទាំងអស់
+       ⇒ គ្មានការប្តូរក្រដាសទៀតទេ ⇒ គ្មានការប៉ះពាល់ឆ្លង ។ */
+  const LANDSCAPE_STEPS = [];
   const wrap = el('div', LANDSCAPE_STEPS.includes(stepKey) ? {class:'print-landscape'} : null);
-  wrap.appendChild(el('h2',{class:'panel-title'}, rsRaw.title));
+  const stepHeadRaw = el('div',{class:'step-head'});
+  stepHeadRaw.appendChild(el('h2',{class:'panel-title'}, toiStepTitle(rsRaw.title)));
+  wrap.appendChild(stepHeadRaw);
   const stepActionsRaw = el('div',{class:'step-actions no-print'});
   /* ⭐⭐ [stated] ២០២៦-០៩-០២ ៖ «បង្កើតប៊ូតុង Print ថ្មី ១ សម្រាប់តែជំហានទី១០
      ជំហានមុនរក្សាធម្មតា» ។ ⇒ ការព្រីនធម្មតា **មិនប៉ះ** ; ប៊ូតុងនេះសង់
      ផ្ទាំងបណ្ដោះអាសន្នផ្ទាល់ខ្លួន ⇒ ច្បាប់របស់វាឯករាជ្យទាំងស្រុង ។ */
-  const exportBtnRaw = el('button',{class:'btn no-print step-dl',
-    title:'ទាញយកទិន្នន័យជំហាននេះ (Excel)', 'aria-label':'ទាញយកទិន្នន័យជំហាននេះ',
-    html:'<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5v10"/><path d="m7.5 9.5 4.5 4.5 4.5-4.5"/><path d="M4.5 19h15"/></svg>'});
-  exportBtnRaw.onclick = ()=> exportStepToExcel(stepKey);
-  stepActionsRaw.appendChild(exportBtnRaw);
-  const backBtnRaw = makeBackToCalcBtn(); if(backBtnRaw) stepActionsRaw.appendChild(backBtnRaw);
+  const backBtnRaw = makeBackToCalcBtn(); if(backBtnRaw) stepHeadRaw.appendChild(backBtnRaw);
   wrap.appendChild(stepActionsRaw);
 
   const tabs = el('div',{class:'year-tabs'});
@@ -42446,7 +43576,9 @@ function renderRawStepPanel(stepKey){
     tab.onclick = ()=>{ state.activeRawYear[stepKey]=y; renderAll(); };
     tabs.appendChild(tab);
   });
-  wrap.appendChild(tabs);
+  stepHeadRaw.appendChild(tabs);   /* ⇒ ជួរដេកជាមួយចំណងជើង */
+  /* [stated] ២១:០៥ ៖ ឧបករណ៍អេក្រង់ដូចផ្ទាំងធម្មតា */
+  stepHeadRaw.appendChild(toiStepScreenTools());
 
   const activeYear = state.activeRawYear[stepKey];
   const aoa = rsRaw.byYear[activeYear];
@@ -42454,7 +43586,14 @@ function renderRawStepPanel(stepKey){
   const activeYearNum = parseInt(activeYear,10);
   const prevYearKey = (!isNaN(activeYearNum)) ? String(activeYearNum-1) : null;
   const visibleYrsWithData = visibleYears().filter(y=> rsRaw.byYear[y]);
-  const showRawPrev = visibleYrsWithData.length===1 && prevYearKey && rsRaw.byYear[prevYearKey];
+  /* ⭐⭐ [stated] ២០២៦-១១-១៦ ២០:០៤ ៖ «លុបជួរ ROW ស្តាំ ដែលមិនមានទិន្នន័យ
+     ចេញ ពីជំហាន១ និង ១៧ … នៅលើអេក្រង់នៅតែចេញ តែព្រីនអត់មានទេ» ។
+     ⚠⚠ មូលហេតុពិត ( រកឃើញពីបន្ទាត់ក្រោមតារាង ) ៖ នោះមិនមែនជួរឈរពីសន្លឹកទេ
+       វាជា **ជួរប្រៀបធៀប N-1** ដែលប្រព័ន្ធបន្ថែមដោយស្វ័យប្រវត្តិ ។ ជំហានទី១
+       និងទី១៧ ជាព័ត៌មានអក្សរ ⇒ ជួរនោះគ្មានន័យ និងទទេជានិច្ច ។ */
+  const NO_PREV_STEPS = ['Step1', 'Step17'];
+  const showRawPrev = visibleYrsWithData.length===1 && prevYearKey && rsRaw.byYear[prevYearKey]
+                      && NO_PREV_STEPS.indexOf(stepKey) < 0;
   const prevAoa = showRawPrev ? rsRaw.byYear[prevYearKey] : null;
 
   const NO_BORDER_STEPS = ['Step1','Step2'];
@@ -42474,15 +43613,73 @@ function renderRawStepPanel(stepKey){
      ពេលព្រីន ប្រព័ន្ធកំណត់ត្រឹមមួយឆ្នាំ ⇒ ជួរឈរប្រៀបធៀបឆ្នាំមុនបើក ⇒
      `prevAoa` មិន null ⇒ ការបំបែកត្រូវរំលង ⇒ ក្រដាសនៅដដែល ។
      ⇒ ឥឡូវបំបែក **ទាំងសងខាង** ៖ កាត់ `prevAoa` តាមលេខជួរដេកដដែល ។ */
+  /* ⭐⭐ [stated] ២០២៦-១១-១៦ ៖ ជំហានទី២ ⇒ ទម្រង់ផ្លូវការ ( rowspan ) ។
+     បើសន្លឹកមិនមានរាងនោះ ⇒ ធ្លាក់ទៅផ្លូវចាស់បេះបិទ ។ */
+  /* ⭐⭐ [stated] ២០២៦-១១-១៦ ៖ ជំហានទី១០ ⇒ ប្លុក I · II · III · IV
+     តាមទម្រង់ផ្លូវការ ( មើលក្បាល fix_step10form.py ) ។
+     ⚠ លក្ខខណ្ឌ ៖ ត្រូវមានចំណងជើងផ្នែកពិត បើមិនដូច្នេះទេ ⇒ ផ្លូវចាស់ ។ */
+  /* ⚠⚠ សុវត្ថិភាព ៖ បើម៉ាស៊ីនទម្រង់ថ្មីមានកំហុសណាមួយ ⇒ **មិនត្រូវ**
+     ធ្វើឱ្យផ្ទាំងទាំងមូលខូចឡើយ ។ បរាជ័យ ⇒ ធ្លាក់ទៅផ្លូវចាស់បេះបិទ ។ */
+  try{
+    /* ⭐⭐ ជំហានទី១០ ៖ ទម្រង់ផ្លូវការ ( ប្លុក I · II · III · IV ) ។
+       ⚠ ឥឡូវដំណើរការបានដោយសុវត្ថិភាព ព្រោះជំហានទី១០ លែងប្តូរក្រដាស
+         ( មើលកំណត់ត្រា LANDSCAPE_STEPS ខាងលើ ) ⇒ លំហូរទំព័ររបស់ជំហានដទៃ
+         លែងរអិល ។ អក្សរក្បាលរុំបន្ទាត់ ⇒ តារាងសមនឹងទំព័រឈរ គ្មានកាត់ ។ */
+    if(stepKey === 'Step10' && Array.isArray(aoa) &&
+       aoaHasFormHeads(aoa, s10IsHead) && s2HeaderRange(aoa, 2)){
+      const w10 = el('div');
+      w10.appendChild(renderStep14Blocks(aoa, {stepKey, isHead:s10IsHead, minHead:2}));
+      if(w10.querySelector('table')){
+        wrap.classList.add('step2-form');
+        while(w10.firstChild) wrap.appendChild(w10.firstChild);
+        return wrap;
+      }
+    }
+    /* ⚠⚠ [stated] ២០២៦-១១-១៦ ១៦:៤២ ៖ «ជំហានទី១ ចង់បានរូបរាងដូចដើមមុនកែវិញ»
+       ⇒ ជំហានទី១ ប្រើតារាងធម្មតាវិញ ( renderAoaTable ) ។ កុំបើកវិញបើគ្មាន
+       ការអនុញ្ញាត ។ ( មុខងារ renderStep1Info នៅទុក តែគ្មានអ្នកហៅ ) */
+    if(stepKey === 'Step14' && Array.isArray(aoa) && s2HeaderRange(aoa, 1)){
+      const w14 = el('div');
+      w14.appendChild(renderStep14Blocks(aoa, {stepKey}));
+      if(w14.querySelector('table')){
+        wrap.classList.add('step2-form');
+        while(w14.firstChild) wrap.appendChild(w14.firstChild);
+        return wrap;
+      }
+    }
+  }catch(e){
+    /* ⚠ សាងសង់ក្នុងប្រអប់ដាច់ដោយឡែក ⇒ `wrap` មិនទាន់ប្រឡាក់ ⇒ គ្រាន់តែ
+       ដកថ្នាក់ចេញ រួចបន្តទៅផ្លូវចាស់ */
+    try{ console.error('form render fallback', stepKey, e); }catch(e2){}
+    wrap.classList.remove('step2-form');
+  }
+  if(STEP_FORM_OPTS[stepKey] && Array.isArray(aoa) &&
+     s2HeaderRange(aoa, STEP_FORM_OPTS[stepKey].minHead || 2)){
+    wrap.classList.add('step2-form');
+    wrap.appendChild(renderStep2Table(aoa,
+      {stepKey, sections: STEP_FORM_OPTS[stepKey].sections,
+       groupRows: STEP_FORM_OPTS[stepKey].groupRows,
+       sumSpan: STEP_FORM_OPTS[stepKey].sumSpan,
+       minHead: STEP_FORM_OPTS[stepKey].minHead || 2}));
+    return wrap;
+  }
   if(stepKey === 'Step10' && Array.isArray(aoa)){
+    /* ⚠⚠ ២០២៦-១១-១៦ ៖ ក្រឡាដែលមានតែដកឃ្លា ( ' ' ) **ជាក្រឡាទទេ** ។
+       មុននេះ `c !== null && c !== ''` រាប់វាជាទិន្នន័យ ⇒ ជួរដេកចំណងជើង
+       ផ្នែក ( ចំណងជើង + ' ' ) មាន cellCount = 2 ⇒ មិនកាត់ផ្នែក ហើយ
+       widthOf លើសមួយ ⇒ សល់ជួរឈរទទេខាងស្តាំ ។ */
+    const s10blank = function(c){
+      return c === null || c === undefined ||
+             (typeof c === 'string' && c.trim() === '');
+    };
     const lastCol = function(r){
       let last = -1;
-      (r || []).forEach(function(c, i){ if(c !== null && c !== '') last = i; });
+      (r || []).forEach(function(c, i){ if(!s10blank(c)) last = i; });
       return last;
     };
     const cellCount = function(r){
       let n = 0;
-      (r || []).forEach(function(c){ if(c !== null && c !== '') n++; });
+      (r || []).forEach(function(c){ if(!s10blank(c)) n++; });
       return n;
     };
     /* ចែកជាផ្នែក ៖ ជួរដេកមួយក្រឡា ( ចំណងជើងផ្នែក ) ចាប់ផ្តើមផ្នែកថ្មី */
@@ -42530,6 +43727,513 @@ function renderRawStepPanel(stepKey){
   return wrap;
 }
 
+/* ⭐⭐ [stated] ២០២៦-១១-១៦ ៖ «ជំហានទី២ ជួយកែឱ្យដូចរូបនេះ ទាំង FONT
+   និង តារាង» ។ ក្បាលតារាងផ្លូវការមាន ៣ ជួរដេក ហើយជួរឈរឆ្វេងបញ្ចូលគ្នា
+   បញ្ឈរ ⇒ ត្រូវការ rowspan ដែល renderAoaTable គ្មាន ។
+   ⚠ មើលក្បាល fix_step2form.py */
+function s2Blank(c){
+  return c === null || c === undefined ||
+         (typeof c === 'string' && c.trim() === '');
+}
+function s2Txt(c){ return s2Blank(c) ? '' : String(c).trim(); }
+function s2Count(r){ let n = 0; (r || []).forEach(c=>{ if(!s2Blank(c)) n++; }); return n; }
+function s2AllText(r){
+  return (r || []).every(c => s2Blank(c) || typeof c === 'string');
+}
+/* ក្បាលតារាង = ជួរដេកដំបូងដែលមាន ≥៣ ក្រឡា បូកជួរដេកបន្តដែល
+   ក្រឡាទី១ ទទេ ហើយសុទ្ធតែអក្សរ ( ជួរទិន្នន័យមានលេខ ) */
+function s2HeaderRange(aoa, minRows){
+  const MIN = minRows || 2;     /* ⚠ លំនាំដើម ២ ⇒ ជំហានទី២·១១·១២·១៣ មិនប្តូរ */
+  let start = -1;
+  for(let i = 0; i < (aoa || []).length; i++){
+    if(s2Count(aoa[i]) >= 3){ start = i; break; }
+  }
+  if(start < 0) return null;
+  let end = start + 1;
+  while(end < aoa.length){
+    const r = aoa[end] || [];
+    if(!s2Blank(r[0]) || s2Count(r) < 1 || !s2AllText(r)) break;
+    end++;
+  }
+  return (end - start >= MIN) ? {start, end} : null;
+}
+function s2IsForm(aoa){ return !!s2HeaderRange(aoa); }
+/* ជំហានណាខ្លះប្រើម៉ាស៊ីនគូរទម្រង់ · និងច្បាប់ផ្ទាល់ខ្លួនរបស់វា
+   sections ៖ ជួរដេកមួយក្រឡា = ចំណងជើងផ្នែកពេញទទឹង ( ជំហានទី២ ៖ ក. ខ. )
+              បិទវាសម្រាប់ជំហានទី១១ ៖ «១-ទ្រព្យរូបីថ្នាក់១» ជាជួរដេកធម្មតា */
+var STEP_FORM_OPTS = { Step2:{sections:true}, Step11:{sections:false},
+                       Step12:{sections:false}, Step13:{sections:false},
+                       /* ជំហានទី១៥ ៖ ក្បាលតារាង **១ ជួរដេក** ( គ្មានជួរយោង ) */
+                       Step15:{sections:false, minHead:1},
+                       /* ជំហានទី៣ ៖ ក្បាល ១ ជួរដេក ; ជួរសង្ខេប «១.» «២.» …
+                          ( លេខខ្មែរ + ចុចមួយ ) ⇒ ដិត និងផ្ទៃស្រាល */
+                       Step3:{sections:false, minHead:1, groupRows:true, sumSpan:false} };
+/* ជួរដេកកន្ទុយ ៖ «យោងទៅ …» · «*…» · «សម្គាល់ …» ⇒ នៅក្រៅតារាង */
+/* ⭐ [stated] ២០២៦-១១-១៦ ៖ «លុបចោល Date : Oct 30, 2026 …» ។
+   ជួរដេកពេលវេលានេះមកពីសន្លឹកកិច្ចការ ; renderAoaTable ចាស់ច្រានវាចោល
+   រួចស្រាប់ ( `row[0].startsWith('Date :')` ) តែម៉ាស៊ីនទម្រង់ថ្មីមិនទាន់ ។ */
+function s2IsDateRow(row){
+  for(var i = 0; i < (row || []).length; i++){
+    var c = row[i];
+    if(s2Blank(c)) continue;
+    if(c instanceof Date) return true;
+    if(typeof c !== 'string') return false;
+    return /^\s*date\s*[:\uFF1A]/i.test(c);
+  }
+  return false;
+}
+function s2IsNoteRow(row){
+  var any = false;
+  for(var i = 0; i < (row || []).length; i++){
+    var c = row[i];
+    if(s2Blank(c)) continue;
+    if(typeof c !== 'string') return false;
+    var t = c.trim();
+    if(!(t.charAt(0) === '*' || t.indexOf('យោងទៅ') === 0 || t.indexOf('សម្គាល់') === 0)) return false;
+    any = true;
+  }
+  return any;
+}
+function s2Pct(v){
+  if(typeof v !== 'number') return s2Txt(v);
+  const x = (Math.abs(v) <= 1) ? v * 100 : v;
+  const r = Math.round(x * 100) / 100;
+  return (Math.round(r) === r ? String(Math.round(r)) : String(r)) + '%';
+}
+/* ⭐⭐ [stated] ២០២៦-១១-១៦ ៖ ជំហានទី១៤ ⇒ ប្លុក ក. ខ. គ. ឃ. ដាច់ពីគ្នា
+   ( មើលក្បាល fix_step14form.py ) */
+var S14_HEAD = /^[\u1780-\u17A2][\u17E0-\u17E9.\d]*\s*[.\u2024\uFF0E\u2013-]/;
+function s14IsHead(t){
+  if(!t) return false;
+  if(t.length <= 14 && t.indexOf('សម្គាល់') === 0 && t.indexOf('ៈ') < 0) return true;
+  return t.length <= 80 && S14_HEAD.test(t);
+}
+/* ជំហានទី១០ ៖ ចំណងជើងផ្នែកជាលេខរ៉ូម៉ាំង ( I. II. III. IV. ) ឬលេខខ្មែរ
+   ( ១. ២. ) ឬលេខអារ៉ាប់ ⇒ លំនាំផ្សេងពីជំហានទី១៤ ( ក. ខ. គ. ) */
+var S10_HEAD = /^(?:[IVXLivxl]+|[\u17E0-\u17E9]+|\d+)\s*[.\u2024\uFF0E\u2013-]/;
+function s10IsHead(t){ return !!t && t.length <= 90 && S10_HEAD.test(t); }
+/* តើអត្ថបទមួយក្រឡានេះជា **កំណត់សម្គាល់** ឬគ្រាន់តែជាជួរទិន្នន័យ ?
+   ⚠ «1» ( លេខរៀង ) មិនមែនកំណត់សម្គាល់ទេ ⇒ ត្រូវនៅក្នុងតារាង ។ */
+function s14IsNoteText(t){
+  if(!t) return false;
+  const c0 = t.charAt(0);
+  if(c0 === '*' || c0 === '(' || c0 === '（') return true;
+  if(t.indexOf('សម្គាល់') === 0 || t.indexOf('យោង') === 0) return true;
+  return t.length > 24;          /* អត្ថបទវែង ⇒ កំណត់សម្គាល់ */
+}
+function renderStep14Blocks(aoa, opts){
+  opts = opts || {};
+  const isHead = opts.isHead || s14IsHead;
+  const minHead = opts.minHead || 1;
+  const frag = document.createDocumentFragment();
+  /* ⭐⭐ ក្បាលផ្នែក + តារាងរបស់វា = ប្លុកតែមួយ ( មិនកាត់ទំព័រពាក់កណ្តាល ) */
+  let host = frag;
+  /* ⭐⭐ [stated] ២០២៦-១១-១៦ ១៩:៤២ ៖ «បើអាច ENTER ចុះបន្ទាត់ វានឹងមិនដាច់
+     ក្បាលអក្សរនៃ III ទេ» ។
+     ⚠⚠ វាស់រួច ៖ `break-inside:avoid` **មិនដំណើរការ** ក្នុង Chrome ត្រង់នេះ
+       ( សាកល្បងហើយ ៖ ក្បាល III នៅតែដាច់ ) តែ `page-break-before:always`
+       **ដំណើរការ** ( សាកល្បងហើយ ៖ ៦ ទំព័រ ) ។
+     ⇒ ផ្នែកកម្រិតលើ ( I · II · III · IV ) ចាប់ទំព័រថ្មី លើកលែងផ្នែកដំបូង ;
+       ផ្នែករង ( ១. ២. ) នៅទំព័រដដែល ⇒ គ្មានក្បាលអក្សរដាច់ទៀតទេ ។ */
+  let topSeen = 0;
+  const isTopHead = t => /^[IVXLivxl]+\s*[.\u2024\uFF0E\u2013-]/.test(t || '');
+  const openBlock = (headText)=>{
+    const top = isTopHead(headText);
+    /* ⭐ [stated] ២០២៦-១១-១៦ ១៩:៤៩ ៖ «I & II នៅទំព័រជាមួយគ្នា · III & IV
+       ក៏នៅជាមួយគ្នាដែរ» ⇒ បំបែកទំព័រ **រៀងរាល់ផ្នែកកម្រិតលើទី ៣ · ៥ …**
+       ( ពីរផ្នែកក្នុងមួយទំព័រ ) */
+    const cls = 's10-sec-block' + (top && topSeen > 0 && topSeen % 2 === 0 ? ' s10-pbrk' : '');
+    if(top) topSeen++;
+    const d = el('div', {class:cls});
+    frag.appendChild(d); host = d;
+  };
+  let buf = [];
+  const flush = ()=>{
+    if(!buf.length) return;
+    const rows = buf; buf = [];
+    if(s2HeaderRange(rows, minHead)){
+      host.appendChild(renderStep2Table(rows,
+        {stepKey:opts.stepKey, sections:false, minHead:minHead}));
+    }else{
+      rows.forEach(r=>{
+        const t = s2Txt(r.find(c=>!s2Blank(c)));
+        if(t) host.appendChild(el('p', {class:'toi-note s2-foot'}, t));
+      });
+    }
+  };
+  (aoa || []).forEach(row=>{
+    row = row || [];
+    const n = s2Count(row);
+    if(n === 0) return;
+    if(s2IsDateRow(row)) return;                  /* ជួរ «Date : …» ⇒ ច្រានចោល */
+    if(n === 1){
+      const t = s2Txt(row.find(c=>!s2Blank(c)));
+      if(!t) return;
+      if(t.indexOf('ជំហានទី') === 0) return;      /* ចំណងជើងមានរួចនៅក្បាលផ្ទាំង */
+      if(isHead(t)){
+        flush(); openBlock(t);
+        host.appendChild(el('h3', {class:'toi-sec s14-head'}, t));
+        return;
+      }
+      if(s14IsNoteText(t)){
+        flush();
+        host.appendChild(el('p', {class:'toi-note s2-foot'}, t));
+        return;
+      }
+      /* ⚠ លេខរៀង ឬអក្សរខ្លី ⇒ ជួរទិន្នន័យ មិនមែនកំណត់សម្គាល់ */
+      buf.push(row);
+      return;
+    }
+    buf.push(row);
+  });
+  flush();
+  return frag;
+}
+/* តើសន្លឹកនេះមានចំណងជើងផ្នែកតាមលំនាំដែលឱ្យទេ ? បើគ្មាន ⇒ ប្រើផ្លូវចាស់ */
+function aoaHasFormHeads(aoa, isHead){
+  return (aoa || []).some(r => r && s2Count(r) === 1 &&
+    isHead(s2Txt(r.find(c => !s2Blank(c)))));
+}
+/* ⭐⭐ [stated] ២០២៦-១១-១៦ ១៥:២៩ ៖ ជំហានទី១ ⇒ បញ្ជី «ស្លាក ៖ តម្លៃ»
+   ២ ជួរឈរ គ្មានស៊ុម ( មើលក្បាល fix_step1info.py ) */
+function renderStep1Info(aoa, opts){
+  /* ១. ប្រមូលគូ ( ស្លាក · តម្លៃ · លេខជួរឈរក្នុងសន្លឹក ) តាមជួរដេក */
+  const lines = [];
+  const colSet = {};
+  (aoa || []).forEach(row=>{
+    row = row || [];
+    if(s2Count(row) === 0) return;
+    if(s2IsDateRow(row)) return;
+    /* ⚠ សញ្ញា «៖» ជាក្រឡាដាច់ដោយឡែកក្នុងសន្លឹកពិត ⇒ មិនមែនទិន្នន័យ */
+    const keep = [];
+    for(let i = 0; i < row.length; i++){
+      const c = row[i];
+      if(s2Blank(c)) continue;
+      const t0 = (typeof c === 'string') ? c.trim() : '';
+      if(t0 === '៖' || t0 === ':' || t0 === '៖៖') continue;
+      keep.push({i:i, v:c});
+    }
+    if(!keep.length) return;
+    if(s2Txt(keep[0].v).indexOf('ជំហានទី') === 0) return;  /* ចំណងជើងមានរួច */
+    const pairs = [];
+    for(let k = 0; k < keep.length; k += 2){
+      const lab = s2Txt(keep[k].v);
+      const val = (k + 1 < keep.length) ? keep[k+1].v : null;
+      pairs.push({at:keep[k].i, lab:lab, val:val});
+      colSet[keep[k].i] = true;
+    }
+    lines.push(pairs);
+  });
+  if(!lines.length) return null;
+  /* ២. ពីរជួរឈរថេរ ៖ គូទី១ ⇒ ឆ្វេង · គូទី២ ⇒ ស្តាំ · គូបន្ថែមចុះជួរក្រោម ។
+     ⚠⚠ ការប្រើទីតាំងក្រឡាពិតជាជួរឈរ ( ៣–៤ ជួរ ) ធ្វើឱ្យជួរឈរនីមួយៗតូច
+       ត្រឹម ២៥% ⇒ អក្សរដាច់បន្ទាត់ច្រើន ។ ពីរជួរឈរ ៥០/៥០ អានស្រួលជាង
+       ហើយត្រូវនឹងទម្រង់សម្រាប់ជួរដេកស្ទើរទាំងអស់ ។
+     ជួរដេកដែលមានគូតែមួយ ⇒ លាតពេញទទឹង ( ដូចទម្រង់ ) ។ */
+  const K = 2;
+  const grid = el('div', {class:'s1-grid'});
+  /* ⚠ ជួរឆ្វេងធំជាងបន្តិច ( ដូចទម្រង់ ) ៖ ស្លាកខាងឆ្វេងវែងជាង */
+  grid.style.gridTemplateColumns = 'minmax(0, 1.25fr) minmax(0, 1fr)';
+  let n = 0;
+  lines.forEach(function(pairs){
+    pairs.forEach(function(pr, pi){
+      const it = el('div', {class:'s1-item'});
+      if(pairs.length === 1) it.style.gridColumn = '1 / -1';
+      else it.style.gridColumn = ((pi % 2) + 1) + ' / ' + ((pi % 2) + 2);
+      it.appendChild(el('span', {class:'s1-lab'}, pr.lab));
+      if(pr.val !== null && pr.val !== undefined){
+        it.appendChild(el('span', {class:'s1-sep'}, '៖'));
+        it.appendChild(el('span', {class:'s1-val'},
+          (typeof pr.val === 'number') ? fmtNum(pr.val) : s2Txt(pr.val)));
+      }
+      grid.appendChild(it); n++;
+    });
+  });
+  return n ? grid : null;
+}
+function __renderStep1InfoOld(aoa, opts){
+  const grid = el('div', {class:'s1-grid'});
+  let n = 0;
+  (aoa || []).forEach(row=>{
+    row = row || [];
+    if(s2Count(row) === 0) return;
+    if(s2IsDateRow(row)) return;
+    /* ⚠⚠ [stated] ២០២៦-១១-១៦ ១៥:៣៧ ៖ សន្លឹកពិតដាក់សញ្ញា «៖» ជា **ក្រឡា
+       ដាច់ដោយឡែក** ⇒ បើរាប់វាជាទិន្នន័យ គូស្លាក/តម្លៃនឹងរអិល ហើយបន្ទាត់
+       ក្លាយជា «ស្លាក ៖ តម្លៃ ៖ ស្លាក ៖ តម្លៃ» ជាប់គ្នា ។ ⇒ ច្រានវាចោល ។ */
+    const cells = [];
+    row.forEach(c=>{
+      if(s2Blank(c)) return;
+      const t0 = (typeof c === 'string') ? c.trim() : '';
+      if(t0 === '៖' || t0 === ':' || t0 === '៖៖' || t0 === '៖ ') return;
+      cells.push(c);
+    });
+    if(!cells.length) return;
+    const first = s2Txt(cells[0]);
+    if(first.indexOf('ជំហានទី') === 0) return;   /* ចំណងជើងមានរួចនៅក្បាល */
+    const put = (lab, val, wide)=>{
+      const it = el('div', {class:'s1-item' + (wide ? ' s1-wide' : '')});
+      it.appendChild(el('span', {class:'s1-lab'}, lab));
+      if(val !== null && val !== undefined){
+        it.appendChild(el('span', {class:'s1-sep'}, '៖'));
+        it.appendChild(el('span', {class:'s1-val'},
+          (typeof val === 'number') ? fmtNum(val) : s2Txt(val)));
+      }
+      grid.appendChild(it); n++;
+    };
+    if(cells.length >= 4){
+      /* ⚠⚠ [stated] ២០២៦-១១-១៦ ១៥:៥៩ ៖ «ក្នុងប្រព័ន្ធវាចង្អៀតណាស់» ។
+         ទំព័រព្រីនឈរមានទទឹងត្រឹម ≈៧៣០px ⇒ គូវែងពីរនៅជួរតែមួយ ⇒ អក្សរ
+         ចុះបន្ទាត់ច្របូកច្របល់ ។ ⇒ គូណាដែលវែង ⇒ ដាក់ពេញទទឹងម្នាក់មួយជួរ
+         ( ជួរខ្លីនៅតែពីរជួរឈរដូចទម្រង់ ) ។ */
+      /* ≈ ទទឹងពាក់កណ្តាលទំព័រ **ដេក** ( ≈៥២០px ) ⇒ គូវែងជាងនេះទើបពេញទទឹង */
+      const LIM = 50;
+      const pairLen = (a, b)=> s2Txt(a).length + (b === null || b === undefined ? 0 : s2Txt(b).length);
+      let wideRow = false;
+      for(let i = 0; i + 1 < cells.length; i += 2){
+        if(pairLen(cells[i], cells[i+1]) > LIM){ wideRow = true; break; }
+      }
+      for(let i = 0; i < cells.length; i += 2){
+        if(i + 1 < cells.length) put(s2Txt(cells[i]), cells[i+1], wideRow);
+        else put(s2Txt(cells[i]), null, true);
+      }
+    }else if(cells.length === 3){
+      put(s2Txt(cells[0]), cells[1], true);
+      put(s2Txt(cells[2]), null, true);
+    }else if(cells.length === 2){
+      put(s2Txt(cells[0]), cells[1], true);
+    }else{
+      put(first, null, true);
+    }
+  });
+  return n ? grid : null;
+}
+function renderStep2Table(aoa, opts){
+  const hr = s2HeaderRange(aoa, (opts && opts.minHead) || 2);
+  const head = aoa.slice(hr.start, hr.end);
+  const body = aoa.slice(hr.end);
+  let cols = 0;
+  (aoa || []).forEach(r=>{
+    for(let i = (r || []).length - 1; i >= 0; i--){
+      if(!s2Blank(r[i])){ if(i + 1 > cols) cols = i + 1; break; }
+    }
+  });
+  if(cols < 1) cols = 1;
+  const H = head.length;
+  const cell = (r, c) => (head[r] || [])[c];
+  const taken = [];
+  for(let r = 0; r < H; r++) taken.push(new Array(cols).fill(false));
+  const pct = new Array(cols).fill(false);
+
+  const wrapEl = el('div', {class:'table-wrap'});
+  const table = el('table', {class:'s2-table'});
+  if(opts && opts.stepKey) table.dataset.stepKey = opts.stepKey;
+  const thead = el('thead');
+  for(let r = 0; r < H; r++){
+    const tr = el('tr');
+    for(let c = 0; c < cols; c++){
+      if(taken[r][c]) continue;
+      const t = s2Txt(cell(r, c));
+      /* colspan ៖ ក្រឡាទទេជាប់ខាងស្តាំ */
+      let cs = 1;
+      while(c + cs < cols && s2Blank(cell(r, c + cs))) cs++;
+      /* rowspan ៖ ជួរដេកក្រោមដែលទទេពេញទទឹងនេះ */
+      let rs = 1;
+      if(t){
+        let r2 = r + 1;
+        while(r2 < H){
+          let empty = true;
+          for(let k = 0; k < cs; k++) if(!s2Blank(cell(r2, c + k))){ empty = false; break; }
+          if(!empty) break;
+          rs++; r2++;
+        }
+      }
+      for(let a = 0; a < rs; a++) for(let k = 0; k < cs; k++) taken[r + a][c + k] = true;
+      if(/ភាគរយ/.test(t) || t === '%'){ for(let k = 0; k < cs; k++) pct[c + k] = true; }
+      const th = el('th', {}, t);
+      if(cs > 1) th.colSpan = cs;
+      if(rs > 1) th.rowSpan = rs;
+      tr.appendChild(th);
+    }
+    thead.appendChild(tr);
+  }
+  table.appendChild(thead);
+
+  const sections = !(opts && opts.sections === false);
+  /* កន្ទុយ ( យោងទៅ … · *… ) ⇒ ដកចេញពីតួតារាង */
+  const notes = [];
+  while(body.length && (s2Count(body[body.length - 1]) === 0 ||
+                        s2IsNoteRow(body[body.length - 1]))){
+    const r = body.pop();
+    if(s2Count(r)) notes.unshift(r);
+  }
+  const tb = el('tbody');
+  body.forEach(row=>{
+    row = row || [];
+    if(s2Count(row) === 0) return;
+    if(s2IsDateRow(row)) return;                  /* ជួរ «Date : …» ⇒ ច្រានចោល */
+    const tr = el('tr');
+    /* ជួរដេកចំណងជើងផ្នែក ( ក. · ខ. · គ. ) ⇒ ពេញទទឹង — តែពេលបើកប៉ុណ្ណោះ */
+    if(sections && s2Count(row) === 1){
+      const td = el('td', {class:'s2-sec'}, s2Txt(row.find(c=>!s2Blank(c))));
+      td.colSpan = cols; tr.appendChild(td); tb.appendChild(tr); return;
+    }
+    const isTotal = row.some(c => typeof c === 'string' && /សរុប/.test(c));
+    if(isTotal) tr.className = 'total-row';
+    /* ជួរសង្ខេបតាមទម្រង់ ៖ ចាប់ផ្តើមដោយលេខខ្មែរ ឬលេខអារ៉ាប់ បូកចុចមួយ */
+    else if(opts && opts.groupRows){
+      const f0 = s2Txt(row[0]);
+      if(/^[\u17E0-\u17E9\d]+\s*[.\u2024\uFF0E]/.test(f0)) tr.className = 's2-grp';
+    }
+    /* ⚠⚠ គ្មានការផ្តុំក្រឡាទទេទេ ( លើកលែងស្លាក «សរុប» ) ៖ ទម្រង់ផ្លូវការ
+       ទុកក្រឡាទទេជាក្រឡាដាច់ដោយឡែក ។ ការផ្តុំធ្វើឱ្យជួរ «១-ទ្រព្យរូបី
+       ថ្នាក់១» ស្រូបអស់ទាំងជួរដេក ។ */
+    let c = 0;
+    while(c < cols){
+      const v = row[c];
+      if(s2Blank(v)){ tr.appendChild(el('td', {}, '')); c++; continue; }
+      let td, span = 1;
+      if(typeof v === 'number'){
+        td = pct[c] ? el('td', {class:'pct'}, s2Pct(v))
+                    : el('td', {class:'num' + (v < 0 ? ' neg' : '')}, fmtNum(v));
+      }else{
+        const t = s2Txt(v);
+        const isSum = /សរុប/.test(t);
+        /* ⚠ ស្លាក «សរុប» ឃ្លាំងទៅស្តាំ តែក្នុងទម្រង់ដែលវាជាក្រឡាបញ្ចូលគ្នា
+           ( ជំហានទី១១·១២·១៣·១៥ ) ។ ជំហានទី៣ ទុកក្រឡាដាច់ ⇒ sumSpan:false */
+        if(isSum && !(opts && opts.sumSpan === false)){
+          while(c + span < cols && s2Blank(row[c + span])) span++;
+        }
+        td = el('td', {class:(isSum ? 's2-total' : '')}, t);
+      }
+      if(span > 1) td.colSpan = span;
+      tr.appendChild(td); c += span;
+    }
+    tb.appendChild(tr);
+  });
+  /* ជួរយោង ( ២ ក្រឡាឡើងទៅ ) ៖ ក្នុងតារាងដដែល ដើម្បីនៅត្រង់ជួរឈររបស់វា
+     តែគ្មានស៊ុម ។ កំណត់សម្គាល់មួយក្រឡា ( * … · សម្គាល់ៈ … ) ⇒ កថាខណ្ឌក្រោម */
+  notes.forEach(row=>{
+    if(s2Count(row) === 1) return;
+    const tr = el('tr', {class:'s2-refline'});
+    for(let c = 0; c < cols; c++) tr.appendChild(el('td', {}, s2Txt(row[c])));
+    tb.appendChild(tr);
+  });
+  table.appendChild(tb);
+  wrapEl.appendChild(table);
+  const out = document.createDocumentFragment();
+  out.appendChild(wrapEl);
+  notes.forEach(row=>{
+    if(s2Count(row) !== 1) return;
+    out.appendChild(el('p', {class:'toi-note s2-foot'}, s2Txt(row.find(c=>!s2Blank(c)))));
+  });
+  return out;
+}
+
+/* ⭐⭐ [stated] ២០២៦-១១-១៦ ៖ កន្ទុយជំហានទី៩ ⇒ ប្លុកតាមទម្រង់ផ្លូវការ
+   ( មើលក្បាល fix_step9.py ) */
+function tailCellCount(row){
+  let n = 0;
+  for(let i = 0; i < (row || []).length; i++){
+    const c = row[i];
+    if(c !== null && c !== undefined && String(c).trim() !== '') n++;
+  }
+  return n;
+}
+function tailOnlyText(row){
+  for(let i = 0; i < (row || []).length; i++){
+    const c = row[i];
+    if(c !== null && c !== undefined && String(c).trim() !== '') return String(c).trim();
+  }
+  return '';
+}
+/* ចំណងជើងផ្នែក ៖ «ក-…» · «ខ-…» · «ខ.១-…» · «គ-…» */
+const TAIL_SEC = /^[\u1780-\u17A2][\u17E0-\u17E9.\d]*\s*[-\u2013]/;
+function isTailNote(t){
+  return /^[*(]/.test(t) || t.indexOf('សម្គាល់') === 0;
+}
+/* ⚠⚠ ក្រឡាចត្រង្គថេរ ៖ គ្មាន colspan ⇒ លេខឈរក្នុងជួរឈររបស់វាពិត
+   ( មើលក្បាល fix_step9grid.py ) */
+function renderTailGrid(rows, opts){
+  let cols = 0;
+  rows.forEach(r=>{
+    for(let i = (r || []).length - 1; i >= 0; i--){
+      const c = r[i];
+      if(c !== null && c !== undefined && String(c).trim() !== ''){
+        if(i + 1 > cols) cols = i + 1;
+        break;
+      }
+    }
+  });
+  if(cols < 1) cols = 1;
+  const wrapEl = el('div', {class:'table-wrap'});
+  const table = el('table', {class:'toi-sec-table'});
+  if(opts && opts.stepKey) table.dataset.stepKey = opts.stepKey;
+  const tb = el('tbody');
+  rows.forEach((r, ri)=>{
+    const tr = el('tr');
+    /* ជួរដេកដំបូងនៃប្លុក = ក្បាលតារាង ; ជួរបន្ទាប់ដែលមានតែលេខយោង
+       ( G9 · (1) … ) = ជួរយោង ⇒ ដាក់រចនាបថផ្សេង */
+    const isHead = (ri === 0);
+    const txt = (r || []).map(c => (c === null || c === undefined) ? '' : String(c).trim());
+    const isRef = !isHead && txt.every(x => x === '' || /^[(（]/.test(x));
+    if(isHead) tr.className = 'toi-sec-head';
+    else if(isRef) tr.className = 'toi-sec-ref';
+    for(let i = 0; i < cols; i++){
+      const c = (r || [])[i];
+      if(typeof c === 'number'){
+        tr.appendChild(el('td', {class:'num' + (c < 0 ? ' neg' : '')}, fmtNum(c)));
+      }else{
+        const t = (c === null || c === undefined) ? '' : String(c);
+        tr.appendChild(el(isHead ? 'th' : 'td', {}, t));
+      }
+    }
+    tb.appendChild(tr);
+  });
+  table.appendChild(tb);
+  wrapEl.appendChild(table);
+  return wrapEl;
+}
+
+function renderStepTailBlocks(aoa, opts){
+  const frag = document.createDocumentFragment();
+  let buf = [];
+  const flush = ()=>{
+    if(!buf.length) return;
+    frag.appendChild(renderTailGrid(buf, opts));
+    buf = [];
+  };
+  (aoa || []).forEach(row=>{
+    if(!row) return;
+    const n = tailCellCount(row);
+    if(n === 0) return;
+    /* [stated] ២០២៦-១១-១៦ ៖ ជួរ «Date : …» មិនត្រូវបង្ហាញ */
+    try{ if(s2IsDateRow(row)) return; }catch(e){}
+    const t = tailOnlyText(row);
+    if(n === 1 && TAIL_SEC.test(t)){
+      flush();
+      const h3 = el('h3', {class:'toi-sec'}, t);
+      /* ⚠⚠ [stated] ២០២៦-១១-១៦ ២០:០៩ ៖ «រៀបជំហានទី៩ ឱ្យចូលតែ១ទំព័រ»
+         ⇒ ការបង្ខំបំបែកទំព័រមុនផ្នែក «គ» ( សំណើ ១៥:២៣ ) ត្រូវដកចេញ
+           ព្រោះវាជាអ្វីដែលរុញផ្នែក «គ» ទៅទំព័រទី២ ។ */
+      frag.appendChild(h3);
+      return;
+    }
+    if(n === 1 && isTailNote(t)){
+      flush();
+      frag.appendChild(el('p', {class:'toi-note'}, t));
+      return;
+    }
+    buf.push(row);
+  });
+  flush();
+  return frag;
+}
+/* តើកន្ទុយនេះមានចំណងជើងផ្នែកទេ ? បើគ្មាន ⇒ ប្រើវិធីចាស់ */
+function tailHasSections(aoa){
+  return (aoa || []).some(r => r && tailCellCount(r) === 1 && TAIL_SEC.test(tailOnlyText(r)));
+}
+
 function renderAoaTable(aoa, prevAoa, opts){
   opts = opts || {};
   const tableWrap = el('div',{class:'table-wrap'+(opts.noBorder?' no-print-border':'')});
@@ -42541,10 +44245,20 @@ function renderAoaTable(aoa, prevAoa, opts){
   // real (non-empty) cells the widest one uses — so a row with just one
   // long field (e.g. Step1's address) can span the full table width
   // instead of being squeezed into a single narrow column.
+  /* ⚠⚠ ក្រឡាដែលមានតែដកឃ្លាក៏ជាក្រឡាទទេដែរ — មើលក្បាល fix_blankcell.py */
+  /* ⭐⭐ [stated] ២០២៦-១១-១៦ ១៩:៥៩ ៖ «លុបជួរ ROW ស្តាំ ដែលមិនមានទិន្នន័យ
+     ចេញ ពីជំហាន១ និង ១៧» ។
+     ⚠ មូលហេតុ ៖ ក្រឡាខ្លះមាន **តួអក្សរមើលមិនឃើញ** ( zero-width space ·
+       NBSP · BOM ) ដែល `trim()` មិនដក ⇒ ប្រព័ន្ធរាប់ជាទិន្នន័យ ⇒ សល់ជួរឈរ
+       ទទេខាងស្តាំ ។ ⇒ ដកតួអក្សរទាំងនោះចេញមុនពេលសាកល្បង ។ */
+  const __blank = c => (c === null || c === undefined ||
+                        (typeof c === 'string' &&
+                         c.replace(/[\u200b-\u200f\u2028\u2029\ufeff\u00a0\u3000\u180e]/g, '')
+                          .trim() === ''));
   const validRows = [];
   aoa.forEach((row, idx)=>{
     if(!row) return;
-    const allNull = row.every(c=>c===null || c==='');
+    const allNull = row.every(__blank);
     if(allNull) return;
     if(typeof row[0]==='string' && row[0].startsWith('Date :')) return;
     if(!skippedHeader && typeof row[0]==='string' && row[0].includes('ជំហានទី')){ skippedHeader = true; return; }
@@ -42552,7 +44266,7 @@ function renderAoaTable(aoa, prevAoa, opts){
   });
   const maxCols = validRows.reduce((m,{row})=>{
     let last = -1, count = 0;
-    row.forEach((c,i)=>{ if(c!==null && c!==''){ last=i; count++; } });
+    row.forEach((c,i)=>{ if(!__blank(c)){ last=i; count++; } });
     if(count<=1) return m; // a single-cell row shouldn't inflate the column count — it just spans across it
     return Math.max(m, last+1);
   }, 1);
@@ -42561,11 +44275,14 @@ function renderAoaTable(aoa, prevAoa, opts){
     const isTotal = row.some(c=> typeof c==='string' && c.includes('សរុប'));
     if(isTotal) tr.className='total-row';
     let lastCellCount = 0;
-    row.forEach((c,i)=>{ if(c!==null && c!=='') lastCellCount = i+1; });
+    row.forEach((c,i)=>{ if(!__blank(c)) lastCellCount = i+1; });
     let colsCovered = 0;
     row.forEach((c,i)=>{
+      /* ⚠⚠ កុំគូរលើសចំនួនជួរឈរពិតរបស់តារាងនេះ ៖ ក្រឡាទទេនៅចុងសន្លឹក
+         Excel ធ្លាប់ក្លាយជាជួរឈរទទេនៅគែមស្តាំ ។ មើលក្បាល fix_extracol.py */
+      if(i >= maxCols) return;
       if(i < colsCovered) return; // already covered by a previous cell's colspan
-      if(c===null || c==='') { tr.appendChild(el('td',{},'')); colsCovered = i+1; return; }
+      if(__blank(c)) { tr.appendChild(el('td',{},'')); colsCovered = i+1; return; }
       const isLastRealCell = (i === lastCellCount-1);
       let span = 1;
       if(isLastRealCell && lastCellCount < maxCols){
@@ -42574,7 +44291,10 @@ function renderAoaTable(aoa, prevAoa, opts){
         // Not the last real cell — span across any immediately-following
         // blank cells within this row (e.g. "ដើមការិយបរិច្ឆេទ" covering its
         // own 2 sub-columns before "ចុងការិយបរិច្ឆេទ" begins).
-        while(i+span < row.length && (row[i+span]===null || row[i+span]==='')) span++;
+        /* ⚠ កំណត់ត្រឹម maxCols ៖ បើមិនដូច្នេះ ក្រឡាចុងក្រោយលាតឆ្លង
+           ក្រឡាទទេនៅចុងសន្លឹក ⇒ ជួរឈរបន្ថែមនៅស្តាំ ( fix_extracol.py ) */
+        const __lim = Math.min(row.length, maxCols);
+        while(i+span < __lim && __blank(row[i+span])) span++;
       }
       const attrs = span>1 ? {colspan: String(span)} : {};
       colsCovered = i + span;
@@ -42756,10 +44476,38 @@ renderAll();
 /* ឲ្យខាងក្រៅបញ្ជាឲ្យគូរឡើងវិញ (ប្រើពេលសិទ្ធិមកដល់ពី server) */
 window.__toiRefresh = function(){ try{ renderAll(); }catch(e){} };
 
+/* ⭐⭐ [stated] ២០២៦-១១-១៦ ៖ កាតលើផ្ទាំងដើមត្រូវលោតចូលទំព័រដែលមាន
+   ឈ្មោះបានដែរ ( មិនមែនតែ STEP ) ។ មើលក្បាល fix_toigo2.py
+   ⚠ ការត្រួតពិនិត្យ STEP រក្សាដដែល ៖ អ្នកហៅចាស់ពឹងលើ `false` ពេល
+     ជំហាននោះគ្មានទិន្នន័យ ។ */
+var TOI_NAMED_PAGES = { overview:1, cover:1, personalinfo:1, risk:1,
+                        ratios:1, changes:1, assets:1 };
+/* ⭐⭐ [stated] ២០២៦-១១-១៦ ៖ «លិខិតប្រកាស បើកមកចេញជំហានមកតែម្តង»
+   ⇒ លោតទៅជំហានដំបូង**ដែលមានទិន្នន័យ** មិនមែន Step1 ដោយងងឹតងងល់
+   ( Step1 អាចទទេ ⇒ __toiGoStep ត្រឡប់ false ⇒ នៅ DATA ENTRY ដដែល ) ។ */
+window.__toiGoReview = function(){
+  try{
+    for(var i = 0; i < STEP_KEYS.length; i++){
+      var k = STEP_KEYS[i];
+      if(state.refSteps[k] || state.rawSteps[k]) return window.__toiGoStep(k);
+    }
+    /* គ្មានជំហានសោះ ⇒ ទៅ Ratio ដែលនៅក្នុងរបៀបពិនិត្យដូចគ្នា */
+    return window.__toiGoStep('ratios');
+  }catch(e){ console.error('toiGoReview:', e); return false; }
+};
+
+/* ⭐⭐ [stated] ២០២៦-១១-១៦ ២០:២៣ ៖ ផ្លូវចូលកាត «RISK ANALYSIS» ។
+   មានឆ្នាំ ⇒ ចាប់ផ្តើមនៅ Ratio ; គ្មានឆ្នាំ ⇒ ទៅ RISK ដោយផ្ទាល់ ។ */
+window.__toiGoRisk = function(){
+  try{
+    if(state.years && state.years.length) return window.__toiGoStep('ratios');
+    return window.__toiGoStep('risk');
+  }catch(e){ console.error('toiGoRisk:', e); return false; }
+};
 window.__toiGoStep = function(key){
   try{
     if(!key) return false;
-    if(!state.refSteps[key] && !state.rawSteps[key]) return false;
+    if(!TOI_NAMED_PAGES[key] && !state.refSteps[key] && !state.rawSteps[key]) return false;
     state.activeStep = key;
     renderAll();
     return true;
@@ -51019,6 +52767,28 @@ function narrFindRows(year){
   }catch(e){}
   return out;
 }
+/* ⭐⭐ ប្រភេទផលបានប្រកាស ( ០% · មិនជាប់អតប ) — មើលក្បាល fix_narrturn.py */
+function narrTurnKind(year){
+  /* ⚠ ហៅតាមស្ពាន ៖ មុខងារ អតប នៅវិសាលភាពផ្សេង ( fix_narrturn2.py ) */
+  try{
+    if(typeof window.__vatTurnKind !== 'function') return '';
+    return window.__vatTurnKind(year) || '';
+  }catch(e){ return ''; }
+}
+/* ⭐⭐ បញ្ជីឈ្មោះផលរកឃើញទាំងអស់ ( រួមការកំណត់ប្រភេទពន្ធ ) ⇒ ដើម្បីដឹងថា
+   មានតែមួយ ឬច្រើន — មើលក្បាល fix_narrturn.py */
+function narrFindNames(year){
+  const out = narrFindRows(year).map(function(r){ return r.name; });
+  try{
+    (window.CalcCard.state.assessments || []).forEach(function(a){
+      if(Number(a.year) !== Number(year)) return;
+      if(!Math.abs(+a.amount || 0)) return;
+      if(!a.tax) return;
+      out.push((a.label || a.ref || 'ការកំណត់') + (a.step ? ' (' + a.step + ')' : ''));
+    });
+  }catch(e){}
+  return out;
+}
 function narrFindList(year){
   /* [stated] គ្មានសញ្ញាចុច · អក្សរធម្មតា · ត្រង់ជួរនឹង «សរុបផលរកឃើញ» */
   return narrFindRows(year).map(function(r){
@@ -51142,9 +52912,16 @@ function narrYearHtml(d, year, breakBefore){
   let toiBody = '';
   toiBody += '<div class="nr-h2">១ - <u>ការកំណត់មូលដ្ឋានគិតពន្ធលើប្រាក់ចំណូលប្រចាំឆ្នាំឡើងវិញ</u></div>';
   toiBody += '<div class="nr-h3">ក - <u>ការកំណត់ផល</u></div>';
-  toiBody += narrLine('- សរុបផលបានប្រកាស', o.turnDecl);
-  toiBody += narrLine('- សរុបផលរកឃើញ', o.findAll, '', false, true);
-  toiBody += narrFindList(year);
+  /* [stated] ២០២៦-១១-១៦ — មើលក្បាល fix_narrturn.py */
+  toiBody += narrLine('- សរុបផលបានប្រកាស' + narrTurnKind(year), o.turnDecl);
+  const fNames = narrFindNames(year);
+  if(fNames.length === 1){
+    /* ផលរកឃើញតែមួយ ⇒ ឈ្មោះក្នុងរង្វង់ក្រចក ជួរតែមួយ គ្មានបន្ទាត់រាយ */
+    toiBody += narrLine('- សរុបផលរកឃើញ ( ' + fNames[0] + ' )', o.findAll, '', false, true);
+  }else{
+    toiBody += narrLine('- សរុបផលរកឃើញ', o.findAll, '', false, true);
+    toiBody += narrFindList(year);
+  }
   toiBody += narrLine('- ផលកំណត់ឡើងវិញ', o.turnNew, '', true);
   toiBody += '<div class="nr-h3">ខ - <u>ការកំណត់បន្ទុក</u></div>';
   toiBody += narrLine('- បន្ទុកបានប្រកាស', o.expDecl);
@@ -54500,6 +56277,8 @@ function docsHtml(){
             <option value="audit">📘 របាយការណ៍សវនកម្ម</option>
             <option value="sum2">📗 របាយការណ៍សង្ខេប</option>
             <option value="smw">📝 សង្ខេបការងារ</option>
+            <!-- ⭐ [stated] ២០២៦-១១-១៦ ៖ ការព្រីន COVER មកនៅទីនេះ -->
+            <option value="cover">📋 COVER</option>
           </select>
         </label>
         <label class="hub-smto">អ្នកទទួល
@@ -54540,6 +56319,9 @@ function docsHtml(){
         <button class="btn btn-primary" id="docsPrint" type="button" title="ព្រីនឯកសារនេះ">🖨️</button>
       </div>
     </div>
+    <!-- [stated] ២០២៦-១១-១៦ ៖ ផ្ទាំង COVER ក្នុងប្រអប់ដកចេញ ៖ ការជ្រើស
+         «📋 COVER» លោតចូលទម្រង់ផ្ទាល់ ហើយប៊ូតុងព្រីននៅលើទំព័រនោះ
+         ( មើលក្បាល fix_coverone.py ) -->
     <div class="doc-pane" data-doc="letter">
     <div class="trk-card">
       <div class="trk-grid">
@@ -54663,7 +56445,43 @@ function wireDocs(host){
     dk.value = trkState.docKind || 'letter';
     if(!dk.value) dk.value = 'letter';
     showDoc(dk.value);
-    dk.onchange = ()=>{ trkState.docKind = dk.value; trkSave(); showDoc(dk.value); };
+    dk.onchange = ()=>{
+      /* ⭐⭐ [stated] ២០២៦-១១-១៦ ៖ COVER ⇒ បើកទម្រង់តែម្តង
+         ( មើលក្បាល fix_coverone.py ) */
+      if(dk.value === 'cover'){
+        dk.value = trkState.docKind || 'letter';   /* ⚠ កុំរក្សាទុក cover */
+        try{ const m = document.getElementById('docs-modal'); if(m) m.remove(); }catch(e){}
+        try{ if(window.showView) window.showView('toi'); }catch(e){}
+        try{ if(window.__toiGoStep) window.__toiGoStep('cover'); }catch(e){}
+        return;
+      }
+      trkState.docKind = dk.value; trkSave(); showDoc(dk.value);
+    };
+  }
+
+  /* ⭐⭐ [stated] ២០២៦-១១-១៦ ៖ ព្រីន COVER ពីប្រអប់នេះ ។
+     មើលក្បាល fix_coverprt.py */
+  const dco = document.getElementById('docsCoverOpen');
+  if(dco){
+    dco.onclick = function(){
+      try{ const m = document.getElementById('docs-modal'); if(m) m.remove(); }catch(e){}
+      try{ if(window.showView) window.showView('toi'); }catch(e){}
+      try{ if(window.__toiGoStep) window.__toiGoStep('cover'); }catch(e){}
+    };
+  }
+  const dcp = document.getElementById('docsCoverPrint');
+  if(dcp){
+    dcp.onclick = function(){
+      try{ const m = document.getElementById('docs-modal'); if(m) m.remove(); }catch(e){}
+      try{ if(window.showView) window.showView('toi'); }catch(e){}
+      try{ if(window.__toiGoStep) window.__toiGoStep('cover'); }catch(e){}
+      /* ⚠ រង់ចាំការគូរឡើងវិញ ⇒ autoFitPrintArea វាស់លើ COVER ពិត */
+      setTimeout(function(){
+        const b = document.getElementById('btnPrintCurrent');
+        if(b && !b.disabled) b.click();
+        else alert('សូមបើក ពន្ធលើប្រាក់ចំណូល ⇒ COVER ជាមុនសិន។');
+      }, 180);
+    };
   }
 
   /* [stated] អ្នកទទួលរបស់របាយការណ៍សង្ខេប ៖ ប្រធាននាយកដ្ឋាន ឬ ឯកឧត្តម
@@ -65145,7 +66963,7 @@ else CC.init();
      ការរក្សាទុកឥឡូវ **រាយលេខជំហាន** លើផ្ទាំង ហើយផ្អាកអោយផ្ទាំងគូររួច
      មុននឹងចាប់ការងារធ្ងន់នីមួយៗ។ សារចុងក្រោយដែលឃើញ = ជំហានដែលគាំង។
      លេខ build ក៏បង្ហាញផង ដើម្បីដឹងច្បាស់ថាកំពុងប្រើឯកសារណា។ */
-  var RSC_BUILD = '14/11 · B86';
+  var RSC_BUILD = '16/11 · C64';
   try{ window.__RSC_BUILD = RSC_BUILD; }catch(e){}
 
   /* ⚠⚠ [stated] ២០២៦-០៨-១៣ ៖ រូបថតបង្ហាញ **«Page Unresponsive» របស់ Chrome**
@@ -73566,6 +75384,52 @@ window.__cogsRender = render;
     TMR = setTimeout(run, 140);
   });
   window.__rscSelSum = run;
+})();
+</script>
+<script>
+/* ⭐⭐ ម៉ឺនុយរបារខាងលើ ( ផ្លូវទិន្នន័យ 🗃️ · ឧបករណ៍ 🧰 )
+   — មើលក្បាល fix_atbmenu.py និង fix_atbmenu3.py
+   បើក/បិទ ៖ ចុចប៊ូតុង · ចុចខាងក្រៅ · Esc · ឬក្រោយជ្រើសធាតុ ។
+   ⚠ ដើរលើគ្រប់ `.atb-menu` ⇒ ម៉ឺនុយថ្មីមិនត្រូវការកូដថ្មី ។ */
+(function(){
+  function parts(m){
+    return { b: m.querySelector(':scope > button'),
+             p: m.querySelector(':scope > .atb-menu-pop') };
+  }
+  function closeAll(except){
+    document.querySelectorAll('.atb-menu').forEach(function(m){
+      if(m === except) return;
+      var q = parts(m); if(!q.p) return;
+      q.p.hidden = true; if(q.b) q.b.setAttribute('aria-expanded','false');
+    });
+  }
+  function openP(m, v){
+    var q = parts(m); if(!q.p) return;
+    if(v) closeAll(m);
+    q.p.hidden = !v;
+    if(q.b) q.b.setAttribute('aria-expanded', v ? 'true' : 'false');
+    if(v){
+      /* ⚠ កុំឱ្យប្រអប់ហៀរចេញក្រៅអេក្រង់ ( ប៊ូតុងអាចនៅជិតគែមស្តាំ ) */
+      var right = q.p.classList.contains('atb-pop-right');
+      q.p.style.left = right ? 'auto' : '0';
+      q.p.style.right = right ? '0' : 'auto';
+      var r = q.p.getBoundingClientRect();
+      if(r.right > window.innerWidth - 6){ q.p.style.left = 'auto'; q.p.style.right = '0'; }
+      else if(r.left < 6){ q.p.style.left = '0'; q.p.style.right = 'auto'; }
+    }
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    document.querySelectorAll('.atb-menu').forEach(function(m){
+      var q = parts(m); if(!q.b || !q.p) return;
+      q.b.addEventListener('click', function(ev){ ev.stopPropagation(); openP(m, !!q.p.hidden); });
+      q.p.addEventListener('click', function(ev){ if(ev.target.closest('.atb-mi')) openP(m, false); });
+    });
+    document.addEventListener('click', function(ev){
+      if(ev.target.closest('.atb-menu')) return;
+      closeAll(null);
+    });
+    document.addEventListener('keydown', function(ev){ if(ev.key === 'Escape') closeAll(null); });
+  });
 })();
 </script>
 </body>
