@@ -43,7 +43,7 @@
 })();
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SYSTEM · 18/11-D08</title>
+<title>SYSTEM · 18/11-D09</title>
 <!-- ដាក់លើអេក្រង់ដើមទូរស័ព្ទ ៖ រូបតំណាង ឈ្មោះ និងបើកពេញអេក្រង់
      manifest ដាក់ជា data URL ព្រោះ Apps Script បម្រើឯកសារតែមួយ។ -->
 <meta name="mobile-web-app-capable" content="yes">
@@ -2799,6 +2799,8 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
 /* ⭐⭐⭐ [stated] ២០២៦-១១-១៨ ០០:០០ ៖ ▪ ខិតចូល · ជួរទូរសព្ទសរសេរបន្ត
    ( ត្រូវដូច SMW_CSS បេះបិទ — មើលសេចក្តីពន្យល់នៅទីនោះ ) ។ */
 #view-tracking .smw-b, #docs-modal .smw-b{ margin:0 0 8px; padding-left:20px; }
+/* ⭐⭐⭐ [stated] ២០២៦-១១-១៨ ០០:០៩ ៖ លេខរមាំងជួរឈរថេរ ( ត្រូវដូច SMW_CSS ) */
+#view-tracking .smw-h .smw-n, #docs-modal .smw-h .smw-n{ display:inline-block; width:20px; }
 #view-tracking .smw-r.smw-run, #docs-modal .smw-r.smw-run{
   display:block; padding-left:10px; text-indent:-10px; }
 #view-tracking .smw-r.smw-run > span, #docs-modal .smw-r.smw-run > span{ margin-right:6px; }
@@ -2863,7 +2865,7 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
    ⇒ វាអង្គុយទាប ។ `align-self:center` ដាក់វាចំកណ្តាលកម្ពស់ជួរវិញ ។ */
 #view-tracking .smw-r .bq, #docs-modal .smw-r .bq{
   flex:0 0 auto; align-self:start; color:#111; margin-right:5px;
-  font-size:1.04em; line-height:1.779; }
+  font-size:1.3em; line-height:1.42; }
 /* ⚠ ទូរស័ព្ទរក្សាទំហំចាស់ ( .44em ) — មើលក្បាល fix_bq3.py */
 html.rsc-mobile-print #view-tracking .smw-r .bq,
 html.rsc-mobile-print #docs-modal .smw-r .bq{ font-size:.44em; line-height:4.2; }
@@ -56635,7 +56637,7 @@ function smwHtml(forPrint){
         '<span class="k2">សវនករ៖</span><span class="v2">' + esc(auditors.join(' និង ')) + '</span>' +
         '<span class="k2">អនុការិ.៖</span><span class="v2">' + esc(c.deputy) + '</span></div>' +
     '</div>' +
-    '<div class="smw-h">I. ព័ត៌មានសហគ្រាស</div>' +
+    '<div class="smw-h"><span class="smw-n">I.</span>ព័ត៌មានសហគ្រាស</div>' +
     '<div class="smw-b">' +
       /* ⭐ [stated] ២០២៦-១១-១៣ ៖ «នៅក្នុងប្រព័ន្ធបាត់សញ្ញាដាក់នៅពីមុខ
          ចុះបញ្ជី · សកម្មភាព · ទូរសព្ទ ដល់សម្គាល់ ដូចក្នុង Word» ។ */
@@ -56647,12 +56649,12 @@ function smwHtml(forPrint){
       '<div class="smw-r smw-run"><span class="bq">▪</span><span class="k2">ទូរសព្ទ៖</span><span class="v2">' + esc(c.phone) + '</span>' +
         '<span class="k2">អាសយដ្ឋាន៖</span><span class="v2">' + esc(c.addr) + '</span></div>' +
     '</div>' +
-    '<div class="smw-h">II. កិច្ចសហការរបស់អ្នកជាប់ពន្ធ៖</div>' +
+    '<div class="smw-h"><span class="smw-n">II.</span>កិច្ចសហការរបស់អ្នកជាប់ពន្ធ៖</div>' +
     '<div class="smw-b">' +
       smwRow('ការជួបពិភាក្សា៖', 'meet', 3, 'ឧ. បានជួបម្ចាស់សហគ្រាស ៣ ដង ; បានជួបម្ចាស់សហគ្រាស និងភ្នាក់ងារ ៤ ដង ; មិនបានជួបម្ចាស់ ឬតំណាងសហគ្រាសទេ …') +
       smwRow('ការផ្ដល់ឯកសារ៖', 'docs', 3, 'ឧ. សហគ្រាសបានផ្តល់ឯកសារតាមការស្នើសុំ ; ស្នើសុំឯកសារចំនួន ១០ ប៉ុន្តែសហគ្រាសឱ្យបានតែ ១ គឺ … ; ស្នើសុំ ១០ មិនបានឱ្យ ៣ គឺ GL, TB, របាយការណ៍ធនាគារ …') +
     '</div>' +
-    '<div class="smw-h">III. មូលដ្ឋាននៃការកំណត់ពន្ធ៖</div>' +
+    '<div class="smw-h"><span class="smw-n">III.</span>មូលដ្ឋាននៃការកំណត់ពន្ធ៖</div>' +
     '<div class="smw-b">' +
       smwRow('មូលដ្ឋាន៖', 'basis', 3, 'ឧ. របាយការណ៍ធនាគារ, ទិន្នន័យ Cross-Check, លម្អៀងទិន្នន័យនាំចូល, លម្អៀងចំនួនបុគ្គលិកបានប្រកាស និងជាក់ស្ដែង, លម្អៀងចំណូលប្រចាំខែ និងប្រចាំឆ្នាំ, ចំណាយសេវាទៅរូបវន្តបុគ្គល …') +
       ((SMW_PRINT && !String(amount).trim()) ? '' :
@@ -56756,6 +56758,11 @@ const SMW_CSS = `
   /* ⭐⭐⭐ [stated] ២០២៦-១១-១៨ ០០:០០ ៖ សញ្ញា ▪ ខិតចូល ⇒ ឈរក្រោមអក្សរ
      នៃចំណងជើង ( មិនមែនក្រោមលេខរមាំង ) ហើយត្រង់គ្នាទាំង I · II · III ។ */
   .smw-b{ margin:0 0 8px; padding-left:20px; }
+  /* ⭐⭐⭐ [stated] ២០២៦-១១-១៨ ០០:០៩ ៖ លេខរមាំងជាជួរឈរទទឹងថេរ ២០px
+     ⇒ អក្សរដើមនៃចំណងជើងទាំង ៣ ចាប់ផ្តើមត្រង់គ្នា ហើយត្រង់នឹង ▪ ដែរ
+       ( .smw-b ក៏ ២០px ) ។ ⚠ បើទុកជា «I. » ធម្មតា ៖ «III.» វែងជាង ⇒ ទាំង
+       ៣ មិនត្រង់គ្នា ហើយ ▪ មិនអាចត្រង់នឹងទាំងអស់បានឡើយ ។ */
+  .smw-h .smw-n{ display:inline-block; width:20px; }
   /* ⭐⭐⭐ ជួរ «ទូរសព្ទ · អាសយដ្ឋាន» ៖ អត្ថបទហូរតត្រង់ដូចកថាខណ្ឌ ។
      ⚠ block ⇒ gap លែងដើរ ⇒ ត្រូវដាក់ margin ឱ្យ span ដោយខ្លួនឯង ។
      ⚠ text-indent អវិជ្ជមាន + padding ស្មើគ្នា = hanging indent ៖
@@ -56830,8 +56837,9 @@ const SMW_CSS = `
   /* ⚠ [stated] ២០២៦-១១-១៤ ៖ «សញ្ញាចុចពីមុខ ចុះបញ្ជី ដល់ សម្គាល់ មានទំហំ
      ធំពេក ដាក់វាដូចទំហំក្នុងរូប» ⇒ ខ្ញុំលើកពី ៩px ទៅ ១៥px ហួសទៅ
      ⇒ ចុះមក ១១px ( ចន្លោះកណ្តាល ដូចក្នុងរូប Word ) ។ */
+  /* [stated] ២០២៦-១១-១៨ ៖ «បង្កើតទំហំសញ្ញានឹងធំជាងបន្តិច» ⇒ ១,០៤ ⇒ ១,៣em */
   .smw-r .bq{ flex:0 0 auto; align-self:start; color:#111; margin-right:5px;
-    font-size:1.04em; line-height:1.779; }
+    font-size:1.3em; line-height:1.42; }
   html.rsc-mobile-print .smw-r .bq{ font-size:.44em; line-height:4.2; }
   /* ⭐ វាលបំពេញហូរតត្រង់ក្រោយស្លាក ⇒ ជួរក្លាយជាប្លុកធម្មតា ( មិនមែន flex )
      ⚠ :has() មានលើ iOS 16.4+ · Chrome 105+ ; បើគ្មាន វាត្រឡប់ទៅរបៀបចាស់ */
@@ -68349,7 +68357,7 @@ else CC.init();
      ការរក្សាទុកឥឡូវ **រាយលេខជំហាន** លើផ្ទាំង ហើយផ្អាកអោយផ្ទាំងគូររួច
      មុននឹងចាប់ការងារធ្ងន់នីមួយៗ។ សារចុងក្រោយដែលឃើញ = ជំហានដែលគាំង។
      លេខ build ក៏បង្ហាញផង ដើម្បីដឹងច្បាស់ថាកំពុងប្រើឯកសារណា។ */
-  var RSC_BUILD = '18/11 · D08';
+  var RSC_BUILD = '18/11 · D09';
   try{ window.__RSC_BUILD = RSC_BUILD; }catch(e){}
 
   /* ⚠⚠ [stated] ២០២៦-០៨-១៣ ៖ រូបថតបង្ហាញ **«Page Unresponsive» របស់ Chrome**
