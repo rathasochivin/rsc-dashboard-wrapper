@@ -43,7 +43,7 @@
 })();
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SYSTEM · 17/11-C87</title>
+<title>SYSTEM · 17/11-D03</title>
 <!-- ដាក់លើអេក្រង់ដើមទូរស័ព្ទ ៖ រូបតំណាង ឈ្មោះ និងបើកពេញអេក្រង់
      manifest ដាក់ជា data URL ព្រោះ Apps Script បម្រើឯកសារតែមួយ។ -->
 <meta name="mobile-web-app-capable" content="yes">
@@ -9873,7 +9873,16 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
                placeholder="ស្វែងរកឈ្មោះបុគ្គលិក…">
         <button type="button" id="matrixSearchClear" title="សម្អាត" hidden>✕</button>
       </div>
+      <!-- ⭐⭐ [stated] ២០២៦-១១-១៧ ៖ «ផ្នែកបៀវត្សជួយថែមប៉ូតង់មួយ ដើម្បីមើល
+           ទិន្នន័យដើមនៃតារាងប្រាក់បៀវត្សនោះផង ដូចករណី PR SR ដែរចឹង» ។
+           ⇒ ដូច `#catview-sale` ⇒ «ទម្រង់ដើម ( គ្រប់ជួរឈរ )» តែសម្រាប់ TOS ៖
+             ជួរតាមខែដែលផ្ទុកចូលពិតៗ មិនមែនមធ្យមប្រចាំឆ្នាំទេ ។ -->
+      <div class="matrix-toggle" style="margin:0;">
+        <button type="button" class="matrix-toggle-btn" id="tosRawBtn"
+                title="បង្ហាញជួរដើមតាមខែ ( គ្រប់ជួរឈរ ) ដូចឯកសារដែលផ្ទុកចូល">📄 ទិន្នន័យដើម</button>
+      </div>
     </div>
+    <div class="missing-table-wrap" id="tosRawWrap" style="display:none;"></div>
     <div class="missing-table-wrap" id="employeeMatrixWrap"></div>
   </section>
 
@@ -10836,6 +10845,13 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
         <div class="import-group">
           <span title="ឈ្មោះអ្នកទទួលប្រាក់">👤</span>
           <select id="wht-filter-name" class="partner-select" style="min-width:200px;" onchange="onWHTFilterChange()"></select>
+          <!-- ⭐⭐⭐ [stated] ២០២៦-១១-១៧ ១៦:៣១ ៖ «អត់ឃើញមានកន្លែងកាត់» ។
+               ⚠ ប៉ូតង់ ✂ ដំបូងដាក់តែក្នុងតារាងសង្ខេបតាមឈ្មោះ ដែលត្រូវចុច
+                 ប្រភេទចូលទៅមើលសិន ⇒ នៅទំព័រដើមគេមិនឃើញ ។
+               ⇒ ដាក់មួយទៀតនៅជាប់ប្រអប់ឈ្មោះ ត្រង់កន្លែងដែលគេកំពុងរើស ។ -->
+          <button type="button" class="btn ghost" id="wht-cut-btn" onclick="whtCutFromFilter()"
+                  style="white-space:nowrap;"
+                  title="កាត់ចំណាយរបស់ឈ្មោះដែលជ្រើស ⇒ យក «ទឹកប្រាក់ត្រូវបើក» បូកតាមឆ្នាំ បញ្ជូនទៅតារាង «កាត់ចំណាយចេញ»">✂ កាត់ចំណាយ</button>
         </div>
         <div class="import-group">
           <span title="ប្រភេទពន្ធកាត់ទុក">🏷️</span>
@@ -13867,6 +13883,9 @@ function showView(id){
     if(__vs) refreshDataView(__vs);
     /* VAT Reverse Charge មានការគូរផ្ទាល់ខ្លួន ⇒ គូរពេលបើកផ្ទាំង */
     if(id === 'vat-rvc' && typeof renderVatRvc === 'function') renderVatRvc();
+    /* ⭐ [stated] ២០២៦-១១-១៧ ៖ ផ្ទាំងបៀវត្ស ៖ សញ្ញា «✂ កាត់រួច» ត្រូវដើរ
+       តាមកាតការគណនាពន្ធ ⇒ សរសេរតារាងឡើងវិញពេលបើកផ្ទាំង ។ */
+    if(id === 'tos' && typeof window.__tosRefreshMatrix === 'function') window.__tosRefreshMatrix();
   }catch(e){ console.error("refresh on open", e); }
   // OTHER EXPENSES is a large flat (ungrouped) list, unlike SALE/PURCHASE
   // which default to a compact category summary — rebuilding its table
@@ -23976,6 +23995,162 @@ function computeWHTNameSummary(rows, typeFilter){
 // Cycles the same red/green/ink accent colors used in the reference WHT
 // dashboard image across the year columns of the total row.
 const WHT_YEAR_COLORS = ["var(--red)","var(--green)","var(--ink)","var(--accent)"];
+
+/* ⭐⭐⭐ [stated] ២០២៦-១១-១៧ ៖ កាត់ចំណាយពីផ្នែកពន្ធកាត់ទុក តាមឈ្មោះ និងឆ្នាំ ។
+   ⚠⚠ ទឹកប្រាក់យកពី **«ទឹកប្រាក់ត្រូវបើក» ( r.baseAmount )** បូកតាមឆ្នាំ
+     មិនមែនពន្ធកាត់ទុក ( r.amount ) ដែលតារាងសង្ខេបបង្ហាញនោះទេ ។
+   ⚠ កំណត់ត្រឹមប្រភេទដែលកំពុងបើក ⇒ ឈ្មោះដដែលនៅប្រភេទផ្សេង មិនកាត់ស្ទួន ។
+   ⚠ ឆ្នាំយកពី `parseDMY(r.date)` ដូចតារាងសង្ខេបបេះបិទ ⇒ លេខត្រូវគ្នា ។ */
+function whtCutName(typeName, name){
+  /* ⭐⭐ [stated] ២០២៦-១១-១៧ ១៦:៤២ ៖ ពន្ធកាត់ទុកដែលបានបង់រួច ត្រូវយកទៅ
+     ជាមួយ ( `tpaid` ) ⇒ ដកចេញពី «ពន្ធលើប្រាក់ចំណូល ត្រូវបង់» ។ */
+  var by = {}, tax = {};
+  (state.wht || []).forEach(function(r){
+    if((r.whtType || "មិនកំណត់ប្រភេទ") !== typeName) return;
+    if((r.name || "(គ្មានឈ្មោះ)") !== name) return;
+    var d = parseDMY(r.date);
+    if(!d) return;
+    var y = String(d.getFullYear());
+    by[y] = (by[y] || 0) + (Number(r.baseAmount) || 0);
+    tax[y] = (tax[y] || 0) + (Number(r.amount) || 0);
+  });
+  var items = Object.keys(by).sort().map(function(y){
+    return { label:'ពន្ធកាត់ទុក ៖ ' + name + ' ( ' + typeName + ' )',
+             emp: typeName + '||' + name, step:'ពន្ធកាត់ទុក', kp:'wht:',
+             year:y, amount: Math.round(by[y]), tpaid: Math.round(tax[y] || 0) };
+  }).filter(function(it){ return it.amount; });
+  if(!items.length){ alert('អ្នកទទួលប្រាក់នេះគ្មានទឹកប្រាក់ត្រូវបើកក្នុងឆ្នាំណាទេ'); return; }
+  var txt = items.map(function(i){ return i.amount.toLocaleString('en-US') + ' ៛ (' + i.year + ')'; }).join(' · ');
+  if(!confirm('កាត់ចំណាយរបស់ ' + name + ' ចេញ ?\n\n' + txt +
+              '\n\nទឹកប្រាក់យកពី «ទឹកប្រាក់ត្រូវបើក» បូកតាមឆ្នាំ ( ប្រភេទ ៖ ' + typeName + ' ) ។' +
+              '\nវានឹងបញ្ជូនទៅតារាង «កាត់ចំណាយចេញ» ក្នុងកាតការគណនាពន្ធ ។')) return;
+  if(typeof window.__ccAddCut !== 'function'){
+    alert('កាតការគណនាពន្ធមិនទាន់ត្រៀមរួច — សូមបើកកាតនោះម្តងជាមុនសិន'); return;
+  }
+  var n = window.__ccAddCut(items);
+  if(!n){ alert('មិនបានបញ្ជូនទេ'); return; }
+  renderWHTSummaryTable();            /* ⇒ សញ្ញា «✂ កាត់រួច» លេចភ្លាម */
+  if(confirm('បានបញ្ជូន ' + n + ' ធាតុ ។ បើកកាតការគណនាពន្ធឥឡូវនេះទេ ?')){
+    try{ showView('calc'); }catch(e){}
+  }
+}
+
+/* ⭐⭐⭐ [stated] ២០២៦-១១-១៧ ១៦:៣១ ៖ កាត់ចំណាយពីរបារតម្រងផ្ទាល់ ។
+   ⚠ ប្រើ `filteredWHTRows()` ⇒ គោរពតម្រងទាំងអស់ដែលគេកំណត់ ( ប្រភេទ · ខែ ·
+     ឆ្នាំ · ស្វែងរក ) ⇒ អ្វីដែលឃើញក្នុងតារាង គឺជាអ្វីដែលនឹងកាត់ ។
+   ⚠ តម្រូវឱ្យរើសឈ្មោះជាមុនសិន ៖ ការកាត់គឺតាម **ឈ្មោះ និងឆ្នាំ** ។ */
+function whtCutFromFilter(){
+  var nameF = (document.getElementById('wht-filter-name')||{}).value || "";
+  var typeF = (document.getElementById('wht-filter-type')||{}).value || "";
+  if(!nameF){
+    alert('សូមរើស «ឈ្មោះអ្នកទទួលប្រាក់» ជាមុនសិន — ការកាត់ចំណាយធ្វើតាមឈ្មោះ និងឆ្នាំ ។');
+    return;
+  }
+  var rows = filteredWHTRows();
+  var by = {}, tax = {};
+  rows.forEach(function(r){
+    var d = parseDMY(r.date);
+    if(!d) return;
+    var y = String(d.getFullYear());
+    by[y] = (by[y] || 0) + (Number(r.baseAmount) || 0);
+    tax[y] = (tax[y] || 0) + (Number(r.amount) || 0);   /* ⇒ `tpaid` */
+  });
+  var scope = typeF || 'ទាំងអស់';
+  var items = Object.keys(by).sort().map(function(y){
+    return { label:'ពន្ធកាត់ទុក ៖ ' + nameF + ' ( ' + scope + ' )',
+             emp: scope + '||' + nameF, step:'ពន្ធកាត់ទុក', kp:'wht:',
+             year:y, amount: Math.round(by[y]), tpaid: Math.round(tax[y] || 0) };
+  }).filter(function(it){ return it.amount; });
+  if(!items.length){ alert('គ្មានទឹកប្រាក់ត្រូវបើកតាមតម្រងបច្ចុប្បន្នទេ'); return; }
+  var txt = items.map(function(i){ return i.amount.toLocaleString('en-US') + ' ៛ (' + i.year + ')'; }).join(' · ');
+  if(!confirm('កាត់ចំណាយរបស់ ' + nameF + ' ចេញ ?\n\n' + txt +
+              '\n\nទឹកប្រាក់យកពី «ទឹកប្រាក់ត្រូវបើក» បូកតាមឆ្នាំ ( ប្រភេទ ៖ ' + scope + ' ) ។' +
+              '\nវានឹងបញ្ជូនទៅតារាង «កាត់ចំណាយចេញ» ក្នុងកាតការគណនាពន្ធ ។')) return;
+  if(typeof window.__ccAddCut !== 'function'){
+    alert('កាតការគណនាពន្ធមិនទាន់ត្រៀមរួច — សូមបើកកាតនោះម្តងជាមុនសិន'); return;
+  }
+  var n = window.__ccAddCut(items);
+  if(!n){ alert('មិនបានបញ្ជូនទេ'); return; }
+  renderWHT();
+  if(confirm('បានបញ្ជូន ' + n + ' ធាតុ ។ បើកកាតការគណនាពន្ធឥឡូវនេះទេ ?')){
+    try{ showView('calc'); }catch(e){}
+  }
+}
+
+/* ⭐⭐⭐ [stated] ២០២៦-១១-១៧ ១៩:៥៥ ៖ ពន្ធកាត់ទុកដែលបានបង់រួចលើអ្នកទទួល
+   ប្រាក់ម្នាក់ ក្នុងឆ្នាំមួយ ⇒ កាតការគណនាហៅវាពេលធាតុកាត់គ្មាន `tpaid` ។
+   ⚠ `scope` = ប្រភេទពន្ធកាត់ទុក ឬ «ទាំងអស់» ( ដូចសោ `emp` ដែលរក្សាទុក ) ។ */
+window.__whtTaxPaidFor = function(scope, name, year){
+  var nm = String(name == null ? '' : name).trim();
+  var yy = String(year == null ? '' : year);
+  var sc = String(scope == null ? '' : scope).trim();
+  var tot = 0;
+  if(!nm || !yy) return 0;
+  (state.wht || []).forEach(function(r){
+    if((r.name || "(គ្មានឈ្មោះ)") !== nm) return;
+    if(sc && sc !== 'ទាំងអស់' && (r.whtType || "មិនកំណត់ប្រភេទ") !== sc) return;
+    var d = parseDMY(r.date);
+    if(!d || String(d.getFullYear()) !== yy) return;
+    tot += (Number(r.amount) || 0);
+  });
+  return tot;
+};
+
+/* ប៉ូតង់ត្រូវប្រាប់ថា ឈ្មោះនេះកាត់រួចឬនៅ ⇒ ហៅរាល់ពេលតម្រងប្រែ ។ */
+function renderWhtCutBtn(){
+  var btn = document.getElementById('wht-cut-btn');
+  if(!btn) return;
+  whtCutCss();
+  var nameF = (document.getElementById('wht-filter-name')||{}).value || "";
+  var typeF = (document.getElementById('wht-filter-type')||{}).value || "";
+  var map = {};
+  try{ if(window.__ccCutBy) map = window.__ccCutBy('ពន្ធកាត់ទុក') || {}; }catch(e){}
+  var cut = nameF ? map[(typeF || 'ទាំងអស់') + '||' + nameF] : null;
+  if(cut){
+    var yr = Object.keys(cut.years).sort().map(function(y){
+      return y + ' ៖ ' + Math.round(cut.years[y]).toLocaleString('en-US') + ' ៛'; }).join(' · ');
+    btn.textContent = '✂✓ កាត់រួច';
+    btn.classList.add('wht-cut-on');
+    btn.title = 'កាត់ចំណាយរួចហើយ ' + cut.n + ' ធាតុ · ' + yr
+      + ' — ចុចម្តងទៀតនឹងបន្ថែមធាតុថ្មី';
+  }else{
+    btn.textContent = '✂ កាត់ចំណាយ';
+    btn.classList.remove('wht-cut-on');
+    btn.title = nameF
+      ? 'កាត់ចំណាយរបស់ ' + nameF + ' ⇒ យក «ទឹកប្រាក់ត្រូវបើក» បូកតាមឆ្នាំ'
+      : 'រើសឈ្មោះអ្នកទទួលប្រាក់ជាមុនសិន ⇒ រួចចុចដើម្បីកាត់ចំណាយតាមឆ្នាំ';
+  }
+}
+
+/* រចនាប័ទ្មសញ្ញាកាត់ ៖ ម៉ូឌុលបៀវត្សមានរបស់ខ្លួនដាច់ដោយឡែក ហើយវាចាក់
+   តែពេលបើកផ្ទាំងនោះ ⇒ ផ្នែកពន្ធកាត់ទុកត្រូវមានរបស់ខ្លួនឯង ។ */
+function whtCutCss(){
+  if(document.getElementById('wht-cut-css')) return;
+  var st = document.createElement('style');
+  st.id = 'wht-cut-css';
+  st.textContent =
+      '#view-wht .mx-cut{border:1px solid var(--tos-gold-600,#b8912f);background:#FFFBF0;'
+    + 'color:#7a5f10;border-radius:7px;cursor:pointer;font-size:12px;line-height:1;'
+    + 'padding:3px 6px;margin-right:6px;vertical-align:middle;}'
+    + '#view-wht .mx-cut:hover{background:#f6e7c0;}'
+    + '#view-wht .mx-cut.mx-cut-on{border-color:#c0392b;background:#fdecea;color:#922b21;font-weight:700;}'
+    + '#view-wht .mx-cut.mx-cut-on:hover{background:#f9d7d2;}'
+    + '#view-wht .mx-cut-badge{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:999px;'
+    + 'border:1px solid #c0392b;background:#fdecea;color:#922b21;font-size:10.5px;'
+    + 'font-weight:700;line-height:1.55;white-space:nowrap;vertical-align:middle;}'
+    + '#view-wht tr.mx-cut-row > td{background:#fff7f6;}'
+    + '#view-wht tr.mx-cut-row > td.name-cell{box-shadow:inset 3px 0 0 #c0392b;}'
+    + '#view-wht td.mx-cell-cut{background:#fdecea !important;box-shadow:inset 0 0 0 1px #e6a9a1;'
+    + 'color:#922b21 !important;font-weight:700;}'
+    + '#view-wht .mx-cut-mk{margin-left:5px;font-size:10px;opacity:.85;}'
+    + '#wht-cut-btn{border:1px solid var(--tos-gold-600,#b8912f) !important;'
+    + 'background:#FFFBF0 !important;color:#7a5f10 !important;font-weight:600;}'
+    + '#wht-cut-btn:hover{background:#f6e7c0 !important;}'
+    + '#wht-cut-btn.wht-cut-on{border-color:#c0392b !important;background:#fdecea !important;'
+    + 'color:#922b21 !important;font-weight:700;}'
+    + '#wht-cut-btn.wht-cut-on:hover{background:#f9d7d2 !important;}';
+  document.head.appendChild(st);
+}
 function renderWHTSummaryTable(){
   const table = document.getElementById('wht-summary-table');
   const backHost = document.getElementById('wht-summary-back');
@@ -24029,6 +24204,18 @@ function renderWHTSummaryTable(){
       table.innerHTML = `<tbody><tr><td style="padding:18px;text-align:center;color:var(--muted);">គ្មានទិន្នន័យសម្រាប់ប្រភេទនេះទេ</td></tr></tbody>`;
       return;
     }
+    /* ⭐⭐⭐ [stated] ២០២៦-១១-១៧ ៖ «នៅផ្នែកពន្ធកាត់ទុកមួយទៀត អាចកាត់ចំណាយ
+       បាន ហើយកាត់ទៅតាមឈ្មោះ និង ឆ្នាំ ហើយផ្នែកនេះយកទឹកប្រាក់ត្រូវបើក
+       មកគិតដូចគ្នា» ។
+       ⚠⚠ តារាងនេះបង្ហាញ **ពន្ធកាត់ទុក** ( r.amount ) ⇒ មិនមែនចំនួនដែល
+         ត្រូវកាត់ចេញទេ ។ ការកាត់យក **ទឹកប្រាក់ត្រូវបើក** ( r.baseAmount )
+         បូកតាមឆ្នាំ ⇒ មើល `whtCutName()` ។
+       ⚠ សញ្ញា «កាត់រួច» គន្លឹះ = «ប្រភេទ||ឈ្មោះ» ⇒ ឈ្មោះដដែលនៅប្រភេទ
+         ផ្សេងគ្នា មិនសម្គាល់ច្រឡំគ្នាទេ ។ */
+    whtCutCss();
+    let cutW = {};
+    try{ if(window.__ccCutBy) cutW = window.__ccCutBy('ពន្ធកាត់ទុក') || {}; }catch(e){}
+
     let html = `<thead><tr><th style="text-align:left;">👤 ឈ្មោះអ្នកទទួលប្រាក់</th>`;
     years.slice().reverse().forEach(y=> html += `<th>${y}</th>`);
     html += `<th>លម្អិត</th></tr></thead><tbody>`;
@@ -24041,13 +24228,26 @@ function renderWHTSummaryTable(){
     names.forEach(n=>{
       const nEsc = escJsAttr(n.name);
       const tEsc = escJsAttr(typeName);
-      html += `<tr class="summary-cat-row" onclick="selectWHTName('${tEsc}','${nEsc}')" title="ចុចដើម្បីមើលវិក្កយបត្រលម្អិត"><td class="name-cell">${n.name}</td>`;
+      const cut = cutW[typeName + '||' + n.name] || null;
+      const cutYrTxt = cut
+        ? Object.keys(cut.years).sort().map(y=> y + ' ៖ ' + Math.round(cut.years[y]).toLocaleString('en-US') + ' ៛').join(' · ')
+        : '';
+      const cutBtn = cut
+        ? `<button type="button" class="mx-cut mx-cut-on" onclick="event.stopPropagation(); whtCutName('${tEsc}','${nEsc}')" title="កាត់ចំណាយរួចហើយ ${cut.n} ធាតុ · ${escAttr(cutYrTxt)} — ចុចម្តងទៀតនឹងបន្ថែមធាតុថ្មី">✂✓</button>`
+        : `<button type="button" class="mx-cut" onclick="event.stopPropagation(); whtCutName('${tEsc}','${nEsc}')" title="កាត់ចំណាយរបស់អ្នកទទួលប្រាក់នេះចេញ ⇒ យក «ទឹកប្រាក់ត្រូវបើក» បូកតាមឆ្នាំ បញ្ជូនទៅតារាង «កាត់ចំណាយចេញ»">✂</button>`;
+      const cutBadge = cut
+        ? `<span class="mx-cut-badge" title="កាត់ចំណាយចេញរួច · ${escAttr(cutYrTxt)} · សរុប ${Math.round(cut.total).toLocaleString('en-US')} ៛">✂ កាត់រួច</span>`
+        : '';
+      html += `<tr class="summary-cat-row${cut ? ' mx-cut-row' : ''}" onclick="selectWHTName('${tEsc}','${nEsc}')" title="ចុចដើម្បីមើលវិក្កយបត្រលម្អិត"><td class="name-cell">${cutBtn}${n.name}${cutBadge}</td>`;
       years.slice().reverse().forEach(y=>{
         const v = n.byYear[y]||0;
+        const cutAmt = cut ? (cut.years[String(y)]||0) : 0;
+        const cutCls = cutAmt ? ' mx-cell-cut' : '';
+        const cutTip = cutAmt ? ` · កាត់ចំណាយចេញរួច ${Math.round(cutAmt).toLocaleString('en-US')} ៛` : '';
         if(v){
-          html += `<td class="amt"><a href="javascript:void(0)" onclick="event.stopPropagation(); selectWHTName('${tEsc}','${nEsc}',${y})" title="ចុចដើម្បីមើលវិក្កយបត្រឆ្នាំ ${y}" style="color:inherit; text-decoration:underline; text-decoration-style:dotted;">${fmtAmt(v)}</a></td>`;
+          html += `<td class="amt${cutCls}"><a href="javascript:void(0)" onclick="event.stopPropagation(); selectWHTName('${tEsc}','${nEsc}',${y})" title="ចុចដើម្បីមើលវិក្កយបត្រឆ្នាំ ${y}${escAttr(cutTip)}" style="color:inherit; text-decoration:underline; text-decoration-style:dotted;">${fmtAmt(v)}${cutAmt ? '<span class="mx-cut-mk">✂</span>' : ''}</a></td>`;
         }else{
-          html += `<td class="amt">—</td>`;
+          html += `<td class="amt${cutCls}">—${cutAmt ? '<span class="mx-cut-mk">✂</span>' : ''}</td>`;
         }
       });
       html += `<td><button class="btn-view" onclick="event.stopPropagation(); selectWHTName('${tEsc}','${nEsc}')">🧾 វិក្កយបត្រ</button></td></tr>`;
@@ -24243,6 +24443,7 @@ function whtGoToPage(p){
 function renderWHTTable(){
   const table = document.getElementById('wht-table');
   const countEl = document.getElementById('wht-result-count');
+  try{ renderWhtCutBtn(); }catch(e){}
   if(!table) return;
   if(state.wht.length === 0){
     table.innerHTML = "";
@@ -46332,6 +46533,125 @@ window.__toiImport = function(data){
      ⚠ ខ្មែរគ្មានអក្សរធំ-តូច តែឈ្មោះខ្លះមានឡាតាំងលាយ ដូច្នេះ toLowerCase
        នៅតែមានប្រយោជន៍ ; ការលុបចន្លោះជួយពេលឯកសារវាយ «សុខ  កាំ» ២ ដក។ */
   const mxNorm = s => String(s == null ? '' : s).replace(/\s+/g, ' ').trim().toLowerCase();
+
+  /* ⭐⭐⭐ [stated] ២០២៦-១១-១៧ ៖ ប៉ូតង់ «📄 ទិន្នន័យដើម» ( ដូច PR / SR ) ។
+     ⚠ តារាងម៉ាទ្រីសបង្ហាញ **មធ្យមប្រចាំខែជាដុល្លារ** ⇒ មិនឃើញជួរដើមទេ ។
+       ផ្ទាំងនេះបង្ហាញ `allRows` ត្រង់ៗ ៖ មួយជួរ = មួយបុគ្គលិក × មួយខែ
+       ជា **រៀល** ដូចឯកសារដែលផ្ទុកចូល ។
+     ⚠ តាមតម្រងដដែលនឹងម៉ាទ្រីស ( សញ្ជាតិ · កំណត់ឡើងវិញ · ស្វែងរក )
+       ⇒ អ្វីដែលឃើញក្នុងពីរតារាងត្រូវគ្នា ។ */
+  let tosRawOn = false;
+  let tosRawPage = 0;
+  const TOS_RAW_PAGE = 200;
+
+  function tosRawRows(){
+    var q = mxNorm(matrixQuery);
+    return (allRows || []).filter(function(r){
+      if(!r) return false;
+      if(matrixNatFilter !== 'all'
+         && String(r.nationality == null ? '' : r.nationality).trim() !== matrixNatFilter) return false;
+      if(matrixAmdFilter === 'yes' && !r.amended) return false;
+      if(matrixAmdFilter === 'no' && r.amended) return false;
+      if(q && mxNorm(r.name).indexOf(q) < 0 && mxNorm(r.empId).indexOf(q) < 0) return false;
+      return true;
+    }).sort(function(a, b){
+      var n = mxNorm(a.name).localeCompare(mxNorm(b.name), 'km');
+      if(n) return n;
+      if((+a.year || 0) !== (+b.year || 0)) return (+b.year || 0) - (+a.year || 0);
+      return MONTHS.indexOf(a.month) - MONTHS.indexOf(b.month);
+    });
+  }
+
+  function renderTosRaw(){
+    var host = document.getElementById('tosRawWrap');
+    var btn = document.getElementById('tosRawBtn');
+    if(!host) return;
+    if(btn) btn.classList.toggle('active', !!tosRawOn);
+    if(!tosRawOn){ host.innerHTML = ''; host.style.display = 'none'; return; }
+    host.style.display = '';
+    var all = tosRawRows();
+    if(!all.length){
+      host.innerHTML = '<p class="hint" style="padding:14px;">គ្មានជួរដើមតាមតម្រងបច្ចុប្បន្នទេ</p>';
+      return;
+    }
+    var pages = Math.max(1, Math.ceil(all.length / TOS_RAW_PAGE));
+    if(tosRawPage >= pages) tosRawPage = pages - 1;
+    if(tosRawPage < 0) tosRawPage = 0;
+    var from = tosRawPage * TOS_RAW_PAGE;
+    var shown = all.slice(from, from + TOS_RAW_PAGE);
+    /* សរុបគិតលើ **គ្រប់ជួរតាមតម្រង** មិនមែនតែទំព័រនេះទេ */
+    var tS = 0, tST = 0, tF = 0, tFT = 0, tAdd = 0;
+    all.forEach(function(r){
+      tS += (+r.salary || 0); tST += (+r.salaryTax || 0);
+      tF += (+r.fringe || 0); tFT += (+r.fringeTax || 0);
+      if(r.amended) tAdd += (+r.additionalSalaryTax || 0) + (+r.additionalFringeTax || 0);
+    });
+    var n0 = function(v){ return Math.round(+v || 0).toLocaleString('en-US'); };
+    var body = shown.map(function(r, i){
+      var amd = r.amended
+        ? '<span class="mx-badge" title="ពន្ធបន្ថែម ' +
+          n0((+r.additionalSalaryTax || 0) + (+r.additionalFringeTax || 0)) + ' ៛">✓</span>'
+        : '';
+      return '<tr' + (r.amended ? ' class="mx-amended"' : '') + '>'
+        + '<td class="tabular">' + (from + i + 1) + '</td>'
+        + '<td>' + escapeHtml(r.name || '-') + ' ' + amd + '</td>'
+        + '<td>' + escapeHtml(r.empId || '-') + '</td>'
+        + '<td>' + escapeHtml(r.nationality || '-') + '</td>'
+        + '<td>' + (r.residency === 'nonresident' ? 'អនិវាសនជន' : 'និវាសនជន') + '</td>'
+        + '<td class="tabular">' + escapeHtml(String(r.year || '-')) + '</td>'
+        + '<td>' + escapeHtml(r.month || '-') + '</td>'
+        + '<td class="tabular">' + n0(r.salary) + '</td>'
+        + '<td class="tabular">' + n0(r.salaryTax) + '</td>'
+        + '<td class="tabular">' + n0(r.fringe) + '</td>'
+        + '<td class="tabular">' + n0(r.fringeTax) + '</td>'
+        + '<td>' + escapeHtml(r.source || '-') + '</td>'
+        + '</tr>';
+    }).join('');
+    var pager = pages > 1
+      ? '<div class="mx-pager">'
+        + '<button type="button" class="btn ghost" data-rp="prev"' + (tosRawPage === 0 ? ' disabled' : '') + '>‹ មុន</button>'
+        + '<span>បង្ហាញ ' + (from + 1) + '–' + (from + shown.length) + ' ក្នុងចំណោម '
+        + all.length.toLocaleString('en-US') + ' ជួរ · ទំព័រ ' + (tosRawPage + 1) + '/' + pages + '</span>'
+        + '<button type="button" class="btn ghost" data-rp="next"' + (tosRawPage >= pages - 1 ? ' disabled' : '') + '>បន្ទាប់ ›</button>'
+        + '</div>'
+      : '';
+    host.innerHTML =
+      '<p class="mx-hit">📄 ជួរដើមតាមខែ ( ជារៀល ) · ' + all.length.toLocaleString('en-US') + ' ជួរ</p>'
+      + '<table class="missing-table mx-tbl" style="min-width:1180px;">'
+      + '<thead><tr><th>ល.រ</th><th>ឈ្មោះនិយោជិត</th><th>លេខសម្គាល់</th><th>សញ្ជាតិ</th>'
+      + '<th>ស្ថានភាព</th><th>ឆ្នាំ</th><th>ខែ</th><th>បៀវត្សត្រូវបើក</th><th>ពន្ធបៀវត្ស</th>'
+      + '<th>អត្ថប្រយោជន៍បន្ថែម</th><th>ពន្ធអត្ថប្រយោជន៍</th><th>ឯកសារដើម</th></tr></thead>'
+      + '<tbody>' + body + '</tbody>'
+      + '<tfoot><tr><th colspan="7">សរុប ( គ្រប់ជួរតាមតម្រង )</th>'
+      + '<th class="tabular">' + n0(tS) + '</th><th class="tabular">' + n0(tST) + '</th>'
+      + '<th class="tabular">' + n0(tF) + '</th><th class="tabular">' + n0(tFT) + '</th>'
+      + '<th>' + (tAdd ? 'ពន្ធបន្ថែម ' + n0(tAdd) + ' ៛' : '') + '</th></tr></tfoot>'
+      + '</table>' + pager;
+    host.querySelectorAll('[data-rp]').forEach(function(b){
+      b.onclick = function(){
+        tosRawPage += (b.dataset.rp === 'next' ? 1 : -1);
+        renderTosRaw();
+        try{ host.scrollIntoView({block:'start', behavior:'smooth'}); }catch(e){}
+      };
+    });
+  }
+
+  /* ភ្ជាប់ប៉ូតង់ ( ម្តងគត់ ) */
+  (function(){
+    var btn = document.getElementById('tosRawBtn');
+    if(!btn) return;
+    btn.addEventListener('click', function(){
+      tosRawOn = !tosRawOn;
+      tosRawPage = 0;
+      renderTosRaw();
+      if(tosRawOn){
+        try{ document.getElementById('tosRawWrap').scrollIntoView({block:'start', behavior:'smooth'}); }catch(e){}
+      }
+    });
+  })();
+
+  /* ⚠ តារាងដើមត្រូវដើរតាមតម្រងដដែល ⇒ ភ្ជាប់នឹងការសរសេរម៉ាទ្រីសឡើងវិញ
+     ជំនួសការហៅដាច់ដោយឡែកនៅគ្រប់កន្លែង ( ~១០ កន្លែង ) ⇒ មិនអាចខកខាន ។ */
   function renderEmployeeMatrix(){
     const { years, employees: allEmployees } = computeEmployeeYearMatrix(matrixView);
     els.matrixTitle.textContent = matrixView === 'salary' ? 'ប្រាក់បៀវត្សប្រកាស' : 'អត្ថប្រយោជន៍បន្ថែមប្រកាស';
@@ -46397,10 +46717,18 @@ window.__toiImport = function(data){
     const from = matrixPage * PAGE;
     const shown = employees.slice(from, from + PAGE);
 
+    /* ⭐⭐ បុគ្គលិកណាបានកាត់ចំណាយរួច ⇒ សម្គាល់ជួរ · ក្រឡាឆ្នាំ · ប៉ូតង់ ✂ ។
+       ⚠ អានពីកាតការគណនាពន្ធរាល់ដងដែលសរសេរតារាង ⇒ បើលុបធាតុកាត់ចេញ
+         សញ្ញាក៏រលាយតាមដែរ ( គ្មានស្ថានភាពស្ទួន ) ។ */
+    let cutMap = {};
+    try{ if(window.__ccCutEmps) cutMap = window.__ccCutEmps() || {}; }catch(e){}
+
     const bodyRows = shown.map(emp => {
+      const cut = cutMap[String(emp.name || '').trim()] || null;
       const cells = years.map(y => {
         const v = emp.valuesByYear.get(y);
         const ext = extremes[y];
+        const cutAmt = cut ? (cut.years[String(y)] || 0) : 0;
         const cls = ext.maxName === emp.name ? 'val-high' : (ext.minName === emp.name ? 'val-low' : '');
         /* ⭐ ក្រឡាឆ្នាំណាមានការកំណត់ឡើងវិញ ⇒ ស៊ុមមាស + ប្រាប់ចំនួនចំណុច
            និងពន្ធបន្ថែមក្នុង title ⇒ ដាក់កណ្តុរលើឃើញភ្លាម ។ */
@@ -46409,6 +46737,9 @@ window.__toiImport = function(data){
         const tip = na
           ? ` title="កំណត់ពន្ធឡើងវិញ ${na} ចំណុច ក្នុងឆ្នាំ ${y} · ពន្ធបន្ថែម ${fmt(emp.addTaxByYear.get(y) || 0)}"`
           : '';
+        if(cutAmt){
+          return `<td class="tabular ${cls}${amdCls} mx-cell-cut" title="កាត់ចំណាយចេញរួច ${Math.round(cutAmt).toLocaleString('en-US')} ៛ ក្នុងឆ្នាំ ${y}">${v != null ? fmtUsd(v) : '-'}<span class="mx-cut-mk">✂</span></td>`;
+        }
         return `<td class="tabular ${cls}${amdCls}"${tip}>${v != null ? fmtUsd(v) : '-'}</td>`;
       }).join('');
       const residencyLabel = emp.residency === 'nonresident' ? 'អនិវាសនជន' : 'និវាសនជន';
@@ -46420,8 +46751,21 @@ window.__toiImport = function(data){
            ⚠ អត្ថន័យពេញនៅក្នុង title ដដែល ( ដាក់កណ្តុរ ឬចុចឱ្យយូរ ) ។ */
         ? `<span class="mx-badge" title="កំណត់ពន្ធឡើងវិញសរុប ${emp.amendedTotal} ចំណុច · ពន្ធបន្ថែម ${fmt(emp.addTaxTotal)}">✓ ${emp.amendedTotal}</span>`
         : '';
-      const rowCls = emp.amendedTotal ? ' class="mx-amended"' : '';
-      return `<tr${rowCls}><td class="name-cell"><button type="button" class="name-link" data-name="${escapeHtml(emp.name)}">${escapeHtml(emp.name)}</button>${badge}</td><td>${escapeHtml(emp.nationality || '-')}</td><td>${residencyLabel}</td>${cells}</tr>`;
+      const rowCls = ' class="' + (emp.amendedTotal ? 'mx-amended' : '')
+        + (cut ? ' mx-cut-row' : '') + '"';
+      /* ⭐⭐ [stated] ២០២៦-១១-១៧ ១៥:៤៦ ៖ កាត់ចំណាយបៀវត្សរបស់បុគ្គលិកនេះ */
+      const cutYrTxt = cut
+        ? Object.keys(cut.years).sort().map(y => y + ' ៖ ' + Math.round(cut.years[y]).toLocaleString('en-US') + ' ៛').join(' · ')
+        : '';
+      const cutBtn = cut
+        ? `<button type="button" class="mx-cut mx-cut-on" data-cutemp="${escapeHtml(emp.name)}"
+            title="កាត់ចំណាយរួចហើយ ${cut.n} ធាតុ · ${escapeHtml(cutYrTxt)} — ចុចម្តងទៀតនឹងបន្ថែមធាតុថ្មី">✂✓</button>`
+        : `<button type="button" class="mx-cut" data-cutemp="${escapeHtml(emp.name)}"
+            title="កាត់ចំណាយបៀវត្សរបស់បុគ្គលិកនេះចេញ ⇒ បញ្ជូនទៅតារាង «កាត់ចំណាយចេញ» ក្នុងកាតការគណនាពន្ធ">✂</button>`;
+      const cutBadge = cut
+        ? `<span class="mx-cut-badge" title="កាត់ចំណាយចេញរួច · ${escapeHtml(cutYrTxt)} · សរុប ${Math.round(cut.total).toLocaleString('en-US')} ៛">✂ កាត់រួច</span>`
+        : '';
+      return `<tr${rowCls}><td class="name-cell">${cutBtn}<button type="button" class="name-link" data-name="${escapeHtml(emp.name)}">${escapeHtml(emp.name)}</button>${badge}${cutBadge}</td><td>${escapeHtml(emp.nationality || '-')}</td><td>${residencyLabel}</td>${cells}</tr>`;
     }).join('');
 
     const pager = pages > 1
@@ -46444,6 +46788,31 @@ window.__toiImport = function(data){
          </p>`
       : '';
 
+    /* រចនាប័ទ្មប៊ូតុងកាត់ ( ដាក់ម្តងគត់ ) */
+    if(!document.getElementById('mx-cut-css')){
+      const st = document.createElement('style');
+      st.id = 'mx-cut-css';
+      st.textContent = '.mx-cut{border:1px solid var(--tos-gold-600,#b8912f);background:#FFFBF0;'
+        + 'color:#7a5f10;border-radius:7px;cursor:pointer;font-size:12px;line-height:1;'
+        + 'padding:3px 6px;margin-right:6px;vertical-align:middle;}'
+        + '.mx-cut:hover{background:#f6e7c0;}'
+        /* ⭐ សម្គាល់អ្វីដែលកាត់រួច ៖ ប៉ូតង់ · ស្លាក · ជួរ · ក្រឡាឆ្នាំ */
+        + '.mx-cut.mx-cut-on{border-color:#c0392b;background:#fdecea;color:#922b21;font-weight:700;}'
+        + '.mx-cut.mx-cut-on:hover{background:#f9d7d2;}'
+        + '.mx-cut-badge{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:999px;'
+        + 'border:1px solid #c0392b;background:#fdecea;color:#922b21;font-size:10.5px;'
+        + 'font-weight:700;line-height:1.55;white-space:nowrap;vertical-align:middle;}'
+        + 'tr.mx-cut-row > td{background:#fff7f6;}'
+        + 'tr.mx-cut-row > td.name-cell{box-shadow:inset 3px 0 0 #c0392b;}'
+        /* ⚠⚠ `#tos-embed .val-high` ប្រើ ID ⇒ ជាប់លើស `.mx-cell-cut` ទោះ
+           មាន !important ក៏ដោយ ( ភាពជាក់លាក់ខ្ពស់ជាង ) ⇒ ក្រឡាដែលកាត់រួច
+           នៅតែពណ៌បៃតង ។ ⇒ សរសេរឱ្យស្មើភាពជាក់លាក់ ហើយមកក្រោយក្នុងល្បាក់ ។ */
+        + '#tos-embed .mx-cell-cut{background:#fdecea !important;'
+        + 'box-shadow:inset 0 0 0 1px #e6a9a1;position:relative;'
+        + 'color:#922b21 !important;font-weight:700;}'
+        + '.mx-cut-mk{margin-left:5px;font-size:10px;opacity:.85;}';
+      document.head.appendChild(st);
+    }
     els.employeeMatrixWrap.innerHTML = hit + amdNote + `
       <table class="missing-table mx-tbl" style="min-width:${340 + years.length * 110}px;">
         <thead><tr><th>ឈ្មោះនិយោជិត</th><th>សញ្ជាតិ</th><th>ស្ថានភាព</th>${theadCols}</tr></thead>
@@ -46453,12 +46822,88 @@ window.__toiImport = function(data){
     els.employeeMatrixWrap.querySelectorAll('[data-mp]').forEach(b=>{
       b.onclick = ()=>{ matrixPage += (b.dataset.mp === 'next' ? 1 : -1); renderEmployeeMatrix(); };
     });
+    /* ⭐⭐ កាត់ចំណាយបៀវត្សបុគ្គលិកម្នាក់ ⇒ កាតការគណនាពន្ធ */
+    els.employeeMatrixWrap.querySelectorAll('[data-cutemp]').forEach(b=>{
+      b.onclick = ()=>{
+        const nm = b.dataset.cutemp;
+        const emp = employees.filter(e => e.name === nm)[0];
+        if(!emp) return;
+        const kind = (matrixView === 'salary') ? 'បៀវត្ស' : 'អត្ថប្រយោជន៍បន្ថែម';
+        /* ⭐⭐⭐ [stated] ២០២៦-១១-១៧ ៖ «គួរយកពីទឹកប្រាក់បៀវត្សត្រូវបើក ទើបត្រូវ
+           ព្រោះតែទឺកប្រាក់នោះជាមធ្យមប្រចាំខែទេ ទិន្នន័យដើមមានជារៀលស្រាប់ហើយ
+           និងតាមខែនីមួយៗ ចឹងគ្រាន់តែយកទិន្នន័យបូកចូលជាឆ្នាំ» ។
+           ⚠⚠ តារាងម៉ាទ្រីស បង្ហាញ **មធ្យមប្រចាំខែ ជាដុល្លារ**
+             ( computeEmployeeYearMatrix ៖ cell.sum / cell.count លើ rowUsdSalary )
+             ⇒ មិនត្រូវយកទៅកាត់ទេ ។
+           ⇒ បូក `r.salary` / `r.fringe` ដែលជា **រៀលដើមតាមខែ** ចូលជាឆ្នាំ ។
+           ⚠ ដូចរបៀបរបស់ `__tosTotalsByYear()` ទាំងស្រុង ( គ្មានចម្រោះខែ )
+             ⇒ ផលបូកតាមបុគ្គលិកម្នាក់ៗ ត្រូវនឹងជួរ «បៀវត្សត្រូវបើក» យោង ។ */
+        const rielField = (matrixView === 'salary') ? 'salary' : 'fringe';
+        /* ⭐⭐⭐ [stated] ២០២៦-១១-១៧ ១៦:៤២ ៖ សហគ្រាសបានបង់ពន្ធលើប្រាក់
+           បៀវត្ស ( ឬអត្ថប្រយោជន៍ ) នេះរួចហើយ ⇒ បើកាត់ចំណាយចេញ ហើយគិត
+           ពន្ធលើប្រាក់ចំណូល ២០% លើវាទៀត = ជាន់ប្រភេទពន្ធ ។
+           ⇒ យកពន្ធដែលបានបង់រួចតាមឆ្នាំទៅជាមួយ ( `tpaid` ) ⇒ កាតការគណនា
+             ដកវាចេញពី «ពន្ធលើប្រាក់ចំណូល ត្រូវបង់» ។
+           ⚠ ពន្ធត្រូវដើរតាមប្រភេទដែលកាត់ ៖ ទិដ្ឋភាពបៀវត្ស ⇒ `salaryTax` ;
+             ទិដ្ឋភាពអត្ថប្រយោជន៍ ⇒ `fringeTax` ។ */
+        const taxField = (matrixView === 'salary') ? 'salaryTax' : 'fringeTax';
+        const rielByYear = {}, taxByYear = {};
+        (scopedRows() || []).forEach(r => {
+          if(String(r.name == null ? '' : r.name).trim() !== nm) return;
+          const y = String(r.year || '');
+          if(!y) return;
+          rielByYear[y] = (rielByYear[y] || 0) + (+r[rielField] || 0);
+          taxByYear[y]  = (taxByYear[y]  || 0) + (+r[taxField]  || 0);
+        });
+        const items = [];
+        years.forEach(y => {
+          const v = Math.round(rielByYear[String(y)] || 0);
+          if(v) items.push({ label: kind + ' ៖ ' + nm, emp: nm, year: String(y), amount: v,
+                             tpaid: Math.round(taxByYear[String(y)] || 0) });
+        });
+        if(!items.length){ alert('បុគ្គលិកនេះគ្មានទឹកប្រាក់ក្នុងឆ្នាំណាទេ'); return; }
+        const sum = items.map(i =>
+          (i.amount).toLocaleString('en-US') + ' ៛ (' + i.year + ')').join(' · ');
+        if(!confirm('កាត់ចំណាយ ' + kind + ' របស់ ' + nm + ' ចេញ ?\n\n' + sum +
+                    '\n\nទឹកប្រាក់យកពី «បៀវត្សត្រូវបើក» ជារៀល បូកតាមខែចូលជាឆ្នាំ ។' +
+                    '\nវានឹងបញ្ជូនទៅតារាង «កាត់ចំណាយចេញ» ក្នុងកាតការគណនាពន្ធ ។')) return;
+        if(typeof window.__ccAddCut !== 'function'){
+          alert('កាតការគណនាពន្ធមិនទាន់ត្រៀមរួច — សូមបើកកាតនោះម្តងជាមុនសិន'); return;
+        }
+        const n = window.__ccAddCut(items);
+        if(!n){ alert('មិនបានបញ្ជូនទេ'); return; }
+        /* ⭐ [stated] ២០២៦-១១-១៧ ៖ សម្គាល់ឱ្យដឹង ⇒ ត្រូវលេចភ្លាម មិនមែន
+           រង់ចាំការសរសេរតារាងលើកក្រោយទេ ។ */
+        try{ renderEmployeeMatrix(); }catch(e){}
+        if(confirm('បានបញ្ជូន ' + n + ' ធាតុ ។ បើកកាតការគណនាពន្ធឥឡូវនេះទេ ?')){
+          try{ showView('calc'); }catch(e){}
+        }
+      };
+    });
   }
 
-  document.querySelectorAll('.matrix-toggle-btn:not(.nat-filter-btn)').forEach(btn => {
+  (function(){
+    const __mx0 = renderEmployeeMatrix;
+    renderEmployeeMatrix = function(){
+      const r = __mx0.apply(this, arguments);
+      try{ renderTosRaw(); }catch(e){}
+      return r;
+    };
+  })();
+
+  /* ⚠ សញ្ញា «✂ កាត់រួច» អានពីកាតការគណនាពន្ធ ⇒ បើគេលុបធាតុកាត់ចេញនៅកាត
+     នោះ តារាងបៀវត្សមិនដឹងទេ លុះត្រាតែសរសេរឡើងវិញ ⇒ បើកផ្ទាំងបៀវត្ស
+     ម្តងណា សរសេរម្តងនោះ ( showView ហៅវា ) ។ */
+  try{ window.__tosRefreshMatrix = function(){ try{ renderEmployeeMatrix(); }catch(e){} }; }catch(e){}
+
+  /* ⚠⚠ `#tosRawBtn` រួមថ្នាក់ `.matrix-toggle-btn` ដែរ តែវា **មិនមែន**
+     ប៉ូតង់ទិដ្ឋភាព ( បៀវត្ស / អត្ថប្រយោជន៍ ) ទេ ⇒ ដកវាចេញពីអ្នកជ្រើស
+     ទាំងពីរ បើមិនដូច្នេះ ៖ ចុចវា ⇒ `matrixView = undefined` ហើយចុច
+     «ប្រាក់បៀវត្ស» ⇒ ដកសញ្ញា active របស់វាចេញ ។ */
+  document.querySelectorAll('.matrix-toggle-btn:not(.nat-filter-btn):not(#tosRawBtn)').forEach(btn => {
     btn.addEventListener('click', () => {
       matrixView = btn.dataset.view;
-      document.querySelectorAll('.matrix-toggle-btn:not(.nat-filter-btn)').forEach(b => b.classList.toggle('active', b === btn));
+      document.querySelectorAll('.matrix-toggle-btn:not(.nat-filter-btn):not(#tosRawBtn)').forEach(b => b.classList.toggle('active', b === btn));
       renderEmployeeMatrix();
     });
   });
@@ -47732,6 +48177,25 @@ window.__toiImport = function(data){
     Object.keys(sets).forEach(y=>{ out[y] = sets[y].map(s=> s ? s.size : null); });
     return out;
   };
+  /* ⭐⭐⭐ [stated] ២០២៦-១១-១៧ ១៩:៥៥ ៖ ពន្ធដែលបានបង់រួចលើបុគ្គលិកម្នាក់
+     ក្នុងឆ្នាំមួយ ⇒ កាតការគណនាត្រូវការវាដើម្បីដកចេញពីពន្ធលើប្រាក់ចំណូល ។
+     ⚠ `allRows` នៅក្នុងវិសាលភាពម៉ូឌុលនេះ ⇒ កាតមិនអាចអានដោយផ្ទាល់ទេ
+       ⇒ ត្រូវបញ្ចេញតាម window ។
+     ត្រឡប់ ៖ { salaryTax, fringeTax } ជារៀល ( បូកតាមខែ ) ។ */
+  window.__tosTaxPaidFor = function(name, year){
+    const nm = String(name == null ? '' : name).replace(/\s+/g,' ').trim().toLowerCase();
+    const yy = String(year == null ? '' : year);
+    const out = { salaryTax:0, fringeTax:0 };
+    if(!nm || !yy) return out;
+    (allRows || []).forEach(r=>{
+      if(String(r.year || '') !== yy) return;
+      if(String(r.name == null ? '' : r.name).replace(/\s+/g,' ').trim().toLowerCase() !== nm) return;
+      out.salaryTax += (+r.salaryTax || 0);
+      out.fringeTax += (+r.fringeTax || 0);
+    });
+    return out;
+  };
+
   window.__tosTotalsByYear = function(){
     const out = {};
     (allRows || []).forEach(r=>{
@@ -53439,8 +53903,14 @@ function narrRunFoot(c, grand, pageNo, total, simple){
      ⚠ ជួរតួលេខក្នុងតួឯកសារ ( .nr-lr · .nr-subr ) **មិនប្តូរទេ** ៖ សញ្ញា ៛
        នៅទីនោះឈរជាជួរឈរត្រង់ ៩៦.៩% ហើយធ្លាប់ស្នើឱ្យរក្សាទុក
        ( «រក្សា ៛ នៅកន្លែងដើមដដែល កែតែលេខ ០» ) ។ */
-  return '<div class="nr-foot"><span>សហគ្រាស៖ ' + esc(c.name) + ' &nbsp; អតប៖ ' + esc(c.tin9) +
-    ' &nbsp; ការិយ៖ ' + esc(c.period) + ' &nbsp; ប្រាក់ពន្ធ៖ ' + narrNum(grand) + ' រៀល</span>' + num + '</div>';
+  /* [stated] ២០២៦-១១-១៧ ១៣:៥៦ ៖ ឈ្មោះវែង ⇒ កាត់ដោយ «…» កុំឱ្យចុះជួរ */
+  /* [stated] ១៤:០១ ៖ មានតែឈ្មោះសហគ្រាសទេដែលអាចដាច់ ; តួលេខទាំងអស់គ្រប់ */
+  return '<div class="nr-foot"><span class="nr-foot-l">' +
+    '<span class="nr-foot-lb">សហគ្រាស៖</span>' +
+    '<span class="nr-foot-co">' + esc(c.name) + '</span>' +
+    '<span class="nr-foot-rest">អតប៖ ' + esc(c.tin9) +
+    ' &nbsp; ការិយ៖ ' + esc(c.period) + ' &nbsp; ប្រាក់ពន្ធ៖ ' + narrNum(grand) + ' រៀល</span>' +
+    '</span>' + num + '</div>';
 }
 
 /* ⚠ លេខទំព័រតាម CSS ធ្វើមិនបានទេ ៖ `counter(page)` ត្រូវការ @page margin box
@@ -54454,7 +54924,19 @@ const NARR_CSS = `
   .nr-shell > thead > tr > td{padding-bottom:8px;}
   .nr-shell > tfoot > tr > td{padding-top:10px;}
   .nr-foot{display:flex; justify-content:space-between; font-size:11.5px;
-    border-top:1px solid #000; padding-top:3px;}
+    border-top:1px solid #000; padding-top:3px;
+    /* ⭐ [stated] ១៣:៥៦ ៖ ជើងទំព័រ **មួយជួរ** ជានិច្ច */
+    white-space:nowrap; align-items:baseline; gap:10px;}
+  /* ⚠⚠ [stated] ១៤:០១ ៖ កុំដាក់ការកាត់លើស្បែកទាំងមូល ⇒ វានឹងកាត់ត្រង់
+     **ចុងបញ្ចប់** គឺទឹកប្រាក់ពន្ធ ។ ⇒ flex ៣ ផ្នែក ៖ មានតែឈ្មោះដែលរួញ ។ */
+  .nr-foot > .nr-foot-l{display:flex; align-items:baseline; min-width:0; gap:6px;
+    overflow:hidden;}
+  .nr-foot > span:last-child{flex:0 0 auto;}
+  .nr-foot .nr-foot-lb{flex:0 0 auto;}
+  .nr-foot .nr-foot-rest{flex:0 0 auto; white-space:nowrap;}
+  /* ឈ្មោះសហគ្រាស ៖ ផ្នែកតែមួយគត់ដែលអាចរួញ និងកាត់ដោយ «…» */
+  .nr-foot .nr-foot-co{flex:0 1 auto; min-width:0; overflow:hidden;
+    text-overflow:ellipsis; white-space:nowrap;}
 `;
 
 function printNarr(){
@@ -56103,6 +56585,12 @@ function smwHtml(forPrint){
   }
   var out = '' +
   '<div class="rpt-page smw-page">' +
+    /* ⭐⭐⭐ [stated] ២០២៦-១១-១៧ ២៣:១៧ ៖ ក្បាលលិខិតដូចរបាយការណ៍សវនកម្ម ។
+       ⚠ មុខងារតែមួយ `letterheadHtml()` ⇒ ប្តូរត្រា ឬក្បាច់ម្តង គ្រប់ឯកសារ
+         ប្តូរតាម ⇒ កុំចម្លងអត្ថបទក្បាលម្តងទៀតនៅទីនេះ ។
+       ⚠ ច្បាប់រចនា ៖ ព្រីនយកពី `LETTERHEAD_CSS` ( បញ្ចូលក្នុង printSmwGo
+         រួចស្រាប់ ) · អេក្រង់យកពីច្បាប់ `#view-tracking .lh …` ដែលមានស្រាប់ ។ */
+    letterheadHtml() +
     '<div class="smw-title">សេចក្ដីសង្ខេប<br>ការងារចុះធ្វើសវនកម្មពន្ធដារ</div>' +
     '<div class="smw-head">' +
       '<div class="smw-hr"><span class="k">សហគ្រាស</span><span class="c">៖</span>' +
@@ -57451,7 +57939,7 @@ CC.blank=function(){
       targetMargin:"",        // (ចាស់) — រក្សាទុកសម្រាប់ឯកសារជំនាន់មុន
       tmargin:{},             // កម្រិតចំណេញកំណត់ តាមឆ្នាំ (ឧ. 10 = 10%)
       /* ការកាត់ចំណាយ តាមឆ្នាំ ៖ ទទេ = តាមតម្លៃ«គ្រប់ឆ្នាំ» ; "off" = គ្មាន */
-      cutModeY:{}, cutPctY:{},
+      cutModeY:{}, cutPctY:{}, cutAmtY:{}, cutSalY:{},
       markup:{},              // កម្រិតចំណេញសុទ្ធ ៖ មេគុណ mark-up លើថ្លៃដើម (1.1 · 1.15 · 1.2)
       charity:z(), intAdj:z(), foreign:z(), dividend:z(), minTaxDecl:z(),   // ជួរតែមួយ អានតែប៉ុណ្ណោះ
       toiPaid:z(), toiPaidAudit:z(), toiPaidLate:z(),   // បង់ ៖ សាលកបត្រ · សវនកម្ម · យឺតយ៉ាវ
@@ -57555,15 +58043,65 @@ CC.baseOf=function(t,y){
 /* មូលដ្ឋានបន្ថែមដែលមកពីការចុចលើតួលេខក្នុងជំហាន */
 CC.TURNOVER_VAT="__turnover_vat";
 CC.TURNOVER_NOVAT="__turnover";
+/* ⭐⭐⭐ [stated] ២០២៦-១១-១៧ ១៩:៥៥ ៖ ពន្ធបានបង់រួចសម្រាប់ធាតុកាត់មួយ ។
+   លំដាប់ ៖
+     ១. `a.tpaid` ដែលភ្ជាប់ពេលចុច ✂  ( ស្ទាំប៍ថ្មី — លឿន និងច្បាស់ )
+     ២. បើគ្មាន ⇒ រកផ្ទាល់ពីទិន្នន័យតាមឈ្មោះ+ឆ្នាំ ( ធាតុកាត់ចាស់ )
+     ៣. បើនៅតែរកមិនឃើញ ⇒ 0 ( ឧ. ជួរបញ្ចូលដោយដៃ )
+   ⚠ ជំហាន «បៀវត្ស» ៖ ត្រូវដឹងថាកាត់ **បៀវត្ស** ឬ **អត្ថប្រយោជន៍បន្ថែម**
+     ⇒ អានពីបុព្វបទស្លាក ⇒ យកពន្ធត្រូវគ្នា មិនយកទាំងពីរ ។
+   ⚠ លទ្ធផលដាក់ឃ្លាំងក្នុងមួយជុំគណនា ⇒ កុំឱ្យស្កេនជួរម្តងហើយម្តងទៀត ។ */
+CC.__tpCache = null;
+CC.tpaidOf=function(a){
+  if(!a || !a.cost) return 0;
+  var direct = Math.abs(+a.tpaid || 0);
+  if(direct) return direct;
+  var emp = String((a && a.emp) || '').trim();
+  if(!emp){
+    /* ⚠ ធាតុកាត់បៀវត្សពីស្ទាំប៍មុន C96 គ្មានវាល `emp` ⇒ ញែកពីស្លាក
+       «បៀវត្ស ៖ ឈ្មោះ» ។ ធាតុបញ្ចូលដោយដៃគ្មានទម្រង់នេះ ⇒ នៅតែ 0 ។ */
+    if(String(a.step || '') === 'បៀវត្ស' || String(a.key || '').indexOf('sal:') === 0){
+      var pr = String(a.label || '').split(' ៖ ');
+      if(pr.length > 1) emp = pr[pr.length - 1].trim();
+    }
+    if(!emp) return 0;
+  }
+  var y = String(a.year || '');
+  if(!y) return 0;
+  var key = (a.step || '') + '\u0001' + emp + '\u0001' + y + '\u0001' + (a.label || '');
+  if(CC.__tpCache && CC.__tpCache.k === key) return CC.__tpCache.v;
+  var v = 0;
+  try{
+    if(String(a.step || '') === 'ពន្ធកាត់ទុក'){
+      var ix = emp.indexOf('||');
+      var sc = ix >= 0 ? emp.slice(0, ix) : '';
+      var nm = ix >= 0 ? emp.slice(ix + 2) : emp;
+      if(typeof window.__whtTaxPaidFor === 'function') v = window.__whtTaxPaidFor(sc, nm, y);
+    }else{
+      if(typeof window.__tosTaxPaidFor === 'function'){
+        var o = window.__tosTaxPaidFor(emp, y) || {};
+        /* ស្លាកចេញពី ✂ ៖ «បៀវត្ស ៖ ឈ្មោះ» ឬ «អត្ថប្រយោជន៍បន្ថែម ៖ ឈ្មោះ» */
+        v = /អត្ថប្រយោជន៍/.test(String(a.label || '')) ? (+o.fringeTax || 0) : (+o.salaryTax || 0);
+      }
+    }
+  }catch(e){ v = 0; }
+  v = Math.abs(Math.round(v) || 0);
+  CC.__tpCache = { k:key, v:v };
+  return v;
+};
+
 CC.assessMaps=function(){
   /* costA / inVatA ៖ បន្ទុកចំណាយអនុញ្ញាត និងអាករលើធាតុចូលអនុញ្ញាត
      ដែលជ្រើសនៅផ្ទាំងកំណត់ពន្ធ។ មុននេះការចុចលើជំហានផ្តល់តែចំណូល
      កំណត់ឡើងវិញទទេ ៖ គ្មានបន្ទុកចំណាយ គ្មានធាតុចូល — ខុសពីតារាង
      ផលរកឃើញដែលមានទាំងពីរ។ */
-  var out={taxBase:{},addBack:{},findVat:{},findNoVat:{},costA:{},inVatA:{}};
+  var out={taxBase:{},addBack:{},findVat:{},findNoVat:{},costA:{},inVatA:{},cutPaid:{}};
   (CC.state.assessments||[]).forEach(function(a){
     var y=a.year, amt=Math.abs(+a.amount||0); if(!amt) return;
     if(a.cost) out.addBack[y]=(out.addBack[y]||0)+amt;
+    /* ⭐⭐ ពន្ធដែលបានបង់រួចលើចំនួនដែលកាត់ចេញ ៖ ភ្ជាប់មកពីប៉ូតង់ ✂ ឬរក
+       ផ្ទាល់ពីទិន្នន័យតាមឈ្មោះ+ឆ្នាំ ( សម្រាប់ធាតុកាត់ចាស់ ) ។ */
+    if(a.cost){ var tp=CC.tpaidOf(a); if(tp) out.cutPaid[y]=(out.cutPaid[y]||0)+tp; }
     if(!a.tax) return;
     if(a.tax===CC.TURNOVER_VAT || a.tax===CC.TURNOVER_NOVAT){
       var pc=(+a.costPct||0)/100;
@@ -57725,6 +58263,8 @@ CC.setYears=function(list){
   s.toi.markup=remapStr(s.toi.markup);
   s.toi.cutModeY=remapStr(s.toi.cutModeY);
   s.toi.cutPctY=remapStr(s.toi.cutPctY);
+  s.toi.cutAmtY=remapStr(s.toi.cutAmtY);
+  s.toi.cutSalY=remapStr(s.toi.cutSalY);
   s.vat.msel=remapStr(s.vat.msel);
   s.taxes.forEach(function(t){
     t.msel=remapStr(t.msel);
@@ -58460,6 +59000,8 @@ CC.repair=function(s){
   if(!s.toi.tmargin) s.toi.tmargin={};
   if(!s.toi.cutModeY) s.toi.cutModeY={};
   if(!s.toi.cutPctY)  s.toi.cutPctY={};
+  if(!s.toi.cutAmtY)  s.toi.cutAmtY={};
+  if(!s.toi.cutSalY)  s.toi.cutSalY={};
   if(s.toi.tmarginAll==null) s.toi.tmarginAll="";
   if(s.toi.markupAll==null)  s.toi.markupAll="";
   /* ឯកសារចាស់ ៖ ទាយឧបករណ៍ពីអ្វីដែលបានកំណត់រួច ដូច្នេះការគណនាមិនប្រែ */
@@ -58723,6 +59265,95 @@ CC.persistNow=function(){
   }catch(e){}
 };
 CC._persistTimer=null;
+/* ⭐⭐ [stated] ២០២៦-១១-១៧ ១៥:៤៦ ៖ ស្ពានពីម៉ូឌុលបៀវត្ស ⇒ តារាងកាត់ចំណាយ ។
+   `items` = [{label, year, usd}] ឬ [{label, year, amount}] ( រៀល ) ។
+   ត្រឡប់ចំនួនធាតុដែលបានបន្ថែម ។ */
+window.__ccAddCut = function(items){
+  try{
+    var s = CC.state;
+    if(!s) return 0;
+    if(!Array.isArray(s.assessments)) s.assessments = [];
+    var n = 0;
+    (items || []).forEach(function(it){
+      if(!it) return;
+      var y = String(it.year || '');
+      var amt = (it.amount != null) ? (+it.amount || 0)
+                                    : Math.round((+it.usd || 0) * CC.fxOf(y));
+      if(!y || !amt) return;
+      /* ⚠ ឆ្នាំដែលកាតមិនស្គាល់ ⇒ បន្ថែមវាចូល បើមិនដូច្នេះធាតុនឹងលេចបាត់ */
+      if(s.years.indexOf(y) < 0 && CC.setYears) CC.setYears(s.years.concat([y]));
+      /* ⭐ [stated] ២០២៦-១១-១៧ ៖ ផ្នែកពន្ធកាត់ទុកក៏កាត់ចំណាយបានដែរ
+         ⇒ ជំហាន និងបុព្វបទសោ អាចបញ្ជាក់បាន ។ លំនាំដើមនៅ «បៀវត្ស»
+         ដដែល ⇒ អ្វីដែលមានស្រាប់មិនប្រែ ។ */
+      s.assessments.push({
+        key:String(it.kp || 'sal:') + Date.now() + ':' + Math.random().toString(36).slice(2,7),
+        step:String(it.step || 'បៀវត្ស'), ref:'', label:String(it.label || 'បៀវត្ស'),
+        /* ⭐ [stated] ២០២៦-១១-១៧ ៖ «ផ្នែកដែរចុចកាត់ចំណាយហើយ គួរហាយឡាយ
+           ឬសម្គាល់ឱ្យដឹងផង» ⇒ ទុកឈ្មោះបុគ្គលិកដាច់ដោយឡែក ដើម្បីឱ្យ
+           តារាងបៀវត្សរកវាវិញបានច្បាស់ ( មិនត្រូវញែកពីស្លាកទេ ) ។ */
+        emp:(it.emp != null ? String(it.emp) : ''),
+        /* ⭐ ពន្ធដែលសហគ្រាសបានបង់រួចលើចំនួននេះ ( TOS · FBT · កាត់ទុក )
+           ⇒ ដកចេញពី «ពន្ធលើប្រាក់ចំណូល ត្រូវបង់» ⇒ កុំឱ្យជាន់ប្រភេទពន្ធ ។ */
+        tpaid:Math.abs(+it.tpaid || 0),
+        year:y, amount:amt, tax:'', cost:true, man:true });
+      n++;
+    });
+    if(n){ CC.persist(); if(CC.render) CC.render(); }
+    return n;
+  }catch(e){ console.error('__ccAddCut', e); return 0; }
+};
+
+/* ⭐⭐ [stated] ២០២៦-១១-១៧ ៖ ត្រឡប់ «បុគ្គលិកណាកាត់រួច» ⇒ ម៉ូឌុលបៀវត្ស
+   សម្គាល់ជួរ និងក្រឡាឆ្នាំបាន ។ ទម្រង់ ៖
+     { '<ឈ្មោះ>' : { years:{'2024':144000000}, total:240000000, n:2 } }
+   ⚠ ធាតុចាស់ ( មុនស្ទាំប៍នេះ ) គ្មាន `emp` ⇒ ញែកពីស្លាក «… ៖ ឈ្មោះ»
+     ជាជម្រើសបម្រុង ⇒ ការងារដែលធ្វើរួចមិនបាត់សញ្ញា ។ */
+window.__ccCutBy = function(step){
+  var out = {};
+  try{
+    var s = CC.state;
+    if(!s || !Array.isArray(s.assessments)) return out;
+    s.assessments.forEach(function(a){
+      if(!a || !a.cost) return;
+      if(String(a.step || '') !== String(step)) return;
+      var nm = String(a.emp || '').trim();
+      if(!nm) return;
+      var y = String(a.year || '');
+      var amt = +a.amount || 0;
+      if(!out[nm]) out[nm] = { years:{}, total:0, n:0 };
+      out[nm].years[y] = (out[nm].years[y] || 0) + amt;
+      out[nm].total += amt;
+      out[nm].n++;
+    });
+  }catch(e){}
+  return out;
+};
+
+window.__ccCutEmps = function(){
+  var out = {};
+  try{
+    var s = CC.state;
+    if(!s || !Array.isArray(s.assessments)) return out;
+    s.assessments.forEach(function(a){
+      if(!a || !a.cost) return;
+      if(String(a.step || '') !== 'បៀវត្ស' && String(a.key || '').indexOf('sal:') !== 0) return;
+      var nm = String(a.emp || '').trim();
+      if(!nm){
+        var m = String(a.label || '').split(' ៖ ');
+        nm = (m.length > 1 ? m[m.length - 1] : '').trim();
+      }
+      if(!nm) return;
+      var y = String(a.year || '');
+      var amt = +a.amount || 0;
+      if(!out[nm]) out[nm] = { years:{}, total:0, n:0 };
+      out[nm].years[y] = (out[nm].years[y] || 0) + amt;
+      out[nm].total += amt;
+      out[nm].n++;
+    });
+  }catch(e){}
+  return out;
+};
+
 CC.persist=function(){
   try{ if(window.state) state.calcCard=CC.state; }catch(e){}
   if(CC._persistTimer) clearTimeout(CC._persistTimer);
@@ -59139,6 +59770,15 @@ CC.compute=function(){
       cutBase=pick[0]*cutCost+pick[1]*cutOpex+pick[2]*cutInt;
       cutAmt=cutCostAmt+cutOpexAmt+cutIntAmt;
     }
+    /* ⭐⭐ [stated] ២០២៦-១១-១៧ ១៤:០៩ ៖ ទឹកប្រាក់កាត់ចំណាយដោយផ្ទាល់
+       ( មិនមែនភាគរយ ) ។ បូកបន្ថែមលើការកាត់តាមភាគរយ ⇒ ប្រើរួមគ្នាបាន ។
+       ⚠ ដូចភាគរយដែរ ៖ ដើរតែពេលឧបករណ៍ «ការកាត់ចំណាយ» បើក ។ */
+    var cutFixAmt = (String(t.adjTool||"")==="cut")
+                  ? Math.abs(num((t.cutAmtY||{})[y])) : 0;
+    /* ⭐⭐ [stated] ២០២៦-១១-១៧ ១៥:៣៦ ៖ កាត់ **ចំណាយបៀវត្ស** ដាច់ដោយឡែក */
+    var cutSalAmt = (String(t.adjTool||"")==="cut")
+                  ? Math.abs(num((t.cutSalY||{})[y])) : 0;
+    cutAmt += cutFixAmt + cutSalAmt;
 
     /* --- ៥. ខ្សែសង្វាក់ E36 → E42 --- */
     var base=pbt+addExpDecl+addIncDecl-lessExpDecl-lessIncDecl+auditAdd-auditLess-findCost+cutAmt;
@@ -59225,8 +59865,14 @@ CC.compute=function(){
     var toiPaidDed=toiPaidMtr+(dedAu?toiPaidAudit:0);
     /* ត្រូវបង់មុនសិន ចាំដកអ្វីដែលបានបង់ — ព្រោះចំនួនបានបង់ពេលខ្លះរួមទាំង
        ទោសទណ្ឌ ឬការកំណត់ពន្ធឡើងវិញពីសវនកម្មមុន */
-    var toiDue=Math.max(0,e52-wht-prep);
-    var credits=wht+prep+toiPaidDed;
+    /* ⭐⭐⭐ [stated] ២០២៦-១១-១៧ ១៦:៤២ ៖ ពន្ធបៀវត្ស · អត្ថប្រយោជន៍បន្ថែម
+       និងពន្ធកាត់ទុក ដែលសហគ្រាសបានបង់រួចលើចំនួនដែលយើងកាត់ចំណាយចេញ
+       ⇒ ដកចេញត្រង់នេះ ដើម្បីកុំឱ្យជាន់ប្រភេទពន្ធ ។
+       ⚠ មកពីធាតុកាត់ចំណាយតែប៉ុណ្ណោះ ( ឈ្មោះដែលបានចុច ✂ ) ⇒ ធាតុដែល
+         បញ្ចូលដោយដៃគ្មាន `tpaid` ⇒ មិនប៉ះពាល់ ។ */
+    var cutPaid=+((am.cutPaid||{})[y])||0;
+    var toiDue=Math.max(0,e52-wht-prep-cutPaid);
+    var credits=wht+prep+cutPaid+toiPaidDed;
     var waived=!!t.waive[y];
     /* ធីក«មិនកំណត់» ៖ ចំនួននៅសល់តូច អាចជាការលំអៀងអត្រាប្តូរប្រាក់ប៉ុណ្ណោះ */
     var toiPay=waived?0:Math.max(0,toiDue-toiPaidDed);
@@ -59311,11 +59957,12 @@ CC.compute=function(){
       expDecl:expDecl,pbt:pbt,
       addExpDecl:addExpDecl,addIncDecl:addIncDecl,lessExpDecl:lessExpDecl,lessIncDecl:lessIncDecl,
       auditAdd:auditAdd,auditLess:auditLess,
-      cutMode:cutMode,cutPct:cutPct,cutCost:cutCost,cutOpex:cutOpex,cutInt:cutInt,
+      cutMode:cutMode,cutPct:cutPct,cutFixAmt:cutFixAmt,cutSalAmt:cutSalAmt,cutCost:cutCost,cutOpex:cutOpex,cutInt:cutInt,
       cutCostAmt:cutCostAmt,cutOpexAmt:cutOpexAmt,cutIntAmt:cutIntAmt,cutBase:cutBase,cutAmt:cutAmt,
       base:base,e36:e36,expCut:expCut,charity:charity,e38:e38,intAdj:intAdj,e40:e40,
       lossCF:lossCF,e42:e42,e43:e43,e45:e45,foreign:foreign,e47:e47,dividend:dividend,e50:e50,
       minTax:minTax,minDecl:minDecl,e52:e52,wht:wht,prepaid:prep,toiPaid:toiPaid,
+      cutPaid:cutPaid,
       credits:credits,toiDue:toiDue,toiPay:toiPay,waived:waived,
       toiPaidMtr:toiPaidMtr,toiPaidAudit:toiPaidAudit,toiPaidLate:toiPaidLate,
       expNew:expNew,expFinal:expNew,profitFinal:e36,
@@ -59388,8 +60035,8 @@ CC.compute=function(){
       /* ⚠ ជំហាននេះគណនាខ្សែសង្វាក់ឡើងវិញក្រោយកាត់ខាតយោង ⇒ ត្រូវគោរព QIP
          ម្តងទៀត បើមិនដូច្នេះការលើកលែងត្រូវសរសេរជាន់ស្ងាត់ៗ ។ */
       o.e52=o.qip?0:Math.max(o.e50,+o.minTax||0);   o.due=o.e52;
-      o.toiDue=Math.max(0,o.e52-(+o.wht||0)-(+o.prepaid||0));
-      o.credits=(+o.wht||0)+(+o.prepaid||0)+(+o.toiPaidDed||0);
+      o.toiDue=Math.max(0,o.e52-(+o.wht||0)-(+o.prepaid||0)-(+o.cutPaid||0));
+      o.credits=(+o.wht||0)+(+o.prepaid||0)+(+o.cutPaid||0)+(+o.toiPaidDed||0);
       o.toiPay=o.waived?0:Math.max(0,o.toiDue-(+o.toiPaidDed||0));
     });
   })();
@@ -59544,18 +60191,34 @@ CC.summary=function(res){
   var lines=[];
   res.rows.forEach(function(r,ri){
     if(!r.any) return;
-    lines.push({k:"tax",n:r.name,v:r.tax});
-    if(isAdd) lines.push({k:"add",n:"ពន្ធបន្ថែម",v:r.add});
-    if(isInt) lines.push({k:"int",n:"ការប្រាក់ ("+(r.ib==="a"?"ប្រចាំឆ្នាំ":"ប្រចាំខែ")+")",v:r.int,drill:"int:"+ri});
-    if(isTot) lines.push({k:"tot",n:"សរុប",v:r.tot});
+    /* ⚠ `g` ៖ លេខក្រុម ⇒ លុបចេញទាំងក្រុម បើវាបង្ហាញ ០ ទាំងអស់ */
+    lines.push({k:"tax",n:r.name,v:r.tax,g:ri});
+    if(isAdd) lines.push({k:"add",n:"ពន្ធបន្ថែម",v:r.add,g:ri});
+    if(isInt) lines.push({k:"int",n:"ការប្រាក់ ("+(r.ib==="a"?"ប្រចាំឆ្នាំ":"ប្រចាំខែ")+")",v:r.int,drill:"int:"+ri,g:ri});
+    if(isTot) lines.push({k:"tot",n:"សរុប",v:r.tot,g:ri});
   });
   if(!lines.length) return null;
 
-  /* keep only the years that carry a figure */
+  /* ⭐⭐ [stated] ២០២៦-១១-១៧ ១៤:០៦ ៖ រក្សាតែឆ្នាំដែល **បង្ហាញ** តួលេខ ។
+     ⚠ មុននេះល័ក្ខខ័ណ្ឌជា «ផលបូក > ០» ឯការបង្ហាញបង្គត់ ⇒ តម្លៃ ០,៣
+       ធ្វើឱ្យជួរឈរនៅ តែលេខចេញ «0» ⇒ អ្នកប្រើឃើញសូន្យពេញតារាង ។ */
+  /* ⚠⚠ [stated] ២០២៦-១១-១៧ ១៤:១៥ ( C91 នៅតែឃើញសូន្យ ) ៖ ល័ក្ខខ័ណ្ឌ
+     «ផលបូកក្រោយបង្គត់ ≥ ១» នៅតែទុកជួរឈរដែល **គ្រប់ក្រឡាបង្ហាញ ០** ៖
+     តម្លៃតូចៗច្រើនជួរ ( ០,៤ + ០,៣ + … ) បូកគ្នាលើស ១ ខណៈក្រឡានីមួយៗ
+     បង្គត់ត្រឡប់ ០ ( វាស់ឃើញ ៖ ឆ្នាំ ២០២៤ សរុប $0.00 ) ។
+     ⇒ ល័ក្ខខ័ណ្ឌត្រឹមត្រូវ ៖ ត្រូវមាន **យ៉ាងតិចមួយក្រឡា** ដែលបង្ហាញលេខ
+       ក្រៅពីសូន្យ ⇒ អ្វីដែលឃើញ ត្រូវនឹងអ្វីដែលតារាងរក្សា ។ */
   var cols=yrs.filter(function(y){
-    return lines.reduce(function(a,l){return a+(+l.v[y]||0);},0)>0;
+    return lines.some(function(l){ return Math.round(+l.v[y]||0)!==0; });
   });
   if(!cols.length) return null;
+  /* ⚠ លុបប្រភេទពន្ធទាំងក្រុម បើគ្រប់ឆ្នាំបង្គត់ត្រឡប់ ០ */
+  var liveG={};
+  lines.forEach(function(l){
+    if(cols.some(function(y){ return Math.round(+l.v[y]||0)!==0; })) liveG[l.g]=1;
+  });
+  lines=lines.filter(function(l){ return liveG[l.g]; });
+  if(!lines.length) return null;
 
   lines.forEach(function(l){
     l.total=cols.reduce(function(a,y){return a+(+l.v[y]||0);},0);
@@ -60736,7 +61399,18 @@ CC.BASIS={
             Bn((s.rate.min*100)+"% × កំណត់ចំណូលឡើងវិញ",o.findAll*s.rate.min)]; }],
   e52:["ធំជាងគេរវាង E50 និង E51",function(y,o){
     return [Bn("E50 បំណុលពន្ធលើប្រាក់ចំណូល",o.e50),Bn("E51 ពន្ធអប្បបរមា",o.minTax)]; }],
-  toiDue:["E52 − ឥណទានពន្ធកាត់ទុក − ប្រាក់រំដោះ",function(y,o){
+  cutPaid:["ពន្ធដែលសហគ្រាសបានបង់រួចលើចំនួនដែលកាត់ចំណាយចេញ ( តាមឈ្មោះដែលចុច ✂ )",function(y,o,s){
+    var a=[],tot=0;
+    ((s&&s.assessments)||[]).forEach(function(x){
+      if(!x||!x.cost||String(x.year)!==String(y)) return;
+      var tp=CC.tpaidOf(x); if(!tp) return;
+      tot+=tp; a.push(Bn((x.step?x.step+' ៖ ':'')+(x.emp||x.label||'—'),tp));
+    });
+    /* ⚠ កុំដាក់ជួរ «គ្មានធាតុ» ៖ តារាងមូលដ្ឋានចែករួមជួរធាតុផ្សំសម្រាប់
+       គ្រប់ឆ្នាំ ⇒ ឆ្នាំណាទទេនឹងបន្ថែមជួរឥតប្រយោជន៍ដល់ឆ្នាំដែលមាន ។ */
+    a.push(Bn("= សរុប ( ដកចេញពីពន្ធលើប្រាក់ចំណូល ត្រូវបង់ )",tot));
+    return a; }],
+  toiDue:["E52 − ឥណទានពន្ធកាត់ទុក − ប្រាក់រំដោះ − ពន្ធបានបង់រួចលើឈ្មោះដែលកាត់",function(y,o){
     return [Bn("E52",o.e52),Bn("E55 ឥណទានពន្ធកាត់ទុក",-o.wht),Bn("E56 ប្រាក់រំដោះ",-o.prepaid)]; }],
   toiPaid:["បង់តាមសាលកបត្រ + ក្នុងសវនកម្ម + យឺតយ៉ាវ",function(y,o){
     return [Bn("តាមសាលកបត្រ",o.toiPaidMtr),Bn("ក្នុងសវនកម្ម",o.toiPaidAudit),Bn("យឺតយ៉ាវ",o.toiPaidLate)]; }],
@@ -61482,9 +62156,43 @@ var MODES=[["tax","ពន្ធត្រូវបង់ប៉ុណ្ណោះ"
    ⚠ គាំទ្រតែក្រឡា **ទឹកប្រាក់ និងចំនួន** ៖ អត្រា ( % ) រក្សាទុកជា ០.xx
      ⇒ បើគាំទ្រដែរ នឹងច្រឡំរវាង 8.45 និង 0.0845 ⇒ ទុកវាយដោយដៃវិញ ។ */
 var CC_FX_KEYS = ['base','loan','paid','paidAudit','paidLate','amt2','sales','cost','ibase','mo'];
+/* ⭐⭐⭐ ញែក «សន្លឹក!រូបមន្ត» ។ `!` មិនប្រើក្នុងវេយ្យាករណ៍រូបមន្តទេ
+   ( `workEval` ទទួលតែ + − × ÷ ( ) ^ , ) ⇒ ប្រើវាជាអ្នកបំបែកបានសុវត្ថិភាព ។
+   ⚠ បុព្វបទអនុវត្តលើ **រូបមន្តទាំងមូល** ( មិនមែនតាមក្រឡាដូច Excel ទេ ) ⇒
+     `=សន្លឹក ១!I13+I14` អានទាំងពីរក្រឡាពីសន្លឹក ១ ។ */
+function ccFxSplit(txt){
+  var s = String(txt == null ? '' : txt);
+  if(s.charAt(0) === '=') s = s.slice(1);
+  var m = s.match(/^\s*([^=+\-*\/()!,;:]+?)\s*!\s*([\s\S]*)$/);
+  if(m && m[1].trim()) return { sheet:m[1].trim(), body:m[2] };
+  return { sheet:'', body:s };
+}
+function ccFxSheetIdx(name){
+  try{
+    var w = workState(), i, nm = String(name || '').trim().toLowerCase();
+    for(i = 0; i < w.sheets.length; i++){
+      if(String(w.sheets[i].name || '').trim().toLowerCase() === nm) return i;
+    }
+  }catch(e){}
+  return -1;
+}
+/* ដំណើរការ `fn(body)` ដោយ **សន្លឹកដែលចង** ជាសន្លឹកបច្ចុប្បន្ន ។
+   ត្រឡប់ `'#SHEET'` បើសន្លឹកនោះរកមិនឃើញ ( ប្តូរឈ្មោះ ឬលុប ) ។ */
+function ccFxWith(txt, fn){
+  var sp = ccFxSplit(txt);
+  if(!sp.sheet) return fn(sp.body);
+  var idx = ccFxSheetIdx(sp.sheet);
+  if(idx < 0) return '#SHEET';
+  var w, old;
+  try{ w = workState(); }catch(e){ return fn(sp.body); }
+  old = w.cur;
+  w.cur = idx;
+  try{ return fn(sp.body); }
+  finally{ w.cur = old; }
+}
 function ccFxVal(txt){
   try{
-    var v = workEval(String(txt).slice(1), 0);
+    var v = ccFxWith(txt, function(body){ return workEval(body, 0); });
     return (typeof v === 'number' && isFinite(v)) ? v : 0;
   }catch(e){ return 0; }
 }
@@ -61502,23 +62210,29 @@ function ccFxVal(txt){
    ⚠ ឈ្មោះមុខងារទាំងអស់ ( SUM · ROUND · MONTHDIF … ) គ្មានលេខ ⇒ មិនជាប់
      ក្នុងលំនាំនេះទេ ។ */
 function ccFxOut(txt){
-  var sh;
-  try{ sh = workSheet(); }catch(e){ return false; }
-  if(!sh) return false;
-  var cols = sh.cols || 8, rows = sh.rows || 30;
-  var s = String(txt).toUpperCase().replace(/"[^"]*"/g, ' ');
-  var re = /\$?([A-Z]{1,2})\$?(\d{1,5})/g, m;
-  while((m = re.exec(s))){
-    var r = Number(m[2]);
-    if(workColIdx(m[1]) >= cols || r < 1 || r > rows) return true;
-  }
-  return false;
+  /* ⚠ ទំហំត្រូវយកពី **សន្លឹកដែលចង** មិនមែនសន្លឹកដែលកំពុងបើកទេ ។ */
+  return ccFxWith(txt, function(body){
+    var sh;
+    try{ sh = workSheet(); }catch(e){ return false; }
+    if(!sh) return false;
+    var cols = sh.cols || 8, rows = sh.rows || 30;
+    var s = String(body).toUpperCase().replace(/"[^"]*"/g, ' ');
+    var re = /\$?([A-Z]{1,2})\$?(\d{1,5})/g, m;
+    while((m = re.exec(s))){
+      var r = Number(m[2]);
+      if(workColIdx(m[1]) >= cols || r < 1 || r > rows) return true;
+    }
+    return false;
+  }) === true;
 }
 /* '' = ល្អ · អត្ថបទ = មូលហេតុ */
 function ccFxWhy(txt){
-  if(ccFxOut(txt)) return 'យោងក្រឡាក្រៅដែនសន្លឹក';
+  var sp = ccFxSplit(txt);
+  if(sp.sheet && ccFxSheetIdx(sp.sheet) < 0)
+    return 'សន្លឹក «' + sp.sheet + '» រកមិនឃើញ ( ប្តូរឈ្មោះ ឬលុបចោល? )';
+  if(ccFxOut(txt)) return 'យោងក្រឡាក្រៅដែនសន្លឹក' + (sp.sheet ? ' «' + sp.sheet + '»' : '');
   try{
-    var v = workEval(String(txt).slice(1), 0);
+    var v = ccFxWith(txt, function(body){ return workEval(body, 0); });
     if(typeof v === 'number' && isFinite(v)) return '';
     return 'គណនាមិនបាន ( ' + String(v) + ' )';
   }catch(e){ return 'គណនាមិនបាន'; }
@@ -61532,8 +62246,13 @@ function ccFxTitle(txt){
   var w = ccFxWhy(txt);
   /* ⚠ `=SUM(C1:C99)` លើសដែន តែនៅតែឱ្យលេខ ⇒ កុំសរសេរ «ចេញ ០» ដែលមិនពិត ៖
      សរសេរមូលហេតុ រួចឱ្យគេពិនិត្យខ្លួនឯង ។ */
-  return w ? ('⚠ ' + w + ' — សូមពិនិត្យរូបមន្តនេះ ៖ ' + txt)
-           : ('យោងតារាងគណនា ៖ ' + txt);
+  var sp = ccFxSplit(txt);
+  if(w) return '⚠ ' + w + ' — សូមពិនិត្យរូបមន្តនេះ ៖ ' + txt;
+  return sp.sheet
+    ? ('យោងតារាងគណនា ៖ ' + txt + '  ( ចងនឹងសន្លឹក «' + sp.sheet + '» ⇒ ប្តូរសន្លឹកមើល ក៏អានដដែល )')
+    : ('យោងតារាងគណនា ៖ ' + txt
+       + '  ⚠ រូបមន្តនេះ **មិនទាន់ចង** នឹងសន្លឹកណាទេ ⇒ វាអានសន្លឹកដែលកំពុងបើក ។'
+       + ' ចុច «🔗 ចងរូបមន្ត» ក្នុង 📐 តារាងគណនា ដើម្បីចងវានឹងសន្លឹកត្រឹមត្រូវ ។');
 }
 function ccFxGet(tx, k, y){ return (tx && tx.fx) ? tx.fx[k + '|' + y] : undefined; }
 /* ត្រឡប់ `true` បើជារូបមន្ត ( ហើយបានរក្សាទុក ) ។ */
@@ -61541,6 +62260,15 @@ function ccFxSet(tx, k, y, raw){
   var txt = String(raw == null ? '' : raw).trim();
   var key = k + '|' + y;
   if(txt.charAt(0) === '='){
+    /* ⭐⭐⭐ [stated] ២០២៦-១១-១៧ ២០:៣៨ ៖ វាយ `=I13` រួចប្តូរសន្លឹក ⇒ លេខខុស ។
+       ⇒ ចងវានឹងសន្លឹកដែលកំពុងបើក **ពេលវាយ** ភ្លាមៗ ⇒ `=សន្លឹក ១!I13` ។
+       ⚠ បើអ្នកប្រើវាយឈ្មោះសន្លឹកខ្លួនឯងរួចហើយ ⇒ គោរពតាមគេ មិនកែ ។ */
+    if(!ccFxSplit(txt).sheet){
+      try{
+        var shN = String((workSheet() || {}).name || '').trim();
+        if(shN && shN.indexOf('!') < 0) txt = '=' + shN + '!' + txt.slice(1);
+      }catch(e){}
+    }
     if(!tx.fx) tx.fx = {};
     tx.fx[key] = txt;
     if(!tx[k]) tx[k] = {};
@@ -61566,6 +62294,52 @@ function ccFxSet(tx, k, y, raw){
    ⚠ តម្លៃក្នុងឃ្លាំងនៅតែជា **លេខ** ដដែល ⇒ ការគណនា ឯកសារ និងរបាយការណ៍
      ទាំងអស់មិនប្រែទេ ។ អត្ថបទរូបមន្តរស់ដាច់ក្នុង `fx` ហើយគណនាឡើងវិញ
      រាល់ពេលគូរ ⇒ កែតារាងគណនា ⇒ កាតពន្ធតាមភ្លាម ។ */
+/* ⭐⭐ ដើរលើឃ្លាំងរូបមន្តទាំងអស់ក្នុងកាត ៖ កំណត់ចំណូលឡើងវិញ · ToI · អតប ·
+   ពន្ធផ្សេងៗ ។ `fn(store, key)` អាចកែ `store[key]` បាន ។ */
+function ccFxEach(fn){
+  var s = CC.state;
+  if(!s) return 0;
+  var n = 0;
+  var hit = function(o){
+    if(!o || !o.fx) return;
+    Object.keys(o.fx).forEach(function(key){
+      if(fn(o.fx, key) === true) n++;
+    });
+  };
+  (((s.toi || {}).findings) || []).forEach(hit);
+  [s.toi, s.vat].forEach(hit);
+  (Array.isArray(s.taxes) ? s.taxes : []).forEach(hit);
+  return n;
+}
+
+/* ចងរូបមន្តដែលមិនទាន់ចង ទៅសន្លឹកមួយ ( តាមឈ្មោះ ) ។ */
+function ccFxBindAll(sheetName){
+  var nm = String(sheetName || '').trim();
+  if(!nm) return 0;
+  var n = ccFxEach(function(fx, key){
+    var txt = String(fx[key] || '');
+    if(txt.charAt(0) !== '=' || ccFxSplit(txt).sheet) return false;
+    fx[key] = '=' + nm + '!' + txt.slice(1);
+    return true;
+  });
+  if(n){ ccFxRefresh(); CC.persistNow(); }
+  return n;
+}
+
+/* ⚠ ប្តូរឈ្មោះសន្លឹក ⇒ រូបមន្តដែលចងនឹងឈ្មោះចាស់ត្រូវដាច់ ⇒ ប្តូរតាម ។ */
+function ccFxRenameSheet(oldName, newName){
+  var a = String(oldName || '').trim().toLowerCase();
+  var b = String(newName || '').trim();
+  if(!a || !b || a === b.toLowerCase()) return 0;
+  return ccFxEach(function(fx, key){
+    var txt = String(fx[key] || '');
+    var sp = ccFxSplit(txt);
+    if(!sp.sheet || sp.sheet.toLowerCase() !== a) return false;
+    fx[key] = '=' + b + '!' + sp.body;
+    return true;
+  });
+}
+
 function ccFxRefresh(){
   var s = CC.state;
   if(!s) return;
@@ -63133,6 +63907,9 @@ function paneWork(){
      ហើយជាន់គ្នា ( ឃើញក្នុងរូបថត ) ។ ⇒ ថ្នាក់ផ្ទាល់ខ្លួនដែលទទឹងតាមអត្ថបទ ។ */
   h.push('<button class="cc-wkbtn" data-act="wkAdd" title="សន្លឹកថ្មី">＋ SHEET</button>');
   h.push('<button class="cc-wkbtn" data-act="wkRen" title="ប្តូរឈ្មោះសន្លឹក">RENAME</button>');
+  /* ⭐⭐⭐ [stated] ២០២៦-១១-១៧ ២០:៣៨ ៖ រូបមន្តចាស់ដែលវាយមុនស្ទាំប៍នេះ
+     គ្មានឈ្មោះសន្លឹក ⇒ បើកសន្លឹកដែលត្រូវ រួចចុចមួយដង គឺចងអស់ ។ */
+  h.push('<button class="cc-wkbtn" data-act="wkBind" title="ចងរូបមន្តក្នុងកាតពន្ធដែលមិនទាន់ចង ទៅសន្លឹកនេះ ⇒ ប្តូរសន្លឹកមើល ក៏អានសន្លឹកនេះដដែល">🔗 ចងរូបមន្ត</button>');
   h.push('<button class="cc-wkbtn" data-act="wkDel" title="លុបសន្លឹកនេះ">🗑</button>');
   h.push('<button class="cc-wkbtn" data-act="wkInsU" title="បញ្ចូលជួរដេកខាងលើជួរដែលជ្រើស ( មិនជ្រើស = បន្ថែមនៅចុង )">⬆＋</button>');
   h.push('<button class="cc-wkbtn" data-act="wkInsD" title="បញ្ចូលជួរដេកខាងក្រោមជួរដែលជ្រើស ( មិនជ្រើស = បន្ថែមនៅចុង )">⬇＋</button>');
@@ -63733,6 +64510,28 @@ function paneToi(res){
   yrs.forEach(function(y){
     h.push('<td class="n"><input class="cc-grid-in" data-cp="'+y+'" value="'+esc((t.cutPctY||{})[y]||"")+'" placeholder="'+
       (t.cutPct?esc(t.cutPct):"ឧ. 10")+'"></td>');});
+  /* [stated] ២០២៦-១១-១៧ ១៤:០៩ ៖ វាយ **ទឹកប្រាក់** ដោយផ្ទាល់ */
+  h.push('</tr><tr><td>ទឹកប្រាក់កាត់ចំណាយ តាមឆ្នាំ</td>');
+  yrs.forEach(function(y){
+    h.push('<td class="n"><input class="cc-grid-in" data-ca="'+y+'" value="'+
+      esc((t.cutAmtY||{})[y]||"")+'" placeholder="ឧ. 5,000,000" '+
+      'title="វាយចំនួនទឹកប្រាក់ដែលត្រូវកាត់ចេញ ( បូកបន្ថែមលើភាគរយខាងលើ )"></td>');});
+  /* ⭐⭐ [stated] ២០២៦-១១-១៧ ១៥:៣៦ ៖ កាត់ចំណាយ **បៀវត្ស** ដាច់ដោយឡែក ។
+     ជួរយោងខាងលើបង្ហាញចំណាយបៀវត្សបានប្រកាស ( បៀវត្ស + អត្ថប្រយោជន៍បន្ថែម )
+     ⇒ ដឹងថាកំពុងកាត់ចេញពីចំនួនប៉ុន្មាន ។ */
+  var __tosY = {}; try{ __tosY = (window.__tosTotalsByYear && window.__tosTotalsByYear()) || {}; }catch(e){}
+  h.push('</tr><tr><td>ចំណាយបៀវត្សបានប្រកាស (យោង)</td>');
+  yrs.forEach(function(y){
+    var g = __tosY[y] || {};
+    var v = (+g.salary||0) + (+g.fringe||0);
+    h.push('<td class="n cc-calc">'+(v?fmt(v):"—")+'</td>');});
+  h.push('</tr><tr><td>កាត់ចំណាយបៀវត្ស តាមឆ្នាំ</td>');
+  yrs.forEach(function(y){
+    var g2 = __tosY[y] || {};
+    var dec = (+g2.salary||0) + (+g2.fringe||0);
+    h.push('<td class="n"><input class="cc-grid-in" data-cs="'+y+'" value="'+
+      esc((t.cutSalY||{})[y]||"")+'" placeholder="'+(dec?esc(fmt(dec)):"ឧ. 20,000,000")+'" '+
+      'title="កាត់ចំណាយបៀវត្សចេញ ⇒ បូកត្រឡប់ចូលមូលដ្ឋានជាប់ពន្ធលើប្រាក់ចំណូល។ ប៉ះតែពន្ធលើប្រាក់ចំណូល មិនប៉ះពន្ធបៀវត្ស ឬអតបទេ។"></td>');});
   h.push('</tr>');
   }
   h.push('<tr><td>កម្រិតចំណេញកំណត់ (ប្រើពិត)</td>');
@@ -63854,6 +64653,9 @@ function paneToi(res){
   h.push('</tr>');
   line('E55 ឥណទានពន្ធកាត់ទុកបានបង់ក្នុងឆ្នាំ',get('wht'),'cc-int');
   line('E56 ប្រាក់រំដោះពន្ធលើប្រាក់ចំណូល បានបង់',get('prepaid'),'cc-int');
+  /* ⭐⭐⭐ [stated] ២០២៦-១១-១៧ ១៦:៤២ ៖ កុំឱ្យជាន់ប្រភេទពន្ធ */
+  line('ដក ៖ ពន្ធបានបង់រួចលើឈ្មោះដែលកាត់ ( បៀវត្ស · អត្ថប្រយោជន៍ · កាត់ទុក )',
+       get('cutPaid'),'cc-int');
   line('ពន្ធលើប្រាក់ចំណូល ត្រូវបង់',get('toiDue'),'cc-tot');
   /* [stated] ២០២៦-០៨-១២ ៖ «វាជាន់គ្នាឬទេ? អាចបញ្ចូលគ្នាតែមួយបានទេ?» — បាទ
      វាជាន់គ្នា ៖ ជួរទាំងបីនេះមានស្រាប់ ហើយខ្ញុំបានបន្ថែមតារាងទីពីរខាងក្រោម
@@ -65471,9 +66273,31 @@ function bind(el){
         return;
       }
       if(act==='wkRen'){
-        var nm2=prompt('ប្តូរឈ្មោះសន្លឹក', workSheet().name||'');
-        if(nm2!==null && String(nm2).trim()){ workSheet().name=String(nm2).trim();
-                                              CC.persistNow(); re(); }
+        var old2=String(workSheet().name||'');
+        var nm2=prompt('ប្តូរឈ្មោះសន្លឹក', old2);
+        if(nm2!==null && String(nm2).trim()){
+          workSheet().name=String(nm2).trim();
+          /* ⚠ រូបមន្តដែលចងនឹងឈ្មោះចាស់ ត្រូវប្តូរតាម បើមិនដូច្នេះវាដាច់ */
+          var nRn=0; try{ nRn=ccFxRenameSheet(old2, String(nm2).trim()); }catch(e){}
+          CC.persistNow(); re();
+          if(nRn){ try{ toast('🔗 រូបមន្ត '+nRn+' ដែលចងនឹង «'+old2+'» ប្តូរតាមឈ្មោះថ្មីរួច'); }catch(e){} }
+        }
+        return;
+      }
+      if(act==='wkBind'){
+        var shB=workSheet(), nmB=String(shB.name||'').trim();
+        var nUn=0;
+        try{ ccFxEach(function(fx,key){
+          var tx=String(fx[key]||'');
+          if(tx.charAt(0)==='=' && !ccFxSplit(tx).sheet) nUn++;
+          return false; }); }catch(e){}
+        if(!nUn){ alert('រូបមន្តទាំងអស់ចងនឹងសន្លឹករួចហើយ — គ្មានអ្វីត្រូវចងទៀតទេ ។'); return; }
+        if(!confirm('ចងរូបមន្ត '+nUn+' ដែលមិនទាន់ចង ទៅសន្លឹក «'+nmB+'» ?\n\n'
+          +'⇒ ពីពេលនេះទៅ ទោះប្តូរទៅសន្លឹកណា រូបមន្តទាំងនោះនៅតែអានសន្លឹក «'+nmB+'» ។\n'
+          +'⚠ បើរូបមន្តខ្លះគួរអានសន្លឹកផ្សេង ត្រូវកែវាដោយដៃ ( ឧ. =សន្លឹក ២!I13 ) ។')) return;
+        var nB=0; try{ nB=ccFxBindAll(nmB); }catch(e){}
+        re();
+        try{ toast('🔗 ចងរូបមន្ត '+nB+' ទៅសន្លឹក «'+nmB+'» រួចរាល់'); }catch(e){}
         return;
       }
       if(act==='wkDel'){
@@ -65763,7 +66587,7 @@ function bind(el){
     else if(act==="delFind"){ s.toi.findings.splice(+a.dataset.i,1); re(); }
     else if(act==="clearMargin"){
       s.toi.targetMargin=""; s.toi.tmargin={}; s.toi.markup={};
-      s.toi.cutModeY={}; s.toi.cutPctY={};
+      s.toi.cutModeY={}; s.toi.cutPctY={}; s.toi.cutAmtY={}; s.toi.cutSalY={};
       s.toi.tmarginAll=""; s.toi.markupAll=""; s.toi.cutMode=""; s.toi.cutPct="";
       re();
     }
@@ -66030,6 +66854,22 @@ function bind(el){
     if(t.dataset.mk!=null){ s.toi.markup[t.dataset.mk]=String(t.value).trim(); return re(); }
     if(t.dataset.cm!=null){ s.toi.cutModeY[t.dataset.cm]=String(t.value).trim(); return re(); }
     if(t.dataset.cp!=null){ s.toi.cutPctY[t.dataset.cp]=String(t.value).trim(); return re(); }
+    /* ទឹកប្រាក់កាត់ចំណាយតាមឆ្នាំ ៖ ដកក្បៀសចេញ រួចបង្ហាញឡើងវិញជាទម្រង់ */
+    if(t.dataset.ca!=null){
+      var vca=num(t.value);
+      if(!s.toi.cutAmtY) s.toi.cutAmtY={};
+      if(vca) s.toi.cutAmtY[t.dataset.ca]=fmt(vca);
+      else delete s.toi.cutAmtY[t.dataset.ca];
+      return re();
+    }
+    /* កាត់ចំណាយបៀវត្ស តាមឆ្នាំ */
+    if(t.dataset.cs!=null){
+      var vcs=num(t.value);
+      if(!s.toi.cutSalY) s.toi.cutSalY={};
+      if(vcs) s.toi.cutSalY[t.dataset.cs]=fmt(vcs);
+      else delete s.toi.cutSalY[t.dataset.cs];
+      return re();
+    }
     if(t.dataset.waive!=null){
       if(t.checked) s.toi.waive[t.dataset.waive]=true; else delete s.toi.waive[t.dataset.waive];
       return re();
@@ -67437,7 +68277,7 @@ else CC.init();
      ការរក្សាទុកឥឡូវ **រាយលេខជំហាន** លើផ្ទាំង ហើយផ្អាកអោយផ្ទាំងគូររួច
      មុននឹងចាប់ការងារធ្ងន់នីមួយៗ។ សារចុងក្រោយដែលឃើញ = ជំហានដែលគាំង។
      លេខ build ក៏បង្ហាញផង ដើម្បីដឹងច្បាស់ថាកំពុងប្រើឯកសារណា។ */
-  var RSC_BUILD = '17/11 · C87';
+  var RSC_BUILD = '17/11 · D03';
   try{ window.__RSC_BUILD = RSC_BUILD; }catch(e){}
 
   /* ⚠⚠ [stated] ២០២៦-០៨-១៣ ៖ រូបថតបង្ហាញ **«Page Unresponsive» របស់ Chrome**
