@@ -43,7 +43,7 @@
 })();
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SYSTEM · 17/11-C84</title>
+<title>SYSTEM · 17/11-C85</title>
 <!-- ដាក់លើអេក្រង់ដើមទូរស័ព្ទ ៖ រូបតំណាង ឈ្មោះ និងបើកពេញអេក្រង់
      manifest ដាក់ជា data URL ព្រោះ Apps Script បម្រើឯកសារតែមួយ។ -->
 <meta name="mobile-web-app-capable" content="yes">
@@ -11868,8 +11868,8 @@ function rscUploadReport(){
   var addD = document.getElementById('urAddDir');
   if(addD){
     /* ការជ្រើស **ថត** ដើរតែលើកុំព្យូទ័រ ⇒ លាក់វានៅលើទូរស័ព្ទ ជាជាងបើកប្រអប់ទទេ */
-    var canDir = ('webkitdirectory' in document.createElement('input'))
-              && !/Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
+    /* [stated] ១២:៤០ ៖ ប្រើការត្រួតពិនិត្យរួម ⇒ Android ទទួលថតវិញ */
+    var canDir = (typeof RSC_NO_DIRPICK === 'undefined') ? true : !RSC_NO_DIRPICK;
     if(!canDir) addD.style.display = 'none';
     addD.onclick = function(){
       try{ ov.remove(); }catch(e){}
@@ -13993,7 +13993,7 @@ function openUploadAndPickFolder(prefill){
     close();
     /* ⚠ ថតជាផ្លូវធម្មតា ; តែបើកម្មវិធីរុករកមិនអាចជ្រើសថត ( ទូរស័ព្ទ )
        ⇒ ធ្លាក់ទៅប្រអប់ឯកសារ ⇒ អ្នកប្រើមិនជាប់គាំង ។ */
-    const canDir = !/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent || '');
+    const canDir = (typeof RSC_NO_DIRPICK === 'undefined') ? true : !RSC_NO_DIRPICK;
     const inp = document.getElementById(canDir ? "auto-folder-input" : "auto-file-input");
     if(inp) inp.click();
   }
@@ -25939,12 +25939,22 @@ window.__mtrLateImport = function(list){
      ទាំងអស់ធ្វើការលើ `evt.target.files` ដដែល ដូច្នេះគ្មានអ្វីត្រូវកែទៀត។
    ⚠ រត់ម្តងពេលចាប់ផ្តើម និងម្តងទៀតរាល់ពេលមាន input ថ្មីកើតឡើង (តារាង
      Top 10 សង់ជួររបស់វាឡើងវិញ) — ដូច្នេះប្រើ MutationObserver ស្រាល។ */
-const RSC_NO_DIRPICK = (function(){
+const RSC_IS_WEBKIT_MOBILE = (function(){
   try{
     const ua = navigator.userAgent || '';
     const touchMac = /Macintosh/.test(ua) && navigator.maxTouchPoints > 1;   /* iPadOS */
-    return /Android|iPhone|iPad|iPod/i.test(ua) || touchMac;
+    return /iPhone|iPad|iPod/i.test(ua) || touchMac;
   }catch(e){ return false; }
+})();
+/* ⭐⭐ [stated] ២០២៦-១១-១៧ ១២:៤០ ៖ តើឧបករណ៍នេះជ្រើស **ថត** បានទេ ?
+   ⚠ មុននេះខ្ញុំបិទវាលើ Android ដែរ — ខុស ៖ Chrome លើ Android ជ្រើសថតបាន ។
+   ⇒ បិទតែលើ WebKit ( iOS · iPadOS ) ដែលពិតជាគ្មានមុខងារនេះ ;
+     ឧបករណ៍ដទៃ ⇒ សួរកម្មវិធីរុករកផ្ទាល់ ។ */
+const RSC_NO_DIRPICK = (function(){
+  try{
+    if(RSC_IS_WEBKIT_MOBILE) return true;
+    return !('webkitdirectory' in document.createElement('input'));
+  }catch(e){ return true; }
 })();
 function rscFixFolderInputs(root){
   if(!RSC_NO_DIRPICK) return;
@@ -25953,7 +25963,11 @@ function rscFixFolderInputs(root){
       inp.removeAttribute('webkitdirectory');
       inp.removeAttribute('directory');
       inp.setAttribute('multiple', '');
-      if(!inp.getAttribute('accept')) inp.setAttribute('accept', '.xlsx,.xls,.csv');
+      /* ⚠⚠ លើ iOS កុំដាក់ `accept` ៖ ឯកសារក្នុង Google Drive · iCloud
+         ក្លាយជា **ប្រផេះ ចុចមិនបាន** ពេលប្រភេទឯកសារ ( UTI ) មិនផ្គូផ្គង ។
+         ⇒ ទុកឱ្យជ្រើសបានទាំងអស់ ; ការច្រោះធ្វើនៅពេលនាំចូលរួចហើយ ។ */
+      if(RSC_IS_WEBKIT_MOBILE) inp.removeAttribute('accept');
+      else if(!inp.getAttribute('accept')) inp.setAttribute('accept', '.xlsx,.xls,.csv');
       inp.dataset.dirFallback = '1';
       const lab = inp.closest('label');
       if(lab && lab.title && lab.title.indexOf('ថត') >= 0){
@@ -67319,7 +67333,7 @@ else CC.init();
      ការរក្សាទុកឥឡូវ **រាយលេខជំហាន** លើផ្ទាំង ហើយផ្អាកអោយផ្ទាំងគូររួច
      មុននឹងចាប់ការងារធ្ងន់នីមួយៗ។ សារចុងក្រោយដែលឃើញ = ជំហានដែលគាំង។
      លេខ build ក៏បង្ហាញផង ដើម្បីដឹងច្បាស់ថាកំពុងប្រើឯកសារណា។ */
-  var RSC_BUILD = '17/11 · C84';
+  var RSC_BUILD = '17/11 · C85';
   try{ window.__RSC_BUILD = RSC_BUILD; }catch(e){}
 
   /* ⚠⚠ [stated] ២០២៦-០៨-១៣ ៖ រូបថតបង្ហាញ **«Page Unresponsive» របស់ Chrome**
@@ -68253,7 +68267,7 @@ function pkTime(f){
      ⚠ ការរកមើល ៖ `showDirectoryPicker` អវត្តមាន **និង** ជាឧបករណ៍ចល័ត។ */
   function dirPickWorks(){
     if(window.showDirectoryPicker) return true;
-    return !/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent || '');
+    return (typeof RSC_NO_DIRPICK === 'undefined') ? true : !RSC_NO_DIRPICK;
   }
   /* ជ្រើសឯកសារដោយផ្ទាល់ ( រួមទាំង .zip ) ⇒ ដើរលើទូរស័ព្ទផងដែរ ព្រោះវា
      មិនពឹងលើការជ្រើសថត ។ */
