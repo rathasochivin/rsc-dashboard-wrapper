@@ -43,7 +43,7 @@
 })();
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SYSTEM · 17/11-C81</title>
+<title>SYSTEM · 17/11-C83</title>
 <!-- ដាក់លើអេក្រង់ដើមទូរស័ព្ទ ៖ រូបតំណាង ឈ្មោះ និងបើកពេញអេក្រង់
      manifest ដាក់ជា data URL ព្រោះ Apps Script បម្រើឯកសារតែមួយ។ -->
 <meta name="mobile-web-app-capable" content="yes">
@@ -2856,6 +2856,14 @@ html.rsc-mobile-print #docs-modal .smw-r .bq{ font-size:.44em; line-height:4.2; 
 #view-tracking .smw-agree .smw-fill, #docs-modal .smw-agree .smw-fill,
 #trk-print-host .smw-agree .smw-fill, body.trk-printing .smw-agree .smw-fill{
   font-weight:700 !important; color:#000 !important; }
+/* [stated] ១១:៥៦ ៖ ជួរធីក «សហគ្រាសឯកភាព» លើអេក្រង់ */
+#view-tracking .smw-chkrow, #docs-modal .smw-chkrow{
+  display:inline-flex !important; align-items:center; gap:7px; cursor:pointer; }
+#view-tracking .smw-chkrow input, #docs-modal .smw-chkrow input{
+  width:16px !important; height:16px !important; margin:0 !important;
+  flex:0 0 auto !important; accent-color:#0F3D3E; }
+#view-tracking .smw-chkrow .smw-fill, #docs-modal .smw-chkrow .smw-fill{
+  width:auto !important; flex:0 1 auto !important; }
 /* ⚠⚠ [stated] ២០២៦-១១-១៧ ១១:៣៧ ៖ ជួរភ្ជាប់ឯកសារចេញ **មួយតួមួយបន្ទាត់** ។
    មូលហេតុ ៖ ពីដើមវាជាអត្ថបទធម្មតាក្នុង `div` ។ ពេលខ្ញុំធ្វើឱ្យវាកែបាន
      វាក្លាយជា `span` ក្នុងជួរ `display:flex` ⇒ ធាតុ flex រួញដល់ទទឹង
@@ -56006,6 +56014,8 @@ function smwState(){
        ( ព្រោះ span ទទួលមរតកពុម្ពពីជួរ ) · គ្មានកម្ពស់ថេររបស់ textarea
        ⇒ គ្មានចន្លោះទទេធំ ។ */
 var SMW_PRINT = false;
+/* ឃ្លាសម្គាល់ ៖ បង្ហាញតែពេលធីក ( [stated] ២០២៦-១១-១៧ ១១:៥៦ ) */
+var SMW_AGREE_TXT = 'សហគ្រាសឯកភាពលើការកំណត់ពន្ធនេះ។';
 /* ឃ្លាលំនាំដើមនៃជួរភ្ជាប់ឯកសារ ( កែបានក្នុងផ្ទាំង ) */
 var SMW_ATTACH_DEF = 'យើងខ្ញុំសូមភ្ជាប់មកជាមួយនូវលិខិតស្នើសុំឯកសារ លិខិតអញ្ជើញ និងកំណត់ហេតុ។';
 function smwVal(key){ return String(smwState()[key] || '').trim(); }
@@ -56086,12 +56096,15 @@ function smwHtml(forPrint){
       ((SMW_PRINT && !smwVal('agree')) ? '' :
         /* [stated] ២០២៦-១១-១៧ ១១:៣៣ ៖ «ផ្នែកសហគ្រាសឯកភាព ជួយសរសេរ
            អក្សរដិតខ្មៅផង» ⇒ ថ្នាក់ `smw-agree` ( CSS ខាងក្រោម ) */
+        /* ⭐⭐ [stated] ២០២៦-១១-១៧ ១១:៥៦ ៖ ប្រអប់ធីកជំនួសវាលវាយអក្សរ ។
+           ធីក ⇒ ឃ្លាចេញលើក្រដាស ( ដិតខ្មៅ ) ; មិនធីក ⇒ គ្មានជួរនេះសោះ ។ */
         '<div class="smw-r smw-agree"><span class="bq">▪</span><span class="k2">សម្គាល់៖</span>' +
-        '<div class="smw-col">' + smwFill('agree', 1, 'បើឯកភាព សរសេរ ៖ សហគ្រាសឯកភាពលើការកំណត់ពន្ធនេះ') +
-        /* ⚠ អត្ថបទណែនាំជាជំនួយសម្រាប់**មើលលើអេក្រង់**ប៉ុណ្ណោះ ⇒ មិនព្រីន */
-        (SMW_PRINT ? '' :
-          '<div class="smw-note">បើសហគ្រាសឯកភាព សវនករត្រូវបំពេញថា «សហគ្រាសឯកភាពលើការកំណត់ពន្ធនេះ» ' +
-          'បើសហគ្រាសមិនឯកភាព សវនករពុំចាំបាច់បំពេញទេ</div>') +
+        '<div class="smw-col">' +
+          (SMW_PRINT
+            ? '<span class="smw-fill smw-txt">' + esc(SMW_AGREE_TXT) + '</span>'
+            : '<label class="smw-chkrow"><input type="checkbox" data-smwchk="agree"' +
+              (smwVal('agree') ? ' checked' : '') + '>' +
+              '<span class="smw-fill">' + esc(SMW_AGREE_TXT) + '</span></label>') +
         '</div></div>') +
       /* ⭐⭐ [stated] ២០២៦-១១-១៧ ១១:៣០ ៖ «អាចកែកន្លែង យើងខ្ញុំសូមភ្ជាប់
          មកជាមួយនូវលិខិតស្នើសុំឯកសារ លិខិតអញ្ជើញ និងកំណត់ហេតុ។ នេះផង» ។
@@ -56140,6 +56153,8 @@ const SMW_CSS = `
   /* ⭐ [stated] ២០២៦-១១-១៧ ១១:៣៣ ៖ ជួរ «សហគ្រាសឯកភាព» ដិតខ្មៅ
      ( ទាំងលើអេក្រង់ ទាំងលើក្រដាស ⇒ អ្វីដែលឃើញ គឺអ្វីដែលព្រីន ) ។ */
   .smw-agree .smw-fill{ font-weight:700 !important; color:#000 !important; }
+  .smw-chkrow{ display:inline-flex; align-items:center; gap:7px; cursor:pointer; }
+  .smw-chkrow input{ width:16px; height:16px; margin:0; flex:0 0 auto; }
   /* ⚠ ជួរភ្ជាប់ឯកសារ ៖ កាន់ជួរពេញ ( មើលសេចក្តីពន្យល់ក្នុង CSS មេ ) */
   .smw-attach .smw-fill{ grid-column:1 / -1 !important;
     flex:1 1 100% !important; width:100% !important;
@@ -56244,6 +56259,15 @@ function renderSmw(){
     t.style.height = 'auto';
     t.style.height = Math.max(t.scrollHeight, 20) + 'px';
   };
+  /* [stated] ២០២៦-១១-១៧ ១១:៥៦ ៖ ប្រអប់ធីក «សហគ្រាសឯកភាព»
+     ⚠ រក្សាទុកជា **អត្ថបទ** ( មិនមែន true/false ) ⇒ ផ្លូវព្រីន និងឯកសារ
+       ចាស់អានដូចគ្នា គ្មានការបម្លែងពិសេស ។ */
+  host.querySelectorAll('[data-smwchk]').forEach(function(cb){
+    cb.addEventListener('change', function(){
+      smwState()[cb.getAttribute('data-smwchk')] = cb.checked ? SMW_AGREE_TXT : '';
+      trkSave();
+    });
+  });
   host.querySelectorAll('[data-smw]').forEach(function(el){
     grow(el);
     el.addEventListener('input', function(){
@@ -67287,7 +67311,7 @@ else CC.init();
      ការរក្សាទុកឥឡូវ **រាយលេខជំហាន** លើផ្ទាំង ហើយផ្អាកអោយផ្ទាំងគូររួច
      មុននឹងចាប់ការងារធ្ងន់នីមួយៗ។ សារចុងក្រោយដែលឃើញ = ជំហានដែលគាំង។
      លេខ build ក៏បង្ហាញផង ដើម្បីដឹងច្បាស់ថាកំពុងប្រើឯកសារណា។ */
-  var RSC_BUILD = '17/11 · C81';
+  var RSC_BUILD = '17/11 · C83';
   try{ window.__RSC_BUILD = RSC_BUILD; }catch(e){}
 
   /* ⚠⚠ [stated] ២០២៦-០៨-១៣ ៖ រូបថតបង្ហាញ **«Page Unresponsive» របស់ Chrome**
@@ -75722,59 +75746,103 @@ window.__cogsRender = render;
    បើក/បិទ ៖ ចុចប៊ូតុង · ចុចខាងក្រៅ · Esc · ឬក្រោយជ្រើសធាតុ ។
    ⚠ ដើរលើគ្រប់ `.atb-menu` ⇒ ម៉ឺនុយថ្មីមិនត្រូវការកូដថ្មី ។ */
 (function(){
+  /* ធាតុដែលកំពុងបើក ៖ ត្រូវចាំ «ផ្ទះ» ដើម្បីដាក់ត្រឡប់វិញ */
+  var OPEN = null;   /* {menu, btn, pop, home, mark} */
+
   function parts(m){
-    return { b: m.querySelector(':scope > button'),
-             p: m.querySelector(':scope > .atb-menu-pop') };
+    var pop = m.querySelector(':scope > .atb-menu-pop');
+    /* បើវាកំពុងនៅ body ( portal ) ⇒ យកពីកំណត់ត្រា */
+    if(!pop && OPEN && OPEN.menu === m) pop = OPEN.pop;
+    return { b: m.querySelector(':scope > button'), p: pop };
+  }
+  /* តើត្រូវប្រើ portal ឬទេ ៖ មានជីដូនជីតាកាត់ ឬបង្កើតប្រអប់មេថ្មី ?
+     ⚠ `transform`/`filter`/`backdrop-filter`/`will-change`/`contain`
+       ធ្វើឱ្យ `position:fixed` ចងនឹងធាតុនោះ មិនមែននឹងអេក្រង់ ។ */
+  function needPortal(m){
+    if(window.innerWidth <= 1024) return true;      /* ទូរស័ព្ទ · ថេប្លេត */
+    var e = m.parentElement;
+    while(e && e !== document.body){
+      var cs = window.getComputedStyle(e);
+      if(cs.overflowX !== 'visible' || cs.overflowY !== 'visible') return true;
+      if(cs.transform !== 'none' || cs.perspective !== 'none') return true;
+      if((cs.filter && cs.filter !== 'none') ||
+         (cs.backdropFilter && cs.backdropFilter !== 'none') ||
+         (cs.webkitBackdropFilter && cs.webkitBackdropFilter !== 'none')) return true;
+      if(cs.willChange && /transform|filter|perspective/.test(cs.willChange)) return true;
+      if(cs.contain && /paint|layout|strict|content/.test(cs.contain)) return true;
+      e = e.parentElement;
+    }
+    return false;
+  }
+  function place(){
+    if(!OPEN) return;
+    var rb = OPEN.btn.getBoundingClientRect();
+    var p = OPEN.pop;
+    var right = p.classList.contains('atb-pop-right');
+    p.style.position = 'fixed';
+    p.style.top = Math.round(rb.bottom + 6) + 'px';
+    var pw = p.offsetWidth || 216;
+    var want = right ? (rb.right - pw) : rb.left;
+    var left = Math.min(Math.max(6, want), window.innerWidth - pw - 6);
+    p.style.left = Math.round(left) + 'px';
+    p.style.right = 'auto';
+    p.style.maxHeight = Math.max(140, Math.round(window.innerHeight - rb.bottom - 18)) + 'px';
+    p.style.overflowY = 'auto';
+  }
+  function unportal(){
+    if(!OPEN || !OPEN.home) return;
+    try{ OPEN.home.insertBefore(OPEN.pop, OPEN.mark); }catch(e){
+      try{ OPEN.home.appendChild(OPEN.pop); }catch(e2){}
+    }
+    try{ if(OPEN.mark && OPEN.mark.parentNode) OPEN.mark.parentNode.removeChild(OPEN.mark); }catch(e){}
+    OPEN.home = null; OPEN.mark = null;
+  }
+  function clearStyle(p){
+    p.style.position = ''; p.style.top = ''; p.style.bottom = '';
+    p.style.left = ''; p.style.right = '';
+    p.style.maxHeight = ''; p.style.overflowY = '';
   }
   function closeAll(except){
+    /* បិទធាតុដែល portal រួច ( វាលែងជាកូនរបស់ .atb-menu ទៀតហើយ ) */
+    if(OPEN && OPEN.menu !== except){
+      OPEN.pop.hidden = true;
+      clearStyle(OPEN.pop);
+      if(OPEN.btn) OPEN.btn.setAttribute('aria-expanded','false');
+      unportal();
+      OPEN = null;
+    }
     document.querySelectorAll('.atb-menu').forEach(function(m){
       if(m === except) return;
       var q = parts(m); if(!q.p) return;
-      q.p.hidden = true; if(q.b) q.b.setAttribute('aria-expanded','false');
+      q.p.hidden = true; clearStyle(q.p);
+      if(q.b) q.b.setAttribute('aria-expanded','false');
     });
   }
   function openP(m, v){
     var q = parts(m); if(!q.p) return;
-    if(v) closeAll(m);
-    q.p.hidden = !v;
-    if(q.b) q.b.setAttribute('aria-expanded', v ? 'true' : 'false');
-    /* ⚠ សម្អាតរចនាប័ទ្មក្នុងជួរជានិច្ចមុនគណនាថ្មី */
-    q.p.style.position = ''; q.p.style.top = ''; q.p.style.bottom = '';
-    q.p.style.left = ''; q.p.style.right = '';
-    q.p.style.maxHeight = ''; q.p.style.overflowY = '';
-    if(v){
-      /* ⚠⚠ [stated] ២០២៦-១១-១៧ ០៨:១៤ ៖ តើមានជីដូនជីតាដែល **កាត់** ឬទេ ?
-         ( លើទូរស័ព្ទ `div.atb-more` មាន overflow:auto ⇒ ម៉ឺនុយ absolute
-           ត្រូវកាត់ និងរអិលទៅតាមវា ⇒ ត្រូវអូសទើបចុចបាន ) */
-      var clip = null, e = m.parentElement;
-      while(e && e !== document.body){
-        var cs = window.getComputedStyle(e);
-        if(cs.overflowX !== 'visible' || cs.overflowY !== 'visible'){ clip = e; break; }
-        e = e.parentElement;
-      }
-      var rb = q.b.getBoundingClientRect();
-      var right = q.p.classList.contains('atb-pop-right');
-      if(clip){
-        /* ⇒ ចេញពីការកាត់ ៖ លំហអេក្រង់ */
-        q.p.style.position = 'fixed';
-        q.p.style.top = Math.round(rb.bottom + 6) + 'px';
-        var pw = q.p.offsetWidth || 216;
-        var want = right ? (rb.right - pw) : rb.left;
-        var left = Math.min(Math.max(6, want), window.innerWidth - pw - 6);
-        q.p.style.left = Math.round(left) + 'px';
-        q.p.style.right = 'auto';
-        /* ⚠ បើវែងជាងកន្លែងនៅសល់ ⇒ អូរក្នុងម៉ឺនុយខ្លួនឯង មិនមែនក្នុងរបារ */
-        q.p.style.maxHeight = Math.max(140, Math.round(window.innerHeight - rb.bottom - 18)) + 'px';
-        q.p.style.overflowY = 'auto';
-        return;
-      }
-      /* ⚠ កុំឱ្យប្រអប់ហៀរចេញក្រៅអេក្រង់ ( ប៊ូតុងអាចនៅជិតគែមស្តាំ ) */
-      q.p.style.left = right ? 'auto' : '0';
-      q.p.style.right = right ? '0' : 'auto';
-      var r = q.p.getBoundingClientRect();
-      if(r.right > window.innerWidth - 6){ q.p.style.left = 'auto'; q.p.style.right = '0'; }
-      else if(r.left < 6){ q.p.style.left = '0'; q.p.style.right = 'auto'; }
+    if(!v){ closeAll(null); return; }
+    closeAll(m);
+    clearStyle(q.p);
+    q.p.hidden = false;
+    if(q.b) q.b.setAttribute('aria-expanded','true');
+
+    if(needPortal(m)){
+      /* ⭐⭐ ផ្លាស់ទៅ body ៖ ដាក់សញ្ញាទុកកន្លែងដើម ដើម្បីដាក់ត្រឡប់វិញ */
+      var mark = document.createComment('atb-pop');
+      q.p.parentNode.insertBefore(mark, q.p);
+      OPEN = { menu:m, btn:q.b, pop:q.p, home:q.p.parentNode, mark:mark };
+      document.body.appendChild(q.p);
+      place();
+      return;
     }
+    OPEN = { menu:m, btn:q.b, pop:q.p, home:null, mark:null };
+    /* ⚠ កុំឱ្យប្រអប់ហៀរចេញក្រៅអេក្រង់ ( ប៊ូតុងអាចនៅជិតគែមស្តាំ ) */
+    var right = q.p.classList.contains('atb-pop-right');
+    q.p.style.left = right ? 'auto' : '0';
+    q.p.style.right = right ? '0' : 'auto';
+    var r = q.p.getBoundingClientRect();
+    if(r.right > window.innerWidth - 6){ q.p.style.left = 'auto'; q.p.style.right = '0'; }
+    else if(r.left < 6){ q.p.style.left = '0'; q.p.style.right = 'auto'; }
   }
   document.addEventListener('DOMContentLoaded', function(){
     document.querySelectorAll('.atb-menu').forEach(function(m){
@@ -75782,11 +75850,17 @@ window.__cogsRender = render;
       q.b.addEventListener('click', function(ev){ ev.stopPropagation(); openP(m, !!q.p.hidden); });
       q.p.addEventListener('click', function(ev){ if(ev.target.closest('.atb-mi')) openP(m, false); });
     });
+    /* ⚠⚠ ក្រោយ portal ម៉ឺនុយលែងនៅក្នុង `.atb-menu` ⇒ ត្រូវរាប់
+       `.atb-menu-pop` ផង បើមិនដូច្នេះ ការចុចលើធាតុបិទវាភ្លាម
+       ហើយអ្នកប្រើឃើញថា «ចុចមិនចូល» ។ */
     document.addEventListener('click', function(ev){
-      if(ev.target.closest('.atb-menu')) return;
+      if(ev.target.closest('.atb-menu, .atb-menu-pop')) return;
       closeAll(null);
     });
     document.addEventListener('keydown', function(ev){ if(ev.key === 'Escape') closeAll(null); });
+    /* ទីតាំងតាមប៊ូតុងជានិច្ច ⇒ អូរ ឬបង្វិលអេក្រង់ក៏មិនរសាត់ */
+    window.addEventListener('scroll', function(){ if(OPEN && OPEN.home) place(); }, true);
+    window.addEventListener('resize', function(){ if(OPEN && OPEN.home) place(); });
   });
 })();
 </script>
