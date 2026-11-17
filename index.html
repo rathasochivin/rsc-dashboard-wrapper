@@ -43,7 +43,7 @@
 })();
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SYSTEM · 16/11-C74</title>
+<title>SYSTEM · 16/11-C75</title>
 <!-- ដាក់លើអេក្រង់ដើមទូរស័ព្ទ ៖ រូបតំណាង ឈ្មោះ និងបើកពេញអេក្រង់
      manifest ដាក់ជា data URL ព្រោះ Apps Script បម្រើឯកសារតែមួយ។ -->
 <meta name="mobile-web-app-capable" content="yes">
@@ -37330,6 +37330,9 @@ var TOI_FIT_MIN = 0.5;        /* ដូចកម្រិតទាបបំផ�
 function toiAutoFit(force){
   try{
     if(!TOI_AUTOFIT && !force) return;
+    /* ⚠ ទង់ ៖ ការប្រែប្រួល DOM ដែលកើតក្នុងពេលនេះ មិនត្រូវបង្កការបង្រួមថ្មី */
+    window.__toiFitBusy = true;
+    setTimeout(function(){ window.__toiFitBusy = false; }, 0);
     var host = document.getElementById('toi-embed');
     if(!host) return;
     var content = host.querySelector('.content');
@@ -37393,6 +37396,9 @@ window.__cvLabelFit = function(){
     }
     var tds = p.querySelectorAll('table.cv-grid tr > td');
     var m = document.createElement('span');
+    /* ⚠ សញ្ញាសម្គាល់ ៖ អ្នកសង្កេត ( MutationObserver ) ត្រូវរំលងធាតុនេះ
+       បើមិនដូច្នេះ ការវាស់បង្កើតរង្វិលជុំបង្រួម ⇒ អេក្រង់ញ័រ ។ */
+    m.setAttribute('data-cv-probe', '1');
     m.style.cssText = 'position:absolute; left:-9999px; top:0; white-space:nowrap; visibility:hidden;';
     p.appendChild(m);
     var max = 0, i, t, cs, w;
@@ -37433,11 +37439,26 @@ try{
   var __toiFitT = null;
   var __toiFitHost = document.getElementById('toi-embed');
   if(__toiFitHost && window.MutationObserver){
+    /* ⚠ តើការប្រែប្រួលនេះមានតែធាតុវាស់ ( data-cv-probe ) ឬទេ ? */
+    var __onlyProbe = function(m){
+      var ns = [], j;
+      for(j = 0; j < m.addedNodes.length; j++) ns.push(m.addedNodes[j]);
+      for(j = 0; j < m.removedNodes.length; j++) ns.push(m.removedNodes[j]);
+      if(!ns.length) return false;
+      for(j = 0; j < ns.length; j++){
+        if(!(ns[j].nodeType === 1 && ns[j].hasAttribute && ns[j].hasAttribute('data-cv-probe'))) return false;
+      }
+      return true;
+    };
     new MutationObserver(function(ms){
+      /* ⚠⚠ [stated] ២២:៣៦ ៖ ការបង្រួមខ្លួនឯងប្រែប្រួល DOM ( ធាតុវាស់ )
+         ⇒ បើមិនរំលង វាកេះខ្លួនឯងរៀងរាល់ ៩០ms ⇒ អេក្រង់ញ័រពេលអូស ។ */
+      if(window.__toiFitBusy) return;
       for(var i = 0; i < ms.length; i++){
         var t = ms[i].target;
         /* ⚠ រំលងការប្តូរដែលខ្លួនឯងបង្កើត ( ស្លាកភាគរយ ) ⇒ កុំវិលមិនចេះចប់ */
         if(t && t.closest && t.closest('.toi-zoom')) continue;
+        if(__onlyProbe(ms[i])) continue;
         clearTimeout(__toiFitT);
         __toiFitT = setTimeout(toiAutoFit, 90);
         return;
@@ -67158,7 +67179,7 @@ else CC.init();
      ការរក្សាទុកឥឡូវ **រាយលេខជំហាន** លើផ្ទាំង ហើយផ្អាកអោយផ្ទាំងគូររួច
      មុននឹងចាប់ការងារធ្ងន់នីមួយៗ។ សារចុងក្រោយដែលឃើញ = ជំហានដែលគាំង។
      លេខ build ក៏បង្ហាញផង ដើម្បីដឹងច្បាស់ថាកំពុងប្រើឯកសារណា។ */
-  var RSC_BUILD = '16/11 · C74';
+  var RSC_BUILD = '16/11 · C75';
   try{ window.__RSC_BUILD = RSC_BUILD; }catch(e){}
 
   /* ⚠⚠ [stated] ២០២៦-០៨-១៣ ៖ រូបថតបង្ហាញ **«Page Unresponsive» របស់ Chrome**
