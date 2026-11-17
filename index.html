@@ -43,7 +43,7 @@
 })();
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SYSTEM · 17/11-C85</title>
+<title>SYSTEM · 17/11-C87</title>
 <!-- ដាក់លើអេក្រង់ដើមទូរស័ព្ទ ៖ រូបតំណាង ឈ្មោះ និងបើកពេញអេក្រង់
      manifest ដាក់ជា data URL ព្រោះ Apps Script បម្រើឯកសារតែមួយ។ -->
 <meta name="mobile-web-app-capable" content="yes">
@@ -25976,6 +25976,46 @@ function rscFixFolderInputs(root){
     });
   }catch(e){ console.error('rscFixFolderInputs', e); }
 }
+/* ⭐⭐ [stated] ២០២៦-១១-១៧ ១២:៤៩ ៖ ឧបករណ៍ចល័តទាំងអស់ ( iOS · Android )
+   ⇒ ដក `accept` ចេញពីប្រអប់ឯកសារ ដើម្បីឱ្យ OneDrive · Google Drive ·
+   iCloud បង្ហាញឯកសារជ្រើសបាន ( មើលក្បាល fix_onedrive.py ) ។ */
+const RSC_MOBILE_PICK = (function(){
+  try{
+    if(typeof RSC_IS_WEBKIT_MOBILE !== 'undefined' && RSC_IS_WEBKIT_MOBILE) return true;
+    return /Android|Mobile|Tablet/i.test(navigator.userAgent || '');
+  }catch(e){ return false; }
+})();
+/* ⚠⚠ ចំណងដែលប្រកាសដោយ `const` នៅកម្រិតកំពូលនៃប្លុក <script> មួយ
+   **មិនឃើញ** ពីក្នុង IIFE នៃប្លុកផ្សេងឡើយ ( វាស់បាន ៖ `typeof` ត្រឡប់
+   «undefined» ) ⇒ ផ្លូវរក្សាទុកធ្លាក់ចូលសាខាកុំព្យូទ័រស្ងាត់ៗ ។
+   ⇒ បង្ហាញតាម `window` ⇒ គ្រប់ប្លុកអានបាន ។ */
+try{
+  window.RSC_MOBILE_PICK = RSC_MOBILE_PICK;
+  window.RSC_IS_WEBKIT_MOBILE = RSC_IS_WEBKIT_MOBILE;
+  window.RSC_NO_DIRPICK = RSC_NO_DIRPICK;
+}catch(e){}
+var RSC_RELAX_IDS = ['auto-file-input', 'inputFiles', 'excelFiles',
+                     'cp-purchase-file-input', 'cp-sale-file-input'];
+function rscRelaxAccept(){
+  if(!RSC_MOBILE_PICK) return;
+  try{
+    RSC_RELAX_IDS.forEach(function(id){
+      var i = document.getElementById(id);
+      if(i && i.hasAttribute('accept')){
+        i.dataset.acceptWas = i.getAttribute('accept');   /* ទុកជាកំណត់ត្រា */
+        i.removeAttribute('accept');
+      }
+      if(i && !i.hasAttribute('multiple')) i.setAttribute('multiple', '');
+    });
+  }catch(e){ console.error('rscRelaxAccept', e); }
+}
+try{
+  if(RSC_MOBILE_PICK){
+    if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', rscRelaxAccept);
+    else rscRelaxAccept();
+  }
+}catch(e){}
+
 try{
   if(RSC_NO_DIRPICK){
     const runFix = ()=> rscFixFolderInputs(document);
@@ -67250,6 +67290,68 @@ else CC.init();
     });
   }
 
+  /* ⭐⭐ [stated] ២០២៦-១១-១៧ ១២:៥៣ ៖ «សួរទុកនៅកន្លែងណា» លើឧបករណ៍ចល័ត ។
+     ត្រឡប់ Promise ⇒ ដោះស្រាយរួចទើបបង្ហាញសារ «រក្សាទុករួច» ។ */
+  function rscAskWhere(text, name){
+    var mobile = !!window.RSC_MOBILE_PICK;   /* ⚠ តាម window — មើលសេចក្តី
+       ពន្យល់ក្បែរ `RSC_RELAX_IDS` ៖ `const` ឆ្លងប្លុក <script> មិនឃើញគ្នា */
+    var canShare = false;
+    try{
+      canShare = !!(navigator.share && navigator.canShare &&
+                    navigator.canShare({ files:[ new File(['x'], 'a.json', {type:'application/json'}) ] }));
+    }catch(e){ canShare = false; }
+    if(!mobile || !canShare){
+      try{ downloadJson(text, name); }catch(e){}
+      return Promise.resolve();
+    }
+    return new Promise(function(done){
+      var w = document.createElement('div');
+      w.style.cssText = 'position:fixed;inset:0;z-index:2147483200;display:flex;'
+        + 'align-items:center;justify-content:center;background:rgba(8,26,27,.55);padding:20px;';
+      var c = document.createElement('div');
+      c.style.cssText = 'background:#fff;color:#171B1A;border-radius:12px;padding:20px;'
+        + 'max-width:360px;width:100%;font-family:inherit;font-size:14px;line-height:1.7;';
+      var h = document.createElement('div');
+      h.textContent = 'រក្សាទុកទៅកន្លែងណា ?';
+      h.style.cssText = 'font-weight:700;font-size:16px;margin-bottom:4px;';
+      var sub = document.createElement('div');
+      sub.textContent = name;
+      sub.style.cssText = 'font-size:12px;color:#6b6b6b;margin-bottom:14px;word-break:break-all;';
+      c.appendChild(h); c.appendChild(sub);
+      var mk = function(label, bg, fg){
+        var b = document.createElement('button');
+        b.textContent = label;
+        b.style.cssText = 'display:block;width:100%;padding:11px 12px;margin-bottom:8px;border:0;'
+          + 'border-radius:9px;cursor:pointer;font:inherit;font-weight:700;font-size:13.5px;'
+          + 'background:' + bg + ';color:' + fg + ';';
+        c.appendChild(b); return b;
+      };
+      var finish = function(){ try{ w.remove(); }catch(e){} done(); };
+      /* ⚠ ការចុចនេះជាសកម្មភាពអ្នកប្រើ ⇒ `share` មិនត្រូវបដិសេធ */
+      mk('📤 ជ្រើសកន្លែង ( OneDrive · Drive · Files )', '#0F3D3E', '#fff').onclick = function(){
+        var f;
+        try{ f = new File([text], name, { type:'application/json' }); }
+        catch(e){ try{ downloadJson(text, name); }catch(_){} return finish(); }
+        navigator.share({ files:[f], title:name })
+          .then(finish)
+          .catch(function(){ /* បោះបង់ ឬបរាជ័យ ⇒ ទាញយកធម្មតា */
+            try{ downloadJson(text, name); }catch(_){}
+            finish();
+          });
+      };
+      mk('⬇️ ទាញយកទៅ Downloads', '#f1efe7', '#171B1A').onclick = function(){
+        try{ downloadJson(text, name); }catch(e){}
+        finish();
+      };
+      mk('បោះបង់ការទាញយក ( ឯកសាររក្សាក្នុងម៉ាស៊ីនរួចហើយ )', 'transparent', '#7a827f').onclick = finish;
+      w.appendChild(c); document.body.appendChild(w);
+      w.onclick = function(ev){ if(ev.target === w) finish(); };
+    });
+  }
+
+  /* ⚠ បង្ហាញជាសកល ៖ ផ្លូវរក្សាទុកដទៃ ( និងការវាស់ ) ត្រូវហៅវាបាន */
+  try{ window.__rscAskWhere = rscAskWhere; }catch(e){}
+
   function localSave(){
     var meta;
     try{
@@ -67304,9 +67406,11 @@ else CC.init();
           return stagePaint(ov, RSC_BUILD + ' · ៨ ទាញយកឯកសារ').then(function(){ return name; });
         }).then(function(name){
           ov.pct(100); ov.close();
-          /* ទាញយកជាឯកសារផងដែរ ៖ ឃ្លាំងក្នុង browser មិនផ្ទេររវាងម៉ាស៊ីនទេ */
-          try{ downloadJson(text, name); }catch(e){}
-          alert('✅ រក្សាទុករួច ៖ ' + name);
+          /* ទាញយកជាឯកសារផងដែរ ៖ ឃ្លាំងក្នុង browser មិនផ្ទេររវាងម៉ាស៊ីនទេ
+             ⇒ លើទូរស័ព្ទ សួរកន្លែងជាមុន ( [stated] ២០២៦-១១-១៧ ១២:៥៣ ) */
+          rscAskWhere(text, name).then(function(){
+            alert('✅ រក្សាទុករួច ៖ ' + name);
+          });
         }).catch(function(e){
           ov.close();
           var q = /Quota/i.test(String(e && e.name) + String(e && e.message));
@@ -67333,7 +67437,7 @@ else CC.init();
      ការរក្សាទុកឥឡូវ **រាយលេខជំហាន** លើផ្ទាំង ហើយផ្អាកអោយផ្ទាំងគូររួច
      មុននឹងចាប់ការងារធ្ងន់នីមួយៗ។ សារចុងក្រោយដែលឃើញ = ជំហានដែលគាំង។
      លេខ build ក៏បង្ហាញផង ដើម្បីដឹងច្បាស់ថាកំពុងប្រើឯកសារណា។ */
-  var RSC_BUILD = '17/11 · C85';
+  var RSC_BUILD = '17/11 · C87';
   try{ window.__RSC_BUILD = RSC_BUILD; }catch(e){}
 
   /* ⚠⚠ [stated] ២០២៦-០៨-១៣ ៖ រូបថតបង្ហាញ **«Page Unresponsive» របស់ Chrome**
