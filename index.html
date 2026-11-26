@@ -157,7 +157,7 @@
 })();
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SYSTEM · 19/11-D41</title>
+<title>SYSTEM · 19/11-D45</title>
 <!-- ដាក់លើអេក្រង់ដើមទូរស័ព្ទ ៖ រូបតំណាង ឈ្មោះ និងបើកពេញអេក្រង់
      manifest ដាក់ជា data URL ព្រោះ Apps Script បម្រើឯកសារតែមួយ។ -->
 <meta name="mobile-web-app-capable" content="yes">
@@ -6426,6 +6426,14 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     white-space:normal; letter-spacing:0;
     font-family:'Khmer OS Siemreap','Noto Serif Khmer',sans-serif;
   }
+  /* ⭐⭐ [stated] ២០២៦-១១-២៦ ៖ ក្បាលតារាងជំហានទី២ មិនត្រូវដាច់ពាក់កណ្តាលពាក្យ ។
+     ខ្មែរគ្មានដកឃ្លា ⇒ កម្មវិធីរុករកកាត់តាមវចនានុក្រម ( «ភាគ / ហ៊ុន» ) ។
+     ⇒ ពាក្យនីមួយៗរុំក្នុង span នេះ ⇒ កាត់បានតែត្រង់ដកឃ្លា និងក្រោយ «/» ។
+     ⚠ អេក្រង់តូច ៖ បើកវិញ ⇒ តារាងមិនហៀរចេញក្រៅ ។ */
+  #toi-embed .s2-table th .s2-nw{ white-space:nowrap; }
+  @media screen and (max-width: 760px){
+    #toi-embed .s2-table th .s2-nw{ white-space:normal; }
+  }
   #toi-embed .s2-table tbody tr{ background:#fff; }
   #toi-embed .s2-table th, #toi-embed .s2-table td{
     border:1px solid #c9bfa0; padding:6px 8px; vertical-align:middle;
@@ -7157,6 +7165,18 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
       /* ⚠ គ្មាន `word-break:break-word` ៖ ខ្មែរគ្មានដកឃ្លា ⇒ វាកាត់ពាក្យ
          ពាក់កណ្តាល ( «ភាគរ / យ» ) ។ ទុកឱ្យកម្មវិធីរុករកកាត់តាមព្រំដែនពាក្យ ។ */
     }
+    /* ⭐⭐ [stated] ២០២៦-១១-២៦ ៖ «ជំហានទី២ … បន្ថយទំហំ FONT និងកុំឱ្យដាច់
+       អក្សរចុះបន្ទាត់» ។ វាស់ក្នុង Chromium ( ទទឹងទំព័រ ៧៣០px · អក្សរ ១១px
+       ដែល STEP_FONT_DELTA.Step2 = −3 កំណត់ ) ៖
+         ១.០០em ⇒ ៥ ពាក្យដាច់ពាក់កណ្តាល · ០.៩២em ⇒ ៤ · **០.៨៦em ⇒ ០**
+       ហើយកម្ពស់ក្បាលតារាងធ្លាក់ពី ១១៣px មក ៨៣px ⇒ សល់កន្លែងច្រើនជាង ។
+       ⚠ ជាប់នឹង `[data-step-key="Step2"]` ដោយចេតនា ៖ ជំហាន ៣ · ១០–១៥ ក៏ប្រើ
+         ម៉ាស៊ីនទម្រង់ដដែល តែពួកវាមិនបានស្នើឱ្យកែ ⇒ កុំប៉ះ ។ */
+    #toi-embed .s2-table[data-step-key="Step2"] thead th{
+      font-size:.86em !important; line-height:1.35 !important;
+      padding:3px 5px !important;
+    }
+    #toi-embed .s2-table th .s2-nw{ white-space:nowrap !important; }
     #toi-embed .s2-table td.num, #toi-embed .s2-table td.pct{ text-align:right !important; }
     #toi-embed .s2-table td.s2-sec, #toi-embed .s2-table td.s2-sec:first-child{
       text-align:left !important; font-weight:700;
@@ -7247,6 +7267,26 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     #toi-embed .print-page:last-child{page-break-after:auto; break-after:auto;}
 
     
+    /* ⭐⭐ [stated] ២០២៦-១១-២៦ ៖ «ចុចព្រីនតែជំហាននេះ វាតែងតែចេញសន្លឹកទទេ
+       មកពីក្រោយជានិច្ច» ។
+       ⚠⚠ មូលហេតុ ( វាស់ក្នុង Chromium · A4 ឈរ · រឹម ៨mm ) ៖ មាន `.app`
+         **ពីរ** ជាន់គ្នា — ខាងក្រៅ ( dashboard ) និងខាងក្នុង `#toi-embed` —
+         ហើយទាំងពីរមាន `min-height:100vh` ។ ក្នុងបរិបទព្រីន 100vh = ទំព័រ
+         ពេញ ១ សន្លឹក ។
+           ក្នុង `.app` ៩៨៣px ( ទំព័រពេញ ) + គម្លាត `main` ខាងក្រៅ ២៨+៦០px
+           = ១០៧១px > ទំព័រ ⇒ សន្លឹកទី ២ ទទេ
+         វាស់ ៖ មុនកែ ២ សន្លឹក · ក្រោយកែ ១ សន្លឹក ។
+       ⚠ ជាប់នឹង `body.toi-print-one` ដែលដាក់តែខណៈព្រីនជំហានតែមួយ
+         ⇒ ការព្រីនផ្សេង ( MTR · ព្រីនគ្រប់ជំហាន · ឯកសារផ្លូវការ ) មិនប៉ះពាល់ ។
+       ⚠ នេះជាលំនាំដដែលនឹង `body.mtr-print-single > .app{min-height:0}`
+         ដែលបានកែរួចកាលពី ២០២៦-០៨-២៨ ដោយមូលហេតុដូចគ្នាបេះបិទ ។ */
+    body.toi-print-one > .app,
+    body.toi-print-one #toi-embed .app{ min-height:0 !important; }
+    body.toi-print-one > .app > main,
+    body.toi-print-one #toi-embed .app > main{
+      padding-top:0 !important; padding-bottom:0 !important;
+    }
+
     #toi-embed .print-landscape{ page:print-landscape-page; page-break-after:always; }
     #toi-embed .print-landscape .table-wrap{border:1px solid #999; page-break-inside:avoid;}
     #toi-embed .print-landscape thead th{white-space:normal; word-break:break-word; line-height:1.2;}
@@ -34812,13 +34852,55 @@ function loadDataEntry(){
 function saveDataEntry(){
   try{ localStorage.setItem(DATA_ENTRY_STORAGE_KEY, JSON.stringify(state.dataEntry)); }catch(e){}
 }
-function getDE(key){ return state.dataEntry[key] ?? ''; }
+/* ⭐⭐ [stated] ២០២៦-១១-២៦ ៖ «ផ្នែកថ្ងៃបញ្ចប់នេះគឺអូតូ TODAY និងមានកន្លែង
+   ធីកដើម្បីកំណត់យកថ្ងៃណាមួយ … បើមិនចុច គឺលោតទៅ TODAY ដើម្បីកំណត់ការប្រាក់
+   លុះត្រាតែចុច LOCK ថ្ងៃណាមួយទើបឈប់ គិតការប្រាក់ត្រឹមថ្ងៃនោះ» ។
+   ⇒ `auditEndLock` ៖ '1' = ចាក់សោ ( ថ្ងៃដែលរក្សាទុកឈរនឹង ) · ទទេ = ដើរតាមថ្ងៃនេះ ។
+   ⚠⚠ ការធ្វើសមកាលកម្មដាក់នៅក្នុង `getDE` និង `__toiDataEntry` ដោយចេតនា ៖
+     កន្លែងអានថ្ងៃបញ្ចប់មានជាង ២០ — ការប្រាក់ ( TOS ) · លិខិតផ្លូវការទាំងអស់
+     តាម khSignDate() · ថ្ងៃចន្ទ្រគតិ · ថ្ងៃកំណត់ពន្ធ · Access export ។
+     ធ្វើនៅ **ប្រភពតែមួយ** ទើបគ្មានកន្លែងណាភ្លេច ហើយមិនបាច់ប៉ះកូដ ២០ កន្លែង ។
+   ⚠ សរសេរចូលតែពេលថ្ងៃប្តូរមែន ⇒ ការអានធម្មតាគ្រាន់តែប្រៀបធៀបខ្សែអក្សរ
+     ( គ្មានការសរសេរ localStorage រាល់ដង និងគ្មានរង្វិលជុំ ) ។ */
+function rscTodayISO(){
+  var d = new Date(), p = function(n){ return (n < 10 ? '0' : '') + n; };
+  return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+}
+function auditEndIsLocked(){
+  try{ return String((state.dataEntry || {}).auditEndLock || '') === '1'; }catch(e){ return false; }
+}
+function syncAuditEndDate(){
+  try{
+    if(!state.dataEntry) return '';
+    if(auditEndIsLocked()) return String(state.dataEntry.auditEndDate || '');
+    var t = rscTodayISO();
+    if(String(state.dataEntry.auditEndDate || '') !== t){
+      state.dataEntry.auditEndDate = t;
+      saveDataEntry();
+    }
+    return t;
+  }catch(e){ return ''; }
+}
+function getDE(key){
+  if(key === 'auditEndDate') return syncAuditEndDate();
+  return state.dataEntry[key] ?? '';
+}
 /* ⚠ ២០២៦-០៨-១៦ ៖ កាតគណនាស្ថិតក្នុង IIFE ផ្សេង ដូច្នេះវាមើល state.dataEntry
    មិនឃើញទេ។ បញ្ជូនច្បាប់ចម្លងតាម window.__ ដូចវិធីធម្មតារបស់ឯកសារនេះ។ */
 window.__toiDataEntry = function(){
+  /* ⭐ កាតគណនា និង TOS អានថ្ងៃបញ្ចប់ពីទីនេះ ⇒ ធ្វើសមកាលកម្មមុន */
+  try{ syncAuditEndDate(); }catch(e){}
   try{ return Object.assign({}, state.dataEntry || {}); }catch(e){ return {}; }
 };
-function setDE(key, value){ state.dataEntry[key] = value; saveDataEntry(); }
+function setDE(key, value){
+  state.dataEntry[key] = value;
+  /* ⭐ ការសរសេរថ្ងៃបញ្ចប់ដោយចេតនា ( ប្រអប់ Data Entry ពេលចាក់សោរួច ឬ
+     ជំហានទី ២ នៃអ្នកជំនួយ ) = ការជ្រើសថ្ងៃ ⇒ ចាក់សោដោយស្វ័យប្រវត្តិ
+     បើមិនដូច្នេះទេ ថ្ងៃដែលគេវាយនឹងត្រូវជំនួសដោយថ្ងៃនេះវិញភ្លាម ។
+     ដកធីក «ចាក់សោ» ⇒ ត្រឡប់មកដើរតាមថ្ងៃនេះដដែល ។ */
+  if(key === 'auditEndDate' && value) state.dataEntry.auditEndLock = '1';
+  saveDataEntry();
+}
 /* ⚠⚠ [stated] ២០២៦-០៨-១៧ ៖ «ការិយបរិច្ឆេទសវនកម្ម អាទិភាពមុនគេ ព្រោះកន្លែង
    នេះជាកន្លែងត្រូវធ្វើសវនកម្ម ; ឆ្នាំ TOI គ្រាន់តែជាការបង្ហាញទិន្នន័យតែ
    ប៉ុណ្ណោះ … ត្រូវរត់ទៅគ្រប់កន្លែង ការគណនា បរិយាយ លិខិតផ្សេងៗទាំងអស់» ។
@@ -36668,7 +36750,54 @@ function renderDataEntryPanel(){
     state.extraCompanyInfo.commerceRegDate = commerceRegDateInput.value;
   });
   const auditEndDateInput = el('input',{type:'date', class:'field-input', value:getDE('auditEndDate'), style:'width:132px;'});
-  auditEndDateInput.addEventListener('input', ()=> setDE('auditEndDate', auditEndDateInput.value));
+  /* ⭐⭐ ថ្ងៃបញ្ចប់ ៖ ដើរតាមថ្ងៃនេះ លុះត្រាតែធីក «ចាក់សោ» ( មើលកំណត់សម្គាល់
+     នៅ `syncAuditEndDate` ) ។ ពេលមិនចាក់សោ ប្រអប់ត្រូវបិទ ⇒ គេដឹងភ្លាមថា
+     វាអូតូ មិនមែនខូច ។ */
+  const auditEndLockCb = el('input', { type:'checkbox', style:'margin:0; cursor:pointer;' });
+  const auditEndLockLbl = el('label',
+    { style:'display:flex; align-items:center; gap:4px; font-size:11.5px; cursor:pointer;'
+           + ' white-space:nowrap; color:var(--toi-slate,#5B6478);',
+      title:'ធីក ⇒ ចាក់សោថ្ងៃដែលជ្រើស ( ការប្រាក់គិតត្រឹមថ្ងៃនោះ ) ។'
+          + ' ដកធីក ⇒ ដើរតាមថ្ងៃនេះ ( TODAY ) ។' },
+    auditEndLockCb, '🔒 ចាក់សោ');
+  const auditEndBox = el('div', { style:'display:flex; align-items:center; gap:8px;' },
+    auditEndDateInput, auditEndLockLbl);
+  function auditEndApply(){
+    var locked = auditEndIsLocked();
+    auditEndLockCb.checked = locked;
+    auditEndDateInput.disabled = !locked;
+    auditEndDateInput.style.opacity = locked ? '' : '0.7';
+    auditEndDateInput.title = locked
+      ? 'ចាក់សោរួច ៖ ការប្រាក់គិតត្រឹមថ្ងៃនេះ'
+      : 'ដើរតាមថ្ងៃនេះដោយស្វ័យប្រវត្តិ — ធីក «ចាក់សោ» ដើម្បីកំណត់ថ្ងៃណាមួយ';
+    auditEndDateInput.value = getDE('auditEndDate');
+  }
+  auditEndLockCb.addEventListener('change', ()=>{
+    try{
+      if(auditEndLockCb.checked){
+        /* ចាក់សោ ៖ យកថ្ងៃដែលកំពុងបង្ហាញ ( ថ្ងៃនេះ ) ធ្វើជាថ្ងៃឈរ រួចបើកប្រអប់
+           ឱ្យគេប្តូរទៅថ្ងៃណាក៏បាន */
+        var cur = auditEndDateInput.value || getDE('auditEndDate') || rscTodayISO();
+        state.dataEntry.auditEndLock = '1';
+        state.dataEntry.auditEndDate = cur;
+        saveDataEntry();
+      }else{
+        state.dataEntry.auditEndLock = '';
+        saveDataEntry();
+        syncAuditEndDate();          /* ⇒ លោតត្រឡប់ទៅថ្ងៃនេះភ្លាម */
+      }
+      auditEndApply();
+      /* ថ្ងៃចន្ទ្រគតិ និងសារព្រមានអានពីថ្ងៃបញ្ចប់ ⇒ ធ្វើបច្ចុប្បន្នភាពតាម */
+      try{ lunarInput.placeholder = lunarAuto(); refreshLunarNote(); }catch(e){}
+    }catch(e){ console.error('ចាក់សោថ្ងៃបញ្ចប់:', e); }
+  });
+  auditEndDateInput.addEventListener('input', ()=>{
+    /* ⚠ ពេលមិនចាក់សោ ប្រអប់បិទរួចហើយ ⇒ ព្រឹត្តិការណ៍នេះមិនកើតទេ ;
+       ទុកការពារទុកជាមុន បើថ្ងៃណាមានកូដកំណត់ `disabled` វិញ */
+    if(!auditEndIsLocked()) return;
+    setDE('auditEndDate', auditEndDateInput.value);
+  });
+  auditEndApply();
   /* [stated] «ការកាន់កាប់បញ្ជីគណនេយ្យ និងលិខិតយុត្តិការផ្សេងៗ» ៖ ត្រឹមត្រូវ /
      មិនត្រឹមត្រូវ។ របាយការណ៍បរិយាយប្រើតម្លៃនេះក្នុងកថាខណ្ឌបើក។ */
   /* [stated] ២០២៦-០៨-១៦ ៖ «DROPDOWN នៅជិត ការកាន់កាប់បញ្ជីគណនេយ្យ …
@@ -36754,7 +36883,7 @@ function renderDataEntryPanel(){
 
   const datesRow = inlineRow(
     labeled('ថ្ងៃចាប់ផ្តើមធ្វើសវនកម្ម', auditStartDateInput),
-    labeled('ថ្ងៃបញ្ចប់ធ្វើសវនកម្ម', auditEndDateInput),
+    labeled('ថ្ងៃបញ្ចប់ធ្វើសវនកម្ម', auditEndBox),
     labeled('ការិយបរិច្ឆេទសវនកម្ម', deInput('auditPeriod', '2022-2026', '150px')),
     labeled('ថ្ងៃខែចុះបញ្ជីពាណិជ្ជកម្ម' + (ex_.commerceRegDate ? ' ✅' : ''), commerceRegDateInput),
   );
@@ -41770,6 +41899,17 @@ window.__rscAskAuditDate = function(keys, onReady){
 document.getElementById('btnPrintCurrent').onclick = (ev, __dateAsked)=>{
   /* ⭐ [stated] ២០២៦-១១-១៦ ៖ ព្រីនតែម្តង គ្មានប្រអប់សួរថ្ងៃទៀតទេ */
   autoFitPrintArea(document.getElementById('content'), -2);   // អក្សរតូចជាង ២px
+  /* ⭐⭐ [stated] ២០២៦-១១-២៦ ៖ សន្លឹកទទេមកពីក្រោយ ⇒ បន្សាប `min-height:100vh`
+     នៃ `.app` ទាំងពីរ ខណៈព្រីនប៉ុណ្ណោះ ( មើលច្បាប់ `body.toi-print-one` ) ។
+     ⚠ ត្រូវដកថ្នាក់ចេញវិញជានិច្ច ៖ បើជាប់ អេក្រង់នឹងបាត់កម្ពស់អប្បបរមា ។
+       `afterprint` + នាឡិកាបម្រុង ( ម៉ាស៊ីនខ្លះមិនបាញ់ afterprint ) ។ */
+  document.body.classList.add('toi-print-one');
+  var __unOne = function(){
+    document.body.classList.remove('toi-print-one');
+    window.removeEventListener('afterprint', __unOne);
+  };
+  window.addEventListener('afterprint', __unOne);
+  setTimeout(__unOne, 6000);
   /* [stated] ២១:៤៧ ៖ ទូរស័ព្ទ ⇒ ទូលាយវិស័យមើលមុនព្រីន */
   var __rvp = toiWidenForPrint();
   withCoverFooter(function(){ toiPrintNow(__rvp); });
@@ -44456,6 +44596,18 @@ function renderRefStepPanel(stepKey){
         'អត្រា ៖ ' + yrs.map(y=> y + ' = ' + fmtAmt(rscFxOf(y))).join(' · ')));
     }
   }
+  /* ⭐⭐ [stated] ២០២៦-១១-២៦ ៖ ប៊ូតុងថ្មី «ពន្ធបានបង់» ( មើល rscPaidTaxBox ) ។
+     ⚠ ដាក់នៅគ្រប់ជំហាន ៖ គេចង់មើលចំនួនបានបង់ពេលណាក៏បាន មិនមែនតែជំហានណាមួយ ។
+     ⚠ `no-print` មានស្រាប់លើ `.step-actions` ⇒ មិនចេញលើឯកសារព្រីន ។ */
+  (function(){
+    var paidBtn = el('button', {class:'btn ghost',
+      title:'ប្រាក់ពន្ធបានបង់តាមសាលកបត្រអនុរក្ស ៖ ប្រាក់រំដោះ · ពន្ធលើប្រាក់ចំណូល · ពន្ធអប្បបរមា'},
+      '💵 ពន្ធបានបង់');
+    paidBtn.onclick = function(){
+      try{ rscPaidTaxBox(); }catch(e){ console.error('ពន្ធបានបង់:', e); }
+    };
+    stepActions.appendChild(paidBtn);
+  })();
   /* [stated] ២១:០៥ ៖ ឧបករណ៍អេក្រង់ ( ឆ្នាំ + ពង្រីក ) នៅជួរដេកតែមួយ */
   stepActions.appendChild(toiStepScreenTools());
   stepHead.appendChild(stepActions);
@@ -45093,6 +45245,165 @@ function __renderStep1InfoOld(aoa, opts){
   });
   return n ? grid : null;
 }
+/* ⭐⭐ [stated] ២០២៦-១១-២៦ ៖ ក្រឡាក្បាលដែលកាត់បានតែត្រង់ព្រំដែនពិត ។
+   ⚠ ខ្មែរគ្មានដកឃ្លារវាងពាក្យ ⇒ បើទុកជាអត្ថបទធម្មតា កម្មវិធីរុករកកាត់តាម
+     វចនានុក្រមរបស់វា ហើយ «ភាគហ៊ុន» ក្លាយជា «ភាគ / ហ៊ុន» ។
+   ⚠ កុំប្រើ `white-space:nowrap` លើក្រឡាទាំងមូល ៖ ក្បាលវែងនឹងហៀរចេញក្រៅ
+     ទំព័រ ។ រុំតែ **ពាក្យនីមួយៗ** ⇒ នៅកាត់បានត្រង់ដកឃ្លា ។
+   ⚠ សញ្ញា «/» ទុកនៅក្រៅ span ⇒ «…បុគ្គល/ ⏎ នីតិបុគ្គល)» ជាការកាត់ត្រឹមត្រូវ ។ */
+function s2HeadCell(t){
+  var th = el('th', {});
+  var s = String(t == null ? '' : t);
+  if(!s){ return th; }
+  s.split(/(\s+|\/)/).forEach(function(x){
+    if(x === '') return;
+    if(/^\s+$/.test(x) || x === '/'){ th.appendChild(document.createTextNode(x)); return; }
+    th.appendChild(el('span', {class:'s2-nw'}, x));
+  });
+  return th;
+}
+/* ══════════════════════════════════════════════════════════════════════
+   ⭐⭐ [stated] ២០២៦-១១-២៦ ៖ «នៅរបារផ្នែកពន្ធលើប្រាក់ចំណូល ជួយបន្ថែម
+   កន្លែងចុចប៉ូតង់ថ្មីមួយ ដើម្បីមើលប្រាក់ពន្ធបានបង់ចំនួន ៣ គឺ ប្រាក់រំដោះ
+   ពន្ធលើប្រាក់ចំណូល, ពន្ធលើប្រាក់ចំណូល និង ពន្ធអប្បបរមា» ។
+
+   ប្រភព ៖ `window.__mtrPaidByTaxYear()` = សាលកបត្រអនុរក្ស ជា **ជួរដើម**
+     ( រួមទឹកប្រាក់ដែលបង់ក្នុងសវនកម្មផង ) ⇒ ដូចអ្វីដែលឃើញក្នុងសាលកបត្រ ។
+     ជួរ «ក្នុងនោះ បង់ក្នុងសវនកម្ម» មកពី `__mtrAuditPaidByTaxYear()` ។
+   ⚠⚠ ការផ្គូផ្គងឈ្មោះតាម **លំនាំ** ៖ ឯកសារ MTR ប្រើឈ្មោះមិនដូចគ្នា
+     ( «ពន្ធលើប្រាក់ចំណូលប្រចាំឆ្នាំ» · «ពន្ធលើប្រាក់ចំណូល» ) ⇒ ផ្គូផ្គង
+     បេះបិទនឹងខកខានទឹកប្រាក់ ។ «រំដោះ» ត្រូវដកចេញពីជួរពន្ធលើប្រាក់ចំណូល
+     បើមិនដូច្នេះទេ វារាប់ស្ទួន ។
+   ⚠ ផ្ទាំងនេះឯករាជ្យទាំងស្រុង ( style ក្នុងខ្លួន ) ⇒ មិនពឹងលើផ្ទាំងដទៃ ។
+   ══════════════════════════════════════════════════════════════════════ */
+var RSC_PAID_KINDS = [
+  { lb:'ប្រាក់រំដោះពន្ធលើប្រាក់ចំណូល',
+    hit:function(n){ return n.indexOf('រំដោះ') > -1; } },
+  { lb:'ពន្ធលើប្រាក់ចំណូល',
+    hit:function(n){ return n.indexOf('ពន្ធលើប្រាក់ចំណូល') > -1 && n.indexOf('រំដោះ') === -1; } },
+  { lb:'ពន្ធអប្បបរមា',
+    hit:function(n){ return n.indexOf('អប្បបរមា') > -1; } }
+];
+
+function rscPaidTaxData(){
+  var paid = {}, aud = {};
+  try{ paid = (window.__mtrPaidByTaxYear && window.__mtrPaidByTaxYear()) || {}; }catch(e){ paid = {}; }
+  try{ aud  = (window.__mtrAuditPaidByTaxYear && window.__mtrAuditPaidByTaxYear()) || {}; }catch(e){ aud = {}; }
+  var yrs = {};
+  Object.keys(paid).forEach(function(t){ Object.keys(paid[t] || {}).forEach(function(y){ yrs[y] = 1; }); });
+  var years = Object.keys(yrs).filter(function(y){ return /^\d{4}$/.test(y); }).sort();
+  /* ⭐⭐ [stated] ២០២៦-១១-២៦ ៖ «ឈ្មោះប្រភេទពន្ធ គួរយកឈ្មោះទៅតាមសាលកបត្រ
+     អនុរក្សចុះ» ⇒ ស្លាកជួរ = **ឈ្មោះពិតក្នុងសាលកបត្រ** មិនមែនឈ្មោះដែល
+     ខ្ញុំសរសេរឡើងទេ ។ បើសាលកបត្រមានឈ្មោះពីរបែបសម្រាប់ប្រភេទតែមួយ
+     ( «ពន្ធលើប្រាក់ចំណូលប្រចាំឆ្នាំ» និង «ពន្ធលើប្រាក់ចំណូល» ) ⇒ ចេញ ២ ជួរ
+     តាមឯកសារ មិនបូកបញ្ចូលគ្នាដោយស្ងាត់ ។
+     ⚠ ប្រភេទដែលគ្មានក្នុងឯកសារសោះ ⇒ នៅតែបង្ហាញជួរទទេ ⇒ គ្រប់ ៣ មុខជានិច្ច ។ */
+  var rows = [];
+  RSC_PAID_KINDS.forEach(function(k){
+    var names = Object.keys(paid).filter(function(t){ return k.hit(String(t)); }).sort();
+    if(!names.length){
+      rows.push({ lb:k.lb, byYear:{}, byAudit:{}, total:0, totalAudit:0 });
+      return;
+    }
+    names.forEach(function(t){
+      var byY = {}, byA = {}, tot = 0, totA = 0;
+      years.forEach(function(y){
+        var v = Number((paid[t] || {})[y]) || 0;
+        if(v){ byY[y] = v; tot += v; }
+        var a = Number((aud[t] || {})[y]) || 0;
+        if(a){ byA[y] = a; totA += a; }
+      });
+      rows.push({ lb:t, byYear:byY, byAudit:byA, total:tot, totalAudit:totA });
+    });
+  });
+  return { years:years, rows:rows };
+}
+
+function rscPaidTaxBox(){
+  /* ⚠ ការចុចពីរដង ធ្លាប់ដាក់ផ្ទាំងជាន់គ្នា ( ដូចប៊ូតុងបៃតងស្ទួនក្នុង Login.html )
+     ⇒ លុបផ្ទាំងចាស់ជាមុនសិន ។ */
+  try{ document.querySelectorAll('[data-rsc-paid]').forEach(function(x){ x.remove(); }); }catch(e){}
+  var d = rscPaidTaxData();
+  var n = function(v){ return (Math.round(Number(v) || 0)).toLocaleString('en-US'); };
+  var esc = function(x){ return String(x == null ? '' : x)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); };
+
+  var ov = document.createElement('div');
+  ov.setAttribute('data-rsc-paid','1');
+  ov.style.cssText = 'position:fixed; inset:0; background:rgba(16,24,28,.55);'
+    + ' display:flex; align-items:center; justify-content:center; z-index:99990; padding:16px;';
+  var card = document.createElement('div');
+  card.style.cssText = 'background:#fff; border-radius:10px; max-width:min(960px,96vw);'
+    + ' max-height:88vh; overflow:auto; box-shadow:0 18px 50px rgba(0,0,0,.3);'
+    + ' padding:18px 20px 16px; font-size:14px;';
+  var hasAudit = d.rows.some(function(r){ return r.totalAudit > 0; });
+
+  var h = '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">'
+        + '<div style="font-weight:700;font-size:16px;">💵 ពន្ធលើប្រាក់ចំណូល — បានបង់</div>'
+        + '<button data-x style="margin-left:auto;border:0;background:#eee;border-radius:6px;'
+        + 'padding:5px 11px;cursor:pointer;font:inherit;">✕ បិទ</button></div>';
+
+  if(!d.years.length){
+    h += '<div style="padding:14px 2px;color:#8a6d3b;">'
+       + 'មិនទាន់មានទិន្នន័យសាលកបត្រអនុរក្ស ( MTR ) ⇒ សូម upload ឯកសារ MTR សិន ។</div>';
+  }else{
+    h += '<table style="border-collapse:collapse;width:100%;">'
+       + '<thead><tr>'
+       /* ⚠ `th` ទូទាំងកម្មវិធីមានពណ៌ស ⇒ ត្រូវកំណត់ពណ៌ និងទម្ងន់ច្បាស់
+          បើមិនដូច្នេះទេ ក្បាលតារាងអានមិនឃើញ ( វាស់ឃើញក្នុងរូបថត ) */
+       + '<th style="border:1px solid #d7d0bd;padding:6px 9px;text-align:left;'
+       + 'background:#f6f3ea;color:#2b2b2b;font-weight:700;">ប្រភេទពន្ធ</th>';
+    d.years.forEach(function(y){
+      h += '<th style="border:1px solid #d7d0bd;padding:6px 9px;text-align:right;'
+         + 'background:#f6f3ea;color:#2b2b2b;font-weight:700;">' + esc(y) + '</th>';
+    });
+    h += '<th style="border:1px solid #d7d0bd;padding:6px 9px;text-align:right;'
+       + 'background:#efe9d8;color:#2b2b2b;font-weight:700;">សរុប</th>'
+       + '</tr></thead><tbody>';
+    var colT = {}, grand = 0;
+    d.rows.forEach(function(r){
+      /* ⚠ ក្រឡាទីមួយ ៖ តម្រឹមឆ្វេងច្បាស់ ( ច្បាប់ទូទៅរុញវាទៅកណ្តាល ) */
+      h += '<tr><td style="border:1px solid #d7d0bd;padding:6px 9px;text-align:left;">' + esc(r.lb);
+      if(hasAudit && r.totalAudit){
+        h += '<div style="font-size:11.5px;color:#777;">ក្នុងនោះ បង់ក្នុងសវនកម្ម ៖ '
+           + n(r.totalAudit) + '</div>';
+      }
+      h += '</td>';
+      d.years.forEach(function(y){
+        var v = r.byYear[y] || 0; colT[y] = (colT[y] || 0) + v;
+        h += '<td style="border:1px solid #d7d0bd;padding:6px 9px;text-align:right;'
+           + (v ? '' : 'color:#bbb;') + '">' + (v ? n(v) : '-') + '</td>';
+      });
+      grand += r.total;
+      h += '<td style="border:1px solid #d7d0bd;padding:6px 9px;text-align:right;font-weight:700;">'
+         + n(r.total) + '</td></tr>';
+    });
+    h += '<tr style="background:#f6f3ea;font-weight:700;">'
+       + '<td style="border:1px solid #d7d0bd;padding:6px 9px;text-align:left;">សរុប</td>';
+    d.years.forEach(function(y){
+      h += '<td style="border:1px solid #d7d0bd;padding:6px 9px;text-align:right;">'
+         + n(colT[y] || 0) + '</td>';
+    });
+    h += '<td style="border:1px solid #d7d0bd;padding:6px 9px;text-align:right;">' + n(grand) + '</td>'
+       + '</tr></tbody></table>';
+    /* [stated] ២០២៦-១១-២៦ ៖ «ផ្នែកសម្គាល់នេះមិនបាច់ដាក់ទេ» ⇒ បន្ទាត់
+       «ប្រភព …» និង «ឈ្មោះក្នុងឯកសារ …» ត្រូវដកចេញ ។ កុំដាក់ចូលវិញ ។ */
+  }
+  card.innerHTML = h;
+  ov.appendChild(card);
+  var close = function(){
+    try{ ov.remove(); }catch(e){}
+    document.removeEventListener('keydown', onKey, true);
+  };
+  var onKey = function(e){ if(e.key === 'Escape') close(); };
+  ov.addEventListener('click', function(e){ if(e.target === ov) close(); });
+  try{ card.querySelector('[data-x]').onclick = close; }catch(e){}
+  document.addEventListener('keydown', onKey, true);
+  document.body.appendChild(ov);
+  return ov;
+}
+try{ window.__rscPaidTaxBox = rscPaidTaxBox; }catch(e){}
+
 function renderStep2Table(aoa, opts){
   const hr = s2HeaderRange(aoa, (opts && opts.minHead) || 2);
   const head = aoa.slice(hr.start, hr.end);
@@ -45135,7 +45446,9 @@ function renderStep2Table(aoa, opts){
       }
       for(let a = 0; a < rs; a++) for(let k = 0; k < cs; k++) taken[r + a][c + k] = true;
       if(/ភាគរយ/.test(t) || t === '%'){ for(let k = 0; k < cs; k++) pct[c + k] = true; }
-      const th = el('th', {}, t);
+      /* ⭐ ជំហានទី២ ប៉ុណ្ណោះ ៖ ក្រឡាក្បាលមិនដាច់ពាក់កណ្តាលពាក្យ ( មើល s2HeadCell ) ។
+         ជំហានផ្សេងនៅដដែល ⇒ ទម្រង់ព្រីនរបស់ពួកវាមិនប្តូរ ។ */
+      const th = (opts && opts.stepKey === 'Step2') ? s2HeadCell(t) : el('th', {}, t);
       if(cs > 1) th.colSpan = cs;
       if(rs > 1) th.rowSpan = rs;
       tr.appendChild(th);
@@ -68951,7 +69264,7 @@ else CC.init();
      ការរក្សាទុកឥឡូវ **រាយលេខជំហាន** លើផ្ទាំង ហើយផ្អាកអោយផ្ទាំងគូររួច
      មុននឹងចាប់ការងារធ្ងន់នីមួយៗ។ សារចុងក្រោយដែលឃើញ = ជំហានដែលគាំង។
      លេខ build ក៏បង្ហាញផង ដើម្បីដឹងច្បាស់ថាកំពុងប្រើឯកសារណា។ */
-  var RSC_BUILD = '19/11 · D41';
+  var RSC_BUILD = '19/11 · D45';
   try{ window.__RSC_BUILD = RSC_BUILD; }catch(e){}
 
   /* ⚠⚠ [stated] ២០២៦-០៨-១៣ ៖ រូបថតបង្ហាញ **«Page Unresponsive» របស់ Chrome**
