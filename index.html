@@ -157,7 +157,7 @@
 })();
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SYSTEM · 19/11-D57</title>
+<title>SYSTEM · 19/11-D61</title>
 <!-- ដាក់លើអេក្រង់ដើមទូរស័ព្ទ ៖ រូបតំណាង ឈ្មោះ និងបើកពេញអេក្រង់
      manifest ដាក់ជា data URL ព្រោះ Apps Script បម្រើឯកសារតែមួយ។ -->
 <meta name="mobile-web-app-capable" content="yes">
@@ -40668,18 +40668,23 @@ function rscLawCss(){
     '@media (max-width:760px){',
     '  #rscLaw .rl-head{ padding:10px !important; gap:8px !important;',
     '    align-items:center !important; }',
-    '  #rscLaw .rl-q{ order:1; flex:1 1 160px !important; min-width:0 !important; }',
-    '  #rscLaw .rl-close{ order:2; flex:0 0 auto; }',
-    '  #rscLaw .rl-src{ order:3; flex:1 1 100% !important; width:100% !important;',
-    '    max-width:100% !important; min-width:0 !important; }',
+    /* [stated] ២០២៦-១១-២៦ ៖ «គួរកែត្រឹមតែ២ជួរបានហើយ» ។
+       ជួរ ១ ៖ ស្វែងរក · ចំនួនសរុប · បិទ   ជួរ ២ ៖ ឯកសារ · មាត្រា · សុពលភាព */
+    '  #rscLaw .rl-q{ order:1; flex:1 1 120px !important; min-width:0 !important; }',
+    '  #rscLaw .rl-info{ order:2; flex:0 0 auto; margin-left:auto !important;',
+    '    white-space:nowrap; font-size:13px !important; opacity:.9; }',
+    '  #rscLaw .rl-close{ order:3; flex:0 0 auto; }',
     '  #rscLaw .rl-row2{ order:4; display:flex !important; flex:1 1 100%;',
     '    width:100%; gap:6px; align-items:center; min-width:0; }',
-    '  #rscLaw .rl-art{ flex:1 1 auto !important; min-width:0 !important;',
+    /* ⚠ ចំណែកទទឹង ៖ ឯកសារ ( វែងជាងគេ ) ទទួលបានច្រើនជាង ; សុពលភាព
+       ( ៣ ជម្រើសខ្លី ) ត្រូវកំណត់ពិដាន បើមិនដូច្នេះទេវាលេបកន្លែង
+       ១៣៩px ហើយទុកឱ្យពីរប្រអប់សំខាន់ត្រឹម ៩៥px ( វាស់នៅ ៣៦០px ) ។ */
+    '  #rscLaw .rl-src{ flex:1.45 1 0 !important; width:auto !important;',
+    '    max-width:none !important; min-width:0 !important; }',
+    '  #rscLaw .rl-art{ flex:1 1 0 !important; min-width:0 !important;',
     '    max-width:none !important; }',
-    '  #rscLaw .rl-val{ flex:0 1 auto !important; min-width:0 !important; }',
-    '  #rscLaw .rl-info{ margin-left:auto !important; flex:0 0 auto;',
-    '    white-space:nowrap; font-size:13px !important; opacity:.9;',
-    '    padding-right:2px; }',
+    '  #rscLaw .rl-val{ flex:0 1 auto !important; min-width:0 !important;',
+    '    max-width:112px !important; }',
     '  #rscLaw .rl-head input, #rscLaw .rl-head select, #rscLaw .rl-head button{',
     '    padding:8px 10px !important; border-radius:6px !important; }',
     '}'
@@ -40774,8 +40779,12 @@ function rscLawOpen(){
        លើ PC ⇒ លំដាប់ q · src · art · val · info · close នៅដដែលបេះបិទ ។ */
   var row2 = document.createElement('div');
   row2.className = 'rl-row2';
-  row2.appendChild(art); row2.appendChild(val); row2.appendChild(info);
-  head.appendChild(q); head.appendChild(src); head.appendChild(row2);
+  /* ⚠ D58 ៖ ប្រអប់រុំកាន់ **ឯកសារ · មាត្រា · សុពលភាព** ⇒ ជួរទី ២ ។
+     ចំនួនសរុបឡើងទៅជួរទី ១ ជាមួយប៊ូតុងបិទ ⇒ សរុប ២ ជួរ ។
+     ⚠ លើ PC `display:contents` ⇒ លំដាប់រាបស្មើនៅដដែល ៖
+       q · src · art · val · info · close ។ */
+  row2.appendChild(src); row2.appendChild(art); row2.appendChild(val);
+  head.appendChild(q); head.appendChild(row2); head.appendChild(info);
   head.appendChild(close);
   /* [stated] «បើវាវែងយើងចុចមើលអក្សរពេញបាន» ⇒ ឈ្មោះឯកសារពេញក្នុង title
      ( ចុច select ⇒ បញ្ជីបង្ហាញអត្ថបទពេញរួចទៅហើយ ) */
@@ -40804,13 +40813,43 @@ function rscLawOpen(){
     return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
       .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
+  /* ⭐⭐⭐ [stated] ២០២៦-១១-២៦ ៖ «ជួយហាយឡាយផ្នែកច្បាប់ប្រកាសណាដែរមាន
+     អក្សរនៅកន្លែងស្វែងរកផង» ។
+     ⚠⚠ វិធីចាស់ធៀប **អក្សរដើមត្រង់ៗ** ⇒ ពេលសួរ «182ថ្ងៃ» អត្ថបទជា
+       «១៨២ថ្ងៃ» ⇒ រកឃើញ ( ព្រោះការស្វែងរកប្រើ `dg()` ) តែ **គ្មានពណ៌** ។
+     ⇒ ធៀបលើអត្ថបទដែលបម្លែងលេខរួច ។ `dg()` ប្តូរតួអក្សរ ១ ទៅ ១ ⇒ លេខរៀង
+       នៅត្រង់គ្នា ⇒ កាត់ពីអត្ថបទ **ដើម** វិញ ⇒ អក្សរដែលបង្ហាញមិនប្តូរ ។
+     ⚠ ប្រមូលចន្លោះ ⇒ បញ្ចូលគ្នា ⇒ ទើបគូរ ៖ ពាក្យជាន់គ្នាលែងបង្កើត
+       `mark` ក្នុង `mark` ហើយពាក្យក្រោយលែងចាប់បានអក្សរក្នុងកូដ HTML
+       របស់ពាក្យមុន ( កំហុសចាស់ ) ។ */
   function hi(text, terms){
-    var s = esc(text);
+    var raw = String(text == null ? '' : text);
+    if(!raw || !terms || !terms.length) return esc(raw);
+    var norm = dg(raw);
+    if(norm.length !== raw.length) return esc(raw);   /* សុវត្ថិភាព */
+    var sp = [];
     terms.forEach(function(t){
-      if(t.length < 2) return;
-      s = s.split(esc(t)).join('<mark style="background:#FFE08A; padding:0 1px;">' + esc(t) + '</mark>');
+      var n = dg(String(t == null ? '' : t));
+      if(n.length < 2) return;
+      var i = 0;
+      while((i = norm.indexOf(n, i)) >= 0){ sp.push([i, i + n.length]); i += n.length; }
     });
-    return s;
+    if(!sp.length) return esc(raw);
+    sp.sort(function(a, b){ return a[0] - b[0] || b[1] - a[1]; });
+    var mg = [];
+    sp.forEach(function(m){
+      var last = mg[mg.length - 1];
+      if(last && m[0] <= last[1]){ if(m[1] > last[1]) last[1] = m[1]; }
+      else mg.push([m[0], m[1]]);
+    });
+    var out = '', pos = 0;
+    mg.forEach(function(m){
+      out += esc(raw.slice(pos, m[0]))
+          + '<mark style="background:#FFE08A; padding:0 1px;">'
+          + esc(raw.slice(m[0], m[1])) + '</mark>';
+      pos = m[1];
+    });
+    return out + esc(raw.slice(pos));
   }
   /* ⭐ [stated] ២០២៦-០៨-២៨ ៖ «កន្លែងស្វែងរកអាចប្រើលេខខ្មែរបានក៏ស្វែងរក
      ឃើញដែរ» ⇒ បម្លែងលេខខ្មែរ ⇄ ឡាតាំង ទាំងសំណួរ និងអត្ថបទ មុនធៀប
@@ -40819,6 +40858,26 @@ function rscLawOpen(){
     return String(s == null ? '' : s).replace(/[០-៩]/g, function(c){
       return String(c.charCodeAt(0) - 0x17E0);
     });
+  }
+  /* ⭐⭐⭐ [stated] ២០២៦-១១-២៦ ( D59 ) ៖ បង្អួចអត្ថបទត្រូវចេញត្រង់កន្លែង
+     ផ្គូផ្គង បើមិនដូច្នេះទេ ការហាយឡាយគ្មានន័យ ៖ មាត្រាវែង ៤–៦ ពាន់តួ
+     ចំណែកកាតបង្ហាញត្រឹម ៧០០ តួដំបូង ⇒ ពាក្យដែលរកឃើញនៅខាងក្រៅបង្អួច ។
+     ( វាស់ ៖ «១៨២ថ្ងៃ» នៅតួទី ៧៣៦ · ៨៣៤ និង ២,៥២៣ ។ )
+     ⚠ ផ្គូផ្គងនៅក្នុងបង្អួចដើមស្រាប់ ⇒ ត្រឡប់ដូចមុនបេះបិទ ⇒ លទ្ធផល
+       ចាស់ៗមិនប្តូររូបរាងទេ ។ */
+  function excerpt(txt, terms){
+    var LIM = 700, t0 = String(txt == null ? '' : txt);
+    if(t0.length <= LIM) return t0;
+    var norm = dg(t0), at = -1;
+    (terms || []).forEach(function(t){
+      var n = dg(String(t == null ? '' : t));
+      if(n.length < 2) return;
+      var i = norm.indexOf(n);
+      if(i >= 0 && (at < 0 || i < at)) at = i;
+    });
+    if(at < 0 || at < LIM - 150) return t0.slice(0, LIM) + '…';
+    var st = Math.max(0, at - 200);
+    return (st > 0 ? '…' : '') + t0.slice(st, st + LIM) + '…';
   }
   function count(hay, needle){
     if(!needle) return 0;
@@ -40904,7 +40963,7 @@ function rscLawOpen(){
                      : 'បង្ហាញ ' + top.length + ' មាត្រា/ប្រការ') + '</div>';
     top.forEach(function(x, i){
       var a = x.a;
-      var b = a.b.length > 700 ? a.b.slice(0, 700) + '…' : a.b;
+      var b = excerpt(a.b, uniq);          /* D59 ៖ បង្អួចតាមកន្លែងផ្គូផ្គង */
       h += '<div style="background:#fff; border:1px solid #e6e1d3; border-radius:8px;'
         + 'padding:10px 12px; margin-bottom:10px;">'
         /* ⭐ [stated] ២០២៦-០៨-២៨ ៖ អ្នកមានឯកសារ HTML ចាស់ដែលមានច្បាប់ និង
@@ -40913,9 +40972,13 @@ function rscLawOpen(){
            ទៅលើ ៣៣៦ មាត្រាដែលផ្គូផ្គងបាន ។
            ⚠ លេខប្រកាសដើម ( 578 · 098 · 49 … ) បង្ហាញជាប់ជានិច្ច ⇒ ការដក
              ស្រង់ចូលលិខិតមានលេខឯកសារត្រឹមត្រូវ ។ */
-        + '<div style="font-size:12px; color:#7a5fa8; font-weight:700;">' + esc(a.d)
-        + (a.k && a.k !== a.d ? ' <span style="color:#9aa3a0;">[' + esc(a.k) + ']</span>' : '')
-        + (a.c ? ' · ' + esc(a.c) : '')
+        /* ⭐⭐ [stated] ២០២៦-១១-២៦ ៖ «ហាយឡាយផ្នែកច្បាប់ប្រកាសណាដែរមាន
+           អក្សរនៅកន្លែងស្វែងរក» ⇒ ឈ្មោះឯកសារ · លេខប្រកាស · ជំពូក
+           ប្តូរពី `esc()` ទៅ `hi()` ។ គ្មានពាក្យស្វែងរក ⇒ `hi()` ត្រឡប់
+           `esc()` ដដែល ⇒ របៀបរកមើលតាមឯកសារមិនប្តូរសោះ ។ */
+        + '<div style="font-size:12px; color:#7a5fa8; font-weight:700;">' + hi(a.d, uniq)
+        + (a.k && a.k !== a.d ? ' <span style="color:#9aa3a0;">[' + hi(a.k, uniq) + ']</span>' : '')
+        + (a.c ? ' · ' + hi(a.c, uniq) : '')
         /* [stated] «ដាក់ឆ្នាំមានសុពលភាព ឬអនុវត្តន៍ចាប់ពីឆ្នាំណា នៅជិតមាតិកា» ។
            ⚠ បង្ហាញ **តែពេលដឹងច្បាស់** ( មកពីលេខកូដឯកសារផ្ទាល់ ) ។ ការស្កេន
              កាលបរិច្ឆេទក្នុងអត្ថបទបានផ្តល់លទ្ធផលខុស — វារើសកាលបរិច្ឆេទនៃ
@@ -57643,11 +57706,18 @@ function smwState(){
 var SMW_PRINT = false;
 /* ឃ្លាសម្គាល់ ៖ បង្ហាញតែពេលធីក ( [stated] ២០២៦-១១-១៧ ១១:៥៦ ) */
 var SMW_AGREE_TXT = 'សហគ្រាសឯកភាពលើការកំណត់ពន្ធនេះ។';
+/* ⭐⭐ [stated] ២០២៦-១១-២៦ ៖ «ចំនុច មូលដ្ឋាន៖ ករណីមិនមានកំណត់ពន្ធ ឬសូន្យ
+   ជួយសរសេរថា "សហគ្រាសមិនទទួលរងនូវការកំណត់ពន្ធឡើងវិញទេ"» ។
+   ⚠ ជាតម្លៃលំនាំដើមប៉ុណ្ណោះ ⇒ កែបាន និងមិនជាន់លើអ្វីដែលវាយរួច ។ */
+var SMW_NOTAX_TXT = 'សហគ្រាសមិនទទួលរងនូវការកំណត់ពន្ធឡើងវិញទេ។';
 /* ឃ្លាលំនាំដើមនៃជួរភ្ជាប់ឯកសារ ( កែបានក្នុងផ្ទាំង ) */
 var SMW_ATTACH_DEF = 'យើងខ្ញុំសូមភ្ជាប់មកជាមួយនូវលិខិតស្នើសុំឯកសារ លិខិតអញ្ជើញ និងកំណត់ហេតុ។';
 function smwVal(key){ return String(smwState()[key] || '').trim(); }
-function smwFill(key, lines, ph){
+/* ⚠ D60 ៖ `def` = តម្លៃលំនាំដើម ( ប្រើតែពេលវាលទទេ ) ⇒ អ្នកប្រើឃើញ
+   ហើយកែបាន ; លុបឱ្យទទេ ⇒ ត្រឡប់មកវិញ ( ដូច `SMW_ATTACH_DEF` ) ។ */
+function smwFill(key, lines, ph, def){
   var v = String(smwState()[key] || '');
+  if(!v && def) v = String(def);
   if(SMW_PRINT) return '<span class="smw-fill smw-txt">' + esc(v) + '</span>';
   /* WARNING : do NOT close the row here. It used to emit </div>, which
      closed .smw-col early and threw .smw-note into its own grid cell
@@ -57657,10 +57727,11 @@ function smwFill(key, lines, ph){
 }
 /* ជួរដែលមានវាលបំពេញ ៖ ពេលព្រីន បើវាលទទេ ⇒ **មិនបោះពុម្ពជួរនោះទាល់តែសោះ**
    ⇒ គ្មានបន្ទាត់ទទេ ឬចន្លោះរំលោងនៅលើក្រដាស ។ */
-function smwRow(label, key, lines, ph){
-  if(SMW_PRINT && !smwVal(key)) return '';
+function smwRow(label, key, lines, ph, def){
+  /* ⚠ D60 ៖ មានតម្លៃលំនាំដើម ⇒ **មិនរាប់ជាទទេ** ⇒ ជួរនៅចេញលើក្រដាស ។ */
+  if(SMW_PRINT && !smwVal(key) && !def) return '';
   return '<div class="smw-r"><span class="bq">▪</span><span class="k2">' + label + '</span>'
-    + smwFill(key, lines, ph) + '</div>';
+    + smwFill(key, lines, ph, def) + '</div>';
 }
 function smwHtml(forPrint){
   SMW_PRINT = !!forPrint;
@@ -57674,6 +57745,12 @@ function smwHtml(forPrint){
     try{ amount = Math.round(c.grand).toLocaleString('en-US'); }
     catch(e){ amount = String(Math.round(c.grand)); }
   }
+  /* ⭐⭐⭐ [stated] ២០២៦-១១-២៦ ( D61 ) ៖ «ករណីសូន្យ … លុបជួរទឹកប្រាក់
+     កំណត់ពន្ធនោះចេញ» ។
+     ⚠ លេខមានសញ្ញាក្បៀស ⇒ សម្អាតមុន `parseFloat` ( «1,234,567» ⇒ ១ ) ។
+     ⭐ លក្ខខណ្ឌ **តែមួយ** សម្រាប់ទាំង ឃ្លា «សហគ្រាសមិនទទួលរង…» ( D60 )
+       និងការលាក់ជួរទឹកប្រាក់ ⇒ ពីរនេះត្រូវគ្នាជានិច្ច មិនអាចផ្ទុយគ្នាទេ ។ */
+  var __smwNoTax = !(parseFloat(String(amount).replace(/[^0-9.\-]/g, '')) > 0);
   var out = '' +
   '<div class="rpt-page smw-page">' +
     /* ⭐⭐⭐ [stated] ២០២៦-១១-១៧ ២៣:១៧ ៖ ក្បាលលិខិតដូចរបាយការណ៍សវនកម្ម ។
@@ -57715,8 +57792,15 @@ function smwHtml(forPrint){
     '</div>' +
     '<div class="smw-h"><span class="smw-n">III.</span>មូលដ្ឋាននៃការកំណត់ពន្ធ៖</div>' +
     '<div class="smw-b">' +
-      smwRow('មូលដ្ឋាន៖', 'basis', 3, 'ឧ. របាយការណ៍ធនាគារ, ទិន្នន័យ Cross-Check, លម្អៀងទិន្នន័យនាំចូល, លម្អៀងចំនួនបុគ្គលិកបានប្រកាស និងជាក់ស្ដែង, លម្អៀងចំណូលប្រចាំខែ និងប្រចាំឆ្នាំ, ចំណាយសេវាទៅរូបវន្តបុគ្គល …') +
-      ((SMW_PRINT && !String(amount).trim()) ? '' :
+      /* ⭐⭐ [stated] ២០២៦-១១-២៦ ៖ គ្មានកំណត់ពន្ធ ( ទទេ ឬ ០ ) ⇒ ឃ្លា
+         លំនាំដើម ។ ⚠ លេខមានសញ្ញាក្បៀស ⇒ ត្រូវសម្អាតមុន `parseFloat`
+         បើមិនដូច្នេះទេ «1,234,567» ក្លាយជា ១ ⇒ នៅតែ > ០ ដោយចៃដន្យ
+         ( ករណីនេះលទ្ធផលដូចគ្នា តែកុំពឹងលើសំណាង ) ។ */
+      smwRow('មូលដ្ឋាន៖', 'basis', 3, 'ឧ. របាយការណ៍ធនាគារ, ទិន្នន័យ Cross-Check, លម្អៀងទិន្នន័យនាំចូល, លម្អៀងចំនួនបុគ្គលិកបានប្រកាស និងជាក់ស្ដែង, លម្អៀងចំណូលប្រចាំខែ និងប្រចាំឆ្នាំ, ចំណាយសេវាទៅរូបវន្តបុគ្គល …',
+        (__smwNoTax ? SMW_NOTAX_TXT : '')) +
+      /* ⚠ D61 ៖ ពីមុនលាក់តែពេល **ទទេ** ⇒ ០ នៅតែបោះពុម្ព «០ រៀល» ។
+         ឥឡូវលាក់ទាំងករណីសូន្យ ។ លើអេក្រង់នៅដដែល ⇒ វាយចូលបាន ។ */
+      ((SMW_PRINT && __smwNoTax) ? '' :
         '<div class="smw-r smw-amt"><span class="bq">▪</span><span class="k2">ទឹកប្រាក់កំណត់ពន្ធ៖</span>' +
         (SMW_PRINT
           ? '<span class="smw-fill smw-txt">' + esc(amount) + '</span>'
@@ -69587,7 +69671,7 @@ else CC.init();
      ការរក្សាទុកឥឡូវ **រាយលេខជំហាន** លើផ្ទាំង ហើយផ្អាកអោយផ្ទាំងគូររួច
      មុននឹងចាប់ការងារធ្ងន់នីមួយៗ។ សារចុងក្រោយដែលឃើញ = ជំហានដែលគាំង។
      លេខ build ក៏បង្ហាញផង ដើម្បីដឹងច្បាស់ថាកំពុងប្រើឯកសារណា។ */
-  var RSC_BUILD = '19/11 · D57';
+  var RSC_BUILD = '19/11 · D61';
   try{ window.__RSC_BUILD = RSC_BUILD; }catch(e){}
 
   /* ⚠⚠ [stated] ២០២៦-០៨-១៣ ៖ រូបថតបង្ហាញ **«Page Unresponsive» របស់ Chrome**
