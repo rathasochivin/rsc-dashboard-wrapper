@@ -35,15 +35,115 @@
          ខណៈកម្មវិធីរុករកបន្តទាញឯកសារ ៤ MB ដែលមិនចាំបាច់ ។ */
     var done = false;
     var jump = function(u){ if(done) return; done = true; go(u); };
-    setTimeout(function(){ jump('./login.html'); }, 1200);
-    fetch('./login.html', {method:'HEAD', cache:'no-store'})
-      .then(function(r){ jump(r && r.status === 404 ? EXEC : './login.html'); })
-      .catch(function(){ jump('./login.html'); });
+    var openLogin = function(){
+      setTimeout(function(){ jump('./login.html'); }, 1200);
+      fetch('./login.html', {method:'HEAD', cache:'no-store'})
+        .then(function(r){ jump(r && r.status === 404 ? EXEC : './login.html'); })
+        .catch(function(){ jump('./login.html'); });
+    };
+
+    /* ⭐⭐ [stated] ២០២៦-១១-២៦ ៖ «តើខ្ញុំអាចធ្វើឱ្យ user ដទៃនៅពេល log in ចូល
+       ដាក់ថា website temporary close បានទេ» — **ផ្នែក ខ ៖ ផ្លាកនៅ teamsmos.com** ។
+       ⇒ ដាក់ឯកសារតូចមួយ `maintenance.json` ក្បែរ index.html ក្នុង GitHub ៖
+            { "closed": true, "msg": "...", "until": "..." }
+          បិទ ⇒ closed: true   ·   បើក ⇒ closed: false  ( ឬលុបឯកសារចោល )
+       ⚠ នេះជា **ផ្លាកសញ្ញា មិនមែនសោ** ៖ សោពិតនៅ Code.gs ( maintGate_ ) ។
+         អ្នកដែលដឹងតំណ /exec ផ្ទាល់ ឆ្លងផ្លាកនេះបាន តែ Code.gs បដិសេធគេដដែល ។
+       ⚠ អ្នកដែលចូលរួចហើយ ( token ) មិនប៉ះពាល់ទេ ⇒ ឆ្មាំនេះបានត្រឡប់ទៅវិញ
+         តាំងពីខាងលើហើយ ( hasQ || hasS ) ។
+       ⚠ ពេលកំណត់ ៩០០ ម.វិ ៖ បើឯកសារមិនឆ្លើយ ⇒ ដើរធម្មតា មិនរាំងអ្នកប្រើ ។ */
+    var mDone = false;
+    var mNext = function(st){
+      if(mDone) return; mDone = true;
+      if(st && st.closed){
+        done = true;                       /* ⚠ ហាមឆ្មាំលោតទៅ login.html */
+        try{ window.stop(); }catch(e){}    /* ឈប់ទាញឯកសារ ៧ MB ដែលនៅសល់ */
+        rscClosedPage(st);
+        return;
+      }
+      openLogin();
+    };
+    setTimeout(function(){ mNext(null); }, 900);
+    fetch('./maintenance.json?t=' + Date.now(), {cache:'no-store'})
+      .then(function(r){ return (r && r.ok) ? r.json() : null; })
+      .then(function(j){ mNext(j); })
+      .catch(function(){ mNext(null); });
+
+    /* ផ្ទាំងបិទ ៖ ពណ៌និងត្រាដូចផ្ទាំងចូល ⇒ អ្នកប្រើដឹងថាជាប្រព័ន្ធដដែល
+       មិនមែនទំព័រខូច ។ ⚠ គ្មានកូដ JS ក្នុងផ្ទាំង ⇒ ប្រើ onclick ជំនួស ។ */
+    function rscClosedPage(st){
+      var esc = function(x){
+        return String(x == null ? '' : x)
+          .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+          .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+      };
+      var msg  = (st && st.msg)  ? st.msg  : 'ប្រព័ន្ធកំពុងផ្អាកបណ្តោះអាសន្នសម្រាប់ការថែទាំ ។';
+      var till = (st && st.until) ? st.until : '';
+      /* ⚠⚠ កុំប្រើ document.write ៖ ស្គ្រីបនេះកំពុងត្រូវបានញែក ( parser )
+         ⇒ `document.open()` ត្រឡប់ទទេតាមស្តង់ដារ ហើយអ្វីៗមិនចេញសោះ ។
+           វាស់រួច ៖ ទំព័រនៅតែជា «SYSTEM · 19/11-D39» ។
+         ⇒ ប្តូរ DOM ផ្ទាល់វិញ ក្រោយ window.stop() ។ */
+      var h =
+        '<head><meta charset="UTF-8">'
+      + '<meta name="viewport" content="width=device-width, initial-scale=1">'
+      + '<title>បិទបណ្តោះអាសន្ន — RSC</title><style>'
+      + ':root{--bg:#0B2F30;--bg2:#0F3D3E;--card:#114547;--card2:#0D3A3C;'
+      + '--gold:#C8A64B;--gold2:#F0C860;--ink:#EFE7D2;--ink-dim:rgba(239,231,210,.62);'
+      + '--line:rgba(200,166,75,.28);--line2:rgba(200,166,75,.5)}'
+      + '*{box-sizing:border-box}html,body{height:100%}'
+      + 'body{margin:0;min-height:100vh;color:var(--ink);'
+      + "font:15px/1.8 'Khmer OS Siemreap','Noto Sans Khmer',system-ui,-apple-system,'Segoe UI',sans-serif;"
+      + 'display:flex;align-items:center;justify-content:center;padding:24px;'
+      + 'background:radial-gradient(120% 90% at 50% -20%,#16585A 0,transparent 60%),'
+      + 'linear-gradient(180deg,var(--bg2) 0,var(--bg) 100%)}'
+      + '#box{width:100%;max-width:430px;position:relative;text-align:center;'
+      + 'background:linear-gradient(180deg,var(--card) 0,var(--card2) 100%);'
+      + 'border:1px solid var(--line);border-radius:4px;padding:38px 30px 30px;'
+      + 'box-shadow:0 24px 60px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.05)}'
+      + '#box::before{content:"";position:absolute;inset:7px;'
+      + 'border:1px solid rgba(200,166,75,.16);border-radius:2px;pointer-events:none}'
+      + '.seal{width:74px;height:74px;display:block;margin:0 auto}'
+      + '.ring{fill:none;stroke:var(--gold);stroke-width:1.1}'
+      + '.ring2{stroke:rgba(200,166,75,.42)}.gem{fill:var(--gold2)}'
+      + '.ticks line{stroke:var(--gold);stroke-width:1.1;stroke-linecap:round;opacity:.75}'
+      + '.orn{display:flex;align-items:center;gap:9px;margin:16px auto 20px;max-width:190px}'
+      + '.orn::before,.orn::after{content:"";flex:1 1 auto;height:1px;'
+      + 'background:linear-gradient(90deg,transparent,var(--line2),transparent)}'
+      + '.orn i{width:5px;height:5px;background:var(--gold);transform:rotate(45deg)}'
+      + 'h1{margin:0 0 5px;font-size:19px;font-weight:700;letter-spacing:.02em}'
+      + '.en{margin:0 0 18px;font-size:11.5px;letter-spacing:.14em;'
+      + 'text-transform:uppercase;color:var(--ink-dim)}'
+      + '.msg{margin:0;font-size:15px}'
+      + '.till{margin:14px 0 0;font-size:13px;color:var(--ink-dim)}'
+      + '.btn{margin-top:24px;padding:12px 24px;border:0;border-radius:3px;'
+      + 'background:linear-gradient(180deg,var(--gold2),var(--gold));color:#17170F;'
+      + 'font:inherit;font-weight:700;letter-spacing:.06em;cursor:pointer}'
+      + '.btn:hover{filter:brightness(1.07)}'
+      + '</style></head><body style="margin:0"><div id="box">'
+      + '<svg class="seal" viewBox="0 0 88 88" aria-hidden="true">'
+      + '<circle class="ring" cx="44" cy="44" r="35"/>'
+      + '<circle class="ring ring2" cx="44" cy="44" r="27"/>'
+      + '<rect class="gem" x="38" y="38" width="12" height="12" transform="rotate(45 44 44)"/>'
+      + '<g class="ticks"><line x1="44" y1="4" x2="44" y2="11"/>'
+      + '<line x1="44" y1="77" x2="44" y2="84"/><line x1="4" y1="44" x2="11" y2="44"/>'
+      + '<line x1="77" y1="44" x2="84" y2="44"/></g></svg>'
+      + '<div class="orn"><i></i></div>'
+      + '<h1>បិទបណ្តោះអាសន្ន</h1>'
+      + '<p class="en">Website temporarily closed</p>'
+      + '<p class="msg">' + esc(msg) + '</p>'
+      + (till ? '<p class="till">រំពឹងបើកវិញ ៖ ' + esc(till) + '</p>' : '')
+      + '<button class="btn" onclick="location.reload()">ព្យាយាមម្តងទៀត</button>'
+      + '</div></body>';
+      try{
+        document.documentElement.innerHTML = h;
+        document.title = 'បិទបណ្តោះអាសន្ន — RSC';
+      }catch(e){}
+    }
   }catch(e){}
 })();
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SYSTEM · 18/11-D10</title>
+<title>SYSTEM · 19/11-D39</title>
 <!-- ដាក់លើអេក្រង់ដើមទូរស័ព្ទ ៖ រូបតំណាង ឈ្មោះ និងបើកពេញអេក្រង់
      manifest ដាក់ជា data URL ព្រោះ Apps Script បម្រើឯកសារតែមួយ។ -->
 <meta name="mobile-web-app-capable" content="yes">
@@ -2786,7 +2886,8 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
 #view-tracking .smw-lh .lh-left .lh-b:first-child::after,
 #docs-modal .smw-lh .lh-left .lh-b:first-child::after{
   content:''; position:absolute; left:50%; bottom:0; transform:translateX(-50%);
-  width:62%; border-top:1.2px solid #1a237e; }
+  /* [stated] ២០២៦-១១-១៨ ០៩:៤៩ ៖ បន្ទាត់វែងជាងនេះ ( វាស់ពីរូប ៩១% ) */
+  width:91%; border-top:1.2px solid #1a237e; }
 #view-tracking .smw-lh .lh-left > div:not(.lh-b),
 #docs-modal .smw-lh .lh-left > div:not(.lh-b){
   font-family:'Khmer OS Siemreap','Noto Sans Khmer',sans-serif !important;
@@ -2802,21 +2903,29 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
 /* ⭐⭐⭐ [stated] ២០២៦-១១-១៨ ០០:០៩ ៖ លេខរមាំងជួរឈរថេរ ( ត្រូវដូច SMW_CSS ) */
 #view-tracking .smw-h .smw-n, #docs-modal .smw-h .smw-n{ display:inline-block; width:20px; }
 #view-tracking .smw-r.smw-run, #docs-modal .smw-r.smw-run{
-  display:block; padding-left:10px; text-indent:-10px; }
+  display:block; padding-left:17px; text-indent:-17px; }
 #view-tracking .smw-r.smw-run > span, #docs-modal .smw-r.smw-run > span{ margin-right:6px; }
 /* ⭐⭐⭐ [stated] ២០២៦-១១-១៨ ០០:១៥ ៖ ▪ ជួរទូរសព្ទត្រូវដូចជួរផ្សេង
    ( ត្រូវដូច SMW_CSS បេះបិទ — មើលសេចក្តីពន្យល់នៅទីនោះ ) ។ */
-#view-tracking .smw-r.smw-run > .bq, #docs-modal .smw-r.smw-run > .bq{ margin-right:5px;
-  display:inline-block; vertical-align:top; line-height:1.42; }
+#view-tracking .smw-r.smw-run > .bq, #docs-modal .smw-r.smw-run > .bq{ margin-right:11px;
+  text-indent:0; display:inline-block; vertical-align:top; line-height:1.42; }
 #view-tracking .smw-r, #docs-modal .smw-r{
   display:flex; flex-wrap:wrap; align-items:baseline; gap:0 6px; margin:0 0 2px; }
 #view-tracking .smw-h, #docs-modal .smw-h{
   font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif; font-size:12.5px;
   margin:12px 0 4px; }
-#view-tracking .smw-hr .v, #docs-modal .smw-hr .v,
-#view-tracking .smw-r .v2, #docs-modal .smw-r .v2{ font-weight:600; }
+/* ⭐⭐⭐ [stated] ២០២៦-១១-១៨ ០៩:៤៩ ៖ ស្លាកដិត · តម្លៃធម្មតាខ្មៅ
+   ( ត្រូវដូច SMW_CSS បេះបិទ ) ។ ⚠ បញ្ច្រាសពីមុន ៖ ពីមុនតម្លៃដិត ។
+   ⚠ ជួរ «សម្គាល់៖» ពេលធីក នៅដិតខ្មៅដដែល ( .smw-agree .smw-fill
+     មាន !important ⇒ ច្បាប់ខាងក្រោមមិនប៉ះវា ) ។ */
+#view-tracking .smw-hr .k, #docs-modal .smw-hr .k,
+#view-tracking .smw-hr .c, #docs-modal .smw-hr .c,
 #view-tracking .smw-r .k2, #docs-modal .smw-r .k2,
-#view-tracking .smw-hr .k2, #docs-modal .smw-hr .k2{ font-weight:400; }
+#view-tracking .smw-hr .k2, #docs-modal .smw-hr .k2{ font-weight:700; color:#000; }
+#view-tracking .smw-hr .v, #docs-modal .smw-hr .v,
+#view-tracking .smw-r .v2, #docs-modal .smw-r .v2,
+#view-tracking .smw-fill, #docs-modal .smw-fill,
+#view-tracking .smw-txt, #docs-modal .smw-txt{ font-weight:400; color:#000; }
 #view-tracking .smw-fill, #docs-modal .smw-fill{
   outline:none; padding:1px 2px;
   background:transparent; white-space:pre-wrap; }
@@ -3082,12 +3191,12 @@ html.rsc-mobile-print #docs-modal .smw-r .bq{ font-size:.44em; line-height:4.2; 
      `transform` ត្រូវការតែ **ពេលព្រីន** ដើម្បីឱ្យការកាត់ទំព័រត្រឹមត្រូវ ;
      អេក្រង់គ្មានការកាត់ទំព័រ ⇒ `zoom` ល្អជាង ។ */
   #view-tracking .cv-cover-page .cv-sheet, #docs-modal .cv-cover-page .cv-sheet{
-    zoom:var(--cv-sc, 0.824); transform:none; width:auto;
-    min-height:calc((var(--cv-box, 270.4mm) - var(--cv-pad, 14mm) - var(--cv-gap, 0mm))
-      / var(--cv-sc, 0.824)); }
+    zoom:var(--cv-sc, 0.886); transform:none; width:auto;
+    min-height:calc((var(--cv-box, 280mm) - var(--cv-pad, 4mm) - var(--cv-gap, 0mm))
+      / var(--cv-sc, 0.886)); }
   #view-tracking .cv-cover-page .cv-in, #docs-modal .cv-cover-page .cv-in{
-    min-height:calc((var(--cv-box, 270.4mm) - var(--cv-pad, 14mm) - var(--cv-gap2, 3mm))
-      / var(--cv-sc, 0.824)); }
+    min-height:calc((var(--cv-box, 280mm) - var(--cv-pad, 4mm) - var(--cv-gap2, 3mm))
+      / var(--cv-sc, 0.886)); }
   /* ⚠⚠ [stated] ២០២៦-១១-១៤ ៖ «លិខិតតាមដានឯកសារ … នៅបាត់ជើងតារាង» ។
      ⚠ វាស់បាន ( អេក្រង់ ) ៖ .cv-in = ២៥៤,៣mm តែ .cv-sheet = ២៤៦mm
        ⇒ ខាងក្នុងហៀរចេញក្រៅស៊ុម ⇒ បន្ទាត់បាតស៊ុមលែងឃើញ ។
@@ -3258,6 +3367,9 @@ html.rsc-mobile-print #docs-modal .smw-r .bq{ font-size:.44em; line-height:4.2; 
 #view-tracking .trk-m-ind-g, #docs-modal .trk-m-ind-g{margin:8px 0;}
 #view-tracking .trk-m-ind-g > .trk-m-p,
 #docs-modal .trk-m-ind-g > .trk-m-p{margin:0;}
+/* [stated] ២០២៦-១១-១៨ ១១:១៨ ៖ ត្រូវដូច TRK_MIN_CSS ( អ្វីដែលឃើញ = អ្វីដែលព្រីន ) */
+#view-tracking .trk-m-ind-r, #docs-modal .trk-m-ind-r{margin:0;}
+#view-tracking .trk-m-ind-e, #docs-modal .trk-m-ind-e{margin:0 0 8px;}
 #view-tracking .trk-m-rep, #docs-modal .trk-m-rep{display:flex; gap:36px; margin:3px 0 3px 2.2em; flex-wrap:wrap;}
 #view-tracking .trk-m-rep span, #docs-modal .trk-m-rep span{min-width:240px;}
 #view-tracking .trk-m-signgrp, #docs-modal .trk-m-signgrp{margin-bottom:20px; page-break-inside:avoid; break-inside:avoid;}
@@ -4919,11 +5031,18 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
   background:#f2efe6; font-weight:700; line-height:1.45;
   color:var(--mtr-navy); overflow:hidden;
 }
-/* Every ប្រភេទពន្ធ box is the same width AND the same height: long labels
-   are clipped with an ellipsis rather than wrapping onto a second line
-   (hover / title shows the full name). */
+/* ⭐⭐⭐ [stated] ២០២៦-១១-១៨ ០៩:២៦ ៖ «ផ្នែកប្រភេទពន្ធនេះកុំឱ្យដាច់អក្សរ
+   ជាពិសេសអត្រា បើអាចបន្ថយទំហំអក្សរកន្លែងនោះ» ។
+   ⚠⚠ ច្បាប់ចាស់កាត់អក្សរដោយ ellipsis ⇒ «ពន្ធកាត់ទុក១០%» ក្លាយជា
+     «ពន្ធកាត់ទុក១…» ⇒ **អត្រាបាត់** ដែលជាផ្នែកសំខាន់បំផុតនៃឈ្មោះ
+     ( ១០% ធៀប ១៥% ធៀប ៦% ជាពន្ធផ្សេងគ្នា ) ។ ចំណងជើងពេញឃើញតែពេល
+     ដាក់កណ្តុរ ⇒ លើក្រដាសបាត់ទាំងស្រុង ។
+   ⇒ ចុះបន្ទាត់ជំនួសការកាត់ ហើយបន្ថយទំហំអក្សរ ។
+   ⚠ `overflow-wrap:anywhere` ចាំបាច់ ៖ ខ្មែរមិនប្រើដកឃ្លារវាងពាក្យ
+     ⇒ បើគ្មានវា ស្លាកវែងនឹងហៀរចេញជំនួសការចុះបន្ទាត់ ។ */
 #mtr-embed table.mtr-grid thead th .mtr-th-label{
-  display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  display:block; white-space:normal; overflow:visible; text-overflow:clip;
+  font-size:.88em; line-height:1.3; overflow-wrap:anywhere;
 }
 #mtr-embed table.mtr-grid thead th.mtr-note{
   background:#faf8f2; font-weight:400; font-size:10.5px; color:#555; white-space:nowrap;
@@ -5136,7 +5255,8 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
 #mtr-embed .mtr-foot-left{flex:1 1 auto; min-width:0;}
 #mtr-embed .mtr-foot-right{flex:0 0 auto;}
 #mtr-embed .mtr-late-note{
-  text-align:left; margin:0; font-size:12px; line-height:1.7;
+  /* [stated] ២០២៦-១១-១៨ ០៩:៥៨ ៖ «បន្ថែមទំហំ ១ លេខ» ⇒ ១២ ⇒ ១៣px */
+  text-align:left; margin:0; font-size:13px; line-height:1.7;
   white-space:nowrap; break-inside:avoid; page-break-inside:avoid;
 }
 #mtr-embed .mtr-late-h{font-weight:700; margin-bottom:2px;}
@@ -11513,6 +11633,9 @@ window.__rscWhyMissing = function(store, year){
   }
   var arr = S[store] || [], y = String(year);
   var parse = function(v){
+    /* ⚠ ត្រូវដូច ym() ក្នុង rscUploadReport បេះបិទ ( Date object ក៏ទទួល ) */
+    if(v instanceof Date && !isNaN(v.getTime()))
+      return { y:String(v.getFullYear()), m:v.getMonth() + 1 };
     var s = String(v == null ? '' : v).replace(/[០-៩]/g, function(c){
       return String(c.charCodeAt(0) - 0x17E0);
     }).trim();
@@ -11563,6 +11686,14 @@ function rscUploadReport(){
 
   /* ទទួល «2022-01-15» និង «15-01-2022» និង «15/01/2022» និងលេខខ្មែរ */
   function ym(v){
+    /* ⭐⭐ [stated] ២០២៦-១១-១៨ ៖ រកឃើញពេលវិភាគករណី «មានឯកសារ តែថាខ្វះខែ» ៖
+       ជួរខ្លះមានវាល date ជា **Date object** ( មិនមែនខ្សែអក្សរ ) ⇒ ការបំលែង
+       ទៅខ្សែអក្សរឱ្យ «Thu Jan 15 2026…» ⇒ គ្មានលំនាំណាត្រូវ ⇒ ធ្លាក់ចូល
+       «គ្មានកាលបរិច្ឆេទ» ⇒ ខែនោះរាយថាខ្វះទាំងដែលឯកសារមាន ។
+       ⚠ Date object ច្បាស់លាស់ ១០០% ⇒ ទទួលវាតែម្តង ។ លេខស៊េរី Excel
+         មិនទទួលទេ ( លេខធម្មតាអាចជាអ្វីផ្សេង ) ⇒ ប៊ូតុង 🔎 បង្ហាញវាជំនួស ។ */
+    if(v instanceof Date && !isNaN(v.getTime()))
+      return { y:String(v.getFullYear()), m:v.getMonth() + 1 };
     var s = String(v == null ? '' : v).replace(/[០-៩]/g, function(c){
       return String(c.charCodeAt(0) - 0x17E0);
     }).trim();
@@ -11595,6 +11726,7 @@ function rscUploadReport(){
     ['otherExpenses', 'ចំណាយផ្សេងៗ']
   ];
 
+  var STORE_KEYS = STORES.map(function(s){ return s[0]; });
   var rows = [], anyGap = false, noted = 0, gapYears = 0;
   STORES.forEach(function(st){
     var arr = [];
@@ -11749,6 +11881,67 @@ function rscUploadReport(){
         : '<span style="color:#A83A26;">មិនមានទិន្នន័យ TOI</span>')
     + '</div>';
 
+  /* ⭐⭐⭐ [stated] ២០២៦-១១-១៨ ៖ បញ្ជីឯកសារនៃការផ្ទុកចុងក្រោយ ។
+     ⚠ វាកើតពីការផ្ទុកក្នុង **វេននេះ** ប៉ុណ្ណោះ ( `__rscImpLog` មិនរក្សាទុក )
+       ⇒ បើបើកកម្មវិធីឡើងវិញ វាទទេ — នេះជាការពិត មិនមែនកំហុស ។ */
+  try{
+    var IL = (window.__rscImpLog || []).slice();
+    if(IL.length){
+      var CATLAB = { sale:'SALE', purchase:'PURCHASE', saleCD:'CN/DN លក់',
+        purchaseCD:'CN/DN ទិញ', wht:'WHT', otherExpenses:'ចំណាយផ្សេងៗ',
+        vatRvc:'វិធីគិតអាករជំនួស', customs:'គយ', mtr:'MTR', toi:'TOI', tos:'បៀវត្ស' };
+      var bad = IL.filter(function(x){ return !x.forwarded && !(x.rowsImported > 0); });
+      /* ⭐⭐⭐ [stated] ២០២៦-១១-១៨ ០៨:៥៥ ៖ ផ្ទុក ៨៦ ឯកសារ · គ្មានឯកសារចេញ
+         ០ ជួរ · តែខែ ០១ នៅតែមិនឃើញក្នុង SR ⇒ ឯកសារនោះចូល **ឃ្លាំងផ្សេង** ។
+         ⇒ ត្រូវការ ២ យ៉ាង ៖ សង្ខេបតាមប្រភេទ ( ឃើញភ្លាមថាមានឯកសារចូលគយ
+           ប៉ុន្មាន ) និងប្រអប់ស្វែងរកតាមឈ្មោះ ( ៨៦ ជួរ រកដោយដៃពិបាក ) ។ */
+      var byCat = {};
+      IL.forEach(function(x){
+        var c = x.category || '(សម្គាល់មិនបាន)';
+        byCat[c] = byCat[c] || { n:0, rows:0 };
+        byCat[c].n++;
+        byCat[c].rows += (+x.rowsImported || 0);
+      });
+      var catSum = Object.keys(byCat).sort(function(a,b){ return byCat[b].n - byCat[a].n; })
+        .map(function(c){
+          return '<span style="display:inline-block; margin:2px 6px 2px 0; padding:1px 7px;'
+            + 'background:#F6F3E9; border:1px solid #e3dcc8; border-radius:999px;">'
+            + esc(CATLAB[c] || c) + ' <b>' + byCat[c].n + '</b> ឯកសារ'
+            + (byCat[c].rows ? ' · ' + byCat[c].rows.toLocaleString('en-US') + ' ជួរ' : '')
+            + '</span>';
+        }).join('');
+      h += '<details style="margin:10px 0 4px;"' + (bad.length ? ' open' : '') + '>'
+        + '<summary style="cursor:pointer; font-weight:700;">📥 ឯកសារនៃការផ្ទុកចុងក្រោយ ( '
+        + IL.length + ' )'
+        + (bad.length ? ' <span style="color:#A83A26;">⚠ ' + bad.length + ' ឯកសារចេញ ០ ជួរ</span>' : '')
+        + '</summary>'
+        + '<div style="margin:6px 0 4px;">' + catSum + '</div>'
+        + '<input id="urImpQ" type="search" placeholder="🔍 រកតាមឈ្មោះឯកសារ… ( ឧ. SALE_01_2026 )"'
+        + ' style="width:100%; padding:5px 8px; border:1px solid #d8d2c0; border-radius:6px;'
+        + ' font-family:inherit; font-size:12.5px; margin-bottom:6px;">'
+        + '<div style="max-height:220px; overflow:auto;">'
+        + '<table style="width:100%; border-collapse:collapse; font-size:12px;">';
+      IL.forEach(function(x){
+        var zero = !x.forwarded && !(x.rowsImported > 0);
+        h += '<tr data-impf="' + esc(String(x.file).toLowerCase()) + '" style="'
+          + (zero ? 'background:#FDECEA;' : '') + '">'
+          + '<td style="padding:3px 5px; border-bottom:1px solid #f0ece0;">' + esc(x.file) + '</td>'
+          + '<td style="padding:3px 5px; border-bottom:1px solid #f0ece0; white-space:nowrap;">'
+          + (x.category ? esc(CATLAB[x.category] || x.category)
+                        : '<span style="color:#A83A26;">សម្គាល់មិនបាន</span>') + '</td>'
+          + '<td style="padding:3px 5px; text-align:right; border-bottom:1px solid #f0ece0;'
+          + (zero ? 'color:#A83A26; font-weight:700;' : '') + '">'
+          + (x.forwarded ? '→ ម៉ូឌុល' : (x.rowsImported || 0) + ' ជួរ') + '</td></tr>'
+          + (zero && x.likelyCause
+              ? '<tr data-impf="' + esc(String(x.file).toLowerCase()) + '" style="background:#FDECEA;">'
+                + '<td colspan="3" style="padding:0 5px 4px 14px;'
+                + 'color:#A83A26; font-size:11.5px;">⇒ ' + esc(x.likelyCause) + '</td></tr>'
+              : '');
+      });
+      h += '</table></div></details>';
+    }
+  }catch(e){}
+
   if(!rows.length){
     h += '<div style="color:#A83A26;">មិនមានទិន្នានុប្បវត្តិណាមួយត្រូវបានផ្ទុកទេ។</div>';
   } else {
@@ -11785,6 +11978,14 @@ function rscUploadReport(){
           + (nt ? 'color:#125c2e; background:#DCF0DF; border:1px solid #A9D6B4;">📝 ខ្វះខែ '
                 : 'color:#A83A26;">⚠ ខ្វះខែ ')
           + ranges(miss) + '</span>'
+          /* ⭐⭐⭐ [stated] ២០២៦-១១-១៨ ៖ ប៊ូតុងវិភាគ ⇒ ឆ្លើយថា «ហេតុអ្វី» ។
+             ⚠ តែឃ្លាំងពិត ( STORES ) ប៉ុណ្ណោះ ៖ TOS · VATRVC មានឆ្នាំ/ខែ
+               ផ្ទាល់ មិនមាន `state[key]` ⇒ ការវិភាគនឹងឆ្លើយខុស ។ */
+          + (STORE_KEYS.indexOf(r.key) >= 0
+              ? ' <span data-why="' + esc(r.key + '|' + y) + '"'
+                + ' title="ហេតុអ្វីខែទាំងនេះរាយថាខ្វះ? ⇒ ពិនិត្យជួរពិតក្នុងឃ្លាំង"'
+                + ' style="cursor:pointer; color:#0F3D3E; font-weight:700;">🔎</span>'
+              : '')
           + (nt ? '<div style="color:#3d6b4c; font-size:11.5px; padding-left:2px;">'
                   + esc(nt.t)
                   /* [stated] ២០២៦-០៩-០២ ៖ «បញ្ចូលពេលណា ដាក់ថ្ងៃខែឆ្នាំពេលនោះ
@@ -11801,7 +12002,9 @@ function rscUploadReport(){
       h += '<tr><td style="padding:4px 5px; border-bottom:1px solid #ece7d8;">' + esc(r.label) + '</td>'
         + '<td style="padding:4px 5px; text-align:center; border-bottom:1px solid #ece7d8;">' + r.n + '</td>'
         + '<td style="padding:4px 5px; border-bottom:1px solid #ece7d8;">' + (cells || '—')
-        + (r.noDate ? '<div style="color:#A83A26;">⚠ ' + r.noDate + ' ជួរគ្មានកាលបរិច្ឆេទ</div>' : '')
+        + (r.noDate ? '<div style="color:#A83A26;">⚠ ' + r.noDate + ' ជួរគ្មានកាលបរិច្ឆេទ'
+              + ' <span data-nod="' + esc(r.key || '') + '" title="មកពីឯកសារណា?"'
+              + ' style="cursor:pointer; color:#0F3D3E; font-weight:700;">🔎</span></div>' : '')
         + (r.note ? '<div style="color:#6b736f;">' + esc(r.note) + '</div>' : '')
         + '</td></tr>';
     });
@@ -11907,6 +12110,123 @@ function rscUploadReport(){
       else rscGapNoteSet(k, 'សហគ្រាសមិនបានប្រកាស', sp.getAttribute('data-miss'));
       try{ ov.remove(); }catch(e){}
       rscUploadReport();
+    };
+  });
+
+  /* ⭐⭐⭐ [stated] ២០២៦-១១-១៨ ០៨:៣៧ ៖ «មានឯកសារ តែវាថាខ្វះខែ» ។
+     បីមូលហេតុដែលអាចកើត ( មើលសេចក្តីពន្យល់នៅ __rscWhyMissing ) ៖
+       ១. ឯកសារមិនបានផ្ទុកក្នុងវេននេះ ( រើសក្នុង Explorer ≠ ផ្ទុក )
+       ២. ផ្ទុករួច តែគ្មានជួរខាងក្នុង
+       ៣. មានជួរ តែថ្ងៃអានមិនបាន ឬចុះក្នុង **ឆ្នាំផ្សេង**
+     ⚠ ប្រើ ym() ដដែលនឹងតារាង ⇒ លេខមិនអាចផ្ទុយគ្នាបានឡើយ ។ */
+  /* ⭐⭐⭐ [stated] ២០២៦-១១-១៨ ០៩:០៣ ៖ ជួរគ្មានកាលបរិច្ឆេទមកពីឯកសារណា ។
+     ⚠ ព័ត៌មាននេះមកពីការនាំចូល **ក្នុងវេននេះ** ( `__rscImpLog` ) ⇒ បើបើក
+       កម្មវិធីឡើងវិញ វាទទេ ⇒ និយាយឱ្យច្បាស់ ជាជាងបង្ហាញបញ្ជីទទេស្ងាត់ ។ */
+  card.querySelectorAll('[data-nod]').forEach(function(sp){
+    sp.onclick = function(ev){
+      ev.stopPropagation();
+      var k = sp.getAttribute('data-nod');
+      var IL2 = (window.__rscImpLog || []).filter(function(x){
+        return x.category === k && x.noDateRows > 0;
+      });
+      var box = document.createElement('div');
+      box.setAttribute('data-nodbox', '1');
+      box.style.cssText = 'margin:4px 0 6px; padding:8px 10px; background:#FDECEA;'
+        + 'border-left:3px solid #A83A26; border-radius:6px; font-size:12px; line-height:1.75;';
+      if(!IL2.length){
+        box.innerHTML = '<b>🔎 ជួរគ្មានកាលបរិច្ឆេទ</b><br>'
+          + 'ព័ត៌មានឯកសារមានតែក្រោយការផ្ទុកក្នុងវេននេះ ។ '
+          + 'សូមផ្ទុកឯកសារម្តងទៀត រួចចុច 🔎 នេះវិញ ⇒ វានឹងប្រាប់ឈ្មោះឯកសារ ។';
+      }else{
+        box.innerHTML = '<b>🔎 ជួរគ្មានកាលបរិច្ឆេទ មកពីឯកសារ ៖</b><br>'
+          + IL2.map(function(x){
+              return '• <b>' + esc(x.file) + '</b> — ' + x.noDateRows + ' ជួរ'
+                + ((x.noDateSamples || []).length
+                    ? '<div style="padding-left:12px; color:#8a3b2b; font-size:11.5px;">'
+                      + esc((x.noDateSamples || []).join('  |  ')) + '</div>'
+                    : '');
+            }).join('')
+          + '<div style="color:#0F3D3E; margin-top:4px;">⇒ បើកឯកសារទាំងនេះ '
+          + 'រួចពិនិត្យជួរឈរ «កាលបរិច្ឆេទ» ៖ ទទេ ឬទម្រង់ប្លែក ( ឧ. ១៥.០១.២០២៦ '
+          + 'ឬអត្ថបទ ) ⇒ កែជា ថ្ងៃ-ខែ-ឆ្នាំ រួចផ្ទុកម្តងទៀត ។</div>';
+      }
+      var host = sp.parentNode;
+      if(host && host.nextSibling && host.nextSibling.getAttribute
+         && host.nextSibling.getAttribute('data-nodbox')){
+        host.parentNode.removeChild(host.nextSibling); return;
+      }
+      if(host && host.parentNode) host.parentNode.insertBefore(box, host.nextSibling);
+    };
+  });
+
+  /* ⭐ ស្វែងរកក្នុងបញ្ជីឯកសារ ⇒ ៨៦ ជួរក៏រកឃើញភ្លាម */
+  var impQ = card.querySelector('#urImpQ');
+  if(impQ){
+    impQ.oninput = function(){
+      var q = String(impQ.value || '').trim().toLowerCase();
+      card.querySelectorAll('[data-impf]').forEach(function(tr){
+        tr.style.display = (!q || tr.getAttribute('data-impf').indexOf(q) >= 0) ? '' : 'none';
+      });
+    };
+    impQ.onclick = function(ev){ ev.stopPropagation(); };
+  }
+
+  card.querySelectorAll('[data-why]').forEach(function(sp){
+    sp.onclick = function(ev){
+      ev.stopPropagation();
+      var kv = String(sp.getAttribute('data-why') || '').split('|');
+      var sk = kv[0], yy = String(kv[1] || '');
+      var arr = [];
+      try{ arr = state[sk] || []; }catch(e){ arr = []; }
+      var inY = 0, bad = 0, other = {}, byM = {}, samp = [];
+      arr.forEach(function(r){
+        var d = ym(r && r.date);
+        if(!d){
+          bad++;
+          if(samp.length < 3){
+            var v = r && r.date;
+            samp.push(String(v === undefined ? '(គ្មានវាល date)' : (v === '' ? '(ទទេ)' : v)).slice(0, 28)
+                      + ' [' + (v instanceof Date ? 'Date' : typeof v) + ']');
+          }
+          return;
+        }
+        if(d.y === yy){ inY++; byM[d.m] = (byM[d.m] || 0) + 1; }
+        else other[d.y] = (other[d.y] || 0) + 1;
+      });
+      var oy = Object.keys(other).sort().map(function(k){ return k + ' ៖ ' + other[k] + ' ជួរ'; });
+      var mm = Object.keys(byM).map(Number).sort(function(a, b){ return a - b; })
+                 .map(function(m){ return 'ខែ ' + m + ' ៖ ' + byM[m]; });
+      var why;
+      if(!arr.length)      why = 'ឃ្លាំងនេះគ្មានជួរណាមួយសោះ ⇒ ឯកសារមិនបានផ្ទុក ។';
+      else if(!inY && bad) why = 'គ្មានជួរណាចុះឆ្នាំ ' + yy + ' ទេ ហើយមានជួរ ' + bad
+                               + ' ដែលអានថ្ងៃមិនបាន ⇒ ថ្ងៃក្នុងឯកសារជាទម្រង់ដែលប្រព័ន្ធមិនស្គាល់ ។';
+      else if(!inY)        why = 'គ្មានជួរណាចុះឆ្នាំ ' + yy + ' ទេ ⇒ ឯកសារឆ្នាំនេះមិនបានផ្ទុក ។';
+      else if(bad)         why = 'ជួរ ' + bad + ' អានថ្ងៃមិនបាន ⇒ វាមិនចូលខែណាទេ ។ '
+                               + 'នេះអាចជាមូលហេតុនៃខែដែលខ្វះ ។';
+      else                 why = 'ជួរទាំងអស់អានថ្ងៃបាន ហើយ **គ្មានជួរណាចុះថ្ងៃក្នុងខែដែលខ្វះ** ⇒ '
+                               + 'ឯកសារខែនោះមិនទាន់ផ្ទុក ឬវាគ្មានជួរខាងក្នុង ។ '
+                               + 'ពិនិត្យថាបានចុច «ផ្ទុកបន្ថែម» លើឯកសារនោះពិតប្រាកដ ។';
+      var box = document.createElement('div');
+      box.style.cssText = 'margin:4px 0 6px; padding:8px 10px; background:#F6F3E9;'
+        + 'border-left:3px solid #0F3D3E; border-radius:6px; font-size:12px; line-height:1.75;';
+      box.innerHTML = '<b>🔎 ហេតុអ្វីខ្វះខែ ( ' + esc(yy) + ' )</b><br>'
+        + 'ជួរសរុបក្នុងឃ្លាំង ៖ <b>' + arr.length + '</b>'
+        + ' · ជួរក្នុងឆ្នាំ ' + esc(yy) + ' ៖ <b>' + inY + '</b>'
+        + ' · អានថ្ងៃមិនបាន ៖ <b style="color:' + (bad ? '#A83A26' : '#1c6b35') + ';">' + bad + '</b><br>'
+        + (mm.length ? 'ជួរតាមខែ ៖ ' + esc(mm.join(' · ')) + '<br>' : '')
+        + (oy.length ? '<span style="color:#A83A26;">ជួរចុះក្នុងឆ្នាំផ្សេង ៖ ' + esc(oy.join(' · '))
+                       + '</span><br>' : '')
+        + (samp.length ? '<span style="color:#A83A26;">គំរូថ្ងៃដែលអានមិនបាន ៖ ' + esc(samp.join(' | '))
+                       + '</span><br>' : '')
+        + '<span style="color:#0F3D3E;">⇒ ' + why + '</span>';
+      var host = sp.parentNode;
+      if(host && host.nextSibling && host.nextSibling.getAttribute
+         && host.nextSibling.getAttribute('data-whybox')){
+        host.parentNode.removeChild(host.nextSibling);   /* ចុចម្តងទៀត ⇒ បិទ */
+        return;
+      }
+      box.setAttribute('data-whybox', '1');
+      if(host && host.parentNode) host.parentNode.insertBefore(box, host.nextSibling);
     };
   });
 
@@ -17320,13 +17640,30 @@ function rowsFromCustomsSheet(aoa, sheetName){
   });
   return out;
 }
+/* ⭐⭐⭐ [stated] ២០២៦-១១-១៨ ០៨:៤៤ ៖ «ហេតុអ្វីមិនស្គាល់ខែ០១ ឆ្នាំ២០២៦ …
+   បើមានបញ្ហានេះកើតឡើងលើខែនេះ១ អាចមានបញ្ហាកើតឡើងផ្សេងទៀត ដែរធ្វើឱ្យខ្វះ
+   ឯកសារ នាំឱ្យមានបញ្ហាធំ» ។
+   ⚠⚠⚠ មូលហេតុពិត ( ផ្ទៀងផ្ទាត់ដោយឯកសារពិត ) ៖ ក្បាលជួរឈរ C នៃទម្រង់ GDT
+     គឺ «លេខវិក្កយបត្រ **ឬប្រតិវេទន៍គយ**» ⇒ មានពាក្យ «ប្រតិវេទន៍គយ»
+     ⇒ វិធានចាស់ចាត់ឯកសារ **SALE ទាំងមូល** ជា «គយ» ⇒ ជួរទាំង ៤ ចូល
+     ឃ្លាំងគយ មិនចូល SR ⇒ ខែ ០១ រាយថាខ្វះ ទាំងដែលឯកសារផ្ទុករួច ។
+     ការវាស់ ៖ category='customs' · rowsFromSheet(aoa,'sale')=4 ជួរ ។
+   ⇒ បែងចែក **សញ្ញាខ្លាំង** ( ផ្តាច់មុខរបស់ឯកសារគយ ) ពី **សញ្ញាខ្សោយ** ៖
+     សញ្ញាខ្សោយរាប់តែពេលសន្លឹកនោះ **មិនមែន** ទិន្នានុប្បវត្តិទិញ/លក់ ។
+   ⚠ «លេខប្រតិវេទន៍គយ» ≠ «ឬប្រតិវេទន៍គយ» ⇒ ឯកសារគយពិតនៅតែចាប់បាន ។ */
 function detectIsCustoms(fn, aoa, sheetNames, relPath){
   const p = String(fn || '') + ' ' + String(relPath || '');
   if(/គយ|customs/i.test(p)) return true;
   const head = (aoa || []).slice(0, 14).map(r => (r || []).join(' ')).join(' ');
-  return head.indexOf('លេខប្រតិវេទន៍គយ') >= 0
-      || head.indexOf('អគ្គនាយកដ្ឋានគយ') >= 0
-      || head.indexOf('ប្រតិវេទន៍គយ') >= 0;
+  /* សញ្ញាខ្លាំង ៖ មានតែក្នុងឯកសារគយពិត */
+  if(head.indexOf('លេខប្រតិវេទន៍គយ') >= 0) return true;
+  if(head.indexOf('អគ្គនាយកដ្ឋានគយ') >= 0) return true;
+  /* សញ្ញាខ្សោយ ៖ «ប្រតិវេទន៍គយ» ទទេៗ — វាលេចក្នុងក្បាល SALE/PURCHASE ដែរ
+     ⇒ រាប់តែពេលសន្លឹកនេះមិនមែនទិន្នានុប្បវត្តិទិញ/លក់ ។ */
+  const looksJournal = head.indexOf('លេខវិក្កយបត្រ') >= 0
+                    || head.indexOf('ទិន្នានុប្បវត្តិលក់') >= 0
+                    || head.indexOf('ទិន្នានុប្បវត្តិទិញ') >= 0;
+  return head.indexOf('ប្រតិវេទន៍គយ') >= 0 && !looksJournal;
 }
 /* ══ បញ្ចូលទិន្នន័យគយតាម **ឯកសារ** ═══════════════════════════════════
    [stated] ២០២៦-១០-២៩ ៖ «កន្លែង upload file អាចរើស file លើសពី១បានទេ
@@ -21137,6 +21474,21 @@ function __rscSkipped(){
   try{ console.table(window.__rscSkippedRows); }catch(e){ console.log(window.__rscSkippedRows); }
   return window.__rscSkippedRows.length;
 }
+/* ⭐⭐ [stated] ២០២៦-១១-១៨ ៖ អ្នកអានថ្ងៃរួម — ត្រូវដូច `ym()` ក្នុង
+   rscUploadReport បេះបិទ ⇒ ចំនួន «គ្មានកាលបរិច្ឆេទ» ដែលរាប់ពេលនាំចូល
+   មិនអាចផ្ទុយនឹងលេខក្នុងរបាយការណ៍បានឡើយ ។ */
+function rscYmOf(v){
+  if(v instanceof Date && !isNaN(v.getTime()))
+    return { y:String(v.getFullYear()), m:v.getMonth() + 1 };
+  var s = String(v == null ? '' : v).replace(/[០-៩]/g, function(c){
+    return String(c.charCodeAt(0) - 0x17E0);
+  }).trim();
+  var m = s.match(/^(\d{4})[-\/.](\d{1,2})/);
+  if(m) return { y:m[1], m:parseInt(m[2], 10) };
+  m = s.match(/^(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{4})/);
+  if(m) return { y:m[3], m:parseInt(m[2], 10) };
+  return null;
+}
 function rscLooksDate(v){
   if(v instanceof Date) return true;
   if(typeof v === "number") return v > 20000 && v < 80000;      /* Excel serial */
@@ -21280,6 +21632,26 @@ function rowsFromOtherExpensesSheet(sheet){
   let autoNo = 1;
   for(const arr of aoa){
     const noVal = arr[0];
+    /* ⭐⭐⭐ [stated] ២០២៦-១១-១៨ ០៩:១១ ៖ «⚠ 19 ជួរគ្មានកាលបរិច្ឆេទ … ការិយ
+       បរិច្ឆេទនៅជួរ B» ⇒ រកឃើញពីឯកសារពិត ៖ ជួរ **«សរុប (KHR)»** នៃទម្រង់
+       GDT ( ជួរទី ៣ មុនទិន្នន័យ ) កំពុងចូលជាជួរទិន្នន័យ ។
+       ⚠⚠ វាមិនត្រឹមតែបង្កើត «ជួរគ្មានកាលបរិច្ឆេទ» ទេ — វា **រាប់ចំណាយ
+         ស្ទួន** ៖ ការវាស់ដោយឯកសារពិត ៣,៥០០,០០០ ⇒ នាំចូល ៧,០០០,០០០ ។
+         ឯកសារ ១៩ ⇒ ១៩ ជួរសរុបស្ទួន ។
+       ⚠ ហេតុអ្វីវិធានចាស់មិនចាប់ ៖ `rscIsHeaderRow` ត្រឡប់ false ភ្លាម
+         ពេលមានលេខក្នុងជួរទឹកប្រាក់ ( ជួរសរុបមានលេខ ) ; ហើយវិធានទី ២
+         រកឃើញអត្ថបទ «សរុប (KHR)» ក្នុងជួរឈរឈ្មោះ ⇒ ទុកវាជាជួរពិត ។
+       ⇒ វិធានពិត ៖ ការចំណាយដែលប្រកាសមាន **ថ្ងៃ** ឬ **លេខវិក្កយបត្រ** ។
+         គ្មានទាំងថ្ងៃ · គ្មានលេខ · គ្មានលេខសម្គាល់ក្រសួង ⇒ ប្លុកសរុប ។
+       ⚠ កត់ត្រាទុកក្នុង `__rscSkipped()` ⇒ គ្មានអ្វីបាត់ស្ងាត់ៗ ។ */
+    if(!rscLooksDate(arr[1]) && rscBlankish(arr[2]) && rscBlankish(arr[4])){
+      if(rscLooksNum(arr[6])){
+        try{ window.__rscSkippedRows.push({ kind:'otherExpenses',
+            why:'ជួរសរុប ( គ្មានថ្ងៃ · គ្មានលេខវិក្កយបត្រ · គ្មានលេខសម្គាល់ក្រសួង )',
+            row:arr.slice(0, 8) }); }catch(e){}
+      }
+      continue;
+    }
     /* ល.រ ជាអក្សរ ឬលេខខ្មែរ ក៏ជាជួរប្រកាសដែរ ; ក្បាលតារាងត្រូវរំលង ។ */
     if(rscIsHeaderRow(arr, 6)) continue;
     if(rscSeqNo(noVal) === null
@@ -21302,12 +21674,29 @@ function rowsFromOtherExpensesSheet(sheet){
 // Detects the "ប្រភេទការកែតម្រូវ" (adjustment type) column in a CN/DN
 // export — the column that holds the literal text CREDIT or DEBIT for
 // each row.
+/* ⭐⭐⭐ [stated] ២០២៦-១១-១៨ ០៨:៥២ ៖ «ខ្ញុំផ្ទុកឯកសារថ្មីទាំងស្រុងពី zip …
+   ហេតុអ្វីវាចូលតែខែ០១ ឆ្នាំ២០២៦ នឹងមួយ» ។
+   ⚠⚠⚠ មូលហេតុពិត ( រកឃើញពីឯកសារពិតរបស់អ្នកប្រើ ) ៖ មុខងារនេះស្កេន
+     **គ្រប់ក្រឡា** រកពាក្យ «កែតម្រូវ» ។ ក្នុងឯកសារ SALE ខែ ០១/២០២៦
+     ជួរឈរ «បរិយាយ» នៃវិក្កយបត្រមួយសរសេរថា ៖
+       «សេវាកម្មស្នើសុំ**កែតម្រូវ**អាសយដ្ឋានម្ចាស់ម៉ា…»
+     ⇒ វាយល់ថាមានជួរឈរ «ប្រភេទកែតម្រូវ» ⇒ ឯកសារ SALE ទាំងមូលក្លាយជា
+       **CN/DN លក់** ⇒ ជួរទាំង ៤ ចូលឃ្លាំង CN/DN មិនចូល SR ⇒ ខែ ០១
+       រាយថាខ្វះ ។ នេះជាមូលហេតុដែលខុសតែឯកសារនេះមួយ ៖ មានតែវាទេដែល
+       **បរិយាយវិក្កយបត្រ**មានពាក្យនោះ ។
+   ⇒ វិធានថ្មី ៖ ចំណងជើងជួរឈរ មិនមែនខ្លឹមសារវិក្កយបត្រ ៖
+       · រំលងជួរដែលមាន **កាលបរិច្ឆេទ** ( ជួរទិន្នន័យ មិនមែនក្បាលតារាង )
+       · ទទួលតែក្រឡា **ខ្លី** ( ចំណងជើងពិតដូច «ប្រភេទកែតម្រូវ» ប្រវែង ១៤ )
+   ⚠ មេរៀនទូទៅ ៖ ការស្កេនពាក្យលើ **គ្រប់ក្រឡា** ប៉ះនឹងអត្ថបទសេរីដែល
+     អ្នកជាប់ពន្ធវាយចូល ⇒ ត្រូវកំណត់ត្រឹមតំបន់ក្បាលតារាងជានិច្ច ។ */
 function detectAdjTypeColumn(aoa){
   const scanRows = Math.min(aoa.length, HEADER_SCAN_ROWS);
   for(let ri=0; ri<scanRows; ri++){
     const row = aoa[ri] || [];
+    if(rscLooksDate(row[1])) continue;              /* ជួរទិន្នន័យ ⇒ មិនមែនក្បាល */
     for(let ci=0; ci<row.length; ci++){
       const cell = String(row[ci] ?? "").replace(/\u200b/g,"").trim();
+      if(!cell || cell.length > 24) continue;       /* អត្ថបទវែង ⇒ បរិយាយ */
       if(cell.includes("កែតម្រូវ")) return ci;
     }
   }
@@ -22491,6 +22880,20 @@ async function handleAutoFileImport(evt){
       try{
         var __d = __rscImpDiag(file.name, aoa, rows);
         __d.category = category;
+        /* ⭐⭐⭐ [stated] ២០២៦-១១-១៨ ០៩:០៣ ៖ «ជួរគ្មានកាលបរិច្ឆេទ … តើដឹង
+           ថា file មួយណាទេ» ⇒ រាប់ត្រង់នេះ ពេលយើងនៅដឹងឈ្មោះឯកសារ ។
+           ⚠ រក្សាតែ **លេខ** និងគំរូ ៣ ⇒ មិនប៉ះទំហំទិន្នន័យដែលរក្សាទុក ។ */
+        var __nd = 0, __ns = [];
+        (rows || []).forEach(function(r){
+          if(rscYmOf(r && r.date)) return;
+          __nd++;
+          if(__ns.length < 3){
+            __ns.push('ល.រ ' + (r && r.no != null ? r.no : '?')
+              + ' · ' + String((r && r.invoiceNo) || '(គ្មានលេខ)').slice(0, 18)
+              + ' · ថ្ងៃ ៖ ' + (String((r && r.date) || '') || '(ទទេ)'));
+          }
+        });
+        if(__nd){ __d.noDateRows = __nd; __d.noDateSamples = __ns; }
         window.__rscImpLog.push(__d);
       }catch(e){}
       try{
@@ -26478,6 +26881,61 @@ const MTR_TAX_SHORT_NAMES = {
   'ពន្ធប្រថាប់ត្រាផ្ទេរភាគហ៊ុនអត្រា០.១%'                  : 'ប្រថាប់ត្រាផ្ទេរភាគហ៊ុន',
 };
 
+/* ⭐⭐⭐ [stated] ២០២៦-១១-១៨ ០៩:៣៤ ៖ «លុប ស្លាកអាជីវកម្មដ្ឋាន · យើងរក្សា
+   តែ ១ ជួរបានហើយសម្រាប់ឈ្មោះប្រភេទពន្ធ កុំវែងពេក និងកុំឱ្យដាច់អត្ថន័យឬអត្រា»
+   ⚠ ប្រភេទពន្ធណាដែល **គ្មាន**ក្នុង MTR_TAX_SHORT_NAMES ធ្លាក់មកឈ្មោះពេញ
+     ( `MTR_TAX_SHORT_NAMES[full] || full` ) ⇒ ឈ្មោះផ្លូវការវែង ( ឧ. ឈ្មោះ
+     ដែលបញ្ចប់ដោយ «… និងស្លាកអាជីវកម្មដ្ឋាន» ) ត្រូវចុះ ២–៣ ជួរដេក ។
+   ច្បាប់ខ្លី — ធ្វើ **តែពេលឈ្មោះវែងជាង MTR_TH_MAX** ( ឈ្មោះខ្លីមិនប៉ះ ) ៖
+     ១. ដកអត្រា ( ១០% · អត្រា០.១% ) ទុកមួយឡែក រួចដាក់ត្រឡប់វិញនៅចុង
+        ⇒ **អត្រាមិនអាចបាត់បានឡើយ** ទោះកាត់ផ្នែកណាក៏ដោយ
+     ២. បញ្ជីភ្ជាប់ដោយ «និង» ឬ «ឬ» ⇒ យកធាតុទីមួយ ( ធាតុចុងក្រោយជាការរាប់
+        បន្ថែម មិនមែនជាអត្ថន័យគោលនៃប្រភេទពន្ធ )
+     ៣. បុព្វបទស្តង់ដារ ៖ «ពន្ធកាត់ទុកលើ» ⇒ «ពន្ធកាត់ទុក» ។ល។
+   ⚠⚠ **មិនកាត់ពាក់កណ្តាលពាក្យទេ** ៖ បើនៅវែង ទុកឱ្យវាចុះបន្ទាត់ ( D18 )
+     ប្រសើរជាងកាត់អត្ថន័យ ។ ឈ្មោះពេញនៅគង់ទាំងស្រុងក្នុង `title`
+     ( ដាក់កណ្តុរមើល ) និងក្នុងទិន្នន័យ ការគណនា និងការនាំចេញទាំងអស់ ។ */
+const MTR_TH_MAX = 16;
+function mtrThLen(s){
+  /* សញ្ញាស្រៈ/ជើង ខ្មែរ មិនបន្ថែមទទឹង ⇒ កុំរាប់វា */
+  return String(s == null ? '' : s).replace(/[\u17B4-\u17D3\u200B\s]/g, '').length;
+}
+/* [stated] ២០២៦-១១-១៨ ០៩:៣៤ ៖ «លុប ស្លាកអាជីវកម្មដ្ឋាន» ⇒ ពាក្យបន្ថែមនេះ
+   ដកចេញពី **ក្បាលជួរឈរ** ជានិច្ច ( ទោះឈ្មោះខ្លីក៏ដោយ ) ។ ⚠ ឈ្មោះពេញនៅគង់
+   ក្នុង `title` ក្នុងទិន្នន័យ និងក្នុងការនាំចេញ — នេះជាការបង្ហាញ មិនមែនការលុប
+   ទិន្នន័យទេ ។ ⚠ បើដកហើយសល់ខ្លីពេក ( < ៦ ) ⇒ រក្សាឈ្មោះដើមវិញ ។ */
+var MTR_TH_DROP = [/\s*(?:និង|ឬ)?\s*(?:លើ|នៃ|សម្រាប់|ចំពោះ)?\s*ស្លាកអាជីវកម្មដ្ឋាន/g,
+                   /\s*(?:និង|ឬ)?\s*(?:លើ|នៃ|សម្រាប់|ចំពោះ)?\s*អាជីវកម្មដ្ឋាន/g];
+function mtrShortTaxName(full){
+  var s = String(full == null ? '' : full).replace(/\s+/g, ' ').trim();
+  var d = s;
+  MTR_TH_DROP.forEach(function(re){ d = d.replace(re, ' '); });
+  d = d.replace(/\s+/g, ' ').replace(/[\s,·]+$/, '')
+       .replace(/(?:លើ|នៃ|សម្រាប់|ចំពោះ)$/, '').trim();   /* កុំឱ្យសល់ «…លើ» ទទេ */
+  if(mtrThLen(d) >= 6) s = d;
+  if(!s || mtrThLen(s) <= MTR_TH_MAX) return s;          /* ខ្លីស្រាប់ ⇒ មិនប៉ះ */
+  var rate = '';
+  var m = s.match(/(?:អត្រា\s*)?[០-៩0-9][០-៩0-9.,]*\s*%/);
+  if(m){
+    rate = m[0].replace(/អត្រា/g, '').replace(/\s+/g, '');
+    s = s.replace(m[0], ' ').replace(/\s+/g, ' ').trim();
+  }
+  var withRate = function(t){
+    t = String(t).replace(/[\s,·៖]+$/, '').trim();
+    return rate ? (t + ' ' + rate) : t;
+  };
+  var cut = s.split(/\s*(?:និង|ឬ)\s*/)[0].trim();        /* ១. យកធាតុទីមួយ */
+  if(mtrThLen(cut) >= 6) s = cut;
+  if(mtrThLen(withRate(s)) <= MTR_TH_MAX) return withRate(s);
+  var PRE = [['ពន្ធកាត់ទុកលើ','ពន្ធកាត់ទុក'], ['ពន្ធប្រថាប់ត្រាលើ','ប្រថាប់ត្រា'],
+             ['ពន្ធប្រថាប់ត្រា','ប្រថាប់ត្រា'], ['អាករពិសេសលើ','អាករពិសេស'],
+             ['អាករសម្រាប់','អាករ'], ['អាករលើ','អាករ'], ['ពន្ធលើ','ពន្ធ']];
+  for(var i = 0; i < PRE.length; i++){
+    if(s.indexOf(PRE[i][0]) === 0){ s = PRE[i][1] + s.slice(PRE[i][0].length); break; }
+  }
+  return withRate(s);
+}
+
 /* The tax type the whole form pivots on (ផលរបរគ្មាន VAT = this ÷ 1%). */
 const MTR_FORM_PREPAY_FULL  = 'ប្រាក់រំដោះពន្ធលើប្រាក់ចំណូល';
 const MTR_FORM_PREPAY_SHORT = 'ប្រាក់រំដោះ';
@@ -29131,6 +29589,46 @@ function vatRefundNoteLines(year){
   }
   return out.join('');
 }
+/* ⭐⭐⭐ [stated] ២០២៦-១១-១៨ ០៩:២២ ៖ «ករណីមានបង់ VATRVC ជួយសម្គាល់នៅ
+   ខាងក្រោម ដូចលក្ខខណ្ឌមុនដែរ ដោយបញ្ជាក់ ខែ១០ ឆ្នាំ២០២៥ សហគ្រាសបានបង់
+   អាករតាមវិធីជំនួសចំនួន 7,634 រៀល។ ព្រោះបើមិនបញ្ជាក់នោះទេ វានឹងធ្វើឱ្យមាន
+   លំអៀងរវាងសាលកបត្រអនុរក្ស ( អាករលើតម្លៃបន្ថែម ) និង សម្រង់» ។
+   ⚠⚠ ហេតុអ្វីគម្លាតនោះកើតឡើង ៖ ជួរ «អាករបានបង់» ក្នុងទម្រង់នេះដក
+     អាករជំនួសចេញ ( `r.c12 = c12 − cRvc` ) ព្រោះវាមិនមែនជាផ្នែកនៃខ្សែសង្វាក់
+     ធាតុចេញ − ធាតុចូល ⇒ វាទៅបង្ហាញក្នុងសាលកបត្រអនុរក្សវិញ ។
+   ⚠ ជួរធ្វើការ «អាករជំនួស (RVC)» ដែលបង្ហាញការដកនោះ **លាក់ពេលព្រីន**
+     ( `extra = forPrint ? [] : calcCols` ) ⇒ លើក្រដាស ការដកក្លាយជាស្ងាត់
+     ⇒ អ្នកអានឃើញតែគម្លាត ។ ⇒ កំណត់សម្គាល់នេះធ្វើឱ្យវាមិនស្ងាត់ទៀត ។ */
+function vatRvcNoteLines(year, rows){
+  const esc = x => String(x == null ? '' : x)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const out = [];
+  (rows || []).forEach(function(r, i){
+    const v = Math.round(Number(r && r.cRvc) || 0);
+    if(!v) return;
+    out.push('<div class="mtr-late-li">* ខែ ' + (i + 1) + ' ឆ្នាំ ' + esc(year)
+      + ' ៖ សហគ្រាសបានបង់អាករតាមវិធីគិតអាករជំនួស ចំនួន '
+      /* [stated] ២០២៦-១១-១៨ ០៩:៣៥ ៖ «លុបឃ្លានេះចេញ» ⇒ ឃ្លាពន្យល់អំពីជួរ
+         «អាករបានបង់» ត្រូវបានដកចេញ ; រក្សាតែការបញ្ជាក់ ខែ · ឆ្នាំ · ចំនួន ។ */
+      + esc(v.toLocaleString('en-US')) + ' ៛ ។</div>');
+  });
+  /* ⭐⭐⭐ [stated] ២០២៦-១១-១៨ ០៩:៥៨ ៖ ជួរសរុប ៖
+       «សរុបអតប (អាករជំនួស + អាករបានបង់) = … រៀល។»
+     ⚠ ជួរនេះចេញតែពេលមានអាករជំនួសយ៉ាងតិច ១ ខែ ( បើគ្មាន ⇒ គ្មានគម្លាត
+       ត្រូវពន្យល់ ⇒ មិនត្រូវដាក់ជួរសរុបឱ្យរញ៉េរញ៉ៃឡើយ ) ។ */
+  if(out.length){
+    var sRvc = 0, sPaid = 0;
+    (rows || []).forEach(function(r){
+      sRvc  += Math.round(Number(r && r.cRvc) || 0);
+      sPaid += Math.round(Number(r && r.c12)  || 0);
+    });
+    out.push('<div class="mtr-late-li">សរុបអតប ('
+      + esc(sRvc.toLocaleString('en-US')) + ' + '
+      + esc(sPaid.toLocaleString('en-US')) + ') = '
+      + esc((sRvc + sPaid).toLocaleString('en-US')) + ' រៀល។</div>');
+  }
+  return out.join('');
+}
 function latePayNoteHtml(year, taxNames, showTaxName, figs){
   let list = [];
   try{ list = latePayNoteRows(year, taxNames); }catch(e){ return ''; }
@@ -29415,7 +29913,7 @@ function getMTRFormColumns(yearRows){
     }
     byFull.set(full, {
       full,
-      short: MTR_TAX_SHORT_NAMES[full] || full,
+      short: MTR_TAX_SHORT_NAMES[full] || mtrShortTaxName(full),
       months,
       total: months.reduce((a, v)=> a + v, 0),
     });
@@ -30196,7 +30694,9 @@ function openFormPrintWindow(sheets){
     }
     table.mtr-grid thead th{background:#fff; font-weight:400;}
     table.mtr-grid thead th.mtr-note{background:#fff; font-weight:400; font-size:9px; color:#555; white-space:nowrap;}
-    .mtr-th-label{display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+    /* [stated] ២០២៦-១១-១៨ ៖ កុំកាត់អក្សរ ( អត្រាបាត់ ) — មើល #mtr-embed */
+    .mtr-th-label{display:block; white-space:normal; overflow:visible; text-overflow:clip;
+      font-size:.88em; line-height:1.3; overflow-wrap:anywhere;}
     table.mtr-grid.vat-grid{table-layout:auto; font-size:9px;}
     table.mtr-grid.vat-grid .mtr-th-label{white-space:normal; overflow:visible; text-overflow:clip;}
     table.mtr-grid tr.vat-credit-row td{text-align:center; font-weight:400; background:#fff;}
@@ -30207,7 +30707,8 @@ function openFormPrintWindow(sheets){
     .mtr-foot-row{display:flex; align-items:flex-start; justify-content:space-between; gap:24px;}
     .mtr-foot-left{flex:1 1 auto; min-width:0;}
     .mtr-foot-right{flex:0 0 auto;}
-    .mtr-late-note{text-align:left; margin:0; font-size:10.5px;
+    /* [stated] ២០២៦-១១-១៨ ០៩:៥៨ ៖ «បន្ថែមទំហំ ១ លេខ» ⇒ ១០,៥ ⇒ ១១,៥px */
+    .mtr-late-note{text-align:left; margin:0; font-size:11.5px;
       line-height:1.7; white-space:nowrap; break-inside:avoid; page-break-inside:avoid;}
     .mtr-late-h{font-weight:700; margin-bottom:2px;}
     .mtr-late-m{margin-top:6px;}
@@ -31241,11 +31742,12 @@ function buildVATFormSheet(year, opts){
             const rr = rows[m - 1];
             return rr ? { paid: rr.c12 || 0, due: rr.cDue || 0, diff: rr.cDiff || 0 } : null;
           });
-          const rfn = vatRefundNoteLines(year);
-          if(!rfn) return lpn;
-          if(lpn) return lpn.replace(/<\/div>\s*$/, rfn + '</div>');
+          /* [stated] ២០២៦-១១-១៨ ៖ បន្ថែមបន្ទាត់អាករជំនួស ក្នុងប្លុកដដែល */
+          const add = vatRefundNoteLines(year) + vatRvcNoteLines(year, rows);
+          if(!add) return lpn;
+          if(lpn) return lpn.replace(/<\/div>\s*$/, add + '</div>');
           return '<div class="mtr-late-note"><div class="mtr-late-h">កំណត់សម្គាល់ ៖</div>'
-               + rfn + '</div>';
+               + add + '</div>';
         })()}</div>
         <div class="mtr-foot-right">
           ${mtrFormDateLine(mtrFormOverride.docDate)}
@@ -32618,6 +33120,27 @@ function renderAuditView_() {
       if (schedNow) {
         const n = schedNow.length;
         sel.stageAmts = sel.stageAmts || {};
+        /* ⭐⭐⭐ [stated] ២០២៦-១១-១៨ ១១:៤៩ ៖ ការកែដោយដៃត្រូវជារបស់ **ជួរនេះ**
+           ពិតប្រាកដ ។ កូនសោ «ប្រភេទពន្ធ#លេខរៀង» រអិលបាន ( ជួរវាយដោយដៃ
+           ដាក់មុនជួរឯកសារ ) ⇒ ត្រូវផ្ទៀងនឹងទឹកប្រាក់ដើមរបស់ជួរ ។ */
+        const stBase = rowTaxN + '|' + rowAddN + '|' + rowIntN;
+        const stKeys = Object.keys(sel.stageAmts);
+        if (stKeys.length) {
+          if (sel.stageBase != null) {
+            if (String(sel.stageBase) !== stBase) { sel.stageAmts = {}; delete sel.stageBase; }
+          } else {
+            /* ទិន្នន័យចាស់ ៖ សម្រេចតាមផលបូក */
+            let sT = 0, sA = 0, sI = 0;
+            stKeys.forEach(function(k){
+              const o = sel.stageAmts[k] || {};
+              sT += Number(o.tax) || 0; sA += Number(o.addTax) || 0; sI += Number(o.interest) || 0;
+            });
+            if (Math.round(sT) === Math.round(rowTaxN)
+             && Math.round(sA) === Math.round(rowAddN)
+             && Math.round(sI) === Math.round(rowIntN)) sel.stageBase = stBase;
+            else { sel.stageAmts = {}; delete sel.stageBase; }
+          }
+        }
         sel.stages = schedNow.map(function(sc, i){
           const ov = sel.stageAmts[i] || {};
           const tx = ov.tax      != null ? Number(ov.tax)      : auditSplitAmt(rowTaxN, n, i);
@@ -32885,7 +33408,7 @@ function renderAuditView_() {
         const selsC = auditTaxSelections[code] || {};
         Object.keys(selsC).forEach(function(k){
           if(k === '__sched') return;
-          if(selsC[k]){ selsC[k].stages = null; delete selsC[k].stageAmts; }
+          if(selsC[k]){ selsC[k].stages = null; delete selsC[k].stageAmts; delete selsC[k].stageBase; }
         });
         toast('បានលុបដំណាក់កាល និងត្រឡប់មកបង់ធម្មតាវិញ ( គ្រប់ប្រភេទពន្ធ )', 'ok');
         renderAuditView();
@@ -32905,7 +33428,7 @@ function renderAuditView_() {
         const selsD = auditTaxSelections[code] || {};
         Object.keys(selsD).forEach(function(k){
           if(k === '__sched') return;
-          if(selsD[k]) delete selsD[k].stageAmts;
+          if(selsD[k]){ delete selsD[k].stageAmts; delete selsD[k].stageBase; }
         });
         toast('បានលុបដំណាក់កាលនេះ ( គ្រប់ប្រភេទពន្ធ )', 'ok');
         renderAuditView();
@@ -32931,6 +33454,19 @@ function renderAuditView_() {
             const selA = auditTaxSelections[code][tax];
             selA.stageAmts = selA.stageAmts || {};
             selA.stageAmts[sIdx] = { tax:st.tax, addTax:st.addTax, interest:st.interest };
+            /* ⭐⭐⭐ [stated] ២០២៦-១១-១៨ ១១:៤៩ ៖ បោះត្រាទឹកប្រាក់ដើមរបស់ជួរ
+               ⇒ បើថ្ងៃណាលេខរៀងរអិល ( បន្ថែមជួរដោយដៃ ) ការកែនេះនឹងមិនទៅ
+                 លេចនៅជួរផ្សេងឡើយ — មើលសេចក្តីពន្យល់ក្នុង renderAuditView ។
+               ⚠ យកតួលេខពីប្រអប់ដំណាក់កាលទាំងអស់ក្នុងជួរដដែល មិនមែនពី
+                 តារាងខាងលើ ⇒ មិនពឹងលើរចនាសម្ព័ន្ធ DOM ខាងក្រៅ ។ */
+            try{
+              const bx = e.target.closest('td') || document;
+              let bT = 0, bA = 0, bI = 0;
+              bx.querySelectorAll('.st-tax').forEach(function(x){ bT += Number(String(x.value).replace(/,/g,'')) || 0; });
+              bx.querySelectorAll('.st-add').forEach(function(x){ bA += Number(String(x.value).replace(/,/g,'')) || 0; });
+              bx.querySelectorAll('.st-int').forEach(function(x){ bI += Number(String(x.value).replace(/,/g,'')) || 0; });
+              selA.stageBase = bT + '|' + bA + '|' + bI;
+            }catch(err){}
 
             /* ⭐ [stated] ២០២៦-០៩-០៣ ៖ «ជួយបន្ថែមក្បៀស (,)» ⇒ ដាក់ទម្រង់
                ភ្លាមពេលវាយ ។ ⚠ ការសរសេរតម្លៃថ្មីចូល input ធ្វើឱ្យទស្សន៍ទ្រនិច
@@ -50315,10 +50851,23 @@ function minutesToHtml(P){
         .filter(function(x){ return x !== ''; });
       if(__ls.length <= 1)
         return `<p class="trk-m-p trk-m-indent">${esc(__ls[0] || '')}</p>`;
-      return `<div class="trk-m-ind-g">`
-        + __ls.map(function(x){
-            return `<p class="trk-m-p trk-m-indent">${esc(x)}</p>`; }).join('')
-        + `</div>`;
+      /* ⭐⭐⭐ [stated] ២០២៦-១១-១៨ ១១:១២ និង ១១:១៨ ៖ «ចុះបន្ទាត់ធំ» រួច
+         «លោតអក្សរជាន់ footer» ។
+         ⚠⚠ ពីមុនបន្ទាត់ទាំងនេះរុំក្នុង `<div class="trk-m-ind-g">` ៖
+           · ក្រុមក្លាយជា **ដុំតែមួយ** សម្រាប់ម៉ាស៊ីនបំបែកទំព័រ
+             ⇒ ក្រុមវែងលោតទាំងមូល ⇒ ចន្លោះទទេធំនៅទំព័រមុន ;
+           · ហើយបើបំបែកក្រុម បន្ទាត់ប្តូរឪពុកម្តាយ ⇒ ច្បាប់គម្លាតប្តូរតាម
+             ⇒ ការវាស់ និងការបោះពុម្ពលែងត្រូវគ្នា ⇒ ជាន់ជើងទំព័រ ។
+         ⇒ បន្ទាត់ចេញ **ដោយផ្ទាល់** ក្នុង `.nr-body` តាំងពីដើម ៖ ម៉ាស៊ីនវាស់
+           និងទំព័រព្រីនឃើញរចនាសម្ព័ន្ធ និងគម្លាតដូចគ្នាបេះបិទ ហើយបន្ទាត់
+           នីមួយៗអាចដាក់ទំព័រដោយឡែកបាន ⇒ ទំព័រពេញ មិនហៀរ ។
+         ⚠ រូបរាងមិនប្តូរ ៖ `trk-m-ind-r` = គម្លាត ០ ( ជាប់គ្នាដូចក្រុម ) ;
+           បន្ទាត់ចុងក្រោយ `trk-m-ind-e` កាន់គម្លាតបញ្ចប់ក្រុម ។ */
+      return __ls.map(function(x, i){
+        return `<p class="trk-m-p trk-m-indent trk-m-ind-r`
+          + (i === __ls.length - 1 ? ' trk-m-ind-e' : '')
+          + `">${esc(x)}</p>`;
+      }).join('');
     }
     /* ⭐⭐ [stated] ២០២៦-១១-០៦ ៖ «នៅផ្នែកកំណត់ហេតុ ករណីដែលទុកចន្លោះបែបនេះ
        គឺដើម្បីបំពេញសរសេរដៃ ដូចនេះជួយគូសបន្ទាត់ដើម្បីសរសេរផង» ⇒ កន្លែង
@@ -52754,8 +53303,8 @@ const WP_CSS = `
          ⇒ ផ្ទៃបោះពុម្ពពិតរបស់ iOS កាត់មិនដល់ស៊ុម ។ */
       /* [stated] ២០២៦-១១-១៤ ( ជុំទី ២ ) ៖ មាត្រដ្ឋានមកពីអថេរ ៖
          PC = 0.824 ( ដូចដើម ) · ទូរស័ព្ទ = 0.810 ( កែសម្រាប់ iOS ) ។ */
-      transform:scale(var(--cv-sc, 0.824)) !important; transform-origin:top left !important;
-      width:calc(100% / var(--cv-sc, 0.824)) !important; }
+      transform:scale(var(--cv-sc, 0.886)) !important; transform-origin:top left !important;
+      width:calc(100% / var(--cv-sc, 0.886)) !important; }
     /* ប្រអប់សន្លឹក ៖ កម្ពស់ពិតតែមួយគត់ ⇒ transform មិនចូលប្លង់
        ⇒ ទំព័រមិនអាចហៀរបានឡើយ ។ */
     /* [stated] ២០២៦-១១-១៤ ( ជុំទី ២ ) ៖ ប្រអប់សន្លឹកមុខមានកម្ពស់
@@ -52763,10 +53312,10 @@ const WP_CSS = `
        រឹម ៦,៣mm ដាច់ដោយឡែក ⇒ ត្រូវ B + P = 284.4 ទើបចន្លោះស្មើគ្នា
        ( មើលក្បាល fix_cvmid2.py ) ។ */
     .cv-cover-page{
-      height:var(--cv-box, 270.4mm) !important;
-      max-height:var(--cv-box, 270.4mm) !important;
+      height:var(--cv-box, 280mm) !important;
+      max-height:var(--cv-box, 280mm) !important;
       box-sizing:border-box !important;
-      padding-top:var(--cv-pad, 14mm) !important;
+      padding-top:var(--cv-pad, 4mm) !important;
       overflow:hidden !important; }
     /* ⚠ ផ្ទៃដែលមាន = 297 − 6.3 − 10.2 = **280.5mm** ។ min-height ជាកម្ពស់មុន
        zoom ⇒ 280.5 ÷ 0.87 ≈ 322mm (ស៊ុមក្នុងដក 3mm)។ */
@@ -52804,11 +53353,11 @@ const WP_CSS = `
        នៅដដែលបេះបិទនឹងមុនពេលកែ ។ */
     /* ⚠ −16mm ត្រូវទៅតាម ០,៧៩០ ៖ បើទុក −6mm សន្លឹកនឹងពេញ ២៤៦mm វិញ ។ */
     .cv-cover-page .cv-sheet{
-      min-height:calc((var(--cv-box, 270.4mm) - var(--cv-pad, 14mm) - var(--cv-gap, 0mm))
-        / var(--cv-sc, 0.824)) !important; }
+      min-height:calc((var(--cv-box, 280mm) - var(--cv-pad, 4mm) - var(--cv-gap, 0mm))
+        / var(--cv-sc, 0.886)) !important; }
     .cv-cover-page .cv-in{
-      min-height:calc((var(--cv-box, 270.4mm) - var(--cv-pad, 14mm) - var(--cv-gap2, 3mm))
-        / var(--cv-sc, 0.824)) !important; }
+      min-height:calc((var(--cv-box, 280mm) - var(--cv-pad, 4mm) - var(--cv-gap2, 3mm))
+        / var(--cv-sc, 0.886)) !important; }
   }
   /* ⚠ zoom:0.82 នៅទីនេះបង្រួម**ស្ទួន**លើការបង្រួមរបស់ .cv-sheet ហើយវាជា
      ប្រភពដដែលនៃការកាត់ទំព័រខុស ⇒ ដកចេញ ។ */
@@ -56747,7 +57296,8 @@ const SMW_CSS = `
   .smw-lh .lh-left .lh-b:first-child{ position:relative; padding-bottom:4px; }
   .smw-lh .lh-left .lh-b:first-child::after{
     content:''; position:absolute; left:50%; bottom:0; transform:translateX(-50%);
-    width:62%; border-top:1.2px solid #1a237e; }
+    /* [stated] ២០២៦-១១-១៨ ០៩:៤៩ ៖ ៩១% ( ត្រូវដូចច្បាប់អេក្រង់ ) */
+    width:91%; border-top:1.2px solid #1a237e; }
   /* ៣. បន្ទាត់ទី ៣ «នាយកដ្ឋានសវនកម្មសហគ្រាស» ប្រើ Khmer OS Siemreap */
   /* ជួរ Siemreap ៖ ១២,៥ ⇒ ១៣,៥px ( បង្កើន ១ លេខ ) ។ ⚠ Siemreap មើលទៅ
      តូចជាង Muol ទោះទំហំ px ដូចគ្នា ⇒ នេះជាសមាមាត្រដូចទម្រង់ដើម ។ */
@@ -56770,7 +57320,14 @@ const SMW_CSS = `
      ⚠ block ⇒ gap លែងដើរ ⇒ ត្រូវដាក់ margin ឱ្យ span ដោយខ្លួនឯង ។
      ⚠ text-indent អវិជ្ជមាន + padding ស្មើគ្នា = hanging indent ៖
        បន្ទាត់ទី ១ ចាប់ត្រង់ ▪ · បន្ទាត់បន្តចាប់ត្រង់ «ទូរសព្ទ» ។ */
-  .smw-r.smw-run{ display:block; padding-left:10px; text-indent:-10px; }
+  /* ⚠⚠ [stated] ២០២៦-១១-១៨ ០០:២០ ៖ «កាន់តែខុសជាងមុនទៀត» ។
+     មូលហេតុ ( វាស់បាន ) ៖ text-indent ជាលក្ខណៈ **តំណពូជ** ⇒ វាចូលទៅ
+     ក្នុង inline-block របស់ ▪ ដែរ ⇒ រូបសញ្ញាត្រូវរុញ −១០px ចេញក្រៅប្រអប់
+     ខ្លួនឯង ហើយទទឹងប្រអប់ ៦,២ − ១០ ⇒ ចាប់ត្រឹម **០px** ។
+     ⇒ ត្រូវកំណត់ text-indent:0 ឡើងវិញលើ ▪ ។
+     ⚠ គម្លាតត្រូវស្មើនឹងជួរ flex ៖ margin ៥px + gap ៦px = ១១px
+       ⇒ hanging indent = ទទឹង ▪ ៦,២ + ១១ ≈ ១៧px ។ */
+  .smw-r.smw-run{ display:block; padding-left:17px; text-indent:-17px; }
   .smw-r.smw-run > span{ margin-right:6px; }
   /* ⭐⭐⭐ [stated] ២០២៦-១១-១៨ ០០:១៥ ៖ «ទូរសព្ទ អត់ត្រង់ជួរដូចគេចឹង» ។
      ⚠⚠ មូលហេតុ ( វាស់បាន ) ៖ ជួរផ្សេងជា flex ⇒ ▪ ប្រើ align-self:start
@@ -56779,7 +57336,7 @@ const SMW_CSS = `
        ខុសគ្នា ២px ហើយក្បាលលើសពីអក្សរ ៥px ⇒ មើលទៅទាបជាងគេ ។
      ⇒ ធ្វើវាជា inline-block + vertical-align:top = សមមូលនឹង
        align-self:start ហើយ line-height ដូចគ្នា ⇒ កម្ពស់ត្រឡប់ ២៤,៩px ។ */
-  .smw-r.smw-run > .bq{ margin-right:5px;
+  .smw-r.smw-run > .bq{ margin-right:11px; text-indent:0;
     display:inline-block; vertical-align:top; line-height:1.42; }
   .smw-r{ display:flex; flex-wrap:wrap; align-items:baseline; gap:0 6px; margin:0 0 2px; }
   /* ⭐ [stated] ២០២៦-១១-១៧ ១១:៣៣ ៖ ជួរ «សហគ្រាសឯកភាព» ដិតខ្មៅ
@@ -56793,8 +57350,14 @@ const SMW_CSS = `
     min-width:0 !important; display:block !important; white-space:pre-wrap; }
   .smw-h{ font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif; font-size:12.5px;
     margin:12px 0 4px; }
-  .smw-hr .v, .smw-r .v2{ font-weight:600; }
-  .smw-r .k2, .smw-hr .k2{ font-weight:400; }
+  /* ⭐⭐⭐ [stated] ២០២៦-១១-១៨ ០៩:៤៩ ៖ «អក្សរដិត bold ធ្វើឱ្យដូចក្នុងរូប
+     ចាប់ពីសហគ្រាស ដល់សម្គាល់» ⇒ **ស្លាក** ដិត ;
+     «អត្ថន័យត្រូវបំពេញ ឬទាញបំពេញអូតូ ពណ៌ខ្មៅធម្មតា» ⇒ **តម្លៃ** ធម្មតា ។
+     ⚠ បញ្ច្រាសពីមុនបេះបិទ ( ពីមុន ៖ តម្លៃ ៦០០ · ស្លាក ៤០០ ) ។
+     ⚠ «លើកលែងតែករណីសម្គាល់មានធីក ដែរត្រូវសរសេរដិតខ្មៅ» ⇒ ច្បាប់
+       .smw-agree .smw-fill ខាងលើមាន !important ⇒ វានៅដិតដដែល ។ */
+  .smw-hr .k, .smw-hr .c, .smw-r .k2, .smw-hr .k2{ font-weight:700; color:#000; }
+  .smw-hr .v, .smw-r .v2, .smw-fill, .smw-txt{ font-weight:400; color:#000; }
   /* វាលបំពេញដោយដៃ ៖ បន្ទាត់ចុចៗ ⇒ ឃើញកន្លែងសរសេរ ទោះទទេ */
   /* ⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «លុបផ្នែកគូសបន្ទាត់ចេញ» ⇒ វាល
      បំពេញគ្មានបន្ទាត់ចុចៗទៀត ⇒ ស្អាតដូច Word ।
@@ -57121,6 +57684,12 @@ const TRK_MIN_CSS = `.trk-min-doc h4{font-family:'Khmer OS Muol Light','Noto Ser
      /* ក្រុមបន្ទាត់ចូលស្មើគ្នា ៖ ខាងក្នុងគ្មានគម្លាត ⇒ ដូចបន្ទាត់ធម្មតា */
      .trk-min-doc .trk-m-ind-g > .trk-m-p{margin:0 !important;}
      .trk-min-doc .nr-body > .trk-m-ind-g{margin:0 0 6px !important;}
+     /* [stated] ២០២៦-១១-១៨ ១១:១៨ ៖ បន្ទាត់ក្រុមឥឡូវជាកូនផ្ទាល់នៃ .nr-body
+        ⇒ ត្រូវសរសេរជាន់ច្បាប់រួម ( .nr-body > * margin:0 0 6px ) ដោយខ្លួនឯង ។
+        ⚠ ច្បាប់នេះឃើញទាំងក្នុងម៉ាស៊ីនវាស់ ទាំងក្នុងទំព័រព្រីន ( TRK_MIN_CSS
+          ចាក់ទាំងពីរកន្លែង ) ⇒ កម្ពស់វាស់ = កម្ពស់ពិត ។ */
+     .trk-min-doc .nr-body > .trk-m-ind-r{margin:0 !important;}
+     .trk-min-doc .nr-body > .trk-m-ind-e{margin:0 0 6px !important;}
      /* បន្ទាត់សរសេរដៃ ៖ ត្រូវតែបោះពុម្ពចេញ ⇒ ពណ៌ដិត និងកម្ពស់ថេរ */
      .trk-m-lines{margin:6px 0 10px;}
      .trk-m-ln{border-bottom:1px solid #333; height:9mm;
@@ -68368,7 +68937,7 @@ else CC.init();
      ការរក្សាទុកឥឡូវ **រាយលេខជំហាន** លើផ្ទាំង ហើយផ្អាកអោយផ្ទាំងគូររួច
      មុននឹងចាប់ការងារធ្ងន់នីមួយៗ។ សារចុងក្រោយដែលឃើញ = ជំហានដែលគាំង។
      លេខ build ក៏បង្ហាញផង ដើម្បីដឹងច្បាស់ថាកំពុងប្រើឯកសារណា។ */
-  var RSC_BUILD = '18/11 · D10';
+  var RSC_BUILD = '19/11 · D39';
   try{ window.__RSC_BUILD = RSC_BUILD; }catch(e){}
 
   /* ⚠⚠ [stated] ២០២៦-០៨-១៣ ៖ រូបថតបង្ហាញ **«Page Unresponsive» របស់ Chrome**
@@ -69640,10 +70209,20 @@ function rscBankOpen(){
   ov.style.cssText = 'position:fixed; inset:0; z-index:2147483140; background:#0d2b2c;'
     + 'display:flex; flex-direction:column; font-family:inherit; color:#171B1A;';
   document.body.appendChild(ov);
+  /* ⭐ [stated] ២០២៦-១១-១៩ ១១:០៧ ៖ «មាន scroll bar ពីរនៅខាងស្តាំ» ។
+     ផ្ទាំងស្តាំមានរបាររមូររបស់វា ហើយ **តួឯកសារពីក្រោយ**នៅរមូរបានដដែល
+     ⇒ របារទី ២ នៅគែមបង្អួច ។ ⇒ ចាក់សោរវាខណៈផ្ទាំងបើក ។
+     ⚠ រក្សាតម្លៃដើមទុកវិញ ( មិនសន្មតថា 'auto' ) ⇒ ផ្ទាំងផ្សេងមិនប៉ះពាល់ ។ */
+  var bodyOvf0 = document.body.style.overflow;
+  try{ document.body.style.overflow = 'hidden'; }catch(e){}
+  function unlockScroll(){ try{ document.body.style.overflow = bodyOvf0; }catch(e){} }
 
   var head = document.createElement('div');
-  head.style.cssText = 'flex:0 0 auto; padding:9px 13px; background:#0F3D3E; color:#EFE7D2;'
-    + 'display:flex; gap:8px; align-items:center; flex-wrap:wrap; font-size:13px;';
+  /* [stated] ២០២៦-១១-១៩ ១១:២៤ ៖ «តែ ១ ជួរ» ⇒ nowrap + គម្លាតតូចជាង ។
+     ⚠ `min-width:0` លើកូនៗ ( ស្លាកព័ត៌មាន ) ទើប nowrap មិនធ្វើឱ្យលើស ។ */
+  head.style.cssText = 'flex:0 0 auto; padding:7px 11px; background:#0F3D3E; color:#EFE7D2;'
+    + 'display:flex; gap:6px; align-items:center; flex-wrap:nowrap;'
+    + 'overflow:hidden; font-size:12.5px;';
   ov.appendChild(head);
   var body = document.createElement('div');
   body.style.cssText = 'flex:1 1 auto; display:flex; min-height:0; background:#f4f1e8;';
@@ -69679,23 +70258,43 @@ function rscBankOpen(){
   function btn(t, bg, fg){
     var b = document.createElement('button');
     b.textContent = t;
-    b.style.cssText = 'padding:6px 11px; border:0; border-radius:6px; cursor:pointer; font:inherit;'
-      + 'font-weight:700; font-size:12.5px; background:' + bg + '; color:' + fg + ';';
+    b.style.cssText = 'padding:5px 9px; border:0; border-radius:6px; cursor:pointer; font:inherit;'
+      + 'font-weight:700; font-size:12px; white-space:nowrap; flex:0 0 auto;'
+      + 'background:' + bg + '; color:' + fg + ';';
     return b;
   }
-  var bPdf = btn('📄 បើក PDF', '#C8A64B', '#17170F');
+  var bPdf = btn('📄 PDF', '#C8A64B', '#17170F');
+  bPdf.title = 'បើកឯកសារ PDF ឬ Excel';
   bPdf.onclick = function(){ pdfIn.click(); };
   var bDir = btn('📁 ថត', '#C8A64B', '#17170F');
-  bDir.onclick = function(){ pdfDir.click(); };
+  bDir.title = 'ជ្រើសថត ( ជំនួសបញ្ជីឯកសារបច្ចុប្បន្ន )';
+  var dirAdd = false;
+  bDir.onclick = function(){ dirAdd = false; pdfDir.click(); };
+  /* ⭐⭐⭐ [stated] ២០២៦-១១-១៩ ១០:៤៨ ៖ ថតឆ្នាំដាច់ៗគ្នា ⇒ ជ្រើសម្តងមួយ
+     ហើយបូកបញ្ចូលគ្នា ។ ( បើថតទាំងនោះនៅក្នុងថតមេតែមួយ ⇒ ជ្រើសថតមេ
+     គ្រប់គ្រាន់ហើយ ព្រោះការជ្រើសថតចុះថតរងដោយស្វ័យប្រវត្តិ ។ ) */
+  var bDirAdd = btn('＋ ថត', '#0F3D3E', '#EFE7D2');
+  bDirAdd.title = 'ជ្រើសថតមួយទៀត រួចបូកបញ្ចូលបញ្ជីឯកសារបច្ចុប្បន្ន'
+    + ' ( សម្រាប់ករណីថតឆ្នាំនីមួយៗដាច់ពីគ្នា )';
+  bDirAdd.onclick = function(){ dirAdd = true; pdfDir.click(); };
   /* បញ្ជីឯកសារ ៖ លេចតែពេលមានច្រើនជាង ១ */
   var fileSel = document.createElement('select');
-  fileSel.style.cssText = 'padding:6px 8px; border-radius:6px; max-width:210px;'
+  fileSel.style.cssText = 'padding:5px 7px; border-radius:6px; max-width:150px;'
     + 'border:1px solid rgba(200,166,75,.45); background:#0B2F30; color:#EFE7D2;'
-    + 'font:inherit; font-size:12.5px; display:none;';
+    + 'font:inherit; font-size:12px; display:none; flex:0 1 auto; min-width:0;';
   fileSel.onchange = function(){
     var f = pdfList[parseInt(fileSel.value, 10)];
     if(!f) return;
-    pdfFile = f; pdfUrl = URL.createObjectURL(f);
+    pdfFile = f;
+    /* [stated] ២០២៦-១១-១៩ ៖ Excel មិនអាចបង្ហាញក្នុងស៊ុម ⇒ កុំបញ្ជូនទៅវា
+       ( បើបញ្ជូន កម្មវិធីរុករកទាញយកឯកសារ ឬបង្ហាញទំព័រទទេ ) ។
+       ⚠ `pdfFile` នៅប្តូរតាមការជ្រើស ⇒ 🔍 អានស្វ័យប្រវត្តិ អានឯកសារនោះបាន ។ */
+    if(!/\.pdf$/i.test(String(f.name || ''))){
+      try{ frame.src = 'about:blank'; }catch(e){}
+      say('« ' + f.name + ' » ជាឯកសារ Excel ⇒ បង្ហាញជាទិដ្ឋភាពមិនបាន តែអានបាន');
+      return;
+    }
+    pdfUrl = URL.createObjectURL(f);
     frame.src = 'about:blank';
     setTimeout(function(){ frame.src = pdfUrl + '#page=1&view=FitH&navpanes=0'; }, 30);
   };
@@ -69722,16 +70321,123 @@ function rscBankOpen(){
      ⚠ ការផ្ទុកទំព័រឡើងវិញនៅតែបាត់ ៖ កម្មវិធីរុករកមិនអនុញ្ញាតឱ្យរក្សាទុក
        ឯកសារទេ ។ ដូច្នេះឈ្មោះឯកសារនៅតែជាការរំលឹកសំខាន់ ។ */
   var pdfMap = window.__rscBankPdfMap = (window.__rscBankPdfMap || {});
-  function takeFiles(list){
-    var arr = Array.prototype.slice.call(list || []).filter(function(f){
-      return /\.pdf$/i.test(f.name);
+  /* ⭐⭐⭐ [stated] ២០២៦-១១-១៩ ១២:០៧ ៖ «ហេតុអ្វីបាត់ឯកសារ PDF?»
+     ⇒ ឃ្លាំងឯកសារពិត ( IndexedDB ) ៖ រក្សា File បាន ខុសពី localStorage ។
+     ⚠ ដំណើរការអសមកាលទាំងអស់ ហើយ **បរាជ័យដោយស្ងៀម** ៖ បើឃ្លាំងប្រើមិនបាន
+       ( ម៉ូដឯកជន · ឃ្លាំងពេញ ) កម្មវិធីនៅដើរដដែល គ្រាន់តែត្រូវបើកឯកសារ
+       ដោយដៃវិញ ដូចមុន ។ */
+  var BK_DB = 'rscBankFiles', BK_ST = 'files', bkDbP = null;
+  function bkDb(){
+    if(bkDbP) return bkDbP;
+    bkDbP = new Promise(function(res, rej){
+      try{
+        var rq = indexedDB.open(BK_DB, 1);
+        rq.onupgradeneeded = function(e){
+          try{ e.target.result.createObjectStore(BK_ST); }catch(err){}
+        };
+        rq.onsuccess = function(e){ res(e.target.result); };
+        rq.onerror   = function(){ rej(rq.error || new Error('idb')); };
+      }catch(e){ rej(e); }
     });
-    if(!arr.length){ say('រកឯកសារ PDF មិនឃើញទេ', true); return; }
-    arr.sort(function(a, b){ return a.name.localeCompare(b.name); });
+    return bkDbP;
+  }
+  function bkPut(uid, files){
+    if(!uid || !files || !files.length) return Promise.resolve(false);
+    var tot = 0;
+    files.forEach(function(f){ tot += (f && f.size) || 0; });
+    if(tot > 400 * 1024 * 1024){
+      try{ say('ឯកសារសរុប ' + Math.round(tot / 1048576) + ' MB ⇒ ធំពេកសម្រាប់ឃ្លាំង'
+        + ' ⇒ មិនរក្សាទុកទេ ។ ពេលបើកកម្មវិធីវិញ សូមចុច 📄 ឬ 📁 ជ្រើសវាម្តងទៀត ។'); }catch(e){}
+      return Promise.resolve(false);
+    }
+    return bkDb().then(function(db){
+      return new Promise(function(res){
+        try{
+          var tx = db.transaction(BK_ST, 'readwrite');
+          tx.objectStore(BK_ST).put({ uid:uid, at:Date.now(), files:files.slice() }, uid);
+          tx.oncomplete = function(){ res(true); };
+          tx.onerror = tx.onabort = function(){ res(false); };
+        }catch(e){ res(false); }
+      });
+    }).catch(function(){ return false; });
+  }
+  function bkGet(uid){
+    if(!uid) return Promise.resolve(null);
+    return bkDb().then(function(db){
+      return new Promise(function(res){
+        try{
+          var g = db.transaction(BK_ST, 'readonly').objectStore(BK_ST).get(uid);
+          g.onsuccess = function(){ res((g.result && g.result.files) || null); };
+          g.onerror = function(){ res(null); };
+        }catch(e){ res(null); }
+      });
+    }).catch(function(){ return null; });
+  }
+  function bkDel(uid){
+    if(!uid) return;
+    bkDb().then(function(db){
+      try{ db.transaction(BK_ST, 'readwrite').objectStore(BK_ST).delete(uid); }catch(e){}
+    }).catch(function(){});
+  }
+  /* ⭐⭐⭐ [stated] ២០២៦-១១-១៩ ០៨:៤៩ ៖ ផ្ទុកជាថតហើយមិនស្គាល់ឯកសារ ។
+     ⚠ បញ្ជីនេះត្រូវដូច `rscBankAutoRead` បេះបិទ ៖ អ្វីដែលអ្នកអានអានបាន
+       ត្រូវឱ្យឆ្លងការច្រោះនេះ ។ ពីមុនច្រោះតែ .pdf ⇒ Excel ធ្លាក់ស្ងាត់ ។ */
+  var RX_BK_OK = /\.(pdf|xlsx|xlsm|xls|csv)$/i;
+  function takeFiles(list, add){
+    var raw = Array.prototype.slice.call(list || []);
+    var arr = raw.filter(function(f){ return f && RX_BK_OK.test(String(f.name || '')); });
+    if(!arr.length){
+      /* ⭐ កុំនិយាយត្រឹម «រកមិនឃើញ» ៖ រាយប្រភេទដែលឃើញ ⇒ ដឹងភ្លាមថាខុសណា */
+      var ex = {};
+      raw.forEach(function(f){
+        var m = /\.([A-Za-z0-9]+)$/.exec(String((f && f.name) || ''));
+        var k = m ? ('.' + m[1].toLowerCase()) : '( គ្មានកន្ទុយឈ្មោះ )';
+        ex[k] = (ex[k] || 0) + 1;
+      });
+      var det = Object.keys(ex).sort(function(a, b){ return ex[b] - ex[a]; }).slice(0, 5)
+                  .map(function(k){ return k + ' × ' + ex[k]; }).join(' · ');
+      say(raw.length
+        ? ('ថតនេះមាន ' + raw.length + ' ឯកសារ តែគ្មានប្រភេទណាដែលអានបានទេ'
+           + ' ( ' + det + ' )\nត្រូវការ ៖ .pdf · .xlsx · .xls · .csv')
+        : 'ថតទទេ ឬមិនបានជ្រើសឯកសារទេ', true);
+      return;
+    }
+    /* ⭐⭐⭐ [stated] ២០២៦-១១-១៩ ១០:៤៨ ៖ «៥ ថត ( ៥ ឆ្នាំ ) ជ្រើសតែម្តង» ។
+       កម្មវិធីរុករកជ្រើសបានតែ ១ ថតក្នុងមួយដង ⇒ «＋ បន្ថែមថត» បូកបញ្ចូល
+       ជំនួសការជំនួស ។ ⚠ ចៀសឯកសារជាន់គ្នាតាម ឈ្មោះ + ទំហំ ⇒ ជ្រើសថត
+         ដដែលពីរដង ទិន្នន័យមិនកើនទ្វេដងឡើយ ។ */
+    var added = arr.length, dup = 0;
+    if(add && pdfList.length){
+      /* ⚠ [stated] ២០២៦-១១-១៩ ៖ ថតឆ្នាំនីមួយៗអាចមានឈ្មោះឯកសារដូចគ្នា
+         ( ST_01.pdf ) ហើយទំហំស្រដៀងគ្នា ⇒ កូនសោត្រូវរួម **ផ្លូវក្នុងថត** */
+      var kOf = function(f){
+        return String(f.webkitRelativePath || f.name) + '|' + f.size;
+      };
+      var seen = {};
+      pdfList.forEach(function(f){ seen[kOf(f)] = 1; });
+      var merged = pdfList.slice();
+      arr.forEach(function(f){
+        var k = kOf(f);
+        if(seen[k]){ dup++; return; }
+        seen[k] = 1; merged.push(f);
+      });
+      added = merged.length - pdfList.length;
+      arr = merged;
+    }
+    /* តម្រៀបតាមផ្លូវក្នុងថត ⇒ ថតរងរក្សាលំដាប់ដើម */
+    arr.sort(function(a, b){
+      return String(a.webkitRelativePath || a.name).localeCompare(String(b.webkitRelativePath || b.name));
+    });
     pdfList = arr;
     var f = arr[0];
     pdfFile = f;
-    pdfUrl = URL.createObjectURL(f);
+    /* ⚠ កម្មវិធីរុករកបង្ហាញ Excel ក្នុងស៊ុមមិនបាន ⇒ ទិដ្ឋភាពត្រូវយក PDF
+       ដំបូងដែលមាន ( ពីមុនយក arr[0] ⇒ ស៊ុមទទេពេលឯកសារទី ១ ជា Excel ) ។ */
+    var prev = null;
+    for(var pi = 0; pi < arr.length; pi++){
+      if(/\.pdf$/i.test(String(arr[pi].name || ''))){ prev = arr[pi]; break; }
+    }
+    pdfUrl = prev ? URL.createObjectURL(prev) : '';
     var hint0 = document.getElementById('bk_pdfhint');
     if(hint0) hint0.style.display = 'none';
     if(S){
@@ -69739,8 +70445,19 @@ function rscBankOpen(){
       pdfMap[S.uid] = { url:pdfUrl, file:f, name:f.name, list:arr };
       S.pdfName = arr.length > 1 ? (arr.length + ' ឯកសារ ៖ ' + arr[0].name + ' …') : f.name;
       save();
+      /* [stated] ២០២៦-១១-១៩ ៖ រក្សាឯកសារក្នុងឃ្លាំង ⇒ បើកវិញថ្ងៃក្រោយក៏នៅ */
+      try{ window.__bkTried = window.__bkTried || {}; window.__bkTried[S.uid] = 1; }catch(e){}
+      bkPut(S.uid, arr);
     }
     fillFileSel();
+    /* ⭐ រាយការណ៍ជានិច្ច ⇒ គ្មានការបោះចោលស្ងាត់ទៀតឡើយ */
+    var skip = raw.length - (added + dup);
+    say((add ? ('បន្ថែម ' + added + ' ឯកសារ · សរុប ' + arr.length) : (arr.length + ' ឯកសារ'))
+      + ' ត្រៀមអានរួច'
+      + (dup > 0 ? ' · ជាន់គ្នា ' + dup + ' ( រំលង )' : '')
+      + (skip > 0 ? ' · រំលង ' + skip + ' ( មិនមែន .pdf/.xlsx/.xls/.csv )' : '')
+      + (prev ? '' : '\n⚠ គ្មានឯកសារ PDF ⇒ ទិដ្ឋភាពខាងឆ្វេងទទេ តែ 🔍 អានស្វ័យប្រវត្តិ នៅដំណើរការ'));
+    if(!prev){ try{ frame.src = 'about:blank'; }catch(e){} return; }
     /* [stated] ២០២៦-០៨-២៨ ៖ «ផ្នែក PDF វាអត់ដូចពេលចុចដូចរបាយការណ៍» ⇒
        ប្រើលក្ខខណ្ឌដដែលនឹងការត្រួតពិនិត្យវិក្កយបត្រ ( page-fit ) ⇒ ទំព័រ
        ពេញអេក្រង់ ហើយបន្ថែមប្រអប់លោតទំព័រ ។ */
@@ -69751,9 +70468,15 @@ function rscBankOpen(){
     setTimeout(function(){ frame.src = pdfUrl + '#page=1&view=FitH&navpanes=0'; }, 30);
   }
   pdfIn.onchange  = function(e){ takeFiles(e.target.files); e.target.value = ''; };
-  pdfDir.onchange = function(e){ takeFiles(e.target.files); e.target.value = ''; };
+  /* ⚠ ទង់ `dirAdd` ត្រូវលុបក្រោយប្រើភ្លាម ⇒ ការជ្រើសលើកក្រោយដោយប៊ូតុង
+     «📁 ថត» ត្រឡប់ទៅ **ជំនួស** វិញដូចដើម ។ */
+  pdfDir.onchange = function(e){
+    var a = !!dirAdd; dirAdd = false;
+    takeFiles(e.target.files, a); e.target.value = '';
+  };
   /* ⭐ អានស្វ័យប្រវត្តិ ៖ កម្មវិធីវាស់ខ្លួនឯងថាឯកសារមានអក្សរ ឬជារូបស្កេន */
-  var bRead = btn('🔍 អានស្វ័យប្រវត្តិ', '#7A5FA8', '#fff');
+  var bRead = btn('🔍 អាន', '#7A5FA8', '#fff');
+  bRead.title = 'អានស្វ័យប្រវត្តិ ( គ្រប់ឯកសារក្នុងបញ្ជី )';
   bRead.onclick = function(){
     if(!pdfFile){ say('សូមបើក PDF ជាមុនសិន', true); return; }
     var queue = pdfList.length ? pdfList.slice() : [pdfFile];
@@ -69817,8 +70540,10 @@ function rscBankOpen(){
          ⇒ ត្រូវយកមុនពេលដក ។ */
       S.close = (res.rows.length ? res.rows[res.rows.length - 1].bal
                                  : rows[rows.length - 1].bal);
+      /* [stated] ២០២៦-១១-១៩ ៖ រក្សា `bal` ( សមតុល្យតាមរបាយការណ៍ធនាគារ )
+         ⇒ ជួរឈរ «សមតុល្យ» អាចប្រៀបធៀប រកជួរដែលធ្វើឱ្យខុស ។ */
       S.rows = rows.map(function(r){
-        return { d:r.d, t:r.t, cat:'', out:r.out, inn:r.inn };
+        return { d:r.d, t:r.t, cat:'', out:r.out, inn:r.inn, bal:r.bal };
       });
       if(!S.m || !S.y){
         var m0 = /^(\d{2})-(\d{2})-(\d{4})$/.exec(rows[0].d);
@@ -69860,13 +70585,17 @@ function rscBankOpen(){
       frame.src = pdfUrl + '#page=' + pgBox.value + '&view=FitH&navpanes=0';
     }, 30);
   };
-  var bNew = btn('＋ របាយការណ៍ថ្មី', '#2E6B6D', '#fff');
-  var bAll = btn('📚 ទាំងអស់', '#EDE8DA', '#3a3a30');
+  var bNew = btn('＋ ថ្មី', '#2E6B6D', '#fff');
+  bNew.title = 'របាយការណ៍ថ្មី';
+  var bAll = btn('📚', '#EDE8DA', '#3a3a30');
+  bAll.title = 'មើលរបាយការណ៍ទាំងអស់';
   /* [stated] ២០២៦-០៨-២៨ ៖ «រក្សាទុកដាក់នៅជួរ Excel» ⇒ ជាមួយប៊ូតុងសកម្មភាព
      ឯកសារដទៃ នៅរបារខាងលើ ⇒ នៅកន្លែងតែមួយជានិច្ច ទោះរំកិលចុះក្រោមប៉ុណ្ណា ។ */
-  var bSave = btn('💾 រក្សាទុក', '#0F3D3E', '#fff');
+  var bSave = btn('💾', '#0F3D3E', '#fff');
+  bSave.title = 'រក្សាទុក';
   var savedTag = document.createElement('span');
-  savedTag.style.cssText = 'font-size:12px; color:#9ee6b4; min-width:92px;';
+  savedTag.style.cssText = 'font-size:11.5px; color:#9ee6b4; white-space:nowrap;'
+    + 'overflow:hidden; text-overflow:ellipsis; flex:0 1 auto; min-width:0;';
   bSave.onclick = function(){
     save();
     var d = new Date();
@@ -69896,6 +70625,7 @@ function rscBankOpen(){
   function delRec(uid){
     try{ if(uid) localStorage.removeItem(keyOf(uid)); }catch(e){}
     try{ if(uid) delete pdfMap[uid]; }catch(e){}
+    try{ if(uid) bkDel(uid); }catch(e){}      /* [stated] ២០២៦-១១-១៩ ៖ កុំឱ្យឃ្លាំងកកកុញ */
   }
   function afterDel(msg){
     var all = listAll();
@@ -69903,7 +70633,8 @@ function rscBankOpen(){
     if(!S.rows || !S.rows.length) S.rows = [{ d:'', t:'', cat:'', out:'', inn:'' }];
     draw(); showPdfFor(); say(msg);
   }
-  var bDel = btn('🗑 លុប', '#EDE8DA', '#7a4030');
+  var bDel = btn('🗑', '#EDE8DA', '#7a4030');
+  bDel.title = 'លុបរបាយការណ៍នេះ';
   bDel.onclick = function(){
     var old = document.getElementById('bk_delbox');
     if(old){ old.remove(); return; }
@@ -69941,14 +70672,19 @@ function rscBankOpen(){
     d.appendChild(b1); d.appendChild(b2); d.appendChild(b3);
   };
   var bXls = btn('⬇ Excel', '#EDE8DA', '#3a3a30');
-  var bClose = btn('✕ បិទ', 'rgba(255,255,255,.14)', '#EFE7D2');
-  bClose.onclick = function(){ save(); try{ ov.remove(); }catch(e){} };
+  bXls.title = 'ទាញជា Excel';
+  var bClose = btn('✕', 'rgba(255,255,255,.14)', '#EFE7D2');
+  bClose.title = 'បិទផ្ទាំង';
+  bClose.onclick = function(){ save(); unlockScroll(); try{ ov.remove(); }catch(e){} };
   var sel = document.createElement('select');
-  sel.style.cssText = 'padding:6px 8px; border-radius:6px; border:1px solid rgba(200,166,75,.45);'
-    + 'background:#0B2F30; color:#EFE7D2; font:inherit; font-size:12.5px; max-width:260px;';
+  sel.style.cssText = 'padding:5px 7px; border-radius:6px; border:1px solid rgba(200,166,75,.45);'
+    + 'background:#0B2F30; color:#EFE7D2; font:inherit; font-size:12px; max-width:170px;'
+    + 'flex:0 1 auto; min-width:0;';
   var info = document.createElement('span');
-  info.style.cssText = 'margin-left:auto; font-size:12.5px; opacity:.9;';
-  head.appendChild(bPdf); head.appendChild(bDir); head.appendChild(fileSel);
+  info.style.cssText = 'margin-left:auto; font-size:12px; opacity:.9; white-space:nowrap;'
+    + 'overflow:hidden; text-overflow:ellipsis; flex:0 1 auto; min-width:0;';
+  head.appendChild(bPdf); head.appendChild(bDir); head.appendChild(bDirAdd);
+  head.appendChild(fileSel);
   head.appendChild(pgBox); head.appendChild(bRead);
   head.appendChild(bNew); head.appendChild(sel);
   head.appendChild(bAll); head.appendChild(bSave); head.appendChild(savedTag);
@@ -70072,11 +70808,47 @@ function rscBankOpen(){
     return (s.bank || 'BANK') + ' | ' + (s.acct || '—') + ' | '
       + (s.y || '????') + '-' + ('0' + (s.m || 0)).slice(-2);
   }
+  /* ⭐⭐⭐ [stated] ២០២៦-១១-១៩ ១០:៥៦ ៖ «ដាក់ ៥ ថតទៅវាគាំង» ។
+     វាស់ ៖ ៨,០០០ ជួរ ⇒ JSON ១,០៩៥ KB ហើយ `save()` ដើរ **រាល់តួអក្សរ**
+     ដែលវាយ ⇒ ១ MB stringify ក្នុងមួយគ្រាប់ចុច ⇒ ទំព័រគាំង ។
+     ⇒ `saveSoon()` ពន្យារ ៤០០ ms ក្រោយឈប់វាយ ។
+     ⚠ សុវត្ថិភាពទិន្នន័យ ៖ `save()` ពិត **លុបការពន្យារ** រាល់ពេលវាដើរ
+       ហើយ blur · change · draw ហៅ `save()` ⇒ គ្មានការវាយណាបាត់ទេ ។
+     ⚠ បើ localStorage ពេញ ⇒ ប្រាប់ត្រង់ ( ពីមុនលេបស្ងាត់ ⇒ ការងារបាត់
+       ដោយគ្មានសញ្ញា ) ។ ប្រាប់ម្តងក្នុង ១ នាទី ⇒ មិនរំខាន ។ */
+  var saveT = null, quotaT = 0;
   function save(){
+    if(saveT){ clearTimeout(saveT); saveT = null; }
     if(!S) return;
     if(!S.uid) S.uid = 'b' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
     S.id = labelOf(S);
-    try{ localStorage.setItem(keyOf(S.uid), JSON.stringify(S)); }catch(e){}
+    try{ localStorage.setItem(keyOf(S.uid), JSON.stringify(S)); }
+    catch(e){
+      var now = Date.now();
+      if(now - quotaT > 60000){
+        quotaT = now;
+        try{
+          say('⚠ រក្សាទុកមិនបាន ៖ ទំហំផ្ទុកក្នុងកម្មវិធីរុករកពេញ ( ជួរច្រើនពេក ) ។\n'
+            + 'សូមទាញជា Excel ទុកជាមុន រួចបែងរបាយការណ៍នេះជាច្រើនឆ្នាំ/ច្រើនគណនី ។', true);
+        }catch(e2){}
+      }
+    }
+  }
+  /* ⭐ [stated] ២០២៦-១១-១៩ ៖ បញ្ជីជម្រើស «ប្រភេទ» សង់ម្តងរួចចាំទុក
+     ⇒ `draw()` និងអ្នកបំពេញពេលចុច ( fillCat ) ប្រើតែមួយ ។
+     ⚠ ត្រូវលុបឃ្លាំងសម្ងាត់ពេលបន្ថែមប្រភេទថ្មី ⇒ បញ្ជីថ្មីលេចភ្លាម ។ */
+  var catOptsC = null;
+  function catOptsHtml(){
+    if(catOptsC == null){
+      catOptsC = cats().map(function(c){
+        return '<option value="' + escAttr0(c) + '">' + esc(c) + '</option>';
+      }).join('');
+    }
+    return catOptsC;
+  }
+  function saveSoon(){
+    if(saveT) clearTimeout(saveT);
+    saveT = setTimeout(function(){ saveT = null; save(); }, 400);
   }
   /* [stated] «ដាក់កំណត់សម្គាល់ Dropdown ដើម្បីរើស និងអាចបន្ថែមបានផង» ។
      ⚠ បញ្ជីរក្សាទុកតាមអតប ⇒ ប្រភេទដែលអ្នកបន្ថែមនៅជាប់សម្រាប់សហគ្រាសនោះ
@@ -70097,6 +70869,7 @@ function rscBankOpen(){
     if(l.indexOf(c) < 0){
       l.push(c);
       try{ localStorage.setItem(SKEY + tin() + ':__cats', JSON.stringify(l)); }catch(e){}
+      catOptsC = null;          /* [stated] ២០២៦-១១-១៩ ៖ បញ្ជីថ្មី ⇒ លុបឃ្លាំងសម្ងាត់ */
     }
   }
   function blank(){
@@ -70116,12 +70889,40 @@ function rscBankOpen(){
       frame.src = 'about:blank';
       setTimeout(function(){ frame.src = pdfUrl + '#page=1&view=FitH&navpanes=0'; }, 30);
       left.style.background = '#555';
+      /* [stated] ២០២៦-១១-១៩ ១២:០៧ ៖ ពេលឯកសារត្រឡប់មកវិញ ( ពីឃ្លាំង ឬពី
+         ការប្តូររបាយការណ៍ ) សារ «សូមចុច 📄 បើក PDF» ត្រូវបាត់ជាមួយ
+         ⇒ បើមិនលាក់ វាសរសេរជាន់លើឯកសារដែលឃើញស្រាប់ ។ */
+      try{
+        var hd = document.getElementById('bk_pdfhint');
+        if(hd) hd.style.display = 'none';
+      }catch(e){}
       return;
     }
     pdfFile = null; pdfUrl = ''; pdfList = [];
     fillFileSel();
     frame.src = 'about:blank';
     left.style.background = '#2b3a3a';
+    /* ⭐⭐⭐ [stated] ២០២៦-១១-១៩ ១២:០៧ ៖ មុននឹងប្រាប់ថា «សូមចុចបើក PDF»
+       សាកទាញពីឃ្លាំងសិន ( ការផ្ទុកទំព័រឡើងវិញលុបតែអង្គចងចាំ មិនលុបឃ្លាំងទេ ) ។
+       ⚠ សាកម្តងគត់ក្នុងមួយ uid ⇒ មិនកើតរង្វិលជុំ ។ */
+    try{
+      window.__bkTried = window.__bkTried || {};
+      if(S && S.uid && !window.__bkTried[S.uid]){
+        window.__bkTried[S.uid] = 1;
+        var uid0 = S.uid;
+        bkGet(uid0).then(function(list){
+          if(!alive() || !list || !list.length) return;
+          if(!S || S.uid !== uid0) return;              /* អ្នកប្រើប្តូររបាយការណ៍រួច */
+          var pv = null;
+          for(var z = 0; z < list.length; z++){
+            if(/\.pdf$/i.test(String(list[z].name || ''))){ pv = list[z]; break; }
+          }
+          pdfMap[uid0] = { url: pv ? URL.createObjectURL(pv) : '',
+                           file:list[0], name:list[0].name, list:list };
+          showPdfFor();
+        });
+      }
+    }catch(e){}
     var hint = document.getElementById('bk_pdfhint');
     if(!hint){
       hint = document.createElement('div');
@@ -70151,6 +70952,36 @@ function rscBankOpen(){
     return { out:o, inn:i, end: num(st.open) - o + i };
   }
 
+  /* ⭐⭐⭐ [stated] ២០២៦-១១-១៩ ១០:៤៦ ៖ បែងចែកតាមខែ ⇒ ដឹងថាខុសមកពីខែណា ។
+     ⚠ ខ្សែសង្វាក់ ៖ ដើមគ្រាខែបន្ទាប់ = ចុងគ្រាខែមុន ⇒ កំហុសមួយកន្លែងរុញ
+       គ្រប់ខែក្រោយៗ ។ ដូច្នេះ **ខែក្រហមដំបូង** គឺខែដែលត្រូវកែ ។
+     ⚠ ជួរដែលអានថ្ងៃមិនបាន ដាក់ក្រុម «( គ្មានថ្ងៃ )» ⇒ មិនបាត់ស្ងាត់
+       ( វាក៏ជាមូលហេតុនៃគម្លាតបានដែរ ) ហើយរៀបនៅចុងបញ្ចប់ ។ */
+  function monthStats(st){
+    var by = {}, order = [];
+    (st.rows || []).forEach(function(r){
+      var mm = /^(\d{2})-(\d{2})-(\d{4})$/.exec(String((r && r.d) || ''));
+      var k = mm ? (mm[3] + '-' + mm[2]) : '?';
+      if(!by[k]){
+        by[k] = { k:k, y:mm ? mm[3] : '', m:mm ? String(parseInt(mm[2], 10)) : '',
+                  n:0, out:0, inn:0 };
+        order.push(k);
+      }
+      by[k].n++; by[k].out += num(r.out); by[k].inn += num(r.inn);
+      /* [stated] ២០២៦-១១-១៩ ១២:១៦ ៖ សមតុល្យធនាគារនៃជួរចុងក្រោយក្នុងខែ
+         ⇒ ក្លាយជា «ចុងគ្រា ( របាយការណ៍ )» ស្វ័យប្រវត្តិ ។ */
+      if(String(r && r.bal != null ? r.bal : '').trim() !== '') by[k].bankClose = num(r.bal);
+    });
+    order.sort();                      /* '?' ធំជាង '9' ⇒ ធ្លាក់ចុងបញ្ចប់ */
+    var open = num(st.open), arr = [];
+    order.forEach(function(k){
+      var b = by[k];
+      b.open = open; b.close = open - b.out + b.inn; open = b.close;
+      arr.push(b);
+    });
+    return arr;
+  }
+
   function fillSel(){
     var all = listAll();
     sel.innerHTML = all.length
@@ -70161,8 +70992,65 @@ function rscBankOpen(){
       : '<option>( មិនទាន់មានរបាយការណ៍ )</option>';
   }
 
+  /* គេចសម្រាប់តម្លៃក្នុង attribute ( ប្រភេទអាចមានសញ្ញាសម្រង់ ) */
+  function escAttr0(s){ return esc(String(s == null ? '' : s)).replace(/"/g, '&quot;'); }
   var IN = 'padding:4px 6px; font:inherit; font-size:12.5px; border:1px solid #d8d2c2;'
     + 'border-radius:5px; box-sizing:border-box;';
+
+  /* ⭐⭐⭐ [stated] ២០២៦-១១-១៩ ១២:១៦ ៖ «អាចឱ្យវាចាប់ឱ្យដឹងថាខុសពី balance
+     ខែណា ឆ្នាំបានទេ?» ⇒ ស្កេនជួរទាំងអស់ ៖ សមតុល្យរត់ ធៀបនឹងសមតុល្យធនាគារ
+     ដែលអានមកជាមួយជួរ ( `r.bal` ) ⇒ ជួរ **ដំបូង** ដែលខុស = កន្លែងបាក់ ។
+     ⚠ ជួរក្រោយៗខុសតាមខ្សែសង្វាក់ ⇒ ប្រាប់តែជួរដំបូង រួចរាប់សរុប ។
+     ⚠ របាយការណ៍ចាស់គ្មាន `r.bal` ⇒ ត្រឡប់ទទេ ( គ្មានបន្ទះ ) ។ */
+  function fbadBox(){
+    var rows = (S && S.rows) || [], acc = num(S && S.open), rb = [], any = false;
+    rows.forEach(function(r, ri){
+      acc = acc - num(r.out) + num(r.inn); rb[ri] = acc;
+      if(String(r && r.bal != null ? r.bal : '').trim() !== '') any = true;
+    });
+    if(!any) return { css:'display:none;', html:'' };
+    var fb = null, n = 0;
+    rows.forEach(function(r, ri){
+      if(String(r && r.bal != null ? r.bal : '').trim() === '') return;
+      var d2 = rb[ri] - num(r.bal);
+      if(Math.abs(d2) < 0.005) return;
+      n++;
+      if(!fb){
+        var mm2 = /^(\d{2})-(\d{2})-(\d{4})$/.exec(String(r.d || ''));
+        fb = { i:ri, d:r.d || '( គ្មានថ្ងៃ )', diff:d2, bank:num(r.bal), run:rb[ri],
+               k: mm2 ? (mm2[3] + '-' + mm2[2]) : '',
+               lab: mm2 ? ('ខែ ' + parseInt(mm2[2], 10) + ' / ' + mm2[3]) : '( គ្មានថ្ងៃ )' };
+      }
+    });
+    if(!fb){
+      return { css:'margin-bottom:8px; padding:7px 11px; border-radius:8px;'
+                 + 'background:#DFF0E4; border:1px solid #bfe0c9; font-size:13px;',
+               html:'✓ សមតុល្យរត់ត្រូវនឹងសមតុល្យធនាគារគ្រប់ជួរ' };
+    }
+    return { css:'margin-bottom:8px; padding:8px 11px; border-radius:8px;'
+               + 'background:#FBD9D2; border:1px solid #f0bdb2; font-size:13px; line-height:1.8;',
+             html:'⚠ <b>សមតុល្យចាប់ផ្តើមខុសនៅ ' + esc(fb.lab) + '</b>'
+               + ' &nbsp;·&nbsp; ជួរទី <b>' + (fb.i + 1) + '</b>'
+               + ' &nbsp;·&nbsp; ថ្ងៃ ' + esc(fb.d)
+               + ' &nbsp;·&nbsp; គម្លាត <b>' + money(fb.diff) + '</b>'
+               + ' <span style="color:#6b736f;">( គណនា ' + money(fb.run)
+               + ' ធៀប ធនាគារ ' + money(fb.bank) + ' )</span>'
+               + (fb.k ? ' <button data-gobad="' + esc(fb.k) + '" style="' + IN
+                         + ' cursor:pointer;">មើលខែនោះ</button>' : '')
+               + '<div style="font-size:11.5px; color:#6b736f;">ជួរដែលមិនត្រូវនឹងធនាគារសរុប ៖ '
+               + n + ' ជួរ ( ជួរក្រោយៗខុសតាមខ្សែសង្វាក់ )</div>' };
+  }
+  function bindGoBad(){
+    right.querySelectorAll('[data-gobad]').forEach(function(b){
+      b.onclick = function(){
+        var p = String(b.getAttribute('data-gobad') || '').split('-');
+        RF.y = p[0] || '';
+        RF.m = p[1] ? String(parseInt(p[1], 10)) : '';
+        RF.pg = 0;
+        draw();
+      };
+    });
+  }
 
   function draw(){
     fillSel();
@@ -70236,6 +71124,89 @@ function rscBankOpen(){
         + 'color:' + (okBal ? '#1c6b35' : '#A83A26') + ';"></div>'
       + '</div>';
 
+    /* ⭐⭐⭐ [stated] ២០២៦-១១-១៩ ១០:៤៦ ៖ តារាងតាមខែ ។ សូមមើលសេចក្តីពន្យល់
+       ពេញលេញនៅ `monthStats` ។ ⚠ វាមិនជំនួសបន្ទាត់ត្រួតពិនិត្យខាងលើទេ ៖
+       នោះនៅតែគិតលើគ្រប់ជួរ ។ */
+    /* ⭐⭐⭐ [stated] ២០២៦-១១-១៩ ១១:៥៣ ៖ សមតុល្យរត់ ( មើលសេចក្តីពន្យល់
+       នៅក្បាលការកែ ) ។ ⚠ គិតលើ **គ្រប់ជួរ** មុនការត្រង ។ */
+    var runBal = [], rbAcc = num(S.open);
+    S.rows.forEach(function(r, ri){
+      rbAcc = rbAcc - num(r.out) + num(r.inn);
+      runBal[ri] = rbAcc;
+    });
+
+    /* ⭐⭐⭐ [stated] ២០២៦-១១-១៩ ១២:១៦ ៖ បន្ទះ «ខុសចាប់ពីខែណា» ។
+       ⚠ ធុងថេរ ⇒ `liveBal()` អាចសរសេរវាឡើងវិញពេលវាយកែ ( មិនគូរតារាង ) ។ */
+    var fbx = fbadBox();
+    h += '<div data-fbad style="' + fbx.css + '">' + fbx.html + '</div>';
+
+    var MS = monthStats(S), MC = S.mclose || {};
+    if(MS.length){
+      var MTH = 'padding:4px 6px; background:#0F3D3E; color:#EFE7D2;'
+        + 'text-align:center; font-size:12px; white-space:nowrap;';
+      var MTD = 'padding:3px 6px; border-bottom:1px solid #ece7d8; white-space:nowrap;';
+      /* ⭐⭐⭐ [stated] ២០២៦-១១-១៩ ១២:១៦ ៖ មូលដ្ឋានប្រៀបធៀប ៖
+         ការវាយដោយដៃមុនគេ ; បើគ្មាន ⇒ សមតុល្យធនាគារនៃជួរចុងក្រោយនៃខែ ។ */
+      var mBasis = function(b){
+        var rc = MC[b.k];
+        if(String(rc == null ? '' : rc).trim() !== '') return { v:num(rc), auto:false };
+        if(b.bankClose != null) return { v:b.bankClose, auto:true };
+        return null;
+      };
+      var badAny = 0;
+      MS.forEach(function(b){
+        var ba = mBasis(b);
+        if(ba && Math.abs(b.close - ba.v) >= 0.005) badAny++;
+      });
+      /* [stated] ២០២៦-១១-១៩ ១២:០១ ៖ សញ្ញាសម្គាល់ ⇒ `liveBal()` រកឃើញ
+         តារាងនេះ ហើយសរសេរលេខថ្មីចូលក្រឡាដោយមិនសង់ឡើងវិញ ។
+         `data-mkeys` = បញ្ជីខែដែលកំពុងបង្ហាញ ⇒ បើបញ្ជីប្តូរ ( ថ្ងៃប្តូរខែ )
+         ការសរសេរក្នុងក្រឡាលែងគ្រប់គ្រាន់ ⇒ រង់ចាំការគូរឡើងវិញ ។ */
+      h += '<details data-mtab="1" data-mkeys="'
+        + esc(MS.map(function(b){ return b.k; }).join(',')) + '"'
+        + ((MS.length > 1 || badAny) ? ' open' : '')
+        + ' style="margin-bottom:8px; border:1px solid #e6e1d3; border-radius:8px; background:#fff;">'
+        + '<summary data-msum="1" style="cursor:pointer; padding:7px 10px; font-weight:700; font-size:12.5px;">'
+        + '📅 តាមខែ ( ' + MS.length + ' ខែ )'
+        + (badAny ? '<span style="color:#A83A26;"> — ⚠ ' + badAny + ' ខែខុស</span>' : '')
+        + '</summary><div style="overflow:auto; padding:0 8px 8px;">'
+        + '<table style="width:100%; border-collapse:collapse; font-size:12.5px;"><thead><tr>'
+        + ['ខែ', 'ជួរ', 'ដើមគ្រា', 'ចេញ', 'ចូល', 'ចុងគ្រា ( គណនា )',
+           'ចុងគ្រា ( របាយការណ៍ )', 'ខុស', ''].map(function(x){
+             return '<th style="' + MTH + '">' + x + '</th>'; }).join('')
+        + '</tr></thead><tbody>';
+      MS.forEach(function(b){
+        var rc = MC[b.k], has = String(rc == null ? '' : rc).trim() !== '';
+        var ba = mBasis(b);
+        var df = ba ? (b.close - ba.v) : 0, bad = !!ba && Math.abs(df) >= 0.005;
+        h += '<tr data-mk="' + esc(b.k) + '" style="' + (bad ? 'background:#FBD9D2;' : '') + '">'
+          + '<td style="' + MTD + ' font-weight:700;">'
+            + (b.m ? ('ខែ ' + b.m + ' / ' + b.y) : '( គ្មានថ្ងៃ )') + '</td>'
+          + '<td data-mf="n" style="' + MTD + ' text-align:center; color:#6b736f;">' + b.n + '</td>'
+          + '<td data-mf="open" style="' + MTD + ' text-align:right;">' + money(b.open) + '</td>'
+          + '<td data-mf="out" style="' + MTD + ' text-align:right; color:#A83A26;">' + money(b.out) + '</td>'
+          + '<td data-mf="inn" style="' + MTD + ' text-align:right; color:#1c6b35;">' + money(b.inn) + '</td>'
+          + '<td data-mf="close" style="' + MTD + ' text-align:right; font-weight:700;">' + money(b.close) + '</td>'
+          + '<td style="' + MTD + '"><input data-mc="' + esc(b.k) + '" value="'
+            + esc(has ? fmtAmt(rc) : '') + '" placeholder="'
+            + esc(b.bankClose != null ? (money(b.bankClose) + ' ( ធនាគារ )') : 'វាយពីរបាយការណ៍')
+            + '" title="ទទេ ⇒ ប្រើសមតុល្យធនាគារក្នុងឯកសារ ; វាយចូល ⇒ លេខរបស់អ្នកឈ្នះ"'
+            + ' style="' + IN + ' width:150px; text-align:right;"></td>'
+          + '<td data-mf="diff" style="' + MTD + ' text-align:right; font-weight:700; color:'
+            + (bad ? '#A83A26' : '#1c6b35') + ';">'
+            + (ba ? (bad ? '⚠ ' + money(df) : '✓') : '<span style="color:#9aa3a0;">—</span>')
+            + (ba && ba.auto ? '<span style="font-weight:400; font-size:10.5px; color:#6b736f;">'
+                               + ' ធនាគារ</span>' : '')
+            + '</td>'
+          + '<td style="' + MTD + ' text-align:center;">'
+            + (b.m ? '<button data-mv="' + esc(b.k) + '" style="' + IN
+                     + ' cursor:pointer; padding:2px 7px;">មើល</button>' : '') + '</td></tr>';
+      });
+      /* [stated] ២០២៦-១១-១៩ ១១:៥៥ ៖ «លុបអក្សរការពន្យល់នេះចេញផង»
+         ⇒ កំណត់សម្គាល់ក្រោមតារាងត្រូវដកចេញ ( តារាងនៅដដែល ) ។ */
+      h += '</tbody></table></div></details>';
+    }
+
     /* [stated] «អាច filter ប្រភេទ លុយចេញ លុយចូល ខែ និងឆ្នាំផង» ។
        ⚠⚠ ការត្រងក្នុងតារាងដែល **កែបាន** មានគ្រោះថ្នាក់ ៖ បើសរុបគិតតែលើ
          ជួរដែលឃើញ បន្ទាត់តុល្យភាពនឹងឡើងក្រហមទាំងដែលទិន្នន័យត្រូវ ។
@@ -70267,6 +71238,9 @@ function rscBankOpen(){
           return '<option' + (RF.y === y ? ' selected' : '') + '>' + y + '</option>'; }).join('')
       + '</select>'
       + '<button id="bf_clear" style="' + IN + ' cursor:pointer;">សម្អាត</button>'
+      /* [stated] ២០២៦-១១-១៩ ១១:០៧ ៖ របារទំព័រ «គួរនៅជួរជាមួយតម្រង»
+         ⇒ កន្លែងដាក់នៅទីនេះ ; ខ្លឹមសារសង់ក្រោយពេលដឹងចំនួនជួរដែលត្រង ។ */
+      + '<!--PAGER-->'
       + '</div>';
 
     var shown = S.rows.map(function(r, i){ return { r:r, i:i }; }).filter(function(x){
@@ -70283,10 +71257,35 @@ function rscBankOpen(){
       }
       return true;
     });
+    /* ⭐⭐⭐ [stated] ២០២៦-១១-១៩ ១០:៥៦ ៖ វាស់បាន ៨,០០០ ជួរ ⇒ ៤០,០០០ ប្រអប់
+       និង ២០២,២១២ ថ្នាំង DOM ⇒ ទំព័រគាំង ។ ⇒ គូរម្តង ៤០០ ជួរ ។
+       ⚠ នេះជាការ **គូរ** មិនមែនការត្រង ៖ សរុប និងបន្ទាត់ត្រួតពិនិត្យនៅ
+         គិតលើគ្រប់ជួរដដែល ⇒ ច្បាប់សុវត្ថិភាពមិនប្តូរ ។ */
+    var PAGE_N = 400;
+    var totalShown = shown.length;
+    var maxPg = Math.max(0, Math.ceil(totalShown / PAGE_N) - 1);
+    if(!(RF.pg >= 0)) RF.pg = 0;
+    if(RF.pg > maxPg) RF.pg = maxPg;
+    var fromI = RF.pg * PAGE_N;
+    var pageRows = (totalShown > PAGE_N) ? shown.slice(fromI, fromI + PAGE_N) : shown;
+    if(totalShown > PAGE_N){
+      /* [stated] ២០២៦-១១-១៩ ១១:០៧ ៖ ដាក់ក្នុងជួរតម្រង ( កន្លែងដាក់ខាងលើ )
+         ហើយ **លុបអក្សរពន្យល់ចេញ** តាមការស្នើ ។ */
+      h = h.replace('<!--PAGER-->',
+        '<span style="width:1px; height:18px; background:#ddd6c4;"></span>'
+        + '<span style="color:#6b736f;">បង្ហាញ <b>' + (fromI + 1) + '–'
+        + Math.min(fromI + PAGE_N, totalShown) + '</b> / ' + totalShown
+        + ' &nbsp;·&nbsp; ទំព័រ <b>' + (RF.pg + 1) + '</b> / ' + (maxPg + 1) + '</span>'
+        + '<button data-pg="p" style="' + IN + ' cursor:pointer;"' + (RF.pg ? '' : ' disabled')
+        + '>‹ មុន</button>'
+        + '<button data-pg="n" style="' + IN + ' cursor:pointer;"' + (RF.pg < maxPg ? '' : ' disabled')
+        + '>បន្ទាប់ ›</button>');
+    }
+
     var filtering = (RF.cat || RF.dir || RF.m || RF.y);
     if(filtering){
       var fo = 0, fi = 0;
-      shown.forEach(function(x){ fo += num(x.r.out); fi += num(x.r.inn); });
+    shown.forEach(function(x){ fo += num(x.r.out); fi += num(x.r.inn); });
       h += '<div style="margin-bottom:6px; padding:6px 9px; background:#FFF3D6;'
         + 'border:1px solid #E8CE84; border-radius:7px; font-size:12.5px;">'
         + '⚠ កំពុងត្រង ៖ បង្ហាញ <b>' + shown.length + '</b> / ' + S.rows.length + ' ជួរ'
@@ -70300,30 +71299,51 @@ function rscBankOpen(){
       + 'font-size:12.5px; table-layout:fixed;">'
       + '<colgroup><col style="width:34px"><col style="width:104px"><col>'
       + '<col style="width:132px"><col style="width:112px"><col style="width:112px">'
-      + '<col style="width:34px"></colgroup>'
+      + '<col style="width:120px"><col style="width:34px"></colgroup>'
       + '<thead><tr><th style="' + TH + '">#</th><th style="' + TH + '">កាលបរិច្ឆេទ</th>'
       + '<th style="' + TH + '">បរិយាយ</th><th style="' + TH + '">ប្រភេទ</th>'
       + '<th style="' + TH + '">លុយចេញ</th>'
-      + '<th style="' + TH + '">លុយចូល</th><th style="' + TH + '"></th></tr></thead><tbody>';
-    shown.forEach(function(x){
+      + '<th style="' + TH + '">លុយចូល</th>'
+      + '<th style="' + TH + '" title="សមតុល្យរត់ ៖ ដើមគ្រា − ចេញ + ចូល បូកបន្ត">សមតុល្យ</th>'
+      + '<th style="' + TH + '"></th></tr></thead><tbody>';
+    /* ⭐⭐⭐ [stated] ២០២៦-១១-១៩ ១១:០៧ ៖ «ប្តូរឆ្នាំ … រៀងយឺត» ។
+       ⚠ មូលហេតុ ៖ `cats()` អាន localStorage ហើយ JSON.parse — ហើយវាត្រូវ
+         ហៅ **ក្នុងរង្វិលជួរនីមួយៗ** ⇒ ៤០០ ការអាន + ៤០០ parse ក្នុងមួយការគូរ ។
+       ⇒ សង់បញ្ជីជម្រើសម្តងគត់ រួចប្តូរតែ `selected` តាមជួរ ។ */
+    var catOpts = catOptsHtml();
+    /* ⭐⭐⭐ [stated] ២០២៦-១១-១៩ ១១:០៧ ៖ បញ្ជីពេញបំពេញពេលចុច ( មើល
+       សេចក្តីពន្យល់នៅក្បាលការកែ ) ⇒ ថ្នាំងថយជាង ១/៣ ⇒ គូរលឿនជាង ។
+       ⚠ ជម្រើសទី ១ = តម្លៃបច្ចុប្បន្នជានិច្ច ⇒ អ្វីដែលឃើញមិនប្តូរ ។ */
+    function catSelHtml(cur){
+      return '<option value="' + escAttr0(cur || '') + '" selected>'
+        + (cur ? esc(cur) : '') + '</option>';
+    }
+    pageRows.forEach(function(x){
       var r = x.r, i = x.i;
       h += '<tr><td style="' + TD + ' text-align:center; color:#9aa3a0;">' + (i + 1) + '</td>'
         + '<td style="' + TD + '"><input data-f="d" data-i="' + i + '" value="' + esc(r.d)
           + '" placeholder="17" style="' + IN + ' width:100%;"></td>'
         + '<td style="' + TD + '"><input data-f="t" data-i="' + i + '" value="' + esc(r.t)
           + '" style="' + IN + ' width:100%;"></td>'
-        + '<td style="' + TD + '"><select data-f="cat" data-i="' + i + '" style="' + IN + ' width:100%;">'
-          + '<option value=""></option>'
-          + cats().map(function(c){
-              return '<option' + (r.cat === c ? ' selected' : '') + '>' + esc(c) + '</option>';
-            }).join('')
-          + '<option value="__new">＋ បន្ថែមថ្មី…</option></select></td>'
+        + '<td style="' + TD + '"><select data-f="cat" data-lazy="1" data-i="' + i
+          + '" style="' + IN + ' width:100%;">' + catSelHtml(r.cat) + '</select></td>'
         + '<td style="' + TD + '"><input data-f="out" data-i="' + i + '" value="' + esc(r.out)
           + '" inputmode="decimal" style="' + IN + ' width:100%; text-align:right;'
           + (r.out ? ' background:#FBEDEA;' : '') + '"></td>'
         + '<td style="' + TD + '"><input data-f="inn" data-i="' + i + '" value="' + esc(r.inn)
           + '" inputmode="decimal" style="' + IN + ' width:100%; text-align:right;'
           + (r.inn ? ' background:#EAF5EE;' : '') + '"></td>'
+        /* ⭐ សមតុល្យរត់ ៖ អត្ថបទ មិនមែនប្រអប់កែ ( វាជាលទ្ធផល មិនមែនទិន្នន័យដើម ) */
+        + (function(){
+            var rb = runBal[i], hasB = String(r.bal == null ? '' : r.bal).trim() !== '';
+            var bad = hasB && Math.abs(rb - num(r.bal)) >= 0.005;
+            return '<td data-bal="' + i + '" style="' + TD + ' text-align:right;'
+              + ' white-space:nowrap; font-variant-numeric:tabular-nums;'
+              + (bad ? ' color:#A83A26; font-weight:700;' : ' color:#2b3a36;') + '"'
+              + (hasB ? ' title="សមតុល្យតាមរបាយការណ៍ធនាគារ ៖ ' + esc(fmtAmt(r.bal))
+                        + (bad ? ' ⇒ ខុសគ្នា ' + esc(money(rb - num(r.bal))) : ' ✓') + '"' : '')
+              + '>' + money(rb) + (bad ? ' ⚠' : '') + '</td>';
+          })()
         + '<td style="' + TD + ' text-align:center;"><button data-del="' + i + '" title="លុបជួរ"'
           + ' style="border:0; background:none; cursor:pointer; color:#A83A26; font-size:14px;">✕</button></td></tr>';
     });
@@ -70360,13 +71380,54 @@ function rscBankOpen(){
     });
     function onf(id, key){
       var e = document.getElementById(id);
-      if(e) e.onchange = function(){ RF[key] = e.value; draw(); };
+      if(e) e.onchange = function(){ RF[key] = e.value; RF.pg = 0; draw(); };
     }
     onf('bf_cat', 'cat'); onf('bf_dir', 'dir'); onf('bf_m', 'm'); onf('bf_y', 'y');
     var fc = document.getElementById('bf_clear');
-    if(fc) fc.onclick = function(){ RF = { cat:'', dir:'', m:'', y:'' }; draw(); };
+    if(fc) fc.onclick = function(){ RF = { cat:'', dir:'', m:'', y:'', pg:0 }; draw(); };
+    /* ⭐ [stated] ២០២៦-១១-១៩ ៖ ប៊ូតុងទំព័រតារាង ( មើលសេចក្តីពន្យល់ខាងលើ ) */
+    right.querySelectorAll('[data-pg]').forEach(function(b){
+      b.onclick = function(){
+        RF.pg = (b.getAttribute('data-pg') === 'n') ? (RF.pg + 1) : (RF.pg - 1);
+        if(RF.pg < 0) RF.pg = 0;
+        save(); draw();
+      };
+    });
     var c = document.getElementById('bk_cur');
     if(c) c.onchange = function(){ S.cur = c.value; save(); draw(); };
+
+    /* ⭐ [stated] ២០២៦-១១-១៩ ៖ សមតុល្យចុងតាមខែ ( រក្សាទុកជាមួយរបាយការណ៍ ) */
+    right.querySelectorAll('[data-mc]').forEach(function(e){
+      var k = e.getAttribute('data-mc');
+      e.onfocus = function(){ e.value = String(e.value || '').replace(/,/g, ''); };
+      e.onchange = function(){
+        S.mclose = S.mclose || {};
+        var v = String(e.value || '').trim();
+        if(v === '') delete S.mclose[k]; else S.mclose[k] = fmtAmt(v);
+        save(); draw();
+      };
+    });
+    /* ⭐ «មើល» ⇒ កំណត់តម្រងខែ/ឆ្នាំដែលមានស្រាប់ ( មិនបង្កើតតម្រងថ្មី ) */
+    bindGoBad();   /* [stated] ២០២៦-១១-១៩ ១២:១៦ ៖ លោតទៅខែដែលចាប់ផ្តើមខុស */
+    right.querySelectorAll('[data-mv]').forEach(function(b){
+      b.onclick = function(){
+        var p = String(b.getAttribute('data-mv') || '').split('-');
+        RF.y = p[0] || '';
+        RF.m = p[1] ? String(parseInt(p[1], 10)) : '';
+        RF.pg = 0;
+        draw();
+        /* [stated] ២០២៦-១១-១៩ ១១:០៧ ៖ «ពេលចុចមើលវាទៅខាងក្រោម វាគួរនៅ
+           ពេលចុចមើលចេញតែម្តង» ⇒ ការគូរឡើងវិញធ្វើឱ្យទំព័រខ្លីជាងមុន
+           ⇒ ទីតាំងរមូរចាស់ក្លាយជាបាត ⇒ រមូរទៅក្បាលតារាងឱ្យឃើញភ្លាម ។ */
+        try{
+          var anchor = document.getElementById('bf_cat');
+          if(anchor && right){
+            right.scrollTop = Math.max(0, anchor.getBoundingClientRect().top
+              - right.getBoundingClientRect().top + right.scrollTop - 8);
+          }
+        }catch(e){}
+      };
+    });
 
     right.querySelectorAll('[data-f]').forEach(function(e){
       var i = parseInt(e.getAttribute('data-i'), 10), f = e.getAttribute('data-f');
@@ -70374,12 +71435,27 @@ function rscBankOpen(){
          ⇒ ការផ្តោតមិនលោតចេញ ( មេរៀនដដែល ) ។ */
       e.oninput = function(){
         S.rows[i][f] = e.value;
-        save(); liveBal();
+        /* [stated] ២០២៦-១១-១៩ ៖ ពន្យារការរក្សាទុក ⇒ កុំ stringify ១ MB
+           ក្នុងមួយគ្រាប់ចុច ( blur ខាងក្រោមរក្សាទុកភ្លាមជានិច្ច ) ។ */
+        saveSoon(); liveBal();
       };
       if(f === 'd'){
         e.onblur = function(){
+          /* [stated] ២០២៦-១១-១៩ ១២:០១ ៖ បើថ្ងៃប្តូរ **ខែ** ⇒ បញ្ជីខែក្នុង
+             តារាង «តាមខែ» ផ្លាស់ប្តូរ ⇒ ការសរសេរក្នុងក្រឡាមិនគ្រប់គ្រាន់
+             ⇒ គូរឡើងវិញ ។ ធ្វើនៅ blur ⇒ ការផ្តោតចេញរួចហើយ ⇒ គ្មានការលោត ។ */
           var v = normDate(e.value, S.m, S.y);
-          if(v !== e.value){ e.value = v; S.rows[i].d = v; save(); }
+          if(v !== e.value){ e.value = v; S.rows[i].d = v; }
+          save();
+          /* ⚠⚠ កុំប្រៀបធៀបនឹង `S.rows[i].d` មុន ៖ `oninput` បានសរសេរតម្លៃ
+             ថ្មីចូលរួចហើយ ⇒ ការប្រៀបធៀបនោះមិនអាចខុសគ្នាបានឡើយ ។
+             ⇒ ប្រៀបធៀបនឹង **បញ្ជីខែដែលបង្ហាញ** ( `data-mkeys` ) ជំនួស
+               ⇒ ត្រូវសម្រាប់គ្រប់មូលហេតុ ( កែថ្ងៃ · លុបជួរ · បន្ថែមជួរ ) ។ */
+          try{
+            var det0 = right.querySelector('details[data-mtab]');
+            var now0 = monthStats(S).map(function(b){ return b.k; }).join(',');
+            if(!det0 || now0 !== (det0.getAttribute('data-mkeys') || '')) draw();
+          }catch(err){ draw(); }
         };
       }
       if(f === 'out' || f === 'inn'){
@@ -70391,6 +71467,23 @@ function rscBankOpen(){
         e.value = fmtAmt(e.value);
       }
       if(f === 'cat'){
+        /* ⭐ បំពេញបញ្ជីពេញនៅពេលចុច ឬផ្តោត ( ម្តងគត់ក្នុងមួយប្រអប់ ) */
+        var fillCat = function(){
+          if(!e.getAttribute('data-lazy')) return;
+          e.removeAttribute('data-lazy');
+          var cur = S.rows[i].cat || '';
+          e.innerHTML = '<option value=""></option>' + catOptsHtml()
+            + '<option value="__new">＋ បន្ថែមថ្មី…</option>';
+          e.value = cur;
+          if(e.value !== cur){          /* ប្រភេទចាស់ដែលលែងមានក្នុងបញ្ជី */
+            var o = document.createElement('option');
+            o.value = cur; o.textContent = cur;
+            e.insertBefore(o, e.firstChild); e.value = cur;
+          }
+        };
+        e.addEventListener('mousedown', fillCat);
+        e.addEventListener('focus', fillCat);
+        e.addEventListener('touchstart', fillCat, { passive:true });
         e.onchange = function(){
           if(e.value === '__new'){
             var c = prompt('ប្រភេទថ្មី ៖');
@@ -70441,6 +71534,76 @@ function rscBankOpen(){
           : (ok ? '<b style="color:#1c6b35;"> ✓ ត្រូវនឹងសមតុល្យចុង</b>'
                 : '<b style="color:#A83A26;"> ⚠ ខុស ' + money(diff)
                   + ' — សូមពិនិត្យថាមានជួរខ្វះ ឬលេខវាយខុស</b>'));
+    /* [stated] ២០២៦-១១-១៩ ៖ សមតុល្យរត់ត្រូវប្តូរតាមភ្លាមពេលកែលេខ
+       ⇒ គណនាឡើងវិញ រួចសរសេរតែក្រឡាដែលបង្ហាញ ( មិនគូរតារាងឡើងវិញ ⇒
+         ការផ្តោតមិនលោតចេញ — មេរៀនដដែល ) ។ */
+    try{
+      var cells = right.querySelectorAll('[data-bal]');
+      if(cells.length){
+        var acc = num(S.open), rb2 = [];
+        S.rows.forEach(function(r, ri){ acc = acc - num(r.out) + num(r.inn); rb2[ri] = acc; });
+        cells.forEach(function(td){
+          var ri = parseInt(td.getAttribute('data-bal'), 10);
+          var r = S.rows[ri]; if(!r) return;
+          var hasB = String(r.bal == null ? '' : r.bal).trim() !== '';
+          var bad = hasB && Math.abs(rb2[ri] - num(r.bal)) >= 0.005;
+          td.textContent = money(rb2[ri]) + (bad ? ' ⚠' : '');
+          td.style.color = bad ? '#A83A26' : '#2b3a36';
+          td.style.fontWeight = bad ? '700' : '';
+        });
+      }
+    }catch(e){}
+    /* ⭐⭐⭐ [stated] ២០២៦-១១-១៩ ១២:០១ ៖ តារាង «តាមខែ» ត្រូវប្តូរតាមភ្លាម
+       ( មើលសេចក្តីពន្យល់នៅក្បាលការកែ ) ។ សរសេរតែអត្ថបទក្នុងក្រឡា
+       ⇒ ការផ្តោតមិនលោតចេញ ។ */
+    /* [stated] ២០២៦-១១-១៩ ១២:១៦ ៖ បន្ទះ «ខុសចាប់ពីខែណា» ត្រូវប្តូរតាម
+       ការវាយកែភ្លាម ( បើមិនដូច្នេះ វាបង្ហាញលេខចាស់ ⇒ យល់ច្រឡំ ) ។ */
+    try{
+      var fbEl = right.querySelector('[data-fbad]');
+      if(fbEl){
+        var bx = fbadBox();
+        fbEl.setAttribute('style', bx.css);
+        fbEl.innerHTML = bx.html;
+        bindGoBad();
+      }
+    }catch(e){}
+    try{
+      var det = right.querySelector('details[data-mtab]');
+      if(det){
+        var MS2 = monthStats(S), MC2 = S.mclose || {};
+        var keyNow = MS2.map(function(b){ return b.k; }).join(',');
+        if(keyNow === (det.getAttribute('data-mkeys') || '')){
+          var bad2 = 0;
+          MS2.forEach(function(b){
+            var tr = det.querySelector('tr[data-mk="' + b.k + '"]');
+            if(!tr) return;
+            var rc = MC2[b.k], has2 = String(rc == null ? '' : rc).trim() !== '';
+            /* ត្រូវដូច `mBasis` ក្នុង draw() ៖ ដៃមុនគេ រួចធនាគារ */
+            var bv = has2 ? num(rc) : (b.bankClose != null ? b.bankClose : null);
+            var df2 = (bv != null) ? (b.close - bv) : 0;
+            var bd = (bv != null) && Math.abs(df2) >= 0.005;
+            if(bd) bad2++;
+            var set = function(f, v){
+              var td = tr.querySelector('[data-mf="' + f + '"]');
+              if(td) td.textContent = v;
+            };
+            set('n', b.n); set('open', money(b.open)); set('out', money(b.out));
+            set('inn', money(b.inn)); set('close', money(b.close));
+            var dtd = tr.querySelector('[data-mf="diff"]');
+            if(dtd){
+              dtd.textContent = (bv != null) ? (bd ? '⚠ ' + money(df2) : '✓') : '—';
+              dtd.style.color = (bv != null) ? (bd ? '#A83A26' : '#1c6b35') : '#9aa3a0';
+            }
+            tr.style.background = bd ? '#FBD9D2' : '';
+          });
+          var sm = det.querySelector('[data-msum]');
+          if(sm){
+            sm.innerHTML = '📅 តាមខែ ( ' + MS2.length + ' ខែ )'
+              + (bad2 ? '<span style="color:#A83A26;"> — ⚠ ' + bad2 + ' ខែខុស</span>' : '');
+          }
+        }
+      }
+    }catch(e){}
   }
 
   function allRows(){
@@ -70850,7 +72013,9 @@ function rscBankAutoRead(file, onDone){
                       sep:9, oct:10, nov:11, dec:12 };
           var D_ISO = /(\d{4})-(\d{2})-(\d{2})/;
           var D_DMY = /(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})/;
-          var D_DMN = /(\d{1,2})[\s\-]([A-Za-z]{3,9})[\s\-](\d{2,4})/;
+          /* [stated] ២០២៦-១១-១៩ ៖ ABA សរសេរ «03/FEB/2021» ⇒ ទទួល / និង .
+             ជាសញ្ញាបំបែកផងដែរ ( ពីមុនមានតែដកឃ្លា និងសហសញ្ញា ) ។ */
+          var D_DMN = /(\d{1,2})[\s\-\/.]([A-Za-z]{3,9})[\s\-\/.](\d{2,4})/;
           var D_MDY = /([A-Za-z]{3,9})\s+(\d{1,2}),?\s+(\d{4})/;
           function yr4(s){ return String(s).length === 2 ? ('20' + s) : String(s); }
           function dateOf(s){
@@ -70902,6 +72067,10 @@ function rscBankAutoRead(file, onDone){
             var o = '', i2 = '';
             rest.forEach(function(n){
               var raw = n.v, val = raw.replace(/[+\-,]/g, '');
+              /* [stated] ២០២៦-១១-១៩ ៖ ទម្រង់ ABA សរសេរជួរឈរទទេជា «0.00»
+                 ⇒ បើទុក ជួរដាក់ប្រាក់គ្រប់ជួរនឹងមាន «0.00» ក្នុងជួរ ចេញ ។
+                 ⚠ រំលងសូន្យមិនប៉ះការត្រួតពិនិត្យសមតុល្យទេ ( បូកសូន្យ ) ។ */
+              if(!parseFloat(val)) return;
               if(raw[0] === '-'){ o = val; return; }
               if(raw[0] === '+'){ i2 = val; return; }
               if(hdr && n.x != null){
