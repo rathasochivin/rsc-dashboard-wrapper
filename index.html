@@ -157,7 +157,7 @@
 })();
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SYSTEM · 19/11-D46</title>
+<title>SYSTEM · 19/11-D57</title>
 <!-- ដាក់លើអេក្រង់ដើមទូរស័ព្ទ ៖ រូបតំណាង ឈ្មោះ និងបើកពេញអេក្រង់
      manifest ដាក់ជា data URL ព្រោះ Apps Script បម្រើឯកសារតែមួយ។ -->
 <meta name="mobile-web-app-capable" content="yes">
@@ -774,24 +774,44 @@ body.view-mtr-active main{align-self:flex-start; min-height:0;}
   #toi-embed .toi-sec{ font-size:12.5px !important; margin:10px 0 5px !important; }
   #toi-embed .toi-note{ font-size:10.5px !important; margin:4px 0 7px !important; }
 }
+/* ⭐⭐⭐ [stated] ២០២៦-១១-២៦ ៖ «កុំឱ្យសល់ផ្នែកខាងលើច្រើនពេក · ឱ្យ ICON
+     PRINT នៅជួរជាមួយនឹង សេចក្ដីបរិយាយការងារចុះធ្វើសវនកម្មពន្ធដារ ·
+     លុបប្រអប់ចេញពីរូប PRINT» ។
+   ⚠ ការបម្រុងកន្លែង ៥៨px ( D54 ) ត្រូវដកចេញ ៖ នោះជាកន្លែងទទេពីលើ ។
+   ⇒ ប៊ូតុងដាក់ចូល **ក្នុង H1** ( មើលអ្នកបង្កើតផ្ទាំង ) ហើយអណ្តែតនៅឆ្វេង
+     កណ្តាលបញ្ឈរ ⇒ ជួរតែមួយជាមួយចំណងជើង · មិនកាន់កន្លែង · ចំណងជើងនៅ
+     ចំកណ្តាលដដែល ។
+   ⚠ `padding:0 46px` ⇒ អក្សរមិនជាន់ប៊ូតុងពេលអេក្រង់តូច ។ */
 #toi-embed .cover-wrap{ position:relative; }
+#toi-embed .cover-wrap h1{ position:relative; padding:0 46px; }
 #toi-embed .cover-actions{
   position:absolute; left:0; top:0; z-index:5;
   display:flex; gap:10px; margin:0;
 }
+/* ⚠ លុបស្រោបចេញ ៖ `.btn` មាន border · background · box-shadow ⇒ ត្រូវ
+   សរសេរពីលើដោយ `!important` ។ នៅសល់តែរូបសញ្ញា 🖨️ ទេ ។ */
 #toi-embed .cv-print-btn{
-  width:48px; min-width:48px; height:48px; min-height:48px;
-  padding:0 !important; border-radius:12px;
+  position:absolute; left:0; top:50%; transform:translateY(-50%);
+  width:auto !important; min-width:0 !important;
+  height:auto !important; min-height:0 !important;
+  padding:0 !important; margin:0 !important;
+  border:0 !important; background:none !important;
+  box-shadow:none !important; border-radius:0 !important;
   display:inline-flex; align-items:center; justify-content:center;
-  font-size:24px; line-height:1;
+  /* ⚠ `.btn` កំណត់ font-size ដោយ !important ⇒ ត្រូវប្រើ !important វិញ
+     បើមិនដូច្នេះទេ រូបសញ្ញានៅ ១៣px ( វាស់បានក្នុង Chromium ) ។ */
+  font-size:20px !important; line-height:1; cursor:pointer; opacity:.85;
 }
+#toi-embed .cv-print-btn:hover{ opacity:1; transform:translateY(-50%) scale(1.08); }
 @media screen and (max-width: 760px){
-  /* [stated] ២២:២៨ ៖ ប៊ូតុងព្រីនត្រឡប់ជាអណ្តែត ⇒ ចំណងជើងឡើងជួរជាមួយវា */
-  #toi-embed .cover-actions{ position:absolute; left:0; top:0; margin:0; }
-  #toi-embed .cv-print-btn{
-    width:42px; min-width:42px; height:42px; min-height:42px; font-size:21px; }
+  #toi-embed .cover-wrap h1{ padding:0 34px; }
+  #toi-embed .cv-print-btn{ font-size:18px !important; }
 }
-@media print{ #toi-embed .cover-actions{ display:none !important; } }
+@media print{
+  #toi-embed .cover-actions,
+  #toi-embed .cv-print-btn{ display:none !important; }
+  #toi-embed .cover-wrap h1{ padding:0 !important; }
+}
 #toi-embed .de-sec-head{
   margin:26px 0 10px; padding:9px 14px; border-radius:10px;
   background:var(--accent-light, #F3EFE4);
@@ -3867,6 +3887,9 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
   width:100% !important; justify-content:flex-start !important; margin-right:0 !important; }
 /* ភាគរយក្នុងក្រឡាស្លាក ៖ តូចជាងស្លាក កុំឱ្យលេចជាងគេ */
 #calcCard .cc-dpct{ font-size:11px; opacity:.75; margin-left:2px; white-space:nowrap; }
+/* ⭐ [stated] ២០២៦-១១-២៦ ៖ លេខក្នុងក្រឡាដែលមានប្រអប់ធីក ( មើល `result()` ) ។
+   កុំឱ្យលេខបាក់ពាក់កណ្តាល ហើយកុំឱ្យវាស៊ីទទឹងលើសតម្រូវការ ។ */
+#calcCard .cc-num{ white-space:nowrap; }
 #calcCard .cc-pane table td .cc-chk > input[type="checkbox"]{ margin:0; }
 #calcCard .cc-chk input{accent-color:var(--primary); width:15px; height:15px;}
 #calcCard .cc-empty{padding:26px; text-align:center; color:var(--muted); font-size:13px;}
@@ -4777,6 +4800,26 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
   white-space:nowrap; width:1%;
 }
 #mtr-embed table.annual-ledger thead th:nth-child(1){ text-align:left; }
+/* ⭐⭐ [stated] ២០២៦-១១-២៦ ៖ «មានតែ ១ ឆ្នាំ វាមើលទៅលេខវានៅខាងចុង មិនស្អាត» ។
+   ⚠ មូលហេតុ ៖ តារាងទទឹង ១០០% + ជួរឈរដំបូង `width:1%` ⇒ ទទឹងសល់ទាំងអស់
+     ធ្លាក់លើជួរឈរឆ្នាំតែមួយ ⇒ លេខរត់ទៅគែមខាងស្តាំ ។
+   ⇒ ឆ្នាំតែមួយ ⇒ តារាងទទឹងតាមមាតិកា ហើយជួរឈរឆ្នាំយ៉ាងតិច ២០០px ។
+   ⚠ កុំប៉ះទូរស័ព្ទ ៖ ច្បាប់ ≤៧៦០px បង្ខំ `width:100% !important` រួចហើយ
+     ហើយទីនោះការលាតពេញជារឿងត្រឹមត្រូវ ។ */
+@media screen and (min-width: 761px){
+  /* ⚠⚠ `width:auto` **មិនគ្រប់គ្រាន់ទេ** ( វាស់រួច ៖ នៅតែ ១៤០០px ) ព្រោះ
+     ក. ជួរឈរដំបូងមាន `width:1%` — ទទឹងជាភាគរយធ្វើឱ្យតារាងយកទទឹងប្រអប់
+        មកជាមូលដ្ឋាន ⇒ លាតពេញ
+     ខ. តារាងមាន `min-width:760px` ដែលឈ្នះលើ `width`
+     ⇒ ត្រូវប្រើ `max-content` ហើយដោះ min-width ។ វាស់ ៖ ១៤០០px ⇒ ២៩៦px ។ */
+  #mtr-embed table.annual-ledger.annual-1y{
+    width:max-content; min-width:0; max-width:100%;
+  }
+  #mtr-embed table.annual-ledger.annual-1y thead th:not(:nth-child(1)),
+  #mtr-embed table.annual-ledger.annual-1y tbody td:not(:nth-child(1)){
+    min-width:200px;
+  }
+}
 /* ⚠ ជួរឈរទី ២ ធ្លាប់ជា TOTAL ដែលបានដកចេញ — ឥឡូវវាជាឆ្នាំដំបូង
    ដូច្នេះកុំដាក់ពណ៌ត្រាលើវាទៀត។ ជួរដេក «សរុប» នៅបាតទទួលពណ៌នោះវិញ។ */
 #mtr-embed .ah-bar{
@@ -8989,7 +9032,7 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
                  មូលដ្ឋានទិន្នន័យទាញតែពេលចុច ⇒ មិនធ្វើឱ្យការចូលដំបូងយឺត។
                  ⚠⚠ បញ្ជូន `.mi-ic` មិនមែន `this` — មើលក្បាល fix_atbmenu3.py -->
             <button type="button" class="atb-mi" role="menuitem"
-                    onclick="window.__rscLawClick && window.__rscLawClick(this.querySelector('.mi-ic'))"><span class="mi-ic">📖</span><span>ស្វែងរកច្បាប់ និងប្រកាស</span></button>
+                    onclick="window.__rscLawClick ? window.__rscLawClick(this.querySelector('.mi-ic')) : alert('ម៉ូឌុលស្វែងរកច្បាប់មិនបានផ្ទុកក្នុងឯកសារនេះទេ ។\nជំនាន់ ៖ ' + (window.__RSC_BUILD || '?'))"><span class="mi-ic">📖</span><span>ស្វែងរកច្បាប់ និងប្រកាស</span></button>
             <!-- ⭐ ២០២៦-០៨-២៨ ៖ អ្នកអាន General Ledger ៖ បំប្លែង GL របស់សហគ្រាស
                  ( QuickBooks · តារាងរាបស្មើ · ក្បាលគណនី ) ជាតារាងតែមួយដែល filter បាន។
                  ⭐ [stated] ២០២៦-០៩-០១ ៖ «ជួយដាក់ផ្នែកអាន GL ឱ្យ user ផង» ⇒ ថ្នាក់
@@ -34280,7 +34323,9 @@ function renderAnnualView(){
   resultMeta.style.display = 'none';
   resultMeta.textContent = '';
 
-  let html = '<div class="table-wrap"><table class="ledger annual-ledger"><thead><tr>';
+  /* ⭐ [stated] ២០២៦-១១-២៦ ៖ ឆ្នាំតែមួយ ⇒ ថ្នាក់ `annual-1y` ( មើល CSS ) */
+  let html = '<div class="table-wrap"><table class="ledger annual-ledger'
+           + (years.length === 1 ? ' annual-1y' : '') + '"><thead><tr>';
   headers.forEach(h => html += `<th>${h}</th>`);
   html += '</tr></thead><tbody>';
 
@@ -40595,12 +40640,56 @@ function rscLawFetch(){
       if(!r.ok) throw new Error('HTTP ' + r.status);
       return r.json();
     })
+    .catch(function(){
+      /* ⚠ D57 ៖ `force-cache` អាចទទួលចម្លើយចាស់ ឬខូចពី service worker
+         ⇒ សាកទាញស្រស់ម្តងទៀត មុននឹងប្រកាសបរាជ័យ ។ */
+      return fetch('./law.json?v=' + Date.now(), { cache:'reload' })
+        .then(function(r){
+          if(!r.ok) throw new Error('HTTP ' + r.status);
+          return r.json();
+        });
+    })
     .then(function(j){ __rscLawDB = j || []; return __rscLawDB; });
 }
 window.__rscLawFetch = rscLawFetch;
 
+/* ⭐⭐⭐ [stated] ២០២៦-១១-២៦ ៖ ក្បាលផ្ទាំងច្បាប់លើទូរសព្ទ ( D56 ) ។
+   ⚠ ច្បាប់ទាំងអស់ក្នុង `@media (max-width:760px)` ⇒ **PC មិនប្តូរសោះ** ។
+   ⚠ `rl-row2` ៖ `display:contents` លើ PC ⇒ ដូចដើមបេះបិទ ;
+     លើទូរសព្ទ ⇒ `display:flex` ⇒ ធានាថា មាត្រា/ប្រការ · សុពលភាព ·
+     ចំនួនសរុប នៅជួរតែមួយ ( `flex-wrap` មិនអាចធានាបានទេ ) ។
+   ⚠ ប្រអប់នៅ ១៦px ដដែល ៖ បន្ថយ ⇒ iOS ពង្រីកអេក្រង់វិញ ។ */
+function rscLawCss(){
+  if(document.getElementById('rscLawCss')) return;
+  var st = document.createElement('style');
+  st.id = 'rscLawCss';
+  st.textContent = [
+    '#rscLaw .rl-row2{ display:contents; }',
+    '@media (max-width:760px){',
+    '  #rscLaw .rl-head{ padding:10px !important; gap:8px !important;',
+    '    align-items:center !important; }',
+    '  #rscLaw .rl-q{ order:1; flex:1 1 160px !important; min-width:0 !important; }',
+    '  #rscLaw .rl-close{ order:2; flex:0 0 auto; }',
+    '  #rscLaw .rl-src{ order:3; flex:1 1 100% !important; width:100% !important;',
+    '    max-width:100% !important; min-width:0 !important; }',
+    '  #rscLaw .rl-row2{ order:4; display:flex !important; flex:1 1 100%;',
+    '    width:100%; gap:6px; align-items:center; min-width:0; }',
+    '  #rscLaw .rl-art{ flex:1 1 auto !important; min-width:0 !important;',
+    '    max-width:none !important; }',
+    '  #rscLaw .rl-val{ flex:0 1 auto !important; min-width:0 !important; }',
+    '  #rscLaw .rl-info{ margin-left:auto !important; flex:0 0 auto;',
+    '    white-space:nowrap; font-size:13px !important; opacity:.9;',
+    '    padding-right:2px; }',
+    '  #rscLaw .rl-head input, #rscLaw .rl-head select, #rscLaw .rl-head button{',
+    '    padding:8px 10px !important; border-radius:6px !important; }',
+    '}'
+  ].join('\n');
+  document.head.appendChild(st);
+}
+
 function rscLawOpen(){
   if(document.getElementById('rscLaw')) return;
+  rscLawCss();
   var DB = __rscLawDB || [];
 
   var ov = document.createElement('div');
@@ -40610,17 +40699,20 @@ function rscLawOpen(){
   document.body.appendChild(ov);
 
   var head = document.createElement('div');
+  head.className = 'rl-head';
   head.style.cssText = 'flex:0 0 auto; padding:10px 14px; background:#0F3D3E; color:#EFE7D2;'
     + 'display:flex; gap:10px; align-items:center; flex-wrap:wrap; font-size:13px;';
   ov.appendChild(head);
 
   var q = document.createElement('input');
+  q.className = 'rl-q';
   q.type = 'search';
   q.placeholder = 'សួរ ឬវាយពាក្យគន្លឹះ… ឧ. ចំណាយមិនអាចកាត់កង · អាករលើតម្លៃបន្ថែម · ការផ្ទេរថ្លៃ';
   q.style.cssText = 'flex:1 1 380px; min-width:0; padding:9px 12px; border-radius:6px;'
     + 'border:1px solid rgba(200,166,75,.5); background:#0B2F30; color:#EFE7D2;'
     + 'font:inherit; font-size:13.5px;';
   var src = document.createElement('select');
+  src.className = 'rl-src';
   src.style.cssText = 'padding:8px; border-radius:6px; border:1px solid rgba(200,166,75,.5);'
     + 'background:#0B2F30; color:#EFE7D2; font:inherit; font-size:12.5px;';
   /* ⭐ [stated] ២០២៦-០៨-២៨ ៖ «ជួយរៀបច្បាប់នៅខាងលើ អនុក្រឹត្យ ប្រកាស
@@ -40651,6 +40743,7 @@ function rscLawOpen(){
   src.innerHTML = html;
   /* [stated] ២០២៦-០៨-២៨ ៖ «មានកន្លែង filter យកសុពលភាព និងនិរាករណ៍ចេញ» ។ */
   var val = document.createElement('select');
+  val.className = 'rl-val';
   val.style.cssText = 'padding:8px; border-radius:6px; border:1px solid rgba(200,166,75,.5);'
     + 'background:#0B2F30; color:#EFE7D2; font:inherit; font-size:12.5px;';
   val.innerHTML = '<option value="ok">មានសុពលភាព</option>'
@@ -40662,19 +40755,32 @@ function rscLawOpen(){
      ⇒ ជ្រើសឯកសារ ⇒ បញ្ជីមាត្រា/ប្រការទាំងអស់លេចឡើងភ្លាម ដោយមិនចាំបាច់
        វាយស្វែងរក ។ ជ្រើសមួយ ⇒ បង្ហាញតែមាត្រានោះ ។ */
   var art = document.createElement('select');
+  art.className = 'rl-art';
   art.style.cssText = 'padding:8px; border-radius:6px; border:1px solid rgba(200,166,75,.5);'
     + 'background:#0B2F30; color:#EFE7D2; font:inherit; font-size:12.5px; max-width:230px;'
     + 'display:none;';
   var close = document.createElement('button');
+  close.className = 'rl-close';
   close.textContent = '✕ បិទ';
   close.style.cssText = 'padding:7px 12px; border:0; border-radius:6px; cursor:pointer;'
     + 'font:inherit; font-weight:700; font-size:12.5px; background:rgba(255,255,255,.14); color:#EFE7D2;';
   close.onclick = function(){ try{ ov.remove(); }catch(e){} };
   var info = document.createElement('span');
+  info.className = 'rl-info';
   info.style.cssText = 'margin-left:auto; font-size:12.5px; opacity:.85;';
   info.textContent = DB.length + ' មាត្រា/ប្រការ';
-  head.appendChild(q); head.appendChild(src); head.appendChild(art); head.appendChild(val);
-  head.appendChild(info); head.appendChild(close);
+  /* ⭐⭐ [stated] ២០២៦-១១-២៦ ៖ «ជួរទី៣ និងទី៤ … គួរនៅជួរតែ១» ។
+     ⚠ `flex-wrap` មិនអាចធានាបានទេ ⇒ ប្រើប្រអប់រុំ ។ `display:contents`
+       លើ PC ⇒ លំដាប់ q · src · art · val · info · close នៅដដែលបេះបិទ ។ */
+  var row2 = document.createElement('div');
+  row2.className = 'rl-row2';
+  row2.appendChild(art); row2.appendChild(val); row2.appendChild(info);
+  head.appendChild(q); head.appendChild(src); head.appendChild(row2);
+  head.appendChild(close);
+  /* [stated] «បើវាវែងយើងចុចមើលអក្សរពេញបាន» ⇒ ឈ្មោះឯកសារពេញក្នុង title
+     ( ចុច select ⇒ បញ្ជីបង្ហាញអត្ថបទពេញរួចទៅហើយ ) */
+  src.title = 'ឯកសារទាំងអស់';
+  src.addEventListener('change', function(){ src.title = src.value || 'ឯកសារទាំងអស់'; });
 
   /* បញ្ជីមាត្រា/ប្រការ របស់ឯកសារដែលជ្រើស */
   function fillArts(){
@@ -40884,19 +40990,48 @@ function rscLawOpen(){
 }
 window.__rscLaw = rscLawOpen;
 
+/* ⭐⭐⭐ [stated] ២០២៦-១១-២៦ ៖ «នៅផ្នែកស្វែងរកច្បាប់ និងប្រកាស នៅលើ
+   ទូរសព្ទចុចបាន តែនៅលើ PC ចុចមិនចេញ» ។
+   ⚠⚠ ប៊ូតុងម៉ឺនុយហៅ `window.__rscLawClick` ។ ឯកសារ Apps Script
+     ( Dashboard.html ) គ្មានអ្នកហៅនេះទេ ⇒ `undefined && …` ⇒ ស្ងាត់ឈឹង ។
+   ⇒ អ្នកហៅបម្រុង ៖ មូលដ្ឋានទិន្នន័យបង្កប់រួចហើយ ⇒ បើកផ្ទាល់តែម្តង ។
+   ⚠ កុំសរសេរជាន់លើអ្នកហៅពិត ( index.html ដែលត្រូវទាញ law.json ) ⇒
+     ពិនិត្យមុន ។ ក្នុង index.html អ្នកហៅពិតកំណត់នៅខាងក្រោម ⇒ វាសរសេរ
+     ជាន់លើបន្ទាត់នេះវិញ ដែលជាលទ្ធផលដែលត្រូវការ ។ */
+if(typeof window.__rscLawClick !== 'function'){
+  window.__rscLawClick = function(btn){
+    var old = btn ? btn.textContent : '';
+    if(btn) btn.textContent = '⏳';
+    setTimeout(function(){
+      try{ rscLawOpen(); }
+      catch(e){
+        alert('បើកផ្ទាំងស្វែងរកច្បាប់មិនបាន ៖ ' + ((e && e.message) || e)
+            + '\n\nជំនាន់ ៖ ' + (window.__RSC_BUILD || '?'));
+      }
+      if(btn) btn.textContent = old;
+    }, 0);
+  };
+}
+
 /* ⚠ ការទាញ ១.៧ MB អាចប្រើពេលពីរបីវិនាទីលើបណ្តាញយឺត ⇒ ប្តូរប៊ូតុងជា ⏳
    ដើម្បីកុំឱ្យអ្នកប្រើគិតថាការចុចមិនដំណើរការ ។ */
 window.__rscLawClick = function(btn){
   if(btn && btn.__busy) return;
   var old = btn ? btn.textContent : '';
   if(btn){ btn.__busy = true; btn.textContent = '⏳'; }
+  /* ⚠⚠ D57 ៖ បើការទាញមិនចប់សោះ ( បណ្តាញដាច់កណ្តាលផ្លូវ ) `__busy` នៅជាប់
+     ⇒ **ការចុចលើកក្រោយត្រូវបដិសេធស្ងាត់ៗរហូត** ⇒ មើលទៅដូច «ចុចមិនចេញ» ។
+     ⇒ ឆ្មាំពេលវេលា ៣០ វិនាទី រំដោះវាជានិច្ច ។ */
+  var rel = function(){ if(btn){ btn.__busy = false; btn.textContent = old; } };
+  var wd = setTimeout(rel, 30000);
   rscLawFetch().then(function(){
-    if(btn){ btn.__busy = false; btn.textContent = old; }
+    clearTimeout(wd); rel();
     rscLawOpen();
   }).catch(function(e){
-    if(btn){ btn.__busy = false; btn.textContent = old; }
+    clearTimeout(wd); rel();
     alert('ទាញមូលដ្ឋានទិន្នន័យច្បាប់មិនបាន ៖ ' + ((e && e.message) || e)
-        + '\n\nសូមពិនិត្យថាឯកសារ law.json ស្ថិតនៅជាមួយ index.html។');
+        + '\n\nសូមពិនិត្យថាឯកសារ law.json ស្ថិតនៅជាមួយ index.html។'
+        + '\nជំនាន់ ៖ ' + (window.__RSC_BUILD || '?'));
   });
 };
 
@@ -42476,18 +42611,25 @@ function renderAll(){
        ⚠ ហៅ `btnPrintCurrent` ដដែល ⇒ ផ្លូវព្រីនមិនប្តូរ ( ថ្ងៃខែ ·
          autoFit · ជើងទំព័រ COVER ) ។ វាលាក់ តែ `.click()` នៅតែដើរ ។ */
     const cvBar = el('div', {class:'cover-actions no-print'});
-    const cvPrint = el('button', {class:'btn cv-print-btn',
+    const cvPrint = el('button', {class:'btn cv-print-btn no-print',
       title:'ព្រីន COVER', 'aria-label':'ព្រីន COVER'}, '🖨️');
     cvPrint.onclick = ()=>{
       const b = document.getElementById('btnPrintCurrent');
       if(b) b.click();
     };
     cvBar.appendChild(cvPrint);
-    /* ⚠ ប្រអប់រុំ ៖ ដើម្បីឱ្យរបារអណ្តែត ( absolute ) មិនកាន់កន្លែងបញ្ឈរ
-       ⇒ ចំណងជើងឡើងលើវិញ ។ មើលក្បាល fix_cvbtn.py */
+    /* ⭐⭐⭐ [stated] ២០២៦-១១-២៦ ៖ «ឱ្យ ICON PRINT នៅជួរជាមួយនឹង សេចក្ដី
+       បរិយាយការងារចុះធ្វើសវនកម្មពន្ធដារ» ⇒ ដាក់ប៊ូតុងចូល **ក្នុង H1**
+       ផ្ទាល់ ( H1 = `position:relative` តាម CSS ) ⇒ គ្មានការបម្រុងកន្លែង
+       ខាងលើទៀតទេ ។
+       ⚠ រក H1 មិនឃើញ ( រចនាសម្ព័ន្ធប្តូរ ) ⇒ ត្រឡប់ទៅរបារចាស់វិញ
+         ⇒ ប៊ូតុងមិនបាត់ឡើយ ។ */
     const cvWrap = el('div', {class:'cover-wrap'});
-    cvWrap.appendChild(cvBar);
-    cvWrap.appendChild(renderCoverPanel());
+    const cvPanel = renderCoverPanel();
+    const cvH1 = cvPanel.querySelector('h1');
+    if(cvH1) cvH1.appendChild(cvPrint);
+    else cvWrap.appendChild(cvBar);
+    cvWrap.appendChild(cvPanel);
     content.appendChild(cvWrap);
     return;
   }
@@ -45325,7 +45467,9 @@ function rscPaidTaxData(){
   try{ aud  = (window.__mtrAuditPaidByTaxYear && window.__mtrAuditPaidByTaxYear()) || {}; }catch(e){ aud = {}; }
   var yrs = {};
   Object.keys(paid).forEach(function(t){ Object.keys(paid[t] || {}).forEach(function(y){ yrs[y] = 1; }); });
-  var years = Object.keys(yrs).filter(function(y){ return /^\d{4}$/.test(y); }).sort();
+  /* ⭐ [stated] ២០២៦-១១-២៦ ៖ «យក ឆ្នាំខ្ពស់នៅពេលខាងមុខ» ⇒ ថ្មី → ចាស់ */
+  var years = Object.keys(yrs).filter(function(y){ return /^\d{4}$/.test(y); })
+                   .sort(function(a, b){ return Number(b) - Number(a); });
   /* ⭐⭐ [stated] ២០២៦-១១-២៦ ៖ «ឈ្មោះប្រភេទពន្ធ គួរយកឈ្មោះទៅតាមសាលកបត្រ
      អនុរក្សចុះ» ⇒ ស្លាកជួរ = **ឈ្មោះពិតក្នុងសាលកបត្រ** មិនមែនឈ្មោះដែល
      ខ្ញុំសរសេរឡើងទេ ។ បើសាលកបត្រមានឈ្មោះពីរបែបសម្រាប់ប្រភេទតែមួយ
@@ -45388,7 +45532,9 @@ function rscPaidTaxBox(){
        + '<th style="border:1px solid #d7d0bd;padding:6px 9px;text-align:left;'
        + 'background:#f6f3ea;color:#2b2b2b;font-weight:700;">ប្រភេទពន្ធ</th>';
     d.years.forEach(function(y){
-      h += '<th style="border:1px solid #d7d0bd;padding:6px 9px;text-align:right;'
+      /* ⭐ [stated] ២០២៦-១១-២៦ ៖ «ដាក់លេខឆ្នាំជា CENTER ចំកណ្តាលផង» ។
+         ⚠ តែក្បាលឆ្នាំ — ក្រឡាលេខនៅតម្រឹមស្តាំដដែល ។ */
+      h += '<th style="border:1px solid #d7d0bd;padding:6px 9px;text-align:center;'
          + 'background:#f6f3ea;color:#2b2b2b;font-weight:700;">' + esc(y) + '</th>';
     });
     h += '<th style="border:1px solid #d7d0bd;padding:6px 9px;text-align:right;'
@@ -58977,7 +59123,10 @@ CC.blank=function(){
       auditItems:[],          // ធាតុថ្មីដោយសវនករ {mode:"+"|"-", label, amt}
       findings:[]
     },
-    vat:{ inputDeclared:z(), inputAllowed:z(), creditCF:z(), creditYear:z(), paid:z(), paidAudit:z(), paidLate:z(), msel:{} },
+    /* ⭐ `inputCut` = អតប លើធាតុចូល ដែល **មិនអនុញ្ញាត** ( កាត់ចេញ ) — D48 */
+    /* ⭐ `creditCutCF` · `creditCutYear` = ឥណទានដែល **មិនអនុញ្ញាត** — D50 */
+    vat:{ inputDeclared:z(), inputAllowed:z(), inputCut:z(), creditCF:z(), creditCutCF:z(),
+          creditYear:z(), creditCutYear:z(), paid:z(), paidAudit:z(), paidLate:z(), msel:{} },
     /* កំណត់ពន្ធដែលចុចមកពីជំហានទី៤–៧ */
     tin:"",                 /* សហគ្រាសដែលកាតុនេះជារបស់ — ប្តូរ TIN = លុបចាប់ផ្តើមថ្មី */
     assessments:[],
@@ -59249,11 +59398,16 @@ CC.setYears=function(list){
        .sort(function(a,b){return b-a;}).slice(0,10);
   if(!ys.length) return false;
   if(ys.join()===s.years.join()) return false;
+  /* ⚠ D51 ៖ `(o||{})` មានរួចហើយ ⇒ កូនសោដែលគ្មាន ក្លាយជាប្រអប់ទទេ
+     ហើយ `remap` ត្រឡប់វត្ថុពេញលក្ខណៈវិញ ⇒ ការហៅនេះជាផ្លូវជួសជុលដែរ ។ */
   var remap=function(o){ var n={}; ys.forEach(function(y){ n[y]=+(o||{})[y]||0; }); return n; };
   s.years=ys;
   ["turnoverDeclared","turnoverVatDeclared","expenseDeclared","addBack",
    "deductMore","lossCF","prepaid","whtCredit"].forEach(function(k){ s.toi[k]=remap(s.toi[k]); });
-  ["inputDeclared","inputAllowed","creditCF","creditYear","paid","paidAudit","paidLate"].forEach(function(k){ s.vat[k]=remap(s.vat[k]); });
+  /* ⚠ `inputCut` ត្រូវតែនៅក្នុងបញ្ជីនេះ ៖ បើភ្លេច ការកាត់នឹងបាត់ស្ងាត់ៗ
+     ពេលបញ្ជីឆ្នាំប្តូរ ( មេរៀនដដែលនឹងវាលថ្មីមុនៗ ) ។ */
+  ["inputDeclared","inputAllowed","inputCut","creditCF","creditCutCF",
+   "creditYear","creditCutYear","paid","paidAudit","paidLate"].forEach(function(k){ s.vat[k]=remap(s.vat[k]); });
   /* ⚠ រូបមន្តសម្គាល់តាម `<វាល>|<ឆ្នាំ>` ⇒ ពេលដកឆ្នាំចេញ ត្រូវដករូបមន្ត
      របស់ឆ្នាំនោះដែរ បើមិនដូច្នេះវាគណនាទៅក្នុងឆ្នាំដែលលែងមាន ។ */
   var remapFx=function(o){
@@ -59752,14 +59906,63 @@ CC.pullTos=function(){
      ការទុកឱ្យផ្លូវមួយធ្វើ ហើយមួយទៀតមិនធ្វើ គឺជាមូលហេតុដែលការរើសពី
      dropdown មិនចេញតួលេខ ។
    ⚠ ក្រឡាដែលអ្នកប្រើវាយខ្លួនឯង (`userSet`) មិនត្រូវប៉ះឡើយ ។ */
+/* ⭐⭐ [stated] ២០២៦-១១-២៦ ៖ «ពេលចុចកុំលោតមកគ្រប់ឆ្នាំ … គួរតែសួរថាកំណត់
+   ឆ្នាំណា ព្រោះប្រភេទពន្ធតែកំណត់តែ១ដងទេ» ។
+   ប្រអប់តូចសួរឆ្នាំ ⇒ `cb(ឆ្នាំ)` ឬ `cb(null)` សម្រាប់ «គ្រប់ឆ្នាំ» ។
+   ⚠ ឯករាជ្យទាំងស្រុង ( style ក្នុងខ្លួន ) ⇒ មិនពឹងលើផ្ទាំងដទៃ ។
+   ⚠ បោះបង់ ⇒ `cb(false)` ⇒ អ្នកហៅត្រូវដកធីកវិញ ។ */
+CC.pickFixedYear=function(tx, cb){
+  try{
+    var s=CC.state, ys=(s.years||[]).slice().sort(function(a,b){ return Number(b)-Number(a); });
+    var ov=document.createElement('div');
+    ov.setAttribute('data-ccfy','1');
+    ov.style.cssText='position:fixed;inset:0;background:rgba(16,24,28,.55);display:flex;'
+      +'align-items:center;justify-content:center;z-index:99992;padding:16px;';
+    var card=document.createElement('div');
+    card.style.cssText='background:#fff;border-radius:10px;padding:18px 20px 14px;'
+      +'box-shadow:0 18px 50px rgba(0,0,0,.3);font-size:14px;max-width:min(520px,96vw);';
+    var btn=function(lb,val,primary){
+      return '<button data-fy="'+(val===null?'__all':val)+'" style="border:0;cursor:pointer;'
+        +'font:inherit;border-radius:7px;padding:8px 14px;margin:4px 6px 0 0;'
+        +(primary?'background:#C8A64B;color:#17170F;font-weight:700;':'background:#eee;color:#222;')
+        +'">'+lb+'</button>';
+    };
+    var h='<div style="font-weight:700;margin-bottom:6px;">កំណត់ឆ្នាំណា?</div>'
+      +'<div style="color:#666;font-size:12.5px;line-height:1.7;margin-bottom:10px;">'
+      +((tx&&tx.name)?String(tx.name).replace(/[<>&]/g,''):'ពន្ធចំនួនថេរ')
+      +' — ប្រភេទពន្ធនេះកំណត់តែម្តង ⇒ ជ្រើសឆ្នាំមួយ ។</div><div>';
+    ys.forEach(function(y,i){ h+=btn(String(y), String(y), i===0); });
+    h+='</div><div style="margin-top:10px;border-top:1px solid #eee;padding-top:8px;">'
+      +btn('គ្រប់ឆ្នាំ', null, false)+btn('បោះបង់','__x',false)+'</div>';
+    card.innerHTML=h;
+    ov.appendChild(card);
+    var done=function(v){ try{ ov.remove(); }catch(e){} cb(v); };
+    ov.addEventListener('click',function(e){
+      if(e.target===ov) return done(false);
+      var b=e.target.closest('[data-fy]'); if(!b) return;
+      var v=b.getAttribute('data-fy');
+      done(v==='__x' ? false : (v==='__all' ? null : v));
+    });
+    document.body.appendChild(ov);
+  }catch(e){ cb(null); }
+};
 CC.applyFixedAmount=function(tx, on){
   try{
     var s=CC.state;
     if(!tx || !tx.amt || !tx.def || !s) return;
     if(!tx.base) tx.base={};
+    /* ⭐ `only` = ឆ្នាំតែមួយដែលត្រូវបំពេញ ( D53 ) ; null = គ្រប់ឆ្នាំដូចមុន */
+    var only=(arguments.length>2 && arguments[2]!=null) ? String(arguments[2]) : null;
     (s.years||[]).forEach(function(y){
       if(tx.userSet && tx.userSet[y]) return;
-      if(on){ if(!(+tx.base[y]||0)) tx.base[y]=tx.def; }
+      if(on){
+        if(only!==null && String(y)!==only){
+          /* ឆ្នាំផ្សេង ៖ លុបចំនួនថេរចេញ ⇒ មិនលោតមកគ្រប់ឆ្នាំ */
+          if((+tx.base[y]||0)===tx.def) tx.base[y]=0;
+          return;
+        }
+        if(!(+tx.base[y]||0)) tx.base[y]=tx.def;
+      }
       else if((+tx.base[y]||0)===tx.def) tx.base[y]=0;
     });
   }catch(e){}
@@ -60913,11 +61116,30 @@ CC.compute=function(){
 
     /* --- ៧. អតប --- */
     var outVat=fl.vat?vatBase*s.rate.vat:0;
-    var inVat =(+s.vat.inputAllowed[y]||0)||(+s.vat.inputDeclared[y]||0);
+    /* ⭐⭐ [stated] ២០២៦-១១-២៦ ៖ «ចង់កាត់ VAT INPUT ចេញ» + «ចុះបើកាត់ទាំងអស់» ។
+       មូលដ្ឋាន ៖ «អនុញ្ញាត» បើវាយ ; បើទទេ ⇒ តាមប្រកាស ( អាកប្បកិរិយាចាស់ ) ។
+       រួចដក **ចំនួនមិនអនុញ្ញាត** ( វាលថ្មី `inputCut` ) ចេញ ។
+       ⚠ វាយចំនួនប្រកាសទាំងអស់ក្នុងវាលកាត់ ⇒ អតបលើធាតុចូល = 0 ⇒ កាត់ទាំងអស់ ។
+       ⚠ `Math.max(0,…)` ៖ ការកាត់លើសមូលដ្ឋាន មិនត្រូវក្លាយជាលេខអវិជ្ជមាន
+         ( វានឹងបន្ថែមឥណទានដោយច្រឡំ ) ។
+       ⚠ `(s.vat.inputCut||{})` ៖ ឯកសារសម័យចាស់គ្មានវាលនេះ ⇒ កុំឱ្យបោះកំហុស ។ */
+    var inBaseV=(+s.vat.inputAllowed[y]||0)||(+s.vat.inputDeclared[y]||0);
+    var inCut  =+((s.vat.inputCut||{})[y])||0;
+    var inVat  =Math.max(0, inBaseV-inCut);
     /* [stated] អាករត្រូវបង់ = ធាតុចេញ − ធាតុចូល − ឥណទានអាករ
        (ទាំងឥណទានយោងពីឆ្នាំមុន និងឥណទានប្រចាំខែនៃឆ្នាំនោះផ្ទាល់)។
        ពីមុនរាប់តែឥណទានយោង ដូច្នេះការកាត់កងខ្វះ។ */
-    var vatCredit=(+s.vat.creditCF[y]||0)+(+s.vat.creditYear[y]||0);
+    /* ⭐⭐ [stated] ២០២៦-១១-២៦ ៖ «ជួយធ្វើផ្នែកឥណទាន១ទៀតផង» ⇒ កាត់ឥណទាន
+       ដូចធាតុចូល ។ កាត់ទាំងអស់ ⇒ វាយចំនួនដដែលនឹងជួរប្រកាសខាងលើ ។
+       ⚠ វាលកាត់ដាច់ដោយឡែក ⇒ `CC.pullFromVat()` ( ដែលសរសេរជាន់លើ
+         `creditCF` · `creditYear` ) មិនអាចលុបការកាត់បានទេ ។
+       ⚠ `Math.max(0,…)` ⇒ ការកាត់លើស មិនក្លាយជាឥណទានអវិជ្ជមាន ។
+       ⚠ `(s.vat.creditCutCF||{})` ⇒ ឯកសារសម័យចាស់គ្មានវាលនេះ ។ */
+    var creCutCF =+((s.vat.creditCutCF||{})[y])||0;
+    var creCutYr =+((s.vat.creditCutYear||{})[y])||0;
+    var creCF    =Math.max(0,(+s.vat.creditCF[y]||0)  -creCutCF);
+    var creYr    =Math.max(0,(+s.vat.creditYear[y]||0)-creCutYr);
+    var vatCredit=creCF+creYr;
     /* [stated] វាលបំពេញដោយដៃត្រូវចូលក្នុងការគណនាផង មិនមែនតែក្នុងរបាយការណ៍ទេ។
        បូក ៖ ឥណទានយោងលើស · អាករបង់ខ្វះលើកមុន
        ដក ៖ អាករលើធាតុចូល (មូលដ្ឋាន × អត្រា) · ឥណទានកាត់កងបាន · ផ្សេងៗ */
@@ -60945,13 +61167,22 @@ CC.compute=function(){
        ⚠ `vmAdd` · `vmSub` · `vAlign` ជាការកែដោយដៃរបស់អ្នកប្រើ ⇒ គោរពជានិច្ច ។ */
     var vatFindOnly=!!((s.vat.findOnly||{})[y]);
     var vatFindOut=findVat*s.rate.vat;
+    /* ⭐⭐⭐ [stated] ២០២៦-១១-២៦ ៖ របៀប «លើការកាត់ + ផលរកឃើញ តែប៉ុណ្ណោះ» ។
+       អ្វីដែលសវនករកំណត់ = ការកាត់ ( ធាតុចូល + ឥណទាន ) បូកនឹងអតបថ្មី
+       លើផលរកឃើញជាប់អតប ។ ធាតុចេញតាមការប្រកាស គេបានបង់រួចហើយ ⇒ កុំរាប់ស្ទួន ។
+       ⚠ លំនាំដើម **បិទ** ⇒ សំណុំរឿងចាស់មិនប្តូរលេខសោះ ។ */
+    var vatCutOnly=!!((s.vat.cutOnly||{})[y]);
+    var vatCutTot =inCut+creCutCF+creCutYr;
     var vatDue=vatFindOnly
       ? Math.max(0,vatFindOut-findInVat+vmAdd-vmSub+vAlign)
+      : vatCutOnly
+      ? Math.max(0,vatCutTot+vatFindOut-findInVat+vmAdd-vmSub+vAlign)
       : Math.max(0,outVat-inVat-findInVat-vatCredit+vmAdd-vmSub+vAlign);
     var vatPaidMtr=+s.vat.paid[y]||0, vatPaidAudit=+s.vat.paidAudit[y]||0, vatPaidLate=+s.vat.paidLate[y]||0;
     var vatPaid=vatPaidMtr+vatPaidAudit+vatPaidLate;      /* សរុប — សម្រាប់បង្ហាញ */
     /* ⭐ ដូចពន្ធលើប្រាក់ចំណូល ៖ ធីកតាមឆ្នាំដើម្បីដកការបង់ក្នុងសវនកម្ម */
-    var vatPaidDed=(vatFindOnly?0:vatPaidMtr)+(((s.vat.dedAudit||{})[y])?vatPaidAudit:0);              /* ដកបានពិត ៖ សាលកបត្រតែប៉ុណ្ណោះ */
+    /* ⚠ របៀបកាត់ ក៏មិនដកការបង់តាមសាលកបត្រដែរ ( ហេតុផលដូចរបៀបផលរកឃើញ ) */
+    var vatPaidDed=((vatFindOnly||vatCutOnly)?0:vatPaidMtr)+(((s.vat.dedAudit||{})[y])?vatPaidAudit:0);
     var vatPay=Math.max(0,vatDue-vatPaidDed);
 
     /* ⭐ QIP ៖ ជួរកំណត់ដាច់ដោយឡែកក៏ជាពន្ធលើប្រាក់ចំណូលដែរ ⇒ ត្រូវលើកលែងផង */
@@ -60993,11 +61224,14 @@ CC.compute=function(){
       targetClamped:targetClamped, byMarkup:byMarkup,
       markupFinal:(turnNew&&(turnNew-e36))?(turnNew/(turnNew-e36)):0,
       taxable:e42,toiOnTaxable:e50,due:e52,
-      outVat:outVat,inVat:inVat,vatDue:vatDue,vatPay:vatPay,vatAlign:vAlign,
+      outVat:outVat,inVat:inVat,inCut:inCut,vatDue:vatDue,vatPay:vatPay,vatAlign:vAlign,
       qip:qip, prep1On:prep1On, prep1Base:prep1Base, prep1:prep1,
       vatFindOnly:vatFindOnly, vatFindOut:vatFindOut,
-      creditCF:(+s.vat.creditCF[y]||0),
-      creditYear:(+s.vat.creditYear[y]||0),
+      vatCutOnly:vatCutOnly, vatCutTot:vatCutTot,
+      /* ⭐ សុទ្ធ ( ក្រោយកាត់ ) ⇒ ជួរលទ្ធផល ឯកសារបរិយាយ និងប្រអប់ពន្យល់
+         បង្ហាញលេខដែល **ត្រូវបានកាត់ពិត** មិនមែនលេខប្រកាសទេ ។ */
+      creditCF:creCF, creditCutCF:creCutCF,
+      creditYear:creYr, creditCutYear:creCutYr,
       vatCredit:vatCredit,
       /* បើចេញអវិជ្ជមាន នោះជាឥណទានយោងទៅការិយបរិច្ឆេទបន្ទាប់ */
       vatBalance:(vatFindOnly?(vatFindOut-findInVat):(outVat-inVat-findInVat-vatCredit)),
@@ -62449,8 +62683,10 @@ CC.BASIS={
     return a; }],
   vatDue:["អតបលើធាតុចេញ − ធាតុចូល − ឥណទានអាករ",function(y,o,s){
     return [Bn("អតបលើធាតុចេញ",o.outVat),Bn("អតបលើធាតុចូល",-o.inVat),
-            Bn("ឥណទានយោង",-(+s.vat.creditCF[y]||0)),
-            Bn("ឥណទានប្រចាំឆ្នាំ",-(+s.vat.creditYear[y]||0))]; }],
+            /* ⚠ ប្រើលេខ **សុទ្ធ** ពីលទ្ធផល ⇒ ការពន្យល់បូកដល់លេខពិត
+               ( មុន D50 វាអានស្ថានភាពដើម ⇒ ការកាត់មិនលេចក្នុងការពន្យល់ ) */
+            Bn("ឥណទានយោង",-(+o.creditCF||0)),
+            Bn("ឥណទានប្រចាំឆ្នាំ",-(+o.creditYear||0))]; }],
   vatPaid:["បង់តាមសាលកបត្រ + ក្នុងសវនកម្ម + យឺតយ៉ាវ",function(y,o){
     return [Bn("តាមសាលកបត្រ",o.vatPaidMtr),Bn("ក្នុងសវនកម្ម",o.vatPaidAudit),Bn("យឺតយ៉ាវ",o.vatPaidLate)]; }],
   vatPay:["អតបត្រូវបង់ − អតបបានបង់សរុប",function(y,o){
@@ -62472,7 +62708,9 @@ CC.showInterest=function(ri){
   if(!r) return;
   var old=document.getElementById("ccAssess"); if(old) old.remove();
   var w=document.createElement("div"); w.id="ccAssess";
-  var h=['<div class="cc-as-box" style="width:min(760px,100%)"><h3>ការគណនាការប្រាក់</h3>'+
+  /* ⭐ [stated] ២០២៦-១១-២៦ ៖ «មិនមានការអូសទៅស្តាំឡើយ … ពង្រីកទំហំ» ⇒
+     ថ្នាក់ `cc-as-wide` ( min(1200px,96vw) ) ជំនួស 760px ។ */
+  var h=['<div class="cc-as-box cc-as-wide"><h3>ការគណនាការប្រាក់</h3>'+
     '<p class="cc-as-sub"><b>'+esc(r.name)+'</b><br>'+
     /* ⚠ [stated] ២០២៦-០៨-១៣ ៖ «ពេលចុចមើលវានៅតែចេញ ៥ ខែ» — ប្រអប់នេះ
        ហៅ `CC.monthsAnnual(y)` ដោយផ្ទាល់ ដូច្នេះវាមិនស្គាល់ `istart` ទេ។
@@ -62504,13 +62742,15 @@ CC.showInterest=function(ri){
       h.push('<tr><td class="n">ប្រចាំឆ្នាំ</td><td class="n">'+fmt(mo,0)+'</td>'+
         '<td class="n">'+fmt(base)+'</td><td class="n">'+fmt(base*s.rate.int*mo)+'</td></tr>');
     }else{
-      var det=CC.monthDetail(y,r.msel[y],base), sum=0;
+      var det=CC.monthDetail(y,r.msel[y],base), sum=0, sumB=0;
       det.forEach(function(d){
-        sum+=d.int;
+        sum+=d.int; sumB+=(+d.amt||0);
         h.push('<tr><td class="n">'+d.m+'</td><td class="n">'+fmt(d.mo,0)+'</td>'+
           '<td class="n">'+fmt(d.amt)+'</td><td class="n">'+fmt(d.int)+'</td></tr>');
       });
-      h.push('<tr class="cc-sum"><td colspan="3">សរុប</td><td class="n">'+fmt(sum)+'</td></tr>');
+      /* ⭐ [stated] ២០២៦-១១-២៦ ៖ «គួរមានទឹកប្រាក់សរុបផ្នែកមូលដ្ឋានផងដែរ» */
+      h.push('<tr class="cc-sum"><td colspan="2">សរុប</td><td class="n">'+fmt(sumB)+
+        '</td><td class="n">'+fmt(sum)+'</td></tr>');
     }
     h.push('</tbody></table></div>');
   });
@@ -65813,8 +66053,14 @@ function paneVat(res){
   h.push(grid("ធាតុចូល និងឥណទាន",[
     ["inputDeclared","អតប លើធាតុចូល បានប្រកាស"],
     ["inputAllowed","អតប លើធាតុចូល អនុញ្ញាត (បើទទេ យកតាមប្រកាស)"],
+    /* ⭐ [stated] ២០២៦-១១-២៦ ៖ វាយចំនួនដែលមិនអនុញ្ញាត ⇒ កាត់ចេញ ។
+       កាត់ទាំងអស់ ⇒ វាយចំនួនដដែលនឹងជួរ «បានប្រកាស» ខាងលើ ។ */
+    ["inputCut","ដក ៖ អតប លើធាតុចូល មិនអនុញ្ញាត (កាត់ចេញ)"],
     ["creditCF","ឥណទានយោងពីការិយបរិច្ឆេទមុន"],
+    /* ⭐ [stated] ២០២៦-១១-២៦ ៖ វាយចំនួនមិនអនុញ្ញាត ⇒ កាត់ចេញ ( D50 ) */
+    ["creditCutCF","ដក ៖ ឥណទានយោង មិនអនុញ្ញាត (កាត់ចេញ)"],
     ["creditYear","ឥណទានអាករប្រចាំខែនៃឆ្នាំនេះ"],
+    ["creditCutYear","ដក ៖ ឥណទានប្រចាំឆ្នាំ មិនអនុញ្ញាត (កាត់ចេញ)"],
     ["paid","អតប បានបង់"]
   ],"vat"));
   h.push('<div class="cc-bar" style="margin-top:14px"><span class="cc-lbl">ខែដែលគិតការប្រាក់</span></div>');
@@ -65833,13 +66079,20 @@ function paneVat(res){
     ["មូលដ្ឋានជាប់អតប កំណត់ឡើងវិញ","vatBase"],
     /* [stated] ២០២៦-១១-១៤ ៖ លុប «( មិនកាត់ធាតុចូល · ឥណទាន · សាលកបត្រ )» */
     ["⚙ កំណត់លើផលរកឃើញតែប៉ុណ្ណោះ","vatFindOnlyChk"],
+    /* ⭐ [stated] ២០២៦-១១-២៦ ៖ របៀបកាត់ ( D52 ) */
+    ["⚙ កំណត់លើការកាត់ + ផលរកឃើញ តែប៉ុណ្ណោះ","vatCutOnlyChk"],
+    ["ក្នុងនោះ ៖ ការកាត់សរុប (ធាតុចូល + ឥណទាន)","vatCutTot"],
     ["អតប លើធាតុចេញ","outVat","b"],
     ["ក្នុងនោះ ៖ អតប លើផលរកឃើញ","vatFindOut"],
     ["ដក ៖ អតប លើធាតុចូល","inVat"],
+    /* ⭐ បង្ហាញចំនួនដែលកាត់ចេញ ⇒ ដានច្បាស់ក្នុងតារាង មិនមែនលាក់ក្នុងលេខសុទ្ធ */
+    ["ក្នុងនោះ ៖ មិនអនុញ្ញាត (កាត់ចេញ)","inCut"],
     ["ដក ៖ អតប លើធាតុចូល អនុញ្ញាតលើផលរកឃើញ","findInVat"],
     ["អតប សុទ្ធ មុនដកឥណទានយោង","vatNet"],
     ["ដក ៖ ឥណទានអាករយោងពីឆ្នាំមុន","creditCF"],
+    ["ក្នុងនោះ ៖ មិនអនុញ្ញាត (កាត់ចេញ)","creditCutCF"],
     ["ដក ៖ ឥណទានអាករប្រចាំខែនៃឆ្នាំនេះ","creditYear"],
+    ["ក្នុងនោះ ៖ មិនអនុញ្ញាត (កាត់ចេញ)","creditCutYear"],
     ["សមតុល្យ (អវិជ្ជមាន = ឥណទានយោងទៅមុខ)","vatBalance"],
     ["តម្រឹមលម្អៀង (បូក/ដក)","vatAlign"],
     ["អតប ត្រូវបង់ (កំណត់ឡើងវិញ)","vatDue"],
@@ -66769,7 +67022,9 @@ function grid(title,rows,ns){
   rows.forEach(function(r){
     h.push('<tr><td>'+esc(r[1])+'</td>');
     s.years.forEach(function(y){
-      var v=(ns==="toi"?s.toi:s.vat)[r[0]][y];
+      /* ⚠⚠ D51 ៖ ស្ថានភាពដែលរក្សាទុកមុនវាលថ្មី គ្មានកូនសោនេះ ⇒ `[y]` លើ
+         undefined បោះកំហុស ហើយ **ផ្ទាំងទាំងមូលឈប់គូរ** ។ កុំដកការការពារនេះ ។ */
+      var v=((ns==="toi"?s.toi:s.vat)[r[0]]||{})[y];
       var fxN=ccFxGet(ns==="toi"?s.toi:s.vat, r[0], y);
       h.push('<td class="n"><input class="cc-grid-in" data-ns="'+ns+'" data-k="'+r[0]+'" data-y="'+y+
         '" value="'+fmt(v)+'"'+
@@ -66807,6 +67062,13 @@ function result(rows,res){
           (((s.vat.dedAudit||{})[y])?' checked':'')+'></span></td>');
         return;
       }
+      /* ⭐ ប្រអប់ធីក «កំណត់លើការកាត់ + ផលរកឃើញ តែប៉ុណ្ណោះ» ( D52 ) */
+      if(r[1]==="vatCutOnlyChk"){
+        h.push('<td class="n"><span class="cc-chk"><input type="checkbox" data-vcut="'+y+'"'+
+          (((s.vat.cutOnly||{})[y])?' checked':'')+
+          ' title="ធីក = អតបត្រូវបង់ គិតលើ ការកាត់ធាតុចូល/ឥណទាន បូកអតបលើផលរកឃើញជាប់អតប តែប៉ុណ្ណោះ ( មិនយកធាតុចេញតាមការប្រកាស និងការបង់តាមសាលកបត្រមកគិត )"></span></td>');
+        return;
+      }
       /* ⭐ ប្រអប់ធីក «កំណត់លើផលរកឃើញតែប៉ុណ្ណោះ» */
       if(r[1]==="vatFindOnlyChk"){
         h.push('<td class="n"><span class="cc-chk"><input type="checkbox" data-vfind="'+y+'"'+
@@ -66817,7 +67079,9 @@ function result(rows,res){
       /* ⚠ ពេលធីក បន្ទាត់ដែលលែងយកមកកាត់ ត្រូវឃើញច្បាស់ថាមិនបានកាត់ —
          បង្ហាញតួលេខពិតដដែល តែគូសបន្ទាត់ឆូត ⇒ មិនបាត់ព័ត៌មាន ហើយមិន
          ច្រឡំថាបានកាត់ ។ */
-      if(o.vatFindOnly && (r[1]==="inVat" || r[1]==="creditCF" ||
+      /* ⚠ របៀបកាត់ ៖ ធាតុចេញ · ធាតុចូលសុទ្ធ · ឥណទានសុទ្ធ · សាលកបត្រ
+         លែងយកមកគិត ⇒ គូសឆូតដូចគ្នា ⇒ មើលឃើញច្បាស់ថាមិនបានកាត់ ។ */
+      if((o.vatFindOnly || o.vatCutOnly) && (r[1]==="inVat" || r[1]==="creditCF" ||
          r[1]==="creditYear" || r[1]==="outVat" || r[1]==="vatPaidMtr")){
         h.push('<td class="n" title="មិនយកមកកាត់ទេ ( កំណត់លើផលរកឃើញតែប៉ុណ្ណោះ )">'+
           '<span style="opacity:.42;text-decoration:line-through">'+fmt(v)+'</span></td>');
@@ -66838,7 +67102,14 @@ function result(rows,res){
         ? '<span class="cc-chk"><input type="checkbox" data-vcarry="'+y+'" title="ធីកបើត្រូវដក"'+
           (CC.vatCarryOn(y)?' checked':'')+'></span>'
         : '';
-      h.push('<td class="n'+(v<0?" neg":"")+'">'+tick+(r[2]==="%"?pct(v):fmt(v))+'</td>');});
+      /* ⭐⭐ [stated] ២០២៦-១១-២៦ ៖ «លេខ និងប្រអប់ធីក ជាន់គ្នា» ។
+         ⚠ រុំលេខក្នុង span ពេលមានប្រអប់ធីក ⇒ ក្រឡាមានធាតុពីរ ⇒ ច្បាប់
+           `td.n:has(> .cc-chk:only-child)` ( ដែលសរសេរសម្រាប់ក្រឡាធីកសុទ្ធ )
+           លែងចាប់ក្រឡានេះ ⇒ span លែងលាតពេញ ១០០% ⇒ លេខលែងជាន់ ។
+         ⚠ គ្មានប្រអប់ធីក ⇒ ទុកជាអត្ថបទធម្មតាដដែល ( កុំប្តូរ DOM ដោយឥតការ ) ។ */
+      var __num = (r[2]==="%"?pct(v):fmt(v));
+      h.push('<td class="n'+(v<0?" neg":"")+'">'+tick+
+        (tick ? '<span class="cc-num">'+__num+'</span>' : __num)+'</td>');});
     h.push('</tr>');
   });
   h.push('</tbody></table></div>');
@@ -67905,6 +68176,11 @@ function bind(el){
       if(t.checked) s.toi.prep1[t.dataset.prep1]=true; else delete s.toi.prep1[t.dataset.prep1];
       return re();
     }
+    if(t.dataset.vcut!=null){
+      if(!s.vat.cutOnly) s.vat.cutOnly={};
+      if(t.checked) s.vat.cutOnly[t.dataset.vcut]=true; else delete s.vat.cutOnly[t.dataset.vcut];
+      return re();
+    }
     if(t.dataset.vfind!=null){
       if(!s.vat.findOnly) s.vat.findOnly={};
       if(t.checked) s.vat.findOnly[t.dataset.vfind]=true; else delete s.vat.findOnly[t.dataset.vfind];
@@ -67919,6 +68195,8 @@ function bind(el){
     if(t.dataset.vsel!=null){ s.vat.msel[t.dataset.vsel]=String(t.value).trim(); return re(); }
     if(t.dataset.ns){
       var nsO=(t.dataset.ns==="toi"?s.toi:s.vat);
+      /* ⚠ D51 ៖ កូនសោអាចគ្មាន ( ស្ថានភាពចាស់ ) ⇒ បង្កើតមុនសរសេរ */
+      if(!nsO[t.dataset.k]) nsO[t.dataset.k]={};
       if(!ccFxSet(nsO, t.dataset.k, t.dataset.y, t.value)){
         nsO[t.dataset.k][t.dataset.y]=num(t.value);
         if(nsO.fx) delete nsO.fx[t.dataset.k+'|'+t.dataset.y];
@@ -68021,6 +68299,17 @@ function bind(el){
       if(k3==="pen"){ tx.pen=t.checked; }
       else if(k3==="on"){
         tx.on=t.checked;
+        /* ⭐⭐ [stated] ២០២៦-១១-២៦ ៖ ពន្ធចំនួនថេរ ( ឧ. អំពើរាំងស្ទះ ) កំណត់
+           តែម្តង ⇒ សួរឆ្នាំមុនបំពេញ ។ មានឆ្នាំតែមួយ ⇒ មិនសួរ ។ */
+        if(tx.on && tx.amt && tx.def && (s.years||[]).length>1){
+          var __chk=t;
+          CC.pickFixedYear(tx, function(pick){
+            if(pick===false){ tx.on=false; __chk.checked=false; CC.persist(); CC.render(); return; }
+            CC.applyFixedAmount(tx, true, pick);
+            CC.persist(); CC.render();
+          });
+          return;
+        }
         CC.applyFixedAmount(tx, tx.on);
       }
       else if(k3==="rate") tx.rate=num(t.value)/100;
@@ -69298,7 +69587,7 @@ else CC.init();
      ការរក្សាទុកឥឡូវ **រាយលេខជំហាន** លើផ្ទាំង ហើយផ្អាកអោយផ្ទាំងគូររួច
      មុននឹងចាប់ការងារធ្ងន់នីមួយៗ។ សារចុងក្រោយដែលឃើញ = ជំហានដែលគាំង។
      លេខ build ក៏បង្ហាញផង ដើម្បីដឹងច្បាស់ថាកំពុងប្រើឯកសារណា។ */
-  var RSC_BUILD = '19/11 · D46';
+  var RSC_BUILD = '19/11 · D57';
   try{ window.__RSC_BUILD = RSC_BUILD; }catch(e){}
 
   /* ⚠⚠ [stated] ២០២៦-០៨-១៣ ៖ រូបថតបង្ហាញ **«Page Unresponsive» របស់ Chrome**
