@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ចូលប្រើប្រព័ន្ធ — RSC</title>
+<style>
+  html,body{ height:100%; margin:0; background:#0B2F30; }
+  iframe{ position:fixed; top:0; left:0; width:100%; height:100%; border:0; display:block; }
+</style>
+</head>
+<body>
+<!-- ══════════════════════════════════════════════════════════════════
+     ⭐⭐ [stated] ២០២៦-១១-២៦ ៖ «នៅពេលចូលតាម teamsmos.com/?staff=1 ឲ្យវា
+     ចេញដូច website បានទេ កុំចេញជា script» ។
+     ទំព័រនេះជា **ទ្វារម្ចាស់ប្រព័ន្ធពេលប្រព័ន្ធបិទបណ្តោះអាសន្ន** ៖ វាដាក់
+     ផ្ទាំងចូលរបស់ Apps Script ក្នុង iframe ដោយបន្ថែម `?staff=1`
+     ⇒ អាសយដ្ឋាននៅ teamsmos.com ហើយបន្ទះ «This application was created by
+       a Google Apps Script user» មិនចេញ ( បន្ទះនោះជារបស់ទំព័រ /exec
+       កម្រិតលើ មិនមែនឯកសារក្នុង iframe ) ។
+     ⚠ នេះ **មិនមែនជាសោ** ៖ សោនៅ Code.gs ( maintGate_ ) ។ អ្នកដទៃបើកទំព័រនេះ
+       ឃើញត្រឹមប្រអប់ចូល តែចូលមិនបាន ។
+     ⚠ កុំដាក់ឯកសារនេះទៅ Apps Script — វាសម្រាប់ GitHub តែប៉ុណ្ណោះ ។
+     ══════════════════════════════════════════════════════════════════ -->
+<iframe id="f" title="RSC" referrerpolicy="no-referrer"></iframe>
+<script>
+(function(){
+  var EXEC = 'https://script.google.com/macros/s/AKfycbzLnWeB05H8oqWAtM1hiw_FdYunlns01NkHR4MjsY5QbiT3Xuh-xdSDzKIuIYbB33k0/exec';
+  document.getElementById('f').src = EXEC + '?staff=1';
+
+  /* ⚠⚠ Login.html ផ្ញើ token មកកម្រិតលើតាម postMessage រួចរង់ចាំ
+     `rsc-wrapper-ack` ក្នុង ៦០០ ម.វិ ។ បើយើងមិនឆ្លើយ វានាំ window.top ទៅ
+     /exec?token=… ជំនួស ⇒ អាសយដ្ឋានត្រឡប់ទៅ script.google.com វិញ ។
+     ដូច្នេះ **ការឆ្លើយ ack ជាចំណុចសំខាន់បំផុតនៃឯកសារនេះ** ។
+     ⚠ ពិនិត្យ origin ៖ តែ *.googleusercontent.com និង script.google.com
+       ⇒ ទំព័រដទៃផ្ញើ token ក្លែងក្លាយមកមិនបាន ។
+     ⚠ `handed` ៖ Login.html អាចផ្ញើពីរដង ( login + poll ) ⇒ យកតែលើកដំបូង ។ */
+  var OKORG = /^https:\/\/([a-z0-9-]+\.)*googleusercontent\.com$|^https:\/\/script\.google\.com$/i;
+  var handed = false;
+  window.addEventListener('message', function(ev){
+    if(!ev || !ev.data || ev.data.type !== 'rsc-dashboard-token') return;
+    if(!OKORG.test(String(ev.origin || ''))) return;
+    var tk = String(ev.data.token || '');
+    if(!tk || handed) return;
+    handed = true;
+    try{ if(ev.source) ev.source.postMessage({ type:'rsc-wrapper-ack' }, '*'); }catch(e){}
+    try{ localStorage.setItem('rsc_token', tk); }catch(e){}
+    location.replace('./?token=' + encodeURIComponent(tk));
+  }, false);
+})();
+</script>
+</body>
+</html>
