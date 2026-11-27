@@ -157,7 +157,7 @@
 })();
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SYSTEM · 19/11-D81</title>
+<title>SYSTEM · 19/11-D83</title>
 <!-- ដាក់លើអេក្រង់ដើមទូរស័ព្ទ ៖ រូបតំណាង ឈ្មោះ និងបើកពេញអេក្រង់
      manifest ដាក់ជា data URL ព្រោះ Apps Script បម្រើឯកសារតែមួយ។ -->
 <meta name="mobile-web-app-capable" content="yes">
@@ -1780,8 +1780,47 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
        ( បើទុកតាមទំហំពិត វាសមថ្ងៃនេះ តែលេខវែងឡើងថ្ងៃក្រោយ ⇒ ធ្លាក់ជួរវិញ ) ។
      ⚠ ទំហំអក្សរយកតាមការវាស់នៅ ៣៩០px ៖ ថេប ៩.៥px ( សល់ ១៨px ) ។
        ១០px សល់តែ ៣px ⇒ មិនគ្រប់គ្រាន់ ។ */
+  /* ⚠ [stated] ២០២៦-១១-២៧ ( D82 ) ៖ ថេបរស់ក្នុងរបារតម្រងហើយ ។
+     របារនោះជា `nowrap + overflow-x:auto` តាមច្បាប់ទូរសព្ទសកល
+     ⇒ ត្រូវប្តូរវាទៅ `wrap` សម្រាប់ផ្ទាំងនេះ បើមិនដូច្នេះថេបត្រូវអូសរក
+       ហើយ «១ ជួរ» ( D81 ) ខូច ។
+     ⇒ ផលល្អបន្ថែម ៖ 🗑 លុប និង ៛ ដែលធ្លាប់កាត់នៅគែមស្តាំ ឥឡូវឃើញ ។ */
+  #view-cross-customs > .toolbar{
+    flex-wrap:wrap !important; overflow-x:visible !important; gap:6px !important;
+    align-items:center !important;
+  }
+  /* ⭐⭐⭐ [stated] ២០២៦-១១-២៧ ( D83 ) ៖ «គ្រប់ឆ្នាំ ដល់ download …
+     កុំឱ្យធ្លាក់ជួរ ហើយប្រអប់កុំឱ្យធំតូច បន្ថយតូចស្មើគ្នា» ។
+     ជួរ ១ ៖ ឆ្នាំ · ស្វែងរក · 🗑 · ៛ · ⬇    ជួរ ២ ៖ ថេប    ជួរ ៣ ៖ អក្សររាប់
+     ⚠ `order` សំខាន់ ៖ អក្សររាប់ឈរកណ្តាលក្នុង HTML ⇒ បើទុកដដែល
+       វានឹងកាត់ជួរប្រអប់ជាពីរ ( «139 / 139 ជួរ» បាក់ ៣ បន្ទាត់ក្នុងរូប ) ។ */
+  #view-cross-customs > .toolbar > *{ order:1; }
+  #view-cross-customs > .toolbar > #cus-year,
+  #view-cross-customs > .toolbar > #cus-q{
+    flex:1 1 0 !important; min-width:0 !important; max-width:none !important;
+    width:auto !important; font-size:12px !important; padding:7px 6px !important;
+  }
+  /* ប៊ូតុង ៣ ⇒ ប្រអប់ស្មើគ្នា ៤០×៣៤px ( រូបសុទ្ធ ) */
+  #view-cross-customs > .toolbar > .btn,
+  #view-cross-customs > .toolbar > .xls-btn,
+  #view-cross-customs > .toolbar > #ccy-cus > .btn{
+    flex:0 0 auto !important; width:40px !important; min-width:40px !important;
+    height:34px !important; padding:0 !important; font-size:13px !important;
+    display:inline-flex !important; align-items:center !important;
+    justify-content:center !important; margin-left:0 !important;
+  }
+  #view-cross-customs > .toolbar > #ccy-cus{
+    flex:0 0 auto !important; display:inline-flex !important;
+  }
+  #view-cross-customs > .toolbar .btn-word,
+  #view-cross-customs > .toolbar .ccy-t{ display:none !important; }
+  #view-cross-customs > .toolbar > #filter-count-crossCustoms{
+    order:3 !important; flex:1 1 100% !important; margin:0 !important;
+  }
   #view-cross-customs #cus-tabs{
+    order:2 !important;
     display:flex !important; flex-wrap:wrap !important; gap:4px !important;
+    flex:1 1 100% !important; margin:2px 0 0 !important;
   }
   #view-cross-customs #cus-tabs > button{
     flex:1 1 auto !important; min-width:0 !important; width:auto !important;
@@ -1809,13 +1848,6 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
   }
   #view-cross-customs #cus-pair > span.import-status,
   #view-cross-customs #cus-pair > div{ flex:1 1 100% !important; }
-}
-/* ⚠ ទូរសព្ទតូចជាង ( ៣៧៥px ចុះក្រោម ) ៖ ទទឹងប្រើបានត្រឹម ~៣៣៩px
-   ⇒ បន្ថយទៀតបន្តិច ទើបនៅជួរតែមួយដដែល ( វាស់បាន ) ។ */
-@media screen and (max-width: 380px){
-  #view-cross-customs #cus-tabs > button{ font-size:8.5px !important; padding:6px 2px !important; }
-  #view-cross-customs #cus-chips > button{ font-size:8.5px !important; }
-  #view-cross-customs #cus-pair > button{ font-size:9.5px !important; padding:5px 3px !important; }
   .toolbar > *, .tabs > *{ flex:0 0 auto; }
   /* ⭐⭐⭐ [stated] ២០២៦-១១-២៧ ៖ «ជួយធ្វើផ្នែកនេះនៅលើទូរសព្ទឱ្យបានស្អាតផង»
      ( CROSSCHECK SALE ⇄ CP_PURCHASE ) ។
@@ -2040,6 +2072,17 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
      ⚠ លើកុំព្យូទ័រ ( ច្រើនជួរ ) នៅ `1fr` ដដែល ⇒ កាតនៅតែស្មើគ្នាស្អាត ។ */
   .module-grid{ grid-template-columns:1fr !important; grid-auto-rows:auto; }
 }
+/* ⚠⚠ [stated] ២០២៦-១១-២៧ ( D83 ) ៖ ប្លុកនេះត្រូវឈរ **ក្រៅ** ប្លុក ៨២០px
+   ដាច់ខាត ។ ក្នុង D81 ខ្ញុំបានដាក់វាកណ្តាលប្លុកនោះ ⇒ ប្លុក ៨២០px ត្រូវ
+   បិទមុនកាលកំណត់ ⇒ ច្បាប់ទូរសព្ទដែលនៅសល់ ( រួមទាំង
+   `.toolbar > *{flex:0 0 auto}` ) ធ្លាក់ចូលប្លុក ៣៨០px ⇒ នៅ ៣៩០px
+   វាលតម្រងបង្រួមជាន់គ្នា ( អ្នកប្រើរាយការណ៍ ) ។ */
+@media screen and (max-width: 380px){
+  #view-cross-customs #cus-tabs > button{ font-size:8.5px !important; padding:6px 2px !important; }
+  #view-cross-customs #cus-chips > button{ font-size:8.5px !important; }
+  #view-cross-customs #cus-pair > button{ font-size:9.5px !important; padding:5px 3px !important; }
+}
+
 @media screen and (max-width: 520px){
   .kpi-row, .kpi-grid, #overview-financials .kpi-grid{ grid-template-columns:1fr !important; }
   main{ padding:10px 8px 44px; }
@@ -11537,18 +11580,26 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
                placeholder="🔍 លេខវិក្កយបត្រ ឬលេខប្រតិវេទន៍…"
                oninput="cusSetFilter('q', this.value)">
         <span class="import-status" id="filter-count-crossCustoms"></span>
-        <button class="btn ghost" style="margin-left:auto" onclick="clearCustoms()" title="លុបទិន្នន័យគយ">🗑 លុប</button>
+        <!-- ⭐⭐ [stated] ២០២៦-១១-២៧ ៖ «នៅលើ PC រុញ COMPARE … EXPORT
+             ទៅជួរគ្រប់ឆ្នាំ» ⇒ ជួរថេបឈរទីនេះ មុនប៊ូតុង 🗑 ដែលមាន
+             `margin-left:auto` ⇒ 🗑 · ៛ · ⬇ នៅជ្រុងស្តាំដដែល ។
+             ⚠ លើទូរសព្ទ វាទទួល `flex:1 1 100%` ⇒ នៅជួរផ្ទាល់ខ្លួន ។ -->
+        <div id="cus-tabs" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+          <!-- [stated] ២០២៦-១១-២៧ ៖ ឈ្មោះថេបជាអង់គ្លេស ( ឈ្មោះពេញក្នុង title ) -->
+          <button class="btn" id="cus-tab-diff" style="width:auto;padding:5px 14px;" onclick="cusSetTab('diff')" title="ប្រៀបធៀប">⇄ COMPARE</button>
+          <button class="btn ghost" id="cus-tab-raw" style="width:auto;padding:5px 14px;" onclick="cusSetTab('raw')" title="ទិន្នន័យគយ ( ដើម )">🛃 ORIGINAL FILE</button>
+          <span style="width:1px;height:22px;background:#d8d4c6;margin:0 4px;"></span>
+          <button class="btn" id="cus-mode-imp" style="width:auto;padding:5px 14px;" onclick="cusSetMode('imp')" title="នាំចូល ⇄ PR">📥 IMPORT</button>
+          <button class="btn ghost" id="cus-mode-exp" style="width:auto;padding:5px 14px;" onclick="cusSetMode('exp')" title="នាំចេញ ⇄ SR">📤 EXPORT</button>
+        </div>
+        <!-- [stated] ២០២៦-១១-២៧ ( D83 ) ៖ ពាក្យរុំក្នុង span ⇒ លើទូរសព្ទ
+             លាក់វា ⇒ ប៊ូតុង ៣ ( 🗑 · ៛ · ⬇ ) ស្មើគ្នា ។ -->
+        <button class="btn ghost" style="margin-left:auto" onclick="clearCustoms()" title="លុបទិន្នន័យគយ">🗑 <span class="btn-word">លុប</span></button>
         <!-- ⭐ [stated] ២០២៦-១១-០៣ ៖ ចុចប្តូររៀល ⇄ ដុល្លារ នៅផ្នែកគយដែរ -->
         <span id="ccy-cus"></span>
       </div>
-      <div id="cus-tabs" style="display:flex;gap:8px;margin:0 0 10px;flex-wrap:wrap;align-items:center;">
-        <!-- [stated] ២០២៦-១១-២៧ ៖ ឈ្មោះថេបជាអង់គ្លេស ( ឈ្មោះពេញក្នុង title ) -->
-        <button class="btn" id="cus-tab-diff" style="width:auto;padding:5px 14px;" onclick="cusSetTab('diff')" title="ប្រៀបធៀប">⇄ COMPARE</button>
-        <button class="btn ghost" id="cus-tab-raw" style="width:auto;padding:5px 14px;" onclick="cusSetTab('raw')" title="ទិន្នន័យគយ ( ដើម )">🛃 ORIGINAL FILE</button>
-        <span style="width:1px;height:22px;background:#d8d4c6;margin:0 4px;"></span>
-        <button class="btn" id="cus-mode-imp" style="width:auto;padding:5px 14px;" onclick="cusSetMode('imp')" title="នាំចូល ⇄ PR">📥 IMPORT</button>
-        <button class="btn ghost" id="cus-mode-exp" style="width:auto;padding:5px 14px;" onclick="cusSetMode('exp')" title="នាំចេញ ⇄ SR">📤 EXPORT</button>
-      </div>
+      <!-- [stated] ២០២៦-១១-២៧ ( D82 ) ៖ ជួរថេបផ្លាស់ឡើងចូលរបារតម្រង
+           ខាងលើ ( ជួរ «គ្រប់ឆ្នាំ» ) ⇒ លែងមានជួរដាច់ដោយឡែកនៅទីនេះ ។ -->
       <!-- [stated] ២០២៦-១០-២៩ ៖ «អាចរើស file លើសពី១បានទេ» ⇒ បង្ហាញឯកសារ
            ដែលកំពុងផ្ទុក ជួរប៉ុន្មាន និងឆ្នាំណា ហើយដកមួយៗចេញបាន។ -->
       <div id="cus-files" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0 0 10px;"></div>
@@ -18799,10 +18850,10 @@ function renderCrossCustoms(){
       const anyLeft = base.some(function(e){ return e.status === 'pr' || e.status === 'cus'; });
       const nMan = cusManualFor(cusMode).length;
       const nExc = Object.keys(cusExclFor(cusMode)).length;
+      /* [stated] ២០២៦-១១-២៧ ៖ «លុបអក្សរចេញ 🔗 ការកត់ត្រាខុសកន្លែង …»
+         ⚠ មុខងារមិនប៉ះ ៖ ធីកជួរ រួចចុច 🔗 ផ្គូផ្គងដោយដៃ ដដែល ។ */
       bar.innerHTML = (!anyLeft && !nMan && !nExc && !cusManUndo.length) ? '' :
-        '<span class="import-status">🔗 ការកត់ត្រាខុសកន្លែង ៖ ធីកជួរក្នុង '
-        + escAttr(M.srcLabel) + ' និងជួរក្នុងគយ ( ច្រើនក៏បាន ) រួចចុចផ្គូផ្គង</span>'
-        + '<button class="btn" style="width:auto;padding:4px 12px;font-size:12px;"'
+        '<button class="btn" style="width:auto;padding:4px 12px;font-size:12px;"'
         + (nP === 1 && nC === 1 ? '' : ' disabled')
         + ' onclick="cusPairNow()">🔗 ផ្គូផ្គងដោយដៃ (' + nP + ' + ' + nC + ')</button>'
         /* ⭐ [stated] ២០២៦-១១-០៣ ៖ ធីករួចដកចេញ — សម្រាប់ការបង់ដែលមិនមែន
@@ -70355,7 +70406,7 @@ else CC.init();
      ការរក្សាទុកឥឡូវ **រាយលេខជំហាន** លើផ្ទាំង ហើយផ្អាកអោយផ្ទាំងគូររួច
      មុននឹងចាប់ការងារធ្ងន់នីមួយៗ។ សារចុងក្រោយដែលឃើញ = ជំហានដែលគាំង។
      លេខ build ក៏បង្ហាញផង ដើម្បីដឹងច្បាស់ថាកំពុងប្រើឯកសារណា។ */
-  var RSC_BUILD = '19/11 · D81';
+  var RSC_BUILD = '19/11 · D83';
   try{ window.__RSC_BUILD = RSC_BUILD; }catch(e){}
 
   /* ⚠⚠ [stated] ២០២៦-០៨-១៣ ៖ រូបថតបង្ហាញ **«Page Unresponsive» របស់ Chrome**
