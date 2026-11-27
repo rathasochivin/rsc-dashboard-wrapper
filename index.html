@@ -157,7 +157,7 @@
 })();
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SYSTEM · 19/11-D61</title>
+<title>SYSTEM · 19/11-D69</title>
 <!-- ដាក់លើអេក្រង់ដើមទូរស័ព្ទ ៖ រូបតំណាង ឈ្មោះ និងបើកពេញអេក្រង់
      manifest ដាក់ជា data URL ព្រោះ Apps Script បម្រើឯកសារតែមួយ។ -->
 <meta name="mobile-web-app-capable" content="yes">
@@ -963,12 +963,26 @@ body.view-mtr-active main{align-self:flex-start; min-height:0;}
   .module-card .mc-sublinks{
     flex-direction:row !important; flex-wrap:wrap !important; gap:6px !important;
   }
+  /* ⭐ [stated] ២០២៦-១១-២៧ ៖ «ជួរ CN DN ដល់ VAT REVERSE ធ្វើវាតែមួយជួរ» ។
+     ⚠ វាស់នៅ ៣៩០px ៖ ឈ្នាប់ ៣ ត្រូវការ ៣៥២px តែកាតមានត្រឹម ៣២០px
+       ⇒ រុំចុះជា ២ ជួរ ។ ⇒ បន្ថយ padding · gap · ទំហំអក្សរបន្តិច
+       ⇒ សមក្នុងជួរតែមួយ ដោយមិនបាច់បង្ខំឱ្យអូស ( ការអូសក្នុងកាតដែលជា
+         ប៊ូតុង អាចប៉ះនឹងការចុចកាត ) ។ */
+  .module-card .mc-sublinks{ gap:5px !important; }
   .module-card .mc-sublink{
     border:1px solid var(--line); border-radius:999px;
-    padding:4px 11px; font-size:12.5px !important; line-height:1.5 !important;
+    padding:4px 7px; font-size:12px !important; line-height:1.5 !important;
     background:var(--surface); color:var(--mc-color, var(--primary));
     white-space:nowrap;
   }
+}
+/* អេក្រង់ ៣៦០px ៖ តូចទៀតបន្តិច ⇒ នៅជួរតែមួយដដែល */
+@media screen and (max-width: 400px){
+  .module-card .mc-sublinks{ gap:4px !important; }
+  .module-card .mc-sublink{ padding:3px 5px; font-size:11.5px !important; }
+  /* ⚠ នៅ ៣៦០px នៅខ្វះ ~១០px ⇒ បន្ថយគម្លាតខាងក្នុងកាតបន្តិច
+     ( តែលើអេក្រង់ ≤៤០០px ) ⇒ ឈ្នាប់ ៣ សមក្នុងជួរតែមួយ ។ */
+  .module-card .mc-body{ padding-left:11px !important; padding-right:11px !important; }
 }
 
 /* Dashboard hero banner — welcoming, colorful, gently animated title.
@@ -1535,6 +1549,15 @@ td[contenteditable="true"]:focus{outline:2px solid var(--accent); outline-offset
 .yoy-year{font-weight:700; color:var(--primary-dark); font-size:12.8px; min-width:36px; flex:none;}
 .yoy-amt{font-family:'JetBrains Mono','Khmer OS Siemreap',monospace; font-size:12px; color:var(--ink); flex:1; text-align:right; font-variant-numeric:tabular-nums;}
 .yoy-growth{font-size:10.8px; font-weight:700; white-space:nowrap; flex:none; min-width:78px; text-align:right;}
+/* ⭐ [stated] ២០២៦-១១-២៧ ៖ «ផ្នែក ទំនិញ/សេវាលក់ដាច់ (Top 5) ជួរអក្សរពី ១ ដល់ ៥
+   វាធំជាងគេ … អាចឱ្យទំហំអក្សរវាស្មើនឹងអក្សរខាងលើ "ផ្អែកលើ … វិក្កយបត្រ"» ។
+   ⚠ ឈ្មោះទំនិញគ្មានទំហំអក្សរផ្ទាល់ ⇒ វាទទួលមរតកពីតួកាត ( ធំ ) ។
+     ជួរពន្យល់ខាងលើគឺ ១១.៥px ⇒ ដាក់ស្មើវា ។
+   ⚠ ច្បាប់នេះ **ចាក់សោតែកាត Top 5** ⇒ ផ្ទាំងដទៃដែលប្រើ `.yoy-row`
+     ( ការប្រៀបធៀបឆ្នាំ ) មិនប៉ះទាល់តែសោះ ។ */
+#top-products-card .yoy-row-head{ font-size:11.5px; }
+#top-products-card .yoy-row-head .name-cell{ font-size:11.5px; }
+#top-products-card .yoy-year{ font-size:11.5px; min-width:24px; }
 .yoy-growth.up{color:var(--green);}
 .yoy-growth.down{color:var(--red);}
 .yoy-growth.first{color:var(--muted); font-weight:600;}
@@ -3496,6 +3519,14 @@ html.rsc-mobile-print #docs-modal .smw-r .bq{ font-size:.44em; line-height:4.2; 
 /* ===== 🧮 Calculation Card ===== */
 #calcCard{--cc-blue:#1D4ED8;}
 .xls-bar{display:flex; justify-content:flex-end; margin:-2px 0 4px;}
+/* ⚠ D68 ៖ ប៊ូតុង ⬇ ត្រូវរុញចេញទៅជួរដទៃ ⇒ របារនេះនៅសល់ទទេ ⇒ លាក់វា
+   បើមិនដូច្នេះទេ វានៅស៊ីកន្លែងបញ្ឈរដោយឥតប្រយោជន៍ ។ */
+.xls-bar:empty{ display:none !important; }
+/* [stated] ២០២៦-១១-២៧ ៖ «⬇ Excel ទុកតែរូប ⬇ បានហើយ លុបពាក្យ excel ចេញ»
+   ⇒ លាក់ពាក្យតែលើទូរសព្ទ ; លើ PC នៅដដែល ( ប៊ូតុងនេះមានគ្រប់ផ្ទាំង ) ។ */
+@media screen and (max-width: 760px){
+  .xls-btn span{ display:none !important; }
+}
 .xls-btn{display:inline-flex; align-items:center; gap:4px; font:inherit; font-size:11.5px; font-weight:600;
   color:var(--primary); background:transparent; border:1px solid var(--line); border-radius:6px;
   padding:2px 8px; cursor:pointer; line-height:1.6; opacity:.75;}
@@ -7130,6 +7161,25 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     #toi-embed tr.risk-row td:first-child{border-left:1px solid #ccc2a4 !important;}
     #toi-embed tr.risk-row td.label::before{content:none !important;}
     #toi-embed td.cell-wrap{white-space:normal !important; word-break:break-word;}
+    /* ⭐⭐⭐ D63 ៖ តារាងដែលចាក់សោទទឹងជួរឈរ ។
+       ⚠⚠ ជាមួយ `table-layout:fixed` ក្រឡា `nowrap` **មិនពង្រីកជួរឈរទេ**
+         ⇒ អក្សរនឹងហៀរចេញក្រៅ ( មើលទៅដូចដាច់ ) ។ ដូច្នេះក្រឡាអក្សរ
+         ត្រូវចុះបន្ទាត់បាន ។ ក្រឡាលេខនៅ `nowrap` ដដែល ព្រោះជួរឈររបស់វា
+         កំណត់តាមលេខវែងជាងគេរួចហើយ ⇒ មិនដាច់ឡើយ ។
+       ⚠ គ្មាន `word-break:break-all` ៖ ខ្មែរនឹងដាច់ពាក់កណ្តាលពាក្យ ។ */
+    #toi-embed table.toi-fitcols th,
+    #toi-embed table.toi-fitcols td:not(.num):not(.pct){
+      white-space:normal !important;
+    }
+    #toi-embed table.toi-fitcols td.num,
+    #toi-embed table.toi-fitcols td.pct{ white-space:nowrap !important; }
+    /* ⚠⚠⚠ ចំណុចចុងក្រោយ និងសំខាន់បំផុត ៖ ច្បាប់សកល `table{min-width:760px}`
+       ( បន្ទាត់ ~១០៤០ ) ជាន់លើ `width:100%` ⇒ **គ្រប់តារាងព្រីនមានយ៉ាងតិច
+       ៧៦០px ខណៈទំព័រ A4 ឈរមានត្រឹម ~៧៣០px** ⇒ កម្មវិធីរុករកបង្រួមសន្លឹក
+       ជានិច្ច ។ ដកពិដានអប្បបរមានោះចេញ **តែលើតារាងដែលយើងចាក់សោទទឹងរួច**
+       ⇒ តារាង = ទទឹងទំព័រពិតប្រាកដ ⇒ គ្មានការបង្រួមទៀត ។
+       ⚠ តារាងឯទៀត ( អេក្រង់ · កាត · ផ្ទាំងដទៃ ) មិនប៉ះទាល់តែសោះ ។ */
+    #toi-embed table.toi-fitcols{ min-width:0 !important; }
     /* ⭐⭐ [stated] ២០២៦-១១-១៦ ១៥:៣៨ ៖ «ជំហានទី១០ ឃើញមានដាច់ក្បាលអក្សរ
        នៅពេលវាចុះទៅទំព័រថ្មី» ⇒ ក្បាលផ្នែកមិនត្រូវកាត់ពាក់កណ្តាល ហើយត្រូវ
        នៅជាមួយតារាងរបស់វា ។ ⚠ ដាក់តែលើផ្ទាំងទម្រង់ ( ជំហានទី១០·១៤ ) ។ */
@@ -7489,7 +7539,42 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
 #toi-embed .toi-sctools{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
 #toi-embed .toi-sctools .years-chips{ display:flex; gap:5px; flex-wrap:wrap; }
 #toi-embed .toi-sczoom{ display:inline-flex; align-items:center; gap:4px; }
-#toi-embed .toi-sczoom .sz-btn{ padding:4px 9px; font-size:12px; margin:0 !important; }
+/* ⭐ [stated] ២០២៦-១១-២៦ ៖ «Zoom in out លុបប្រអប់ចេញ ដោយទុកតែរូប
+   ហើយបន្ថយទំហំរូប» ។ ⚠ `.btn` មានស្រោប ⇒ ត្រូវសរសេរពីលើដោយ `!important` ។
+   ⚠ រក្សា padding តូច ៖ ផ្ទៃចុចនៅលើទូរសព្ទ ( មើលមិនឃើញ ព្រោះគ្មានផ្ទៃពណ៌ ) ។ */
+#toi-embed .toi-sczoom .sz-btn{
+  padding:2px 4px !important; margin:0 !important;
+  border:0 !important; background:none !important;
+  box-shadow:none !important; border-radius:0 !important;
+  font-size:12px; line-height:1; min-width:0; width:auto; height:auto;
+  color:inherit; opacity:.8; cursor:pointer;
+}
+#toi-embed .toi-sczoom .sz-btn:hover{ opacity:1; }
+/* ⭐⭐⭐ [stated] ២០២៦-១១-២៦ ៖ «ផ្នែក TOI នេះតាមទូរសព្ទគួរឱ្យវាចេញតែ ២ ជួរ ៖
+   ជួរទី១ជំហាន និងផ្សេងទៀតជួរទី២» ។
+   ⇒ `.step-actions` យកទទឹង ១០០% ⇒ វាធ្លាក់ទៅជួរទី ២ ទាំងមូល ហើយចំណងជើង
+     និង ↩ នៅសល់តែឯងនៅជួរទី ១ ។
+   ⚠ `flex-wrap:nowrap` + `overflow-x:auto` ⇒ ធានាថាវានៅ **ជួរតែមួយ**
+     ទោះមានឆ្នាំច្រើន ( អូសមើលបាន ) ជំនួសការចុះបន្ទាត់ទៅជួរទី ៣ ។ */
+@media screen and (max-width: 760px){
+  #toi-embed .step-head .step-actions{
+    flex:1 1 100% !important; width:100%;
+    flex-wrap:nowrap !important; overflow-x:auto; gap:5px !important;
+    padding-bottom:2px;
+  }
+  #toi-embed .step-head .step-actions > *{ flex:0 0 auto; }
+  #toi-embed .step-head .step-actions .btn{ padding:5px 8px !important; font-size:12px !important; }
+  #toi-embed .toi-sctools{ flex-wrap:nowrap !important; gap:6px !important; }
+  #toi-embed .toi-sctools .years-chips{ flex-wrap:nowrap !important; }
+  /* [stated] ៖ លាក់អក្សររូបិយប័ណ្ណ និងអត្រាប្តូរប្រាក់ តែលើទូរសព្ទ */
+  #toi-embed .btn-word{ display:none !important; }
+  #toi-embed .toi-fxhint{ display:none !important; }
+  /* ⚠ ទទឹងជួរទី ២ នៅ ៣៩០px មានត្រឹម ៣៣៨px ⇒ ត្រូវបង្រួមបន្ថែម ៖
+     លេខភាគរយ Zoom លាក់ ( ៤២px ) និងបន្ទះឆ្នាំតូចជាង ( ~១៥px ក្នុងមួយ ) ។
+     ⚠ មានឆ្នាំច្រើន ⇒ ជួរទី ២ អូសទៅស្តាំបាន ជំនួសការចុះទៅជួរទី ៣ ។ */
+  #toi-embed .toi-sczoom .sz-lab{ display:none !important; }
+  #toi-embed .toi-sctools .year-chip{ padding:3px 7px !important; font-size:11px !important; }
+}
 #toi-embed .toi-sczoom .sz-lab{
   font-size:11.5px; color:var(--toi-ink-soft); min-width:42px; text-align:center;
 }
@@ -9724,15 +9809,25 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
            សម្រាប់ពីចំណុចនេះ ដោយឡែកតារាងនៅអាចមើលបានធម្មតា» ⇒ ដក**តែ
            បន្ទាត់ចំណងជើង** «🏆 ១០ សហគ្រាសកំពូល ( Top 10 )» និង «🤝 សង្ខេប
            តាមក្រុមហ៊ុនដៃគូ» ។ តារាង ប៊ូតុងប្តូរ និងការគណនានៅដដែលទាំងស្រុង ។ -->
-      <div class="chart-row" style="align-items:start;">
-        <div class="chart-card" style="padding:14px;">
-          <h3>ដៃគូ — SALE (អតិថិជន)</h3>
-          <div class="table-scroll" style="max-height:320px;"><table id="partner-summary-sale"></table></div>
+      <!-- ⭐⭐⭐ [stated] ២០២៦-១១-២៧ ៖ «គួរធ្វើលំនាំតាម 🏆 TOP 10 ដោយចុច
+           ប្តូរ Sale or purchase និងធ្វើឱ្យអូសទៅស្តាំដូចផ្នែកនេះដែរ
+           កុំឱ្យតារាងហៀរខុសគេ» ។
+           ⚠⚠ មុននេះកាតទាំងពីរនៅក្នុង `.chart-row` ( ក្រឡាចត្រង្គ ) ។
+             `table{min-width:760px}` + ធាតុក្រឡាចត្រង្គមិនបង្រួមក្រោម
+             min-content ⇒ កាតធំជាងអេក្រង់ ⇒ **ទំព័រទាំងមូលអូសទៅស្តាំ** ។
+           ⇒ កាតតែមួយឈរឯករាជ្យពេញទទឹង ⇒ `.table-scroll` ទប់ការអូស
+             ⇒ តារាងអូសក្នុងកាត ដូច TOP 10 ។
+           ⚠ លេខសម្គាល់តារាងរក្សាដដែល ⇒ កូដគូរតារាងមិនប៉ះសោះ ។ -->
+      <div class="chart-card" style="padding:14px;">
+        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:10px;">
+          <h3 style="margin:0;">🤝 ដៃគូ — <span id="psum-title">SALE ( អតិថិជន )</span></h3>
+          <div id="psum-switch" style="margin-left:auto; display:inline-flex; border:1px solid var(--line); border-radius:8px; overflow:hidden;">
+            <button type="button" class="top10-tab is-on" data-pside="sale">អតិថិជន</button>
+            <button type="button" class="top10-tab" data-pside="purchase">អ្នកផ្គត់ផ្គង់</button>
+          </div>
         </div>
-        <div class="chart-card" style="padding:14px;">
-          <h3>ដៃគូ — PURCHASE (អ្នកផ្គត់ផ្គង់)</h3>
-          <div class="table-scroll" style="max-height:320px;"><table id="partner-summary-purchase"></table></div>
-        </div>
+        <div class="table-scroll" id="psum-wrap-sale" style="max-height:320px;"><table id="partner-summary-sale"></table></div>
+        <div class="table-scroll" id="psum-wrap-purchase" style="max-height:320px; display:none;"><table id="partner-summary-purchase"></table></div>
       </div>
 
       <!-- តារាងនេះវែង ដូច្នេះទុកតែមួយ ហើយប្តូររវាង អតិថិជន / អ្នកផ្គត់ផ្គង់
@@ -24184,6 +24279,31 @@ document.addEventListener("click", function(ev){
   renderTopCompanies();
 });
 
+/* ⭐⭐ [stated] ២០២៦-១១-២៧ ៖ កាត «ដៃគូ» ប្តូរភាគីដូច TOP 10 ។
+   ⚠ តារាងទាំងពីរនៅគូរដដែល ⇒ ការប្តូរគ្រាន់តែលាក់/បង្ហាញប្រអប់រុំ
+     ⇒ **គ្មានកូដគណនាណាត្រូវប៉ះ** ហើយតារាងដែលលាក់នៅរក្សាទីតាំងអូសរបស់វា ។ */
+let partnerSide = "sale";
+function renderPartnerSide(){
+  try{
+    var ws = document.getElementById('psum-wrap-sale');
+    var wp = document.getElementById('psum-wrap-purchase');
+    if(ws) ws.style.display = (partnerSide === 'sale') ? '' : 'none';
+    if(wp) wp.style.display = (partnerSide === 'purchase') ? '' : 'none';
+    var t = document.getElementById('psum-title');
+    if(t) t.textContent = (partnerSide === 'sale')
+      ? 'SALE ( អតិថិជន )' : 'PURCHASE ( អ្នកផ្គត់ផ្គង់ )';
+    document.querySelectorAll('#psum-switch .top10-tab').forEach(function(b){
+      b.classList.toggle('is-on', b.dataset.pside === partnerSide);
+    });
+  }catch(e){}
+}
+document.addEventListener("click", function(ev){
+  const b = ev.target.closest && ev.target.closest("#psum-switch .top10-tab");
+  if(!b) return;
+  partnerSide = b.dataset.pside;
+  renderPartnerSide();
+});
+
 function renderTopCompaniesTable(containerId, storeName){
   const table = document.getElementById(containerId);
   if(!table) return;
@@ -25111,14 +25231,29 @@ function renderPartnersView(){
        + ((state.customs||[]).length ? '<span class="mc-unit">ជួរ</span>' : ''),
      subLinks:[{ label:"📥 ផ្ទុកឯកសារគយ", action:"cusPickFile()" }]},
   ];
+  /* ⭐⭐⭐ [stated] ២០២៦-១១-២៧ ៖ «ពី excel ដល់ មើលការផ្គូរផ្គង តែ ១ ជួរ» ។
+     ⚠ ថ្នាក់ `toolbar` សំខាន់ ៖ `ensureXlsButton` ស្វែងរក `.toolbar` ក្នុង
+       ផ្ទាំង រួចដាក់ប៊ូតុង ⬇ ចូលទីនោះ ។ គ្មាន `.toolbar` ⇒ វាសង់
+       `.xls-bar` ដាច់ដោយឡែកនៅខាងលើ ⇒ ក្លាយជាជួរទី ១ ។
+     ⚠ ស្លាកខ្លី ៖ ឈ្មោះពេញនៅក្នុង `title` ⇒ ចង្អុលមើលដឹងដដែល ។ */
   container.innerHTML =
     `<div class="section-title">🏢 ផ្គូផ្គងទិន្នន័យ<div class="rule"></div></div>`
-    + `<div style="display:flex;gap:8px;flex-wrap:wrap;margin:0 0 10px;">
+    + `<div class="toolbar cus-row" style="display:flex;gap:8px;flex-wrap:wrap;margin:0 0 10px;">
          <button class="btn primary" style="width:auto;" onclick="cusPickFile()"
-           title="ផ្ទុកឯកសារ Excel ទិន្នន័យគយ — រើសបានច្រើនឯកសារក្នុងពេលតែមួយ (Ctrl / Shift) ហើយអានគ្រប់សន្លឹក">🛃 UPLOAD ទិន្នន័យគយ (ច្រើនឯកសារបាន)</button>
-         <button class="btn ghost" style="width:auto;" onclick="showView('cross-customs')">⇄ មើលការផ្គូផ្គងគយ</button>
+           title="UPLOAD ទិន្នន័យគយ — ផ្ទុកឯកសារ Excel រើសបានច្រើនឯកសារក្នុងពេលតែមួយ (Ctrl / Shift) ហើយអានគ្រប់សន្លឹក">🛃</button>
+         <button class="btn ghost" style="width:auto;" onclick="showView('cross-customs')"
+           title="មើលការផ្គូផ្គងគយ">CHECK</button>
        </div>`
     + `<div class="module-grid">${cards.map(moduleCardHtml).join("")}</div>`;
+  /* ⚠ លំដាប់ហៅមិនច្បាស់ ៖ បើប៊ូតុង ⬇ ត្រូវបានសង់ **មុន** ជួរនេះ វានៅ
+     ក្នុង `.xls-bar` រួចហើយ ⇒ រុញវាចូល ។ បើសង់ក្រោយ ⇒ វារកឃើញ
+     `.toolbar` ខាងលើដោយខ្លួនឯង ⇒ គ្របដណ្តប់ទាំងពីរករណី ។ */
+  try{
+    const vw = document.getElementById('view-partners');
+    const xb = vw && vw.querySelector('.xls-bar .xls-btn');
+    const row = container.querySelector('.cus-row');
+    if(xb && row){ xb.style.marginLeft = 'auto'; row.appendChild(xb); }
+  }catch(e){}
 }
 
 /* The tracking card shows how far the document requests have got, so the
@@ -25339,16 +25474,21 @@ function renderModuleOverview(){
        title:"ពន្ធកាត់ទុក", stat: fmtCount(state.wht.length)},
       {id:"sale", icon:"💵", color:"var(--green)", bg:"var(--green-bg)",
        title:"ទិន្នានុប្បវត្តលក់", stat: fmtCount(state.sale.length),
+       /* [stated] ២០២៦-១១-២៧ ៖ «ទុកតែ CN DN បានហើយ លុបពាក្យ
+          ទិន្នានុប្បវត្តទិញ លក់ ចេញ» ⇒ ឈ្មោះកាតប្រាប់រួចហើយថាលក់ ។ */
        subLinks:[
-         {id:"sale-cd", label:"ទិន្នានុប្បវត្តលក់ CN DN"},
+         {id:"sale-cd", label:"CN DN"},
        ]},
       {id:"purchase", icon:"🧾", color:"var(--primary)", bg:"var(--accent-light)",
        title:"ទិន្នានុប្បវត្តទិញ", stat: fmtCount(state.purchase.length),
+       /* [stated] ២០២៦-១១-២៧ ៖ ស្លាកខ្លី ⇒ ៣ ឈ្នាប់នៅជួរតែមួយ ។
+          ⚠ ប្តូរតែស្លាកលើកាត ៖ ឈ្មោះផ្ទាំង និងពាក្យក្នុងឯកសារមិនប៉ះ
+            ( «វិធីគិតអាករជំនួស» នៅជាពាក្យផ្លូវការដដែល ) ។ */
        subLinks:[
-         {id:"purchase-cd", label:"ទិន្នានុប្បវត្តទិញ CN DN"},
-         {id:"other-expenses", label:"ចំណាយផ្សេងៗ"},
+         {id:"purchase-cd", label:"CN DN"},
+         {id:"other-expenses", label:"OTHER EXPENSES"},
          /* [stated] ២០២៦-០៩-០២ ៖ អាករជំនួសជាធាតុ **ចូល** ⇒ ក្រោមទិន្នានុប្បវត្តិទិញ */
-         {id:"vat-rvc", label:"វិធីគិតអាករជំនួស"},
+         {id:"vat-rvc", label:"VAT REVERSE"},
        ]},
       {id:"tracking", icon:"📋", color:"var(--primary)", bg:"var(--accent-light)",
        title:"តាមដាន & ប្រជុំ", stat: ''},   /* [stated] លុប «0/10 ឯកសារ» ចេញ */
@@ -38296,6 +38436,77 @@ function autoFitPrintArea(root, extraFontDelta){
   /* ⭐ [stated] ២០២៦-១១-១៦ ១៦:៤៧ ៖ ជំហានទី១ ត្រូវការ ≈១០px ដើម្បីកុំឱ្យ
      ជួរ «ការិយបរិច្ឆេទសារពើពន្ធ …» ចុះបន្ទាត់ ( វាស់ ៖ ៨៨៧px ធៀប ៧៣០px ) */
   const STEP_FONT_DELTA = {Step8: -1, Step2: -3, Step1: -3}; // Step8 one size smaller; Step2 and Step1 stay portrait but need a smaller font to keep their long value cells on one line
+  /* ⭐⭐⭐ [stated] ២០២៦-១១-២៦ ( D63 ) ៖ តារាងត្រូវសមនឹងទំព័រជានិច្ច ។
+     ⚠ បើតារាងធំជាងទំព័រ កម្មវិធីរុករកបង្រួម **សន្លឹកទាំងមូល** ហើយកម្រិត
+       បង្រួមអាស្រ័យលើអក្សរវែងជាងគេរបស់ឯកសារនោះ ⇒ ក្រុមហ៊ុនម្នាក់ៗចេញ
+       ទំហំខុសគ្នា ( វាស់បាន ៖ ត្រូវការ ៧៦០px ធៀបទំព័រ ៧៣០px ) ។
+     ⇒ កំណត់ទទឹងជួរឈរជា **ភាគរយ** រួចចាក់សោដោយ `table-layout:fixed`
+       ⇒ តារាង = ១០០% នៃទំព័រជានិច្ច ⇒ គ្មានការបង្រួមដោយកម្មវិធីរុករក ។
+     ⚠ ភាគរយ ( មិនមែន px ) ៖ គែមក្រដាសរបស់អ្នកប្រើម្នាក់ៗមិនដូចគ្នា ។ */
+  /* ⚠⚠⚠ [stated] ២០២៦-១១-២៦ ៖ «ជំហានទី១០មានបញ្ហាខ្លាំង» · «ទី១២ ក៏ចឹង» ·
+     «ទី១៥ ធ្លាក់អក្សរដែរ» · «ជួយធ្វើកុំឱ្យមានបញ្ហាបែបនេះ» ។
+     ⚠ D63 ដាក់ច្បាប់លើគ្រប់ជំហានឈរ ⇒ តារាងទូលាយ ( ៦–១១ ជួរឈរ ) ត្រូវ
+       កិនចូលទំព័រ ⇒ អក្សរដាច់ម្តងមួយតួ ។
+     ⇒ **បញ្ជីអនុញ្ញាត** ៖ មានតែជំហានដែលបានវាស់រួចទេដែលទទួលការចាក់សោ ។
+       ជំហានដទៃទាំងអស់ត្រឡប់ទៅអាកប្បកិរិយាមុន D63 បេះបិទ ។
+     ⚠ កុំបើកឱ្យគ្រប់ជំហានម្តងទៀត ។ ចង់បន្ថែមជំហានណា ត្រូវវាស់វាជាមុនសិន ។ */
+  var FIT_ONLY_STEPS = {Step8:1};
+  function fitTableCols(table, baseline){
+    try{
+      if(!FIT_ONLY_STEPS[table.dataset.stepKey]) return;
+      /* ១. ចំនួនជួរឈរពិត ( គិត colspan ) */
+      var N = 0;
+      Array.from(table.rows).forEach(function(tr){
+        var n = 0;
+        Array.from(tr.cells).forEach(function(td){
+          n += (parseInt(td.getAttribute('colspan')) || 1);
+        });
+        if(n > N) N = n;
+      });
+      if(N < 2) return;
+      /* ២. ទទឹងចាំបាច់ក្នុងមួយជួរឈរ ⇒ រំលងក្រឡាដែលលាតលើជួរឈរច្រើន */
+      var need = [], j;
+      for(j = 0; j < N; j++) need.push(0);
+      Array.from(table.rows).forEach(function(tr){
+        var ci = 0;
+        Array.from(tr.cells).forEach(function(td){
+          var cs = parseInt(td.getAttribute('colspan')) || 1;
+          if(cs === 1 && ci < N){
+            var mono = td.classList.contains('num') || td.classList.contains('ref');
+            var w = measurePrintTextWidth(td.textContent, baseline, mono) + CELL_PAD;
+            if(w > need[ci]) need[ci] = w;
+          }
+          ci += cs;
+        });
+      });
+      /* ៣. ជួរឈរទី ០ ជាស្លាក ⇒ ទទួលកន្លែងដែលសល់ ។
+         ⚠⚠ សំណាញ់ទី ២ ៖ កូដដើមបង្រួមជួរឈរតាមសមាមាត្រពេលលើស — នោះជា
+           អ្វីដែលកិនអក្សរ ។ ឥឡូវ **ឈប់បង្រួម** ៖ ជួរឈរក្រៅពីស្លាក
+           ត្រូវការលើស ៦៨% នៃទំព័រ ⇒ រំលងទាំងស្រុង ។
+           ( ឧ. ជំហានទី៨ របស់ក្រុមហ៊ុនដែលមានឆ្នាំច្រើនពេក ។ )
+         ⚠ កុំបង្វិលទៅការបង្រួមតាមសមាមាត្រវិញ ។ */
+      var rest = 0;
+      for(j = 1; j < N; j++) rest += need[j];
+      if(rest > PAGE_W_PX * 0.68) return;
+      var first = Math.max(PAGE_W_PX - rest, PAGE_W_PX * 0.2);
+      var tot = first + rest;
+      if(!(tot > 0)) return;
+      /* ៤. សរសេរ colgroup ជាភាគរយ */
+      var prev = table.querySelector('colgroup[data-fit]');
+      if(prev) prev.remove();
+      var cg = document.createElement('colgroup');
+      cg.setAttribute('data-fit', '1');
+      for(j = 0; j < N; j++){
+        var col = document.createElement('col');
+        col.style.width = (((j === 0 ? first : need[j]) / tot) * 100).toFixed(4) + '%';
+        cg.appendChild(col);
+      }
+      table.insertBefore(cg, table.firstChild);
+      table.classList.add('toi-fitcols');
+      table.style.tableLayout = 'fixed';
+      table.style.width = '100%';
+    }catch(e){}
+  }
   const tables = root.querySelectorAll('.table-wrap table');
   tables.forEach(table=>{
     const isLandscape = !!table.closest('.print-landscape'); // Step10-15 — extra width via a landscape page
@@ -38337,11 +38548,35 @@ function autoFitPrintArea(root, extraFontDelta){
           }
         });
       });
+      /* ⭐ D63 ៖ ចាក់សោទទឹងជួរឈរ ⇒ តារាងលែងលើសទំព័រ ⇒ កម្មវិធីរុករក
+         លែងបង្រួមសន្លឹក ⇒ គ្រប់ក្រុមហ៊ុនចេញមាត្រដ្ឋានតែមួយ ។ */
+      fitTableCols(table, baseline);
     }
   });
   /* ⚠⚠ [stated] ២០២៦-១១-១៦ ១៥:៣៣ ៖ «វាអាក្រក់ណាស់កែទំហំ FONT ដូចនេះ
      ជួយដាក់មកដូចដើមវិញ» ⇒ ការបង្រួមអក្សរស្វ័យប្រវត្តិ ( ជំហានទី៨·៩ )
      ត្រូវដកចេញ ។ កុំបញ្ចូលវិញបើគ្មានការអនុញ្ញាត ។ */
+}
+
+/* ⭐⭐ D63 ៖ ស្តារតារាងផ្ទាល់ ( ផ្លូវ «ព្រីនទំព័របច្ចុប្បន្ន» កែតារាង
+   **ពិតលើអេក្រង់** មិនមែនច្បាប់ចម្លងទេ ) ⇒ ក្រោយព្រីន ត្រូវដកការចាក់សោ
+   ទទឹងជួរឈរចេញវិញ បើមិនដូច្នេះទេ តារាងលើអេក្រង់នឹងជាប់ទម្រង់ព្រីន ។
+   ⚠ ផ្លូវ «ព្រីនទាំងអស់» ប្រើប្រអប់បណ្តោះអាសន្ន ⇒ លុបចោលស្រាប់ ។ */
+function unfitPrintTables(root){
+  try{
+    Array.prototype.forEach.call(
+      (root || document).querySelectorAll('table.toi-fitcols'), function(t){
+        var cg = t.querySelector('colgroup[data-fit]');
+        if(cg) cg.remove();
+        t.classList.remove('toi-fitcols');
+        t.style.tableLayout = '';
+        t.style.width = '';
+        t.style.fontSize = '';
+        Array.prototype.forEach.call(t.querySelectorAll('td.cell-wrap'), function(td){
+          td.classList.remove('cell-wrap');
+        });
+      });
+  }catch(e){}
 }
 
 /* ពង្រីក/បង្រួម ៖ ជំហានខ្លះមានជួរឈរច្រើន ដូច្នេះការបង្រួមអោយឃើញទាំងអស់
@@ -39627,24 +39862,58 @@ function rscInvCheckOpen(){
     + 'display:flex; flex-direction:column; font-family:inherit; color:#171B1A;';
   document.body.appendChild(ov);
 
+  /* ⭐⭐⭐ [stated] ២០២៦-១១-២៧ ៖ «ត្រួតពិនិត្យវិក្កយបត្រ ក៏ចឹងដែរ» ( D66 ) ។
+     ⚠ ម៉ូឌុលនេះបញ្ចូលសន្លឹកបញ្ជីរបស់វាផ្ទាល់ ⇒ មិនពឹងលើម៉ូឌុលធនាគារ ។ */
+  (function(){
+    if(document.getElementById('rscInvChkCss')) return;
+    var st = document.createElement('style');
+    st.id = 'rscInvChkCss';
+    st.textContent = [
+      '@media screen and (max-width:760px){',
+      '  #rscInvChk .iv-head{ padding:7px 9px !important; gap:6px !important; }',
+      '  #rscInvChk .iv-head button{ padding:9px 12px !important; }',
+      '  #rscInvChk .iv-head select, #rscInvChk .iv-head input{',
+      '    padding:7px 9px !important; font-size:12.5px !important; }',
+      '  #rscInvChk .iv-body{ flex-direction:column !important; }',
+      '  #rscInvChk .iv-right{ order:1; flex:1 1 auto !important; width:100%;',
+      '    padding:10px !important; }',
+      '  #rscInvChk .iv-left{ order:2; flex:0 0 auto !important; width:100%;',
+      '    height:42vh; border-right:0 !important; border-top:2px solid #0F3D3E; }',
+      '  #rscInvChk.iv-nopdf .iv-left{ display:none !important; }',
+      '}'
+    ].join('\n');
+    document.head.appendChild(st);
+  })();
+
   var head = document.createElement('div');
+  head.className = 'iv-head';
   head.style.cssText = 'flex:0 0 auto; padding:10px 14px; background:#0F3D3E; color:#EFE7D2;'
     + 'display:flex; gap:10px; align-items:center; flex-wrap:wrap; font-size:13px;';
   ov.appendChild(head);
 
   var body = document.createElement('div');
+  body.className = 'iv-body';
   body.style.cssText = 'flex:1 1 auto; display:flex; min-height:0; background:#f4f1e8;';
   ov.appendChild(body);
 
   var left = document.createElement('div');
+  left.className = 'iv-left';
   left.style.cssText = 'flex:1 1 46%; min-width:0; border-right:2px solid #0F3D3E; background:#555;';
   var right = document.createElement('div');
+  right.className = 'iv-right';
   right.style.cssText = 'flex:1 1 54%; min-width:0; overflow:auto; padding:10px 12px; background:#fff;';
   body.appendChild(left); body.appendChild(right);
 
   var frame = document.createElement('iframe');
   frame.style.cssText = 'width:100%; height:100%; border:0; display:block;';
   left.appendChild(frame);
+  try{
+    ov.classList.add('iv-nopdf');
+    new MutationObserver(function(){
+      var sv = frame.getAttribute('src') || '';
+      ov.classList.toggle('iv-nopdf', !sv || /^about:blank/.test(sv));
+    }).observe(frame, { attributes:true, attributeFilter:['src'] });
+  }catch(e){}
 
   function btn(label, bg, fg){
     var b = document.createElement('button');
@@ -41292,7 +41561,28 @@ function rscGLOpen(){
   }
   window.__rscGLRestore = restoreGL;
 
+  /* ⭐⭐ [stated] ២០២៦-១១-២៧ ៖ «ជួយរៀបចំតែ ១ ជួរផង សម្រាប់ក្បាលតារាង» ។
+     ⇒ `nowrap` + `overflow-x:auto` ⇒ ១ ជួរជានិច្ច ហើយអូសមើលបាន
+       ⇒ ប៊ូតុងមិនបាត់ ( មេរៀនពីម៉ូឌុលធនាគារ ៖ `overflow:hidden` កាត់ចោល ) ។ */
+  (function(){
+    if(document.getElementById('rscGLCss')) return;
+    var st = document.createElement('style');
+    st.id = 'rscGLCss';
+    st.textContent = [
+      '#rscGL .gl-head{ flex-wrap:nowrap !important;',
+      '  overflow-x:auto !important; overflow-y:hidden !important; }',
+      '#rscGL .gl-head > *{ flex:0 0 auto; }',
+      '@media screen and (max-width:760px){',
+      '  #rscGL .gl-head{ padding:7px 9px !important; gap:6px !important; }',
+      '  #rscGL .gl-head button{ padding:9px 12px !important; }',
+      '  #rscGL .gl-head select, #rscGL .gl-head input{',
+      '    padding:7px 9px !important; font-size:12.5px !important; }',
+      '}'
+    ].join('\n');
+    document.head.appendChild(st);
+  })();
   var head = document.createElement('div');
+  head.className = 'gl-head';
   head.style.cssText = 'flex:0 0 auto; padding:10px 14px; background:#0F3D3E; color:#EFE7D2;'
     + 'display:flex; gap:8px; align-items:center; flex-wrap:wrap; font-size:13px;';
   ov.appendChild(head);
@@ -41742,10 +42032,9 @@ function rscGLOpen(){
 
   function draw(){
     if(!rows.length){
+      /* [stated] ២០២៦-១១-២៧ ៖ «លុបអក្សរចេញ "ជ្រើសឯកសារ GL ( .xlsx · .csv ) ។
+         អានបានស្វ័យប្រវត្តិ ៖ …"» ⇒ នៅសល់តែបញ្ជីឯកសារដែលបានជ្រើស ។ */
       body.innerHTML = '<div style="padding:12px; color:#6b736f; font-size:13px;">'
-        + 'ជ្រើសឯកសារ GL ( .xlsx · .csv ) ។ អានបានស្វ័យប្រវត្តិ ៖ ទម្រង់ QuickBooks · '
-        + 'តារាងរាបស្មើ ( G/L · Dr.AMT · Cr.AMT ) · និងទម្រង់ក្បាលគណនី '
-        + '( Account Name · Date · Descriptions · Debit · Credit ) ។<br><br>'
         + (files.length
             ? files.map(function(f){
                 return '· ' + esc(f.name) + ' ៖ ' + (f.n ? f.n + ' ជួរ'
@@ -42130,7 +42419,14 @@ window.__rscAskAuditDate = function(keys, onReady){
 
 document.getElementById('btnPrintCurrent').onclick = (ev, __dateAsked)=>{
   /* ⭐ [stated] ២០២៦-១១-១៦ ៖ ព្រីនតែម្តង គ្មានប្រអប់សួរថ្ងៃទៀតទេ */
-  autoFitPrintArea(document.getElementById('content'), -2);   // អក្សរតូចជាង ២px
+  /* ⭐⭐⭐ [stated] ២០២៦-១១-២៦ ៖ «ពេលចុចព្រីនហេតុអ្វីទំហំខុសគ្នាបែបនេះ?»
+     ⇒ «យក ១៣px ទាំងពីរ ( ធំ )» ។
+     ⚠⚠ មុននេះទីនេះឱ្យ −២ ចំណែក «ព្រីនទាំងអស់» មិនឱ្យ ⇒ ជំហានតែមួយចេញ
+       ពីរទំហំ ( ជំហានទី៨ ៖ ១១px ធៀប ១៣px ព្រោះ STEP_FONT_DELTA = −១ ) ។
+       វាស់ពីរូបថត ៖ ៥៩ ជួរ ធៀប ៥១ ជួរក្នុងមួយទំព័រ ( ០.៨៦ ≈ ១១÷១៣ ) ។
+     ⇒ ឈប់ឱ្យតម្លៃបន្ថែម ⇒ ផ្លូវទាំងពីរប្រើមូលដ្ឋានតែមួយ ។
+     ⚠ កុំដាក់តម្លៃចូលវិញដោយគ្មានការអនុញ្ញាត — ទំហំនឹងខុសគ្នាម្តងទៀត ។ */
+  autoFitPrintArea(document.getElementById('content'));
   /* ⭐⭐ [stated] ២០២៦-១១-២៦ ៖ សន្លឹកទទេមកពីក្រោយ ⇒ បន្សាប `min-height:100vh`
      នៃ `.app` ទាំងពីរ ខណៈព្រីនប៉ុណ្ណោះ ( មើលច្បាប់ `body.toi-print-one` ) ។
      ⚠ ត្រូវដកថ្នាក់ចេញវិញជានិច្ច ៖ បើជាប់ អេក្រង់នឹងបាត់កម្ពស់អប្បបរមា ។
@@ -42138,6 +42434,8 @@ document.getElementById('btnPrintCurrent').onclick = (ev, __dateAsked)=>{
   document.body.classList.add('toi-print-one');
   var __unOne = function(){
     document.body.classList.remove('toi-print-one');
+    /* ⭐ D63 ៖ ស្តារតារាងលើអេក្រង់វិញ */
+    unfitPrintTables(document.getElementById('content'));
     window.removeEventListener('afterprint', __unOne);
   };
   window.addEventListener('afterprint', __unOne);
@@ -44817,7 +45115,11 @@ function renderRefStepPanel(stepKey){
   const stepActions = el('div',{class:'step-actions no-print'});
 
   if(rowFilterable){
-    const toggleBtn = el('button',{class:'btn'}, showAll ? '🔎 បង្ហាញតែមុខមានទឹកប្រាក់' : '📋 បង្ហាញទាំងអស់');
+    /* [stated] ២០២៦-១១-២៦ ៖ «បង្ហាញទាំងអស់ ប្តូរទៅ UNHIDE» ។
+       ⚠ ប៊ូតុងតែមួយដែលប្តូរស្លាក ⇒ ខាងម្ខាងទៀតត្រូវខ្លីដូចគ្នា ។ */
+    const toggleBtn = el('button',{class:'btn',
+      title: showAll ? 'បង្ហាញតែមុខដែលមានទឹកប្រាក់' : 'បង្ហាញមុខទាំងអស់'},
+      showAll ? '🔎 HIDE' : '📋 UNHIDE');
     toggleBtn.onclick = ()=>{ state.showAllRows[stepKey] = !showAll; renderAll(); };
     stepActions.appendChild(toggleBtn);
   }
@@ -44826,11 +45128,17 @@ function renderRefStepPanel(stepKey){
        របាយការណ៍លទ្ធផល ) ។ អត្រាតាមឆ្នាំនីមួយៗ ។ */
     const ccyBtn = el('button',{class:'btn' + (rscCcyIsUsd() ? '' : ' ghost'),
       title:'ប្តូររវាងរៀល និងដុល្លារ — ការបង្ហាញប៉ុណ្ណោះ ទិន្នន័យនៅជារៀល'},
-      rscCcyIsUsd() ? '💵 ដុល្លារ' : '៛ រៀល');
+      /* [stated] ២០២៦-១១-២៦ ៖ «ដុល្លារ រៀល ប្តូរទៅតែរូបរូបិយប័ណ្ណ» ។
+         ⚠ អក្សរដាក់ក្នុង `span.btn-word` ⇒ លាក់តែលើទូរសព្ទ ( CSS ) ;
+           លើ PC នៅដដែល ព្រោះមានកន្លែងគ្រប់គ្រាន់ ។ */
+      rscCcyIsUsd() ? '💵' : '៛',
+      el('span', {class:'btn-word'}, rscCcyIsUsd() ? ' ដុល្លារ' : ' រៀល'));
     ccyBtn.onclick = ()=> rscCcyToggle('toi');
     stepActions.appendChild(ccyBtn);
     if(rscCcyIsUsd()){
-      stepActions.appendChild(el('span',{class:'hint',
+      /* [stated] ២០២៦-១១-២៦ ៖ «អត្រាប្តូរប្រាក់មិនបាច់បង្ហាញទេ»
+         ⇒ លាក់លើទូរសព្ទ ( ថ្នាក់ `toi-fxhint` ) ; លើ PC នៅដដែល ។ */
+      stepActions.appendChild(el('span',{class:'hint toi-fxhint',
         style:'color:var(--muted);font-size:11.5px;align-self:center;'},
         'អត្រា ៖ ' + yrs.map(y=> y + ' = ' + fmtAmt(rscFxOf(y))).join(' · ')));
     }
@@ -44841,7 +45149,7 @@ function renderRefStepPanel(stepKey){
   (function(){
     var paidBtn = el('button', {class:'btn ghost',
       title:'ប្រាក់ពន្ធបានបង់តាមសាលកបត្រអនុរក្ស ៖ ប្រាក់រំដោះ · ពន្ធលើប្រាក់ចំណូល · ពន្ធអប្បបរមា'},
-      '💵 ពន្ធបានបង់');
+      '💵 TAX PAID');   /* [stated] ២០២៦-១១-២៦ ៖ ប្តូរពី «ពន្ធបានបង់» */
     paidBtn.onclick = function(){
       try{ rscPaidTaxBox(); }catch(e){ console.error('ពន្ធបានបង់:', e); }
     };
@@ -44919,10 +45227,9 @@ function renderRefStepPanel(stepKey){
   table.appendChild(tbody);
   tableWrap.appendChild(table);
   wrap.appendChild(tableWrap);
-  if(anyRisk){
-    wrap.appendChild(el('p',{class:'panel-sub risk-legend'},
-      '⚠ ជួរដែលមានស្រទាប់ក្រហមខាងឆ្វេង៖ តម្លៃប្រែប្រួលលើសពី 50% ឬលេចឡើង/បាត់ទៅវិញ រវាងឆ្នាំជាប់គ្នា — សម្រាប់ចាប់អារម្មណ៍ត្រួតពិនិត្យបន្ថែម មិនមែនចាំបាច់ជាកំហុសទេ។'));
-  }
+  /* [stated] ២០២៦-១១-២៦ ៖ «លុបអក្សរចេញ "⚠ ជួរដែលមានស្រទាប់ក្រហម…"» ។
+     ⚠ ស្រទាប់ក្រហមលើជួរដេក ( `risk-row` ) នៅដដែល ⇒ សញ្ញាមើលឃើញនៅគង់វង្ស
+       គ្រាន់តែឈប់សរសេរពន្យល់ពីក្រោមតារាង ។ `anyRisk` ទុកសម្រាប់ថ្ងៃក្រោយ ។ */
   if(showPrev){
     wrap.appendChild(el('p',{class:'panel-sub'}, 'ជួរឈរ ' + prevYearLabel + ' (N-1) ទាញយកពីជួរឈរ "ការិយបរិច្ឆេទមុន" នៅក្នុងឯកសារ ' + yrs[0] + ' ដដែល (មិនមែនឯកសារដាច់ដោយឡែកទេ)'));
   }
@@ -69671,7 +69978,7 @@ else CC.init();
      ការរក្សាទុកឥឡូវ **រាយលេខជំហាន** លើផ្ទាំង ហើយផ្អាកអោយផ្ទាំងគូររួច
      មុននឹងចាប់ការងារធ្ងន់នីមួយៗ។ សារចុងក្រោយដែលឃើញ = ជំហានដែលគាំង។
      លេខ build ក៏បង្ហាញផង ដើម្បីដឹងច្បាស់ថាកំពុងប្រើឯកសារណា។ */
-  var RSC_BUILD = '19/11 · D61';
+  var RSC_BUILD = '19/11 · D69';
   try{ window.__RSC_BUILD = RSC_BUILD; }catch(e){}
 
   /* ⚠⚠ [stated] ២០២៦-០៨-១៣ ៖ រូបថតបង្ហាញ **«Page Unresponsive» របស់ Chrome**
@@ -70951,24 +71258,65 @@ function rscBankOpen(){
   try{ document.body.style.overflow = 'hidden'; }catch(e){}
   function unlockScroll(){ try{ document.body.style.overflow = bodyOvf0; }catch(e){} }
 
+  /* ⭐⭐⭐ [stated] ២០២៦-១១-២៧ ៖ «ផ្នែកនេះនៅលើទូរសព្ទពិបាកចុច» ( D66 ) ។
+     ច្បាប់រៀបប្លង់ទាំងអស់ក្នុង `@media (max-width:760px)` ⇒ PC មិនប្តូរ ។ */
+  (function(){
+    if(document.getElementById('rscBankCss')) return;
+    var st = document.createElement('style');
+    st.id = 'rscBankCss';
+    st.textContent = [
+      /* ⚠⚠ `overflow:hidden` កាត់ប៊ូតុងចោល ⇒ ចុចមិនបាន ។ `auto` រក្សា
+         «តែ ១ ជួរ» ដដែល តែអូសមើលបាន ។ មិនលើស ⇒ គ្មានរបារ ⇒ PC ដដែល ។ */
+      '#rscBank .bk-head{ overflow-x:auto !important; overflow-y:hidden !important; }',
+      '@media screen and (max-width:760px){',
+      '  #rscBank .bk-head{ padding:6px 8px !important; gap:5px !important; }',
+      '  #rscBank .bk-head button{ padding:8px 11px !important; font-size:12.5px !important; }',
+      '  #rscBank .bk-head select, #rscBank .bk-head input{',
+      '    padding:7px 9px !important; font-size:12.5px !important; }',
+      '  #rscBank .bk-body{ flex-direction:column !important; }',
+      '  #rscBank .bk-right{ order:1; flex:1 1 auto !important; width:100%;',
+      '    padding:10px !important; }',
+      '  #rscBank .bk-left{ order:2; flex:0 0 auto !important; width:100%;',
+      '    height:42vh; border-right:0 !important; border-top:2px solid #0F3D3E; }',
+      /* ⚠ មិនទាន់បើក PDF ⇒ ផ្ទាំងនោះទទេ ⇒ លាក់វា កុំឱ្យស៊ីកន្លែង */
+      '  #rscBank.bk-nopdf .bk-left{ display:none !important; }',
+      '}'
+    ].join('\n');
+    document.head.appendChild(st);
+  })();
+
   var head = document.createElement('div');
   /* [stated] ២០២៦-១១-១៩ ១១:២៤ ៖ «តែ ១ ជួរ» ⇒ nowrap + គម្លាតតូចជាង ។
-     ⚠ `min-width:0` លើកូនៗ ( ស្លាកព័ត៌មាន ) ទើប nowrap មិនធ្វើឱ្យលើស ។ */
+     ⚠ `min-width:0` លើកូនៗ ( ស្លាកព័ត៌មាន ) ទើប nowrap មិនធ្វើឱ្យលើស ។
+     ⚠ D66 ៖ `overflow` ប្តូរទៅ `auto` ក្នុងសន្លឹកបញ្ជីខាងលើ ។ */
+  head.className = 'bk-head';
   head.style.cssText = 'flex:0 0 auto; padding:7px 11px; background:#0F3D3E; color:#EFE7D2;'
     + 'display:flex; gap:6px; align-items:center; flex-wrap:nowrap;'
     + 'overflow:hidden; font-size:12.5px;';
   ov.appendChild(head);
   var body = document.createElement('div');
+  body.className = 'bk-body';
   body.style.cssText = 'flex:1 1 auto; display:flex; min-height:0; background:#f4f1e8;';
   ov.appendChild(body);
   var left = document.createElement('div');
+  left.className = 'bk-left';
   left.style.cssText = 'flex:1 1 42%; min-width:0; border-right:2px solid #0F3D3E; background:#555;';
   var right = document.createElement('div');
+  right.className = 'bk-right';
   right.style.cssText = 'flex:1 1 58%; min-width:0; overflow:auto; padding:10px 12px; background:#fff;';
   body.appendChild(left); body.appendChild(right);
   var frame = document.createElement('iframe');
   frame.style.cssText = 'width:100%; height:100%; border:0; display:block;';
   left.appendChild(frame);
+  /* ⭐⭐ D66 ៖ `frame.src` ប្តូរនៅច្រើនកន្លែងក្នុងម៉ូឌុលនេះ ⇒ ឃ្លាំមើលវា
+     កន្លែងតែមួយ ជាជាងបន្ថែមការហៅគ្រប់កន្លែង ( ងាយភ្លេចពេលសរសេរកូដថ្មី ) ។ */
+  try{
+    ov.classList.add('bk-nopdf');
+    new MutationObserver(function(){
+      var sv = frame.getAttribute('src') || '';
+      ov.classList.toggle('bk-nopdf', !sv || /^about:blank/.test(sv));
+    }).observe(frame, { attributes:true, attributeFilter:['src'] });
+  }catch(e){}
 
   /* ⭐⭐ [stated] ២០២៦-០៨-២៨ ៖ «គណនីតែមួយ តែសហគ្រាសផ្ញើ file មកជាខែដាច់ៗ
      តើអាចជ្រើសរើស file លើសពី ១ បានទេ ? ឬរើសជា folder» ⇒ បានទាំងពីរ ។
@@ -72848,6 +73196,32 @@ function rscToiManualOpen(){
   ov.id = 'rscToiMan';
   ov.style.cssText = 'position:fixed; inset:0; z-index:2147483210; background:rgba(8,26,27,.62);'
     + 'display:flex; align-items:flex-start; justify-content:center; overflow:auto; padding:22px 14px;';
+  /* ⭐⭐⭐ [stated] ២០២៦-១១-២៧ ៖ «បំពេញ TOI ដោយដៃក៏ដូចគ្នា» ( D66 ) ។
+     ⚠ ប្រអប់វាយលេខ `width:150px` ក្នុងតារាង ២ ជួរឈរ ⇒ លើទូរសព្ទ
+       ជួរឈរស្លាកលេបកន្លែង ⇒ ប្រអប់ស្ទើរមើលមិនឃើញ និងចុចពិបាក ។
+     ⇒ ជួរឈរប្រអប់ ៤២% ហើយប្រអប់ពេញជួរឈរនោះ ។ */
+  (function(){
+    if(document.getElementById('rscToiManCss')) return;
+    var st = document.createElement('style');
+    st.id = 'rscToiManCss';
+    st.textContent = [
+      /* របារសកម្មភាពស្អិតនៅខាងលើ — គ្រប់ទំហំអេក្រង់ */
+      '#rscToiMan .tm-act{ position:sticky; top:0; z-index:5; background:#fff;',
+      '  display:flex; gap:8px; align-items:center; flex-wrap:wrap;',
+      '  padding:8px 0 10px; margin-bottom:6px; border-bottom:1px solid #ece7d8; }',
+      '@media screen and (max-width:760px){',
+      '  #rscToiMan{ padding:8px 6px !important; }',
+      '  #rscToiMan > div{ padding:12px 10px 14px !important; }',
+      '  #rscToiMan table td:first-child{ font-size:12.5px; padding:5px 4px !important; }',
+      '  #rscToiMan table td:last-child{ width:42%; padding:4px 4px !important; }',
+      '  #rscToiMan table td:last-child input{ width:100% !important; min-width:0;',
+      '    padding:8px 7px !important; font-size:13px !important; }',
+      '  #rscToiMan .tm-act button{ padding:9px 13px !important; }',
+      '}'
+    ].join('\n');
+    document.head.appendChild(st);
+  })();
+
   var card = document.createElement('div');
   card.style.cssText = 'background:#fff; color:#171B1A; border-radius:12px; width:100%;'
     + 'max-width:760px; padding:18px 20px 16px; font-family:inherit; font-size:14px;'
@@ -72903,9 +73277,25 @@ function rscToiManualOpen(){
         + (on ? '#0F3D3E' : '#d8d2c2') + '; background:' + (on ? '#0F3D3E' : '#fff')
         + '; color:' + (on ? '#fff' : '#3a3a30') + ';">' + lb + '</button>';
     }
+    /* ⭐⭐⭐ [stated] ២០២៦-១១-២៧ ៖ «រាល់ប៉ូតង់បិទ រក្សាទុក ផ្សេងៗ …
+       យកមកដាក់នៅខាងលើ កុំដាក់នៅខាងក្រោម» ។
+       ⚠ លេខសម្គាល់ ( tm_del · tm_close · tm_save · tm_msg ) រក្សាដដែល
+         ⇒ `wire()` នៅភ្ជាប់ដូចដើម ⇒ គ្មានអ្វីដាច់ ។
+       ⚠ របារស្អិត ( sticky ) ⇒ ឃើញជានិច្ចទោះរំកិលចុះក្រោម ។ */
+    var ACT = '<div class="tm-act">'
+      + '<button id="tm_save" style="padding:8px 20px; border:0; border-radius:7px; background:#0F3D3E;'
+      + 'color:#fff; font:inherit; font-weight:700; font-size:13px; cursor:pointer;">💾 រក្សាទុក</button>'
+      + '<button id="tm_close" style="padding:8px 14px; border:1px solid #d8d2c2; border-radius:7px;'
+      + 'background:#fff; font:inherit; font-weight:700; font-size:13px; cursor:pointer;">បិទ</button>'
+      + '<button id="tm_del" style="padding:8px 14px; border:1px solid #d8d2c2; border-radius:7px;'
+      + 'background:#fff; font:inherit; font-weight:700; font-size:13px; cursor:pointer; color:#7a4030;">'
+      + '🗑 លុបឆ្នាំនេះ</button>'
+      + '<span id="tm_msg" style="margin-left:auto; font-size:12.5px; color:#1c6b35;"></span>'
+      + '</div>';
     var h = '<div style="font-weight:700; font-size:17px;">📝 បំពេញ TOI ដោយដៃ</div>'
-      + '<div style="color:#4a5250; font-size:12.5px; margin-bottom:10px;">'
+      + '<div style="color:#4a5250; font-size:12.5px; margin-bottom:6px;">'
       + 'សម្រាប់សហគ្រាសដែលប្រកាសលើក្រដាស ( គ្មានឯកសារ TOI ) ។</div>'
+      + ACT
       + '<div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px;">'
       + tb('calc', 'តួលេខគណនាពន្ធ')
       + tb('Step4', 'តារាងតុល្យការ')
@@ -72944,19 +73334,11 @@ function rscToiManualOpen(){
         + '<input data-k="' + f.k + '" value="' + esc(money(v[f.k])) + '" inputmode="decimal" style="'
         + IN + '"></td></tr>';
     });
+    /* ⚠ D66 ៖ របារសកម្មភាពផ្លាស់ទៅខាងលើរួចហើយ ( `ACT` ) ⇒ កុំគូរវាម្តងទៀត
+       នៅទីនេះ បើមិនដូច្នេះទេ លេខសម្គាល់ជាន់គ្នា ហើយ `wire()` ភ្ជាប់ខុស ។ */
     h += '</tbody></table></div>'
       + '<div style="margin-top:8px; font-size:12px; color:#6b736f;">'
-      + '⚠ ចំណាយត្រូវគណនាដោយស្វ័យប្រវត្តិ ៖ ចំណូល − លទ្ធផលមុនបង់ពន្ធ។</div>'
-      + '<div style="margin-top:14px; display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap;">'
-      + '<span id="tm_msg" style="margin-right:auto; font-size:12.5px; color:#1c6b35;"></span>'
-      + '<button id="tm_del" style="padding:8px 14px; border:1px solid #d8d2c2; border-radius:7px;'
-      + 'background:#fff; font:inherit; font-weight:700; font-size:13px; cursor:pointer; color:#7a4030;">'
-      + '🗑 លុបឆ្នាំនេះ</button>'
-      + '<button id="tm_close" style="padding:8px 14px; border:1px solid #d8d2c2; border-radius:7px;'
-      + 'background:#fff; font:inherit; font-weight:700; font-size:13px; cursor:pointer;">បិទ</button>'
-      + '<button id="tm_save" style="padding:8px 20px; border:0; border-radius:7px; background:#0F3D3E;'
-      + 'color:#fff; font:inherit; font-weight:700; font-size:13px; cursor:pointer;">💾 រក្សាទុក</button>'
-      + '</div>';
+      + '⚠ ចំណាយត្រូវគណនាដោយស្វ័យប្រវត្តិ ៖ ចំណូល − លទ្ធផលមុនបង់ពន្ធ។</div>';
     card.innerHTML = h;
     wire();
   }
