@@ -157,7 +157,7 @@
 })();
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SYSTEM · 19/11-D83</title>
+<title>SYSTEM · 19/11-D86</title>
 <!-- ដាក់លើអេក្រង់ដើមទូរស័ព្ទ ៖ រូបតំណាង ឈ្មោះ និងបើកពេញអេក្រង់
      manifest ដាក់ជា data URL ព្រោះ Apps Script បម្រើឯកសារតែមួយ។ -->
 <meta name="mobile-web-app-capable" content="yes">
@@ -1814,8 +1814,22 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
   }
   #view-cross-customs > .toolbar .btn-word,
   #view-cross-customs > .toolbar .ccy-t{ display:none !important; }
-  #view-cross-customs > .toolbar > #filter-count-crossCustoms{
-    order:3 !important; flex:1 1 100% !important; margin:0 !important;
+  /* [stated] ២០២៦-១១-២៧ ( D84 ) ៖ «លុប 139 / 139 ជួរ ចេញ»
+     ⚠ លាក់ មិនលុបធាតុ ៖ កូដផ្សេងសរសេរចូលវាដោយគ្មាន guard ។ */
+  #view-cross-customs > .toolbar > #filter-count-crossCustoms{ display:none !important; }
+  /* [stated] ២០២៦-១១-២៧ ៖ បញ្ជីឯកសារគយ ⇒ អក្សរតូច និងឆ្នាំរុំបាន */
+  #view-cross-customs #cus-files .cus-fl{ font-size:11.5px !important; }
+  #view-cross-customs #cus-files .cus-fl-t td{
+    font-size:11px !important; padding:3px 6px 3px 0 !important;
+  }
+  #view-cross-customs #cus-files .cus-fl-t td.y{ white-space:normal !important; }
+  /* ⭐ [stated] ២០២៦-១១-២៧ ៖ «តារាងខាងក្រោមជួយបង្រួមតូចស្រួលមើលផង»
+     ⚠ `min-width:0` ⇒ ជួរឈរតូចតាមមាតិកាពិត ( មិនបង្ខំ ៧៦០px )
+       ⇒ ឃើញជួរឈរច្រើនជាងមុនក្នុងអេក្រង់តែមួយ ។ តារាងនៅអូសបានដដែល ។ */
+  #view-cross-customs #table-crossCustoms{ min-width:0 !important; font-size:11px !important; }
+  #view-cross-customs #table-crossCustoms th,
+  #view-cross-customs #table-crossCustoms td{
+    padding:5px 6px !important; font-size:11px !important;
   }
   #view-cross-customs #cus-tabs{
     order:2 !important;
@@ -7651,15 +7665,60 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
   font-family:'Khmer OS Siemreap','Noto Sans Khmer',sans-serif;
 }
 @media screen and (max-width: 760px){
-  /* ទូរសព្ទ ៖ ប៊ូតុងចុះជួរផ្ទាល់ខ្លួន ⇒ TAB នៅឃើញពេញ */
-  #toi-embed .toi-acts{ margin-left:0; flex:1 1 100%; flex-wrap:wrap; }
-  #toi-embed .toi-acts .btn{ min-height:38px; }
+  /* ⭐⭐ [stated] ២០២៦-១១-២៧ ( D85 ) ៖ «ជួរ Ratio ដល់ ព្រីន ជួយធ្វើមក
+     តែ ១ ជួរ» និង «ព្រីន ដល់ excel ជួយបង្រួមកុំឱ្យអូសទៅស្តាំ» ។
+     ⚠ D80 ដាក់ `flex:1 1 100%` ⇒ 🖨️ ធ្លាក់ជួរទី ២ ជានិច្ច ។
+       ⇒ `flex:0 1 auto` ⇒ ឈរជាប់ TAB ហើយរុំតែពេលគ្មានកន្លែងពិត ។
+     ⚠ TAB បន្ថយបន្តិច ( ១១px ) ទើប TAB ៤ + 🖨️ សមក្នុងជួរតែមួយ ។ */
+  /* ⚠⚠ ជួរ TAB ជាធាតុ flex ក្នុង `.toolbar` ( nowrap + overflow-x:auto )
+     ហើយធាតុ flex មាន `min-width:auto` ⇒ វាលាតតាមមាតិកា ( វាស់បាន ៖
+     ៦៣៧px ក្នុងអេក្រង់ ៣៥៤px ) ⇒ ការរុំមិនដែលកើត ហើយប៊ូតុងហៀរទៅស្តាំ ។
+     ⇒ `min-width:0` + `flex:1 1 100%` ⇒ ជួរត្រឹមទទឹងរបារ ⇒ រុំពិតប្រាកដ ។ */
+  #toi-embed.toi-riskmode .toi-mainrow{
+    flex-wrap:wrap !important; overflow-x:visible !important;
+    min-width:0 !important; max-width:100% !important; flex:1 1 100% !important;
+  }
+  #toi-embed.toi-riskmode #toiMainNav,
+  #toi-embed.toi-riskmode .toi-acts{ min-width:0 !important; max-width:100% !important; }
+  #toi-embed .toi-acts{
+    margin-left:auto !important; flex:0 1 auto !important;
+    flex-wrap:wrap !important; gap:4px !important;
+  }
+  /* ប៊ូតុងទម្រង់ហានិភ័យ ៣ ⇒ សមក្នុងអេក្រង់ ( លែងអូសទៅស្តាំ ) */
+  #toi-embed .toi-acts .btn{
+    font-size:10px !important; padding:5px 6px !important;
+    min-height:32px !important; white-space:nowrap;
+  }
+  #toi-embed .toi-acts .toi-riskprint{
+    width:26px !important; height:26px !important; font-size:15px !important;
+    margin-left:0 !important; padding:0 !important;
+  }
 }
 /* ⭐ [stated] ២០២៦-១១-១៦ ២២:២២ ៖ របៀបវិភាគ ៖ ទុកតែអក្សរ TAB — គ្មានផ្ទាំងស
    គ្មានស្រមោល ហើយ TAB ទាំង ៤ រុំបន្ទាត់ជំនួសការអូសទៅស្តាំ ។ */
 #toi-embed.toi-riskmode .toolbar{
   background:transparent !important; box-shadow:none !important;
-  border:none !important; padding:6px 8px !important;
+  border:none !important;
+  /* ⭐ [stated] ២០២៦-១១-២៧ ( D86 ) ៖ «ខិតជួរ TAB ទៅខាងលើ កុំឱ្យសល់
+     SPACE ធំ» ⇒ បន្ថយគែមខាងលើ ( ៦ ⇒ ០ ) ។ */
+  padding:0 8px 2px !important;
+}
+/* ⚠ ចន្លោះ ៦៦px មកពី ៣ កន្លែង ( វាស់បាន ) ៖ main ២៨ + toolbar ៦ +
+   mainrow ១០ + កម្ពស់ធាតុ ។ បន្ថយទាំងបី **តែក្នុងរបៀបវិភាគ** ។ */
+#toi-embed.toi-riskmode main{ padding-top:6px !important; }
+#toi-embed.toi-riskmode .toi-mainrow{
+  margin-top:0 !important;
+  /* ⚠⚠ `#toi-embed .toolbar-row` ជា `nowrap + overflow-x:auto`
+     ⇒ ក្រុមប៊ូតុង ( ព្រីនទម្រង់ · រដ្ឋបាល · Excel ) មិនអាចរុំចុះក្រោម TAB
+       ⇒ វាហៀរទៅស្តាំ ៦៦៧px ក្នុងអេក្រង់ ៣៩០px ( វាស់បាន ) ។
+     ⇒ បើក `wrap` សម្រាប់របៀបវិភាគ ⇒ រុំស្អាត លែងត្រូវអូស ។
+     ⚠⚠⚠ `wrap` តែម្នាក់ឯង **មិនគ្រប់គ្រាន់** ៖ ជួរនេះជាធាតុ flex ក្នុង
+       `.toolbar` ហើយធាតុ flex មាន `min-width:auto` ⇒ វាលាតតាមមាតិកា
+       ( វាស់បាន ៖ ជួរ ៦៣៧px ក្នុងអេក្រង់ ៣៥៤px ) ⇒ ការរុំមិនដែលកើត ។
+       ⇒ `min-width:0` + `flex:1 1 100%` ⇒ ជួរត្រឹមទទឹងរបារ ⇒ រុំពិតប្រាកដ ។
+       ( មេរៀនដដែលនឹងជួរថេបសាលកបត្រ — មើលកំណត់សម្គាល់នៅ ១៧៤៥ ) */
+  /* ⚠ លើកុំព្យូទ័រ ទុកជួរតាមទទឹងមាតិកា ⇒ 🖨️ ឈរជាប់ TAB ដូចមុន ;
+     ច្បាប់រុំ និង `min-width:0` ដាក់តែក្នុងប្លុកទូរសព្ទខាងក្រោម ។ */
 }
 #toi-embed.toi-riskmode #toiMainNav{
   flex-wrap:wrap !important; overflow:visible !important; row-gap:4px;
@@ -7669,8 +7728,23 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
    ⚠ តែរបៀបវិភាគ ⇒ ជំហាន TOI និងការព្រីនមិនរងផលទេ ។ */
 #toi-embed.toi-riskmode .content{ padding-top:10px !important; }
 @media screen and (max-width: 760px){
+  /* ⚠ [stated] ២០២៦-១១-២៧ ( D86 ) ៖ TAB ៤ + 🖨️ ត្រូវសមក្នុងជួរតែមួយ
+     នៅ ៣៦០–៤៣០px ⇒ ១០px · padding ៣/៤ ( វាស់បាន ) ។
+     ⚠ ច្បាប់នេះឈរក្រោយគេ ⇒ វាជាអ្នកសម្រេច ; កុំបន្ថែមច្បាប់ស្ទួន
+       នៅខាងលើ ព្រោះវានឹងត្រូវច្បាប់នេះជាន់ ។ */
   #toi-embed.toi-riskmode .toi-topnav-item{
-    padding:5px 7px !important; font-size:12px !important;
+    padding:3px 4px !important; font-size:10px !important;
+  }
+}
+/* ⚠ ទូរសព្ទតូច ( ≤៣៨០px ) ៖ ១០px នៅធំពេក ⇒ 🖨️ ធ្លាក់ជួរ ( វាស់បាន )
+   ⇒ ៩px និងរូបព្រីនតូចជាង ⇒ នៅជួរតែមួយដដែល ។
+   ⚠ ត្រូវឈរ **ក្រោយ** ច្បាប់ ៧៦០px ខាងលើ ទើបវាជាន់បាន ។ */
+@media screen and (max-width: 380px){
+  #toi-embed.toi-riskmode .toi-topnav-item{
+    padding:3px 3px !important; font-size:9px !important;
+  }
+  #toi-embed .toi-acts .toi-riskprint{
+    width:22px !important; height:22px !important; font-size:13px !important;
   }
 }
 #toi-embed .toi-anl-head .panel-title{ margin:0; }
@@ -10919,6 +10993,9 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
         text-overflow:clip; word-break:break-word; }
       #cogs-sc td.cg-scn .cg-scx:hover{ text-decoration:underline dotted; }
       /* បញ្ជីឯកសារគយ ៖ បិទជាលំនាំដើម ⇒ មិនលេបកន្លែង */
+      /* [stated] ២០២៦-១១-២៧ ៖ «លុប 139 / 139 ជួរ ចេញ» — គ្រប់ទំហំអេក្រង់ ។
+   ⚠ ចំនួនជួរនៅមើលឃើញក្នុង chips ( គម្លាត · PR · គយ · ត្រូវគ្នា ) ។ */
+      #filter-count-crossCustoms{ display:none !important; }
       #cus-files .cus-fl{ font-size:12.5px; }
       #cus-files .cus-fl > summary{ cursor:pointer; padding:4px 2px; color:var(--muted);
         list-style:none; user-select:none; }
@@ -10927,8 +11004,12 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
         width:14px; color:var(--muted); transition:transform .15s; }
       #cus-files .cus-fl[open] > summary::before{ transform:rotate(90deg); }
       #cus-files .cus-fl > summary:hover{ color:var(--ink); }
-      #cus-files .cus-fl-t{ width:100%; border-collapse:collapse; margin:4px 0 2px;
-        table-layout:auto; }
+      /* ⚠⚠ [stated] ២០២៦-១១-២៧ ( D84 ) ៖ `min-width:0` ចាំបាច់ដាច់ខាត ៖
+         ច្បាប់សកល `table{min-width:760px}` ចាប់យកតារាងនេះផងដែរ
+         ⇒ ពេលបើកបញ្ជី វាធំជាងអេក្រង់ ⇒ ទំព័ររុញទៅស្តាំ ⇒ iOS បង្រួម
+           អេក្រង់ទាំងមូល ⇒ អក្សរគ្រប់ផ្នែកតូចៗ ( អ្នកប្រើរាយការណ៍ ) ។ */
+      #cus-files .cus-fl-t{ width:100%; min-width:0 !important; border-collapse:collapse;
+        margin:4px 0 2px; table-layout:auto; }
       #cus-files .cus-fl-t td{ padding:3px 10px 3px 0; border-bottom:1px solid var(--line);
         vertical-align:top; }
       #cus-files .cus-fl-t td.n{ text-align:left; word-break:break-all; }
@@ -70406,7 +70487,7 @@ else CC.init();
      ការរក្សាទុកឥឡូវ **រាយលេខជំហាន** លើផ្ទាំង ហើយផ្អាកអោយផ្ទាំងគូររួច
      មុននឹងចាប់ការងារធ្ងន់នីមួយៗ។ សារចុងក្រោយដែលឃើញ = ជំហានដែលគាំង។
      លេខ build ក៏បង្ហាញផង ដើម្បីដឹងច្បាស់ថាកំពុងប្រើឯកសារណា។ */
-  var RSC_BUILD = '19/11 · D83';
+  var RSC_BUILD = '19/11 · D86';
   try{ window.__RSC_BUILD = RSC_BUILD; }catch(e){}
 
   /* ⚠⚠ [stated] ២០២៦-០៨-១៣ ៖ រូបថតបង្ហាញ **«Page Unresponsive» របស់ Chrome**
