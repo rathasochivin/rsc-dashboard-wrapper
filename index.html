@@ -157,7 +157,7 @@
 })();
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SYSTEM · 19/11-D72</title>
+<title>SYSTEM · 19/11-D73</title>
 <!-- ដាក់លើអេក្រង់ដើមទូរស័ព្ទ ៖ រូបតំណាង ឈ្មោះ និងបើកពេញអេក្រង់
      manifest ដាក់ជា data URL ព្រោះ Apps Script បម្រើឯកសារតែមួយ។ -->
 <meta name="mobile-web-app-capable" content="yes">
@@ -842,7 +842,13 @@ body.view-mtr-active main{align-self:flex-start; min-height:0;}
 .module-card:hover .mc-icon{transform:scale(1.12) rotate(-4deg);}
 .module-card .mc-title{
   /* ⭐ [stated] ២០២៦-១១-០៦ ៖ «ពង្រីកអក្សរ … ឱ្យធំល្មមនឹងកាត» 19 ⇒ 22px */
-  font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif; font-weight:600; font-size:22px;
+  /* ⭐ [stated] ២០២៦-១១-២៧ ៖ «ធ្វើទំហំអក្សរឱ្យស្មើ 🏢 ផ្គូផ្គងទិន្នន័យ
+     កុំឱ្យធំជាងគេពេក» ។
+     ⚠ `.section-title` ជាប់ `15px !important` ក្នុង @media screen
+       ( បញ្ជីជិតក្បាលឯកសារ ) ⇒ ១៥px ទើបស្មើគ្នាពិត ។
+     ⚠ ច្បាប់ទទឹងនីមួយៗខាងក្រោម ( ១៤៨០ · ១១៨០ · ៨២០ · ៤០០ ) ក៏ត្រូវ
+       ដាក់ ១៥px ដែរ បើមិនដូច្នេះវាជាន់ច្បាប់នេះវិញ ។ */
+  font-family:'Khmer OS Muol Light','Noto Serif Khmer',serif; font-weight:600; font-size:15px;
   color:var(--mc-color, var(--primary-dark)); line-height:1.35;
   transition:letter-spacing .18s ease;
 }
@@ -850,8 +856,9 @@ body.view-mtr-active main{align-self:flex-start; min-height:0;}
 /* ⭐ [stated] ២០២៦-១១-០៨ ៖ «កាតនៅខាងក្នុង អក្សរដាក់មួយ កុំឱ្យចុះបន្ទាត់»
    ⇒ ចំណងជើងកាតមិនបំបែកបន្ទាត់ ហើយបង្រួមដោយស្វ័យប្រវត្តិបើវែងពេក ។ */
 .module-card .mc-title{ white-space:nowrap; }
-@media (max-width:1480px){ .module-card .mc-title{ font-size:20px; } }
-@media (max-width:1180px){ .module-card .mc-title{ font-size:18px; } }
+/* [stated] ២០២៦-១១-២៧ ៖ ស្មើ `.section-title` គ្រប់ទទឹង ⇒ ១៥px ដដែល */
+@media (max-width:1480px){ .module-card .mc-title{ font-size:15px; } }
+@media (max-width:1180px){ .module-card .mc-title{ font-size:15px; } }
 /* ⚠ letter-spacing ប្តូរទទឹងអក្សរ → រៀបចំឡើងវិញក្នុងកាត → ញ័របាន */
 .module-card .mc-title .mc-char{
   display:inline-block;
@@ -950,7 +957,8 @@ body.view-mtr-active main{align-self:flex-start; min-height:0;}
   }
   /* ២ · សមាមាត្រអក្សរ ៖ ចំណងជើងនាំមុខ លេខជាដៃគូ មិនប្រជែងគ្នា */
   .module-card .mc-body{ padding:14px 16px 13px !important; gap:7px !important; }
-  .module-card .mc-title{ font-size:17px !important; line-height:1.45 !important; }
+  /* [stated] ២០២៦-១១-២៧ ៖ ១៥px ស្មើចំណងជើងផ្នែក ( លើទូរសព្ទដែរ ) */
+  .module-card .mc-title{ font-size:15px !important; line-height:1.45 !important; }
   .module-card .mc-stat{ font-size:23px !important; }
   .module-card .mc-stat .mc-unit{ font-size:14px !important; margin-left:5px !important; }
   /* ⭐ [stated] ២០២៦-១១-២៧ ៖ «ជួយរៀបវាតែ ១ ជួរ … ហើយអក្សរ គយ និង ទិញ
@@ -1740,6 +1748,54 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
     overflow:hidden; text-overflow:ellipsis;
   }
   .toolbar > *, .tabs > *{ flex:0 0 auto; }
+  /* ⭐⭐⭐ [stated] ២០២៦-១១-២៧ ៖ «ជួយធ្វើផ្នែកនេះនៅលើទូរសព្ទឱ្យបានស្អាតផង»
+     ( CROSSCHECK SALE ⇄ CP_PURCHASE ) ។
+     ⚠⚠ វាស់នៅ ៣៩០px មុនកែ ៖ ចំណងជើងបានត្រឹម **១២៥px ( ៣ បន្ទាត់ )**
+       ហើយប៊ូតុង ៤ ឈររៀងគ្នា **៤ ជួរ** ខាងស្តាំ ⇒ ក្បាលទំព័រខ្ពស់ ២០៨px ។
+     ⚠⚠ ឫសគល់ ៖ ច្បាប់ទូរសព្ទខាងលើដាក់ `flex-wrap:nowrap !important`
+       លើ `.topbar` ទាំងអស់ ⇒ `.cross-top` ( ដែលជា `.topbar` ) មិនអាច
+       រុំបាន ⇒ ចំណងជើងនិងប្លុកប៊ូតុងត្រូវឈរក្បែរគ្នាដោយបង្ខំ ។
+     ⇒ `display:block` ⇒ `flex-wrap` លែងពាក់ព័ន្ធ ( មិនបាច់ប្រយុទ្ធនឹង
+       `!important` ) ⇒ ចំណងជើងពេញទទឹង ហើយប៊ូតុងចុះក្រោមជា ២×២ ។
+     ⚠ កម្ពស់ប៊ូតុង ៤៤px ជាអប្បបរមាសម្រាប់ម្រាមដៃ ( ស្តង់ដារដដែល
+       ដែលយើងប្រើនៅរបារខាងលើ ) ។ */
+  #view-cross-sale > .cross-top,
+  #view-cross-purchase > .cross-top{
+    display:block !important; overflow:visible !important; padding-bottom:0 !important;
+  }
+  #view-cross-sale > .cross-top > .cross-top-t,
+  #view-cross-purchase > .cross-top > .cross-top-t{ margin-bottom:10px; }
+  #view-cross-sale > .cross-top > .cross-top-b,
+  #view-cross-purchase > .cross-top > .cross-top-b{
+    margin-left:0 !important; display:grid !important;
+    grid-template-columns:repeat(2, minmax(0,1fr)) !important; gap:8px !important;
+  }
+  #view-cross-sale > .cross-top > .cross-top-b > .btn,
+  #view-cross-purchase > .cross-top > .cross-top-b > .btn{
+    width:100% !important; min-height:44px; white-space:normal !important;
+    line-height:1.35; padding:8px 10px !important; font-size:12.5px !important;
+  }
+  /* ⚠ របារតម្រង ៖ ច្បាប់ទូរសព្ទធ្វើឱ្យវាជាជួរអូស ⇒ ប្រអប់ជ្រើស
+     ( `min-width:260px` ) លាតហួស ៤៩៤px ទៅស្តាំ ( វាស់បាន ) ⇒ ត្រូវអូសរក ។
+     ⇒ ផ្ទាំងនេះរុំជំនួស ៖ ប្រអប់នីមួយៗពេញទទឹង ⇒ ចុចងាយ មើលឃើញទាំងអស់ ។
+     ⚠ ១៦px លើប្រអប់ ៖ តូចជាងនេះ iOS នឹងពង្រីកអេក្រង់ពេលចុច ។ */
+  #view-cross-sale > .toolbar,
+  #view-cross-purchase > .toolbar{
+    flex-wrap:wrap !important; overflow-x:visible !important; gap:8px !important;
+  }
+  #view-cross-sale > .toolbar > .import-group,
+  #view-cross-purchase > .toolbar > .import-group{ flex:1 1 100% !important; }
+  #view-cross-sale > .toolbar .partner-select,
+  #view-cross-purchase > .toolbar .partner-select{
+    min-width:0 !important; max-width:100% !important; width:100% !important;
+    flex:1 1 auto !important; font-size:16px !important;
+  }
+  #view-cross-sale > .toolbar > input.partner-select,
+  #view-cross-purchase > .toolbar > input.partner-select{
+    flex:1 1 calc(100% - 46px) !important;
+  }
+  #view-cross-sale > .toolbar > .btn,
+  #view-cross-purchase > .toolbar > .btn{ flex:0 0 auto !important; min-height:40px; }
   /* ⭐⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «ផ្នែកសាលកបត្រ … ឱ្យងាយមើល» ( រូប ៖ ជួរថេប
      កាត់ដាច់នៅគែមស្តាំ ហើយអេក្រង់ទាំងមូលតូចៗ ) ។
      ⚠⚠ ឫសគល់ ( វាស់បាន ) ៖ `overflow-x:auto` **មិនគ្រប់គ្រាន់** សម្រាប់
@@ -1941,14 +1997,14 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
   /* ៤ · កាតម៉ូឌុល ៖ អក្សរ និងលេខសមាមាត្រនឹងអេក្រង់តូច */
   .module-card .mc-body{ padding:14px 15px 13px; gap:7px; }
   .module-card .mc-icon{ width:34px; height:34px; font-size:17px; }
-  .module-card .mc-title{ font-size:17px; }
+  .module-card .mc-title{ font-size:15px; }
   .module-card .mc-stat{ font-size:24px; }
   .module-card .mc-stat .mc-unit{ font-size:15px; margin-left:5px; }
   .module-card .mc-sublink{ font-size:13px; line-height:1.9; }
 }
 /* អេក្រង់តូចបំផុត ៖ បន្ថយទៀតបន្តិច ដើម្បីកុំឱ្យចំណងជើងត្រូវបង្រួម */
 @media screen and (max-width: 400px){
-  .module-card .mc-title{ font-size:15.5px; }
+  .module-card .mc-title{ font-size:15px; }
   .module-card .mc-stat{ font-size:21px; }
 }
 
@@ -7463,6 +7519,10 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
 #toi-embed.toi-riskmode #toiMainNav{
   flex-wrap:wrap !important; overflow:visible !important; row-gap:4px;
 }
+/* ⭐ [stated] ២០២៦-១១-២៧ ៖ «ជួយខិតវាឡើងទៅលើផង» ⇒ ក្នុងរបៀបវិភាគ
+   គែមខាងលើនៃខ្លឹមសារ ២៤px ⇒ ១០px ( ជួរ TAB នៅជាប់ខាងលើរួចហើយ ) ។
+   ⚠ តែរបៀបវិភាគ ⇒ ជំហាន TOI និងការព្រីនមិនរងផលទេ ។ */
+#toi-embed.toi-riskmode .content{ padding-top:10px !important; }
 @media screen and (max-width: 760px){
   #toi-embed.toi-riskmode .toi-topnav-item{
     padding:5px 7px !important; font-size:12px !important;
@@ -14428,6 +14488,9 @@ function showView(id){
       /* ⚠ តាម window ៖ មុខងារទាំងពីរនៅក្នុង IIFE ដាច់ដោយឡែក */
       try{ if(window.__toiAutoFit) window.__toiAutoFit(); }catch(e){}
       try{ if(window.__whtAutoFit) window.__whtAutoFit(); }catch(e){}
+      /* ⭐ [stated] ២០២៦-១១-២៧ ៖ កាតដែលគូរខណៈផ្ទាំងលាក់ វាស់ទទឹងមិនបាន
+         ⇒ វាស់ម្តងទៀតពេលផ្ទាំងបង្ហាញ ⇒ លែងជាន់ពេលបើកលើកទី ២ ។ */
+      try{ if(window.__mcFitTitles) window.__mcFitTitles(); }catch(e){}
     };
     requestAnimationFrame(function(){ requestAnimationFrame(__fit); });
     setTimeout(__fit, 260);
@@ -25304,9 +25367,10 @@ function renderPartnersView(){
   const cards = [
     {id:"cross-purchase", icon:"🤝", color:"var(--red)", bg:"var(--red-bg)",
      /* [stated] ២០២៦-១១-២៧ ៖ ប្តូរឈ្មោះកាត */
-     title:"CROSS-CHECK PURCHASE", stat: fmtCount(state.cpSale.length)},
+     /* [stated] ២០២៦-១១-២៧ ៖ ចំណងជើង ១ ជួរ · លេខ ១ ជួរផ្សេង */
+     title:"CROSS-CHECK PURCHASE", stat: fmtCount(state.cpSale.length), stackStat:true},
     {id:"cross-sale", icon:"🤝", color:"var(--red)", bg:"var(--red-bg)",
-     title:"CROSS-CHECK SALE", stat: fmtCount(state.cpPurchase.length)},
+     title:"CROSS-CHECK SALE", stat: fmtCount(state.cpPurchase.length), stackStat:true},
     /* ⭐⭐⭐ [stated] ២០២៦-១០-២៨ ៖ «រកអត់ឃើញ គួរមានកន្លែង UPLOAD ទិន្នន័យគយ
        នៅកន្លែងផ្គូផ្គងនេះតែម្តង និង បន្ថែម CARD ផ្គូផ្គង ទិន្នន័យគយ» ។
        ⚠ មេរៀនដដែលដែលសរសេរទុកខាងលើ ៖ ការបន្ថែមផ្ទាំងថ្មីត្រូវប៉ះ **បញ្ជីពីរ**
@@ -25357,12 +25421,24 @@ function mcFitTitles(){
     var t = heads[i].querySelector('.mc-title');
     if(!t) continue;
     var s = heads[i].querySelector('.mc-stat');
-    /* លុបស្ថានភាពចាស់ចេញជាមុន ⇒ ពេលអេក្រង់ធំឡើងវិញ អ្វីៗត្រឡប់មកដើមវិញ */
-    heads[i].classList.remove('mc-stack');
+    /* ⭐⭐⭐ [stated] ២០២៦-១១-២៧ ៖ «ពេលបើកដំបូងមិនជាន់ ពេលចុចចូល
+       បើក ១ ដងទៀត វាលោតជាន់អក្សរ» ។
+       ⚠⚠ ឫសគល់ ( វាស់បាន ) ៖ កាតគូរឡើងវិញខណៈផ្ទាំងនៅ `display:none`
+         ⇒ `scrollWidth` និង `clientWidth` ស្មើ ០ ⇒ ០ ≤ ០ ⇒ យល់ថា «សម»
+         ⇒ មិនដាក់ `mc-stack` ⇒ ពេលបង្ហាញវិញ ចំណងជើងហៀរ ៥៧px ⇒ ជាន់លេខ ។
+       ⇒ ទទឹង ០ ⇒ **រំលង** ៖ ទុកស្ថានភាពចាស់ ហើយ `showView` នឹងហៅ
+         មុខងារនេះឡើងវិញពេលផ្ទាំងបង្ហាញ ( ដូច `toiAutoFit` ) ។ */
+    if(!heads[i].clientWidth) continue;
+    /* លុបស្ថានភាពចាស់ចេញជាមុន ⇒ ពេលអេក្រង់ធំឡើងវិញ អ្វីៗត្រឡប់មកដើមវិញ
+       ⚠ លើកលែង `mc-keep-stack` ៖ កាតនោះចាក់សោ ២ ជួរដោយចេតនា ។ */
+    var keep = heads[i].classList.contains('mc-keep-stack');
+    if(!keep) heads[i].classList.remove('mc-stack');
     t.style.removeProperty('font-size');
     var base = parseFloat(window.getComputedStyle(t).fontSize) || 22;
-    /* ⚠ ១៦px ជាព្រំដែន ៖ ក្រោមនេះចំណងជើងតូចពេករហូតអានពិបាក ។ */
-    var MIN = 16;
+    /* ⚠ ១៦px ជាព្រំដែន ៖ ក្រោមនេះចំណងជើងតូចពេករហូតអានពិបាក ។
+       ⚠⚠ ពេលទំហំមូលដ្ឋាន = ១៥px ( D73 ) ច្បាប់ចាស់ `size = MIN` នឹង
+         **ពង្រីក** ទៅ ១៦px ⇒ ធំជាងដើម ⇒ ត្រូវ Math.min ។ */
+    var MIN = Math.min(16, base);
     mcShrink(t, base, MIN);
     /* មិនល្មមទោះបង្រួមដល់ព្រំដែន ⇒ ប្រគល់ទទឹងពេញឱ្យចំណងជើង
        ដោយរុញលេខចុះបន្ទាត់ក្រោម ( ប្រសើរជាងកាត់អក្សរចោល ) */
@@ -25420,6 +25496,13 @@ function moduleCardHtml(c){
      :has() selector - older Safari does not support it. */
   const statTxt  = String(c.stat || '').replace(/<[^>]*>/g, '').trim();
   const statLong = statTxt.length > 12 ? ' long' : '';
+  /* ⭐ [stated] ២០២៦-១១-២៧ ៖ «CROSS CHECK SALE OR PRUCHASE ដាក់វា ១ ជួរ
+     និង លេខ ១ ជួរផ្សេងគ្នា» ។
+     ⚠ `mc-stack` ធម្មតាដាក់ដោយ `mcFitTitles` **តាមការវាស់** ⇒ កាតមួយ
+       ២ ជួរ កាតមួយ ១ ជួរ ( ឃើញក្នុងរូប ៖ PURCHASE ២ ជួរ · SALE ១ ជួរ ) ។
+     ⇒ `stackStat:true` ⇒ ចាក់សោ ២ ជួរជានិច្ច ហើយ `mc-keep-stack`
+       ប្រាប់ `mcFitTitles` កុំដកវាចេញ ។ */
+  const keepStack = c.stackStat ? ' mc-stack mc-keep-stack' : '';
   return `
     <button class="module-card" style="--mc-color:${c.color}; --mc-color-bg:${c.bg};" onclick="${c.action ? c.action : `showView('${c.id}')`}">
       <div class="mc-bar"></div>
@@ -25427,7 +25510,7 @@ function moduleCardHtml(c){
         <!-- ⭐ [stated] ២០២៦-១១-១៣ ៖ «លេខពីក្រោមកាតនីមួយៗ ជួយដាក់វានៅតែមួយជួរ»
              ⇒ លេខឡើងទៅជួរចំណងជើង ជ្រុងស្តាំ ។ ជួរក្រោមសល់តែតំណរង ហើយ
              បាត់ទាំងស្រុងពេលគ្មានតំណ ⇒ កាតទាបជាងមុន និងស្មើគ្នា ។ -->
-        <div class="mc-head${statLong}">
+        <div class="mc-head${statLong}${keepStack}">
           <div class="mc-icon">${c.icon}</div>
           <div class="mc-title">${animatedTitleHtml(c.title)}</div>
           ${statTxt ? `<div class="mc-stat${statLong}">${c.stat}</div>` : ""}
@@ -42787,7 +42870,13 @@ function renderNav(){
        ទៅ **ជួរចំណងជើង** នៃទំព័រវិភាគនីមួយៗ ( មើល `anlTitleRow` ) ។ */
     riskTabs.forEach(function(t){ navItem(t[0], t[1], t[2]); });
     /* ការវិភាគហានិភ័យ ៖ សម្រាប់ Team និង admin ប៉ុណ្ណោះ ⇒ ឈរចុងក្រោយ */
-    if(!window.__featOn || window.__featOn('risk')) navItem('risk', 'RISK', '⚠');
+    /* ⭐ [stated] ២០២៦-១១-២៧ ៖ «លុបប៉ូតង់ RISK នៅផ្នែកខាងលើចេញផង» ។
+       ⚠⚠ តែវាជា **ផ្លូវតែមួយគត់** ទៅទម្រង់ហានិភ័យពេលមានឆ្នាំ ( កាត
+         RISK ANALYSIS នាំទៅ Ratio ហើយ dropdown STEP ត្រូវលាក់ ) ។
+       ⇒ លុបវាពេលវា **ឈរតែម្នាក់ឯង** ( គ្មានឆ្នាំ — ជាករណីក្នុងរូប ) ៖
+         ជួរ TAB នោះគ្មានអ្វីឱ្យប្តូរទេ ⇒ វាគ្រាន់តែស៊ីកន្លែង ។
+         ពេលមាន Ratio · Change · Asset វានៅជា TAB ទី ៤ ដដែល ។ */
+    if(riskTabs.length && (!window.__featOn || window.__featOn('risk'))) navItem('risk', 'RISK', '⚠');
   }
   /* ⭐⭐ របារចំហៀងឆ្វេង ៖ ជំហានទី១–១៧ ( របៀប steps ប៉ុណ្ណោះ ) */
   try{
@@ -42923,7 +43012,14 @@ function renderNav(){
     /* ⚠ [stated] ២១:១៨ ៖ របៀបវិភាគត្រូវឃើញជួរ TAB ⇒ បើកជួរនេះវិញ ។
        ធាតុឯទៀតក្នុងជួរ ( ព្រីន TOI · ឆ្នាំ · ZOOM · EXCEL ) នៅលាក់ដដែល
        ព្រោះវាលាក់ម្តងមួយដោយ `hideBar` ខាងលើរួចហើយ ។ */
-    if(mrow) mrow.style.display = (hideBar && !toiInRisk) ? 'none' : '';
+    /* ⭐ [stated] ២០២៦-១១-២៧ ៖ «ផ្នែក RISK នេះជួយខិតវាឡើងទៅលើផង» ។
+       ⚠ ជួរ TAB ទទេ ( គ្មានឆ្មោះ TAB សោះ ) ⇒ លាក់ជួរ ⇒ ច្បាប់ខាងក្រោម
+         ឃើញ `.toolbar` គ្មានកូនមើលឃើញ ⇒ លាក់ផ្ទាំងសទាំងមូល
+         ⇒ ខ្លឹមសារឡើងលើ ~៦៧px ( វាស់បាន ) ។ */
+    var __navEmpty = !document.getElementById('toiMainNav')
+                   || document.getElementById('toiMainNav').children.length === 0;
+    if(mrow) mrow.style.display =
+      ((hideBar && !toiInRisk) || (toiInRisk && __navEmpty)) ? 'none' : '';
     /* ⚠ ជួរឧបករណ៍ណាដែលគ្មានកូនមើលឃើញសោះ ⇒ លាក់ ។ បើទុក វាសល់ជា
        បន្ទះសទទេនៅពីលើទំព័រ ( ឃើញក្នុងរូបថត ) ។ */
     document.querySelectorAll('#toi-embed .toolbar-row').forEach(function(row){
@@ -43117,7 +43213,14 @@ function renderAll(){
     return;
   }
   if(state.years.length === 0){
-    content.appendChild(el('div', {class:'empty-state'}));
+    /* ⭐ [stated] ២០២៦-១១-២៧ ៖ «ពេលមិនទាន់មានឯកសារ វាចេញ RISK បែបនេះ
+       គួរលុបកែតម្រូវផង» ⇒ មុននេះជា `empty-state` **ទទេស្អាត** ⇒ ឃើញតែ
+       ប្រអប់ដាច់ៗគ្មានពាក្យណាមួយ ( ឃើញក្នុងរូប ) ។ ⇒ ប្រាប់ឱ្យច្បាស់
+       ថាត្រូវធ្វើអ្វីតទៅ ។ */
+    content.appendChild(el('div', {class:'empty-state'},
+      el('div', {class:'big'}, 'មិនទាន់មានឯកសារ'),
+      el('div', {}, 'សូមផ្ទុកឯកសារ TOI ( .xlsx ) ជាមុនសិន ទើបផ្នែកវិភាគនេះមានទិន្នន័យបង្ហាញ ។')
+    ));
     return;
   }
   if(state.activeStep === 'ratios'){
@@ -70057,7 +70160,7 @@ else CC.init();
      ការរក្សាទុកឥឡូវ **រាយលេខជំហាន** លើផ្ទាំង ហើយផ្អាកអោយផ្ទាំងគូររួច
      មុននឹងចាប់ការងារធ្ងន់នីមួយៗ។ សារចុងក្រោយដែលឃើញ = ជំហានដែលគាំង។
      លេខ build ក៏បង្ហាញផង ដើម្បីដឹងច្បាស់ថាកំពុងប្រើឯកសារណា។ */
-  var RSC_BUILD = '19/11 · D72';
+  var RSC_BUILD = '19/11 · D73';
   try{ window.__RSC_BUILD = RSC_BUILD; }catch(e){}
 
   /* ⚠⚠ [stated] ២០២៦-០៨-១៣ ៖ រូបថតបង្ហាញ **«Page Unresponsive» របស់ Chrome**
