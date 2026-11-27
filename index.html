@@ -157,7 +157,7 @@
 })();
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SYSTEM · 19/11-D86</title>
+<title>SYSTEM · 19/11-D88</title>
 <!-- ដាក់លើអេក្រង់ដើមទូរស័ព្ទ ៖ រូបតំណាង ឈ្មោះ និងបើកពេញអេក្រង់
      manifest ដាក់ជា data URL ព្រោះ Apps Script បម្រើឯកសារតែមួយ។ -->
 <meta name="mobile-web-app-capable" content="yes">
@@ -1371,6 +1371,22 @@ td[contenteditable="true"]:focus{outline:2px solid var(--accent); outline-offset
 #view-wht > .toolbar .import-group > span{
   font-size:12px; color:#6B6A63; font-weight:600; letter-spacing:.2px;
 }
+/* ⭐⭐ [stated] ២០២៦-១១-២៧ ( D88 ) ៖ «ជួយរៀបចំតែ ១ ជួរបានហើយ» ។
+   ⚠ ក្រោយដកស្លាក ៣ ចេញ របារនៅត្រូវការ ១៤៧១px ខណៈមានត្រឹម ១៣៣០px
+     ( វាស់នៅ ១៤០០px ) ⇒ «↕ តម្រៀប» នៅតែធ្លាក់ជួរ ។
+   ⇒ បន្ថយទទឹងប្រអប់ ( min-width ដើមជាកម្រាលមិនឱ្យបង្រួម ) ៖ សន្សំ ~១៥៥px
+     ⇒ សមក្នុងជួរតែមួយ ។ អត្ថបទវែងនៅតែអានបាន ដោយចុចបើកបញ្ជី ។
+   ⚠ ច្បាប់ទូរសព្ទ ( បន្ទាត់ ~១០៥០០ ) ឈរក្រោយ ⇒ វាជាន់ច្បាប់នេះ
+     ⇒ ទូរសព្ទមិនរងផលទេ ។ */
+@media screen{
+  #view-wht > .toolbar #wht-filter-name{ min-width:0 !important; width:150px !important; }
+  #view-wht > .toolbar #wht-filter-type{ min-width:0 !important; width:180px !important; }
+  #view-wht > .toolbar #wht-filter-month,
+  #view-wht > .toolbar #wht-filter-year{ min-width:0 !important; width:100px !important; }
+  #view-wht > .toolbar #wht-filter-search{ min-width:0 !important; width:165px !important; }
+  #view-wht > .toolbar #wht-sort{ min-width:0 !important; width:140px !important; }
+  #view-wht > .toolbar{ gap:8px !important; }
+}
 /* វាលទាំងអស់កម្ពស់ស្មើគ្នា ⇒ ជួរផ្តេកត្រង់ */
 #view-sale > .toolbar .partner-select,
 #view-purchase > .toolbar .partner-select,
@@ -1878,10 +1894,12 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
      ⚠ លើទូរសព្ទ ៖ `order:-1` ⇒ ក្រុមប៊ូតុងនៅ **ខាងលើ** តម្រងដដែល
        ( [stated] «រាល់ប៉ូតង់ … យកមកដាក់នៅខាងលើ» ) ហើយកាន់ជួរពេញ
        ⇒ មិនបៀតតម្រងទេ ។ ទំហំចុច ៤៨×៤៤px ដដែល ។ */
+  /* ⚠ [stated] ២០២៦-១១-២៧ ( D87 ) ៖ ប្រអប់ស្វែងរកឈរជួរតែមួយនឹងប៊ូតុង
+     ⇒ ក្រុមប៊ូតុងលែងយកជួរពេញ ( `1 1 100%` ⇒ `0 0 auto` ) ។ */
   #view-cross-sale > .toolbar > .cx-acts,
   #view-cross-purchase > .toolbar > .cx-acts{
-    order:-1 !important; flex:1 1 100% !important; margin-left:0 !important;
-    display:flex !important; flex-wrap:wrap !important; gap:8px !important;
+    order:-1 !important; flex:0 0 auto !important; margin-left:0 !important;
+    display:flex !important; flex-wrap:nowrap !important; gap:6px !important;
   }
   #view-cross-sale > .toolbar > .cx-acts > .btn,
   #view-cross-purchase > .toolbar > .cx-acts > .btn{
@@ -1903,9 +1921,13 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
        ទទឹងទាំងអស់ ⇒ ឈ្មោះក្រុមហ៊ុនឃើញវែងជាងមុន ។
      ⚠ `min-width:0` ចាំបាច់ ៖ ធាតុ flex មិនបង្រួមក្រោមមាតិកាបើគ្មានវា
        ⇒ ប្រអប់នឹងរុញទំព័រទៅស្តាំវិញ ។ */
+  /* ⚠ [stated] ២០២៦-១១-២៧ ( D87 ) ៖ មូលដ្ឋាន `0` ធ្វើឱ្យប្រអប់ជ្រើស
+     ចូលជួរជាមួយប្រអប់ស្វែងរកបាន ( វាបង្រួមដល់ ០ ) ⇒ ជួរទី ១ ក្លាយជា
+     ៥ ធាតុ ។ ⇒ មូលដ្ឋាន ៤៥% ⇒ ពួកវាទាមទារជួរផ្ទាល់ខ្លួន ហើយនៅទីនោះ
+     ពង្រីកស្មើគ្នា ៥០/៥០ ។ */
   #view-cross-sale > .toolbar > .import-group,
   #view-cross-purchase > .toolbar > .import-group{
-    flex:1 1 0 !important; min-width:0 !important;
+    flex:1 1 45% !important; min-width:0 !important;
     gap:0 !important; padding:0 !important;
   }
   #view-cross-sale > .toolbar > .import-group > span,
@@ -1917,9 +1939,50 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
     min-width:0 !important; max-width:100% !important; width:100% !important;
     flex:1 1 auto !important; font-size:13.5px !important; padding:9px 8px !important;
   }
+  /* ⭐ [stated] ២០២៦-១១-២៧ ( D87 ) ៖ «កន្លែងស្វែងរកជួយដាក់ជួរជាមួយនឹង
+     ⬇ 📥 🗑» ⇒ `order:-1` ដូចក្រុមប៊ូតុង ⇒ ឈរជួរតែមួយនឹងវា
+     ( ប្រអប់ជ្រើស ២ ចុះជួរក្រោម ) ។ */
   #view-cross-sale > .toolbar > input.partner-select,
   #view-cross-purchase > .toolbar > input.partner-select{
-    flex:1 1 100% !important;
+    flex:1 1 auto !important; order:-1 !important; min-width:0 !important;
+    /* ⚠ ច្បាប់ D76 ដាក់ `width:100%` លើប្រអប់ទាំងអស់ ⇒ មូលដ្ឋាន flex
+       ក្លាយជាទទឹងពេញជួរ ⇒ ក្រុមប៊ូតុងធ្លាក់ជួរក្រោម ។ ⇒ `auto` ។ */
+    width:auto !important;
+  }
+  /* ប៊ូតុង ៣ ៖ ចាក់សោទំហំស្មើគ្នា ( វាស់បាន ៤៨×៤៤px ) */
+  #view-cross-sale > .toolbar > .cx-acts > .btn,
+  #view-cross-purchase > .toolbar > .cx-acts > .btn{
+    width:48px !important; min-width:48px !important; max-width:48px !important;
+    height:44px !important; padding:0 !important; flex:0 0 auto !important;
+    display:inline-flex !important; align-items:center !important;
+    justify-content:center !important; font-size:17px !important;
+  }
+  /* ⭐ ក្បាល «📋 សង្ខេបគ្រប់ក្រុមហ៊ុន …» ⇒ ១ ជួរ
+     ⚠ វាជា flex `nowrap` ស្រាប់ ⇒ បញ្ហាគឺ **អត្ថបទរុំក្នុងធាតុនីមួយៗ**
+       ⇒ `white-space:nowrap` + អក្សរតូច + លាក់របាររីកចម្រើន ។ */
+  #view-cross-sale .cx-sumhead,
+  #view-cross-purchase .cx-sumhead{
+    gap:6px !important; font-size:9px !important; margin-bottom:4px !important;
+  }
+  #view-cross-sale .cx-sumhead > *,
+  #view-cross-purchase .cx-sumhead > *{
+    white-space:nowrap !important; flex:0 0 auto !important; font-size:9px !important;
+  }
+  /* ⚠ សល់តែ ១៨px នៅ ៣៩០px ( វាស់បាន ) ⇒ ចំណងជើងអនុញ្ញាតឱ្យបង្រួម
+     ជាជម្រើសចុងក្រោយ ⇒ នៅជួរតែមួយទោះអេក្រង់តូចជាង ។ */
+  #view-cross-sale .cx-sumhead > b,
+  #view-cross-purchase .cx-sumhead > b{
+    flex:0 1 auto !important; min-width:0 !important;
+    overflow:hidden !important; text-overflow:ellipsis !important;
+  }
+  #view-cross-sale .cx-sumhead .cx-sumbar,
+  #view-cross-purchase .cx-sumhead .cx-sumbar{ display:none !important; }
+  /* ⭐ តារាងសង្ខេប និងតារាងតាមឆ្នាំ ⇒ ទំហំអក្សរ និងចន្លោះដូចគ្នា */
+  #view-cross-sale table.ledger,
+  #view-cross-purchase table.ledger{ font-size:10.5px !important; }
+  #view-cross-sale table.ledger th, #view-cross-sale table.ledger td,
+  #view-cross-purchase table.ledger th, #view-cross-purchase table.ledger td{
+    font-size:10.5px !important; padding:5px 6px !important;
   }
   /* ⭐ [stated] «ប៊ូតុង ℹ ជួយលុបចេញ» ⇒ លាក់លើទូរសព្ទ ( PC នៅដដែល ) ។
      ⚠ អត្ថបទលម្អិតក៏លាក់ដែរ ៖ វាជាបន្ទាត់វែងមិនរុំ ⇒ រុញទំព័រទៅស្តាំ
@@ -11512,7 +11575,10 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
       <div id="wht-summary-back"></div>
       <div class="table-scroll"><table id="wht-summary-table"></table></div>
 
-      <div class="toolbar" style="margin-top:18px;">
+      <!-- [stated] ២០២៦-១១-២៧ ( D88 ) ៖ «រូប DOWNLOAD ជួយរុញចុះមកក្រោម
+           នៅជួរ 👤 … ↕ តម្រៀប» ⇒ `data-xls-bar` ⇒ `ensureXlsButton`
+           ដាក់ប៊ូតុង ⬇ ចូលរបារនេះ ជំនួស `.topbar` ទទេនៅក្បាលផ្ទាំង ។ -->
+      <div class="toolbar" data-xls-bar style="margin-top:18px;">
         <div class="import-group">
           <span title="ឈ្មោះអ្នកទទួលប្រាក់">👤</span>
           <select id="wht-filter-name" class="partner-select" style="min-width:200px;" onchange="onWHTFilterChange()"></select>
@@ -11528,17 +11594,18 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
           <span title="ប្រភេទពន្ធកាត់ទុក">🏷️</span>
           <select id="wht-filter-type" class="partner-select" style="min-width:220px;" onchange="onWHTFilterChange()"></select>
         </div>
+        <!-- [stated] ២០២៦-១១-២៧ ៖ «លុប អក្សរ និងរូប 📅 ខែ: · 📅 ឆ្នាំ: · 🔎»
+             ⇒ សន្សំ ~១៥០px ⇒ របារសមក្នុងជួរតែមួយ ។
+             ⚠ អត្ថន័យមិនបាត់ ៖ ប្រអប់ខែ/ឆ្នាំមានជម្រើស «គ្រប់ខែ» / «គ្រប់ឆ្នាំ»
+               ជាស្លាកក្នុងខ្លួន ហើយប្រអប់ស្វែងរកមានអក្សរគំរូពេញ ។ -->
         <div class="import-group">
-          <span>📅 ខែ:</span>
-          <select id="wht-filter-month" class="partner-select" style="min-width:110px;" onchange="onWHTFilterChange()"></select>
+          <select id="wht-filter-month" class="partner-select" title="ខែ" style="min-width:110px;" onchange="onWHTFilterChange()"></select>
         </div>
         <div class="import-group">
-          <span>📅 ឆ្នាំ:</span>
-          <select id="wht-filter-year" class="partner-select" style="min-width:110px;" onchange="onWHTFilterChange()"></select>
+          <select id="wht-filter-year" class="partner-select" title="ឆ្នាំ" style="min-width:110px;" onchange="onWHTFilterChange()"></select>
         </div>
         <div class="import-group">
-          <span title="ស្វែងរក (ឈ្មោះ/TIN/លេខវិក្កយបត្រ)">🔎</span>
-          <input type="text" id="wht-filter-search" class="partner-select" style="min-width:200px;" placeholder="វាយឈ្មោះ TIN ឬ លេខវិក្កយបត្រ..." oninput="onWHTFilterChangeDebounced()">
+          <input type="text" id="wht-filter-search" class="partner-select" style="min-width:200px;" title="ស្វែងរក (ឈ្មោះ/TIN/លេខវិក្កយបត្រ)" placeholder="វាយឈ្មោះ TIN ឬ លេខវិក្កយបត្រ..." oninput="onWHTFilterChangeDebounced()">
         </div>
         <!-- [stated] ២០២៦-០៨-១៤ ៖ «ជួយតម្រៀបពីខែ១ ដល់ខែ១២ ដើម្បីងាយស្រួលមើល» ។
              ⚠ ការតម្រៀបតាមទឹកប្រាក់ខ្ពស់មុន គឺជាសំណើចាស់របស់គេផ្ទាល់ ដូច្នេះ
@@ -21000,12 +21067,14 @@ function renderCrossPartnerSummary(which, list, yearTag){
   }
   /* បញ្ជីប្រភព + សារព្រមាន គូររួច ⇒ ឥឡូវទើបសម្រេចថាតារាងសង្ខេបគួរចេញឬអត់ */
   if(filters[which] || !list.length){ box.innerHTML = h; return; }
-  h += '<div style="display:flex;align-items:center;gap:10px;margin:0 0 6px;font-size:13px;">'
+  /* [stated] ២០២៦-១១-២៧ ( D87 ) ៖ ថ្នាក់ `cx-sumhead` ⇒ CSS ទូរសព្ទ
+     អាចរៀបវាមកជួរតែមួយបាន ។ */
+  h += '<div class="cx-sumhead" style="display:flex;align-items:center;gap:10px;margin:0 0 6px;font-size:13px;">'
     + '<b>📋 សង្ខេបគ្រប់ក្រុមហ៊ុន (' + list.length + ')</b>'
     /* បញ្ជាក់ច្បាស់ថាលេខខាងក្រោមជាលេខឆ្នាំណា — កុំឱ្យច្រឡំជាសរុបគ្រប់ឆ្នាំ */
     + (yearTag ? '<span class="hint" style="padding:2px 9px;border-radius:99px;'
         + 'background:var(--primary);color:#fff;font-weight:600;">📅 ឆ្នាំ ' + escAttr(yearTag) + '</span>' : '')
-    + '<span style="flex:0 0 160px;height:8px;border-radius:99px;background:var(--line);overflow:hidden;display:inline-block">'
+    + '<span class="cx-sumbar" style="flex:0 0 160px;height:8px;border-radius:99px;background:var(--line);overflow:hidden;display:inline-block">'
     + '<span style="display:block;height:100%;width:' + pct + '%;background:var(--primary)"></span></span>'
     + '<span class="hint">ពិនិត្យរួច ' + nDone + ' / ' + list.length + ' ក្រុមហ៊ុន</span>'
     + '<span class="hint" style="margin-left:auto">🟢 ≤0.5% · 🟡 ≤2% · 🔴 >2%</span>'
@@ -70487,7 +70556,7 @@ else CC.init();
      ការរក្សាទុកឥឡូវ **រាយលេខជំហាន** លើផ្ទាំង ហើយផ្អាកអោយផ្ទាំងគូររួច
      មុននឹងចាប់ការងារធ្ងន់នីមួយៗ។ សារចុងក្រោយដែលឃើញ = ជំហានដែលគាំង។
      លេខ build ក៏បង្ហាញផង ដើម្បីដឹងច្បាស់ថាកំពុងប្រើឯកសារណា។ */
-  var RSC_BUILD = '19/11 · D86';
+  var RSC_BUILD = '19/11 · D88';
   try{ window.__RSC_BUILD = RSC_BUILD; }catch(e){}
 
   /* ⚠⚠ [stated] ២០២៦-០៨-១៣ ៖ រូបថតបង្ហាញ **«Page Unresponsive» របស់ Chrome**
