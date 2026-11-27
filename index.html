@@ -157,7 +157,7 @@
 })();
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SYSTEM · 19/11-D80</title>
+<title>SYSTEM · 19/11-D81</title>
 <!-- ដាក់លើអេក្រង់ដើមទូរស័ព្ទ ៖ រូបតំណាង ឈ្មោះ និងបើកពេញអេក្រង់
      manifest ដាក់ជា data URL ព្រោះ Apps Script បម្រើឯកសារតែមួយ។ -->
 <meta name="mobile-web-app-capable" content="yes">
@@ -1772,15 +1772,50 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
   }
   /* បន្ទាត់បែងចែកឯកោពេលថេបរុំ ⇒ លាក់ */
   #view-cross-customs #cus-tabs > span[style*="width:1px"]{ display:none !important; }
-  /* ថេប ៤ ⇒ ២ ជួរឈរស្មើគ្នា */
+  /* ⭐⭐⭐ [stated] ២០២៦-១១-២៧ ( D81 ) ៖ «ជួយធ្វើតែ ១ ជួរនៃ COMPARE
+     ដល់ EXPORT … គម្លាតទឹកប្រាក់ ដល់ ត្រូវគ្នា … ផ្គូផ្គងដោយដៃ ដល់
+     មើលជារួម ដោយបន្ថយទំហំអក្សរ និងប្រអប់» ។
+     ⚠⚠ គន្លឹះ ៖ `flex:1 1 0` + `min-width:0` ⇒ ទំហំមូលដ្ឋាន = ០
+       ⇒ ធាតុទាំងអស់នៅជួរតែមួយ **ជានិច្ច** រួចចែកកន្លែងស្មើគ្នា ។
+       ( បើទុកតាមទំហំពិត វាសមថ្ងៃនេះ តែលេខវែងឡើងថ្ងៃក្រោយ ⇒ ធ្លាក់ជួរវិញ ) ។
+     ⚠ ទំហំអក្សរយកតាមការវាស់នៅ ៣៩០px ៖ ថេប ៩.៥px ( សល់ ១៨px ) ។
+       ១០px សល់តែ ៣px ⇒ មិនគ្រប់គ្រាន់ ។ */
   #view-cross-customs #cus-tabs{
-    display:grid !important; grid-template-columns:repeat(2, minmax(0,1fr)) !important;
-    gap:8px !important;
+    display:flex !important; flex-wrap:wrap !important; gap:4px !important;
   }
   #view-cross-customs #cus-tabs > button{
-    width:100% !important; padding:6px 8px !important; white-space:nowrap;
-    overflow:hidden; text-overflow:ellipsis;
+    flex:1 1 auto !important; min-width:0 !important; width:auto !important;
+    padding:6px 4px !important; font-size:9.5px !important;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
   }
+  /* ២ · chips ស្ថានភាព ( គម្លាតទឹកប្រាក់ … ត្រូវគ្នា ) ⇒ ១ ជួរ */
+  #view-cross-customs #cus-chips{ gap:4px !important; }
+  #view-cross-customs #cus-chips > button{
+    flex:1 1 auto !important; min-width:0 !important; width:auto !important;
+    padding:5px 2px !important; font-size:9px !important;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  /* អត្ថបទសរុប / សេចក្តីពន្យល់ ⇒ ជួរផ្ទាល់ខ្លួន */
+  #view-cross-customs #cus-chips > span.import-status,
+  #view-cross-customs #cus-chips > div{
+    flex:1 1 100% !important; margin-left:0 !important;
+  }
+  /* ៣ · របារផ្គូផ្គងដោយដៃ ⇒ ១ ជួរ */
+  #view-cross-customs #cus-pair{ gap:4px !important; }
+  #view-cross-customs #cus-pair > button{
+    flex:1 1 auto !important; min-width:0 !important; width:auto !important;
+    padding:5px 5px !important; font-size:10.5px !important;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  #view-cross-customs #cus-pair > span.import-status,
+  #view-cross-customs #cus-pair > div{ flex:1 1 100% !important; }
+}
+/* ⚠ ទូរសព្ទតូចជាង ( ៣៧៥px ចុះក្រោម ) ៖ ទទឹងប្រើបានត្រឹម ~៣៣៩px
+   ⇒ បន្ថយទៀតបន្តិច ទើបនៅជួរតែមួយដដែល ( វាស់បាន ) ។ */
+@media screen and (max-width: 380px){
+  #view-cross-customs #cus-tabs > button{ font-size:8.5px !important; padding:6px 2px !important; }
+  #view-cross-customs #cus-chips > button{ font-size:8.5px !important; }
+  #view-cross-customs #cus-pair > button{ font-size:9.5px !important; padding:5px 3px !important; }
   .toolbar > *, .tabs > *{ flex:0 0 auto; }
   /* ⭐⭐⭐ [stated] ២០២៦-១១-២៧ ៖ «ជួយធ្វើផ្នែកនេះនៅលើទូរសព្ទឱ្យបានស្អាតផង»
      ( CROSSCHECK SALE ⇄ CP_PURCHASE ) ។
@@ -70320,7 +70355,7 @@ else CC.init();
      ការរក្សាទុកឥឡូវ **រាយលេខជំហាន** លើផ្ទាំង ហើយផ្អាកអោយផ្ទាំងគូររួច
      មុននឹងចាប់ការងារធ្ងន់នីមួយៗ។ សារចុងក្រោយដែលឃើញ = ជំហានដែលគាំង។
      លេខ build ក៏បង្ហាញផង ដើម្បីដឹងច្បាស់ថាកំពុងប្រើឯកសារណា។ */
-  var RSC_BUILD = '19/11 · D80';
+  var RSC_BUILD = '19/11 · D81';
   try{ window.__RSC_BUILD = RSC_BUILD; }catch(e){}
 
   /* ⚠⚠ [stated] ២០២៦-០៨-១៣ ៖ រូបថតបង្ហាញ **«Page Unresponsive» របស់ Chrome**
