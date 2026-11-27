@@ -157,7 +157,7 @@
 })();
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SYSTEM · 19/11-D78</title>
+<title>SYSTEM · 19/11-D80</title>
 <!-- ដាក់លើអេក្រង់ដើមទូរស័ព្ទ ៖ រូបតំណាង ឈ្មោះ និងបើកពេញអេក្រង់
      manifest ដាក់ជា data URL ព្រោះ Apps Script បម្រើឯកសារតែមួយ។ -->
 <meta name="mobile-web-app-capable" content="yes">
@@ -7561,6 +7561,22 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
 #toi-embed .toi-riskprint.alt{ border-style:dashed; margin-left:4px; }
 /* ⭐ [stated] ២២:០២ ៖ ជួរចំណងជើងទំព័រវិភាគ ៖ ចំណងជើង + ប៊ូតុងព្រីន */
 #toi-embed .toi-anl-head{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+/* ⭐ [stated] ២០២៦-១១-២៧ ( D80 ) ៖ ប្រអប់ប៊ូតុងក្នុងជួរ TAB ។
+   ⚠ `margin-left:auto` ⇒ TAB ឆ្វេង ប៊ូតុងស្តាំ ក្នុងជួរតែមួយ ។
+   ⚠ ទំហំអក្សរ ៖ ច្បាប់ `.risk-head .btn` លែងប៉ះពេលប៊ូតុងចេញពីក្បាល
+     ⇒ សរសេរម្តងទៀតទីនេះ បើមិនដូច្នេះវាធំតាមរបារឧបករណ៍ ។ */
+#toi-embed .toi-acts{
+  margin-left:auto; display:inline-flex; align-items:center; gap:6px; flex:0 0 auto;
+}
+#toi-embed .toi-acts .btn{
+  font-size:12.5px; font-weight:600; padding:5px 11px; width:auto;
+  font-family:'Khmer OS Siemreap','Noto Sans Khmer',sans-serif;
+}
+@media screen and (max-width: 760px){
+  /* ទូរសព្ទ ៖ ប៊ូតុងចុះជួរផ្ទាល់ខ្លួន ⇒ TAB នៅឃើញពេញ */
+  #toi-embed .toi-acts{ margin-left:0; flex:1 1 100%; flex-wrap:wrap; }
+  #toi-embed .toi-acts .btn{ min-height:38px; }
+}
 /* ⭐ [stated] ២០២៦-១១-១៦ ២២:២២ ៖ របៀបវិភាគ ៖ ទុកតែអក្សរ TAB — គ្មានផ្ទាំងស
    គ្មានស្រមោល ហើយ TAB ទាំង ៤ រុំបន្ទាត់ជំនួសការអូសទៅស្តាំ ។ */
 #toi-embed.toi-riskmode .toolbar{
@@ -14463,7 +14479,11 @@ function xlsDownloadFrom(node, baseName){
    ក្នុងកាតកំណត់ហេតុរួចហើយ។ */
 /* ⚠ `cogs` ៖ ប៊ូតុង ⬇ Excel គូរដោយម៉ូឌុលខ្លួនឯងក្នុងរបារឧបករណ៍
    ( របារនោះគូរឡើងវិញរាល់ដង ⇒ ប៊ូតុងពីខាងក្រៅត្រូវបាត់ ) ។ */
-const XLS_SKIP = new Set(['mtr','toi','calc','tos','tracking','cross-sale','cross-purchase','cogs']);
+/* [stated] ២០២៦-១១-២៧ ៖ «លុបប៊ូតុង ⬇ Excel ចេញ ព្រោះមិនត្រូវប្រើនៅ
+   ផ្នែកនេះ» ( ផ្ទាំងផ្គូផ្គងទិន្នន័យ = កាតផ្លូវចូល គ្មានតារាងឱ្យទាញ ) ។
+   ⚠ ដាក់ទីនេះ ទើបមិនសង់ប៊ូតុង និងមិនសង់ `.xls-bar` ⇒ ចំណងជើងផ្នែក
+     ក្លាយជាកូនទី ១ ⇒ ឡើងលើដោយច្បាប់ `:first-child` ដែលមានស្រាប់ ។ */
+const XLS_SKIP = new Set(['mtr','toi','calc','tos','tracking','cross-sale','cross-purchase','cogs','partners']);
 
 /* បញ្ចូលប៊ូតុងតូចទៅក្នុងផ្ទាំងនោះផ្ទាល់ — ដាក់ក្នុងរបារឧបករណ៍ដែលមានស្រាប់
    ដើម្បីកុំឱ្យសល់ប្រហោងទទេនៅខាងលើ។ */
@@ -42818,6 +42838,43 @@ function toiScrollTop(){
 /* ⭐⭐ [stated] ២០២៦-១១-១៦ ២២:០២ ៖ ជួរចំណងជើងនៃទំព័រវិភាគ = ចំណងជើង
    + ប៊ូតុងព្រីន ( ព្រីនទាំង ៣ ទំព័រ ; RISK មានរបស់ខ្លួនដាច់ដោយឡែក ) ។ */
 var ANL_PRINT_KEYS = ['ratios', 'changes', 'assets'];
+/* ⭐⭐⭐ [stated] ២០២៦-១១-២៧ ៖ «ប៉ូតង់ 🖨️ ជួយយកមកដាក់នៅជួរ %Ratio
+   ∆Change ⚙Asset & Depre ⚠RISK … រួមទាំង ព្រីនទម្រង់ · ព្រីនទម្រង់រដ្ឋបាល
+   · Excel ដែរ» ។
+   ⚠ ផ្លាស់ទីធាតុពិត ⇒ `onclick` នៅជាប់នឹងវា ⇒ មុខងារមិនប្តូរសោះ ។
+   ⚠ រត់ក្រោយការគូរ ( setTimeout 0 ) ⇒ គ្របដណ្តប់គ្រប់ផ្លូវចេញរបស់
+     renderAll ដោយកូដតែមួយកន្លែង ។ */
+function toiMoveActs(){
+  try{
+    var row = document.querySelector('#toi-embed .toi-mainrow');
+    if(!row) return;
+    /* ប្រអប់ចាស់ ៖ ប៊ូតុងក្នុងវារលាយជាមួយ #content រួចហើយ ⇒ ដកចោល */
+    var old = document.getElementById('toiActs');
+    if(old) old.remove();
+    var cont = document.getElementById('content');
+    if(!cont) return;
+    var btns = cont.querySelectorAll('.toi-anl-head .toi-riskprint, .risk-head > .btn');
+    if(!btns.length) return;
+    var box = document.createElement('span');
+    box.id = 'toiActs'; box.className = 'toi-acts no-print';
+    for(var i = 0; i < btns.length; i++) box.appendChild(btns[i]);
+    row.appendChild(box);
+    /* ⚠ គ្មានឆ្នាំ ⇒ ជួរ TAB ត្រូវលាក់ដោយ D73 ⇒ បើកវិញ ទើបប៊ូតុងឃើញ */
+    row.style.removeProperty('display');
+    var tb = row.parentNode;
+    while(tb && tb !== document.body){
+      if(tb.classList && tb.classList.contains('toolbar')){ tb.style.removeProperty('display'); break; }
+      tb = tb.parentNode;
+    }
+    /* ⚠ ក្បាលទម្រង់ហានិភ័យនៅសល់ទទេ ( ចំណងជើងវាទទេស្រាប់ ) ⇒ លាក់ */
+    var rh = cont.querySelector('.risk-head');
+    if(rh && !rh.querySelector('.btn') && !(rh.textContent || '').trim()){
+      rh.style.display = 'none';
+    }
+  }catch(e){ console.error('toiMoveActs:', e); }
+}
+try{ window.__toiMoveActs = toiMoveActs; }catch(e){}
+
 function anlTitleRow(text){
   const head = el('div', {class:'toi-anl-head'});
   head.appendChild(el('h2', {class:'panel-title'}, text));
@@ -43140,6 +43197,10 @@ function renderNav(){
       if(!any) tb.style.display = 'none';
     });
   }catch(e){}
+  /* ⭐ [stated] ២០២៦-១១-២៧ ( D80 ) ៖ ប៊ូតុងសកម្មភាពឡើងជួរ TAB ។
+     ⚠ `setTimeout 0` ៖ មាតិកា `#content` សង់ក្រោយ `renderNav` ⇒ ត្រូវ
+       រង់ចាំឱ្យការគូរសមកាលកម្មចប់សិន ទើបមានប៊ូតុងឱ្យផ្លាស់ទី ។ */
+  try{ setTimeout(toiMoveActs, 0); }catch(e){}
   /* [stated] STEP1–17 ជា dropdown ជាប់នឹង RISK ; របារចំហៀងលែងត្រូវការ
      ទៀតទេ ដូច្នេះផ្ទាំង TOI ទទួលបានទទឹងទាំងមូល។ ជំហានដែលគ្មានទិន្នន័យ
      នៅជា <option disabled> ដើម្បីអោយឃើញថាមានប៉ុន្មានជំហានទាំងអស់។ */
@@ -70259,7 +70320,7 @@ else CC.init();
      ការរក្សាទុកឥឡូវ **រាយលេខជំហាន** លើផ្ទាំង ហើយផ្អាកអោយផ្ទាំងគូររួច
      មុននឹងចាប់ការងារធ្ងន់នីមួយៗ។ សារចុងក្រោយដែលឃើញ = ជំហានដែលគាំង។
      លេខ build ក៏បង្ហាញផង ដើម្បីដឹងច្បាស់ថាកំពុងប្រើឯកសារណា។ */
-  var RSC_BUILD = '19/11 · D78';
+  var RSC_BUILD = '19/11 · D80';
   try{ window.__RSC_BUILD = RSC_BUILD; }catch(e){}
 
   /* ⚠⚠ [stated] ២០២៦-០៨-១៣ ៖ រូបថតបង្ហាញ **«Page Unresponsive» របស់ Chrome**
