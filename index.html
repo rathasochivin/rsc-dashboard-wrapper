@@ -157,7 +157,7 @@
 })();
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SYSTEM · 19/11-D74</title>
+<title>SYSTEM · 19/11-D78</title>
 <!-- ដាក់លើអេក្រង់ដើមទូរស័ព្ទ ៖ រូបតំណាង ឈ្មោះ និងបើកពេញអេក្រង់
      manifest ដាក់ជា data URL ព្រោះ Apps Script បម្រើឯកសារតែមួយ។ -->
 <meta name="mobile-web-app-capable" content="yes">
@@ -1265,6 +1265,33 @@ tfoot td{
 .cross-top{display:flex; align-items:flex-end; gap:14px; flex-wrap:wrap;}
 .cross-top .cross-top-t{flex:1 1 320px; min-width:0;}
 .cross-top .cross-top-b{margin-left:auto; display:flex; gap:8px; align-items:center; flex-wrap:wrap;}
+/* ⭐ [stated] ២០២៦-១១-២៧ ៖ «ទុកតែរូបបានហើយ» ⇒ ប៊ូតុងរូបសុទ្ធ ។
+   ⚠ `.btn` កំណត់ `font-size` និង `padding` ⇒ ត្រូវសរសេរជាន់ឱ្យច្បាស់ ។ */
+/* ⭐ [stated] ២០២៦-១១-២៧ ( D77 ) ៖ ក្រុមប៊ូតុងក្នុងរបារតម្រង ។
+   ⚠ `margin-left:auto` ⇒ ឈរជ្រុងស្តាំនៃជួរដដែល ដូចរបារផ្ទាំងគយ ។ */
+.toolbar > .cx-acts{
+  margin-left:auto; display:inline-flex; align-items:center; gap:8px; flex:0 0 auto;
+}
+.cx-acts .cx-ico,
+.cross-top .cross-top-b .cx-ico{
+  width:44px; min-width:44px; height:40px; padding:0 !important;
+  display:inline-flex; align-items:center; justify-content:center;
+  font-size:17px !important; line-height:1;
+}
+/* បញ្ជីជម្រើសតូច ( ⬇ Excel ) — មើលក្បាល fix_d75.py */
+.rsc-menu{
+  position:fixed; z-index:9999; background:var(--surface,#fff);
+  border:1px solid var(--line,#E0DED4); border-radius:10px; padding:6px;
+  box-shadow:0 10px 28px rgba(15,61,62,.18); min-width:230px; max-width:92vw;
+  display:flex; flex-direction:column; gap:4px;
+}
+.rsc-menu-it{
+  font-family:inherit; font-size:12.8px; font-weight:600; text-align:left;
+  cursor:pointer; border:0; background:transparent; color:var(--ink,#171B1A);
+  padding:10px 10px; border-radius:7px; line-height:1.5;
+}
+.rsc-menu-it:hover{ background:var(--accent-light,#F1F0E9); }
+@media print{ .rsc-menu{ display:none !important; } }
 .btn{
   font-family:inherit; font-size:12.8px; font-weight:600; cursor:pointer;
   border-radius:7px; padding:9px 16px; border:1px solid var(--primary);
@@ -1766,21 +1793,19 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
        `!important` ) ⇒ ចំណងជើងពេញទទឹង ហើយប៊ូតុងចុះក្រោមជា ២×២ ។
      ⚠ កម្ពស់ប៊ូតុង ៤៤px ជាអប្បបរមាសម្រាប់ម្រាមដៃ ( ស្តង់ដារដដែល
        ដែលយើងប្រើនៅរបារខាងលើ ) ។ */
-  #view-cross-sale > .cross-top,
-  #view-cross-purchase > .cross-top{
-    display:block !important; overflow:visible !important; padding-bottom:0 !important;
+  /* ⭐ [stated] ២០២៦-១១-២៧ ( D77 ) ៖ ប៊ូតុងចូលរបារតម្រងហើយ ។
+     ⚠ លើទូរសព្ទ ៖ `order:-1` ⇒ ក្រុមប៊ូតុងនៅ **ខាងលើ** តម្រងដដែល
+       ( [stated] «រាល់ប៉ូតង់ … យកមកដាក់នៅខាងលើ» ) ហើយកាន់ជួរពេញ
+       ⇒ មិនបៀតតម្រងទេ ។ ទំហំចុច ៤៨×៤៤px ដដែល ។ */
+  #view-cross-sale > .toolbar > .cx-acts,
+  #view-cross-purchase > .toolbar > .cx-acts{
+    order:-1 !important; flex:1 1 100% !important; margin-left:0 !important;
+    display:flex !important; flex-wrap:wrap !important; gap:8px !important;
   }
-  #view-cross-sale > .cross-top > .cross-top-t,
-  #view-cross-purchase > .cross-top > .cross-top-t{ margin-bottom:10px; }
-  #view-cross-sale > .cross-top > .cross-top-b,
-  #view-cross-purchase > .cross-top > .cross-top-b{
-    margin-left:0 !important; display:grid !important;
-    grid-template-columns:repeat(2, minmax(0,1fr)) !important; gap:8px !important;
-  }
-  #view-cross-sale > .cross-top > .cross-top-b > .btn,
-  #view-cross-purchase > .cross-top > .cross-top-b > .btn{
-    width:100% !important; min-height:44px; white-space:normal !important;
-    line-height:1.35; padding:8px 10px !important; font-size:12.5px !important;
+  #view-cross-sale > .toolbar > .cx-acts > .btn,
+  #view-cross-purchase > .toolbar > .cx-acts > .btn{
+    flex:0 0 auto !important; min-height:44px !important; height:44px !important;
+    min-width:48px !important; width:48px !important;
   }
   /* ⚠ របារតម្រង ៖ ច្បាប់ទូរសព្ទធ្វើឱ្យវាជាជួរអូស ⇒ ប្រអប់ជ្រើស
      ( `min-width:260px` ) លាតហួស ៤៩៤px ទៅស្តាំ ( វាស់បាន ) ⇒ ត្រូវអូសរក ។
@@ -1790,19 +1815,38 @@ td.amt-sub{color:var(--muted); font-size:11.8px;}
   #view-cross-purchase > .toolbar{
     flex-wrap:wrap !important; overflow-x:visible !important; gap:8px !important;
   }
+  /* ⭐⭐ [stated] ២០២៦-១១-២៧ ( D76 ) ៖ «ជួរ ឆ្នាំ និង ក្រុមហ៊ុនដៃគូ
+     ជួយដាក់ជាមួយគ្នា និងលុបពាក្យនិងរូបខាងមុខចេញ» ។
+     ⇒ ក្រុមទាំងពីរចែកទទឹងស្មើគ្នា ( `flex:1 1 0` ) ⇒ ជួរតែមួយ ;
+       ស្លាក «📅 ឆ្នាំ:» និង «🏢 ក្រុមហ៊ុនដៃគូ:» លាក់ ⇒ ប្រអប់ទទួល
+       ទទឹងទាំងអស់ ⇒ ឈ្មោះក្រុមហ៊ុនឃើញវែងជាងមុន ។
+     ⚠ `min-width:0` ចាំបាច់ ៖ ធាតុ flex មិនបង្រួមក្រោមមាតិកាបើគ្មានវា
+       ⇒ ប្រអប់នឹងរុញទំព័រទៅស្តាំវិញ ។ */
   #view-cross-sale > .toolbar > .import-group,
-  #view-cross-purchase > .toolbar > .import-group{ flex:1 1 100% !important; }
+  #view-cross-purchase > .toolbar > .import-group{
+    flex:1 1 0 !important; min-width:0 !important;
+    gap:0 !important; padding:0 !important;
+  }
+  #view-cross-sale > .toolbar > .import-group > span,
+  #view-cross-purchase > .toolbar > .import-group > span{ display:none !important; }
+  /* [stated] «អក្សររើសនោះបង្រួមតូចផង» ⇒ ១៦ ⇒ ១៣.៥px
+     ⚠ បើ iPhone ពង្រីកអេក្រង់ពេលចុច ⇒ ត្រឡប់ទៅ ១៦px វិញ ។ */
   #view-cross-sale > .toolbar .partner-select,
   #view-cross-purchase > .toolbar .partner-select{
     min-width:0 !important; max-width:100% !important; width:100% !important;
-    flex:1 1 auto !important; font-size:16px !important;
+    flex:1 1 auto !important; font-size:13.5px !important; padding:9px 8px !important;
   }
   #view-cross-sale > .toolbar > input.partner-select,
   #view-cross-purchase > .toolbar > input.partner-select{
-    flex:1 1 calc(100% - 46px) !important;
+    flex:1 1 100% !important;
   }
-  #view-cross-sale > .toolbar > .btn,
-  #view-cross-purchase > .toolbar > .btn{ flex:0 0 auto !important; min-height:40px; }
+  /* ⭐ [stated] «ប៊ូតុង ℹ ជួយលុបចេញ» ⇒ លាក់លើទូរសព្ទ ( PC នៅដដែល ) ។
+     ⚠ អត្ថបទលម្អិតក៏លាក់ដែរ ៖ វាជាបន្ទាត់វែងមិនរុំ ⇒ រុញទំព័រទៅស្តាំ
+       ⇒ iOS បង្រួមអេក្រង់ទាំងមូល ( ឃើញក្នុងរូបទី ២ ) ។ */
+  #view-cross-sale > .toolbar > .cx-info,
+  #view-cross-purchase > .toolbar > .cx-info,
+  #view-cross-sale > .toolbar > .import-status,
+  #view-cross-purchase > .toolbar > .import-status{ display:none !important; }
   /* ⭐⭐⭐ [stated] ២០២៦-១១-១៣ ៖ «ផ្នែកសាលកបត្រ … ឱ្យងាយមើល» ( រូប ៖ ជួរថេប
      កាត់ដាច់នៅគែមស្តាំ ហើយអេក្រង់ទាំងមូលតូចៗ ) ។
      ⚠⚠ ឫសគល់ ( វាស់បាន ) ៖ `overflow-x:auto` **មិនគ្រប់គ្រាន់** សម្រាប់
@@ -11342,20 +11386,14 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
 
     <!-- CROSSCHECK_SALE -->
     <section class="view" id="view-cross-sale">
-      <div class="topbar cross-top">
-        <div class="cross-top-t">
-          <h2>CROSSCHECK SALE ⇄ CP_PURCHASE</h2>
-          <p>ការលក់របស់យើង ធៀបនឹង ការទិញរបស់ក្រុមហ៊ុនដៃគូ</p>
-        </div>
-        <div class="cross-top-b">
-          <button class="btn ghost" onclick="crossExcel('crossSale')" title="ទាញយកលទ្ធផលផ្គូផ្គងទាំងអស់ (គ្រប់ទំព័រ)">⬇ Excel</button>
-          <button class="btn ghost" onclick="crossExcelAll('crossSale')" title="សន្លឹកសង្ខេបគ្រប់ក្រុមហ៊ុន + សន្លឹកលម្អិត">⬇ Excel (គ្រប់ក្រុមហ៊ុន)</button>
-          <button class="btn" onclick="openCrossPurchaseAndPickFolder()"
-                  title="ផ្ទុកបញ្ជីទិញរបស់ក្រុមហ៊ុនដៃគូ">📥 ផ្ទុកឯកសារដៃគូ (ការទិញ)</button>
-          <button class="btn ghost" onclick="clearCpStore('cpPurchase')"
-                  title="លុបទិន្នន័យដៃគូដែលបាន upload">🗑 លុប</button>
-        </div>
-      </div>
+      <!-- ⭐⭐ [stated] ២០២៦-១១-២៧ ៖ «លុបអក្សរនេះចេញ CROSSCHECK SALE ⇄
+           CP_PURCHASE / ការលក់របស់យើង ធៀបនឹង …» ⇒ ចំណងជើង និងអត្ថបទរង
+           ដកចេញ ; «DOWNLOAD EXCEL គួរមានតែ ១ … ពេលចុចឱ្យជាជម្រើសវិញ» ⇒
+           រូប ⬇ តែមួយ បើកបញ្ជីជម្រើស ២ ; ប៊ូតុងដទៃទុកតែរូប ។
+           ⚠ ឈ្មោះពេញនៅក្នុង `title` ⇒ ចង្អុលមើលដឹងដដែល ។ -->
+      <!-- [stated] ២០២៦-១១-២៧ ( D77 ) ៖ «📅 ឆ្នាំ: ដល់ ℹ ជួយរុញមកជួរ
+           ជាមួយនឹង DOWNLOAD EXCEL ដល់ លុប» ⇒ ជួរប៊ូតុងដាច់ដោយឡែក
+           លុបចោល ; ប៊ូតុងទាំង ៣ ចុះទៅក្នុងរបារតម្រងខាងក្រោម ។ -->
       <div class="toolbar">
         <!-- [stated] ២០២៦-១០-២៩ ៖ «នៅផ្នែក crosscheck មានកន្លែង filter រើសឆ្នាំ
              នៅពីជួរតែ១មុខក្រុមហ៊ុនដៃគូ» ។ តម្រងនេះប្រើអញ្ញត្តិ `crossYear[which]`
@@ -11375,29 +11413,26 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
              លាក់ជាលំនាំដើម តែមិនលុបចោល — ព័ត៌មាន «លាក់ … វិក្កយបត្រ
              (ក្រុមហ៊ុនគ្មានទិន្នន័យដៃគូ)» ជាការប្រាប់ថាមានជួរមិនចេញ
              ដូច្នេះត្រូវនៅតែមើលបាន ដោយចុច ℹ ។ -->
-        <button class="btn ghost" style="padding:5px 10px;" title="បង្ហាញ / លាក់ព័ត៌មានលម្អិតនៃតម្រង"
+        <!-- [stated] ២០២៦-១១-២៧ ៖ ថ្នាក់ `cx-info` ⇒ លាក់តែលើទូរសព្ទ -->
+        <button class="btn ghost cx-info" style="padding:5px 10px;" title="បង្ហាញ / លាក់ព័ត៌មានលម្អិតនៃតម្រង"
                 onclick="crossToggleInfo('crossSale')">ℹ</button>
         <span class="import-status" id="filter-count-crossSale" style="display:none"></span>
+        <!-- ⚠ `margin-left:auto` លើក្រុមនេះ ⇒ តម្រងឆ្វេង ប៊ូតុងស្តាំ -->
+        <span class="cx-acts">
+          <button class="btn ghost cx-ico" onclick="crossXlsMenu(this,'crossSale')"
+                  title="ទាញយកជា Excel ( មានជម្រើស )">⬇</button>
+          <button class="btn cx-ico" onclick="openCrossPurchaseAndPickFolder()"
+                  title="ផ្ទុកបញ្ជីទិញរបស់ក្រុមហ៊ុនដៃគូ">📥</button>
+          <button class="btn ghost cx-ico" onclick="clearCpStore('cpPurchase')"
+                  title="លុបទិន្នន័យដៃគូដែលបាន upload">🗑</button>
+        </span>
       </div>
       <div class="table-scroll"><table id="table-crossSale"></table></div>
     </section>
 
     <!-- CROSSCHECK_PURCHASE -->
     <section class="view" id="view-cross-purchase">
-      <div class="topbar cross-top">
-        <div class="cross-top-t">
-          <h2>CROSSCHECK PURCHASE ⇄ CP_SALE</h2>
-          <p>ការទិញរបស់យើង ធៀបនឹង ការលក់របស់ក្រុមហ៊ុនដៃគូ</p>
-        </div>
-        <div class="cross-top-b">
-          <button class="btn ghost" onclick="crossExcel('crossPurchase')" title="ទាញយកលទ្ធផលផ្គូផ្គងទាំងអស់ (គ្រប់ទំព័រ)">⬇ Excel</button>
-          <button class="btn ghost" onclick="crossExcelAll('crossPurchase')" title="សន្លឹកសង្ខេបគ្រប់ក្រុមហ៊ុន + សន្លឹកលម្អិត">⬇ Excel (គ្រប់ក្រុមហ៊ុន)</button>
-          <button class="btn" onclick="openCrossSaleAndPickFolder()"
-                  title="ផ្ទុកបញ្ជីលក់របស់ក្រុមហ៊ុនដៃគូ">📥 ផ្ទុកឯកសារដៃគូ (ការលក់)</button>
-          <button class="btn ghost" onclick="clearCpStore('cpSale')"
-                  title="លុបទិន្នន័យដៃគូដែលបាន upload">🗑 លុប</button>
-        </div>
-      </div>
+      <!-- [stated] ២០២៦-១១-២៧ ៖ ដូចផ្ទាំង SALE បេះបិទ ( គូភ្លោះ ) -->
       <div class="toolbar">
         <div class="import-group" style="padding-left:12px;">
           <span>📅 ឆ្នាំ:</span>
@@ -11410,9 +11445,17 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
         <input type="text" id="search-crossPurchase" class="partner-select" style="min-width:190px"
                placeholder="🔍 លេខវិក្កយបត្រ (យើង ឬ ដៃគូ)…"
                oninput="crossSearchSet('crossPurchase', this.value)">
-        <button class="btn ghost" style="padding:5px 10px;" title="បង្ហាញ / លាក់ព័ត៌មានលម្អិតនៃតម្រង"
+        <button class="btn ghost cx-info" style="padding:5px 10px;" title="បង្ហាញ / លាក់ព័ត៌មានលម្អិតនៃតម្រង"
                 onclick="crossToggleInfo('crossPurchase')">ℹ</button>
         <span class="import-status" id="filter-count-crossPurchase" style="display:none"></span>
+        <span class="cx-acts">
+          <button class="btn ghost cx-ico" onclick="crossXlsMenu(this,'crossPurchase')"
+                  title="ទាញយកជា Excel ( មានជម្រើស )">⬇</button>
+          <button class="btn cx-ico" onclick="openCrossSaleAndPickFolder()"
+                  title="ផ្ទុកបញ្ជីលក់របស់ក្រុមហ៊ុនដៃគូ">📥</button>
+          <button class="btn ghost cx-ico" onclick="clearCpStore('cpSale')"
+                  title="លុបទិន្នន័យដៃគូដែលបាន upload">🗑</button>
+        </span>
       </div>
       <div class="table-scroll"><table id="table-crossPurchase"></table></div>
     </section>
@@ -25362,6 +25405,51 @@ function openDataEntry(){
     if(el2) el2.scrollIntoView({behavior:'smooth', block:'start'});
   }, 200);
 }
+
+/* ⭐⭐ [stated] ២០២៦-១១-២៧ ៖ «DOWNLOAD EXCEL គួរមានតែ ១ បានហើយ
+   ពេលចុចពីលើ ឱ្យជាជម្រើសវិញ» ។
+   ⚠ មុខងារទាំងពីរ ( `crossExcel` = លទ្ធផលផ្គូផ្គងគ្រប់ទំព័រ ·
+     `crossExcelAll` = សង្ខេបគ្រប់ក្រុមហ៊ុន + លម្អិត ) **មិនប្តូរសោះ** ;
+     ប្តូរតែផ្លូវចូល ។
+   ⚠ `position:fixed` ៖ បញ្ជីមិនត្រូវកាត់ដោយ `overflow` របស់របារ ។
+   ⚠ ចុចរូបម្តងទៀត = បិទ ⇒ ប្រៀបធៀប `__btn` មុនបើកថ្មី ។
+   ⚠ អ្នកស្តាប់ `click` លើ document ជា **bubble** ( មិនមែន capture )
+     ⇒ `onclick` របស់ប៊ូតុងរត់មុន ⇒ ការបិទ/បើកមិនច្រឡំគ្នា ។ */
+function crossXlsMenu(btn, which){
+  try{
+    var old = document.getElementById('rscMenu');
+    if(old){ var same = (old.__btn === btn); old.remove(); if(same) return; }
+    var m = document.createElement('div');
+    m.id = 'rscMenu'; m.className = 'rsc-menu'; m.__btn = btn;
+    var items = [
+      ['⬇ លទ្ធផលផ្គូផ្គងទាំងអស់ ( គ្រប់ទំព័រ )', function(){ crossExcel(which); }],
+      ['⬇ សង្ខេបគ្រប់ក្រុមហ៊ុន + សន្លឹកលម្អិត',  function(){ crossExcelAll(which); }]
+    ];
+    items.forEach(function(it){
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'rsc-menu-it'; b.textContent = it[0];
+      b.onclick = function(ev){ ev.stopPropagation(); m.remove(); it[1](); };
+      m.appendChild(b);
+    });
+    document.body.appendChild(m);
+    var r = btn.getBoundingClientRect();
+    var w = m.offsetWidth || 240;
+    m.style.left = Math.max(8, Math.min(r.left, window.innerWidth - w - 8)) + 'px';
+    m.style.top  = (r.bottom + 6) + 'px';
+    setTimeout(function(){
+      var close = function(ev){
+        if(m.contains(ev.target)) return;
+        m.remove(); document.removeEventListener('click', close);
+      };
+      document.addEventListener('click', close);
+      var esc = function(ev){
+        if(ev.key === 'Escape'){ m.remove(); document.removeEventListener('keydown', esc); }
+      };
+      document.addEventListener('keydown', esc);
+    }, 0);
+  }catch(e){ console.error('crossXlsMenu:', e); }
+}
+try{ window.crossXlsMenu = crossXlsMenu; }catch(e){}
 
 function renderPartnersView(){
   const container = document.getElementById("partners-container");
@@ -58338,12 +58426,15 @@ function smwHtml(forPrint){
     '<div class="smw-sign">' +
       '<div class="smw-date">' + esc(khSignDate()) + '</div>' +
       '<div class="smw-sh">ហត្ថលេខាសវនករ</div>' +
+      /* ⭐ [stated] ២០២៦-១១-២៧ ៖ «លុបជួរ អនុការិ. សវនករ សវនករ ចេញ
+         ទុកតែឈ្មោះបានហើយ» ។
+         ⚠ ចន្លោះចុះហត្ថលេខា ( .smw-gap ) និងឈ្មោះ នៅដដែល ។ */
       '<table class="smw-stbl"><tr>' +
-        '<td><div class="smw-gap"></div><div class="smw-role">អនុការិ.</div>' +
+        '<td><div class="smw-gap"></div>' +
           '<div class="smw-nm">' + esc(c.deputy) + '</div></td>' +
-        '<td><div class="smw-gap"></div><div class="smw-role">សវនករ</div>' +
+        '<td><div class="smw-gap"></div>' +
           '<div class="smw-nm">' + esc(auditors[0] || '') + '</div></td>' +
-        '<td><div class="smw-gap"></div><div class="smw-role">សវនករ</div>' +
+        '<td><div class="smw-gap"></div>' +
           '<div class="smw-nm">' + esc(auditors[1] || '') + '</div></td>' +
       '</tr></table>' +
     '</div>' +
@@ -70168,7 +70259,7 @@ else CC.init();
      ការរក្សាទុកឥឡូវ **រាយលេខជំហាន** លើផ្ទាំង ហើយផ្អាកអោយផ្ទាំងគូររួច
      មុននឹងចាប់ការងារធ្ងន់នីមួយៗ។ សារចុងក្រោយដែលឃើញ = ជំហានដែលគាំង។
      លេខ build ក៏បង្ហាញផង ដើម្បីដឹងច្បាស់ថាកំពុងប្រើឯកសារណា។ */
-  var RSC_BUILD = '19/11 · D74';
+  var RSC_BUILD = '19/11 · D78';
   try{ window.__RSC_BUILD = RSC_BUILD; }catch(e){}
 
   /* ⚠⚠ [stated] ២០២៦-០៨-១៣ ៖ រូបថតបង្ហាញ **«Page Unresponsive» របស់ Chrome**
