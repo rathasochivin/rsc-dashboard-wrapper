@@ -157,7 +157,7 @@
 })();
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SYSTEM · 19/11-D90</title>
+<title>SYSTEM · 19/11-D92</title>
 <!-- ដាក់លើអេក្រង់ដើមទូរស័ព្ទ ៖ រូបតំណាង ឈ្មោះ និងបើកពេញអេក្រង់
      manifest ដាក់ជា data URL ព្រោះ Apps Script បម្រើឯកសារតែមួយ។ -->
 <meta name="mobile-web-app-capable" content="yes">
@@ -8289,11 +8289,17 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     #tos-embed #empGridTable td:first-child,
     #tos-embed #empGridTable th:first-child{ text-align:center !important; }
     /* ⭐ [stated] ប្រអប់រយៈពេលធ្វើការ ៖ ១ ជួរ */
+    /* ⚠ [stated] ២០២៦-១១-២៧ ( D92 ) ៖ «រយៈពេលប្រកាស …» ចូលជួរនេះហើយ ។
+       លើទូរសព្ទ ជួរនេះធ្លាប់ជា `nowrap + overflow-x:auto` ⇒ អត្ថបទវែងនោះ
+       នឹងហៀរទៅស្តាំ ៦០៦px ក្នុងប្រអប់ ៣៣៤px ( វាស់បាន ) ។
+       ⇒ ប្តូរទៅ `wrap` ហើយឱ្យអត្ថបទនោះកាន់ជួរពេញ ⇒ ដូចមុនបេះបិទ
+         សម្រាប់ទូរសព្ទ ( ថ្ងៃចូល/ចេញនៅជួរលើ អត្ថបទនៅជួរក្រោម ) ។ */
     #tos-embed .period-box{
-      display:flex !important; flex-wrap:nowrap !important;
-      align-items:center; gap:8px; overflow-x:auto;
+      display:flex !important; flex-wrap:wrap !important;
+      align-items:center; gap:8px; overflow-x:visible !important;
       -webkit-overflow-scrolling:touch; scrollbar-width:none;
     }
+    #tos-embed .period-box #empMissingInfo{ flex:1 1 100% !important; }
     #tos-embed .period-box::-webkit-scrollbar{ display:none; }
     /* ⭐ ក្បាលផ្ទាំងបុគ្គលិក ៖ ឈ្មោះ · សញ្ជាតិ · ស្ថានភាព ក្នុងជួរតែមួយ
        ⇒ បង្ខំលេខអត្តសញ្ញាណឱ្យចុះជួរទី ២ ( flex-basis ១០០% ) ។ */
@@ -8453,6 +8459,34 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
     padding:8px 12px; margin:0 0 10px; font-size:12.5px;
   }
   #tos-embed .period-box label{ display:inline-flex; align-items:center; gap:6px; }
+  /* ⭐ [stated] ២០២៦-១១-២៧ ( D92 ) ៖ «រយៈពេលប្រកាស …» ឈរជួរតែមួយនឹង
+     «ថ្ងៃចូលធ្វើការ» ⇒ វាកាន់កន្លែងដែលនៅសល់ ហើយបង្រួមបានពេលអេក្រង់តូច ។ */
+  #tos-embed .period-box #empMissingInfo{
+    flex:1 1 320px; min-width:0; margin:0; text-align:left;
+  }
+  #tos-embed .period-box #empMissingInfo:empty{ display:none; }
+  /* ⭐ [stated] ២០២៦-១១-២៧ ៖ ប៊ូតុង ៣ ក្នុងក្បាល «ចំនួនបុគ្គលប្រចាំឆ្នាំ» ។ */
+  #tos-embed .hc-head .hc-acts{
+    margin-left:auto; display:inline-flex; align-items:center; gap:8px; flex:0 0 auto;
+  }
+  #tos-embed .hc-head .hc-acts .btn{
+    height:30px; min-height:30px; padding:0 11px; font-size:11.5px;
+    display:inline-flex; align-items:center; justify-content:center;
+  }
+  #tos-embed .hc-head .hc-acts #exportBtn{ width:34px; min-width:34px; padding:0; }
+  /* ⭐ [stated] ២០២៦-១១-២៧ ៖ «ជួរ ប្រាក់បៀវត្ស … ដល់ កំណត់ឡើងវិញ ១ ជួរ» ។
+     ⚠ `.bf-row` ជាការរចនាសម្រាប់ទូរសព្ទ ( ២ ជួរច្បាស់លាស់ ) ⇒ លើកុំព្យូទ័រ
+       `display:contents` ⇒ វាលទាំង ៥ ក្លាយជាកូនផ្ទាល់ ⇒ ជួរតែមួយ ។
+     ⚠ ទូរសព្ទនៅ ២ ជួរដដែល ( បើបង្ខំ ១ ជួរ វាលនឹងច្របាច់រហូតអានពិបាក ) ។ */
+  /* ⚠⚠ ច្បាប់នេះត្រូវឈរ **ក្រោយ** `.bf-row{display:flex; flex:1 0 100%}`
+     ( បន្ទាត់ ~៨៦១៦ ) ⇒ ត្រូវប្រើ `!important` ព្រោះច្បាប់នោះឈរក្រោយ
+     ក្នុងឯកសារ ។ ហើយ `.field{flex:1 1 0}` ក៏ត្រូវប្តូរដែរ ៖ ទុកដូច្នោះ
+     វាលនីមួយៗលាតដល់ ៤៨០px ( វាស់បាន ) ⇒ ២ វាលពេញជួរ ។
+     ⇒ `flex:0 1 auto` ⇒ វាលធំតាមមាតិការបស់វា ⇒ ទាំង ៥ សមក្នុង ១ ជួរ ។ */
+  @media screen and (min-width:861px){
+    #tos-embed .bulk-fill-box .bf-row{ display:contents !important; }
+    #tos-embed .bulk-fill-box .bf-row > .field{ flex:0 1 auto !important; }
+  }
   #tos-embed .period-box input[type=date]{
     font:inherit; padding:4px 7px; border:1px solid var(--tos-line);
     border-radius:6px; background:#fff; color:inherit;
@@ -10465,25 +10499,26 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
          ច្របាច់ឱ្យតូចជាងអត្ថបទរបស់វា ⇒ អក្សរបាក់ ហើយលេខក្នុងវង់ក្រចក
          ដាច់ចេញពីពាក្យ ( មើលរូបរបស់អ្នកប្រើ ) ។
        ⇒ រុំបន្ទាត់ជំនួសការច្របាច់ ។ -->
-  <div style="display:flex; justify-content:flex-end; flex-wrap:wrap; gap:10px; margin:10px 4px 0;">
-    <button class="btn gold" id="exportBtn" type="button" disabled title="នាំចេញជា Excel">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
-           stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
-      <!-- [stated] ២០២៦-១១-១៤ ៖ «Excel ប្តូរមកតែរូប download បានហើយ» -->
-    </button>
-    <button type="button" class="btn danger-ghost" id="revertAllReassessBtn" title="លុបការកំណត់ពន្ធឡើងវិញទាំងអស់">លុបការកំណត់</button>
-    <!-- [stated] ២០២៦-១១-១៣ ៖ «ផ្នែក excel ដល់ការពិនិត្យ រៀបវាតែមួយជួរ» ។
-         ⚠ ទទឹងជួរវាស់បាន ៣០៦px តែប៊ូតុង ៣ ត្រូវការ ៤២៦px ⇒ បាក់ ២ ជួរ ។
-         ⇒ បង្រួមស្លាកវែងបំផុត ( ១៨០px ) ⇒ សមក្នុង ១ ជួរ ។ អត្ថន័យពេញ
-           នៅក្នុង title ដដែល ។ -->
-    <button type="button" class="btn gold" id="viewAllReassessBtn" title="ពិនិត្យការកំណត់ពន្ធឡើងវិញទាំងអស់">ពិនិត្យ (<span id="reassessCountBadge">0</span>)</button>
-  </div>
+  <!-- ⭐⭐ [stated] ២០២៦-១១-២៧ ( D92 ) ៖ «DOWNLOAD ដល់ ពិនិត្យ (0) ជួយរុញ
+       ចុះមកក្រោមនៅជួរជាមួយនឹង ចំនួនបុគ្គលិកប្រចាំឆ្នាំ» ⇒ ជួរប៊ូតុង
+       ដាច់ដោយឡែកនៅទីនេះត្រូវដកចេញ ; ប៊ូតុងចុះទៅក្នុងក្បាលកាតខាងក្រោម ។ -->
   <div id="statusLine" class="hint" style="margin:8px 4px 0;"></div>
 
   <!-- [stated] ចំនួនបុគ្គលិកតាមខែ — បិទជាមុន ចុចចំណងជើងទើបបើក -->
   <section class="card hc-card hc-shut" id="hcCard">
     <h3 class="hc-head" id="hcHead">▸ ចំនួនបុគ្គលប្រចាំឆ្នាំ
       <span class="hint" style="font-weight:400;">មើលកំណើន ឬការថយចុះនៃបុគ្គលិកពីខែមួយទៅខែមួយ</span>
+      <!-- ⚠ ប៊ូតុងត្រូវឈរ **ខាងចុង** ៖ `sync()` សរសេរលើថ្នាំងអក្សរទី ១
+           របស់ក្បាលនេះ ⇒ ការដាក់ខាងមុខនឹងបំផ្លាញចំណងជើង ។
+           ⚠ លេខសម្គាល់ប៊ូតុងមិនប្តូរ ⇒ ការចងកូដទាំងអស់ដដែល ។ -->
+      <span class="hc-acts">
+        <button class="btn gold" id="exportBtn" type="button" disabled title="នាំចេញជា Excel">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+               stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+        </button>
+        <button type="button" class="btn danger-ghost" id="revertAllReassessBtn" title="លុបការកំណត់ពន្ធឡើងវិញទាំងអស់">លុបការកំណត់</button>
+        <button type="button" class="btn gold" id="viewAllReassessBtn" title="ពិនិត្យការកំណត់ពន្ធឡើងវិញទាំងអស់">ពិនិត្យ (<span id="reassessCountBadge">0</span>)</button>
+      </span>
     </h3>
     <div id="hcBody"></div>
   </section>
@@ -10682,8 +10717,11 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
         <label>ថ្ងៃឈប់ធ្វើការ <input type="date" id="empWorkEnd"></label>
         <button type="button" class="btn ghost" id="empWorkClear"
                 title="សម្អាតថ្ងៃចូល និងថ្ងៃឈប់ធ្វើការ">&#8629;</button>
+        <!-- ⭐ [stated] ២០២៦-១១-២៧ ( D92 ) ៖ «រយៈពេលប្រកាស … ដាក់ជួរ
+             ជាមួយនឹង ថ្ងៃចូលធ្វើការ» ⇒ ផ្លាស់ចូលក្នុងជួរនេះតែម្តង ។
+             ⚠ លេខសម្គាល់ដដែល ⇒ កូដដែលសរសេរចូលវាមិនប្តូរទេ ។ -->
+        <div id="empMissingInfo" class="modal-hint"></div>
       </div>
-      <div id="empMissingInfo" class="modal-hint"></div>
       <div id="empModalStatus" class="hint"></div>
       <div id="empAmendDetail"></div>
       <div id="empYearTabs" class="matrix-toggle" style="margin-bottom:10px;"></div>
@@ -10874,6 +10912,42 @@ td.assessable.assessed::after{content:"\25CF"; color:var(--green); font-size:9px
   #view-wht #wht-table th,
   #view-wht #wht-table td,
   #view-wht #wht-table td.name-cell{ white-space:nowrap !important; }
+  /* ⭐ [stated] ២០២៦-១១-២៧ ( D91 ) ៖ ប៊ូតុងព្រមានលេខវិក្កយបត្រ ⇒ ១ ជួរ ។ */
+  .inv-issue-btn{
+    font-size:9.5px !important; white-space:nowrap !important;
+    padding:6px 9px !important; line-height:1.5 !important;
+    max-width:100% !important; overflow:hidden !important; text-overflow:ellipsis !important;
+  }
+  /* ⭐ [stated] ២០២៦-១១-២៧ ៖ «តារាង Sale and purchase ជួរបង្រួម
+     ឱ្យស្រួលមើលដូច WHT ដែរ» ⇒ អក្សរតូច · ចន្លោះតូច · ១ បន្ទាត់ក្នុងក្រឡា
+     ( តារាងរស់ក្នុង `.table-scroll` ⇒ អូសទៅស្តាំបានដដែល ) ។ */
+  #view-sale .table-scroll table, #view-purchase .table-scroll table{
+    min-width:0 !important;   /* ⇒ ជួរឈរតូចតាមមាតិកា មិនបង្ខំ ៧៦០px */
+  }
+  #view-sale .table-scroll table th, #view-sale .table-scroll table td,
+  #view-purchase .table-scroll table th, #view-purchase .table-scroll table td{
+    font-size:11px !important; padding:5px 6px !important; white-space:nowrap !important;
+  }
+  /* ⭐ [stated] ២០២៦-១១-២៧ ៖ សាលកបត្រ ( MTR ) ៖ «ជួយរៀបឱ្យងាយស្រួល
+     មើលបានពេញផង» ។
+     ⚠ ថេបមាន ៨ ⇒ ១ ជួរមិនអាចទេ ⇒ **រុំជាច្រើនជួរ** ជំនួសការអូស
+       ( ការអូសលាក់ថេបខាងស្តាំ ⇒ គេមិនដឹងថានៅមាន ) ។ */
+  #mtr-embed #viewTabs{
+    flex-wrap:wrap !important; overflow-x:visible !important;
+    min-width:0 !important; max-width:100% !important; gap:4px !important;
+  }
+  #mtr-embed #viewTabs .tab-btn{
+    flex:0 1 auto !important; font-size:10.5px !important;
+    padding:5px 8px !important; white-space:nowrap;
+  }
+  /* តារាងសាលកបត្រ ៖ ជួរឈរតូចតាមមាតិកា ⇒ ឃើញច្រើនជាងមុន */
+  #mtr-embed .table-scroll table, #mtr-embed .tbl-wrap table{
+    min-width:0 !important;
+  }
+  #mtr-embed .table-scroll table th, #mtr-embed .table-scroll table td,
+  #mtr-embed .tbl-wrap table th, #mtr-embed .tbl-wrap table td{
+    font-size:11px !important; padding:5px 6px !important;
+  }
 
         .vm-head{ gap:8px 10px; }
         .vm-head > b{ order:1; flex:1 1 auto; min-width:0; }
@@ -17347,7 +17421,9 @@ function renderInvoiceIssuesCard(storeName, containerId){
   const totalMissing = gaps.reduce((s,g)=>s+g.missingCount,0);
   const isOpen = invoiceIssuesOpen[storeName];
 
-  let html = `<button class="btn ghost" style="margin-bottom:10px;" onclick="toggleInvoiceIssues('${storeName}','${containerId}')">
+  /* [stated] ២០២៦-១១-២៧ ( D91 ) ៖ ថ្នាក់ `inv-issue-btn` ⇒ CSS ទូរសព្ទ
+     រៀបវាមក ១ ជួរបាន ។ */
+  let html = `<button class="btn ghost inv-issue-btn" style="margin-bottom:10px;" onclick="toggleInvoiceIssues('${storeName}','${containerId}')">
     ⚠ លេខវិក្កយបត្រស្ទួន (${dupList.length}) / បាត់ (${totalMissing}) — ${isOpen? "ចុចដើម្បីលាក់" : "ចុចដើម្បីមើលលម្អិត"}
   </button>`;
 
@@ -50103,7 +50179,12 @@ window.__toiImport = function(data){
       try{ localStorage.setItem('tosHcOpen', open ? '1' : '0'); }catch(e){}
     };
     sync();
-    head.onclick = ()=>{ card.classList.toggle('hc-shut'); sync(); };
+    /* ⚠ [stated] ២០២៦-១១-២៧ ( D92 ) ៖ ប៊ូតុងរស់ក្នុងក្បាលនេះហើយ
+       ⇒ ការចុចប៊ូតុងមិនត្រូវបើក/បិទកាតជាមួយទេ ។ */
+    head.onclick = (ev)=>{
+      try{ if(ev && ev.target && ev.target.closest && ev.target.closest('.hc-acts')) return; }catch(e){}
+      card.classList.toggle('hc-shut'); sync();
+    };
   })();
 
   /* ប្រអប់បន្ថែមឈ្មោះបុគ្គលិក ៖ បិទជាមុន · ចុចចំណងជើងបើក · ចាំស្ថានភាព */
@@ -70584,7 +70665,7 @@ else CC.init();
      ការរក្សាទុកឥឡូវ **រាយលេខជំហាន** លើផ្ទាំង ហើយផ្អាកអោយផ្ទាំងគូររួច
      មុននឹងចាប់ការងារធ្ងន់នីមួយៗ។ សារចុងក្រោយដែលឃើញ = ជំហានដែលគាំង។
      លេខ build ក៏បង្ហាញផង ដើម្បីដឹងច្បាស់ថាកំពុងប្រើឯកសារណា។ */
-  var RSC_BUILD = '19/11 · D90';
+  var RSC_BUILD = '19/11 · D92';
   try{ window.__RSC_BUILD = RSC_BUILD; }catch(e){}
 
   /* ⚠⚠ [stated] ២០២៦-០៨-១៣ ៖ រូបថតបង្ហាញ **«Page Unresponsive» របស់ Chrome**
